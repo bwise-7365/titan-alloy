@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="DESim">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../DESim/out/artifacts/DESim_jar/DESim.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

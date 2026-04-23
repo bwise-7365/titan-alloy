@@ -42,6 +42,9 @@ static const struct { QColor color; const char* label; } kBgColors[] = {
     { QColor("#0C7F84"), "Teal" },
 };
 
+static const int kMaxEdges[]       = { 3, 4, 5, 6 };
+static constexpr int kDefaultMaxEdgesIdx = 1; // value 4
+
 static const struct { double fraction; const char* label; } kStones[] = {
     { 0.00, "Empty"         },
     { 0.20, "Sparse (20%)"  },
@@ -129,6 +132,14 @@ void MainWindow::buildMenuBar() {
 
     irregularCheck_ = new QCheckBox("Irregular", bmw);
     form->addRow("", irregularCheck_);
+
+    maxEdgesCombo_ = new QComboBox(bmw);
+    for (int v : kMaxEdges) maxEdgesCombo_->addItem(QString::number(v));
+    maxEdgesCombo_->setCurrentIndex(kDefaultMaxEdgesIdx);
+    maxEdgesCombo_->setEnabled(false);
+    form->addRow("Max Edges:", maxEdgesCombo_);
+    connect(irregularCheck_, &QCheckBox::toggled,
+            maxEdgesCombo_,  &QWidget::setEnabled);
 
     bgCombo_ = new QComboBox(bmw);
     for (const auto& bg : kBgColors) bgCombo_->addItem(bg.label);
@@ -227,8 +238,10 @@ void MainWindow::generateBoard() {
 
     game_.reset();
     graph_.reset();
-    if (irr)
-        graph_ = std::make_unique<IrregularGraph>(sz.rows, sz.cols, 4, seed);
+    if (irr) {
+        int maxDeg = kMaxEdges[maxEdgesCombo_->currentIndex()];
+        graph_ = std::make_unique<IrregularGraph>(sz.rows, sz.cols, maxDeg, seed);
+    }
     else
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
 

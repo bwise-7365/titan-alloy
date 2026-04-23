@@ -48,6 +48,7 @@ private:
     // Board menu embedded controls
     QComboBox*    sizeCombo_;
     QCheckBox*    irregularCheck_;
+    QComboBox*    maxEdgesCombo_;
     QComboBox*    bgCombo_;
 
     // Random menu

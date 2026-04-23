@@ -18,6 +18,11 @@ static double orient(float ax, float ay, float bx, float by, float px, float py)
          - static_cast<double>(by - ay) * (px - ax);
 }
 
+int IrregularGraph::expandGrid(int n) {
+    int m = (int)(0.5 + (6.25 * n) / 5);
+    return m;
+}
+
 bool IrregularGraph::segmentsProperlyIntersect(
     float ax, float ay, float bx, float by,
     float cx, float cy, float dx, float dy)
@@ -66,7 +71,7 @@ bool IrregularGraph::canAddEdge(int a, int b) const {
 
 IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
     : m_(m), n_(n), maxDegree_(maxDegree),
-      baseRows_((7 * m + 1) / 5), baseCols_((7 * n + 1) / 5)
+      baseRows_(expandGrid(m)), baseCols_(expandGrid(n))
 {
     std::mt19937_64 rng(seed);
 

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="DCVRP:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DCVRP_jar</output-path>
+    <root id="archive" name="DCVRP.jar">
+      <element id="module-output" name="DCVRP" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../DESim/out/artifacts/DESim_jar/DESim.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Logistics/out/artifacts/Logistics_jar/Logistics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../NWUtilities/out/artifacts/NWUtilities_jar/NWUtilities.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -16,6 +16,7 @@ private:
     int m_, n_, maxDegree_;
     int baseRows_, baseCols_;
     std::vector<std::pair<int,int>> edges_;
+    static int expandGrid(int n);
 
     static bool segmentsProperlyIntersect(float ax, float ay, float bx, float by,
                                           float cx, float cy, float dx, float dy);
