@@ -1,0 +1,25 @@
+@startuml SEntity
+title SEntity — State Machine
+
+hide empty description
+
+[*] --> Select
+
+Select --> Wait : doSelect()\n/ selectBacklog()\n[SEntity does not self-schedule;\nTEntity drives all further events]
+
+Wait --> Move : [TEntity departs src]\n/ scheduled by TEntity at src.transferEndTime
+
+Move --> Delivered : [serial.deliveryNodeName == currNode]\n/ scheduled by TEntity at dst.transferEndTime
+Move --> Select    : [serial.deliveryNodeName != currNode]\n/ scheduled by TEntity at dst.transferEndTime
+
+Delivered --> [*]
+
+note right of Wait
+  SEntity never calls
+  mySim.addEvent() for itself
+  after joining a backlog.
+  All state changes are
+  driven by TEntity.
+end note
+
+@enduml

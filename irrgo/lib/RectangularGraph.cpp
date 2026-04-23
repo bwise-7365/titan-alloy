@@ -2,6 +2,8 @@
 #include "RectangularGraph.h"
 #include <sstream>
 
+namespace IrrGo {
+
 static constexpr float kColSpacing = 0.87f;
 static constexpr float kRowSpacing = 0.93f;
 
@@ -39,4 +41,6 @@ std::string RectangularGraph::asciiRepresentation() const {
     }
     return oss.str();
 }
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,10 +1,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "Game.h"
-#include <cassert>
 #include <limits>
 #include <queue>
 #include <random>
-#include <sstream>
+
+namespace IrrGo {
+
+// ── Constructors ──────────────────────────────────────────────────────────────
 
 Game::Game(const Graph& graph, double komi, int handicap)
     : graph_(graph),
@@ -14,6 +16,8 @@ Game::Game(const Graph& graph, double komi, int handicap)
     initZobrist();
     history_.insert(hash_);
 }
+
+// ── Private helpers ───────────────────────────────────────────────────────────
 
 void Game::initZobrist() {
     std::mt19937_64 rng(0xdeadbeefcafe1234ULL);
@@ -63,20 +67,18 @@ void Game::removeGroup(const std::vector<int>& group) {
     }
 }
 
-bool Game::isLegalMove(int nodeId) const {
+bool Game::isLegalPlacement(int nodeId) const {
     if (board_[nodeId] != Color::Empty) return false;
 
     Color myColor = (current_ == Player::Black) ? Color::Black : Color::White;
     Color opColor = (current_ == Player::Black) ? Color::White : Color::Black;
     int N = graph_.nodeCount();
 
-    // Simulate on a temporary board
     std::vector<Color> tmp = board_;
     tmp[nodeId] = myColor;
     uint64_t tmpHash = hash_;
     tmpHash ^= (myColor == Color::Black) ? zobBlack_[nodeId] : zobWhite_[nodeId];
 
-    // Helper: BFS group on tmp
     auto bfsGroup = [&](int start, Color col) {
         std::vector<int> grp;
         std::vector<bool> vis(N, false);
@@ -97,7 +99,6 @@ bool Game::isLegalMove(int nodeId) const {
         return false;
     };
 
-    // Remove captured opponent groups
     std::vector<bool> visited(N, false);
     for (int nb : graph_.node(nodeId).neighbors) {
         if (tmp[nb] == opColor && !visited[nb]) {
@@ -111,7 +112,6 @@ bool Game::isLegalMove(int nodeId) const {
         }
     }
 
-    // Remove friendly group if it has no liberties (suicide)
     {
         auto grp = bfsGroup(nodeId, myColor);
         if (!hasLiberty(grp))
@@ -121,11 +121,13 @@ bool Game::isLegalMove(int nodeId) const {
             }
     }
 
-    return setupMode_ || history_.find(tmpHash) == history_.end();
+    return setupMode_ || !history_.contains(tmpHash);
 }
 
+// ── IrrGo-specific moves ──────────────────────────────────────────────────────
+
 bool Game::placeStone(int nodeId) {
-    if (isGameOver() || !isLegalMove(nodeId)) return false;
+    if (isTerminal() || !isLegalPlacement(nodeId)) return false;
 
     Color myColor = (current_ == Player::Black) ? Color::Black : Color::White;
     Color opColor = (current_ == Player::Black) ? Color::White : Color::Black;
@@ -134,7 +136,6 @@ bool Game::placeStone(int nodeId) {
     hash_ ^= (myColor == Color::Black) ? zobBlack_[nodeId] : zobWhite_[nodeId];
     board_[nodeId] = myColor;
 
-    // Capture opponent groups with no liberties
     std::vector<bool> visited(N, false);
     for (int nb : graph_.node(nodeId).neighbors) {
         if (board_[nb] == opColor && !visited[nb]) {
@@ -145,7 +146,6 @@ bool Game::placeStone(int nodeId) {
         }
     }
 
-    // Remove friendly group if it has no liberties (suicide)
     {
         std::vector<bool> vis2(N, false);
         std::vector<int> myGrp;
@@ -164,13 +164,51 @@ bool Game::placeStone(int nodeId) {
 }
 
 bool Game::pass() {
-    if (isGameOver()) return false;
+    if (isTerminal()) return false;
     ++passCount_;
     moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
                             Color::Empty, -1, -1});
     current_ = (current_ == Player::Black) ? Player::White : Player::Black;
     return true;
 }
+
+// ── AbsGame::Game overrides ───────────────────────────────────────────────────
+
+std::vector<AbsGame::MoveId> Game::getLegalMoves() const {
+    if (isTerminal()) return {};
+    std::vector<AbsGame::MoveId> moves;
+    int N = graph_.nodeCount();
+    moves.reserve(N + 1);
+    for (int i = 0; i < N; ++i)
+        if (isLegalPlacement(i)) moves.push_back(i);
+    moves.push_back(AbsGame::kPass);
+    return moves;
+}
+
+bool Game::isLegalMove(AbsGame::MoveId mv) const {
+    if (isTerminal()) return false;
+    if (mv == AbsGame::kPass) return true;
+    if (mv < 0 || mv >= graph_.nodeCount()) return false;
+    return isLegalPlacement(mv);
+}
+
+bool Game::applyMove(AbsGame::MoveId mv) {
+    if (mv == AbsGame::kPass) return pass();
+    return placeStone(mv);
+}
+
+double Game::staticEval() const {
+    auto result = score();
+    double myScore = (current_ == Player::Black) ? result.blackScore : result.whiteScore;
+    double opScore = (current_ == Player::Black) ? result.whiteScore : result.blackScore;
+    return myScore - opScore;
+}
+
+std::unique_ptr<AbsGame::Game> Game::clone() const {
+    return std::make_unique<Game>(*this);
+}
+
+// ── Scoring ───────────────────────────────────────────────────────────────────
 
 GameResult Game::score() const {
     int N = graph_.nodeCount();
@@ -182,10 +220,9 @@ GameResult Game::score() const {
         else if (board_[i] == Color::White) ++whiteScore;
     }
 
-    // Voronoi territory: each empty node belongs to whichever stone color
-    // can reach it in fewer hops (multi-source BFS from each color's stones).
-    // Ties are neutral — neither player scores them.
-    const int INF = std::numeric_limits<int>::max();
+    // Voronoi territory: each empty node belongs to whichever color can reach
+    // it in fewer hops (multi-source BFS). Ties are neutral.
+    constexpr int INF = std::numeric_limits<int>::max();
     auto bfsDist = [&](Color stoneColor) {
         std::vector<int> dist(N, INF);
         std::queue<int> q;
@@ -209,7 +246,6 @@ GameResult Game::score() const {
         if (board_[i] != Color::Empty) continue;
         if      (distB[i] < distW[i]) ++blackScore;
         else if (distW[i] < distB[i]) ++whiteScore;
-        // equal distance → neutral, no score
     }
 
     GameResult result;
@@ -220,7 +256,8 @@ GameResult Game::score() const {
 }
 
 std::string Game::asciiBoard() const {
-    // Delegate to graph's own ASCII, which can be overridden to overlay stones
     return graph_.asciiRepresentation();
 }
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

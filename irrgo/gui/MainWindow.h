@@ -15,6 +15,7 @@ class QComboBox;
 class QLabel;
 class QPushButton;
 class QLineEdit;
+class QSpinBox;
 class QTextEdit;
 class QTimer;
 
@@ -31,18 +32,29 @@ private slots:
     void onMoveRequested(int nodeId);
     void onBlackPass();
     void onWhitePass();
+    void onSuggestGo();
 
 private:
     void buildMenuBar();
     void updateControls();
     void logLastMove();
     void stopStoneSetup();
+    void clearSuggestion();
+
+    // Builds a NegaMax submenu action and attaches it to parent / group.
+    // depthOut / turnsOut are set to the created spinboxes.
+    // connectGo: if true the Go! button is wired to onSuggestGo().
+    void buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
+                          QSpinBox*& depthOut, QSpinBox*& turnsOut,
+                          bool connectGo, bool withTurns = true);
 
     // Central UI
     BoardWidget*  boardWidget_;
     QLabel*       currentPlayerLabel_;
     QPushButton*  blackPassBtn_;
     QPushButton*  whitePassBtn_;
+    QTextEdit*    suggestedLog_;
+    QPushButton*  clearSuggestBtn_;
     QTextEdit*    moveLog_;
 
     // Board menu embedded controls
@@ -57,9 +69,18 @@ private:
     // Stones menu
     QActionGroup* stonesGroup_;
 
+    // Play menu
+    QAction*  manualAction_     = nullptr;
+    QSpinBox* playDepthSpin_    = nullptr;
+    QSpinBox* playTurnsSpin_    = nullptr;
+
+    // Suggest menu
+    QSpinBox* suggestDepthSpin_ = nullptr;
+    QSpinBox* suggestTurnsSpin_ = nullptr;
+
     // Game state
-    std::unique_ptr<Graph>  graph_;
-    std::unique_ptr<Game>   game_;
+    std::unique_ptr<IrrGo::Graph>  graph_;
+    std::unique_ptr<IrrGo::Game>   game_;
 
     // Setup animation
     QTimer*          stoneTimer_;
@@ -69,3 +90,4 @@ private:
     int              setupTarget_ = 0;
     std::mt19937_64  setupRng_;
 };
+// Copyright Ben Paul Wise. All Rights Reserved.

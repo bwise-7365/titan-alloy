@@ -8,6 +8,8 @@
 #include <random>
 #include <sstream>
 
+namespace IrrGo {
+
 static constexpr float kColSpacing = 0.87f;
 static constexpr float kRowSpacing = 0.93f;
 static constexpr double kMinAngleDeg = 15.0;
@@ -109,7 +111,6 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
 
     int N = nodeCount();
 
-    // Potential edges sorted by length
     struct PotEdge { int a, b; float len; };
     std::vector<PotEdge> potEdges;
     potEdges.reserve(static_cast<size_t>(N) * (N - 1) / 2);
@@ -145,11 +146,9 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
 
     // Greedily add remaining edges shortest-first
     for (const auto& pe : potEdges) {
-        // Corners are capped at degree 2
         if (pe.a < 4 && static_cast<int>(nodes_[pe.a].neighbors.size()) >= 2) continue;
         if (pe.b < 4 && static_cast<int>(nodes_[pe.b].neighbors.size()) >= 2) continue;
 
-        // Skip if already connected
         bool already = false;
         for (int nb : nodes_[pe.a].neighbors)
             if (nb == pe.b) { already = true; break; }
@@ -163,7 +162,6 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
 }
 
 std::string IrregularGraph::asciiRepresentation() const {
-    // Character grid: each base-grid cell → 4 cols wide, 2 rows tall
     int gridH = baseRows_ * 2 - 1;
     int gridW = baseCols_ * 4 - 3;
     std::vector<std::string> grid(gridH, std::string(gridW, ' '));
@@ -180,14 +178,14 @@ std::string IrregularGraph::asciiRepresentation() const {
         const Node& nb = nodes_[b];
         if (na.row == nb.row) {
             ++hCount;
-            int r = dispR(na.row);
+            int r  = dispR(na.row);
             int c1 = dispC(std::min(na.col, nb.col));
             int c2 = dispC(std::max(na.col, nb.col));
             for (int c = c1 + 1; c < c2 && c < gridW; ++c)
                 grid[r][c] = '-';
         } else if (na.col == nb.col) {
             ++vCount;
-            int c = dispC(na.col);
+            int c  = dispC(na.col);
             int r1 = dispR(std::min(na.row, nb.row));
             int r2 = dispR(std::max(na.row, nb.row));
             for (int r = r1 + 1; r < r2 && r < gridH; ++r)
@@ -219,4 +217,6 @@ std::string IrregularGraph::asciiRepresentation() const {
 
     return oss.str();
 }
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

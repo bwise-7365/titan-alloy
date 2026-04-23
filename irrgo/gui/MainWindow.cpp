@@ -1,5 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "MainWindow.h"
+#include "AbsGame.h"
 #include "IrregularGraph.h"
 #include "RectangularGraph.h"
 #include "utils.h"
@@ -17,6 +18,7 @@
 #include <QPushButton>
 #include <QIntValidator>
 #include <QLineEdit>
+#include <QSpinBox>
 #include <QTextEdit>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -24,6 +26,8 @@
 #include <QWidgetAction>
 #include <algorithm>
 #include <numeric>
+
+using namespace IrrGo;
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
@@ -63,7 +67,6 @@ MainWindow::MainWindow(QWidget* parent)
     stoneTimer_ = new QTimer(this);
     connect(stoneTimer_, &QTimer::timeout, this, &MainWindow::onSetupTick);
 
-    // Central layout: board (stretches) + right panel (fixed)
     auto* central  = new QWidget(this);
     setCentralWidget(central);
     auto* root = new QHBoxLayout(central);
@@ -72,7 +75,10 @@ MainWindow::MainWindow(QWidget* parent)
     root->addWidget(boardWidget_, 1);
     connect(boardWidget_, &BoardWidget::moveRequested,
             this, &MainWindow::onMoveRequested);
+    connect(boardWidget_, &BoardWidget::clearSuggestionRequested,
+            this, &MainWindow::clearSuggestion);
 
+    // ── Right panel ───────────────────────────────────────────────────────────
     auto* panel = new QWidget(this);
     panel->setFixedWidth(200);
     auto* pv = new QVBoxLayout(panel);
@@ -94,6 +100,19 @@ MainWindow::MainWindow(QWidget* parent)
     connect(whitePassBtn_, &QPushButton::clicked, this, &MainWindow::onWhitePass);
 
     pv->addSpacing(8);
+
+    // Suggested move display
+    pv->addWidget(new QLabel("Suggested:", this));
+    suggestedLog_ = new QTextEdit(this);
+    suggestedLog_->setReadOnly(true);
+    suggestedLog_->setFixedHeight(54);  // ~2 lines
+    pv->addWidget(suggestedLog_);
+    clearSuggestBtn_ = new QPushButton("Clear", this);
+    pv->addWidget(clearSuggestBtn_);
+    connect(clearSuggestBtn_, &QPushButton::clicked, this, &MainWindow::clearSuggestion);
+
+    pv->addSpacing(8);
+
     pv->addWidget(new QLabel("Move log:", this));
     moveLog_ = new QTextEdit(this);
     moveLog_->setReadOnly(true);
@@ -101,6 +120,61 @@ MainWindow::MainWindow(QWidget* parent)
 
     buildMenuBar();
     resize(1000, 760);
+}
+
+// ── Shared NegaMax submenu builder ────────────────────────────────────────────
+
+void MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
+                                   QSpinBox*& depthOut, QSpinBox*& turnsOut,
+                                   bool connectGo, bool withTurns)
+{
+    auto* action = new QAction("NegaMax", this);
+    action->setCheckable(true);
+    group->addAction(action);
+    parent->addAction(action);
+
+    auto* nmMenu  = new QMenu(this);
+    auto* widget  = new QWidget;
+    auto* vbox    = new QVBoxLayout(widget);
+    vbox->setContentsMargins(8, 6, 8, 6);
+    auto* form    = new QFormLayout;
+    form->setSpacing(6);
+    vbox->addLayout(form);
+
+    depthOut = new QSpinBox(widget);
+    depthOut->setRange(1, 6);
+    depthOut->setValue(2);
+    form->addRow("Depth:", depthOut);
+
+    if (withTurns) {
+        turnsOut = new QSpinBox(widget);
+        turnsOut->setRange(1, 30);
+        turnsOut->setValue(1);
+        form->addRow("Turns:", turnsOut);
+    } else {
+        turnsOut = nullptr;
+    }
+
+    auto* sep = new QFrame(widget);
+    sep->setFrameShape(QFrame::HLine);
+    vbox->addWidget(sep);
+
+    auto* goBtn = new QPushButton("Go!", widget);
+    vbox->addWidget(goBtn);
+    if (connectGo) {
+        connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
+        connect(goBtn, &QPushButton::clicked, this,   &MainWindow::onSuggestGo);
+    }
+
+    auto* wa = new QWidgetAction(nmMenu);
+    wa->setDefaultWidget(widget);
+    nmMenu->addAction(wa);
+    action->setMenu(nmMenu);
+
+    // Opening the submenu selects the NegaMax mode
+    connect(nmMenu, &QMenu::aboutToShow, this, [action]() {
+        action->setChecked(true);
+    });
 }
 
 // ── Menu bar ──────────────────────────────────────────────────────────────────
@@ -113,7 +187,7 @@ void MainWindow::buildMenuBar() {
     fileMenu->addSeparator();
     fileMenu->addAction("Load");
 
-    // Board — embedded widget action
+    // Board
     auto* boardMenu = menuBar()->addMenu("Board");
 
     auto* bmw  = new QWidget;
@@ -140,6 +214,9 @@ void MainWindow::buildMenuBar() {
     form->addRow("Max Edges:", maxEdgesCombo_);
     connect(irregularCheck_, &QCheckBox::toggled,
             maxEdgesCombo_,  &QWidget::setEnabled);
+    connect(irregularCheck_, &QCheckBox::toggled, this, [this](bool checked) {
+        bgCombo_->setCurrentIndex(checked ? 2 : 0);  // 2=Teal, 0=Tan
+    });
 
     bgCombo_ = new QComboBox(bmw);
     for (const auto& bg : kBgColors) bgCombo_->addItem(bg.label);
@@ -174,19 +251,45 @@ void MainWindow::buildMenuBar() {
     connect(stonesGroup_, &QActionGroup::triggered,
             this, &MainWindow::onStonesSelected);
 
-    // Play (no-op)
+    // ── Play (mode selection only; Go! is present but unconnected) ────────────
     auto* playMenu  = menuBar()->addMenu("Play");
     auto* playGroup = new QActionGroup(this);
     playGroup->setExclusive(true);
-    for (const char* lbl : {"Manual Placement", "10 Seconds",
-                             "30 Seconds",       "60 Seconds"}) {
-        auto* a = playMenu->addAction(lbl);
-        a->setCheckable(true);
-        playGroup->addAction(a);
-    }
-    playGroup->actions().first()->setChecked(true);
 
-    // Random — seed control
+    manualAction_ = playMenu->addAction("Manual");
+    manualAction_->setCheckable(true);
+    manualAction_->setChecked(true);
+    playGroup->addAction(manualAction_);
+
+    buildNegaMaxMenu(playMenu, playGroup, playDepthSpin_, playTurnsSpin_,
+                     /* connectGo= */ false);
+
+    auto* playMcts = playMenu->addAction("MCTS");
+    playMcts->setCheckable(true);
+    playMcts->setEnabled(false);
+    playGroup->addAction(playMcts);
+
+    // ── Suggest (NegaMax Go! is wired up) ────────────────────────────────────
+    auto* suggestMenu  = menuBar()->addMenu("Suggest");
+    auto* suggestGroup = new QActionGroup(this);
+    suggestGroup->setExclusive(true);
+
+    buildNegaMaxMenu(suggestMenu, suggestGroup,
+                     suggestDepthSpin_, suggestTurnsSpin_,
+                     /* connectGo= */ true, /* withTurns= */ false);
+
+    auto* suggestMcts = suggestMenu->addAction("MCTS");
+    suggestMcts->setCheckable(true);
+    suggestMcts->setEnabled(false);
+    suggestGroup->addAction(suggestMcts);
+
+    // Keep Play and Suggest depth spinboxes in sync
+    connect(playDepthSpin_,    &QSpinBox::valueChanged,
+            suggestDepthSpin_, &QSpinBox::setValue);
+    connect(suggestDepthSpin_, &QSpinBox::valueChanged,
+            playDepthSpin_,    &QSpinBox::setValue);
+
+    // ── Random ────────────────────────────────────────────────────────────────
     auto* randomMenu = menuBar()->addMenu("Random");
 
     auto* rmw  = new QWidget;
@@ -231,6 +334,7 @@ void MainWindow::buildMenuBar() {
 
 void MainWindow::generateBoard() {
     stopStoneSetup();
+    clearSuggestion();
 
     const auto& sz  = kSizes[sizeCombo_->currentIndex()];
     bool        irr = irregularCheck_->isChecked();
@@ -246,6 +350,7 @@ void MainWindow::generateBoard() {
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
 
     game_ = std::make_unique<Game>(*graph_);
+    game_->setMaxSearchDepth(suggestDepthSpin_->value());
     boardWidget_->setGame(game_.get());
     boardWidget_->setBgColor(kBgColors[bgCombo_->currentIndex()].color);
 
@@ -263,10 +368,11 @@ void MainWindow::onBgColorChanged(int index) {
 void MainWindow::onStonesSelected(QAction* action) {
     if (!game_) return;
     stopStoneSetup();
+    clearSuggestion();
 
-    // Recreate game on same graph for a fresh board
     game_.reset();
     game_ = std::make_unique<Game>(*graph_);
+    game_->setMaxSearchDepth(suggestDepthSpin_->value());
     boardWidget_->setGame(game_.get());
     moveLog_->clear();
     updateControls();
@@ -303,10 +409,9 @@ void MainWindow::onSetupTick() {
                 game_->setSetupMode(false);
                 updateControls();
             }
-            return; // wait 500 ms before next stone
+            return;
         }
     }
-    // exhausted all nodes before reaching target
     stoneTimer_->stop();
     game_->setSetupMode(false);
     boardWidget_->update();
@@ -323,6 +428,7 @@ void MainWindow::stopStoneSetup() {
 void MainWindow::onMoveRequested(int nodeId) {
     if (!game_ || stoneTimer_->isActive()) return;
     if (game_->placeStone(nodeId)) {
+        clearSuggestion();
         boardWidget_->update();
         updateControls();
         logLastMove();
@@ -330,9 +436,10 @@ void MainWindow::onMoveRequested(int nodeId) {
 }
 
 void MainWindow::onBlackPass() {
-    if (!game_ || game_->currentPlayer() != Player::Black) return;
+    if (!game_ || game_->toMove() != Player::Black) return;
     int turn = static_cast<int>(game_->moveHistory().size()) + 1;
     if (game_->pass()) {
+        clearSuggestion();
         moveLog_->append(QString("%1: B PASS").arg(turn));
         boardWidget_->update();
         updateControls();
@@ -340,13 +447,48 @@ void MainWindow::onBlackPass() {
 }
 
 void MainWindow::onWhitePass() {
-    if (!game_ || game_->currentPlayer() != Player::White) return;
+    if (!game_ || game_->toMove() != Player::White) return;
     int turn = static_cast<int>(game_->moveHistory().size()) + 1;
     if (game_->pass()) {
+        clearSuggestion();
         moveLog_->append(QString("%1: W PASS").arg(turn));
         boardWidget_->update();
         updateControls();
     }
+}
+
+// ── NegaMax suggestion ────────────────────────────────────────────────────────
+
+void MainWindow::onSuggestGo() {
+    if (!game_ || game_->isGameOver()) return;
+
+    int depth = suggestDepthSpin_->value();
+    auto searchGame = game_->clone();
+    searchGame->setMaxSearchDepth(depth);
+
+    AbsGame::MoveId mv = searchGame->bestMove();
+
+    bool isBlack = (game_->toMove() == Player::Black);
+    int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
+
+    QString text;
+    if (mv == AbsGame::kPass) {
+        text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");
+        boardWidget_->clearSuggestion();
+    } else {
+        const auto& nd = game_->graph().node(mv);
+        text = QString("%1: %2 R%3C%4")
+                   .arg(turn)
+                   .arg(isBlack ? "B" : "W")
+                   .arg(nd.row).arg(nd.col);
+        boardWidget_->setSuggestion(mv, isBlack);
+    }
+    suggestedLog_->setText(text);
+}
+
+void MainWindow::clearSuggestion() {
+    suggestedLog_->clear();
+    boardWidget_->clearSuggestion();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -364,7 +506,7 @@ void MainWindow::updateControls() {
         whitePassBtn_->setEnabled(false);
         return;
     }
-    bool bt      = (game_->currentPlayer() == Player::Black);
+    bool bt      = (game_->toMove() == Player::Black);
     bool animating = stoneTimer_->isActive();
     currentPlayerLabel_->setText(bt ? "Black to move" : "White to move");
     blackPassBtn_->setEnabled( bt && !animating);
@@ -382,3 +524,4 @@ void MainWindow::logLastMove() {
               .arg(m.row).arg(m.col);
     moveLog_->append(text);
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

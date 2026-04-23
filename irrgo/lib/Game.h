@@ -1,10 +1,14 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
+#include "AbsGame.h"
 #include "Graph.h"
 #include "Move.h"
 #include <cstdint>
+#include <memory>
 #include <unordered_set>
 #include <vector>
+
+namespace IrrGo {
 
 enum class Player { Black, White };
 
@@ -14,24 +18,39 @@ struct GameResult {
     Player winner = Player::Black;
 };
 
-class Game {
+class Game : public AbsGame::Game {
 public:
     // komi is added to White's score; handicap > 1 reduces komi to 0.5
     explicit Game(const Graph& graph, double komi = 1.5, int handicap = 0);
+    Game(const Game&) = default;  // copy constructor used by clone()
 
+    // ── IrrGo-specific interface ────────────────────────────────────────────
     bool placeStone(int nodeId);   // returns false if illegal or game over
     bool pass();
-    bool isGameOver() const { return passCount_ >= 2; }
 
-    Player currentPlayer() const { return current_; }
     Color colorAt(int nodeId) const { return board_[nodeId]; }
     const Graph& graph() const { return graph_; }
-
     GameResult score() const;
     std::string asciiBoard() const;
-
     void setSetupMode(bool on) { setupMode_ = on; }
     const std::vector<Move>& moveHistory() const { return moveHistory_; }
+
+    // isGameOver() kept for backward compatibility; delegates to isTerminal()
+    bool isGameOver() const { return isTerminal(); }
+
+    // toMove() returns the Player enum for GUI / IrrGo-specific code
+    Player toMove() const { return current_; }
+
+    // ── AbsGame::Game overrides ─────────────────────────────────────────────
+    // 0 = Black (first player), 1 = White (second player)
+    int currentPlayer() const override { return static_cast<int>(current_); }
+
+    std::vector<AbsGame::MoveId> getLegalMoves() const override;
+    bool isLegalMove(AbsGame::MoveId mv) const override;
+    bool applyMove(AbsGame::MoveId mv) override;
+    bool isTerminal() const override { return passCount_ >= 2; }
+    double staticEval() const override;
+    std::unique_ptr<AbsGame::Game> clone() const override;
 
 private:
     const Graph& graph_;
@@ -48,8 +67,10 @@ private:
 
     void initZobrist();
     void getGroup(int nodeId, std::vector<int>& group, std::vector<bool>& visited) const;
-    int libertyCount(const std::vector<int>& group) const;
+    int  libertyCount(const std::vector<int>& group) const;
     void removeGroup(const std::vector<int>& group);
-    bool isLegalMove(int nodeId) const;
+    bool isLegalPlacement(int nodeId) const;   // renamed from isLegalMove
 };
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

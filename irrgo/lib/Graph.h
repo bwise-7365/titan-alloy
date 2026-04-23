@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+namespace IrrGo {
+
 class Graph {
 public:
     virtual ~Graph() = default;
@@ -18,4 +20,6 @@ protected:
     std::vector<Node> nodes_;
     void addEdge(int a, int b);
 };
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

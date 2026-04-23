@@ -1,0 +1,79 @@
+@startuml LegSequence
+title One Itinerary Leg — Event Sequence
+' T1 = leg.src.transferSrtTime    T2 = leg.src.transferEndTime
+' T3 = leg.dst.transferSrtTime    T4 = leg.dst.transferEndTime
+
+participant "Scheduler" as S
+participant "TEntity"   as TE
+participant "SEntity(s)" as SE
+participant "LogAdj\n(recordEvent)" as LA
+
+== Initialization ==
+
+[-> S : run()
+S -> TE : process() [Plan, t=0]
+TE -> TE : backlog empty
+TE -> S  : addEvent(TE, t = PLAN_INTERVAL)
+
+S -> SE : process() [Select, t=0]
+SE -> SE : selectBacklog()
+note right SE : state = Wait\n(no self-scheduling)
+
+== TEntity: backlog acquired ==
+
+S -> TE : process() [Plan, t = PLAN_INTERVAL]
+TE -> TE : backlog non-empty\nbuildItineraryFromBacklog()\nlegIdx=0, atSrc=true
+TE -> TE : state = Transfer
+TE -> S  : addEvent(TE, t = T1)
+
+== Transfer – src loading starts (t = T1) ==
+
+S -> TE : process() [Transfer, atSrc=true, t = T1]
+TE -> LA : recordEvent(TransportRecord(T1, start, load, [serials], srcNode))
+TE -> LA : recordEvent(SerialRecord(T1, start, load, serial, transport, srcNode))  [× N]
+TE -> S  : addEvent(TE, t = T2)
+
+== Transfer – src loading ends; depart (t = T2) ==
+
+S -> TE : process() [Transfer, atSrc=true, t = T2]
+TE -> LA : recordEvent(SerialRecord(T2, finish, load, serial, transport, srcNode))  [× N]
+TE -> SE : state = Move
+TE -> S  : addEvent(SE, t = T2)
+TE -> TE : state = Move
+TE -> S  : addEvent(TE, t = T3)
+
+S -> SE : process() [Move, t = T2]
+note right SE : Passive — no records,\nno scheduling.
+
+== Move – arrive at dst (t = T3) ==
+
+S -> TE : process() [Move, t = T3]
+TE -> LA : recordEvent(TransportRecord(T3, start, unload, [serials], dstNode))
+TE -> LA : recordEvent(SerialRecord(T3, start, unload, serial, transport, dstNode))  [× N]
+TE -> TE : state = Transfer, atSrc=false
+TE -> S  : addEvent(TE, t = T4)
+
+== Transfer – dst unloading ends (t = T4) ==
+
+S -> TE : process() [Transfer, atSrc=false, t = T4]
+TE -> LA : recordEvent(TransportRecord(T4, finish, unload, [serials], dstNode))
+
+loop for each serial dropped at dstNode
+    TE -> LA : recordEvent(SerialRecord(T4, finish, unload, serial, transport, dstNode))
+    alt serial.deliveryNodeName == dstNode
+        TE -> SE : state = Delivered
+    else not at final destination
+        TE -> SE : state = Select
+    end
+    TE -> S : addEvent(SE, t = T4)
+end
+
+alt more legs remain
+    TE -> TE : legIdx++, atSrc=true
+    TE -> S  : addEvent(TE, t = T5)\nnote: T5 = next leg src.transferSrtTime
+else itinerary complete
+    TE -> TE : state = Plan
+    TE -> S  : addEvent(TE, t = T4 + PLAN_INTERVAL)
+end
+
+@enduml

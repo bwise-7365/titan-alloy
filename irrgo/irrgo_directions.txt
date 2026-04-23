@@ -1,0 +1,39 @@
+-------------------------------
+
+We were working on the IrrGo game. Now I want you to examine the game.h and game.cpp files in the design_rsrcs directory. They specify an abstract game interface for two-person, zero-sum, perfect information games. It is not the most efficient and I know it won't compile.
+I assume you can fix that. However, the negaMax algorithm has been debugged in a separate project. 
+
+(*) Do not assume that negaMax is only way to play. It is just a preliminary test before full Monte Carlo Tree Search is implemented.
+
+(*) First, put all the existing CPP and H code in the 'lib' directory into a new namespace, IrrGo.
+
+(*) Use the game.* files in design_rsrcs as templates for an abstract game interface in the 'src' directory.
+You can call the AbsGame, and put them in the 'AbsGame' namespace.   That way, the abstract AbsGame.Game and
+the concreate IrrGo.Game will stay separate.
+
+(*) Provide the appropriate subclassing so that we can play the IrrGo game. You will need to change the Irrgo:: method names to line up with the AbsGame:: method names. The staticEval method is the area scoring algorithm
+in the current Game::score. Similarly for Game::isLegalMove and so on.
+It is OK to change names in either (or both) namespaces to make inheritance work.
+
+---
+
+I want you to use NegaMax to suggest moves.
+Duplicate the "Play" menu, except with the title "Suggest" and no Manual option.
+
+Between the "White Pass' button and the Move log, I want you to add a text output box called "Suggested", with a "Clear" button just below it.
+
+Share code between the Play and Suggest menus.
+On the NegaMax button, only allow 1-6 for depth and 1-30 for turns. At the bottom of that drop-down menu, have clickable button labeled "Go!".
+For the "Play" menu, continue to have no action for NegaMax or MCTS.
+On the Suggest menu, clicking the "Go!" button starts a search for a good move.
+When the user clicks that button, instantiate a Game object from the current board and stone placement,
+and do a NegaMax search to the specified depth for the player whose turn it now is. 
+Then show the move returned from NegaMax in the "Suggested" box, in the same format as in the Move log. But do not play it.
+Instead, draw a White or Black disc, as appropriate with a Green border. Share code with the preview function that drew them with an Orange
+border. It will disappear when the user clicks on "Clear". If you need clarification, ask; otherwise proceed.
+
+---
+
+BPW: The suggestions are terrible. I see the problem with NegaMax. At non-terminal positions, it should score differently. 
+
+-------------------------------

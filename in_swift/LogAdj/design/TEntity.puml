@@ -1,0 +1,49 @@
+@startuml TEntity
+title TEntity — State Machine
+' Internal context: legIdx (int), atSrc (boolean)
+
+hide empty description
+
+[*] --> Plan
+
+Plan --> Plan     : [backlog empty]\n/ schedule(now + PLAN_INTERVAL)
+
+Plan --> Transfer : [backlog non-empty]\n/ itinerary = buildItineraryFromBacklog()\n/ legIdx = 0, atSrc = true\n/ schedule(leg[0].src.transferSrtTime)
+
+Transfer --> Move : [atSrc, at src.transferEndTime]\n/ SerialRecord(finish, load) × N\n/ SEntities.state = Move\n/ schedule each SE\n/ schedule(TE, dst.transferSrtTime)
+
+Move --> Transfer : [at dst.transferSrtTime]\n/ TransportRecord(start, unload)\n/ SerialRecord(start, unload) × N\n/ atSrc = false\n/ schedule(dst.transferEndTime)
+
+Transfer --> Transfer : [!atSrc, more legs remain]\n/ legIdx++, atSrc = true\n/ schedule(next src.transferSrtTime)
+
+Transfer --> Plan : [!atSrc, no legs remain]\n/ schedule(now + PLAN_INTERVAL)
+
+note right of Transfer
+  atSrc=true, at transferSrtTime:
+    recordEvent(TransportRecord(start, load, [serials], srcNode))
+    recordEvent(SerialRecord(start, load, serial, transport, srcNode)) × N
+    schedule(src.transferEndTime)
+
+  atSrc=true, at transferEndTime:
+    recordEvent(SerialRecord(finish, load, serial, transport, srcNode)) × N
+    SEntities.state = Move  [see transition label]
+
+  atSrc=false, at transferSrtTime:
+    [handled on transition from Move — see label]
+
+  atSrc=false, at transferEndTime:
+    recordEvent(TransportRecord(finish, unload, [serials], dstNode))
+    recordEvent(SerialRecord(finish, unload, serial, transport, dstNode)) × N
+    SEntities.state = Delivered or Select
+end note
+
+note right of Move
+  Traveling to dst.
+  No records emitted here.
+  TransportRecord(start, unload)
+  and SerialRecord(start, unload)
+  are emitted on the transition
+  INTO Transfer (atSrc=false).
+end note
+
+@enduml

@@ -4,6 +4,8 @@
 #include "RectangularGraph.h"
 #include <iostream>
 
+using namespace IrrGo;
+
 int main() {
 
     std::cout << "=== Rectangular 9x9 ===\n";
@@ -31,7 +33,7 @@ int main() {
     game.placeStone(7);   // Black
     game.placeStone(11);  // White
     std::cout << "Current player: "
-              << (game.currentPlayer() == Player::Black ? "Black" : "White") << '\n';
+              << (game.toMove() == Player::Black ? "Black" : "White") << '\n';
     game.pass();
     game.pass();
     auto result = game.score();

@@ -7,7 +7,10 @@
 #include <algorithm>
 #include <limits>
 
+using namespace IrrGo;
+
 static const QColor kOrange    { 255, 140,   0 };
+static const QColor kGreen     {   0, 200,   0 };
 static const QColor kMedPurple { 147, 112, 219 };
 static const QColor kRed       { 220,   0,   0, 180 };
 static constexpr float kStoneRPhys = 0.875f / 2.0f;
@@ -24,12 +27,24 @@ BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
     });
 }
 
-void BoardWidget::setGame(const Game* game) {
+void BoardWidget::setGame(const IrrGo::Game* game) {
     game_         = game;
     hoverNode_    = -1;
     tentativeNode_= -1;
+    suggestedNode_= -1;
     confirmTimer_->stop();
     updateTransform();
+    update();
+}
+
+void BoardWidget::setSuggestion(int nodeId, bool isBlack) {
+    suggestedNode_  = nodeId;
+    suggestIsBlack_ = isBlack;
+    update();
+}
+
+void BoardWidget::clearSuggestion() {
+    suggestedNode_ = -1;
     update();
 }
 
@@ -61,8 +76,7 @@ void BoardWidget::updateTransform() {
     rangeX_ = (maxX - minX_ < 1e-4f) ? 1.0f : maxX - minX_;
     rangeY_ = (maxY - minY_ < 1e-4f) ? 1.0f : maxY - minY_;
 
-    // Pad by one stone radius on each side so stones at edges aren't clipped
-    float paddedRX = rangeX_ + 4.0f * kStoneRPhys;  // 2× stone radius margin each side
+    float paddedRX = rangeX_ + 4.0f * kStoneRPhys;
     float paddedRY = rangeY_ + 4.0f * kStoneRPhys;
     const float kExtra = 10.0f;
     scale_ = std::min((width()  - 2.0f * kExtra) / paddedRX,
@@ -92,6 +106,19 @@ int BoardWidget::nodeAt(QPointF pos) const {
     return (best <= r2) ? found : -1;
 }
 
+// ── Shared bordered-stone helper ──────────────────────────────────────────────
+
+void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
+                                     bool isBlack, QColor borderColor) const {
+    float penW = stoneR_ * 2.0f * 0.1f;
+    float ellR = stoneR_ - penW * 0.5f;
+    p.setPen(QPen(borderColor, penW));
+    p.setBrush(isBlack ? QColor(0, 0, 0) : QColor(255, 255, 255));
+    p.drawEllipse(pt, ellR, ellR);
+}
+
+// ── Mouse events ──────────────────────────────────────────────────────────────
+
 void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
     int n = nodeAt(e->position());
     if (n != hoverNode_) { hoverNode_ = n; update(); }
@@ -99,6 +126,7 @@ void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
 
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
     if (e->button() != Qt::LeftButton || !game_) return;
+    emit clearSuggestionRequested();
     int n = nodeAt(e->position());
     if (n < 0 || game_->colorAt(n) != Color::Empty) return;
 
@@ -112,6 +140,8 @@ void BoardWidget::mousePressEvent(QMouseEvent* e) {
     }
     update();
 }
+
+// ── Paint ─────────────────────────────────────────────────────────────────────
 
 void BoardWidget::paintEvent(QPaintEvent*) {
     QPainter p(this);
@@ -144,7 +174,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                 p.drawLine(toWidget(nd.x, nd.y),
                            toWidget(nodes[nb].x, nodes[nb].y));
 
-    // Irregular hover: incident edges highlighted in medium purple (drawn over normal)
+    // Irregular hover: incident edges in medium purple
     if (isIrr && hoverNode_ >= 0) {
         p.setPen(QPen(kMedPurple, 2.5));
         const auto& hn = nodes[hoverNode_];
@@ -168,10 +198,16 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         p.drawEllipse(toWidget(nd.x, nd.y), stoneR_, stoneR_);
     }
 
-    // Tentative stone: player color with grey cross-hatch overlay
+    // Suggested move — green bordered disc (drawn over any stone on that node)
+    if (suggestedNode_ >= 0 && suggestedNode_ < static_cast<int>(nodes.size())) {
+        paintStoneBordered(p, toWidget(nodes[suggestedNode_].x, nodes[suggestedNode_].y),
+                           suggestIsBlack_, kGreen);
+    }
+
+    // Tentative stone: player colour with grey cross-hatch
     if (tentativeNode_ >= 0) {
         QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
-        bool isBlack = (game_->currentPlayer() == Player::Black);
+        bool isBlack = (game_->toMove() == Player::Black);
         p.setPen(Qt::NoPen);
         p.setBrush(isBlack ? Qt::black : Qt::white);
         p.drawEllipse(pt, stoneR_, stoneR_);
@@ -179,22 +215,18 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         p.drawEllipse(pt, stoneR_, stoneR_);
     }
 
-    // Hover effect on any node other than the tentative one
+    // Hover effect
     if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
         QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
         if (game_->colorAt(hoverNode_) == Color::Empty) {
-            // Preview stone: player color + orange border (border = 1/10 diameter)
-            float penW = stoneR_ * 2.0f * 0.1f;
-            float ellR = stoneR_ - penW * 0.5f;
-            bool isBlack = (game_->currentPlayer() == Player::Black);
-            p.setPen(QPen(kOrange, penW));
-            p.setBrush(isBlack ? QColor(0, 0, 0) : QColor(255, 255, 255));
-            p.drawEllipse(pt, ellR, ellR);
+            // Orange-bordered preview — shares paintStoneBordered
+            paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange);
         } else {
-            // Occupied: small red disc to signal illegal (half stone diameter)
+            // Occupied: small red disc
             p.setPen(Qt::NoPen);
             p.setBrush(kRed);
             p.drawEllipse(pt, stoneR_ * 0.5f, stoneR_ * 0.5f);
         }
     }
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

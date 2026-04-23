@@ -5,6 +5,8 @@
 #include <utility>
 #include <vector>
 
+namespace IrrGo {
+
 class IrregularGraph : public Graph {
 public:
     // m*n total nodes, max C incident edges per node, reproducible via seed
@@ -24,4 +26,6 @@ private:
     double angleDeg(int center, int n1, int n2) const;
     bool canAddEdge(int a, int b) const;
 };
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.

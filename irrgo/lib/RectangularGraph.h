@@ -2,6 +2,8 @@
 #pragma once
 #include "Graph.h"
 
+namespace IrrGo {
+
 class RectangularGraph : public Graph {
 public:
     RectangularGraph(int rows, int cols);
@@ -15,4 +17,6 @@ public:
 private:
     int rows_, cols_;
 };
+
+} // namespace IrrGo
 // Copyright Ben Paul Wise. All Rights Reserved.
