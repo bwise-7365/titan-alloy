@@ -1,0 +1,39 @@
+<!-- 
+  This is a basic DTD for specifying valid
+  railroad networks in the SWIFT Stalingrad game,
+  inspired by the original from Avalon Hill 1963,
+  1974, and variants up to 2010.
+  Note that a Junction must have at least one RailLine.
+ -->
+
+  <!ELEMENT description  (#PCDATA)>
+  <!ATTLIST description
+    text       	CDATA #REQUIRED>
+	
+ 
+  <!ELEMENT name (#PCDATA)>
+ 
+  <!ELEMENT cell (#PCDATA)>
+  <!ATTLIST cell
+    row       	CDATA #REQUIRED
+    clm       	CDATA #REQUIRED>
+	 
+  
+  <!ELEMENT RailRoadNetwork (description?, Arcs, Nodes)>
+  
+  <!-- These RailLine should each have at least two cells -->
+  <!ELEMENT Arcs (RailLine*)>
+  
+  <!ELEMENT Nodes (Junction*)>
+
+  <!ELEMENT RailLine (cell*)>
+  <!ATTLIST RailLine
+    name       	CDATA #REQUIRED>
+
+  <!-- These RailLine should have zero cells -->
+  <!ELEMENT Junction (cell, RailLine+)>
+  <!ATTLIST Junction
+    name       	CDATA #REQUIRED>
+	
+  
+<!-- end of DTD -->

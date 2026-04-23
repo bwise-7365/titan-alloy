@@ -1,0 +1,694 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE RailRoadNetwork SYSTEM "srrn.dtd">
+<RailRoadNetwork>
+    <description text="Example file"/>
+    <!--
+This is the railroad network for the Stalingrad (AH 63/74) game.
+It must pass the DTD validity check, as well as semantic checks.
+(*) the RailLine specification inside the Junction must have zero cells.
+(*) Arcs cannot self-intersect
+(*) Arcs must begin and end at Nodes
+(*) No other point of an Arc can be on a Node
+(*) All Arcs named as part of a Junction must be in the Arcs section
+(*) All Arcs named as part of a Junction must have at least one end at that Junction
+(*) Coordinates must be in the range of the Stalingrad map
+and many more.
+    -->
+    <Arcs>
+        <RailLine name="L-10">
+            <cell row="26" clm="23"/> <!-- Alpha -->
+            <cell row="25" clm="23"/>
+            <cell row="24" clm="24"/>
+            <cell row="24" clm="25"/>
+            <cell row="23" clm="26"/>
+            <cell row="23" clm="27"/>
+            <cell row="22" clm="28"/>
+            <cell row="22" clm="29"/>
+            <cell row="22" clm="30"/>
+            <cell row="22" clm="31"/>
+            <cell row="21" clm="31"/>
+            <cell row="20" clm="31"/>
+            <cell row="19" clm="32"/> <!-- Moscow -->
+        </RailLine>
+        <RailLine name="L-11">
+            <cell row="26" clm="23"/> <!-- Alpha -->
+            <cell row="26" clm="24"/>
+            <cell row="27" clm="25"/>
+            <cell row="27" clm="26"/>
+            <cell row="28" clm="27"/>
+            <cell row="29" clm="27"/>
+            <cell row="30" clm="27"/>
+            <cell row="31" clm="27"/>
+            <cell row="32" clm="27"/>
+            <cell row="32" clm="28"/>
+            <cell row="33" clm="28"/>
+            <cell row="34" clm="28"/>
+            <cell row="35" clm="28"/> <!-- Kubishev East -->
+        </RailLine>
+        <RailLine name="L-12">
+            <cell row="26" clm="23"/> <!-- Alpha -->
+            <cell row="26" clm="22"/>
+            <cell row="27" clm="21"/>
+            <cell row="27" clm="20"/>
+            <cell row="28" clm="19"/>
+            <cell row="28" clm="18"/>
+            <cell row="29" clm="17"/> <!-- Stalingrad -->
+        </RailLine>
+        <RailLine name="L-13">
+            <cell row="19" clm="23"/> <!-- Kursk -->
+            <cell row="20" clm="23"/>
+            <cell row="21" clm="23"/>
+            <cell row="22" clm="23"/>
+            <cell row="23" clm="23"/>
+            <cell row="24" clm="23"/>
+            <cell row="25" clm="23"/>
+            <cell row="26" clm="23"/> <!-- Alpha -->
+        </RailLine>
+        <RailLine name="L-14">
+            <cell row="19" clm="32"/> <!-- Moscow -->
+            <cell row="20" clm="31"/>
+            <cell row="20" clm="30"/>
+            <cell row="20" clm="29"/>
+            <cell row="19" clm="28"/>
+            <cell row="19" clm="27"/>
+            <cell row="18" clm="26"/> <!-- Kursk North -->
+        </RailLine>
+        <RailLine name="L-15">
+            <cell row="29" clm="17"/> <!-- Stalingrad -->
+            <cell row="23" clm="15"/> <!-- Voroshilovgrad-->
+        </RailLine>
+        <RailLine name="L-16a">
+            <cell row="10" clm="36"/> <!-- Riga East -->
+            <cell row= "6" clm="34"/> <!-- Riga Junction -->
+        </RailLine>
+        <RailLine name="L-16b">
+            <cell row= "6" clm="34"/> <!-- Riga Junction -->
+            <cell row="01" clm="29"/> <!-- Konigsberg Terminal -->
+        </RailLine>
+        <RailLine name="L-17">
+            <cell row="10" clm="36"/> <!-- Riga East -->
+            <cell row="12" clm="39"/> <!-- Leningrad SW -->
+        </RailLine>
+        <RailLine name="L-18">
+            <cell row="7" clm="29"/> <!-- Vilnius -->
+            <cell row="10" clm="36"/> <!-- Riga East -->
+        </RailLine>
+        <RailLine name="L-19">
+            <cell row="9 " clm=" 16 "/> <!-- Odessa NW -->
+            <cell row="5"   clm="19"/>   <!-- Lwow -->
+        </RailLine>
+	
+        <RailLine name="L-20">
+            <cell row="24" clm="11"/> <!-- Rostov SE -->
+            <cell row="29" clm="17"/> <!-- Stalingrad -->
+        </RailLine>
+        <RailLine name="L-21">
+            <cell row="24" clm="11"/> <!-- Rostov SE -->
+            <cell row="23" clm="15"/> <!-- Voroshilovgrad  -->
+        </RailLine>
+        <RailLine name="L-22">
+            <cell row="24" clm="11"/> <!-- Rostov SE -->
+            <cell row="35" clm="5"/> <!-- Grozny  -->
+        </RailLine>
+        <RailLine name="L-23">
+            <cell row="20" clm="16"/> <!-- Stalino -->
+            <cell row="23" clm="15"/> <!-- Voroshilovgrad -->
+        </RailLine>
+        <RailLine name="L-24">
+            <cell row="18" clm="16"/> <!-- Dnepropetrovsk -->
+            <cell row="20" clm="16"/> <!-- Stalino -->
+        </RailLine>
+        <RailLine name="L-25">
+            <cell row="18" clm="16"/> <!-- Dnepropetrovsk -->
+            <cell row="19" clm="18"/> <!-- Kharkov SE -->
+        </RailLine>
+        <RailLine name="L-26">
+            <cell row="19" clm="18"/> <!-- Kharkov SE -->
+            <cell row="20" clm="16"/> <!-- Stalino -->
+        </RailLine>
+        <RailLine name="L-27">
+            <cell row="19" clm="18"/> <!-- Kharkov SE -->
+            <cell row="19" clm="19"/> <!-- Kharkov -->
+        </RailLine>
+        <RailLine name="L-28">
+            <cell row="19" clm="19"/> <!-- Kharkov -->
+            <cell row="19" clm="23"/> <!-- Kursk -->
+        </RailLine>
+        <RailLine name="L-29">
+            <cell row="6" clm="8"/> <!-- Bucharest -->
+            <cell row="1" clm="8"/> <!-- Bucharest West -->
+        </RailLine>
+
+        <RailLine name="L-30">
+            <cell row="6" clm="8"/> <!-- Bucharest -->
+            <cell row="2" clm="5"/> <!-- Sophia -->
+        </RailLine>
+        <RailLine name="L-31">
+            <cell row="2" clm="5"/> <!-- Sophia -->
+            <cell row="1" clm="5"/> <!-- Sophia West -->
+        </RailLine>
+        <RailLine name="L-32">
+            <cell row="2" clm="5"/> <!-- Sophia -->
+            <cell row="2" clm="2"/> <!-- Sophia South -->
+        </RailLine>
+        <RailLine name="L-33">
+            <cell row="18" clm="26"/> <!-- Kursk North -->
+            <cell row="19" clm="23"/> <!-- Kursk -->
+        </RailLine>
+        <RailLine name="L-34">
+            <cell row="1" clm="2"/> <!-- Sophia SW -->
+            <cell row="1" clm="1"/> <!-- Greece -->
+        </RailLine>
+        <RailLine name="L-35a">
+            <cell row="9" clm="1"/> <!-- Istanbul -->
+            <cell row="2" clm="2"/> <!-- Sophia South -->
+        </RailLine>
+        <RailLine name="L-35b">
+            <cell row="2" clm="2"/> <!-- Sophia South -->
+            <cell row="1" clm="2"/> <!-- Sophia SW -->
+        </RailLine>
+        <RailLine name="L-36">
+            <cell row="22" clm="39"/> <!-- Vologda -->
+			<cell row="21" clm="40"/>
+			<cell row="22" clm="41"/>
+			<cell row="21" clm="42"/>
+			<cell row="22" clm="43"/>
+			<cell row="21" clm="44"/>
+			<cell row="22" clm="45"/>
+			<cell row="21" clm="46"/>
+			<cell row="22" clm="47"/>
+			<cell row="21" clm="48"/>
+            <cell row="22" clm="49"/> <!-- Archangel -->
+        </RailLine>
+        <RailLine name="L-37">
+            <cell row="19" clm="32"/> <!-- Moscow -->
+            <cell row="20" clm="32"/>
+            <cell row="21" clm="33"/>
+            <cell row="21" clm="34"/>
+            <cell row="22" clm="35"/>
+            <cell row="22" clm="36"/>
+            <cell row="22" clm="37"/>
+            <cell row="22" clm="38"/>
+            <cell row="22" clm="39"/> <!-- Vologda -->
+        </RailLine>
+        <RailLine name="L-38">
+            <cell row="19" clm="32"/> <!-- Moscow -->
+            <cell row="19" clm="33"/>
+            <cell row="18" clm="33"/>
+            <cell row="17" clm="34"/>
+            <cell row="17" clm="35"/>
+            <cell row="16" clm="36"/>
+            <cell row="16" clm="37"/> <!-- Moscow NW -->
+        </RailLine>
+        <RailLine name="L-39">
+            <cell row="16" clm="37"/> <!-- Moscow NW -->
+            <cell row="14" clm="39"/> <!-- Leningrad SW -->
+        </RailLine>
+	
+        <RailLine name="L-40">
+            <cell row="12" clm="36"/> <!-- Leningrad South -->
+            <cell row="16" clm="37"/> <!-- Moscow NW -->
+        </RailLine>
+        <RailLine name="L-41">
+            <cell row="14" clm="39"/> <!-- Leningrad SE -->
+            <cell row="22" clm="39"/> <!-- Vologda -->
+        </RailLine>
+        <RailLine name="L-42">
+            <cell row="14" clm="39"/> <!-- Leningrad SE -->
+            <cell row="16" clm="50"/> <!-- Onega North -->
+        </RailLine>
+        <RailLine name="L-43">
+            <cell row="11" clm="42"/> <!-- Leningrad NW -->
+            <cell row="11" clm="50"/> <!-- Finland NE -->
+        </RailLine>
+        <RailLine name="L-44">
+            <cell row="8" clm="48"/> <!-- Helsinki North -->
+            <cell row="9" clm="50"/> <!-- Finland NW -->
+        </RailLine>
+        <RailLine name="L-45a">
+            <cell row="8" clm="48"/> <!-- Helsinki North -->
+            <cell row="10" clm="42"/> <!-- Helsinki East -->
+        </RailLine>
+        <RailLine name="L-45b">
+            <cell row="8" clm="48"/> <!-- Helsinki North -->
+            <cell row="7" clm="41"/>  <!-- Helsinki -->
+        </RailLine>
+        <RailLine name="L-46">
+            <cell row="7" clm="41"/> <!-- Helsinki -->
+            <cell row="10" clm="42"/> <!-- Helsinki East -->
+        </RailLine>
+        <RailLine name="L-47">
+            <cell row="11" clm="42"/> <!-- Leningrad NW -->
+            <cell row="10" clm="42"/> <!-- Helsinki East -->
+        </RailLine>
+        <RailLine name="L-48">
+            <cell row="12" clm="40"/> <!-- Leningrad -->
+            <cell row="11" clm="42"/> <!-- Leningrad NW -->
+        </RailLine>
+        <RailLine name="L-49">
+            <cell row="12" clm="40"/> <!-- Leningrad -->
+            <cell row="12" clm="39"/> <!-- Leningrad SW -->
+        </RailLine>
+	
+        <RailLine name="L-50">
+            <cell row="12" clm="36"/> <!-- Leningrad South -->
+            <cell row="12" clm="39"/> <!-- Leningrad SW -->
+        </RailLine>
+        <RailLine name="L-51">
+            <cell row="12" clm="36"/> <!-- Leningrad South -->
+            <cell row="10" clm="36"/> <!-- Riga East -->
+        </RailLine>
+        <RailLine name="L-52">
+            <cell row="12" clm="40"/> <!-- Leningrad -->
+            <cell row="14" clm="39"/> <!-- Leningrad SE -->
+        </RailLine>
+        <RailLine name="L-53">
+            <cell row="12" clm="29"/> <!-- Smolensk West -->
+            <cell row="12" clm="36"/> <!-- Leningrad South -->
+        </RailLine>
+        <RailLine name="L-54">
+            <cell row="14" clm="21"/> <!-- Kiev East -->
+            <cell row="09" clm="27"/> <!-- Minsk -->
+        </RailLine>
+        <RailLine name="L-55">
+            <cell row="14" clm="21"/> <!-- Kiev East -->
+            <cell row="19" clm="23"/> <!-- Kursk -->
+        </RailLine>
+        <RailLine name="L-56">
+            <cell row="19" clm="19"/> <!-- Kharkov -->
+            <cell row="12" clm="20"/> <!-- Kiev -->
+        </RailLine>
+        <RailLine name="L-57">
+            <cell row="18" clm="16"/> <!-- Dnepropetrovsk -->
+            <cell row="11" clm="19"/> <!-- Kiev West -->
+        </RailLine>
+        <RailLine name="L-58">
+            <cell row="12" clm="20"/> <!-- Kiev -->
+            <cell row="14" clm="21"/> <!-- Kiev East -->
+        </RailLine>
+        <RailLine name="L-59">
+            <cell row="12" clm="20"/> <!-- Kiev -->
+            <cell row="11" clm="19"/> <!-- Kiev West -->
+        </RailLine>
+	
+        <RailLine name="L-60">
+            <cell row="11" clm="19"/> <!-- Kiev West -->
+            <cell row="9" clm="16"/> <!-- Odessa NW -->
+        </RailLine>
+        <RailLine name="L-61">
+            <cell row="11" clm="19"/> <!-- Kiev West -->
+            <cell row="5" clm="22"/> <!-- B-L SE -->
+        </RailLine>
+        <RailLine name="L-62">
+            <cell row="5" clm="22"/> <!-- B-L SE -->
+            <cell row="2" clm="25"/> <!-- Warsaw -->
+        </RailLine>
+        <RailLine name="L-63">
+            <cell row="9" clm="27"/> <!-- Minsk -->
+            <cell row="4" clm="24"/> <!-- Brest-Litovsk -->
+        </RailLine>
+        <RailLine name="L-64">
+            <cell row="5" clm="22"/> <!-- B-L SE -->
+            <cell row="4" clm="24"/> <!-- Brest-Litovsk -->
+        </RailLine>
+        <RailLine name="L-65">
+            <cell row="4" clm="24"/> <!-- Brest-Litovsk -->
+            <cell row="2" clm="25"/> <!-- Warsaw -->
+        </RailLine>
+        <RailLine name="L-66">
+            <cell row="2" clm="25"/> <!-- Warsaw -->
+            <cell row="7" clm="29"/> <!-- Vilnius -->
+        </RailLine>
+        <RailLine name="L-67">
+            <cell row="7" clm="29"/> <!-- Vilnius -->
+            <cell row="9" clm="27"/> <!-- Minsk -->
+        </RailLine>
+        <RailLine name="L-68">
+            <cell row="9" clm="27"/> <!-- Minsk -->
+            <cell row="12" clm="29"/> <!-- Smolensk West -->
+        </RailLine>
+        <!-- no L-69 -->
+	
+        <RailLine name="L-70">
+            <cell row="14" clm="29"/> <!-- Smolensk -->
+            <cell row="12" clm="29"/> <!-- Smolensk West -->
+        </RailLine>
+        <RailLine name="L-71">
+            <cell row="14" clm="29"/> <!-- Smolensk -->
+            <cell row="18" clm="26"/> <!-- Kursk North -->
+        </RailLine>
+        <RailLine name="L-72">
+            <cell row="19" clm="32"/> <!-- Moscow -->
+            <cell row="18" clm="32"/>
+            <cell row="18" clm="31"/>
+            <cell row="17" clm="31"/>
+            <cell row="16" clm="30"/>
+            <cell row="15" clm="30"/>
+            <cell row="14" clm="30"/>
+            <cell row="14" clm="29"/> <!-- Smolensk -->
+        </RailLine>
+        <RailLine name="L-73a">
+            <cell row="5" clm="19"/> <!-- Lwow -->
+            <cell row="1" clm="20"/> <!-- Lwow West -->
+        </RailLine>
+        <RailLine name="L-73b">
+            <cell row="18" clm="16"/> <!-- Dnepropetrovsk -->
+            <cell row="16" clm="08"/> <!-- Sevastopol -->
+        </RailLine>
+        <RailLine name="L-74">
+            <cell row="1" clm="25"/> <!-- Warsaw West -->
+            <cell row="2" clm="25"/> <!-- Warsaw -->
+        </RailLine>
+        <RailLine name="L-75">
+            <cell row="7" clm="16"/> <!-- Cernauti -->
+            <cell row="5" clm="19"/> <!-- Lwow -->
+        </RailLine>
+        <RailLine name="L-76">
+            <cell row="12" clm="12"/> <!-- Odessa -->
+            <cell row="9" clm="16"/> <!-- Odessa NW -->
+        </RailLine>
+        <RailLine name="L-77">
+            <cell row="7" clm="16"/> <!-- Cernauti -->
+            <cell row="6" clm="08"/> <!-- Bucharest -->
+        </RailLine>
+        <RailLine name="L-78">
+            <cell row="7" clm="16"/> <!-- Cernauti -->
+            <cell row="1" clm="15"/> <!-- Hungary W -->
+        </RailLine>
+        <!-- no L-79 -->
+    </Arcs>
+    <Nodes>
+        <Junction name="Alpha Junction">
+            <cell row="26" clm="23"/>
+            <RailLine name="L-11"/>
+            <RailLine name="L-13"/>
+            <RailLine name="L-12"/>
+            <RailLine name="L-10"/>
+        </Junction>
+        <Junction name="Archangel Terminal">
+            <cell row="22" clm="49"/>
+            <RailLine name="L-36"/>
+        </Junction>
+        <Junction name="Bucharest Junction">
+            <cell row="6" clm="8"/>
+            <RailLine name="L-30"/>
+            <RailLine name="L-29"/>
+            <RailLine name="L-77"/>
+        </Junction>
+        <Junction name="Bucharest West Terminal">
+            <cell row="1" clm="8"/>
+            <RailLine name="L-29"/>
+        </Junction>
+        <Junction name="B-L SE Junction">
+            <cell row="5" clm="22"/>
+            <RailLine name="L-61"/>
+            <RailLine name="L-62"/>
+            <RailLine name="L-64"/>
+        </Junction>
+        <Junction name="Brest-Litovsk Junction">
+            <cell row="4" clm="24"/>
+            <RailLine name="L-63"/>
+            <RailLine name="L-64"/>
+            <RailLine name="L-65"/>
+        </Junction>
+        <Junction name="Cernauti Junction">
+            <cell row="7" clm="16"/>
+            <RailLine name="L-75"/>
+            <RailLine name="L-77"/>
+            <RailLine name="L-78"/>
+        </Junction>
+        <Junction name="Dnepropetrovsk Junction">
+            <cell row="18" clm="16"/>
+            <RailLine name="L-24"/>
+            <RailLine name="L-25"/>
+            <RailLine name="L-57"/>
+            <RailLine name="L-73b"/>
+        </Junction>
+        <Junction name="Finland NE Terminal">
+            <cell row="11" clm="50"/>
+            <RailLine name="L-43"/>
+        </Junction>
+        <Junction name="Finland NW Terminal">
+            <cell row="9" clm="50"/>
+            <RailLine name="L-44"/>
+        </Junction>
+        <Junction name="Greece Terminal">
+            <cell row="1" clm="1"/>
+            <RailLine name="L-34"/>
+        </Junction>
+        <Junction name="Grozny Terminal">
+            <cell row="35" clm="5"/>
+            <RailLine name="L-22"/>
+        </Junction>
+        <Junction name="Helsinki East Junction">
+            <cell row="10" clm="42"/>
+            <RailLine name="L-45a"/>
+            <RailLine name="L-46"/>
+            <RailLine name="L-47"/>
+        </Junction>
+        <Junction name="Helsinki Junction">
+            <cell row="7" clm="41"/>
+            <RailLine name="L-45a"/>
+            <RailLine name="L-45b"/>
+        </Junction>
+        <Junction name="Helsinki North Junction">
+            <cell row="8" clm="48"/>
+            <RailLine name="L-44"/>
+            <RailLine name="L-45b"/>
+            <RailLine name="L-46"/>
+        </Junction>
+        <Junction name="Hungary W Terminal">
+            <cell row="1" clm="15"/>
+            <RailLine name="L-78"/>
+        </Junction>
+        <Junction name="Istanbul Terminal">
+            <cell row="9" clm="1"/>
+            <RailLine name="L-35a"/>
+        </Junction>
+        <Junction name="Kharkov Junction">
+            <cell row="19" clm="19"/>
+            <RailLine name="L-27"/>
+            <RailLine name="L-28"/>
+            <RailLine name="L-56"/>
+        </Junction>
+        <Junction name="Kharkov SE Junction">
+            <cell row="19" clm="18"/>
+            <RailLine name="L-25"/>
+            <RailLine name="L-26"/>
+            <RailLine name="L-27"/>
+        </Junction>
+        <Junction name="Kiev East Junction">
+            <cell row="14" clm="21"/>
+            <RailLine name="L-54"/>
+            <RailLine name="L-55"/>
+            <RailLine name="L-58"/>
+        </Junction>
+        <Junction name="Kiev Junction">
+            <cell row="12" clm="20"/>
+            <RailLine name="L-56"/>
+            <RailLine name="L-58"/>
+            <RailLine name="L-59"/>
+        </Junction>
+        <Junction name="Kiev West Junction">
+            <cell row="11" clm="19"/>
+            <RailLine name="L-57"/>
+            <RailLine name="L-59"/>
+            <RailLine name="L-60"/>
+            <RailLine name="L-61"/>
+        </Junction>
+        <Junction name="Konigsberg Terminal">
+            <cell row="1" clm="29"/>
+            <RailLine name="L-16b"/>
+        </Junction>
+        <Junction name="Kubishev East Terminal">
+            <cell row="35" clm="28"/>
+            <RailLine name="L-11"/>
+        </Junction>
+        <Junction name="Kursk Junction">
+            <cell row="19" clm="23"/>
+            <RailLine name="L-13"/>
+            <RailLine name="L-28"/>
+            <RailLine name="L-33"/>
+            <RailLine name="L-55"/>
+        </Junction>
+        <Junction name="Kursk North Junction">
+            <cell row="18" clm="26"/>
+            <RailLine name="L-14"/>
+            <RailLine name="L-33"/>
+            <RailLine name="L-71"/>
+        </Junction>
+        <Junction name="Leningrad NW Junction">
+            <cell row="11" clm="42"/>
+            <RailLine name="L-43"/>
+            <RailLine name="L-47"/>
+            <RailLine name="L-48"/>
+        </Junction>
+        <Junction name="Leningrad Junction">
+            <cell row="12" clm="40"/>
+            <RailLine name="L-48"/>
+            <RailLine name="L-49"/>
+            <RailLine name="L-52"/>
+        </Junction>
+        <Junction name="Leningrad SE Junction">
+            <cell row="14" clm="39"/>
+            <RailLine name="L-39"/>
+            <RailLine name="L-41"/>
+            <RailLine name="L-42"/>
+            <RailLine name="L-52"/>
+        </Junction>
+        <Junction name="Leningrad South Junction">
+            <cell row="12" clm="36"/>
+            <RailLine name="L-40"/>
+            <RailLine name="L-50"/>
+            <RailLine name="L-51"/>
+            <RailLine name="L-53"/>
+        </Junction>
+        <Junction name="Leningrad SW Junction">
+            <cell row="12" clm="39"/>
+            <RailLine name="L-17"/>
+            <RailLine name="L-49"/>
+            <RailLine name="L-50"/>
+        </Junction>
+        <Junction name="Lwow Junction">
+            <cell row="5" clm="19"/>
+            <RailLine name="L-19"/>
+            <RailLine name="L-73a"/>
+            <RailLine name="L-75"/>
+        </Junction>
+        <Junction name="Lwow West Terminal">
+            <cell row="1" clm="20"/>
+            <RailLine name="L-73a"/>
+        </Junction>
+        <Junction name="Minsk Junction">
+            <cell row="9" clm="27"/>
+            <RailLine name="L-54"/>
+            <RailLine name="L-63"/>
+            <RailLine name="L-67"/>
+            <RailLine name="L-68"/>
+        </Junction>
+        <Junction name="Moscow Junction">
+            <cell row=" 19 " clm=" 32  "/>
+            <RailLine name="L-10"/>
+            <RailLine name="L-14"/>
+            <RailLine name="L-37"/>
+            <RailLine name="L-38"/>
+            <RailLine name="L-72"/>
+        </Junction>
+        <Junction name="Moscow NW Junction">
+            <cell row="16" clm=" 37 "/>
+            <RailLine name="L-38"/>
+            <RailLine name="L-39"/>
+            <RailLine name="L-40"/>
+        </Junction>
+        <Junction name="Odessa NW Junction">
+            <cell row="9 " clm=" 16 "/>
+            <RailLine name="L-19"/>
+            <RailLine name="L-60"/>
+            <RailLine name="L-76"/>
+        </Junction>
+        <Junction name="Odessa Terminal">
+            <cell row="12" clm=" 12 "/>
+            <RailLine name="L-76"/>
+        </Junction>
+        <Junction name="Onega North Terminal">
+            <cell row="16" clm=" 50 "/>
+            <RailLine name="L-42"/>
+        </Junction>
+        <Junction name="Riga East Junction">
+            <cell row="10" clm="36"/>
+            <RailLine name="L-16a"/>
+            <RailLine name="L-17"/>
+            <RailLine name="L-18"/>
+            <RailLine name="L-51"/>
+        </Junction>
+        <Junction name="Riga Junction">
+            <cell row="6" clm="34"/> <!-- Riga Junction -->
+            <RailLine name="L-16a"/>
+            <RailLine name="L-16b"/>
+        </Junction>
+        <Junction name="Rostov SE Junction">
+            <cell row="24" clm="11"/>
+            <RailLine name="L-20"/>
+            <RailLine name="L-21"/>
+            <RailLine name="L-22"/>
+        </Junction>
+        <Junction name="Sevastopol Terminal">
+            <cell row="16" clm="08"/>
+            <RailLine name="L-73b"/>
+        </Junction>
+        <Junction name="Smolensk Junction">
+            <cell row="14" clm="29"/>
+            <RailLine name="L-70"/>
+            <RailLine name="L-71"/>
+            <RailLine name="L-72"/>
+        </Junction>
+        <Junction name="Smolensk West Junction">
+            <cell row="12" clm="29"/>
+            <RailLine name="L-53"/>
+            <RailLine name="L-68"/>
+            <RailLine name="L-70"/>
+        </Junction>
+        <Junction name="Sophia Junction">
+            <cell row="2" clm="5"/>
+            <RailLine name="L-30"/>
+            <RailLine name="L-31"/>
+            <RailLine name="L-32"/>
+        </Junction>
+        <Junction name="Sophia South Junction">
+            <cell row="2" clm="2"/>
+            <RailLine name="L-32"/>
+            <RailLine name="L-35a"/>
+            <RailLine name="L-35b"/>
+        </Junction>
+        <Junction name="Sophia SW Junction">
+            <cell row="1" clm="2"/>
+            <RailLine name="L-35b"/>
+            <RailLine name="L-34"/>
+        </Junction>
+        <Junction name="Sophia West Terminal">
+            <cell row="1" clm="5"/>
+            <RailLine name="L-31"/>
+        </Junction>
+        <Junction name="Stalingrad Junction">
+            <cell row="29" clm="17"/>
+            <RailLine name="L-12"/>
+            <RailLine name="L-15"/>
+            <RailLine name="L-20"/>
+        </Junction>
+        <Junction name="Stalino Junction">
+            <cell row="20" clm="16"/>
+            <RailLine name="L-23"/>
+            <RailLine name="L-24"/>
+            <RailLine name="L-26"/>
+        </Junction>
+        <Junction name="Vilnius Junction">
+            <cell row="7" clm="29"/>
+            <RailLine name="L-18"/>
+            <RailLine name="L-66"/>
+            <RailLine name="L-67"/>
+        </Junction>
+        <Junction name="Vologda Junction">
+            <cell row="22" clm="39"/>
+            <RailLine name="L-36"/>
+            <RailLine name="L-37"/>
+            <RailLine name="L-41"/>
+        </Junction>
+        <Junction name="Voroshilovgrad Junction">
+            <cell row="23" clm="15"/>
+            <RailLine name="L-15"/>
+            <RailLine name="L-21"/>
+            <RailLine name="L-23"/>
+        </Junction>
+        <Junction name="Warsaw Junction">
+            <cell row="2" clm="25"/>
+            <RailLine name="L-62"/>
+            <RailLine name="L-65"/>
+            <RailLine name="L-66"/>
+            <RailLine name="L-74"/>
+        </Junction>
+        <Junction name="Warsaw West Terminal">
+            <cell row="1" clm="25"/>
+            <RailLine name="L-74"/>
+        </Junction>
+    </Nodes>
+</RailRoadNetwork>
