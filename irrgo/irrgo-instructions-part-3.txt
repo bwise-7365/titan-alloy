@@ -1,0 +1,25 @@
+
+---
+
+HOW TO SAVE AND LOAD A GAME
+
+I want you to define an XML format to save IrrGo boards and games. I also want an XSD to specify that format, so I can validate the XML.
+
+The InitialPostion and FinalPosition have the same grammar in XSD. Each is a Position, which
+has a field to indicate whether it is  Rectangular or Irregular, then a
+ist of GameNode , then a list of GameEdges. Each GameNode has a Color, row and column. They are exaactly the row and column
+of the corrsponding GameNode in C++. There is one GameEdge for each edge on the board.
+It is specified as the row and column of each end of the edge. In the InitialPostion, all the nodes have Color Empty.
+In the FinalPosition, they will be a mix of Black, White, and Empty.
+
+There should be sections for InitialPostion, Moves, and FinalPosition.
+Each Move should be move number then either Pass or a triple of (Color, row, column). The row and column elements refer to the row and column in
+a Game Node.
+
+The FinalPosition will be filled out by whatever was the Position to be saved.
+
+
+
+==============================================================
+
+

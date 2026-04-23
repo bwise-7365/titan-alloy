@@ -1,0 +1,117 @@
+==============================================================
+
+I have designed a game, IrrGo, which is played on an irregular planar graph or an standard rectangular grid.
+I want to you to build C++ framework which sets up games, then lets me play against a simple opponent
+or have it play against a copy of itself.
+
+The overall workplan is to make it in several sections.
+The first section is a library to handle building game boards and playing games directory.
+There should be a 'driver' program that just builds boards and prints out an ASCII representation of them.
+
+The second section will be a Qt application that uses the exact same library to build, play, and record
+games from a graphical user interface.
+
+Here is a work plan for the first section. Each section is marked with "----"
+----
+
+C++ FRAMEWORK
+
+Use the C++20 standard.
+
+Use CMake; I will build and test using KDevelop on Linux. The minimum required version is 3.20
+
+Later, use Qt 6 for the graphical user interface; but text-only for now.
+
+The code for making moves should be optimized for speed, as I intend to use Monte Carlo Tree Search
+(MCTS) to implement a basic automated player.
+
+Every file you generate (C++, CMakeLists, Qt GUI files, and so on) should have their
+first and last line be a comment saying "Copyright Ben Paul Wise. All Rights Reserved."
+
+----
+
+HOW TO BUILD A RECTANGULAR GRAPH.
+
+A rectanglular graph is specified by three numbers: M, N.
+Form a regular grid of M by N points.
+A game node goes at each grid point.
+Each game node is connected by horizontal and vertical edges to its neighbors.
+Thus, corner nodes will have two incident edges. Game nodes on the top, bottom, left and right will have three incident edges.
+The remaining (interior) nodes will have four incident edges.
+The standard spacing is 0.87 inches for width (seperation between columns) and 0.93 for length (seperation between rows).
+
+In a rectangular graph, each node has (row, column) coordinates and a string label which is those coordinates in %02d%02d format.
+
+----
+
+HOW TO BUILD AN IRREGULAR GRAPH.
+
+An irregular graph is specified by three numbers: M, N and C.
+The constructor will use a Random, initialized from a seed provided in the constructor.
+The M and N parameters specify that there shall be M*N nodes in the graph.
+The C parameter specifies that each node will have a maximum of C incident edges.
+When the size of an irregular graph is specified as M by N, form a regular grid of (3/M/2) by (3N/2).
+Call that the 'base grid'; it is a temporary structure used only to make the game graph; then it is discarded.
+The lines should be spaced exactly like a regular grid of that size (0.87 for width and 0.93 for length).
+Place one node in each corner, then randomly mark MN-4 of the other grid points as nodes of the game graph.
+Make a set of all potential undirected edges, (x,y), between nodes of the game graph.
+Sort them from shortest to longest.
+
+The four corner nodes should have degree of exactly 2. Connect each to the closest neighbors
+horizontally and vertically.
+
+In shortest to longest order, add the rest of the edges to the game graph, subject to the following conditions:
+(*) No new edge can cross any edge already in the game graph.
+(*) No two incident edges (sharing an end point) of the game graph can make less than a 29 degree angle.
+(For reference, a 1-3 right triangle has angles 30, 60, and 90 degrees).
+(*) No edge can have more than C incident edges. Some, like the corners, might have less.
+
+
+In an irregular graph, each node has the (row, column) coordinates from the base grid.
+It has a string label which is those coordinates in %02d%02d format.
+----
+
+RULES
+
+It is not the game of Go, but the rules are similar.
+
+At any point in the game, each node is marked as Black, White, or Empty.
+Initially, all nodes are Empty.
+
+Two players, Black and White, take turns placing stones on the nodes of the graph.
+
+Stones may only be placed on Empty nodes.
+
+The weaker player plays Black. If mutually agreed, Black gets a handicap: Black can place
+several stones before White takes a turn.
+
+Any group of stones directly connected by edges makes a group.
+
+The empty nodes directly adjacent to a group are the liberties of that group.
+
+When a player places a stone, there are two possible capture processes.
+First, any opposing group with no liberties is removed from the board. The nodes they occupied are now Empty.
+Second, any friendly group with no liberties (after the first step) is removed from the board.
+
+Use a version of the "super-ko" rule from Go, adapted to this game.
+Specifically, no complete board position can be repeated in a game: the complete board configuration after a move
+(after placement and captures) may not match any other complete configuration after a move.
+
+At any time, either player can choose to Pass, i.e. place no stone this turn.
+Then it is the other player's turn.
+
+Two passes in a row end the game.
+
+A board is scored by a system similar to the Chineses "area rule" in Go.
+The score of each player is the number of their stones on the board plus the
+number of Empty spaces which are connected (directly or indirectly) only to stones of their color.
+Empty nodes which are connect to both Black and to White are not credited to either player.
+
+White's score is increased by "komi" to prevent ties and compensate White for the disadvantage of not moving first
+It is always a half-integer, such as 0.5, 1.5 up to a maximum of 9.5 In IrrGo, the default komi is 1.5 for White, but 0.5 if Black get a handicap
+(i.e. makes more than one move before White).
+
+==============================================================
+
+
+

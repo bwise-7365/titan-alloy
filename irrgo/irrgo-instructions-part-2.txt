@@ -1,0 +1,61 @@
+==============================================================
+
+
+GRAPHICAL USER INTERFACE
+
+Again, use Qt 6.8
+
+(*) The overall layout has a menu bar at the top and an IrrGo board below it. To the right is an area for various controls. At the bottom of the control area
+is a scrollable text output widget. Each move will be displayed there as it is made. Keep a record of the moves made in a game, as they will be saved later.
+Each Move object, in C++ terms, is a record of the turn number, then either PASS or the (color, row, col) of the move.
+
+The top-left entry of the standard menu bar should be "File", with operations Save, Save As .. and Load. Those operations will be explained later.
+
+The size of a board, whether it is rectangular or irregular, is specified by two integers, M and N,
+nominally rows and columns. For a rectanglular board, draw a grid with M rows and N columns.
+For an irregular board, generate a random planar graph of M*N nodes; the generation process is defined later.
+Every GameNode object is a point on the board and has (row, col) attributes. The row and column are
+specified when the graph is first built; see below.
+
+(*) The graph is drawn with a dot at each node and a thin line connecting it to its neighbors in the graph.
+The color of the dots, lines and frame are #373C65. There should be a menu to select
+the background color of the board. The choices are #DBAD6b (the default), #FFD169, #0C7F84.
+A pale wood-grain background with a mix of colors, like ash or walnut, is optional.
+Black stones are solid discs of #000000 and White stones are solid discs of #FFFFFF.
+
+(*) On a rectangular board, the grid lines are not quite matched to the size of the stones.
+The standad diameter of a stone is 7/8, or 0.875 inches.
+The standard spacing is 0.87 inches for width (seperation between columns) and 0.93 for length (seperation between rows).
+This forces the stones to be slightly off-center, in random ways, to slightly disrupt the perfect symmetry of the grid.
+
+(*) The board-definition menu will offer a drop-down menu of sizes: 7 x 7, 7 x 9, 9x9, 9x13, 13x13, 15x15, 15x17, 17x19, 19x19, 21x21.
+It will have a checkbox for "Irregular", initially unchecked, with an integer numeric entry box titled "Seed".
+There will be a menu for "Stones" with mutually exclusive choices for Empty, Sparse, Medium, Dense, or Solid.
+They are defined by the number of stones to be placed, as a fraction of the number of points on the board.
+The fractions are 0%,  20%, 40%, 75%, or 100%. Place the stones one at a time, in alternating order starting with Black,
+according to the rules. That is, no stone may be placed on another and captures are performed. During this setup phase,
+the super-ko rule is not applied. Thus, even when a stone is placed on every point, the resulting position will have Empty
+points because of captures.
+The board is generated and optionally populated with stones when the player clicks the last entry in the menu, "Generate".
+It will use the provided random number, so that it produces the same board until the user changes the random seed.
+
+(*) On any graph, I want to highlight Empty nodes whenever the user mouses over them. Make the sensitive region 1/2 the diameter of a stone.
+If it is White's turn to move, draw a White disc of the regular size, but with an orange edge. Make the thickness of the edge be 1/10 of the diameter.
+If it Black's turn, draw a Black disc with orange edge.
+On irregular graphs, I want
+to highlight the incident edges of that node in medium purple at the same time.
+
+When the user mouses over an occupied place (Black or White), display a red disk on the stone to indicate
+that it would be an illegal placement. Do not accept moves that attempt to place a stone in an occupied place.
+
+(*)  Left clicking on an Empty node places a stone of the players color, cross-hatched in grey. Left clicking again
+within 3 seconds confirms the placement, otherwise it disappears, the stone is not placed, and it is still the player's move.
+There are two boxes to the side of the board for passing moves. One is marked "White Pass" and performs a Pass move for White.
+The other is marked "Black Pass" and performs a Pass move for Black. Each is enabled on that player's move and disabled on the
+other players move.
+
+(*) There will be a "Play" drop-down menu in the bar. The entries should be
+"Manual Placement", "10 Seconds", "30 Seconds", and "60 Seconds". For now, they do nothing.
+
+
+==============================================================
