@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="DCVRP">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../DCVRP/out/artifacts/DCVRP_jar/DCVRP.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

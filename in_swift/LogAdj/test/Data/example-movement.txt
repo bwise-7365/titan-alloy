@@ -1,0 +1,39 @@
+Units start from Havana, Juragua, Palma, Santiago.
+Need at least 2 KC-130 and one LST at each.
+
+drop airbase, seabase, island designators.
+ports are marked by what kinds of vehicles can use them.
+Note: this lets one distinguish between airbases for large FWA and those for small FWA,
+improved harbor vs steep beach vs shallow beach, etc.
+
+Need at least 10 units across 5 island and 100 serials (10 per unit)
+About 20-25 serials are boat-only (LST, LSM)
+
+base 16 CH-53 around Plata, SD-3, Puerto Rico and USVI
+base 16 LST in Juragua, Palma
+base 10 KC-130 in Havana, Santiago
+base 30 MV22 in USVI, A&B, Mrtnq (must be accessible to KC-130, LST and LSM)
+base 16 LSM around Plata, Esperanza
+
+This is intended to use KC-130 and LST for the main movement East,
+then MV22 and LSM.
+
+Need to choose which locations can handle which vehicles. 
+CSV must be in the style of normalized RDBS:
+Palma, KC-130
+Palma, LST
+Havana, KC-130
+Havana, LST
+...
+
+USVI, KC-130
+USVI, LST
+USVI, MV22
+...
+etc.
+
+Destinations are the five eastern-most islands:  A&B, Dominica, Mrtnq, Lucia, Vincent
+
+All APODs, SPODs and islands must be accessible by MV22 and CH-53.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
