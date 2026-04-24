@@ -37,6 +37,7 @@ void BoardWidget::setGame(const IrrGo::Game* game) {
     hoverNode_    = -1;
     tentativeNode_= -1;
     suggestedNode_= -1;
+    lastMoveNode_ = -1;
     confirmTimer_->stop();
     updateTransform();
     update();
@@ -55,6 +56,11 @@ void BoardWidget::clearSuggestion() {
 
 void BoardWidget::setBoardInfo(const QString& info) {
     boardInfoRight_ = info;
+    update();
+}
+
+void BoardWidget::setLastMove(int nodeId) {
+    lastMoveNode_ = nodeId;
     update();
 }
 
@@ -224,6 +230,17 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         p.setPen(Qt::NoPen);
         p.setBrush(c == Color::Black ? Qt::black : Qt::white);
         p.drawEllipse(toWidget(nd.x, nd.y), stoneR_, stoneR_);
+    }
+
+    // Last-move marker: small contrasting dot on the most recently placed stone
+    if (lastMoveNode_ >= 0 && lastMoveNode_ < static_cast<int>(nodes.size())) {
+        Color lmc = game_->colorAt(lastMoveNode_);
+        if (lmc != Color::Empty) {
+            float dotR = stoneR_ * 0.28f;
+            p.setPen(Qt::NoPen);
+            p.setBrush(lmc == Color::Black ? Qt::white : lineColor_);
+            p.drawEllipse(toWidget(nodes[lastMoveNode_].x, nodes[lastMoveNode_].y), dotR, dotR);
+        }
     }
 
     // Suggested move — green bordered disc (drawn over any stone on that node)

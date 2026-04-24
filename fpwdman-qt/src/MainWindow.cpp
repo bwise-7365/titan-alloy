@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QKeyEvent>
@@ -15,7 +16,12 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
+#include <QPushButton>
 #include <QMessageBox>
+#include <QDialog>
+#include <QPalette>
+#include <QColor>
 #include "ViewSiteEntry.h"
 #include "EditSiteEntry.h"
 
@@ -23,6 +29,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_lastFoundIndex(-1) {
     setWindowTitle("fpwdman-qt");
     resize(300, 480);
+
+    // Set tooltip style using QPalette
+    /*
+    QPalette pal = QApplication::palette();
+    pal.setColor(QPalette::ToolTipBase, QColor("#FFFFDD"));
+    pal.setColor(QPalette::ToolTipText, Qt::black);
+    QApplication::setPalette(pal);
+    */
 
     setupMenus();
     setupCentralWidget();
@@ -92,24 +106,61 @@ void MainWindow::setupCentralWidget() {
     }
     updateTextOutput();
 
-    mainLayout->addWidget(m_textOutput);
+    mainLayout->addWidget(m_textOutput, 1);
 
-    // Find row
-    QHBoxLayout *findLayout = new QHBoxLayout();
+    // Bottom container for both text rows and the status tiles
+    // We use a QGridLayout to ensure perfect alignment between 2 rows on the left and 3 tiles on the right.
+    // Total 6 units of height: each row on left spans 3 units, each tile on right spans 2 units.
+    QGridLayout *bottomGrid = new QGridLayout();
+    bottomGrid->setVerticalSpacing(0);
+    bottomGrid->setHorizontalSpacing(5);
+    bottomGrid->setContentsMargins(0, 0, 0, 0);
+
+    // Find row (spans rows 0-2)
     QLabel *findLabel = new QLabel(tr("Find"), this);
     m_findLineEdit = new QLineEdit(this);
-    findLayout->addWidget(findLabel);
-    findLayout->addWidget(m_findLineEdit);
-    mainLayout->addLayout(findLayout);
+    bottomGrid->addWidget(findLabel, 0, 0, 3, 1);
+    bottomGrid->addWidget(m_findLineEdit, 0, 1, 3, 1);
 
-    // File row
-    QHBoxLayout *fileLayout = new QHBoxLayout();
+    // File row (spans rows 3-5)
     QLabel *fileLabel = new QLabel(tr("File"), this);
     m_fileLineEdit = new QLineEdit(this);
     m_fileLineEdit->setReadOnly(true);
-    fileLayout->addWidget(fileLabel);
-    fileLayout->addWidget(m_fileLineEdit);
-    mainLayout->addLayout(fileLayout);
+    bottomGrid->addWidget(fileLabel, 3, 0, 3, 1);
+    bottomGrid->addWidget(m_fileLineEdit, 3, 1, 3, 1);
+
+    // Three status tiles: 3 tiles * 18px = 54px total height. 
+    // This matches the height of 6 units of 9px each.
+    const int tileSize = 18;
+
+    m_entropyTile = new QLabel(this);
+    m_entropyTile->setFixedSize(tileSize, tileSize);
+    m_entropyTile->setToolTip(tr("Sufficient Entropy?"));
+    m_entropyTile->setStyleSheet("background-color: red; border: 1px solid gray;");
+
+    m_passphraseTile = new QLabel(this);
+    m_passphraseTile->setFixedSize(tileSize, tileSize);
+    m_passphraseTile->setToolTip(tr("Passphrase set?"));
+    m_passphraseTile->setStyleSheet("background-color: blue; border: 1px solid gray;");
+
+    m_changesTile = new QLabel(this);
+    m_changesTile->setFixedSize(tileSize, tileSize);
+    m_changesTile->setToolTip(tr("Changes saved?"));
+    m_changesTile->setStyleSheet("background-color: blue; border: 1px solid gray;");
+
+    // Right part: Three status tiles (spans 2 units each)
+    bottomGrid->addWidget(m_entropyTile, 0, 2, 2, 1, Qt::AlignCenter);
+    bottomGrid->addWidget(m_passphraseTile, 2, 2, 2, 1, Qt::AlignCenter);
+    bottomGrid->addWidget(m_changesTile, 4, 2, 2, 1, Qt::AlignCenter);
+
+    // Ensure rows are equal height units
+    for (int i = 0; i < 6; ++i) {
+        bottomGrid->setRowStretch(i, 1);
+        bottomGrid->setRowMinimumHeight(i, 9);
+    }
+    bottomGrid->setColumnStretch(1, 1); // Let line edits expand
+
+    mainLayout->addLayout(bottomGrid, 0);
 
     connect(m_findLineEdit, &QLineEdit::returnPressed, this, &MainWindow::onFindReturnPressed);
 
@@ -153,48 +204,71 @@ void MainWindow::onLoadActionTriggered() {
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::critical(this, tr("Error"), tr("The file is unreadable."));
+        QDialog errorDialog(this);
+        errorDialog.setWindowTitle(tr("Error"));
+        QVBoxLayout *layout = new QVBoxLayout(&errorDialog);
+        layout->addWidget(new QLabel(tr("The file is unreadable."), &errorDialog));
+        QHBoxLayout *btnLayout = new QHBoxLayout();
+        btnLayout->addStretch();
+        QPushButton *closeBtn = new QPushButton(tr("Close"), &errorDialog);
+        connect(closeBtn, &QPushButton::clicked, &errorDialog, &QDialog::accept);
+        btnLayout->addWidget(closeBtn);
+        layout->addLayout(btnLayout);
+        errorDialog.setFixedWidth(300);
+        errorDialog.exec();
         return;
     }
 
     QXmlStreamReader reader(&file);
     std::vector<SiteEntry> newEntries;
-    bool inSiteTable = false;
-    bool success = true;
 
-    while (!reader.atEnd() && !reader.hasError()) {
-        QXmlStreamReader::TokenType token = reader.readNext();
-        if (token == QXmlStreamReader::StartElement) {
-            if (reader.name() == QStringLiteral("SiteTable")) {
-                inSiteTable = true;
-            } else if (reader.name() == QStringLiteral("SiteEntry") && inSiteTable) {
-                SiteEntry entry;
-                while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QStringLiteral("SiteEntry"))) {
-                    reader.readNext();
-                    if (reader.tokenType() == QXmlStreamReader::StartElement) {
-                        QString name = reader.name().toString();
-                        QString text = reader.readElementText();
-                        if (name == "title") entry.Title = text;
-                        else if (name == "site") entry.Site = text;
-                        else if (name == "userid") entry.UserID = text;
-                        else if (name == "password") entry.Password = text;
-                        else if (name == "comments") entry.Comment = text;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QStringLiteral("FpwdMan")) {
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QStringLiteral("SiteTable")) {
+                    while (reader.readNextStartElement()) {
+                        if (reader.name() == QStringLiteral("SiteEntry")) {
+                            SiteEntry entry;
+                            while (reader.readNextStartElement()) {
+                                QString name = reader.name().toString();
+                                QString text = reader.readElementText();
+                                if (name == "title") entry.Title = text;
+                                else if (name == "site") entry.Site = text;
+                                else if (name == "userid") entry.UserID = text;
+                                else if (name == "password") entry.Password = text;
+                                else if (name == "comments") entry.Comment = text;
+                            }
+                            newEntries.push_back(entry);
+                        } else {
+                            reader.skipCurrentElement();
+                        }
                     }
-                    if (reader.atEnd()) break;
+                } else {
+                    reader.skipCurrentElement();
                 }
-                newEntries.push_back(entry);
             }
-        } else if (token == QXmlStreamReader::EndElement) {
-            if (reader.name() == QStringLiteral("SiteTable")) {
-                inSiteTable = false;
-            }
+        } else {
+            reader.skipCurrentElement();
         }
     }
 
-    if (reader.hasError() || newEntries.empty()) {
-        QMessageBox::critical(this, tr("Error"), tr("The file is unreadable."));
+    if (reader.hasError()) {
+        QDialog errorDialog(this);
+        errorDialog.setWindowTitle(tr("Error"));
+        QVBoxLayout *layout = new QVBoxLayout(&errorDialog);
+        layout->addWidget(new QLabel(tr("The file is unreadable."), &errorDialog));
+        QHBoxLayout *btnLayout = new QHBoxLayout();
+        btnLayout->addStretch();
+        QPushButton *closeBtn = new QPushButton(tr("Close"), &errorDialog);
+        connect(closeBtn, &QPushButton::clicked, &errorDialog, &QDialog::accept);
+        btnLayout->addWidget(closeBtn);
+        layout->addLayout(btnLayout);
+        errorDialog.setFixedWidth(300);
+        errorDialog.exec();
     } else {
         m_entries = std::move(newEntries);
+        m_lastFoundIndex = -1;
+        m_lastSearchString.clear();
         updateTextOutput();
         m_fileLineEdit->setText(fileName);
     }

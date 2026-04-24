@@ -66,6 +66,7 @@ private:
     // Central UI
     BoardWidget*  boardWidget_;
     QLabel*       currentPlayerLabel_;
+    QPushButton*  stopBtn_;
     QPushButton*  blackPassBtn_;
     QPushButton*  whitePassBtn_;
     QTextEdit*    suggestedLog_;
@@ -113,5 +114,6 @@ private:
     int            searchBudgetMs_  = 0;   // 0 = sweep mode; >0 = timed mode
     bool           isSearching_     = false;
     unsigned       searchGen_       = 0;   // incremented on board reset to discard stale results
+    int            playTurnsRemaining_ = 0; // counts down during auto-play; 0 = idle
 };
 // Copyright Ben Paul Wise. All Rights Reserved.

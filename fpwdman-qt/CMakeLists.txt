@@ -19,6 +19,8 @@ qt_add_executable(fpwdman_qt
     src/ViewSiteEntry.cpp
     src/EditSiteEntry.h
     src/EditSiteEntry.cpp
+    src/sbc.h
+    src/sbc.cpp
 )
 
 target_link_libraries(fpwdman_qt PRIVATE Qt6::Widgets)
@@ -36,4 +38,27 @@ if(WIN32)
         message(WARNING "windeployqt not found. DLLs will not be deployed automatically.")
     endif()
 endif()
+
+# Testing setup
+enable_testing()
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.15.2
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+include(GoogleTest)
+
+add_executable(sbc_test
+    test/SbcTest.cpp
+    src/sbc.h
+    src/sbc.cpp
+)
+target_link_libraries(sbc_test PRIVATE GTest::gtest GTest::gtest_main)
+gtest_discover_tests(sbc_test)
+
 # Copyright Ben Paul Wise. All Rights Reserved.

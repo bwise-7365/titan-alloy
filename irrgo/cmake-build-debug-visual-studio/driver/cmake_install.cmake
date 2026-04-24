@@ -1,4 +1,4 @@
-# Install script for directory: C:/repos/ghub-per/titan-alloy/irrgo/driver
+# Install script for directory: C:/home/bwise/tmp/clion_tests/irrgo/driver
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -35,6 +35,6 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/repos/ghub-per/titan-alloy/irrgo/cmake-build-debug-visual-studio/driver/install_local_manifest.txt"
+  file(WRITE "C:/home/bwise/tmp/clion_tests/irrgo/cmake-build-debug-visual-studio/driver/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

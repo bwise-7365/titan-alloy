@@ -20,6 +20,9 @@ public:
     void clearSuggestion();
     void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
 
+    // Mark the most recently placed stone with a contrasting dot; -1 clears it.
+    void setLastMove(int nodeId);
+
 signals:
     void moveRequested(int nodeId);
     void clearSuggestionRequested();  // any left-click anywhere in the board area
@@ -48,6 +51,7 @@ private:
     int     tentativeNode_   = -1;
     int     suggestedNode_   = -1;
     bool    suggestIsBlack_  = true;
+    int     lastMoveNode_    = -1;
     QTimer* confirmTimer_    = nullptr;
 
     // Cached transform — updated on resize / graph change

@@ -8,6 +8,7 @@
 
 class QPlainTextEdit;
 class QLineEdit;
+class QLabel;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -36,6 +37,9 @@ private:
     QPlainTextEdit *m_textOutput;
     QLineEdit *m_findLineEdit;
     QLineEdit *m_fileLineEdit;
+    QLabel *m_entropyTile;
+    QLabel *m_passphraseTile;
+    QLabel *m_changesTile;
     QString m_lastSearchString;
     std::vector<SiteEntry> m_entries;
     int m_lastFoundIndex;

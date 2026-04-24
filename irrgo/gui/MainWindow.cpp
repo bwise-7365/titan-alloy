@@ -121,9 +121,20 @@ MainWindow::MainWindow(QWidget* parent)
     pv->setAlignment(Qt::AlignTop);
     root->addWidget(panel);
 
-    currentPlayerLabel_ = new QLabel("No game", this);
-    currentPlayerLabel_->setAlignment(Qt::AlignCenter);
-    pv->addWidget(currentPlayerLabel_);
+    auto* statusRow  = new QWidget(this);
+    auto* statusHBox = new QHBoxLayout(statusRow);
+    statusHBox->setContentsMargins(0, 0, 0, 0);
+    statusHBox->setSpacing(4);
+    currentPlayerLabel_ = new QLabel("No game", statusRow);
+    currentPlayerLabel_->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    stopBtn_ = new QPushButton("Stop", statusRow);
+    stopBtn_->setFixedWidth(44);
+    { auto sp = stopBtn_->sizePolicy(); sp.setRetainSizeWhenHidden(true); stopBtn_->setSizePolicy(sp); }
+    stopBtn_->hide();
+    statusHBox->addWidget(currentPlayerLabel_, 1);
+    statusHBox->addWidget(stopBtn_);
+    pv->addWidget(statusRow);
+    connect(stopBtn_, &QPushButton::clicked, this, &MainWindow::cancelSearch);
     pv->addSpacing(8);
 
     blackPassBtn_ = new QPushButton("Black Pass", this);
@@ -189,8 +200,8 @@ QPushButton* MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
 
     if (withTurns) {
         turnsOut = new QSpinBox(widget);
-        turnsOut->setRange(1, 30);
-        turnsOut->setValue(1);
+        turnsOut->setRange(1, 50);
+        turnsOut->setValue(2);
         form->addRow("Turns:", turnsOut);
     } else {
         turnsOut = nullptr;
@@ -528,6 +539,7 @@ void MainWindow::stopSearchIndicator() {
 
 void MainWindow::cancelSearch() {
     ++searchGen_;
+    playTurnsRemaining_ = 0;
     if (isSearching_) {
         isSearching_ = false;
         stopSearchIndicator();
@@ -540,6 +552,7 @@ void MainWindow::cancelSearch() {
 void MainWindow::onMoveRequested(int nodeId) {
     if (!game_ || stoneTimer_->isActive() || isSearching_) return;
     if (game_->placeStone(nodeId)) {
+        boardWidget_->setLastMove(nodeId);
         clearSuggestion();
         boardWidget_->update();
         updateControls();
@@ -641,10 +654,12 @@ void MainWindow::onSuggestMctsGo() {
 void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
     if (!game_ || game_->isGameOver()) return;
     clearSuggestion();
-    if (mv == AbsGame::kPass)
+    if (mv == AbsGame::kPass) {
         game_->pass();
-    else
+    } else {
         game_->placeStone(mv);
+        boardWidget_->setLastMove(mv);
+    }
     boardWidget_->update();
     updateControls();
     logLastMove();
@@ -652,6 +667,9 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     if (!game_ || game_->isGameOver() || isSearching_ || stoneTimer_->isActive()) return;
+
+    if (playTurnsRemaining_ <= 0)
+        playTurnsRemaining_ = playTurnsSpin_->value();
 
     isSearching_ = true;
     startSearchIndicator();
@@ -667,6 +685,8 @@ void MainWindow::onPlayNegamaxGo() {
             isSearching_ = false;
             stopSearchIndicator();
             applyComputedMove(mv);
+            if (!game_->isGameOver() && --playTurnsRemaining_ > 0)
+                onPlayNegamaxGo();
         }, Qt::QueuedConnection);
     }).detach();
 }
@@ -679,6 +699,7 @@ void MainWindow::clearSuggestion() {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 void MainWindow::updateControls() {
+    stopBtn_->setVisible(isSearching_);
     if (!game_) {
         currentPlayerLabel_->setText("No game");
         blackPassBtn_->setEnabled(false);
