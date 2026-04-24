@@ -33,6 +33,7 @@ using namespace IrrGo;
 
 struct SizeEntry  { int rows, cols; const char* label; };
 static const SizeEntry kSizes[] = {
+    //{ 5,  5, "5 × 5"   }, // this size has low enough detail for ICO
     { 7,  7, "7 × 7"   }, { 7,  9, "7 × 9"   },
     { 9,  9, "9 × 9"   }, { 9, 13, "9 × 13"  },
     {13, 13, "13 × 13"  }, {13, 17, "13 × 17"  },
@@ -40,7 +41,11 @@ static const SizeEntry kSizes[] = {
     {19, 19, "19 × 19" },
     {21, 21, "21 × 21" },
 };
-static constexpr int kDefaultSizeIdx = 4; // starting at zero, this should be 13 × 13
+
+// I made it start at 17x21 because it is an interesting variant on 19x19.
+// It is a slightly smaller area, and I expect tactics on the long edge
+// to differ from those on the short edge.
+static constexpr int kDefaultSizeIdx = 7; // starting at zero, this should be 17 × 21
 
 static const struct { QColor color; const char* label; } kBgColors[] = {
     { QColor("#F2B06D"), "Tan"  },

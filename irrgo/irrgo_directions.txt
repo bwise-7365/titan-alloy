@@ -62,7 +62,21 @@ Change the way positions are converted to string. Right now, it appears to use s
 ---
 Good. Now make the move log output use the same format. If it is easy, you might
 have it print the Node to which the move went, then it would reuse the same 'label' as in Node.
+
+---
+Earlier, we were working on adding icons in a platform-independent way.
+I said I would generate the ICO files.
+In the irrgo/images directory, there are now ICO files with 256, 48, 32, and 16 in their names. Use those 
+---
+That was perfect.
+Now, I need you to modify the board-generation code. When adding edges, an edge will touch its two end points.
+Add a helper function to  check to see if the new edge would cross some other node and reject it 
+if so. Again, show me where you modified the code. 
 ---
 
+16, 32, 48, 256
+32 is most common
 
+17x21 irregular 42
+R13C15
 -------------------------------

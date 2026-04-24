@@ -15,8 +15,10 @@ static int starCoord(int n) { return n < 11 ? 2 : 3; }
 static const QColor kOrange    { 255, 140,   0 };
 static const QColor kGreen     {   0, 200,   0 };
 static const QColor kMedPurple { 147, 112, 219 };
+static const QColor kDarkBlue  { 0, 0, 128 };
 static const QColor kRed       { 220,   0,   0, 180 };
-static constexpr float kStoneRPhys = 0.875f / 2.0f;
+static constexpr float kStoneRPhys      = 0.875f / 2.0f;
+static constexpr float kGridLineThickness = 2.5f; // normally 1.5f;
 
 BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
     setMinimumSize(400, 400);
@@ -170,7 +172,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     p.drawRect(fr);
 
     // Edges (normal)
-    p.setPen(QPen(lineColor_, 1.5));
+    p.setPen(QPen(lineColor_, kGridLineThickness));
     for (const auto& nd : nodes)
         for (int nb : nd.neighbors)
             if (nb > nd.id)
@@ -179,7 +181,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     // Irregular hover: incident edges in medium purple
     if (isIrr && hoverNode_ >= 0) {
-        p.setPen(QPen(kMedPurple, 2.5));
+        p.setPen(QPen(kMedPurple, 2.5)); // normally kMedPurple kDarkBlue
         const auto& hn = nodes[hoverNode_];
         for (int nb : hn.neighbors)
             p.drawLine(toWidget(hn.x, hn.y), toWidget(nodes[nb].x, nodes[nb].y));
@@ -187,7 +189,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     // Node dots: all nodes for irregular; corner star points for rectangular
     {
-        float dotR = std::max(2.0f, stoneR_ * 0.20f);
+        float dotR = std::max(2.0f, stoneR_ * 0.3f);
         p.setPen(Qt::NoPen);
         p.setBrush(lineColor_);
         if (isIrr) {

@@ -12,7 +12,8 @@ namespace IrrGo {
 
 static constexpr float kColSpacing = 0.87f;
 static constexpr float kRowSpacing = 0.93f;
-static constexpr double kMinAngleDeg = 15.0;
+static constexpr double kMinAngleDeg   = 15.0;
+static constexpr float  kNodeClearance = 0.3f; // min distance from segment to any non-endpoint node
 
 // Orientation of point p relative to directed line a→b (sign of cross product)
 static double orient(float ax, float ay, float bx, float by, float px, float py) {
@@ -35,6 +36,20 @@ bool IrregularGraph::segmentsProperlyIntersect(
     double d4 = orient(ax, ay, bx, by, dx, dy);
     return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) &&
            ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+}
+
+bool IrregularGraph::edgeCrossesNode(int a, int b, int nodeId) const {
+    if (nodeId == a || nodeId == b) return false;
+    float ax = nodes_[a].x,      ay = nodes_[a].y;
+    float bx = nodes_[b].x,      by = nodes_[b].y;
+    float px = nodes_[nodeId].x, py = nodes_[nodeId].y;
+    float dx = bx - ax, dy = by - ay;
+    float len2 = dx*dx + dy*dy;
+    if (len2 < 1e-9f) return false;
+    float t     = std::clamp(((px-ax)*dx + (py-ay)*dy) / len2, 0.0f, 1.0f);
+    float rx    = px - (ax + t*dx);
+    float ry    = py - (ay + t*dy);
+    return rx*rx + ry*ry < kNodeClearance * kNodeClearance;
 }
 
 bool IrregularGraph::edgesCross(int a, int b, int c, int d) const {
@@ -61,6 +76,10 @@ bool IrregularGraph::canAddEdge(int a, int b) const {
 
     for (const auto& [ea, eb] : edges_)
         if (edgesCross(a, b, ea, eb)) return false;
+
+    int N = nodeCount();
+    for (int i = 0; i < N; ++i)
+        if (edgeCrossesNode(a, b, i)) return false;
 
     for (int nb : nodes_[a].neighbors)
         if (angleDeg(a, b, nb) < kMinAngleDeg) return false;

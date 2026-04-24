@@ -23,6 +23,7 @@ private:
     static bool segmentsProperlyIntersect(float ax, float ay, float bx, float by,
                                           float cx, float cy, float dx, float dy);
     bool edgesCross(int a, int b, int c, int d) const;
+    bool edgeCrossesNode(int a, int b, int nodeId) const;
     double angleDeg(int center, int n1, int n2) const;
     bool canAddEdge(int a, int b) const;
 };

@@ -15,7 +15,12 @@ qt_add_executable(irrgo_gui
     MainWindow.cpp
     BoardWidget.h
     BoardWidget.cpp
+    irrgo.qrc
 )
+
+if(WIN32)
+    target_sources(irrgo_gui PRIVATE irrgo.rc)
+endif()
 
 set_target_properties(irrgo_gui PROPERTIES
     WIN32_EXECUTABLE TRUE
