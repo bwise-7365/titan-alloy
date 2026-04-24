@@ -22,10 +22,16 @@ protected:
 
 private slots:
     void onFindReturnPressed();
+    void onEditActionTriggered();
+    void onSaveActionTriggered();
+    void onSaveAsActionTriggered();
+    void onLoadActionTriggered();
 
 private:
     void setupMenus();
     void setupCentralWidget();
+    void updateTextOutput();
+    bool saveToFile(const QString &fileName);
 
     QPlainTextEdit *m_textOutput;
     QLineEdit *m_findLineEdit;

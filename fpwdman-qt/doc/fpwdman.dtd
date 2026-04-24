@@ -1,0 +1,10 @@
+  <!ELEMENT title (#PCDATA)>
+  <!ELEMENT site (#PCDATA)>
+  <!ELEMENT userid (#PCDATA)>
+  <!ELEMENT password (#PCDATA)>
+  <!ELEMENT comments (#PCDATA)>
+  
+  <!ELEMENT SiteTable (SiteEntry*)>
+  <!ELEMENT SiteEntry (title, site, userid, password, comments)>
+
+

@@ -12,7 +12,12 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QTextCursor>
+#include <QFileDialog>
+#include <QFile>
+#include <QXmlStreamWriter>
+#include <QMessageBox>
 #include "ViewSiteEntry.h"
+#include "EditSiteEntry.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_lastFoundIndex(-1) {
@@ -31,12 +36,30 @@ void MainWindow::setupMenus() {
 
     // File menu
     QMenu *fileMenu = menuBar->addMenu(tr("&File"));
+    QAction *saveAction = fileMenu->addAction(tr("&Save"));
+    QAction *saveAsAction = fileMenu->addAction(tr("Save &As ..."));
+    QAction *loadAction = fileMenu->addAction(tr("&Load"));
+    fileMenu->addSeparator();
     QAction *quitAction = fileMenu->addAction(tr("&Quit"));
+
+    saveAction->setShortcut(QKeySequence::Save);
+    saveAsAction->setShortcut(QKeySequence::SaveAs);
+    loadAction->setShortcut(QKeySequence::Open);
     quitAction->setShortcut(QKeySequence::Quit);
+
+    connect(saveAction, &QAction::triggered, this, &MainWindow::onSaveActionTriggered);
+    connect(saveAsAction, &QAction::triggered, this, &MainWindow::onSaveAsActionTriggered);
+    connect(loadAction, &QAction::triggered, this, &MainWindow::onLoadActionTriggered);
     connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
-    // Edit, Tools, Help menus (empty for now)
-    menuBar->addMenu(tr("&Edit"));
+    // Edit menu
+    QMenu *editMenu = menuBar->addMenu(tr("&Edit"));
+    editMenu->addAction(tr("&New"));
+    QAction *editAction = editMenu->addAction(tr("&Edit"));
+    editMenu->addAction(tr("&Delete"));
+    connect(editAction, &QAction::triggered, this, &MainWindow::onEditActionTriggered);
+
+    // Tools, Help menus (empty for now)
     menuBar->addMenu(tr("&Tools"));
     menuBar->addMenu(tr("&Help"));
 }
@@ -58,7 +81,6 @@ void MainWindow::setupCentralWidget() {
     );
 
     // Generate 250 site entries
-    QString content;
     for (int i = 1; i <= 250; ++i) {
         SiteEntry entry;
         entry.Title = QString("Title %1").arg(i, 3, 10, QChar('0'));
@@ -67,9 +89,8 @@ void MainWindow::setupCentralWidget() {
         entry.Password = "abcd";
         entry.Comment = "abcd";
         m_entries.push_back(entry);
-        content += entry.Title + "\n";
     }
-    m_textOutput->setPlainText(content);
+    updateTextOutput();
 
     mainLayout->addWidget(m_textOutput);
 
@@ -95,6 +116,144 @@ void MainWindow::setupCentralWidget() {
     m_textOutput->viewport()->installEventFilter(this);
 
     setCentralWidget(container);
+}
+
+void MainWindow::onEditActionTriggered() {
+    int lineIndex = m_textOutput->textCursor().blockNumber();
+    if (lineIndex >= 0 && lineIndex < static_cast<int>(m_entries.size())) {
+        EditSiteEntry dialog(&m_entries[lineIndex], this);
+        if (dialog.exec() == QDialog::Accepted) {
+            updateTextOutput();
+            // Restore cursor to the edited line
+            QTextCursor cursor(m_textOutput->document());
+            for (int i = 0; i < lineIndex; ++i) {
+                cursor.movePosition(QTextCursor::NextBlock);
+            }
+            cursor.select(QTextCursor::LineUnderCursor);
+            m_textOutput->setTextCursor(cursor);
+            m_textOutput->ensureCursorVisible();
+        }
+    }
+}
+
+void MainWindow::onSaveActionTriggered() {
+    QString fileName = m_fileLineEdit->text();
+    if (fileName.isEmpty() || !QFile::exists(fileName)) {
+        onSaveAsActionTriggered();
+    } else {
+        saveToFile(fileName);
+    }
+}
+
+void MainWindow::onLoadActionTriggered() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("XML Files (*.xml);;All Files (*)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, tr("Error"), tr("The file is unreadable."));
+        return;
+    }
+
+    QXmlStreamReader reader(&file);
+    std::vector<SiteEntry> newEntries;
+    bool inSiteTable = false;
+    bool success = true;
+
+    while (!reader.atEnd() && !reader.hasError()) {
+        QXmlStreamReader::TokenType token = reader.readNext();
+        if (token == QXmlStreamReader::StartElement) {
+            if (reader.name() == QStringLiteral("SiteTable")) {
+                inSiteTable = true;
+            } else if (reader.name() == QStringLiteral("SiteEntry") && inSiteTable) {
+                SiteEntry entry;
+                while (!(reader.tokenType() == QXmlStreamReader::EndElement && reader.name() == QStringLiteral("SiteEntry"))) {
+                    reader.readNext();
+                    if (reader.tokenType() == QXmlStreamReader::StartElement) {
+                        QString name = reader.name().toString();
+                        QString text = reader.readElementText();
+                        if (name == "title") entry.Title = text;
+                        else if (name == "site") entry.Site = text;
+                        else if (name == "userid") entry.UserID = text;
+                        else if (name == "password") entry.Password = text;
+                        else if (name == "comments") entry.Comment = text;
+                    }
+                    if (reader.atEnd()) break;
+                }
+                newEntries.push_back(entry);
+            }
+        } else if (token == QXmlStreamReader::EndElement) {
+            if (reader.name() == QStringLiteral("SiteTable")) {
+                inSiteTable = false;
+            }
+        }
+    }
+
+    if (reader.hasError() || newEntries.empty()) {
+        QMessageBox::critical(this, tr("Error"), tr("The file is unreadable."));
+    } else {
+        m_entries = std::move(newEntries);
+        updateTextOutput();
+        m_fileLineEdit->setText(fileName);
+    }
+
+    file.close();
+}
+
+void MainWindow::onSaveAsActionTriggered() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), "", tr("XML Files (*.xml);;All Files (*)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    if (saveToFile(fileName)) {
+        m_fileLineEdit->setText(fileName);
+    }
+}
+
+bool MainWindow::saveToFile(const QString &fileName) {
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, tr("Error"), tr("Could not open file for writing: %1").arg(file.errorString()));
+        return false;
+    }
+
+    QXmlStreamWriter xml(&file);
+    xml.setAutoFormatting(true);
+    xml.writeStartDocument();
+
+    xml.writeStartElement("FpwdMan");
+    xml.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    xml.writeAttribute("xsi:noNamespaceSchemaLocation", "fpwdman.xsd");
+
+    xml.writeStartElement("SiteTable");
+
+    for (const auto& entry : m_entries) {
+        xml.writeStartElement("SiteEntry");
+        xml.writeTextElement("title", entry.Title);
+        xml.writeTextElement("site", entry.Site);
+        xml.writeTextElement("userid", entry.UserID);
+        xml.writeTextElement("password", entry.Password);
+        xml.writeTextElement("comments", entry.Comment);
+        xml.writeEndElement(); // SiteEntry
+    }
+
+    xml.writeEndElement(); // SiteTable
+    xml.writeEndElement(); // FpwdMan
+    xml.writeEndDocument();
+
+    file.close();
+    return true;
+}
+
+void MainWindow::updateTextOutput() {
+    QString content;
+    for (const auto& entry : m_entries) {
+        content += entry.Title + "\n";
+    }
+    m_textOutput->setPlainText(content);
 }
 
 void MainWindow::onFindReturnPressed() {
