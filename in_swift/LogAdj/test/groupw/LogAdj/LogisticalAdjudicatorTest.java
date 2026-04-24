@@ -36,9 +36,10 @@ public class LogisticalAdjudicatorTest {
 
     @Test
     public void testItnry() throws IOException {
+        double runTimeHours = 650;
         ReadDCVRScenarioCSV.ScenarioRecord sRec = ReadDCVRScenarioCSV.readStandardTestCase();
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
-        List<LogisticalAdjudicator.LogRecord> records = la.adjudicator(48.0);
+        List<LogisticalAdjudicator.LogRecord> records = la.adjudicator(runTimeHours);
         records.sort((a, b) -> Double.compare(a.time, b.time));
         try (PrintWriter pw = new PrintWriter(new FileWriter("logrun.txt"))) {
             for (LogisticalAdjudicator.LogRecord r : records) {

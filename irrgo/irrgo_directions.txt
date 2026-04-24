@@ -116,4 +116,9 @@ White's score does have komi added.
 The 'dvrScore' of a side is the total size of its DVR, as you guessed. Define a constant in the function called 'areaPremium' with value 0.05
 The 'stoneCount' of a side is the number of stones they have on the board.
 The 'territoryScore' of a side is (1 + areaPremium)*dvrScore - areaPremium*stoneCount.
+
+---
+
+It did that correctly, but the play is still terrible. If you turn on both DVR, and start placing alternating stones across the top row, then
+it is obvious why it happens: whoever places the last stone has a DVR covering most of the board.
 -------------------------------
