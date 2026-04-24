@@ -8,7 +8,7 @@ Node::Node(int id, int row, int col, float x, float y)
     : id(id), row(row), col(col), x(x), y(y)
 {
     char buf[8];
-    std::snprintf(buf, sizeof(buf), "%02d%02d", row, col);
+    std::snprintf(buf, sizeof(buf), "R%02dC%02d", row, col);
     label = buf;
 }
 

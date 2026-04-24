@@ -1,0 +1,42 @@
+start points:
+start at 1 and go to 19, 13 or 9 respectively
+
+19x19: 9 points, 4-4, 10-4, 16 and symmetric
+
+13x13: 5 points
+corners: 4 and 10
+center: 7,7
+
+9x9: 5 points, but sometime 4 without center
+corners: 3, 7
+center: 5,5
+
+I would have to figure it for 7, 9, 13, 17, 19, 21
+
+ 7: row/col 3, no center
+ 9: standard corners (r/c 3), optional center at 5 (N+1)/2
+13: standard corners (r/c 4), center at 7 (N+1)/2
+17: standard corners (r/c 4), center [because 13 and 19 both use r/c 4]
+19: standard corners (r/c 4), center
+21: standard corners (r/c 4), center
+
+Calculate four corners, 1-based:
+ width < 11: 2
+11 <= width: 4
+
+9x9 is marginal case for centers, so I note that
+ 9 * 9 =  81 points, optional center
+13 * 9 = 117 points, with center
+
+So I decree that for rectangular grids, 100 points or more have a center
+and 99 or less have no center.
+
+ 7: 2
+ 9: 2
+13: 3
+
+In other words, if N<11, star-coord is r/c 3, othewise 4.
+If the area is less than 100, no center, otherwise draw center.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

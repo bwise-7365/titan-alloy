@@ -158,6 +158,7 @@ bool Game::placeStone(int nodeId) {
     passCount_ = 0;
     moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
                             myColor,
+                            nodeId,
                             graph_.node(nodeId).row, graph_.node(nodeId).col});
     current_ = (current_ == Player::Black) ? Player::White : Player::Black;
     return true;

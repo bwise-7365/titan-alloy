@@ -34,6 +34,35 @@ border. It will disappear when the user clicks on "Clear". If you need clarifica
 
 ---
 
-BPW: The suggestions are terrible. I see the problem with NegaMax. At non-terminal positions, it should score differently. 
+BPW: The suggested moves are terrible. I see the problem with NegaMax.
+     At non-terminal positions, it should score by range-limited discrete voronoi regions. 
+BPW: end of session.
+
+---
+Now we will add four dots, called "star points", in the corners of rectangular graphs.
+As usual, the row/col start at zero, so 17 rows are numbered 0 ... 16.
+The corner-coordinates for row and column dimensions are calculated separately,
+so you should create a helper function, 'int starCoord(int n)' to get the correct value.
+If n <11, return 2
+else return 3
+
+That gives the low value (left or bottom). The high value, (right or top is) n - (1+starCoord(n))
+
+For an N x M grid,  use starCoord(N) to get the row-coordinates and starCoord(M) to get the col-coordinates,
+and place all four dots using the same size dot (use a helper function) as in irregular grids.
+
+And tell me exactly where in the code you do this, so I can review the details.
+
+---
+Add a dot in the center of rectangular graphs when 100 <= rows*cols
+---
+
+Change the way positions are converted to string. Right now, it appears to use something like "R%dC%d". I want them to be zero-padded to two digits, something like "R%02dC%02d" 
+
+---
+Good. Now make the move log output use the same format. If it is easy, you might
+have it print the Node to which the move went, then it would reuse the same 'label' as in Node.
+---
+
 
 -------------------------------

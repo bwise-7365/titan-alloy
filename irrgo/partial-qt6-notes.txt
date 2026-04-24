@@ -1,0 +1,18 @@
+ -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64
+ 
+-G Ninja -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2026.1/bin/ninja/win/x64/ninja.exe" 
+
+
+-DQt6_DIR=C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6  
+
+x86 amd64 arm
+
+For my laptop, arm64 was best.
+
+ QMetaObject, MainWindow::qt_metacast , and similar
+ 
+error while loading shared libraries: Qt6Cored.dll: cannot open shared object file: No such file or directory
+                                                        [gui 536]$
+
+
+have to copy appropriate DLL into same directory as EXE and the platforms/ directory under it.

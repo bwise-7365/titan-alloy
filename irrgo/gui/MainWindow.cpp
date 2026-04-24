@@ -36,15 +36,14 @@ static const SizeEntry kSizes[] = {
     { 7,  7, "7 × 7"   }, { 7,  9, "7 × 9"   },
     { 9,  9, "9 × 9"   }, { 9, 13, "9 × 13"  },
     {13, 13, "13 × 13"  }, {13, 17, "13 × 17"  },
-    {15, 15, "15 × 15" }, {15, 17, "15 × 17" },
     {17, 19, "17 × 19"  },{17, 21, "17 × 21"  },
     {19, 19, "19 × 19" },
     {21, 21, "21 × 21" },
 };
-static constexpr int kDefaultSizeIdx = 8; // 19 × 19
+static constexpr int kDefaultSizeIdx = 4; // starting at zero, this should be 13 × 13
 
 static const struct { QColor color; const char* label; } kBgColors[] = {
-    { QColor("#DBAD6B"), "Tan"  },
+    { QColor("#F2B06D"), "Tan"  },
     { QColor("#FFD169"), "Gold" },
     { QColor("#0C7F84"), "Teal" },
 };
@@ -119,6 +118,11 @@ MainWindow::MainWindow(QWidget* parent)
     pv->addWidget(new QLabel("Move log:", this));
     moveLog_ = new QTextEdit(this);
     moveLog_->setReadOnly(true);
+    {
+        QFont font("Monospace");
+        font.setStyleHint(QFont::TypeWriter);
+        moveLog_->setFont(font);
+    }
     pv->addWidget(moveLog_, 1);
 
     buildMenuBar();
@@ -521,10 +525,10 @@ void MainWindow::logLastMove() {
     const Move& m = game_->moveHistory().back();
     QString text = (m.color == Color::Empty)
         ? QString("%1: PASS").arg(m.turn)
-        : QString("%1: %2 R%3C%4")
-              .arg(m.turn)
+        : QString("%1: %2 %3")
+              .arg(m.turn, 3)
               .arg(m.color == Color::Black ? "B" : "W")
-              .arg(m.row).arg(m.col);
+              .arg(QString::fromStdString(game_->graph().node(m.nodeId).label));
     moveLog_->append(text);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

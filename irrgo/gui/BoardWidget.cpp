@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "BoardWidget.h"
 #include "IrregularGraph.h"
+#include "RectangularGraph.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTimer>
@@ -8,6 +9,8 @@
 #include <limits>
 
 using namespace IrrGo;
+
+static int starCoord(int n) { return n < 11 ? 2 : 3; }
 
 static const QColor kOrange    { 255, 140,   0 };
 static const QColor kGreen     {   0, 200,   0 };
@@ -182,12 +185,30 @@ void BoardWidget::paintEvent(QPaintEvent*) {
             p.drawLine(toWidget(hn.x, hn.y), toWidget(nodes[nb].x, nodes[nb].y));
     }
 
-    // Node dots
-    float dotR = std::max(2.0f, stoneR_ * 0.15f);
-    p.setPen(Qt::NoPen);
-    p.setBrush(lineColor_);
-    for (const auto& nd : nodes)
-        p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
+    // Node dots: all nodes for irregular; corner star points for rectangular
+    {
+        float dotR = std::max(2.0f, stoneR_ * 0.20f);
+        p.setPen(Qt::NoPen);
+        p.setBrush(lineColor_);
+        if (isIrr) {
+            for (const auto& nd : nodes)
+                p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
+        } else {
+            const auto* rg = static_cast<const RectangularGraph*>(&game_->graph());
+            int rows = rg->rows(), cols = rg->cols();
+            int lr = starCoord(rows),  hr = rows - (1 + lr);
+            int lc = starCoord(cols),  hc = cols - (1 + lc);
+            for (int r : {lr, hr})
+                for (int c : {lc, hc}) {
+                    const auto& nd = nodes[rg->nodeId(r, c)];
+                    p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
+                }
+            if (rows * cols >= 100) {
+                const auto& nd = nodes[rg->nodeId(rows / 2, cols / 2)];
+                p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
+            }
+        }
+    }
 
     // Stones
     for (const auto& nd : nodes) {

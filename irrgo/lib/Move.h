@@ -6,10 +6,11 @@ namespace IrrGo {
 
 // Color == Empty means a pass move; row and col are -1 in that case.
 struct Move {
-    int   turn  = 0;
-    Color color = Color::Empty;
-    int   row   = -1;
-    int   col   = -1;
+    int   turn   = 0;
+    Color color  = Color::Empty;
+    int   nodeId = -1;
+    int   row    = -1;
+    int   col    = -1;
 };
 
 } // namespace IrrGo
