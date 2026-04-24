@@ -33,9 +33,12 @@ using namespace IrrGo;
 
 struct SizeEntry  { int rows, cols; const char* label; };
 static const SizeEntry kSizes[] = {
-    { 7,  7, "7 × 7"   }, { 7,  9, "7 × 9"   }, { 9,  9, "9 × 9"   },
-    { 9, 13, "9 × 13"  }, {13, 13, "13 × 13"  }, {15, 15, "15 × 15" },
-    {15, 17, "15 × 17" }, {17, 19, "17 × 19"  }, {19, 19, "19 × 19" },
+    { 7,  7, "7 × 7"   }, { 7,  9, "7 × 9"   },
+    { 9,  9, "9 × 9"   }, { 9, 13, "9 × 13"  },
+    {13, 13, "13 × 13"  }, {13, 17, "13 × 17"  },
+    {15, 15, "15 × 15" }, {15, 17, "15 × 17" },
+    {17, 19, "17 × 19"  },{17, 21, "17 × 21"  },
+    {19, 19, "19 × 19" },
     {21, 21, "21 × 21" },
 };
 static constexpr int kDefaultSizeIdx = 8; // 19 × 19
@@ -51,9 +54,9 @@ static constexpr int kDefaultMaxEdgesIdx = 1; // value 4
 
 static const struct { double fraction; const char* label; } kStones[] = {
     { 0.00, "Empty"         },
-    { 0.20, "Sparse (20%)"  },
-    { 0.40, "Medium (40%)"  },
-    { 0.75, "Dense (75%)"   },
+    { 0.10, "Sparse (10%)"  },
+    { 0.25, "Medium (25%)"  },
+    { 0.50, "Dense (50%)"   },
     { 1.00, "Solid (100%)"  },
 };
 
