@@ -97,7 +97,6 @@ Here is how the NegaMax -> Go! should be connected. Run negamax using the search
 exactly as if a person had made that move from the GUI. That is, reuse existing code, do not make duplicate code.
 If necessary, pull it out into helper functions. We will need to use it again for MCTS. Any questions?         
 ---
-NOT YET TRIED:
 I want to change the 'staticEval' function for IrrGo's negamax (Do not change it for MCTS).
 To do that, first define a new class for "Discrete Voronoi Region" called DVR.
 The discrete Voronoi region for Black is all those nodes on the grid that are closer to a Black stone than to any White stone.
@@ -110,9 +109,11 @@ It should return the DVR on that board of that color, but only out to the radius
 For the Black color, a radius of 1 means only those points directly connected to a Black stone but not directly connected to any White stone..
 If you need clarification, ask; otherwise proceed.
 
+---
 
-The new static evaluation function for negaMax is as follows. White's score does have komi added.
-The 'dvrScore' of a side is the total size of its DVR. Define a constant in the function called 'areaPremium' with value 1.01
+The negamaxEval function needs to be modified to treat empty territory somewhat differently from stones placed.
+White's score does have komi added.
+The 'dvrScore' of a side is the total size of its DVR, as you guessed. Define a constant in the function called 'areaPremium' with value 0.05
 The 'stoneCount' of a side is the number of stones they have on the board.
 The 'territoryScore' of a side is (1 + areaPremium)*dvrScore - areaPremium*stoneCount.
 -------------------------------

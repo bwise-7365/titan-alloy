@@ -97,6 +97,17 @@ MainWindow::MainWindow(QWidget* parent)
     boardVBox->setSpacing(4);
     boardWidget_ = new BoardWidget(boardArea);
     boardVBox->addWidget(boardWidget_, 1);
+    turnProgress_ = new QProgressBar(boardArea);
+    turnProgress_->setRange(0, 100);
+    turnProgress_->setFixedHeight(14);
+    turnProgress_->setTextVisible(false);
+    {
+        auto sp = turnProgress_->sizePolicy();
+        sp.setRetainSizeWhenHidden(true);
+        turnProgress_->setSizePolicy(sp);
+    }
+    turnProgress_->hide();
+    boardVBox->addWidget(turnProgress_);
     searchProgress_ = new QProgressBar(boardArea);
     searchProgress_->setRange(0, 100);
     searchProgress_->setFixedHeight(14);
@@ -157,6 +168,22 @@ MainWindow::MainWindow(QWidget* parent)
     clearSuggestBtn_ = new QPushButton("Clear", this);
     pv->addWidget(clearSuggestBtn_);
     connect(clearSuggestBtn_, &QPushButton::clicked, this, &MainWindow::clearSuggestion);
+
+    {
+        auto* dvrRow  = new QWidget(this);
+        auto* dvrHBox = new QHBoxLayout(dvrRow);
+        dvrHBox->setContentsMargins(0, 0, 0, 0);
+        dvrHBox->setSpacing(8);
+        blackDvrCheck_ = new QCheckBox("Black DVR", dvrRow);
+        whiteDvrCheck_ = new QCheckBox("White DVR", dvrRow);
+        dvrHBox->addWidget(blackDvrCheck_);
+        dvrHBox->addWidget(whiteDvrCheck_);
+        pv->addWidget(dvrRow);
+    }
+    connect(blackDvrCheck_, &QCheckBox::toggled,
+            boardWidget_,   &BoardWidget::setShowBlackDvr);
+    connect(whiteDvrCheck_, &QCheckBox::toggled,
+            boardWidget_,   &BoardWidget::setShowWhiteDvr);
 
     pv->addSpacing(8);
 
@@ -442,7 +469,9 @@ void MainWindow::generateBoard() {
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
 
     game_ = std::make_unique<Game>(*graph_);
-    boardWidget_->setGame(game_.get());
+    boardWidget_->setGame(game_.get());   // also resets DVR flags on the widget
+    blackDvrCheck_->setChecked(false);
+    whiteDvrCheck_->setChecked(false);
     boardWidget_->setBgColor(kBgColors[bgCombo_->currentIndex()].color);
     boardWidget_->setBoardInfo(QString("%1 x %2: %3")
         .arg(sz.rows).arg(sz.cols).arg(static_cast<int>(seed)));
@@ -540,6 +569,8 @@ void MainWindow::stopSearchIndicator() {
 void MainWindow::cancelSearch() {
     ++searchGen_;
     playTurnsRemaining_ = 0;
+    playTurnsTotal_     = 0;
+    turnProgress_->hide();
     if (isSearching_) {
         isSearching_ = false;
         stopSearchIndicator();
@@ -668,8 +699,12 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 void MainWindow::onPlayNegamaxGo() {
     if (!game_ || game_->isGameOver() || isSearching_ || stoneTimer_->isActive()) return;
 
-    if (playTurnsRemaining_ <= 0)
+    if (playTurnsRemaining_ <= 0) {
         playTurnsRemaining_ = playTurnsSpin_->value();
+        playTurnsTotal_     = playTurnsRemaining_;
+        turnProgress_->setValue(0);
+        turnProgress_->show();
+    }
 
     isSearching_ = true;
     startSearchIndicator();
@@ -685,8 +720,16 @@ void MainWindow::onPlayNegamaxGo() {
             isSearching_ = false;
             stopSearchIndicator();
             applyComputedMove(mv);
-            if (!game_->isGameOver() && --playTurnsRemaining_ > 0)
+            --playTurnsRemaining_;
+            if (playTurnsTotal_ > 0)
+                turnProgress_->setValue((playTurnsTotal_ - playTurnsRemaining_) * 100
+                                        / playTurnsTotal_);
+            if (!game_->isGameOver() && playTurnsRemaining_ > 0) {
                 onPlayNegamaxGo();
+            } else {
+                turnProgress_->hide();
+                playTurnsTotal_ = 0;
+            }
         }, Qt::QueuedConnection);
     }).detach();
 }

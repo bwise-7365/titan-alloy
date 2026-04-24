@@ -5,6 +5,7 @@ add_library(irrgo_lib STATIC
     RectangularGraph.cpp
     IrregularGraph.cpp
     Game.cpp
+    DVR.cpp
     utils.cpp
     utils.h
 )

@@ -34,6 +34,10 @@ public:
     // Positive values favour the mover; negative values favour the opponent.
     virtual double staticEval() const = 0;
 
+    // Eval used by NegaMax. Default delegates to staticEval(); subclasses may
+    // override with a richer heuristic without affecting MCTS rollouts.
+    virtual double negamaxEval() const { return staticEval(); }
+
     // Deep copy: board state is duplicated; the underlying graph is shared.
     virtual std::unique_ptr<Game> clone() const = 0;
 

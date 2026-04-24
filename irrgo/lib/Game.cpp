@@ -1,5 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "Game.h"
+#include "DVR.h"
 #include <limits>
 #include <queue>
 #include <random>
@@ -217,6 +218,25 @@ double Game::staticEval() const {
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
     return std::make_unique<Game>(*this);
+}
+
+double Game::negamaxEval() const {
+    constexpr int    kRadius     = 4;
+    constexpr double areaPremium = 0.05;
+
+    int blackStones = 0, whiteStones = 0;
+    for (Color c : board_) {
+        if      (c == Color::Black) ++blackStones;
+        else if (c == Color::White) ++whiteStones;
+    }
+
+    double blackDvr = DVR(*this, Color::Black, kRadius).size();
+    double whiteDvr = DVR(*this, Color::White, kRadius).size();
+
+    double blackScore = (1.0 + areaPremium) * blackDvr - areaPremium * blackStones;
+    double whiteScore = (1.0 + areaPremium) * whiteDvr - areaPremium * whiteStones + komi_;
+
+    return (current_ == Player::Black) ? blackScore - whiteScore : whiteScore - blackScore;
 }
 
 // ── Scoring ───────────────────────────────────────────────────────────────────

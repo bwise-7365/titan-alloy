@@ -38,6 +38,8 @@ void BoardWidget::setGame(const IrrGo::Game* game) {
     tentativeNode_= -1;
     suggestedNode_= -1;
     lastMoveNode_ = -1;
+    showBlackDvr_ = false;
+    showWhiteDvr_ = false;
     confirmTimer_->stop();
     updateTransform();
     update();
@@ -61,6 +63,16 @@ void BoardWidget::setBoardInfo(const QString& info) {
 
 void BoardWidget::setLastMove(int nodeId) {
     lastMoveNode_ = nodeId;
+    update();
+}
+
+void BoardWidget::setShowBlackDvr(bool show) {
+    showBlackDvr_ = show;
+    update();
+}
+
+void BoardWidget::setShowWhiteDvr(bool show) {
+    showWhiteDvr_ = show;
     update();
 }
 
@@ -220,6 +232,25 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                 const auto& nd = nodes[rg->nodeId(rows / 2, cols / 2)];
                 p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
             }
+        }
+    }
+
+    // DVR overlay — drawn before stones so occupied intersections stay clean
+    if (showBlackDvr_ || showWhiteDvr_) {
+        int radius = game_->graph().nodeCount(); // large enough for full Voronoi
+        float dotR = stoneR_ * 0.35f;
+        p.setPen(Qt::NoPen);
+        if (showBlackDvr_) {
+            DVR blackDvr(*game_, Color::Black, radius);
+            p.setBrush(Qt::black);
+            for (int id : blackDvr.nodes())
+                p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
+        }
+        if (showWhiteDvr_) {
+            DVR whiteDvr(*game_, Color::White, radius);
+            p.setBrush(Qt::white);
+            for (int id : whiteDvr.nodes())
+                p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
         }
     }
 

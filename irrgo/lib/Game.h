@@ -50,6 +50,7 @@ public:
     bool applyMove(AbsGame::MoveId mv) override;
     bool isTerminal() const override { return passCount_ >= 2; }
     double staticEval() const override;
+    double negamaxEval() const override;
     std::unique_ptr<AbsGame::Game> clone() const override;
 
 private:
