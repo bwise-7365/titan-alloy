@@ -70,6 +70,13 @@ private:
     int  libertyCount(const std::vector<int>& group) const;
     void removeGroup(const std::vector<int>& group);
     bool isLegalPlacement(int nodeId) const;   // renamed from isLegalMove
+
+    // Scratch buffers for isLegalPlacement — reused across calls to avoid heap churn.
+    // mutable because isLegalPlacement is const; contents are not part of logical state.
+    mutable std::vector<Color> lp_board_;
+    mutable std::vector<bool>  lp_vis_outer_;
+    mutable std::vector<bool>  lp_vis_inner_;
+    mutable std::vector<int>   lp_grp_;
 };
 
 } // namespace IrrGo

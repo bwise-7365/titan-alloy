@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include <QApplication>
 #include "MainWindow.h"
 
@@ -9,3 +10,4 @@ int main(int argc, char *argv[]) {
 
     return QApplication::exec();
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

@@ -570,7 +570,7 @@ void MainWindow::onWhitePass() {
 // ── NegaMax suggestion ────────────────────────────────────────────────────────
 
 void MainWindow::onSuggestGo() {
-    if (!game_ || game_->isGameOver() || isSearching_) return;
+    if (!game_ || game_->isGameOver() || isSearching_ || stoneTimer_->isActive()) return;
 
     isSearching_ = true;
     startSearchIndicator();
@@ -583,7 +583,7 @@ void MainWindow::onSuggestGo() {
 
     std::thread([this, gen, depth, isBlack, turn,
                  searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth);
+        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth, 10000);
         QMetaObject::invokeMethod(this, [this, mv, gen, isBlack, turn]() {
             if (gen != searchGen_) return;
             isSearching_ = false;
@@ -651,7 +651,7 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 }
 
 void MainWindow::onPlayNegamaxGo() {
-    if (!game_ || game_->isGameOver() || isSearching_) return;
+    if (!game_ || game_->isGameOver() || isSearching_ || stoneTimer_->isActive()) return;
 
     isSearching_ = true;
     startSearchIndicator();
@@ -661,7 +661,7 @@ void MainWindow::onPlayNegamaxGo() {
     unsigned gen        = searchGen_;
 
     std::thread([this, gen, depth, searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth);
+        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth, 10000);
         QMetaObject::invokeMethod(this, [this, mv, gen]() {
             if (gen != searchGen_) return;
             isSearching_ = false;

@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 cmake_minimum_required(VERSION 3.20)
 project(fpwdman_qt)
 
@@ -13,6 +14,11 @@ qt_add_executable(fpwdman_qt
     src/main.cpp
     src/MainWindow.h
     src/MainWindow.cpp
+    src/SiteEntry.h
+    src/ViewSiteEntry.h
+    src/ViewSiteEntry.cpp
+    src/EditSiteEntry.h
+    src/EditSiteEntry.cpp
 )
 
 target_link_libraries(fpwdman_qt PRIVATE Qt6::Widgets)
@@ -30,3 +36,4 @@ if(WIN32)
         message(WARNING "windeployqt not found. DLLs will not be deployed automatically.")
     endif()
 endif()
+# Copyright Ben Paul Wise. All Rights Reserved.

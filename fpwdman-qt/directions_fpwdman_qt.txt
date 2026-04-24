@@ -1,6 +1,8 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 These are NOT for use by Junie or Claude or any other software.
 
 Be sure to copy the hard-coded paths to Qt into CMakeLists.txt
 Be sure to invoke auto_moc, copy Qt DLL's to executable directory, and copy the platforms/ subdirectory with DLL's.
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// Copyright Ben Paul Wise. All Rights Reserved.

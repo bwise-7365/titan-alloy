@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 Billing and Subscription Information                                                                                                                 
    Whether you are billed for each interaction depends on your chosen authentication method. Junie offers three ways to manage usage and costs:         
                                                                                                                                                         
@@ -57,4 +58,4 @@ Billing and Subscription Information
                                                                                                                                                         
    In summary: You are safe from extra costs. As long as you remain logged in with your JetBrains Account, you can interact with Junie freely within    
    the bounds of your subscription.                                                                                                                     
-                                       
+// Copyright Ben Paul Wise. All Rights Reserved.

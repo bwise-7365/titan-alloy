@@ -11,7 +11,10 @@ namespace IrrGo {
 Game::Game(const Graph& graph, double komi, int handicap)
     : graph_(graph),
       board_(graph.nodeCount(), Color::Empty),
-      komi_(handicap > 1 ? 0.5 : komi)
+      komi_(handicap > 1 ? 0.5 : komi),
+      lp_board_(graph.nodeCount()),
+      lp_vis_outer_(graph.nodeCount(), false),
+      lp_vis_inner_(graph.nodeCount(), false)
 {
     initZobrist();
     history_.insert(hash_);
@@ -72,52 +75,55 @@ bool Game::isLegalPlacement(int nodeId) const {
 
     Color myColor = (current_ == Player::Black) ? Color::Black : Color::White;
     Color opColor = (current_ == Player::Black) ? Color::White : Color::Black;
-    int N = graph_.nodeCount();
 
-    std::vector<Color> tmp = board_;
-    tmp[nodeId] = myColor;
+    // Reuse pre-allocated scratch buffers — no heap allocation.
+    lp_board_ = board_;
+    lp_board_[nodeId] = myColor;
     uint64_t tmpHash = hash_;
     tmpHash ^= (myColor == Color::Black) ? zobBlack_[nodeId] : zobWhite_[nodeId];
 
-    auto bfsGroup = [&](int start, Color col) {
-        std::vector<int> grp;
-        std::vector<bool> vis(N, false);
+    // Fills lp_grp_ with the BFS group starting at `start`; resets lp_vis_inner_.
+    auto bfsGroup = [&](int start, Color col) -> const std::vector<int>& {
+        lp_grp_.clear();
+        std::fill(lp_vis_inner_.begin(), lp_vis_inner_.end(), false);
         std::queue<int> q;
-        q.push(start); vis[start] = true;
+        q.push(start); lp_vis_inner_[start] = true;
         while (!q.empty()) {
             int cur = q.front(); q.pop();
-            grp.push_back(cur);
+            lp_grp_.push_back(cur);
             for (int nb : graph_.node(cur).neighbors)
-                if (!vis[nb] && tmp[nb] == col) { vis[nb] = true; q.push(nb); }
+                if (!lp_vis_inner_[nb] && lp_board_[nb] == col) {
+                    lp_vis_inner_[nb] = true; q.push(nb);
+                }
         }
-        return grp;
+        return lp_grp_;
     };
     auto hasLiberty = [&](const std::vector<int>& grp) {
         for (int id : grp)
             for (int nb : graph_.node(id).neighbors)
-                if (tmp[nb] == Color::Empty) return true;
+                if (lp_board_[nb] == Color::Empty) return true;
         return false;
     };
 
-    std::vector<bool> visited(N, false);
+    std::fill(lp_vis_outer_.begin(), lp_vis_outer_.end(), false);
     for (int nb : graph_.node(nodeId).neighbors) {
-        if (tmp[nb] == opColor && !visited[nb]) {
-            auto grp = bfsGroup(nb, opColor);
-            for (int gi : grp) visited[gi] = true;
+        if (lp_board_[nb] == opColor && !lp_vis_outer_[nb]) {
+            const auto& grp = bfsGroup(nb, opColor);
+            for (int gi : grp) lp_vis_outer_[gi] = true;
             if (!hasLiberty(grp))
                 for (int gi : grp) {
                     tmpHash ^= (opColor == Color::Black) ? zobBlack_[gi] : zobWhite_[gi];
-                    tmp[gi] = Color::Empty;
+                    lp_board_[gi] = Color::Empty;
                 }
         }
     }
 
     {
-        auto grp = bfsGroup(nodeId, myColor);
+        const auto& grp = bfsGroup(nodeId, myColor);
         if (!hasLiberty(grp))
             for (int gi : grp) {
                 tmpHash ^= (myColor == Color::Black) ? zobBlack_[gi] : zobWhite_[gi];
-                tmp[gi] = Color::Empty;
+                lp_board_[gi] = Color::Empty;
             }
     }
 
@@ -199,10 +205,14 @@ bool Game::applyMove(AbsGame::MoveId mv) {
 }
 
 double Game::staticEval() const {
-    auto result = score();
-    double myScore = (current_ == Player::Black) ? result.blackScore : result.whiteScore;
-    double opScore = (current_ == Player::Black) ? result.whiteScore : result.blackScore;
-    return myScore - opScore;
+    // Lightweight stone-count heuristic — O(N), no allocation.
+    // The full Voronoi score() is reserved for end-of-game display.
+    double black = 0.0, white = komi_;
+    for (Color c : board_) {
+        if      (c == Color::Black) ++black;
+        else if (c == Color::White) ++white;
+    }
+    return (current_ == Player::Black) ? black - white : white - black;
 }
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
