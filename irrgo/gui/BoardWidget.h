@@ -2,6 +2,7 @@
 #pragma once
 #include "Game.h"
 #include <QColor>
+#include <QString>
 #include <QWidget>
 
 class QTimer;
@@ -17,6 +18,7 @@ public:
     // Highlight a suggested move with a coloured border; -1 clears it.
     void setSuggestion(int nodeId, bool isBlack);
     void clearSuggestion();
+    void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
 
 signals:
     void moveRequested(int nodeId);
@@ -40,6 +42,7 @@ private:
     const IrrGo::Game* game_      = nullptr;
     QColor      bgColor_   { "#DBAD6B" };
     QColor      lineColor_ { "#373C65" };
+    QString     boardInfoRight_;            // right corner label, set via setBoardInfo()
 
     int     hoverNode_       = -1;
     int     tentativeNode_   = -1;

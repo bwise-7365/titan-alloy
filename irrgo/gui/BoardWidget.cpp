@@ -53,6 +53,11 @@ void BoardWidget::clearSuggestion() {
     update();
 }
 
+void BoardWidget::setBoardInfo(const QString& info) {
+    boardInfoRight_ = info;
+    update();
+}
+
 void BoardWidget::setBgColor(QColor c) {
     bgColor_ = c;
     update();
@@ -250,6 +255,28 @@ void BoardWidget::paintEvent(QPaintEvent*) {
             p.setBrush(kRed);
             p.drawEllipse(pt, stoneR_ * 0.5f, stoneR_ * 0.5f);
         }
+    }
+
+    // Corner labels — below the grid, inside the board frame
+    {
+        float bandTop = offY_ + rangeY_ * scale_;   // bottom of lowest grid row
+        float bandH   = static_cast<float>(fr.bottom()) - bandTop;
+        int   px      = qBound(8, qRound(stoneR_ * 0.8f), 16);
+        QFont f       = p.font();
+        f.setPixelSize(px);
+        f.setBold(true);
+        p.setFont(f);
+        p.setPen(lineColor_);
+
+        float margin = stoneR_ * 0.35f;
+        QRectF leftR (fr.left() + margin,                      bandTop,
+                      fr.width() * 0.5f - margin,              bandH);
+        QRectF rightR(fr.left() + fr.width() * 0.5f,           bandTop,
+                      fr.width() * 0.5f - margin,              bandH);
+
+        p.drawText(leftR,  Qt::AlignLeft  | Qt::AlignVCenter, "IrrGo");
+        if (!boardInfoRight_.isEmpty())
+            p.drawText(rightR, Qt::AlignRight | Qt::AlignVCenter, boardInfoRight_);
     }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

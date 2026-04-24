@@ -1,0 +1,60 @@
+Billing and Subscription Information                                                                                                                 
+   Whether you are billed for each interaction depends on your chosen authentication method. Junie offers three ways to manage usage and costs:         
+                                                                                                                                                        
+   1. JetBrains AI Subscription                                                                                                                         
+   If you are logged in with your JetBrains Account, Junie is included as part of your JetBrains AI subscription.                                       
+                                                                                                                                                        
+   • Billing: You are not billed per interaction. Your usage is covered by your monthly or annual subscription fee.                                     
+   • Limits: Usage is subject to the quotas of your plan. If you reach these limits, the service may be restricted until the next cycle, but you will   
+   not incur unexpected charges.                                                                                                                        
+                                                                                                                                                        
+   2. Junie API Key Usage-Based                                                                                                                         
+   If you use a JUNIE_API_KEY configured via junie.jetbrains.com/cli (https://junie.jetbrains.com/cli):                                                 
+                                                                                                                                                        
+   • Billing: This is a pay-as-you-go model. You are billed based on the number of tokens input and output used in each interaction.                    
+   • Control: You can monitor your balance and set spending limits on the Junie website.                                                                
+                                                                                                                                                        
+   3. Bring Your Own Key BYOK                                                                                                                           
+   If you provide your own API keys for providers like Anthropic, OpenAI, or Google:                                                                    
+                                                                                                                                                        
+   • Billing: JetBrains does not bill you. You are billed directly by the LLM provider according to their specific pricing.                             
+                                                                                                                                                        
+   How to Stay Within Your Budget                                                                                                                       
+   To manage your costs and ensure you stay within your subscription or balance, you can use the following commands within the Junie interface:         
+                                                                                                                                                        
+   • Check Current Usage: Run /usage to see the token count and cost breakdown for your current session.                                                
+   • Verify Account Status: Run /account to see which authentication method is currently active.                                                        
+   • Model Selection: Use /model to ensure you are using the Default model optimized for cost/quality or a model covered by your specific subscription. 
+                                                                                                                                                        
+   For most users with a JetBrains AI subscription, staying logged in via your JetBrains Account is the best way to ensure no new charges are incurred  
+   beyond your regular subscription fee.     
+                                                                                                                                                    
+ > Let me rephrase that. I just logged in with my JetBrains Account - that's how I was able to start this. Can I use you, Junie, without incurring      
+   extras costs? I do not want to get a bill above my current JetBrains / Junie subscription.                                                           
+                                                                                                                                                        
+ ● Reviewed the documentation                                                                                                                           
+                                                                                                                                                        
+                                                                                                                                                        
+ ✓ TASK RESULT:                                                                                                                                         
+   ────────────                                                                                                                                         
+                                                                                                                                                        
+   Your Billing and Subscription Confirmation                                                                                                           
+   Yes, you can use Junie without incurring any extra costs. Since you are logged in with your JetBrains Account, Junie is included as part of your     
+   JetBrains AI subscription.                                                                                                                           
+                                                                                                                                                        
+   Key Points to Remember:                                                                                                                              
+   • No Extra Charges: You will not be billed per interaction. Your usage is covered by your existing subscription fee.                                 
+   • No Surprise Bills: Unlike the "Pay-as-you-go" model which requires a specific JUNIE_API_KEY, the JetBrains Account login ensures you stay within   
+   your pre-paid plan.                                                                                                                                  
+   • Usage Quotas: Your usage is subject to the quotas defined in your JetBrains AI plan. If you reach these limits, the service might slow down or     
+   become temporarily unavailable until the next cycle, but you will never receive a bill for exceeding these limits.                                   
+                                                                                                                                                        
+   How to Verify Your Status:                                                                                                                           
+   If you want to be absolutely sure at any time, you can use these commands:                                                                           
+                                                                                                                                                        
+   • /account: This will confirm you are logged in via your "JetBrains Account" and not a usage-based API key.                                          
+   • /usage: This shows your current session's token count and confirms that it is being applied to your subscription.                                  
+                                                                                                                                                        
+   In summary: You are safe from extra costs. As long as you remain logged in with your JetBrains Account, you can interact with Junie freely within    
+   the bounds of your subscription.                                                                                                                     
+                                       

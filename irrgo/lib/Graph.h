@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 #include "Node.h"
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -13,11 +14,13 @@ public:
     int nodeCount() const { return static_cast<int>(nodes_.size()); }
     const Node& node(int id) const { return nodes_[id]; }
     const std::vector<Node>& nodes() const { return nodes_; }
+    uint64_t seed() const { return seed_; }
 
     virtual std::string asciiRepresentation() const = 0;
 
 protected:
     std::vector<Node> nodes_;
+    uint64_t          seed_ = 0;
     void addEdge(int a, int b);
 };
 

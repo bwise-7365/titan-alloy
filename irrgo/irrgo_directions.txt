@@ -73,10 +73,38 @@ Now, I need you to modify the board-generation code. When adding edges, an edge 
 Add a helper function to  check to see if the new edge would cross some other node and reject it 
 if so. Again, show me where you modified the code. 
 ---
+I want you to create a new class, Searcher, in the 'src' directory. It looks for good moves in the AbsGame.
+Searcher should not reference IrrGo in any way; it should use only the AbsGame interface.
+Move the negamax code from AbsGame to Searcher::negamax, 
+Put the negamax code into a separate CPP file, negamax.cpp.
+And wire that back into the GUI so that Suggestions now uses the Searcher.negamax function.
+If you need clarification, ask; otherwise proceed.
+---
+/plan
+In an earlier conversation, I asked you to examine some of my old code in the irrgo\design_resources directory.
+The current AbsGame.negamax code was adapted from the game.* files there.
+Now I want you to make a plan to adapt the mcts.h and mcts.cpp files to use the AbsGame interface.
+Add a new method, Searcher::mcts, as a kind of search, with the same API as negamax.
+Do not modify any code; I just want a plan for now.
+---
+That plan looks good. Proceed.
+---
+BPW: It offered to add MCTS to the Play and Suggest menus.
 
-16, 32, 48, 256
-32 is most common
+The computational limit on MCTS is seconds. I see you added an MCTS option to the Suggest menu. That is good. Similar to the negamax choices, offer choices of 10 sec, 30 sec and 60 sec, then another "Go!" button. 
+---
+Here is how the NegaMax -> Go! should be connected. Run negamax using the search depth, exactly as in Suggestion, except actually make the move. It should appear in the moveLog, and the stone should be marked,
+exactly as if a person had made that move from the GUI. That is, reuse existing code, do not make duplicate code.
+If necessary, pull it out into helper functions. We will need to use it again for MCTS. Any questions?         
+---
+NOT YET TRIED:
+I want to change the 'staticEval' function for IrrGo.
+To do that, first define a new class for "Discrete Voronoi Region" called DVR.
+The discrete Voronoi region for Black is all those nodes on the grid that are closer to a Black stone than to any White stone.
+The discrete Voronoi region for White is all those nodes on the grid that are closer to a White stone than to any Black stone.
+The nodes at equal distance are not in either DVR.
+The DVR class should take an irrgo board, a color, and an integer radius. 
+It should return the DVR on that board of that color, but only out to the radius.
+For the Black color, a radius of 1 means only those points directly connected to a Black stone but not directly connected to any White stone
 
-17x21 irregular 42
-R13C15
 -------------------------------

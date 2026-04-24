@@ -15,6 +15,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMenuBar>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QIntValidator>
 #include <QLineEdit>
@@ -26,6 +27,7 @@
 #include <QWidgetAction>
 #include <algorithm>
 #include <numeric>
+#include <thread>
 
 using namespace IrrGo;
 
@@ -74,12 +76,39 @@ MainWindow::MainWindow(QWidget* parent)
     stoneTimer_ = new QTimer(this);
     connect(stoneTimer_, &QTimer::timeout, this, &MainWindow::onSetupTick);
 
+    searchBarTimer_ = new QTimer(this);
+    connect(searchBarTimer_, &QTimer::timeout, this, [this]() {
+        if (searchBudgetMs_ > 0) {
+            int pct = qMin(100, static_cast<int>(searchElapsed_.elapsed()) * 100
+                                / searchBudgetMs_);
+            searchProgress_->setValue(pct);
+        } else {
+            searchProgress_->setValue((searchProgress_->value() + 3) % 101);
+        }
+    });
+
     auto* central  = new QWidget(this);
     setCentralWidget(central);
     auto* root = new QHBoxLayout(central);
 
-    boardWidget_ = new BoardWidget(this);
-    root->addWidget(boardWidget_, 1);
+    auto* boardArea = new QWidget(this);
+    auto* boardVBox = new QVBoxLayout(boardArea);
+    boardVBox->setContentsMargins(0, 0, 0, 0);
+    boardVBox->setSpacing(4);
+    boardWidget_ = new BoardWidget(boardArea);
+    boardVBox->addWidget(boardWidget_, 1);
+    searchProgress_ = new QProgressBar(boardArea);
+    searchProgress_->setRange(0, 100);
+    searchProgress_->setFixedHeight(14);
+    searchProgress_->setTextVisible(false);
+    {
+        auto sp = searchProgress_->sizePolicy();
+        sp.setRetainSizeWhenHidden(true);
+        searchProgress_->setSizePolicy(sp);
+    }
+    searchProgress_->hide();
+    boardVBox->addWidget(searchProgress_);
+    root->addWidget(boardArea, 1);
     connect(boardWidget_, &BoardWidget::moveRequested,
             this, &MainWindow::onMoveRequested);
     connect(boardWidget_, &BoardWidget::clearSuggestionRequested,
@@ -136,9 +165,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 // ── Shared NegaMax submenu builder ────────────────────────────────────────────
 
-void MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
-                                   QSpinBox*& depthOut, QSpinBox*& turnsOut,
-                                   bool connectGo, bool withTurns)
+QPushButton* MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
+                                          QSpinBox*& depthOut, QSpinBox*& turnsOut,
+                                          bool withTurns)
 {
     auto* action = new QAction("NegaMax", this);
     action->setCheckable(true);
@@ -173,20 +202,17 @@ void MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
 
     auto* goBtn = new QPushButton("Go!", widget);
     vbox->addWidget(goBtn);
-    if (connectGo) {
-        connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
-        connect(goBtn, &QPushButton::clicked, this,   &MainWindow::onSuggestGo);
-    }
+    connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
 
     auto* wa = new QWidgetAction(nmMenu);
     wa->setDefaultWidget(widget);
     nmMenu->addAction(wa);
     action->setMenu(nmMenu);
 
-    // Opening the submenu selects the NegaMax mode
     connect(nmMenu, &QMenu::aboutToShow, this, [action]() {
         action->setChecked(true);
     });
+    return goBtn;
 }
 
 // ── Menu bar ──────────────────────────────────────────────────────────────────
@@ -273,8 +299,10 @@ void MainWindow::buildMenuBar() {
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
 
-    buildNegaMaxMenu(playMenu, playGroup, playDepthSpin_, playTurnsSpin_,
-                     /* connectGo= */ false);
+    {
+        auto* goBtn = buildNegaMaxMenu(playMenu, playGroup, playDepthSpin_, playTurnsSpin_);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
+    }
 
     auto* playMcts = playMenu->addAction("MCTS");
     playMcts->setCheckable(true);
@@ -286,14 +314,54 @@ void MainWindow::buildMenuBar() {
     auto* suggestGroup = new QActionGroup(this);
     suggestGroup->setExclusive(true);
 
-    buildNegaMaxMenu(suggestMenu, suggestGroup,
-                     suggestDepthSpin_, suggestTurnsSpin_,
-                     /* connectGo= */ true, /* withTurns= */ false);
+    {
+        auto* goBtn = buildNegaMaxMenu(suggestMenu, suggestGroup,
+                                       suggestDepthSpin_, suggestTurnsSpin_,
+                                       /* withTurns= */ false);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestGo);
+    }
 
-    auto* suggestMcts = suggestMenu->addAction("MCTS");
-    suggestMcts->setCheckable(true);
-    suggestMcts->setEnabled(false);
-    suggestGroup->addAction(suggestMcts);
+    // MCTS suggest submenu
+    {
+        static const struct { int secs; const char* label; } kMctsOptions[] = {
+            { 10, "10 sec" }, { 30, "30 sec" }, { 60, "60 sec" },
+        };
+        auto* mctsAction = new QAction("MCTS", this);
+        mctsAction->setCheckable(true);
+        suggestGroup->addAction(mctsAction);
+        suggestMenu->addAction(mctsAction);
+
+        auto* mctsMenu   = new QMenu(this);
+        auto* widget     = new QWidget;
+        auto* vbox       = new QVBoxLayout(widget);
+        vbox->setContentsMargins(8, 6, 8, 6);
+        auto* form       = new QFormLayout;
+        form->setSpacing(6);
+        vbox->addLayout(form);
+
+        suggestMctsSecCombo_ = new QComboBox(widget);
+        for (const auto& o : kMctsOptions)
+            suggestMctsSecCombo_->addItem(o.label, o.secs);
+        form->addRow("Time:", suggestMctsSecCombo_);
+
+        auto* sep = new QFrame(widget);
+        sep->setFrameShape(QFrame::HLine);
+        vbox->addWidget(sep);
+
+        auto* goBtn = new QPushButton("Go!", widget);
+        vbox->addWidget(goBtn);
+        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
+
+        auto* wa = new QWidgetAction(mctsMenu);
+        wa->setDefaultWidget(widget);
+        mctsMenu->addAction(wa);
+        mctsAction->setMenu(mctsMenu);
+
+        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() {
+            mctsAction->setChecked(true);
+        });
+    }
 
     // Keep Play and Suggest depth spinboxes in sync
     connect(playDepthSpin_,    &QSpinBox::valueChanged,
@@ -345,6 +413,7 @@ void MainWindow::buildMenuBar() {
 // ── Board generation ──────────────────────────────────────────────────────────
 
 void MainWindow::generateBoard() {
+    cancelSearch();
     stopStoneSetup();
     clearSuggestion();
 
@@ -362,9 +431,10 @@ void MainWindow::generateBoard() {
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
 
     game_ = std::make_unique<Game>(*graph_);
-    game_->setMaxSearchDepth(suggestDepthSpin_->value());
     boardWidget_->setGame(game_.get());
     boardWidget_->setBgColor(kBgColors[bgCombo_->currentIndex()].color);
+    boardWidget_->setBoardInfo(QString("%1 x %2: %3")
+        .arg(sz.rows).arg(sz.cols).arg(static_cast<int>(seed)));
 
     stonesGroup_->actions().first()->setChecked(true);
     moveLog_->clear();
@@ -379,12 +449,12 @@ void MainWindow::onBgColorChanged(int index) {
 
 void MainWindow::onStonesSelected(QAction* action) {
     if (!game_) return;
+    cancelSearch();
     stopStoneSetup();
     clearSuggestion();
 
     game_.reset();
     game_ = std::make_unique<Game>(*graph_);
-    game_->setMaxSearchDepth(suggestDepthSpin_->value());
     boardWidget_->setGame(game_.get());
     moveLog_->clear();
     updateControls();
@@ -435,10 +505,40 @@ void MainWindow::stopStoneSetup() {
     if (game_) game_->setSetupMode(false);
 }
 
+// ── Search progress indicator ──────────────────────────────────────────────────
+
+void MainWindow::startSearchIndicator(int budgetSeconds) {
+    searchBudgetMs_ = budgetSeconds * 1000;
+    searchProgress_->setValue(0);
+    searchProgress_->show();
+    if (searchBudgetMs_ > 0) {
+        searchElapsed_.start();
+        searchBarTimer_->setInterval(250);
+    } else {
+        searchBarTimer_->setInterval(30);
+    }
+    searchBarTimer_->start();
+    updateControls();
+}
+
+void MainWindow::stopSearchIndicator() {
+    searchBarTimer_->stop();
+    searchProgress_->hide();
+}
+
+void MainWindow::cancelSearch() {
+    ++searchGen_;
+    if (isSearching_) {
+        isSearching_ = false;
+        stopSearchIndicator();
+        updateControls();
+    }
+}
+
 // ── Move handling ─────────────────────────────────────────────────────────────
 
 void MainWindow::onMoveRequested(int nodeId) {
-    if (!game_ || stoneTimer_->isActive()) return;
+    if (!game_ || stoneTimer_->isActive() || isSearching_) return;
     if (game_->placeStone(nodeId)) {
         clearSuggestion();
         boardWidget_->update();
@@ -448,54 +548,127 @@ void MainWindow::onMoveRequested(int nodeId) {
 }
 
 void MainWindow::onBlackPass() {
-    if (!game_ || game_->toMove() != Player::Black) return;
-    int turn = static_cast<int>(game_->moveHistory().size()) + 1;
+    if (!game_ || game_->toMove() != Player::Black || isSearching_) return;
     if (game_->pass()) {
         clearSuggestion();
-        moveLog_->append(QString("%1: B PASS").arg(turn));
         boardWidget_->update();
         updateControls();
+        logLastMove();
     }
 }
 
 void MainWindow::onWhitePass() {
-    if (!game_ || game_->toMove() != Player::White) return;
-    int turn = static_cast<int>(game_->moveHistory().size()) + 1;
+    if (!game_ || game_->toMove() != Player::White || isSearching_) return;
     if (game_->pass()) {
         clearSuggestion();
-        moveLog_->append(QString("%1: W PASS").arg(turn));
         boardWidget_->update();
         updateControls();
+        logLastMove();
     }
 }
 
 // ── NegaMax suggestion ────────────────────────────────────────────────────────
 
 void MainWindow::onSuggestGo() {
+    if (!game_ || game_->isGameOver() || isSearching_) return;
+
+    isSearching_ = true;
+    startSearchIndicator();
+
+    int      depth      = suggestDepthSpin_->value();
+    bool     isBlack    = (game_->toMove() == Player::Black);
+    int      turn       = static_cast<int>(game_->moveHistory().size()) + 1;
+    unsigned gen        = searchGen_;
+    auto     searchGame = game_->clone();
+
+    std::thread([this, gen, depth, isBlack, turn,
+                 searchGame = std::move(searchGame)]() {
+        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth);
+        QMetaObject::invokeMethod(this, [this, mv, gen, isBlack, turn]() {
+            if (gen != searchGen_) return;
+            isSearching_ = false;
+            stopSearchIndicator();
+            QString text;
+            if (mv == AbsGame::kPass) {
+                text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");
+                boardWidget_->clearSuggestion();
+            } else {
+                const auto& nd = game_->graph().node(mv);
+                text = QString("%1: %2 R%3C%4")
+                           .arg(turn).arg(isBlack ? "B" : "W")
+                           .arg(nd.row).arg(nd.col);
+                boardWidget_->setSuggestion(mv, isBlack);
+            }
+            suggestedLog_->setText(text);
+        }, Qt::QueuedConnection);
+    }).detach();
+}
+
+void MainWindow::onSuggestMctsGo() {
+    if (!game_ || game_->isGameOver() || isSearching_) return;
+
+    isSearching_ = true;
+    int      seconds    = suggestMctsSecCombo_->currentData().toInt();
+    startSearchIndicator(seconds);
+    bool     isBlack    = (game_->toMove() == Player::Black);
+    int      turn       = static_cast<int>(game_->moveHistory().size()) + 1;
+    unsigned gen        = searchGen_;
+    auto     searchGame = game_->clone();
+
+    std::thread([this, gen, seconds, isBlack, turn,
+                 searchGame = std::move(searchGame)]() {
+        AbsGame::MoveId mv = AbsGame::Searcher::mcts(*searchGame, seconds);
+        QMetaObject::invokeMethod(this, [this, mv, gen, isBlack, turn]() {
+            if (gen != searchGen_) return;
+            isSearching_ = false;
+            stopSearchIndicator();
+            QString text;
+            if (mv == AbsGame::kPass) {
+                text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");
+                boardWidget_->clearSuggestion();
+            } else {
+                const auto& nd = game_->graph().node(mv);
+                text = QString("%1: %2 %3")
+                           .arg(turn).arg(isBlack ? "B" : "W")
+                           .arg(QString::fromStdString(nd.label));
+                boardWidget_->setSuggestion(mv, isBlack);
+            }
+            suggestedLog_->setText(text);
+        }, Qt::QueuedConnection);
+    }).detach();
+}
+
+void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
     if (!game_ || game_->isGameOver()) return;
+    clearSuggestion();
+    if (mv == AbsGame::kPass)
+        game_->pass();
+    else
+        game_->placeStone(mv);
+    boardWidget_->update();
+    updateControls();
+    logLastMove();
+}
 
-    int depth = suggestDepthSpin_->value();
-    auto searchGame = game_->clone();
-    searchGame->setMaxSearchDepth(depth);
+void MainWindow::onPlayNegamaxGo() {
+    if (!game_ || game_->isGameOver() || isSearching_) return;
 
-    AbsGame::MoveId mv = searchGame->bestMove();
+    isSearching_ = true;
+    startSearchIndicator();
 
-    bool isBlack = (game_->toMove() == Player::Black);
-    int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
+    auto     searchGame = game_->clone();
+    int      depth      = playDepthSpin_->value();
+    unsigned gen        = searchGen_;
 
-    QString text;
-    if (mv == AbsGame::kPass) {
-        text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");
-        boardWidget_->clearSuggestion();
-    } else {
-        const auto& nd = game_->graph().node(mv);
-        text = QString("%1: %2 R%3C%4")
-                   .arg(turn)
-                   .arg(isBlack ? "B" : "W")
-                   .arg(nd.row).arg(nd.col);
-        boardWidget_->setSuggestion(mv, isBlack);
-    }
-    suggestedLog_->setText(text);
+    std::thread([this, gen, depth, searchGame = std::move(searchGame)]() {
+        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth);
+        QMetaObject::invokeMethod(this, [this, mv, gen]() {
+            if (gen != searchGen_) return;
+            isSearching_ = false;
+            stopSearchIndicator();
+            applyComputedMove(mv);
+        }, Qt::QueuedConnection);
+    }).detach();
 }
 
 void MainWindow::clearSuggestion() {
@@ -518,21 +691,28 @@ void MainWindow::updateControls() {
         whitePassBtn_->setEnabled(false);
         return;
     }
-    bool bt      = (game_->toMove() == Player::Black);
+    bool bt        = (game_->toMove() == Player::Black);
     bool animating = stoneTimer_->isActive();
-    currentPlayerLabel_->setText(bt ? "Black to move" : "White to move");
-    blackPassBtn_->setEnabled( bt && !animating);
-    whitePassBtn_->setEnabled(!bt && !animating);
+    if (isSearching_)
+        currentPlayerLabel_->setText("Thinking...");
+    else
+        currentPlayerLabel_->setText(bt ? "Black to move" : "White to move");
+    blackPassBtn_->setEnabled( bt && !animating && !isSearching_);
+    whitePassBtn_->setEnabled(!bt && !animating && !isSearching_);
 }
 
 void MainWindow::logLastMove() {
     if (!game_ || game_->moveHistory().empty()) return;
     const Move& m = game_->moveHistory().back();
-    QString text = (m.color == Color::Empty)
-        ? QString("%1: PASS").arg(m.turn)
+    // After a pass, toMove() has already flipped, so the passer is the other player.
+    QString clr = (m.nodeId < 0)
+        ? (game_->toMove() == Player::White ? "B" : "W")
+        : (m.color == Color::Black ? "B" : "W");
+    QString text = (m.nodeId < 0)
+        ? QString("%1: %2 PASS").arg(m.turn, 3).arg(clr)
         : QString("%1: %2 %3")
               .arg(m.turn, 3)
-              .arg(m.color == Color::Black ? "B" : "W")
+              .arg(clr)
               .arg(QString::fromStdString(game_->graph().node(m.nodeId).label));
     moveLog_->append(text);
 }

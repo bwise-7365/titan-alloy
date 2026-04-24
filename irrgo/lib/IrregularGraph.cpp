@@ -94,6 +94,7 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
     : m_(m), n_(n), maxDegree_(maxDegree),
       baseRows_(expandGrid(m)), baseCols_(expandGrid(n))
 {
+    seed_ = seed;
     std::mt19937_64 rng(seed);
 
     int totalBase = baseRows_ * baseCols_;

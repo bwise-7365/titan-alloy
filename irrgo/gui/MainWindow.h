@@ -3,6 +3,8 @@
 #include "BoardWidget.h"
 #include "Game.h"
 #include "Graph.h"
+#include "Searcher.h"
+#include <QElapsedTimer>
 #include <QMainWindow>
 #include <memory>
 #include <random>
@@ -17,6 +19,7 @@ class QPushButton;
 class QLineEdit;
 class QSpinBox;
 class QTextEdit;
+class QProgressBar;
 class QTimer;
 
 class MainWindow : public QMainWindow {
@@ -33,6 +36,8 @@ private slots:
     void onBlackPass();
     void onWhitePass();
     void onSuggestGo();
+    void onSuggestMctsGo();
+    void onPlayNegamaxGo();
 
 private:
     void buildMenuBar();
@@ -41,12 +46,22 @@ private:
     void stopStoneSetup();
     void clearSuggestion();
 
+    // Search progress bar helpers — reused by NegaMax and MCTS.
+    // budgetSeconds == 0  →  indeterminate sweep animation (NegaMax)
+    // budgetSeconds  > 0  →  elapsed-time fraction updated every 250 ms (MCTS)
+    void startSearchIndicator(int budgetSeconds = 0);
+    void stopSearchIndicator();
+    void cancelSearch();     // invalidates any in-flight search and hides bar
+
     // Builds a NegaMax submenu action and attaches it to parent / group.
     // depthOut / turnsOut are set to the created spinboxes.
     // connectGo: if true the Go! button is wired to onSuggestGo().
-    void buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
-                          QSpinBox*& depthOut, QSpinBox*& turnsOut,
-                          bool connectGo, bool withTurns = true);
+    // Returns the Go! button so the caller can connect it to any slot.
+    QPushButton* buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
+                                  QSpinBox*& depthOut, QSpinBox*& turnsOut,
+                                  bool withTurns = true);
+
+    void applyComputedMove(AbsGame::MoveId mv);
 
     // Central UI
     BoardWidget*  boardWidget_;
@@ -75,8 +90,9 @@ private:
     QSpinBox* playTurnsSpin_    = nullptr;
 
     // Suggest menu
-    QSpinBox* suggestDepthSpin_ = nullptr;
-    QSpinBox* suggestTurnsSpin_ = nullptr;
+    QSpinBox*  suggestDepthSpin_    = nullptr;
+    QSpinBox*  suggestTurnsSpin_    = nullptr;
+    QComboBox* suggestMctsSecCombo_ = nullptr;
 
     // Game state
     std::unique_ptr<IrrGo::Graph>  graph_;
@@ -89,5 +105,13 @@ private:
     int              setupPlaced_ = 0;
     int              setupTarget_ = 0;
     std::mt19937_64  setupRng_;
+
+    // Search state (shared by NegaMax and MCTS)
+    QProgressBar*  searchProgress_  = nullptr;
+    QTimer*        searchBarTimer_  = nullptr;
+    QElapsedTimer  searchElapsed_;          // wall-clock timer for MCTS progress
+    int            searchBudgetMs_  = 0;   // 0 = sweep mode; >0 = timed mode
+    bool           isSearching_     = false;
+    unsigned       searchGen_       = 0;   // incremented on board reset to discard stale results
 };
 // Copyright Ben Paul Wise. All Rights Reserved.
