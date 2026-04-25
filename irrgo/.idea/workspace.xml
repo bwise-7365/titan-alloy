@@ -24,31 +24,17 @@
       <config projectName="IrrGo" targetName="irrgo_driver" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug-Visual Studio" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio" GENERATION_OPTIONS="-G Ninja -DCMAKE_BUILD_TYPE=Debug &quot;-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2026.1/bin/ninja/win/x64/ninja.exe&quot; &quot;-DQt6_DIR=C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6&quot;" />
-      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" />
+      <configuration PROFILE_NAME="Release-v2" ENABLED="true" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja -DCMAKE_BUILD_TYPE=Release &quot;-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2026.1/bin/ninja/win/x64/ninja.exe&quot; -DQt6_DIR=C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6 -DCMAKE_CXX_FLAGS_RELEASE=&quot;/GL /O2 /DNDEBUG&quot;" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="050b0786-39ec-410d-a950-8db12c38b51d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/QtSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/QtSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI-Assistant-suggestions.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/doc/AI-Assistant-suggestions.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/driver/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/driver/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/gui/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/gui/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/lib/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/lib/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/MainWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irrgo_directions.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo_directions.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/partial-qt6-notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/partial-qt6-notes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Searcher.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Searcher.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mcts.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/mcts.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/negamax.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/negamax.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/star-points.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/star-points.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +167,7 @@
       <workItem from="1777033701984" duration="1219000" />
       <workItem from="1777035237312" duration="31110000" />
       <workItem from="1777079827581" duration="5522000" />
-      <workItem from="1777123088521" duration="8517000" />
+      <workItem from="1777123088521" duration="10089000" />
     </task>
     <servers />
   </component>

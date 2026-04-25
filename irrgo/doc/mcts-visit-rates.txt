@@ -1,23 +1,38 @@
-9x13, 45: 166, 157, 174  for B0708
+
+These times are for unoptimized debugging version of the code.
+--------
+9x13, 45sec: 166, 157, 174  for B0708
 average of 165.67 in 45 sec, or 3.68/sec
 
 Say 45 sec to termain evals (tval) 166
 9x13 has 117 nodes, so to visit each at least 10 times
 means 1170 tvals
 317.8 = (1170/3.68) or about 5.30 minutes
-
+--------
 9x13 opening, 2 minutes: 487, 291, 433
 average of 403.67 tvals, 3.36/sec
 347.8 = (1170/3.36) or about 5.80 minutes
 
 Now we try three more
-
+--------
 9x13 opening, 5 minutes: 1099, 1046, 1076
 averabe 1073.67, about 3.58 tvals/sec
 326.92 = (1170/3.58) or about 5.45 minutes
 
-These are unoptimized debugging version of the code.
+--------
+9x13 opening, 10 minutes: 
+2310
+---------------------------------------
+Optimized version, "release-v2"
 
+
+9x13 opening, 2 minutes: 13806
+or a factor of 34 speed-up
+13806 tval / 120 seconds = 112.8 tval/sec
+1170 / 112.8 = 10.4 seconds
+
+2 minutes / 30 = 2*60/30 = 4 seconds ?!
+
+9x13 opening, 30 seconds: 3470, 3415, 3268
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
--DCMAKE_CXX_FLAGS_RELEASE="/O2 /DNDEBUG"
