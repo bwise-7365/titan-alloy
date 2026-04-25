@@ -1,0 +1,14 @@
+*** = unfixed
++++ = partially fixed
+--- = totally fixed
+
+
+====
+*** 2026-04-24 NegaMax seems to just pick the lowest index
+
+
+====
+*** 2026-04-24 Seems to hang up after NegaMax play ends
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

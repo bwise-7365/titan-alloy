@@ -39,4 +39,9 @@ In other words, if N<11, star-coord is r/c 3, othewise 4.
 If the area is less than 100, no center, otherwise draw center.
 
 
+On rectangular grids, there are some star points drawn. This is done in BoardWidget.cpp around the comment "If large enough, draw center star point"
+If there is a center point, then add four more star points (dots on the grid) on the top, bottom, left and right.
+On the left and right sides, they have the same row as the two other star points but the col of the center.
+On the top and bottom side, they have the same col as the two other star points, but the row of the center.
+
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

@@ -1,0 +1,5 @@
+Unit Name,Start Node, priority, due date (hours), delivery window (hours),   Delivery Node
+117 INF Btln,HB1,5,113,12, Node 37A   
+27 INF Btln,HB1,23,96,12, Node 37B
+56 INF Btln ,HB2,10,120,12, Node 37C
+# comment marking end of file,,,,,

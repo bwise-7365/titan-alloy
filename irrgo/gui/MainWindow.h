@@ -71,8 +71,11 @@ private:
     QPushButton*  whitePassBtn_;
     QTextEdit*    suggestedLog_;
     QPushButton*  clearSuggestBtn_;
-    QCheckBox*    blackDvrCheck_   = nullptr;
-    QCheckBox*    whiteDvrCheck_   = nullptr;
+    QSpinBox*     dvrRadiusSpin_      = nullptr;
+    QCheckBox*    blackDvrCheck_      = nullptr;
+    QCheckBox*    whiteDvrCheck_      = nullptr;
+    QPushButton*  labelsBtn_           = nullptr;
+    QPushButton*  neighborhoodBtn_    = nullptr;
     QTextEdit*    moveLog_;
 
     // Board menu embedded controls

@@ -38,8 +38,10 @@ void BoardWidget::setGame(const IrrGo::Game* game) {
     tentativeNode_= -1;
     suggestedNode_= -1;
     lastMoveNode_ = -1;
-    showBlackDvr_ = false;
-    showWhiteDvr_ = false;
+    showBlackDvr_         = false;
+    showWhiteDvr_         = false;
+    showNeighborhoodSize_ = false;
+    showLabels_           = false;
     confirmTimer_->stop();
     updateTransform();
     update();
@@ -66,6 +68,11 @@ void BoardWidget::setLastMove(int nodeId) {
     update();
 }
 
+void BoardWidget::setSearching(bool s) {
+    searching_ = s;
+    if (s) { hoverNode_ = -1; update(); }
+}
+
 void BoardWidget::setShowBlackDvr(bool show) {
     showBlackDvr_ = show;
     update();
@@ -73,6 +80,31 @@ void BoardWidget::setShowBlackDvr(bool show) {
 
 void BoardWidget::setShowWhiteDvr(bool show) {
     showWhiteDvr_ = show;
+    update();
+}
+
+void BoardWidget::setDvrRadius(int r) {
+    dvrRadius_ = r;
+    update();
+}
+
+void BoardWidget::showNeighborhoodSize() {
+    showNeighborhoodSize_ = true;
+    update();
+}
+
+void BoardWidget::hideNeighborhoodSize() {
+    showNeighborhoodSize_ = false;
+    update();
+}
+
+void BoardWidget::showLabels() {
+    showLabels_ = true;
+    update();
+}
+
+void BoardWidget::hideLabels() {
+    showLabels_ = false;
     update();
 }
 
@@ -148,11 +180,13 @@ void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
 // ── Mouse events ──────────────────────────────────────────────────────────────
 
 void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
+    if (searching_) return;
     int n = nodeAt(e->position());
     if (n != hoverNode_) { hoverNode_ = n; update(); }
 }
 
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
+    if (searching_) return;
     if (e->button() != Qt::LeftButton || !game_) return;
     emit clearSuggestionRequested();
     int n = nodeAt(e->position());
@@ -228,80 +262,119 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                     const auto& nd = nodes[rg->nodeId(r, c)];
                     p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
                 }
+            // If large enough, draw center + 4 side star points
             if (rows * cols >= 100) {
-                const auto& nd = nodes[rg->nodeId(rows / 2, cols / 2)];
-                p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
+                int cr = rows / 2, cc = cols / 2;
+                p.drawEllipse(toWidget(nodes[rg->nodeId(cr, cc)].x,
+                                       nodes[rg->nodeId(cr, cc)].y), dotR, dotR);
+                for (int r : {lr, hr})
+                    p.drawEllipse(toWidget(nodes[rg->nodeId(r,  cc)].x,
+                                           nodes[rg->nodeId(r,  cc)].y), dotR, dotR);
+                for (int c : {lc, hc})
+                    p.drawEllipse(toWidget(nodes[rg->nodeId(cr, c)].x,
+                                           nodes[rg->nodeId(cr, c)].y), dotR, dotR);
             }
         }
     }
 
-    // DVR overlay — drawn before stones so occupied intersections stay clean
-    if (showBlackDvr_ || showWhiteDvr_) {
-        int radius = game_->graph().nodeCount(); // large enough for full Voronoi
-        float dotR = stoneR_ * 0.35f;
-        p.setPen(Qt::NoPen);
-        if (showBlackDvr_) {
-            DVR blackDvr(*game_, Color::Black, radius);
-            p.setBrush(Qt::black);
-            for (int id : blackDvr.nodes())
-                p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
+    if (showLabels_) {
+        QFont f = p.font();
+        float textScale = 0.6f;
+        f.setPixelSize(qBound(4, qRound(stoneR_ * textScale), 9));
+        f.setBold(true);
+        p.setFont(f);
+        p.setPen(Qt::white);
+        for (const auto& nd : nodes) {
+            QPointF pt = toWidget(nd.x, nd.y);
+            QRectF textRect(pt.x() - stoneR_, pt.y() - stoneR_,
+                            stoneR_ * 2.0f, stoneR_ * 2.0f);
+            p.drawText(textRect, Qt::AlignCenter, QString::fromStdString(nd.label));
         }
-        if (showWhiteDvr_) {
-            DVR whiteDvr(*game_, Color::White, radius);
-            p.setBrush(Qt::white);
-            for (int id : whiteDvr.nodes())
-                p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
+    } else if (showNeighborhoodSize_) {
+        // For each node, count neighbours within Manhattan distance <= dvrRadius_
+        int radius = dvrRadius_;
+        QFont f = p.font();
+        f.setPixelSize(qBound(8, qRound(stoneR_ * 0.95f), 18));
+        f.setBold(true);
+        p.setFont(f);
+        p.setPen(Qt::white);
+        for (const auto& nd : nodes) {
+            int count = 0;
+            for (const auto& other : nodes)
+                if (qAbs(other.row - nd.row) + qAbs(other.col - nd.col) <= radius)
+                    ++count;
+            QPointF pt = toWidget(nd.x, nd.y);
+            QRectF textRect(pt.x() - stoneR_, pt.y() - stoneR_,
+                            stoneR_ * 2.0f, stoneR_ * 2.0f);
+            p.drawText(textRect, Qt::AlignCenter, QString::number(count));
         }
-    }
-
-    // Stones
-    for (const auto& nd : nodes) {
-        Color c = game_->colorAt(nd.id);
-        if (c == Color::Empty) continue;
-        p.setPen(Qt::NoPen);
-        p.setBrush(c == Color::Black ? Qt::black : Qt::white);
-        p.drawEllipse(toWidget(nd.x, nd.y), stoneR_, stoneR_);
-    }
-
-    // Last-move marker: small contrasting dot on the most recently placed stone
-    if (lastMoveNode_ >= 0 && lastMoveNode_ < static_cast<int>(nodes.size())) {
-        Color lmc = game_->colorAt(lastMoveNode_);
-        if (lmc != Color::Empty) {
-            float dotR = stoneR_ * 0.28f;
+    } else {
+        // DVR overlay — drawn before stones so occupied intersections stay clean
+        if (showBlackDvr_ || showWhiteDvr_) {
+            int radius = dvrRadius_;
+            float dotR = stoneR_ * 0.35f;
             p.setPen(Qt::NoPen);
-            p.setBrush(lmc == Color::Black ? Qt::white : lineColor_);
-            p.drawEllipse(toWidget(nodes[lastMoveNode_].x, nodes[lastMoveNode_].y), dotR, dotR);
+            if (showBlackDvr_) {
+                DVR blackDvr(*game_, Color::Black, radius);
+                p.setBrush(Qt::black);
+                for (int id : blackDvr.nodes())
+                    p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
+            }
+            if (showWhiteDvr_) {
+                DVR whiteDvr(*game_, Color::White, radius);
+                p.setBrush(Qt::white);
+                for (int id : whiteDvr.nodes())
+                    p.drawEllipse(toWidget(nodes[id].x, nodes[id].y), dotR, dotR);
+            }
         }
-    }
 
-    // Suggested move — green bordered disc (drawn over any stone on that node)
-    if (suggestedNode_ >= 0 && suggestedNode_ < static_cast<int>(nodes.size())) {
-        paintStoneBordered(p, toWidget(nodes[suggestedNode_].x, nodes[suggestedNode_].y),
-                           suggestIsBlack_, kGreen);
-    }
-
-    // Tentative stone: player colour with grey cross-hatch
-    if (tentativeNode_ >= 0) {
-        QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
-        bool isBlack = (game_->toMove() == Player::Black);
-        p.setPen(Qt::NoPen);
-        p.setBrush(isBlack ? Qt::black : Qt::white);
-        p.drawEllipse(pt, stoneR_, stoneR_);
-        p.setBrush(QBrush(QColor(130, 130, 130), Qt::DiagCrossPattern));
-        p.drawEllipse(pt, stoneR_, stoneR_);
-    }
-
-    // Hover effect
-    if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
-        QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
-        if (game_->colorAt(hoverNode_) == Color::Empty) {
-            // Orange-bordered preview — shares paintStoneBordered
-            paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange);
-        } else {
-            // Occupied: small red disc
+        // Stones
+        for (const auto& nd : nodes) {
+            Color c = game_->colorAt(nd.id);
+            if (c == Color::Empty) continue;
             p.setPen(Qt::NoPen);
-            p.setBrush(kRed);
-            p.drawEllipse(pt, stoneR_ * 0.5f, stoneR_ * 0.5f);
+            p.setBrush(c == Color::Black ? Qt::black : Qt::white);
+            p.drawEllipse(toWidget(nd.x, nd.y), stoneR_, stoneR_);
+        }
+
+        // Last-move marker: small contrasting dot on the most recently placed stone
+        if (lastMoveNode_ >= 0 && lastMoveNode_ < static_cast<int>(nodes.size())) {
+            Color lmc = game_->colorAt(lastMoveNode_);
+            if (lmc != Color::Empty) {
+                float dotR = stoneR_ * 0.28f;
+                p.setPen(Qt::NoPen);
+                p.setBrush(lmc == Color::Black ? Qt::white : lineColor_);
+                p.drawEllipse(toWidget(nodes[lastMoveNode_].x, nodes[lastMoveNode_].y), dotR, dotR);
+            }
+        }
+
+        // Suggested move — green bordered disc (drawn over any stone on that node)
+        if (suggestedNode_ >= 0 && suggestedNode_ < static_cast<int>(nodes.size())) {
+            paintStoneBordered(p, toWidget(nodes[suggestedNode_].x, nodes[suggestedNode_].y),
+                               suggestIsBlack_, kGreen);
+        }
+
+        // Tentative stone: player colour with grey cross-hatch
+        if (tentativeNode_ >= 0) {
+            QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
+            bool isBlack = (game_->toMove() == Player::Black);
+            p.setPen(Qt::NoPen);
+            p.setBrush(isBlack ? Qt::black : Qt::white);
+            p.drawEllipse(pt, stoneR_, stoneR_);
+            p.setBrush(QBrush(QColor(130, 130, 130), Qt::DiagCrossPattern));
+            p.drawEllipse(pt, stoneR_, stoneR_);
+        }
+
+        // Hover effect
+        if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
+            QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
+            if (game_->colorAt(hoverNode_) == Color::Empty) {
+                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange);
+            } else {
+                p.setPen(Qt::NoPen);
+                p.setBrush(kRed);
+                p.drawEllipse(pt, stoneR_ * 0.5f, stoneR_ * 0.5f);
+            }
         }
     }
 

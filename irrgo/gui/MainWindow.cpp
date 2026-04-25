@@ -139,6 +139,7 @@ MainWindow::MainWindow(QWidget* parent)
     currentPlayerLabel_ = new QLabel("No game", statusRow);
     currentPlayerLabel_->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     stopBtn_ = new QPushButton("Stop", statusRow);
+    stopBtn_->setStyleSheet("QPushButton { background-color: #FFCC99; color: black; }");
     stopBtn_->setFixedWidth(44);
     { auto sp = stopBtn_->sizePolicy(); sp.setRetainSizeWhenHidden(true); stopBtn_->setSizePolicy(sp); }
     stopBtn_->hide();
@@ -157,6 +158,11 @@ MainWindow::MainWindow(QWidget* parent)
     connect(blackPassBtn_, &QPushButton::clicked, this, &MainWindow::onBlackPass);
     connect(whitePassBtn_, &QPushButton::clicked, this, &MainWindow::onWhitePass);
 
+    labelsBtn_ = new QPushButton("Labels", this);
+    pv->addWidget(labelsBtn_);
+    connect(labelsBtn_, &QPushButton::pressed,  boardWidget_, &BoardWidget::showLabels);
+    connect(labelsBtn_, &QPushButton::released, boardWidget_, &BoardWidget::hideLabels);
+
     pv->addSpacing(8);
 
     // Suggested move display
@@ -170,6 +176,18 @@ MainWindow::MainWindow(QWidget* parent)
     connect(clearSuggestBtn_, &QPushButton::clicked, this, &MainWindow::clearSuggestion);
 
     {
+        auto* radiusRow  = new QWidget(this);
+        auto* radiusHBox = new QHBoxLayout(radiusRow);
+        radiusHBox->setContentsMargins(0, 0, 0, 0);
+        radiusHBox->setSpacing(4);
+        radiusHBox->addWidget(new QLabel("Radius", radiusRow));
+        dvrRadiusSpin_ = new QSpinBox(radiusRow);
+        dvrRadiusSpin_->setRange(1, 999);
+        dvrRadiusSpin_->setValue(4);
+        radiusHBox->addWidget(dvrRadiusSpin_);
+        pv->addWidget(radiusRow);
+    }
+    {
         auto* dvrRow  = new QWidget(this);
         auto* dvrHBox = new QHBoxLayout(dvrRow);
         dvrHBox->setContentsMargins(0, 0, 0, 0);
@@ -180,10 +198,19 @@ MainWindow::MainWindow(QWidget* parent)
         dvrHBox->addWidget(whiteDvrCheck_);
         pv->addWidget(dvrRow);
     }
+    connect(dvrRadiusSpin_, &QSpinBox::valueChanged,
+            boardWidget_,   &BoardWidget::setDvrRadius);
     connect(blackDvrCheck_, &QCheckBox::toggled,
             boardWidget_,   &BoardWidget::setShowBlackDvr);
     connect(whiteDvrCheck_, &QCheckBox::toggled,
             boardWidget_,   &BoardWidget::setShowWhiteDvr);
+
+    neighborhoodBtn_ = new QPushButton("Neighborhood Size", this);
+    pv->addWidget(neighborhoodBtn_);
+    connect(neighborhoodBtn_, &QPushButton::pressed,
+            boardWidget_,     &BoardWidget::showNeighborhoodSize);
+    connect(neighborhoodBtn_, &QPushButton::released,
+            boardWidget_,     &BoardWidget::hideNeighborhoodSize);
 
     pv->addSpacing(8);
 
@@ -362,7 +389,12 @@ void MainWindow::buildMenuBar() {
     // MCTS suggest submenu
     {
         static const struct { int secs; const char* label; } kMctsOptions[] = {
-            { 10, "10 sec" }, { 30, "30 sec" }, { 60, "60 sec" },
+            { 10, "10 sec" },
+            { 30, "30 sec" },
+            { 45, "45 sec" },
+            { 60, "60 sec" },
+            { 90, "90 sec" },
+            { 120, "120 sec" },
         };
         auto* mctsAction = new QAction("MCTS", this);
         mctsAction->setCheckable(true);
@@ -743,6 +775,15 @@ void MainWindow::clearSuggestion() {
 
 void MainWindow::updateControls() {
     stopBtn_->setVisible(isSearching_);
+    boardWidget_->setSearching(isSearching_);
+    bool idle = !isSearching_;
+    menuBar()          ->setEnabled(idle);
+    labelsBtn_         ->setEnabled(idle);
+    clearSuggestBtn_   ->setEnabled(idle);
+    blackDvrCheck_     ->setEnabled(idle);
+    whiteDvrCheck_     ->setEnabled(idle);
+    dvrRadiusSpin_     ->setEnabled(idle);
+    neighborhoodBtn_   ->setEnabled(idle);
     if (!game_) {
         currentPlayerLabel_->setText("No game");
         blackPassBtn_->setEnabled(false);

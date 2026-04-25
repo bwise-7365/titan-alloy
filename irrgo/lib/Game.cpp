@@ -221,7 +221,7 @@ std::unique_ptr<AbsGame::Game> Game::clone() const {
 }
 
 double Game::negamaxEval() const {
-    constexpr int    kRadius     = 4;
+    constexpr int    kRadius     = 3;
     constexpr double areaPremium = 0.05;
 
     int blackStones = 0, whiteStones = 0;

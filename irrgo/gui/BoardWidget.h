@@ -21,8 +21,14 @@ public:
     void clearSuggestion();
     void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
 
+    void setSearching(bool s);
     void setShowBlackDvr(bool show);
     void setShowWhiteDvr(bool show);
+    void setDvrRadius(int r);
+    void showNeighborhoodSize();
+    void hideNeighborhoodSize();
+    void showLabels();
+    void hideLabels();
 
     // Mark the most recently placed stone with a contrasting dot; -1 clears it.
     void setLastMove(int nodeId);
@@ -51,13 +57,17 @@ private:
     QColor      lineColor_ { "#373C65" };
     QString     boardInfoRight_;            // right corner label, set via setBoardInfo()
 
+    bool    searching_       = false;
     int     hoverNode_       = -1;
     int     tentativeNode_   = -1;
     int     suggestedNode_   = -1;
     bool    suggestIsBlack_  = true;
     int     lastMoveNode_    = -1;
-    bool    showBlackDvr_    = false;
-    bool    showWhiteDvr_    = false;
+    bool    showBlackDvr_         = false;
+    bool    showWhiteDvr_         = false;
+    int     dvrRadius_            = 4;
+    bool    showNeighborhoodSize_ = false;
+    bool    showLabels_           = false;
     QTimer* confirmTimer_    = nullptr;
 
     // Cached transform — updated on resize / graph change
