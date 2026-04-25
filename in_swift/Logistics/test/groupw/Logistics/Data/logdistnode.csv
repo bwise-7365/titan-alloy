@@ -1,0 +1,8 @@
+Name,Open,Coordinates,FuelStorageCapacity,FuelThroughput,AmmoStorageCapacity,AmmoThroughput,WaterStorageCapacity,WaterThroughput
+airbaseA,true,"50.0,1200.0,0.0",40,4,500,50,10,20
+islandA,false,"0.0, 0.0, 0.0",4,5,50,5,1,2
+islandB,false,"90.0, 100.0, 0.0",4,5,50,5,1,2
+islandC,false,"160.0, 0.0, 0.0",4,5,50,5,1,2
+airportA,false,"0.0, 380.0, 0.0",4,5,50,5,1,2
+airportB,false,"125.0, 380.0, 0.0",4,5,50,5,1,2
+seaportA,false,"60.0, 600.0, 0.0",4,5,50,5,1,2

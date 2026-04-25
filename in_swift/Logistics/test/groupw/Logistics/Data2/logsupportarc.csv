@@ -1,0 +1,28 @@
+Name,LogNodeSource,LogNodeTarget
+C2Arc-1-2A,Supply-Co-1,Supply-Co-2A
+C2Arc-1-3A,Supply-Co-1,Supply-Co-3A
+C2Arc-2A-2B,Supply-Co-2A,Supply-Co-2B
+C2Arc-3A-3B,Supply-Co-3A,Supply-Co-3B
+
+C2Arc-1-1A,Supply-Co-1,Supply-Co-1A
+C2Arc-1-1B,Supply-Co-1,Supply-Co-1B
+C2Arc-1-1C,Supply-Co-1,Supply-Co-1C
+
+C2Arc-1A-2B,Supply-Co-1A,Supply-Co-2B
+C2Arc-1A-3B,Supply-Co-1A,Supply-Co-3B
+
+C2Arc-1B-2B,Supply-Co-1B,Supply-Co-2B
+C2Arc-1B-3B,Supply-Co-1B,Supply-Co-3B
+
+C2Arc-1C-2B,Supply-Co-1C,Supply-Co-2B
+C2Arc-1C-3B,Supply-Co-1C,Supply-Co-3B
+
+C2Arc-2B-373,Supply-Co-2B,373 INF BN
+C2Arc-2B-159,Supply-Co-2B,159 INF BN
+C2Arc-2B-005,Supply-Co-2B,5 INF BDE
+C2Arc-2B-012,Supply-Co-2B,12 INF BDE
+
+C2Arc-3B-007,Supply-Co-3B,7 INF BDE
+C2Arc-3B-294,Supply-Co-3B,294 INF BN
+C2Arc-3B-413,Supply-Co-3B,413 INF BN
+C2Arc-3B-009,Supply-Co-3B,9 INF BDE

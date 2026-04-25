@@ -1,0 +1,21 @@
+Name,UnitType
+373 INF BN,InfantryBN
+294 INF BN,InfantryBN
+413 INF BN,InfantryBN
+159 INF BN,InfantryBN
+
+7 INF BDE,InfantryBDE
+9 INF BDE,InfantryBDE
+12 INF BDE,InfantryBDE
+5 INF BDE,InfantryBDE
+
+Supply-Co-1,SupplyCO
+Supply-Co-1A,SupplyCO
+Supply-Co-1B,SupplyCO
+Supply-Co-1C,SupplyCO
+
+Supply-Co-2A,SupplyCO
+Supply-Co-3A,SupplyCO
+
+Supply-Co-2B,SupplyCO
+Supply-Co-3B,SupplyCO

@@ -1,0 +1,7 @@
+UnitType,Posture,FuelGallon,AmmoCase,WaterGallon,MREPallet
+InfantryBN,Engaged,6450.13,2272.00,2120.00,3.65
+InfantryBN,Unengaged,6300.42,0.00,1060.00,3.65
+InfantryBDE,Engaged,36856.30,12982.70,12114.20,20.83
+InfantryBDE,Unengaged,36000.00,0.00,6057.10,20.83
+SupplyCO,Engaged,2150.00,757.33,706.67,1.22
+SupplyCO,Unengaged,2100.00,0.00,353.33,1.22

@@ -1,0 +1,7 @@
+UnitType,Posture,Fuel,Ammo,Water,Food
+Infantry,Attack,1000,10000,500,50
+Infantry,Defend,100,0,300,1000
+Infantry,Movement,12342,0,200,300
+Artillery,Attack,1000,100000,250,100
+Artillery,Defend,100,10000,250,100
+Artillery,Movement,50000,0,250,100
