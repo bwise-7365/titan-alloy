@@ -1,0 +1,39 @@
+<!ELEMENT rectangularP (#PCDATA)>
+  <!ATTLIST rectangularP
+      val       	(True | False )  #REQUIRED>
+      
+  <!ELEMENT sideToMove (#PCDATA)>
+  <!ATTLIST sideToMove
+      color       	(Black | White )  #REQUIRED>
+      
+  <!ELEMENT node (#PCDATA)>
+  <!ATTLIST node
+      id       	CDATA #REQUIRED>
+  
+  <!ELEMENT color (#PCDATA)>
+  <!ATTLIST color
+      val       	(Black | White | Vacant ) #REQUIRED>
+  
+  <!ELEMENT X (#PCDATA)>
+  <!ATTLIST X
+      val       	CDATA #REQUIRED>
+  
+  <!ELEMENT Y (#PCDATA)>
+  <!ATTLIST Y
+      val       	CDATA #REQUIRED>
+  
+  <!ELEMENT movenum  (#PCDATA)>
+  <!ATTLIST movenum
+      num       	CDATA #REQUIRED>
+  
+  <!ELEMENT edge (node, node)>
+  <!ELEMENT edge_list (edge*)>
+  <!ELEMENT coord (node, X, Y)>
+  <!ELEMENT coord_list (coord*)>
+  <!ELEMENT stone (node, color)>
+  <!ELEMENT Position (stone*)>
+  <!ELEMENT move (node, color, movenum)>
+  <!ELEMENT move_list (move*)>
+  <!ELEMENT GraphGoBoard (rectangularP, coord_list, edge_list, Game)>
+  <!ELEMENT Game (sideToMove, Position, move_list, Position)>
+  

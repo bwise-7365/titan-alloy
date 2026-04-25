@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE GraphGoBoard SYSTEM "ggb.dtd">
+<GraphGoBoard>
+	<rectangularP val="False"/>
+	<coord_list>
+		<coord>
+			<node id="0"/>
+			<X val="865"/>
+			<Y val="654"/>
+		</coord>
+		<coord>
+			<node id="1"/>
+			<X val="258"/>
+			<Y val="897"/>
+		</coord>
+		<coord>
+			<node id="2"/>
+			<X val="488"/>
+			<Y val="98"/>
+		</coord>
+		<coord>
+			<node id="3"/>
+			<X val="856"/>
+			<Y val="273"/>
+		</coord>
+	</coord_list>
+	<edge_list>
+		<edge>
+			<node id="9"/>
+			<node id="27"/>
+		</edge>
+		<edge>
+			<node id="6"/>
+			<node id="47"/>
+		</edge>
+		<edge>
+			<node id="6"/>
+			<node id="37"/>
+		</edge>
+		<edge>
+			<node id="11"/>
+			<node id="29"/>
+		</edge>
+	</edge_list>
+	<Game>
+		<sideToMove color="Black"/>
+		<Position>
+			<stone>
+				<node id="0"/>
+				<color val="Black"/>
+			</stone>
+			<stone>
+				<node id="4"/>
+				<color val="White"/>
+			</stone>
+			<stone>
+				<node id="5"/>
+				<color val="Black"/>
+			</stone>
+		</Position>
+		<move_list>
+			<move>
+				<node id="8"/>
+				<color val="Black"/>
+				<movenum num="2"/>
+			</move>
+			<move>
+				<node id="7"/>
+				<color val="White"/>
+				<movenum num="1"/>
+			</move>
+			<move>
+				<node id="39"/>
+				<color val="Black"/>
+				<movenum num="0"/>
+			</move>
+		</move_list>
+		<Position>
+    </Position>
+	</Game>
+</GraphGoBoard>

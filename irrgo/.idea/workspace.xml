@@ -32,23 +32,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="050b0786-39ec-410d-a950-8db12c38b51d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-29-capability_graph_test_150.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-29-capability_graph_test_650.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/doc/irrgo.xsd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gui/MainWindow_save.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/capability_graph_test_150.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/capability_graph_test_650.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-27-capability_graph_test_150.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-27-capability_graph_test_650.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-27-logrun-150.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-29-logrun-150.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-27-logrun-650.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../in_swift/LogAdj/doc/2026-04-29-logrun-650.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/src/groupw/LogAdj/CapabilityGraphGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../in_swift/LogAdj/src/groupw/LogAdj/CapabilityGraphGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../in_swift/LogAdj/test/groupw/LogAdj/LogisticalAdjudicatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../in_swift/LogAdj/test/groupw/LogAdj/LogisticalAdjudicatorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/gui/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/MainWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/MainWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +165,7 @@
       <workItem from="1777033701984" duration="1219000" />
       <workItem from="1777035237312" duration="31110000" />
       <workItem from="1777079827581" duration="5522000" />
-      <workItem from="1777123088521" duration="17172000" />
+      <workItem from="1777123088521" duration="18551000" />
     </task>
     <servers />
   </component>

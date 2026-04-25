@@ -1,0 +1,219 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+\documentclass[11pt,letterpaper]{article}
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{colorlinks=true, linkcolor=blue!60!black}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\bug}{\textcolor{red}{\textbf{BUG}}}
+\newcommand{\pbug}{\textcolor{orange}{\textbf{POTENTIAL BUG}}}
+\newcommand{\ineff}{\textcolor{blue}{\textbf{INEFFICIENCY}}}
+\newcommand{\style}{\textcolor{gray}{\textbf{STYLE}}}
+
+\title{\textbf{IrrGo C++ Code Review}}
+\author{Ben Paul Wise}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Group 1 — Definite Bugs}
+% ────────────────────────────────────────────────────────────────────────────
+
+\subsection{\bug\ \ \file{src/Searcher.h}:26 — \code{terminalCount} is not thread-safe}
+
+\code{terminalCount} is a \code{static} member variable written by the search
+thread and reset by the launching thread with no synchronisation.  If two
+searches run concurrently (which the current guard prevents, but is fragile),
+the counter is silently corrupted.  Even with the guard, the reset in the
+main thread and the increment in the worker thread are a data race under the
+C++ memory model.  Fix: use \code{std::atomic<int>}.
+
+\subsection{\bug\ \ \file{lib/Game.cpp} — Pass move leaves \code{col} default-initialised to 0}
+
+The \code{Move} struct has five fields: \code{turn}, \code{color},
+\code{nodeId}, \code{row}, \code{col}.  The pass-move push uses only four
+initialisers, so \code{col} is default-initialised to \code{0} instead of
+\code{-1}.  Any code that reads \code{col} from a pass move and compares it
+against \code{-1} will behave incorrectly.
+
+\subsection{\bug\ \ \file{gui/MainWindow.cpp} — Detached \code{std::thread} holds raw \code{this}}
+
+All four search launchers (\code{onSuggestGo}, \code{onSuggestMctsGo},
+\code{onPlayNegamaxGo}, \code{onPlayMctsGo}) detach a \code{std::thread}
+whose lambda captures \code{this} by value.  If \code{MainWindow} is
+destroyed before the thread completes, all member-variable accesses in the
+lambda are undefined behaviour.  The generation-counter cancellation
+mechanism reduces the risk but does not eliminate it.  Fix: use a
+\code{std::shared\_ptr} sentinel or join on destruction.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Group 2 — Potential Bugs}
+% ────────────────────────────────────────────────────────────────────────────
+
+\subsection{\pbug\ \ \file{lib/Graph.h}:15 — \code{node()} has no bounds check}
+
+\code{Graph::node(int id)} indexes \code{nodes\_[id]} without validating
+that \code{id} is in range.  Any caller passing an invalid ID causes
+undefined behaviour.  An \code{assert} or a bounds check with a clear error
+message would make failures diagnosable.
+
+\subsection{\pbug\ \ \file{lib/Graph.cpp} — \code{addEdge()} does not guard against duplicates}
+
+\code{addEdge(a, b)} appends \code{b} to \code{a.neighbors} and vice versa
+unconditionally.  If called twice for the same pair, the neighbor lists
+contain duplicates.  Every algorithm that iterates neighbors (DVR BFS, liberty
+counting, edge export in \file{MainWindow\_save.cpp}) will then process each
+edge twice.
+
+\subsection{\pbug\ \ \file{src/mcts.cpp}:45--54 — UCT score called with zero visit count}
+
+\code{uctScore()} divides by \code{child.visitCount} without checking for
+zero.  While the current \code{treePolicy()} only calls it after all children
+are expanded (each having been through at least one \code{backup()}), the
+function itself provides no guard.  A future refactor or a subtle ordering
+change would cause a division-by-zero crash.  Add an assertion or early
+return.
+
+\subsection{\pbug\ \ \file{gui/BoardWidget.cpp}:153--167 — \code{nodeAt()} returns stale index}
+
+The nearest-node search returns the raw index \code{found} from the game's
+node list.  If the board has been regenerated between the mouse event and the
+lookup (a race that the current single-threaded UI makes unlikely but not
+impossible), \code{found} may exceed the new node count.  The result is
+passed to \code{game\_->placeStone()} without a bounds check.
+
+\subsection{\pbug\ \ \file{gui/BoardWidget.cpp}:293--310 — Manhattan distance meaningless for irregular graphs}
+
+The neighbourhood-highlight code computes
+$|r_a - r_b| + |c_a - c_b|$ to decide whether two nodes are ``nearby.''
+For a \code{RectangularGraph} this approximates physical distance, but for an
+\code{IrregularGraph} row/col are base-grid coordinates and bear no
+consistent relationship to the actual layout.  The displayed neighbourhood
+radius will be visually wrong for irregular boards.
+
+\subsection{\pbug\ \ \file{gui/MainWindow\_save.cpp}:26--132 — XML write errors are silently dropped}
+
+After the initial \code{file.open()} check, no error is ever inspected.
+\code{QXmlStreamWriter} and \code{QFile} can fail mid-write (disk full,
+permissions, etc.) without the caller knowing.  The saved file would be
+truncated or malformed with no warning to the user.  Check
+\code{xml.hasError()} and \code{file.error()} before closing.
+
+\subsection{\pbug\ \ \file{gui/MainWindow\_save.cpp}:34 — Open-coded graph type check will silently mis-classify new graph types}
+
+\code{isRect} is set by a \code{dynamic\_cast} to \code{RectangularGraph}.
+If a third graph type is ever added, it will silently be saved as
+\code{rectangularP val="False"} (i.e.\ irregular), which may be incorrect.
+A virtual method such as \code{Graph::isRectangular()} would be more robust.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Group 3 — Inefficiencies}
+% ────────────────────────────────────────────────────────────────────────────
+
+\subsection{\ineff\ \ \file{lib/Game.cpp} — \code{getLegalMoves()} is O($N^2$)}
+
+\code{isLegalPlacement()} copies the entire board into \code{lp\_board\_}
+on every call (O($N$)).  \code{getLegalMoves()} calls it once per node, making
+the total O($N^2$).  During MCTS rollouts this is the innermost hot loop.
+A diff-based or incremental legality check would give a large speedup,
+especially on 19$\times$19 or 21$\times$21 boards.
+
+\subsection{\ineff\ \ \file{src/mcts.cpp}:94 — Rollout clones the full game state}
+
+Each MCTS rollout calls \code{node.game->clone()}, duplicating the entire
+board for every simulation.  For a game with $N$ nodes this allocates
+and copies $O(N)$ data per rollout, millions of times per search.  An
+in-place playout with undo (or a lighter-weight game representation) would
+reduce allocator pressure significantly.
+
+\subsection{\ineff\ \ \file{gui/BoardWidget.cpp}:155--157 — \code{nodeAt()} is O($N$) per mouse event}
+
+Every hover and click linearly scans all nodes to find the nearest one.
+On a 21$\times$21 irregular board (441 nodes) this is fast enough, but
+for larger or denser graphs it becomes perceptible.  A spatial grid or
+k-d tree built once after board generation would reduce this to O(1).
+
+\subsection{\ineff\ \ \file{gui/BoardWidget.cpp}:293--310 — Neighbourhood highlight is O($N^2$) per paint}
+
+For each node being highlighted, all other nodes are scanned to compute
+a distance.  This runs on every \code{paintEvent()}, including during
+animations.  The neighbourhood size for each node should be computed once
+after board generation and cached.
+
+\subsection{\ineff\ \ \file{lib/IrregularGraph.cpp} — Edge validation is O($E \cdot N$) per candidate}
+
+\code{canAddEdge()} checks crossing and proximity against all existing edges
+and all nodes.  During graph construction this is called repeatedly in a
+greedy loop, making total construction O($E^2 N$) in the worst case.  A
+spatial index on node positions would reduce crossing tests to the relevant
+neighbourhood.
+
+\subsection{\ineff\ \ \file{lib/DVR.cpp} — Two independent BFS passes could be merged}
+
+\code{DVR} runs two separate multi-source BFS passes (\code{distMine} and
+\code{distOpp}).  A single interleaved BFS that assigns ownership to each
+node on first discovery would halve the traversal work and improve cache
+locality.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Group 4 — Style and Maintainability}
+% ────────────────────────────────────────────────────────────────────────────
+
+\subsection{\style\ \ \file{src/mcts.cpp}:174--175, 196--197 — Debug prints left in production code}
+
+\code{fprintf(stderr, ...)} and \code{printf(...)} are called at the end of
+both MCTS overloads on every search.  These should be removed or placed
+behind a compile-time flag before any non-debug build.
+
+\subsection{\style\ \ \file{src/AbsGame.cpp} — Empty translation unit}
+
+The file contains only copyright notices.  It should either hold the
+out-of-line definition of \code{AbsGame::kPass} (currently in the header)
+or be deleted to reduce build noise.
+
+\subsection{\style\ \ \file{lib/utils.cpp} — \code{qTrans()} is undocumented}
+
+The function uses constants 3, 4, and 17 with no explanation of the
+algorithm or its purpose (appears to be a fast non-cryptographic hash for
+seed derivation).  A one-line comment stating the intent would prevent
+future confusion.
+
+\subsection{\style\ \ \file{src/Searcher.h}:16,21 — Two \code{mcts()} overloads with identical parameter types}
+
+Both overloads take \code{const Game\&} and \code{int}; the second overload
+adds another \code{int}.  A caller passing two ints unintentionally selects
+the node-budget overload.  Strong typedef (\code{using Seconds = int}) or
+distinct method names (\code{mctsByTime}, \code{mctsByNodes}) would prevent
+accidental misuse.
+
+\subsection{\style\ \ \file{lib/RectangularGraph.cpp} — Magic spacing constants}
+
+\code{kColSpacing = 0.87f} and \code{kRowSpacing = 0.93f} are
+unexplained.  A comment indicating these approximate
+$\cos 30°$ (equilateral triangle spacing) and a slight vertical compression
+would make the intent clear.
+
+\subsection{\style\ \ \file{gui/BoardWidget.cpp}:216,256 — Repeated \code{dynamic\_cast} on every paint}
+
+The same \code{dynamic\_cast<const IrregularGraph*>} is evaluated on every
+\code{paintEvent()}.  The result could be cached in a \code{bool isIrregular\_}
+member set once in \code{setGame()}, or replaced by a virtual method on
+\code{Graph}.
+
+\end{document}
+% Copyright Ben Paul Wise. All Rights Reserved.
