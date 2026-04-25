@@ -13,7 +13,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
 import java.awt.BasicStroke;
 import java.io.File;
 
@@ -189,7 +189,7 @@ public class CapabilityGraphGenerator {
         // Customize the line width
         float lineWidth = 2.5f;
         XYPlot plot = chart.getXYPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
+        XYStepRenderer renderer = new XYStepRenderer();
         BasicStroke stroke = new BasicStroke(lineWidth);
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             renderer.setSeriesStroke(i, stroke);

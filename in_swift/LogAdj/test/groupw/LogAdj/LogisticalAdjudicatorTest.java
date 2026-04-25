@@ -34,9 +34,17 @@ public class LogisticalAdjudicatorTest {
         System.out.println(tr1);
     }
 
+    /**
+     * This runs the DCVRP adjudication using the DESim API
+     *
+     * The SEntity and TEntity classes are the 'bridge' between the DESim API and the DCVRP API.
+     * The most interesting time-frames for the standardTestCase are 150 and 650 hours.
+     * I did not bother to convert units, so they print as seconds from DESim.
+     * @throws IOException
+     */
     @Test
     public void testItnry() throws IOException {
-        double runTimeHours = 650;
+        double runTimeHours = 150;
         ReadDCVRScenarioCSV.ScenarioRecord sRec = ReadDCVRScenarioCSV.readStandardTestCase();
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
         List<LogisticalAdjudicator.LogRecord> records = la.adjudicator(runTimeHours);

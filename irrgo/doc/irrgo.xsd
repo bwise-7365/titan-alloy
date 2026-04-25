@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- ── Shared leaf elements ─────────────────────────────────────────────── -->
+
+  <xs:element name="node">
+    <xs:complexType>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="color">
+    <xs:complexType>
+      <xs:attribute name="val" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Black"/>
+            <xs:enumeration value="White"/>
+            <xs:enumeration value="Vacant"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ── Board structure ──────────────────────────────────────────────────── -->
+
+  <xs:element name="rectangularP">
+    <xs:complexType>
+      <xs:attribute name="val" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="True"/>
+            <xs:enumeration value="False"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="R">
+    <xs:complexType>
+      <xs:attribute name="val" type="xs:integer" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="C">
+    <xs:complexType>
+      <xs:attribute name="val" type="xs:integer" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="coord">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="node"/>
+        <xs:element ref="R"/>
+        <xs:element ref="C"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="coord_list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="coord" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="edge">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="node" minOccurs="2" maxOccurs="2"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="edge_list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="edge" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ── Game elements ────────────────────────────────────────────────────── -->
+
+  <xs:element name="sideToMove">
+    <xs:complexType>
+      <xs:attribute name="color" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Black"/>
+            <xs:enumeration value="White"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="stone">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="node"/>
+        <xs:element ref="color"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- type="setup" = stones placed before play; type="after-play" = current board -->
+  <xs:element name="Position">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="stone" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="setup"/>
+            <xs:enumeration value="after-play"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="movenum">
+    <xs:complexType>
+      <xs:attribute name="num" type="xs:integer" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="move">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="node"/>
+        <xs:element ref="color"/>
+        <xs:element ref="movenum"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="move_list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="move" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Game">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="sideToMove"/>
+        <xs:element ref="Position"/>
+        <xs:element ref="move_list"/>
+        <xs:element ref="Position"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ── Root element ─────────────────────────────────────────────────────── -->
+
+  <xs:element name="IrrGoBoard">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="rectangularP"/>
+        <xs:element ref="coord_list"/>
+        <xs:element ref="edge_list"/>
+        <xs:element ref="Game"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

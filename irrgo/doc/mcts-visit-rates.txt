@@ -34,5 +34,116 @@ or a factor of 34 speed-up
 2 minutes / 30 = 2*60/30 = 4 seconds ?!
 
 9x13 opening, 30 seconds: 3470, 3415, 3268
+
+------------------
+This is the first non-debugging self-play game.
+I used the default 9x13, 42 opening board.
+First 11 moves are random.
+Starting with W12:0206, remainder are
+MCTS self-play at 2 minutes per turn.
+I am not sure it is great play, but it looks non-random.
+The last moves will be a test of whether it chooses to
+pass (twice) rather than pointlessly fill in eyes.
+
+Around move 61-63 the top right corner is interesting.
+B63:0315 is probably much better tha 0415 would have been.
+
+The position on the lower right edge around move 76 seems
+to be three "dead" white stones. Black doesn't waste a move to
+capture them; White does not waste moves trying to save them.
+For reasonable play, they should be captured in the very end game,
+as per Chinese area scoring.
+
+At least by move 84, the top right corner looks up in the air to me.
+
+// 11 random moves
+  1: B 0002
+  2: W 0312
+  3: B 1012
+  4: W 0603
+  5: B 0911
+  6: W 0102
+  7: B 0113
+  8: W 0900
+  9: B 0609
+ 10: W 0313
+ 11: B 0103
+// 50 turns at 2 min/turn
+ 12: W 0206
+ 13: B 0607
+ 14: W 0705
+ 15: B 0504
+ 16: W 0414
+ 17: B 0306
+ 18: W 0704
+ 19: B 0509
+ 20: W 0610
+ 21: B 0310
+ 22: W 0706
+ 23: B 0708
+ 24: W 0807
+ 25: B 0503
+ 26: W 0208
+ 27: B 0402
+ 28: W 0003
+ 29: B 0308
+ 30: W 0600
+ 31: B 0010
+ 32: W 0409
+ 33: B 0812
+ 34: W 0311
+ 35: B 0210
+ 36: W 0112
+ 37: B 0408
+ 38: W 0602
+ 39: B 0714
+ 40: W 0612
+ 41: B 0809
+ 42: W 0401
+ 43: B 0012
+ 44: W 0710
+ 45: B 0302
+ 46: W 0811
+ 47: B 0201
+ 48: W 0713
+ 49: B 1008
+ 50: W 0403
+ 51: B 0305
+ 52: W 0613
+ 53: B 0913
+ 54: W 0910
+ 55: B 0314
+ 56: W 0101
+ 57: B 0105
+ 58: W 0013
+ 59: B 0510
+ 60: W 0406
+ 61: B 0214
+// 25 more at 2 min/turn
+ 62: W 0511
+ 63: B 0315
+ 64: W 0909
+ 65: B 0810
+ 66: W 0108
+ 67: B 1005
+ 68: W 0507
+ 69: B 0508
+ 70: W 0202
+ 71: B 0409
+ 72: W 0104
+ 73: B 0211
+ 74: W 0711
+ 75: B 0110
+ 76: W 0507
+ 77: B 0406
+ 78: W 1007
+ 79: B 1004
+ 80: W 0212
+ 81: B 0404
+ 82: W 0200
+ 83: B 0907
+ 84: W 0415
+ 85: B 0702
+ 86: W 0004
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

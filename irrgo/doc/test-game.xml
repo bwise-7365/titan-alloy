@@ -1,0 +1,1668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IrrGoBoard xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="irrgo.xsd">
+    <rectangularP val="False"/>
+    <coord_list>
+        <coord>
+            <node id="0000"/>
+            <R val="0"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0015"/>
+            <R val="0"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1000"/>
+            <R val="10"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="1015"/>
+            <R val="10"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0414"/>
+            <R val="4"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="1008"/>
+            <R val="10"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0610"/>
+            <R val="6"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0600"/>
+            <R val="6"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0212"/>
+            <R val="2"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1012"/>
+            <R val="10"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0510"/>
+            <R val="5"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0404"/>
+            <R val="4"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0907"/>
+            <R val="9"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0604"/>
+            <R val="6"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0406"/>
+            <R val="4"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0807"/>
+            <R val="8"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0305"/>
+            <R val="3"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0312"/>
+            <R val="3"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0713"/>
+            <R val="7"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0102"/>
+            <R val="1"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0402"/>
+            <R val="4"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0608"/>
+            <R val="6"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0603"/>
+            <R val="6"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0705"/>
+            <R val="7"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0714"/>
+            <R val="7"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0211"/>
+            <R val="2"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0612"/>
+            <R val="6"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0200"/>
+            <R val="2"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0013"/>
+            <R val="0"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0504"/>
+            <R val="5"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1004"/>
+            <R val="10"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0009"/>
+            <R val="0"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0704"/>
+            <R val="7"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0607"/>
+            <R val="6"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0306"/>
+            <R val="3"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0302"/>
+            <R val="3"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0913"/>
+            <R val="9"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0513"/>
+            <R val="5"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0712"/>
+            <R val="7"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0809"/>
+            <R val="8"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0911"/>
+            <R val="9"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0208"/>
+            <R val="2"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0801"/>
+            <R val="8"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0113"/>
+            <R val="1"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0002"/>
+            <R val="0"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0214"/>
+            <R val="2"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0811"/>
+            <R val="8"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0314"/>
+            <R val="3"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0500"/>
+            <R val="5"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0311"/>
+            <R val="3"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0310"/>
+            <R val="3"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0206"/>
+            <R val="2"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0012"/>
+            <R val="0"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0401"/>
+            <R val="4"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0708"/>
+            <R val="7"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0004"/>
+            <R val="0"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1007"/>
+            <R val="10"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0711"/>
+            <R val="7"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0210"/>
+            <R val="2"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0702"/>
+            <R val="7"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0815"/>
+            <R val="8"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0304"/>
+            <R val="3"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0111"/>
+            <R val="1"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0615"/>
+            <R val="6"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0101"/>
+            <R val="1"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0508"/>
+            <R val="5"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0003"/>
+            <R val="0"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0213"/>
+            <R val="2"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0104"/>
+            <R val="1"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0201"/>
+            <R val="2"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0403"/>
+            <R val="4"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0006"/>
+            <R val="0"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0115"/>
+            <R val="1"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0900"/>
+            <R val="9"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0806"/>
+            <R val="8"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0315"/>
+            <R val="3"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0110"/>
+            <R val="1"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0108"/>
+            <R val="1"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0105"/>
+            <R val="1"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0614"/>
+            <R val="6"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0408"/>
+            <R val="4"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0409"/>
+            <R val="4"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0901"/>
+            <R val="9"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0803"/>
+            <R val="8"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0703"/>
+            <R val="7"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0609"/>
+            <R val="6"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0910"/>
+            <R val="9"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0706"/>
+            <R val="7"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0010"/>
+            <R val="0"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0100"/>
+            <R val="1"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0602"/>
+            <R val="6"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0507"/>
+            <R val="5"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0103"/>
+            <R val="1"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0308"/>
+            <R val="3"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0112"/>
+            <R val="1"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1010"/>
+            <R val="10"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0613"/>
+            <R val="6"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0810"/>
+            <R val="8"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0313"/>
+            <R val="3"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0909"/>
+            <R val="9"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1013"/>
+            <R val="10"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0903"/>
+            <R val="9"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0109"/>
+            <R val="1"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0611"/>
+            <R val="6"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0503"/>
+            <R val="5"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0514"/>
+            <R val="5"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0202"/>
+            <R val="2"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="1014"/>
+            <R val="10"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0800"/>
+            <R val="8"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0812"/>
+            <R val="8"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0412"/>
+            <R val="4"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0415"/>
+            <R val="4"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0710"/>
+            <R val="7"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1009"/>
+            <R val="10"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1005"/>
+            <R val="10"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0509"/>
+            <R val="5"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0511"/>
+            <R val="5"/>
+            <C val="11"/>
+        </coord>
+    </coord_list>
+    <edge_list>
+        <edge>
+            <node id="0000"/>
+            <node id="0002"/>
+        </edge>
+        <edge>
+            <node id="0000"/>
+            <node id="0100"/>
+        </edge>
+        <edge>
+            <node id="0015"/>
+            <node id="0013"/>
+        </edge>
+        <edge>
+            <node id="0015"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="1000"/>
+            <node id="1004"/>
+        </edge>
+        <edge>
+            <node id="1000"/>
+            <node id="0900"/>
+        </edge>
+        <edge>
+            <node id="1015"/>
+            <node id="1014"/>
+        </edge>
+        <edge>
+            <node id="1015"/>
+            <node id="0815"/>
+        </edge>
+        <edge>
+            <node id="0414"/>
+            <node id="0415"/>
+        </edge>
+        <edge>
+            <node id="0414"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0414"/>
+            <node id="0314"/>
+        </edge>
+        <edge>
+            <node id="0414"/>
+            <node id="0513"/>
+        </edge>
+        <edge>
+            <node id="1008"/>
+            <node id="1009"/>
+        </edge>
+        <edge>
+            <node id="1008"/>
+            <node id="1007"/>
+        </edge>
+        <edge>
+            <node id="1008"/>
+            <node id="0909"/>
+        </edge>
+        <edge>
+            <node id="1008"/>
+            <node id="0907"/>
+        </edge>
+        <edge>
+            <node id="0610"/>
+            <node id="0611"/>
+        </edge>
+        <edge>
+            <node id="0610"/>
+            <node id="0609"/>
+        </edge>
+        <edge>
+            <node id="0610"/>
+            <node id="0510"/>
+        </edge>
+        <edge>
+            <node id="0610"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0600"/>
+            <node id="0500"/>
+        </edge>
+        <edge>
+            <node id="0600"/>
+            <node id="0602"/>
+        </edge>
+        <edge>
+            <node id="0600"/>
+            <node id="0800"/>
+        </edge>
+        <edge>
+            <node id="0600"/>
+            <node id="0401"/>
+        </edge>
+        <edge>
+            <node id="0212"/>
+            <node id="0213"/>
+        </edge>
+        <edge>
+            <node id="0212"/>
+            <node id="0211"/>
+        </edge>
+        <edge>
+            <node id="0212"/>
+            <node id="0312"/>
+        </edge>
+        <edge>
+            <node id="0212"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="1013"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="0913"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="0911"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="1010"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0511"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0609"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0403"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0304"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0305"/>
+        </edge>
+        <edge>
+            <node id="0907"/>
+            <node id="0807"/>
+        </edge>
+        <edge>
+            <node id="0907"/>
+            <node id="1007"/>
+        </edge>
+        <edge>
+            <node id="0907"/>
+            <node id="0806"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0603"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0704"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="0406"/>
+            <node id="0306"/>
+        </edge>
+        <edge>
+            <node id="0406"/>
+            <node id="0507"/>
+        </edge>
+        <edge>
+            <node id="0406"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="0807"/>
+            <node id="0806"/>
+        </edge>
+        <edge>
+            <node id="0807"/>
+            <node id="0706"/>
+        </edge>
+        <edge>
+            <node id="0807"/>
+            <node id="0708"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0304"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0306"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0206"/>
+        </edge>
+        <edge>
+            <node id="0312"/>
+            <node id="0313"/>
+        </edge>
+        <edge>
+            <node id="0312"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="0312"/>
+            <node id="0412"/>
+        </edge>
+        <edge>
+            <node id="0713"/>
+            <node id="0712"/>
+        </edge>
+        <edge>
+            <node id="0713"/>
+            <node id="0714"/>
+        </edge>
+        <edge>
+            <node id="0713"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0713"/>
+            <node id="0812"/>
+        </edge>
+        <edge>
+            <node id="0102"/>
+            <node id="0101"/>
+        </edge>
+        <edge>
+            <node id="0102"/>
+            <node id="0103"/>
+        </edge>
+        <edge>
+            <node id="0102"/>
+            <node id="0202"/>
+        </edge>
+        <edge>
+            <node id="0102"/>
+            <node id="0002"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0401"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0403"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0302"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0602"/>
+        </edge>
+        <edge>
+            <node id="0608"/>
+            <node id="0607"/>
+        </edge>
+        <edge>
+            <node id="0608"/>
+            <node id="0609"/>
+        </edge>
+        <edge>
+            <node id="0608"/>
+            <node id="0508"/>
+        </edge>
+        <edge>
+            <node id="0608"/>
+            <node id="0708"/>
+        </edge>
+        <edge>
+            <node id="0603"/>
+            <node id="0602"/>
+        </edge>
+        <edge>
+            <node id="0603"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="0603"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="0705"/>
+            <node id="0704"/>
+        </edge>
+        <edge>
+            <node id="0705"/>
+            <node id="0706"/>
+        </edge>
+        <edge>
+            <node id="0705"/>
+            <node id="0806"/>
+        </edge>
+        <edge>
+            <node id="0705"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="0714"/>
+            <node id="0614"/>
+        </edge>
+        <edge>
+            <node id="0714"/>
+            <node id="0815"/>
+        </edge>
+        <edge>
+            <node id="0714"/>
+            <node id="0615"/>
+        </edge>
+        <edge>
+            <node id="0211"/>
+            <node id="0210"/>
+        </edge>
+        <edge>
+            <node id="0211"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="0211"/>
+            <node id="0111"/>
+        </edge>
+        <edge>
+            <node id="0612"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0612"/>
+            <node id="0611"/>
+        </edge>
+        <edge>
+            <node id="0612"/>
+            <node id="0712"/>
+        </edge>
+        <edge>
+            <node id="0612"/>
+            <node id="0513"/>
+        </edge>
+        <edge>
+            <node id="0200"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0200"/>
+            <node id="0100"/>
+        </edge>
+        <edge>
+            <node id="0200"/>
+            <node id="0500"/>
+        </edge>
+        <edge>
+            <node id="0013"/>
+            <node id="0012"/>
+        </edge>
+        <edge>
+            <node id="0013"/>
+            <node id="0113"/>
+        </edge>
+        <edge>
+            <node id="0013"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="0504"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="1004"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="1004"/>
+            <node id="0903"/>
+        </edge>
+        <edge>
+            <node id="1004"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="0009"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0009"/>
+            <node id="0109"/>
+        </edge>
+        <edge>
+            <node id="0009"/>
+            <node id="0108"/>
+        </edge>
+        <edge>
+            <node id="0009"/>
+            <node id="0006"/>
+        </edge>
+        <edge>
+            <node id="0704"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="0704"/>
+            <node id="0803"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0507"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0706"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0708"/>
+        </edge>
+        <edge>
+            <node id="0306"/>
+            <node id="0206"/>
+        </edge>
+        <edge>
+            <node id="0306"/>
+            <node id="0308"/>
+        </edge>
+        <edge>
+            <node id="0302"/>
+            <node id="0202"/>
+        </edge>
+        <edge>
+            <node id="0302"/>
+            <node id="0401"/>
+        </edge>
+        <edge>
+            <node id="0302"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0913"/>
+            <node id="1013"/>
+        </edge>
+        <edge>
+            <node id="0913"/>
+            <node id="0812"/>
+        </edge>
+        <edge>
+            <node id="0913"/>
+            <node id="1014"/>
+        </edge>
+        <edge>
+            <node id="0513"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0513"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0712"/>
+            <node id="0711"/>
+        </edge>
+        <edge>
+            <node id="0712"/>
+            <node id="0812"/>
+        </edge>
+        <edge>
+            <node id="0809"/>
+            <node id="0810"/>
+        </edge>
+        <edge>
+            <node id="0809"/>
+            <node id="0909"/>
+        </edge>
+        <edge>
+            <node id="0809"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0809"/>
+            <node id="0708"/>
+        </edge>
+        <edge>
+            <node id="0911"/>
+            <node id="0910"/>
+        </edge>
+        <edge>
+            <node id="0911"/>
+            <node id="0811"/>
+        </edge>
+        <edge>
+            <node id="0911"/>
+            <node id="1010"/>
+        </edge>
+        <edge>
+            <node id="0208"/>
+            <node id="0308"/>
+        </edge>
+        <edge>
+            <node id="0208"/>
+            <node id="0108"/>
+        </edge>
+        <edge>
+            <node id="0208"/>
+            <node id="0206"/>
+        </edge>
+        <edge>
+            <node id="0208"/>
+            <node id="0310"/>
+        </edge>
+        <edge>
+            <node id="0801"/>
+            <node id="0800"/>
+        </edge>
+        <edge>
+            <node id="0801"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="0801"/>
+            <node id="0702"/>
+        </edge>
+        <edge>
+            <node id="0801"/>
+            <node id="0900"/>
+        </edge>
+        <edge>
+            <node id="0113"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="0113"/>
+            <node id="0213"/>
+        </edge>
+        <edge>
+            <node id="0113"/>
+            <node id="0214"/>
+        </edge>
+        <edge>
+            <node id="0002"/>
+            <node id="0003"/>
+        </edge>
+        <edge>
+            <node id="0002"/>
+            <node id="0101"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0213"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0314"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0313"/>
+        </edge>
+        <edge>
+            <node id="0811"/>
+            <node id="0810"/>
+        </edge>
+        <edge>
+            <node id="0811"/>
+            <node id="0812"/>
+        </edge>
+        <edge>
+            <node id="0811"/>
+            <node id="0711"/>
+        </edge>
+        <edge>
+            <node id="0314"/>
+            <node id="0315"/>
+        </edge>
+        <edge>
+            <node id="0314"/>
+            <node id="0313"/>
+        </edge>
+        <edge>
+            <node id="0500"/>
+            <node id="0401"/>
+        </edge>
+        <edge>
+            <node id="0311"/>
+            <node id="0310"/>
+        </edge>
+        <edge>
+            <node id="0311"/>
+            <node id="0412"/>
+        </edge>
+        <edge>
+            <node id="0310"/>
+            <node id="0210"/>
+        </edge>
+        <edge>
+            <node id="0310"/>
+            <node id="0409"/>
+        </edge>
+        <edge>
+            <node id="0206"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0012"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="0012"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0004"/>
+            <node id="0003"/>
+        </edge>
+        <edge>
+            <node id="0004"/>
+            <node id="0104"/>
+        </edge>
+        <edge>
+            <node id="0004"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0004"/>
+            <node id="0006"/>
+        </edge>
+        <edge>
+            <node id="1007"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="0711"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0711"/>
+            <node id="0611"/>
+        </edge>
+        <edge>
+            <node id="0210"/>
+            <node id="0110"/>
+        </edge>
+        <edge>
+            <node id="0210"/>
+            <node id="0111"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0602"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0803"/>
+        </edge>
+        <edge>
+            <node id="0815"/>
+            <node id="1014"/>
+        </edge>
+        <edge>
+            <node id="0304"/>
+            <node id="0403"/>
+        </edge>
+        <edge>
+            <node id="0111"/>
+            <node id="0110"/>
+        </edge>
+        <edge>
+            <node id="0111"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="0615"/>
+            <node id="0614"/>
+        </edge>
+        <edge>
+            <node id="0615"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0615"/>
+            <node id="0415"/>
+        </edge>
+        <edge>
+            <node id="0101"/>
+            <node id="0100"/>
+        </edge>
+        <edge>
+            <node id="0101"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0507"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0408"/>
+        </edge>
+        <edge>
+            <node id="0003"/>
+            <node id="0103"/>
+        </edge>
+        <edge>
+            <node id="0003"/>
+            <node id="0104"/>
+        </edge>
+        <edge>
+            <node id="0213"/>
+            <node id="0313"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0103"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0201"/>
+            <node id="0202"/>
+        </edge>
+        <edge>
+            <node id="0403"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="0006"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0006"/>
+            <node id="0108"/>
+        </edge>
+        <edge>
+            <node id="0115"/>
+            <node id="0315"/>
+        </edge>
+        <edge>
+            <node id="0900"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="0900"/>
+            <node id="0800"/>
+        </edge>
+        <edge>
+            <node id="0806"/>
+            <node id="0706"/>
+        </edge>
+        <edge>
+            <node id="0315"/>
+            <node id="0415"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0109"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0108"/>
+            <node id="0109"/>
+        </edge>
+        <edge>
+            <node id="0614"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0614"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0408"/>
+            <node id="0409"/>
+        </edge>
+        <edge>
+            <node id="0408"/>
+            <node id="0308"/>
+        </edge>
+        <edge>
+            <node id="0408"/>
+            <node id="0507"/>
+        </edge>
+        <edge>
+            <node id="0409"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0409"/>
+            <node id="0308"/>
+        </edge>
+        <edge>
+            <node id="0901"/>
+            <node id="0903"/>
+        </edge>
+        <edge>
+            <node id="0803"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="0803"/>
+            <node id="0903"/>
+        </edge>
+        <edge>
+            <node id="0609"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0910"/>
+            <node id="0909"/>
+        </edge>
+        <edge>
+            <node id="0910"/>
+            <node id="0810"/>
+        </edge>
+        <edge>
+            <node id="0910"/>
+            <node id="1010"/>
+        </edge>
+        <edge>
+            <node id="0010"/>
+            <node id="0109"/>
+        </edge>
+        <edge>
+            <node id="0103"/>
+            <node id="0202"/>
+        </edge>
+        <edge>
+            <node id="1010"/>
+            <node id="1009"/>
+        </edge>
+        <edge>
+            <node id="0810"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0909"/>
+            <node id="1009"/>
+        </edge>
+        <edge>
+            <node id="1013"/>
+            <node id="1014"/>
+        </edge>
+        <edge>
+            <node id="0903"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="0611"/>
+            <node id="0511"/>
+        </edge>
+        <edge>
+            <node id="0412"/>
+            <node id="0511"/>
+        </edge>
+    </edge_list>
+    <Game>
+        <sideToMove color="White"/>
+        <Position type="setup">
+            <stone>
+                <node id="0104"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0600"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1014"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0511"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0615"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0710"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0800"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0015"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1015"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1005"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0102"/>
+                <color val="Black"/>
+            </stone>
+        </Position>
+        <move_list>
+            <move>
+                <node id="0000"/>
+                <color val="White"/>
+                <movenum num="12"/>
+            </move>
+            <move>
+                <node id="1000"/>
+                <color val="Black"/>
+                <movenum num="13"/>
+            </move>
+            <move>
+                <node id="0414"/>
+                <color val="White"/>
+                <movenum num="14"/>
+            </move>
+            <move>
+                <node id="1008"/>
+                <color val="Black"/>
+                <movenum num="15"/>
+            </move>
+            <move>
+                <node id="0610"/>
+                <color val="White"/>
+                <movenum num="16"/>
+            </move>
+            <move>
+                <node id="0212"/>
+                <color val="Black"/>
+                <movenum num="17"/>
+            </move>
+            <move>
+                <node id="1012"/>
+                <color val="White"/>
+                <movenum num="18"/>
+            </move>
+            <move>
+                <node id="0510"/>
+                <color val="Black"/>
+                <movenum num="19"/>
+            </move>
+            <move>
+                <node id="0404"/>
+                <color val="White"/>
+                <movenum num="20"/>
+            </move>
+            <move>
+                <node id="0907"/>
+                <color val="Black"/>
+                <movenum num="21"/>
+            </move>
+        </move_list>
+        <Position type="after-play">
+            <stone>
+                <node id="0000"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0015"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1000"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1015"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0414"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1008"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0610"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0600"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0212"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1012"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0510"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0404"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0907"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0102"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0615"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0104"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1014"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0800"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0710"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1005"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0511"/>
+                <color val="White"/>
+            </stone>
+        </Position>
+    </Game>
+</IrrGoBoard>

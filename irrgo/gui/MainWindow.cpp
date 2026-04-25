@@ -299,8 +299,8 @@ QPushButton* MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
 void MainWindow::buildMenuBar() {
     // File
     auto* fileMenu = menuBar()->addMenu("File");
-    fileMenu->addAction("Save");
-    fileMenu->addAction("Save As...");
+    connect(fileMenu->addAction("Save"),     &QAction::triggered, this, &MainWindow::onSave);
+    connect(fileMenu->addAction("Save As..."), &QAction::triggered, this, &MainWindow::onSaveAs);
     fileMenu->addSeparator();
     fileMenu->addAction("Load");
 
@@ -545,6 +545,7 @@ void MainWindow::generateBoard() {
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
 
     game_ = std::make_unique<Game>(*graph_);
+    setupPlaced_ = 0;
     boardWidget_->setGame(game_.get());   // also resets DVR flags on the widget
     blackDvrCheck_->setChecked(false);
     whiteDvrCheck_->setChecked(false);
@@ -905,4 +906,5 @@ void MainWindow::logLastMove() {
               .arg(QString::fromStdString(game_->graph().node(m.nodeId).label));
     moveLog_->append(text);
 }
+
 // Copyright Ben Paul Wise. All Rights Reserved.

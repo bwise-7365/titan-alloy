@@ -39,6 +39,8 @@ private slots:
     void onSuggestMctsGo();
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onSave();
+    void onSaveAs();
 
 private:
     void buildMenuBar();
@@ -63,6 +65,7 @@ private:
                                   bool withTurns = true);
 
     void applyComputedMove(AbsGame::MoveId mv);
+    void saveToFile(const QString& path);
 
     // Central UI
     BoardWidget*  boardWidget_;
@@ -106,6 +109,7 @@ private:
     // Game state
     std::unique_ptr<IrrGo::Graph>  graph_;
     std::unique_ptr<IrrGo::Game>   game_;
+    QString currentFilePath_;
 
     // Setup animation
     QTimer*          stoneTimer_;

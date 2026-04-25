@@ -13,6 +13,7 @@ qt_add_executable(irrgo_gui
     main_gui.cpp
     MainWindow.h
     MainWindow.cpp
+    MainWindow_save.cpp
     BoardWidget.h
     BoardWidget.cpp
     irrgo.qrc
