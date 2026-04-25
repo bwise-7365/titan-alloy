@@ -38,6 +38,7 @@ private slots:
     void onSuggestGo();
     void onSuggestMctsGo();
     void onPlayNegamaxGo();
+    void onPlayMctsGo();
 
 private:
     void buildMenuBar();
@@ -91,9 +92,11 @@ private:
     QActionGroup* stonesGroup_;
 
     // Play menu
-    QAction*  manualAction_     = nullptr;
-    QSpinBox* playDepthSpin_    = nullptr;
-    QSpinBox* playTurnsSpin_    = nullptr;
+    QAction*  manualAction_      = nullptr;
+    QSpinBox* playDepthSpin_     = nullptr;
+    QSpinBox* playTurnsSpin_     = nullptr;
+    QComboBox* playMctsSecCombo_ = nullptr;
+    QSpinBox*  playMctsTurnsSpin_ = nullptr;
 
     // Suggest menu
     QSpinBox*  suggestDepthSpin_    = nullptr;

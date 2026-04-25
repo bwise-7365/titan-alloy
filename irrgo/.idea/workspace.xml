@@ -32,9 +32,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="050b0786-39ec-410d-a950-8db12c38b51d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/QtSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/QtSettings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-release-v2/gui/Qt6Core.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-release-v2/gui/Qt6Gui.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-release-v2/gui/Qt6Widgets.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-release-v2/gui/platforms/qwindows.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/gui/platforms/qwindows.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/MainWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/MainWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +53,7 @@
     <option name="cachedIndexableFilesCount" value="79" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug-Visual Studio" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release-v2" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
@@ -80,7 +85,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "CMake Application.irrgo_driver.executor": "Run",
-    "CMake Application.irrgo_gui.executor": "Debug",
+    "CMake Application.irrgo_gui.executor": "Run",
     "CMake Debug.IrrGo.executor": "Debug",
     "CMake Debug.Project.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -167,7 +172,7 @@
       <workItem from="1777033701984" duration="1219000" />
       <workItem from="1777035237312" duration="31110000" />
       <workItem from="1777079827581" duration="5522000" />
-      <workItem from="1777123088521" duration="10089000" />
+      <workItem from="1777123088521" duration="11904000" />
     </task>
     <servers />
   </component>

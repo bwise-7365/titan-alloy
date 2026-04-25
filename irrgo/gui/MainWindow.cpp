@@ -58,6 +58,18 @@ static const struct { QColor color; const char* label; } kBgColors[] = {
 static const int kMaxEdges[]       = { 3, 4, 5, 6 };
 static constexpr int kDefaultMaxEdgesIdx = 1; // value 4
 
+static const struct { int secs; const char* label; } kMctsOptions[] = {
+    {  10, "10 sec"   },
+    {  30, "30 sec"   },
+    {  45, "45 sec"   },
+    {  60, "60 sec"   },
+    {  90, "90 sec"   },
+    { 120, "2 min"    },
+    { 300, "5 min"    },
+    { 450, "7.5 min"  },
+    { 600, "10 min"   },
+};
+
 static const struct { double fraction; const char* label; } kStones[] = {
     { 0.00, "Empty"         },
     { 0.10, "Sparse (10%)"  },
@@ -371,10 +383,48 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
 
-    auto* playMcts = playMenu->addAction("MCTS");
-    playMcts->setCheckable(true);
-    playMcts->setEnabled(false);
-    playGroup->addAction(playMcts);
+    {
+        auto* mctsAction = new QAction("MCTS", this);
+        mctsAction->setCheckable(true);
+        playGroup->addAction(mctsAction);
+        playMenu->addAction(mctsAction);
+
+        auto* mctsMenu = new QMenu(this);
+        auto* widget   = new QWidget;
+        auto* vbox     = new QVBoxLayout(widget);
+        vbox->setContentsMargins(8, 6, 8, 6);
+        auto* form     = new QFormLayout;
+        form->setSpacing(6);
+        vbox->addLayout(form);
+
+        playMctsSecCombo_ = new QComboBox(widget);
+        for (const auto& o : kMctsOptions)
+            playMctsSecCombo_->addItem(o.label, o.secs);
+        form->addRow("Time:", playMctsSecCombo_);
+
+        playMctsTurnsSpin_ = new QSpinBox(widget);
+        playMctsTurnsSpin_->setRange(1, 999);
+        playMctsTurnsSpin_->setValue(10);
+        form->addRow("Turns:", playMctsTurnsSpin_);
+
+        auto* sep = new QFrame(widget);
+        sep->setFrameShape(QFrame::HLine);
+        vbox->addWidget(sep);
+
+        auto* goBtn = new QPushButton("Go!", widget);
+        vbox->addWidget(goBtn);
+        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
+
+        auto* wa = new QWidgetAction(mctsMenu);
+        wa->setDefaultWidget(widget);
+        mctsMenu->addAction(wa);
+        mctsAction->setMenu(mctsMenu);
+
+        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() {
+            mctsAction->setChecked(true);
+        });
+    }
 
     // ── Suggest (NegaMax Go! is wired up) ────────────────────────────────────
     auto* suggestMenu  = menuBar()->addMenu("Suggest");
@@ -390,17 +440,6 @@ void MainWindow::buildMenuBar() {
 
     // MCTS suggest submenu
     {
-        static const struct { int secs; const char* label; } kMctsOptions[] = {
-            { 10, "10 sec" }, // this is too short, debugging only
-            { 30, "30 sec" },
-            { 45, "45 sec" }, // on my laptop, 166, 157, 174  terminal evals on 9x13 opening
-            { 60, "60 sec" }, // reasonable for first moves of 9x13:
-            { 90, "90 sec" },
-            { 120, "2 min" },
-            { 300, "5 min" }, // 9x13 opening, 117 nodes, gets
-            { 450, "7.5 min" },
-            { 600, "10 min" },
-        };
         auto* mctsAction = new QAction("MCTS", this);
         mctsAction->setCheckable(true);
         suggestGroup->addAction(mctsAction);
@@ -765,6 +804,44 @@ void MainWindow::onPlayNegamaxGo() {
                                         / playTurnsTotal_);
             if (!game_->isGameOver() && playTurnsRemaining_ > 0) {
                 onPlayNegamaxGo();
+            } else {
+                turnProgress_->hide();
+                playTurnsTotal_ = 0;
+            }
+        }, Qt::QueuedConnection);
+    }).detach();
+}
+
+void MainWindow::onPlayMctsGo() {
+    if (!game_ || game_->isGameOver() || isSearching_ || stoneTimer_->isActive()) return;
+
+    if (playTurnsRemaining_ <= 0) {
+        playTurnsRemaining_ = playMctsTurnsSpin_->value();
+        playTurnsTotal_     = playTurnsRemaining_;
+        turnProgress_->setValue(0);
+        turnProgress_->show();
+    }
+
+    int      seconds = playMctsSecCombo_->currentData().toInt();
+    isSearching_ = true;
+    startSearchIndicator(seconds);
+
+    auto     searchGame = game_->clone();
+    unsigned gen        = searchGen_;
+
+    std::thread([this, gen, seconds, searchGame = std::move(searchGame)]() {
+        AbsGame::MoveId mv = AbsGame::Searcher::mcts(*searchGame, seconds);
+        QMetaObject::invokeMethod(this, [this, mv, gen]() {
+            if (gen != searchGen_) return;
+            isSearching_ = false;
+            stopSearchIndicator();
+            applyComputedMove(mv);
+            --playTurnsRemaining_;
+            if (playTurnsTotal_ > 0)
+                turnProgress_->setValue((playTurnsTotal_ - playTurnsRemaining_) * 100
+                                        / playTurnsTotal_);
+            if (!game_->isGameOver() && playTurnsRemaining_ > 0) {
+                onPlayMctsGo();
             } else {
                 turnProgress_->hide();
                 playTurnsTotal_ = 0;
