@@ -22,6 +22,9 @@ public:
     // the robust child (most-visited).
     static MoveId mcts(const Game& game, int seconds);
 
+
+    static int terminalCount;
+
 private:
     static double negaMax(const Game& game, int depth, double alpha, double beta,
                           std::chrono::steady_clock::time_point deadline);

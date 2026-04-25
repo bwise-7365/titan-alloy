@@ -27,10 +27,29 @@
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug-Visual Studio" ENABLED="true" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio" GENERATION_OPTIONS="-G Ninja -DCMAKE_BUILD_TYPE=Debug &quot;-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2026.1/bin/ninja/win/x64/ninja.exe&quot; &quot;-DQt6_DIR=C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6&quot;" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="050b0786-39ec-410d-a950-8db12c38b51d" name="Changes" comment="" />
+    <list default="true" id="050b0786-39ec-410d-a950-8db12c38b51d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/doc/mcts-visit-rates.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI-Assistant-suggestions.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/doc/AI-Assistant-suggestions.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/driver/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/driver/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/gui/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/gui/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug-visual-studio/lib/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug-visual-studio/lib/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/MainWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/gui/MainWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irrgo-instructions-part-3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo-instructions-part-3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irrgo_directions.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/irrgo_directions.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/partial-qt6-notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/partial-qt6-notes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Searcher.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Searcher.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mcts.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/mcts.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/negamax.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/negamax.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/star-points.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/star-points.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,10 +59,13 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="69" />
+    <option name="cachedIndexableFilesCount" value="79" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug-Visual Studio" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="DJIzmVQz" />
   </component>
@@ -81,6 +103,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "RunOnceActivity.west.config.association.type.startup.service": "true",
@@ -88,8 +111,9 @@
     "cidr.known.project.marker": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "integration",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/home/bwise/tmp/clion_tests/irrgo",
+    "last_opened_file_path": "C:/repos/ghub-per/titan-alloy/irrgo",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -104,6 +128,11 @@
   <component name="RunManager" selected="CMake Application.irrgo_gui">
     <configuration name="IrrGo" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory" temporary="true">
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="abs_game" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="IrrGo" TARGET_NAME="abs_game" CONFIG_NAME="Debug-Visual Studio">
       <method v="2">
@@ -152,6 +181,7 @@
       <workItem from="1777033701984" duration="1219000" />
       <workItem from="1777035237312" duration="31110000" />
       <workItem from="1777079827581" duration="5522000" />
+      <workItem from="1777123088521" duration="8517000" />
     </task>
     <servers />
   </component>

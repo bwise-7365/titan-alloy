@@ -2,9 +2,12 @@
 #include "Searcher.h"
 #include <chrono>
 #include <cmath>
+#include <cstdio>
 #include <limits>
 #include <random>
 #include <vector>
+
+int AbsGame::Searcher::terminalCount = 0;
 
 // ── Internal MCTS machinery ───────────────────────────────────────────────────
 namespace {
@@ -91,7 +94,10 @@ MctsNode* treePolicy(MctsNode& node, double expFactor,
 double rollout(const MctsNode& node, int rootPlayer, std::mt19937_64& rng) {
     auto game = node.game->clone();
     for (int d = 0; d < kMaxRolloutDepth; ++d) {
-        if (game->isTerminal()) break;
+        if (game->isTerminal()) {
+            ++AbsGame::Searcher::terminalCount;
+            break;
+        }
         auto moves = game->getLegalMoves();
         if (moves.empty()) break;
         std::uniform_int_distribution<int> dist(0, static_cast<int>(moves.size()) - 1);
@@ -145,6 +151,7 @@ void growTree(MctsNode& root, double expFactor, int rootPlayer, std::mt19937_64&
 namespace AbsGame {
 
 MoveId Searcher::mcts(const Game& game, int nodeMin, int nodeMax) {
+    terminalCount = 0;
     int             rootPlayer = game.currentPlayer();
     std::mt19937_64 rng(std::random_device{}());
 
@@ -164,11 +171,15 @@ MoveId Searcher::mcts(const Game& game, int nodeMin, int nodeMax) {
         growTree(*root, kUctExpFactor, rootPlayer, rng);
     }
 
+    fprintf(stderr, "terminalCount: %d\n", terminalCount);
+    printf("terminalCount: %d\n", terminalCount);
+
     MctsNode* rc = robustChild(*root);
     return rc ? rc->incomingMove : kPass;
 }
 
 MoveId Searcher::mcts(const Game& game, int seconds) {
+    terminalCount = 0;
     using Clock = std::chrono::steady_clock;
     const auto deadline = Clock::now() + std::chrono::seconds(seconds);
 
@@ -181,6 +192,9 @@ MoveId Searcher::mcts(const Game& game, int seconds) {
 
     while (Clock::now() < deadline)
         growTree(*root, kUctExpFactor, rootPlayer, rng);
+
+    fprintf(stderr, "terminalCount: %d\n", terminalCount);
+    printf("terminalCount: %d\n", terminalCount);
 
     MctsNode* rc = robustChild(*root);
     return rc ? rc->incomingMove : kPass;

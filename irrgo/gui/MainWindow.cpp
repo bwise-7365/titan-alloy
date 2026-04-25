@@ -47,7 +47,7 @@ static const SizeEntry kSizes[] = {
 // I made it start at 17x21 because it is an interesting variant on 19x19.
 // It is a slightly smaller area, and I expect tactics on the long edge
 // to differ from those on the short edge.
-static constexpr int kDefaultSizeIdx = 7; // starting at zero, this should be 17 × 21
+static constexpr int kDefaultSizeIdx = 3; // 9 × 13
 
 static const struct { QColor color; const char* label; } kBgColors[] = {
     { QColor("#F2B06D"), "Tan"  },
@@ -226,6 +226,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     buildMenuBar();
     resize(1000, 760);
+    irregularCheck_->setChecked(true);
+    generateBoard();
 }
 
 // ── Shared NegaMax submenu builder ────────────────────────────────────────────
@@ -389,12 +391,15 @@ void MainWindow::buildMenuBar() {
     // MCTS suggest submenu
     {
         static const struct { int secs; const char* label; } kMctsOptions[] = {
-            { 10, "10 sec" },
+            { 10, "10 sec" }, // this is too short, debugging only
             { 30, "30 sec" },
-            { 45, "45 sec" },
-            { 60, "60 sec" },
+            { 45, "45 sec" }, // on my laptop, 166, 157, 174  terminal evals on 9x13 opening
+            { 60, "60 sec" }, // reasonable for first moves of 9x13:
             { 90, "90 sec" },
-            { 120, "120 sec" },
+            { 120, "2 min" },
+            { 300, "5 min" }, // 9x13 opening, 117 nodes, gets
+            { 450, "7.5 min" },
+            { 600, "10 min" },
         };
         auto* mctsAction = new QAction("MCTS", this);
         mctsAction->setCheckable(true);
@@ -664,6 +669,7 @@ void MainWindow::onSuggestGo() {
             if (gen != searchGen_) return;
             isSearching_ = false;
             stopSearchIndicator();
+            updateControls();
             QString text;
             if (mv == AbsGame::kPass) {
                 text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");
@@ -698,6 +704,7 @@ void MainWindow::onSuggestMctsGo() {
             if (gen != searchGen_) return;
             isSearching_ = false;
             stopSearchIndicator();
+            updateControls();
             QString text;
             if (mv == AbsGame::kPass) {
                 text = QString("%1: %2 PASS").arg(turn).arg(isBlack ? "B" : "W");

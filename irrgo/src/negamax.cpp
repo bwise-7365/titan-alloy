@@ -26,6 +26,7 @@ double Searcher::negaMax(const Game& game, int depth, double alpha, double beta,
 }
 
 MoveId Searcher::bestMove(const Game& game, int depth, int timeLimitMs) {
+    terminalCount = 0;
     auto deadline = Clock::now() + std::chrono::milliseconds(timeLimitMs);
 
     MoveId best      = kPass;
