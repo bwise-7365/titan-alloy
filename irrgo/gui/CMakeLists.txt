@@ -35,14 +35,11 @@ qt_add_resources(irrgo_gui "stones_res"
         ../images/white01.png ../images/white02.png ../images/white03.png
         ../images/white04.png ../images/white05.png ../images/white06.png)
 
-# Background fabric — alias shortens the long filename
-set_source_files_properties(
-    ../images/dark-green-old-velvet-fabric-texture-used-as-background--free-photo.jpg
-    PROPERTIES QT_RESOURCE_ALIAS fabric_bg.jpg)
+# Background fabric
 qt_add_resources(irrgo_gui "textures_res"
     PREFIX "/textures"
     FILES
-        ../images/dark-green-old-velvet-fabric-texture-used-as-background--free-photo.jpg)
+        ../images/fabric_bg.jpg)
 
 if(WIN32)
     target_sources(irrgo_gui PRIVATE irrgo.rc)
