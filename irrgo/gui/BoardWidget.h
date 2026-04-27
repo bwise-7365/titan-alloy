@@ -81,6 +81,8 @@ private:
     bool useTexture_ = false;
     std::vector<QPixmap> blackSrc_,    whiteSrc_;
     std::vector<QPixmap> blackScaled_, whiteScaled_;
+    QPixmap fabricSrc_;
+    QPixmap fabricScaled_;
 
     // Cached transform — updated on resize / graph change
     float minX_=0, minY_=0, rangeX_=1, rangeY_=1;

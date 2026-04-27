@@ -43,11 +43,20 @@ void BoardWidget::loadTextures() {
         QPixmap pm(QString(":/stones/white%1.png").arg(i, 2, 10, QChar('0')));
         if (!pm.isNull()) whiteSrc_.push_back(pm);
     }
-    qDebug() << "BoardWidget::loadTextures:" << blackSrc_.size() << "black," << whiteSrc_.size() << "white";
+    fabricSrc_ = QPixmap(":/textures/fabric_bg.jpg");
+    if (fabricSrc_.isNull())
+        qDebug() << "BoardWidget: fabric_bg.jpg not found in resources";
 }
 
 void BoardWidget::rescaleTextures() {
-    if (!useTexture_ || blackSrc_.empty() || whiteSrc_.empty()) return;
+    if (!useTexture_) return;
+    // Fabric background — stretch to fill widget, no aspect-ratio constraint
+    if (!fabricSrc_.isNull() && width() > 0 && height() > 0)
+        fabricScaled_ = fabricSrc_.scaled(width(), height(),
+                                          Qt::IgnoreAspectRatio,
+                                          Qt::SmoothTransformation);
+    // Stone textures
+    if (blackSrc_.empty() || whiteSrc_.empty()) return;
     int sz = std::max(1, static_cast<int>(stoneR_ * 2.0f));
     blackScaled_.clear();
     for (const auto& pm : blackSrc_)
@@ -60,12 +69,14 @@ void BoardWidget::rescaleTextures() {
 }
 
 void BoardWidget::setUseTexture(bool on) {
-
-    qDebug() << "setUseTexture" << on << "blackScaled size after rescale:"
-             << (on ? blackScaled_.size() : 0);
     useTexture_ = on;
-    if (on) rescaleTextures();
-    else { blackScaled_.clear(); whiteScaled_.clear(); }
+    if (on) {
+        rescaleTextures();
+    } else {
+        blackScaled_.clear();
+        whiteScaled_.clear();
+        fabricScaled_ = QPixmap();
+    }
     update();
 }
 
@@ -258,7 +269,10 @@ void BoardWidget::mousePressEvent(QMouseEvent* e) {
 void BoardWidget::paintEvent(QPaintEvent*) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    p.fillRect(rect(), bgColor_);
+    if (useTexture_ && !fabricScaled_.isNull())
+        p.drawPixmap(0, 0, fabricScaled_);
+    else
+        p.fillRect(rect(), bgColor_);
 
     if (!game_ || game_->graph().nodeCount() == 0) return;
 
