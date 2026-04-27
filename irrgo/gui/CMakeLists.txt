@@ -35,12 +35,12 @@ qt_add_resources(irrgo_gui "stones_res"
         ../images/white01.png ../images/white02.png ../images/white03.png
         ../images/white04.png ../images/white05.png ../images/white06.png)
 
-# Background fabric
+# Background texture
 qt_add_resources(irrgo_gui "textures_res"
     PREFIX "/textures"
     BASE "../images"
     FILES
-        ../images/fabric_bg.jpg)
+        ../images/texture_bg.png)
 
 if(WIN32)
     target_sources(irrgo_gui PRIVATE irrgo.rc)

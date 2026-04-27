@@ -43,17 +43,19 @@ void BoardWidget::loadTextures() {
         QPixmap pm(QString(":/stones/white%1.png").arg(i, 2, 10, QChar('0')));
         if (!pm.isNull()) whiteSrc_.push_back(pm);
     }
-    fabricSrc_ = QPixmap(":/textures/fabric_bg.jpg");
+    fabricSrc_ = QPixmap(":/textures/texture_bg.png");
     if (fabricSrc_.isNull())
-        qDebug() << "BoardWidget: fabric_bg.jpg not found in resources";
+        qDebug() << "BoardWidget: texture_bg.png not found in resources";
 }
 
 void BoardWidget::rescaleTextures() {
     if (!useTexture_) return;
-    // Fabric background — stretch to fill widget, no aspect-ratio constraint
+    // Texture background — stretch to fill widget, no aspect-ratio constraint
+    int tmpW = width();
+    int tmpH = height();
     if (!fabricSrc_.isNull() && width() > 0 && height() > 0)
-        fabricScaled_ = fabricSrc_.scaled(width(), height(),
-                                          Qt::IgnoreAspectRatio,
+        fabricScaled_ = fabricSrc_.scaled(tmpW, tmpH,
+                                                Qt::IgnoreAspectRatio,
                                           Qt::SmoothTransformation);
     // Stone textures
     if (blackSrc_.empty() || whiteSrc_.empty()) return;
@@ -267,6 +269,13 @@ void BoardWidget::mousePressEvent(QMouseEvent* e) {
 // ── Paint ─────────────────────────────────────────────────────────────────────
 
 void BoardWidget::paintEvent(QPaintEvent*) {
+
+    // trying to figure out why textures do not show
+    qDebug() << "useTexture:" << useTexture_
+             << "fabricScaled isNull:" << fabricScaled_.isNull()
+             << "size:" << fabricScaled_.size();
+
+
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     if (useTexture_ && !fabricScaled_.isNull())
