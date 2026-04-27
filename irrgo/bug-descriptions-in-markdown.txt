@@ -1,0 +1,38 @@
+I have found some bugs and want you help analyzing them.
+Would Markdown be a good format for conveying them to you?
+If so, could you generate an example of the Markdown style most useful to you?                                                                                                                                
+                                                                                                                                                                    
+● Yes, Markdown works well. Here's the format most useful for me:                                                                                                   
+
+  ## Bug: <short title>                                                                                                                                             
+   
+  **File:** `src/Foo.java:42`                                                                                                                                       
+  **Severity:** critical | high | medium | low
+
+  ### Observed behavior
+  What actually happens.
+
+  ### Expected behavior
+  What should happen instead.
+
+  ### Steps to reproduce
+  1. Step one
+  2. Step two
+
+  ### Relevant code
+  ```java
+  // paste the snippet here
+
+  Notes
+
+  Any hypotheses, related code, or context.
+
+  A few things that help the most:
+  - **File paths with line numbers** (`path/to/File.java:42`) so I can jump straight to the source
+  - **Actual vs expected** stated separately — avoids ambiguity
+  - **A snippet** of the offending code if you have one, even a few lines
+  - **Severity** so I know what to prioritize if you're listing several bugs
+
+  You can drop the sections that don't apply. Go ahead and paste your bug list whenever you're ready.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
