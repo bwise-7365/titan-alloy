@@ -1,6 +1,5 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "BoardWidget.h"
-#include "IrregularGraph.h"
 #include "RectangularGraph.h"
 #include <QMouseEvent>
 #include <QPainter>
@@ -213,7 +212,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     if (!game_ || game_->graph().nodeCount() == 0) return;
 
     const auto& nodes = game_->graph().nodes();
-    bool isIrr = dynamic_cast<const IrregularGraph*>(&game_->graph()) != nullptr;
+    const auto* rg = dynamic_cast<const RectangularGraph*>(&game_->graph());
 
     auto toWidget = [&](float x, float y) -> QPointF {
         return { offX_ + (x - minX_) * scale_,
@@ -236,8 +235,8 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                 p.drawLine(toWidget(nd.x, nd.y),
                            toWidget(nodes[nb].x, nodes[nb].y));
 
-    // Irregular hover: incident edges in medium purple
-    if (isIrr && hoverNode_ >= 0) {
+    // Non-rectangular hover: incident edges in medium purple
+    if (!rg && hoverNode_ >= 0) {
         p.setPen(QPen(kMedPurple, 2.5)); // normally kMedPurple kDarkBlue
         const auto& hn = nodes[hoverNode_];
         for (int nb : hn.neighbors)
@@ -249,11 +248,10 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         float dotR = std::max(2.0f, stoneR_ * 0.3f);
         p.setPen(Qt::NoPen);
         p.setBrush(lineColor_);
-        if (isIrr) {
+        if (!rg) {
             for (const auto& nd : nodes)
                 p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
         } else {
-            const auto* rg = static_cast<const RectangularGraph*>(&game_->graph());
             int rows = rg->rows(), cols = rg->cols();
             int lr = starCoord(rows),  hr = rows - (1 + lr);
             int lc = starCoord(cols),  hc = cols - (1 + lc);

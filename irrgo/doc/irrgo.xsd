@@ -39,6 +39,19 @@
     </xs:complexType>
   </xs:element>
 
+  <!-- Present only when rectangularP val="True" -->
+  <xs:element name="rows">
+    <xs:complexType>
+      <xs:attribute name="val" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="cols">
+    <xs:complexType>
+      <xs:attribute name="val" type="xs:positiveInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
   <!-- Present only when rectangularP val="False" -->
   <xs:element name="seed">
     <xs:complexType>
@@ -174,6 +187,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="rectangularP"/>
+        <xs:element ref="rows" minOccurs="0"/>
+        <xs:element ref="cols" minOccurs="0"/>
         <xs:element ref="seed" minOccurs="0"/>
         <xs:element ref="coord_list"/>
         <xs:element ref="edge_list"/>

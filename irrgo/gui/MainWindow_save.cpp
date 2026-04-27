@@ -51,7 +51,13 @@ void MainWindow::saveToFile(const QString& path) {
     xml.writeEmptyElement("rectangularP");
     xml.writeAttribute("val", isRect ? "True" : "False");
 
-    if (!isRect) {
+    if (isRect) {
+        const auto* rg = static_cast<const RectangularGraph*>(graph_.get());
+        xml.writeEmptyElement("rows");
+        xml.writeAttribute("val", QString::number(rg->rows()));
+        xml.writeEmptyElement("cols");
+        xml.writeAttribute("val", QString::number(rg->cols()));
+    } else {
         xml.writeEmptyElement("seed");
         xml.writeAttribute("val", QString::number(graph_->seed()));
     }
@@ -156,6 +162,7 @@ void MainWindow::onLoad() {
 
     bool isRect   = false;
     uint64_t xmlSeed = 0;
+    int xmlRows = 0, xmlCols = 0;
 
     struct NodeRec  { std::string label; int row = 0, col = 0; };
     struct EdgeRec  { std::string a, b; };
@@ -182,6 +189,10 @@ void MainWindow::onLoad() {
             const auto name = xml.name();
             if (name == QLatin1String("rectangularP")) {
                 isRect = xml.attributes().value("val") == QLatin1String("True");
+            } else if (name == QLatin1String("rows")) {
+                xmlRows = xml.attributes().value("val").toInt();
+            } else if (name == QLatin1String("cols")) {
+                xmlCols = xml.attributes().value("val").toInt();
             } else if (name == QLatin1String("seed")) {
                 xmlSeed = xml.attributes().value("val").toULongLong();
             } else if (name == QLatin1String("coord")) {
@@ -236,8 +247,12 @@ void MainWindow::onLoad() {
     for (const auto& er : edgeRecs)
         graphEdges.push_back({er.a, er.b});
 
-    auto newGraph = std::make_unique<LoadedGraph>(graphNodes, graphEdges, xmlSeed);
-    auto newGame  = std::make_unique<Game>(*newGraph);
+    std::unique_ptr<Graph> newGraph;
+    if (isRect && xmlRows > 0 && xmlCols > 0)
+        newGraph = std::make_unique<RectangularGraph>(xmlRows, xmlCols);
+    else
+        newGraph = std::make_unique<LoadedGraph>(graphNodes, graphEdges, xmlSeed);
+    auto newGame = std::make_unique<Game>(*newGraph);
 
     int newSetupPlaced = 0;
     newGame->setSetupMode(true);
@@ -272,7 +287,7 @@ void MainWindow::onLoad() {
     whiteDvrCheck_->setChecked(false);
     boardWidget_->setBgColor(isRect ? QColor("#F2B06D") : QColor("#0C7F84"));
     boardWidget_->setBoardInfo(isRect
-        ? QString("Loaded (rectangular)")
+        ? QString("Loaded (%1x%2)").arg(xmlRows).arg(xmlCols)
         : QString("Loaded, seed %1").arg(xmlSeed));
     if (!isRect)
         randomSeedEdit_->setText(QString::number(xmlSeed));
