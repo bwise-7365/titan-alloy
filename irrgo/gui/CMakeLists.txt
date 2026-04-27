@@ -18,16 +18,16 @@ qt_add_executable(irrgo_gui
     BoardWidget.cpp
 )
 
-# App icon — alias shortens the filename
-set_source_files_properties(../images/irrgo-logo-gold-v2.png
-    PROPERTIES QT_RESOURCE_ALIAS irrgo.png)
+# App icon
 qt_add_resources(irrgo_gui "icons_res"
     PREFIX "/icons"
+    BASE "../images"
     FILES ../images/irrgo-logo-gold-v2.png)
 
-# Stone textures — base names already match the :/stones/black01.png aliases
+# Stone textures
 qt_add_resources(irrgo_gui "stones_res"
     PREFIX "/stones"
+    BASE "../images"
     FILES
         ../images/black01.png ../images/black02.png ../images/black03.png
         ../images/black04.png ../images/black05.png ../images/black06.png
@@ -38,6 +38,7 @@ qt_add_resources(irrgo_gui "stones_res"
 # Background fabric
 qt_add_resources(irrgo_gui "textures_res"
     PREFIX "/textures"
+    BASE "../images"
     FILES
         ../images/fabric_bg.jpg)
 
