@@ -1,0 +1,5190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IrrGoBoard xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="irrgo.xsd">
+    <rectangularP val="False"/>
+    <coord_list>
+        <coord>
+            <node id="0000"/>
+            <R val="0"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0020"/>
+            <R val="0"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="1500"/>
+            <R val="15"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="1520"/>
+            <R val="15"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0903"/>
+            <R val="9"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="1307"/>
+            <R val="13"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0404"/>
+            <R val="4"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0604"/>
+            <R val="6"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1503"/>
+            <R val="15"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0202"/>
+            <R val="2"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="1408"/>
+            <R val="14"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0119"/>
+            <R val="1"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="1207"/>
+            <R val="12"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0110"/>
+            <R val="1"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1315"/>
+            <R val="13"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1511"/>
+            <R val="15"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0510"/>
+            <R val="5"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0401"/>
+            <R val="4"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0812"/>
+            <R val="8"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0320"/>
+            <R val="3"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0118"/>
+            <R val="1"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="1313"/>
+            <R val="13"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0920"/>
+            <R val="9"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="1009"/>
+            <R val="10"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0307"/>
+            <R val="3"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1514"/>
+            <R val="15"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0810"/>
+            <R val="8"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1119"/>
+            <R val="11"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="1502"/>
+            <R val="15"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="1104"/>
+            <R val="11"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0116"/>
+            <R val="1"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="1317"/>
+            <R val="13"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="1105"/>
+            <R val="11"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0111"/>
+            <R val="1"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0104"/>
+            <R val="1"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0301"/>
+            <R val="3"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0103"/>
+            <R val="1"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="1504"/>
+            <R val="15"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1208"/>
+            <R val="12"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0300"/>
+            <R val="3"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="1218"/>
+            <R val="12"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0914"/>
+            <R val="9"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0508"/>
+            <R val="5"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0415"/>
+            <R val="4"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0820"/>
+            <R val="8"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0305"/>
+            <R val="3"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1316"/>
+            <R val="13"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="0904"/>
+            <R val="9"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0817"/>
+            <R val="8"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0900"/>
+            <R val="9"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0214"/>
+            <R val="2"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="1409"/>
+            <R val="14"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1501"/>
+            <R val="15"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0519"/>
+            <R val="5"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="1310"/>
+            <R val="13"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0210"/>
+            <R val="2"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1414"/>
+            <R val="14"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0619"/>
+            <R val="6"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="1418"/>
+            <R val="14"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0616"/>
+            <R val="6"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="0109"/>
+            <R val="1"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0314"/>
+            <R val="3"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0107"/>
+            <R val="1"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1101"/>
+            <R val="11"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="1413"/>
+            <R val="14"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0909"/>
+            <R val="9"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1116"/>
+            <R val="11"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="1213"/>
+            <R val="12"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="1515"/>
+            <R val="15"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0014"/>
+            <R val="0"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="1217"/>
+            <R val="12"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0209"/>
+            <R val="2"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1020"/>
+            <R val="10"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="1007"/>
+            <R val="10"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0416"/>
+            <R val="4"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="1106"/>
+            <R val="11"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0204"/>
+            <R val="2"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1300"/>
+            <R val="13"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="1519"/>
+            <R val="15"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="0215"/>
+            <R val="2"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1214"/>
+            <R val="12"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="1111"/>
+            <R val="11"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0002"/>
+            <R val="0"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0211"/>
+            <R val="2"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0607"/>
+            <R val="6"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1000"/>
+            <R val="10"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0410"/>
+            <R val="4"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0706"/>
+            <R val="7"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0004"/>
+            <R val="0"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0605"/>
+            <R val="6"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1107"/>
+            <R val="11"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1206"/>
+            <R val="12"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="1001"/>
+            <R val="10"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0015"/>
+            <R val="0"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1212"/>
+            <R val="12"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0711"/>
+            <R val="7"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0100"/>
+            <R val="1"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0717"/>
+            <R val="7"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0420"/>
+            <R val="4"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0806"/>
+            <R val="8"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0808"/>
+            <R val="8"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0602"/>
+            <R val="6"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="1012"/>
+            <R val="10"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1417"/>
+            <R val="14"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="1108"/>
+            <R val="11"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="1114"/>
+            <R val="11"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0105"/>
+            <R val="1"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1410"/>
+            <R val="14"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0115"/>
+            <R val="1"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1416"/>
+            <R val="14"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="1319"/>
+            <R val="13"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="0702"/>
+            <R val="7"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0907"/>
+            <R val="9"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0606"/>
+            <R val="6"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="1513"/>
+            <R val="15"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="1004"/>
+            <R val="10"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0718"/>
+            <R val="7"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="1420"/>
+            <R val="14"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0117"/>
+            <R val="1"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0609"/>
+            <R val="6"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0512"/>
+            <R val="5"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1508"/>
+            <R val="15"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="1308"/>
+            <R val="13"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0006"/>
+            <R val="0"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="1103"/>
+            <R val="11"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0905"/>
+            <R val="9"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1204"/>
+            <R val="12"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1017"/>
+            <R val="10"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="1403"/>
+            <R val="14"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0509"/>
+            <R val="5"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="1309"/>
+            <R val="13"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0101"/>
+            <R val="1"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="1301"/>
+            <R val="13"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0902"/>
+            <R val="9"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0406"/>
+            <R val="4"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0911"/>
+            <R val="9"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="1100"/>
+            <R val="11"/>
+            <C val="0"/>
+        </coord>
+        <coord>
+            <node id="0515"/>
+            <R val="5"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0618"/>
+            <R val="6"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0813"/>
+            <R val="8"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0811"/>
+            <R val="8"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0113"/>
+            <R val="1"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0417"/>
+            <R val="4"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="1211"/>
+            <R val="12"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="1405"/>
+            <R val="14"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1312"/>
+            <R val="13"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1404"/>
+            <R val="14"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0409"/>
+            <R val="4"/>
+            <C val="9"/>
+        </coord>
+        <coord>
+            <node id="0008"/>
+            <R val="0"/>
+            <C val="8"/>
+        </coord>
+        <coord>
+            <node id="0703"/>
+            <R val="7"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0815"/>
+            <R val="8"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1306"/>
+            <R val="13"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="1516"/>
+            <R val="15"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="0506"/>
+            <R val="5"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="1318"/>
+            <R val="13"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0520"/>
+            <R val="5"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="1311"/>
+            <R val="13"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0504"/>
+            <R val="5"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1112"/>
+            <R val="11"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0612"/>
+            <R val="6"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1113"/>
+            <R val="11"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="1216"/>
+            <R val="12"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="0112"/>
+            <R val="1"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1517"/>
+            <R val="15"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0804"/>
+            <R val="8"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="0614"/>
+            <R val="6"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0010"/>
+            <R val="0"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1506"/>
+            <R val="15"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0901"/>
+            <R val="9"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0513"/>
+            <R val="5"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0019"/>
+            <R val="0"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="0407"/>
+            <R val="4"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="0212"/>
+            <R val="2"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="0411"/>
+            <R val="4"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="1304"/>
+            <R val="13"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1006"/>
+            <R val="10"/>
+            <C val="6"/>
+        </coord>
+        <coord>
+            <node id="0501"/>
+            <R val="5"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0714"/>
+            <R val="7"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0205"/>
+            <R val="2"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0402"/>
+            <R val="4"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0715"/>
+            <R val="7"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0413"/>
+            <R val="4"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="0514"/>
+            <R val="5"/>
+            <C val="14"/>
+        </coord>
+        <coord>
+            <node id="0318"/>
+            <R val="3"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0913"/>
+            <R val="9"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="1415"/>
+            <R val="14"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0919"/>
+            <R val="9"/>
+            <C val="19"/>
+        </coord>
+        <coord>
+            <node id="0017"/>
+            <R val="0"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0503"/>
+            <R val="5"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0302"/>
+            <R val="3"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0502"/>
+            <R val="5"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0802"/>
+            <R val="8"/>
+            <C val="2"/>
+        </coord>
+        <coord>
+            <node id="0412"/>
+            <R val="4"/>
+            <C val="12"/>
+        </coord>
+        <coord>
+            <node id="1505"/>
+            <R val="15"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0201"/>
+            <R val="2"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0317"/>
+            <R val="3"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0217"/>
+            <R val="2"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="1210"/>
+            <R val="12"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="0316"/>
+            <R val="3"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="0701"/>
+            <R val="7"/>
+            <C val="1"/>
+        </coord>
+        <coord>
+            <node id="0018"/>
+            <R val="0"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="0613"/>
+            <R val="6"/>
+            <C val="13"/>
+        </coord>
+        <coord>
+            <node id="1205"/>
+            <R val="12"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="1115"/>
+            <R val="11"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="1011"/>
+            <R val="10"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="1203"/>
+            <R val="12"/>
+            <C val="3"/>
+        </coord>
+        <coord>
+            <node id="0418"/>
+            <R val="4"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="1005"/>
+            <R val="10"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0807"/>
+            <R val="8"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1510"/>
+            <R val="15"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1120"/>
+            <R val="11"/>
+            <C val="20"/>
+        </coord>
+        <coord>
+            <node id="0311"/>
+            <R val="3"/>
+            <C val="11"/>
+        </coord>
+        <coord>
+            <node id="0218"/>
+            <R val="2"/>
+            <C val="18"/>
+        </coord>
+        <coord>
+            <node id="1016"/>
+            <R val="10"/>
+            <C val="16"/>
+        </coord>
+        <coord>
+            <node id="1015"/>
+            <R val="10"/>
+            <C val="15"/>
+        </coord>
+        <coord>
+            <node id="0704"/>
+            <R val="7"/>
+            <C val="4"/>
+        </coord>
+        <coord>
+            <node id="1507"/>
+            <R val="15"/>
+            <C val="7"/>
+        </coord>
+        <coord>
+            <node id="1117"/>
+            <R val="11"/>
+            <C val="17"/>
+        </coord>
+        <coord>
+            <node id="0805"/>
+            <R val="8"/>
+            <C val="5"/>
+        </coord>
+        <coord>
+            <node id="0710"/>
+            <R val="7"/>
+            <C val="10"/>
+        </coord>
+        <coord>
+            <node id="1102"/>
+            <R val="11"/>
+            <C val="2"/>
+        </coord>
+    </coord_list>
+    <edge_list>
+        <edge>
+            <node id="0000"/>
+            <node id="0002"/>
+        </edge>
+        <edge>
+            <node id="0000"/>
+            <node id="0100"/>
+        </edge>
+        <edge>
+            <node id="0020"/>
+            <node id="0019"/>
+        </edge>
+        <edge>
+            <node id="0020"/>
+            <node id="0320"/>
+        </edge>
+        <edge>
+            <node id="1500"/>
+            <node id="1501"/>
+        </edge>
+        <edge>
+            <node id="1500"/>
+            <node id="1300"/>
+        </edge>
+        <edge>
+            <node id="1520"/>
+            <node id="1519"/>
+        </edge>
+        <edge>
+            <node id="1520"/>
+            <node id="1420"/>
+        </edge>
+        <edge>
+            <node id="0903"/>
+            <node id="0904"/>
+        </edge>
+        <edge>
+            <node id="0903"/>
+            <node id="0902"/>
+        </edge>
+        <edge>
+            <node id="0903"/>
+            <node id="0804"/>
+        </edge>
+        <edge>
+            <node id="0903"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="1307"/>
+            <node id="1308"/>
+        </edge>
+        <edge>
+            <node id="1307"/>
+            <node id="1306"/>
+        </edge>
+        <edge>
+            <node id="1307"/>
+            <node id="1207"/>
+        </edge>
+        <edge>
+            <node id="1307"/>
+            <node id="1208"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0305"/>
+        </edge>
+        <edge>
+            <node id="0404"/>
+            <node id="0302"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0605"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0704"/>
+        </edge>
+        <edge>
+            <node id="0604"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="1503"/>
+            <node id="1504"/>
+        </edge>
+        <edge>
+            <node id="1503"/>
+            <node id="1502"/>
+        </edge>
+        <edge>
+            <node id="1503"/>
+            <node id="1403"/>
+        </edge>
+        <edge>
+            <node id="0202"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0202"/>
+            <node id="0302"/>
+        </edge>
+        <edge>
+            <node id="0202"/>
+            <node id="0101"/>
+        </edge>
+        <edge>
+            <node id="0202"/>
+            <node id="0103"/>
+        </edge>
+        <edge>
+            <node id="1408"/>
+            <node id="1409"/>
+        </edge>
+        <edge>
+            <node id="1408"/>
+            <node id="1508"/>
+        </edge>
+        <edge>
+            <node id="1408"/>
+            <node id="1308"/>
+        </edge>
+        <edge>
+            <node id="1408"/>
+            <node id="1507"/>
+        </edge>
+        <edge>
+            <node id="0119"/>
+            <node id="0118"/>
+        </edge>
+        <edge>
+            <node id="0119"/>
+            <node id="0019"/>
+        </edge>
+        <edge>
+            <node id="0119"/>
+            <node id="0218"/>
+        </edge>
+        <edge>
+            <node id="0119"/>
+            <node id="0018"/>
+        </edge>
+        <edge>
+            <node id="1207"/>
+            <node id="1206"/>
+        </edge>
+        <edge>
+            <node id="1207"/>
+            <node id="1208"/>
+        </edge>
+        <edge>
+            <node id="1207"/>
+            <node id="1107"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0109"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0111"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0210"/>
+        </edge>
+        <edge>
+            <node id="0110"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="1315"/>
+            <node id="1316"/>
+        </edge>
+        <edge>
+            <node id="1315"/>
+            <node id="1415"/>
+        </edge>
+        <edge>
+            <node id="1511"/>
+            <node id="1510"/>
+        </edge>
+        <edge>
+            <node id="1511"/>
+            <node id="1410"/>
+        </edge>
+        <edge>
+            <node id="1511"/>
+            <node id="1513"/>
+        </edge>
+        <edge>
+            <node id="1511"/>
+            <node id="1311"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0410"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0609"/>
+        </edge>
+        <edge>
+            <node id="0510"/>
+            <node id="0411"/>
+        </edge>
+        <edge>
+            <node id="0401"/>
+            <node id="0402"/>
+        </edge>
+        <edge>
+            <node id="0401"/>
+            <node id="0301"/>
+        </edge>
+        <edge>
+            <node id="0401"/>
+            <node id="0501"/>
+        </edge>
+        <edge>
+            <node id="0401"/>
+            <node id="0300"/>
+        </edge>
+        <edge>
+            <node id="0812"/>
+            <node id="0813"/>
+        </edge>
+        <edge>
+            <node id="0812"/>
+            <node id="0811"/>
+        </edge>
+        <edge>
+            <node id="0812"/>
+            <node id="0913"/>
+        </edge>
+        <edge>
+            <node id="0812"/>
+            <node id="0711"/>
+        </edge>
+        <edge>
+            <node id="0320"/>
+            <node id="0420"/>
+        </edge>
+        <edge>
+            <node id="0320"/>
+            <node id="0418"/>
+        </edge>
+        <edge>
+            <node id="0118"/>
+            <node id="0117"/>
+        </edge>
+        <edge>
+            <node id="0118"/>
+            <node id="0218"/>
+        </edge>
+        <edge>
+            <node id="0118"/>
+            <node id="0018"/>
+        </edge>
+        <edge>
+            <node id="1313"/>
+            <node id="1312"/>
+        </edge>
+        <edge>
+            <node id="1313"/>
+            <node id="1213"/>
+        </edge>
+        <edge>
+            <node id="1313"/>
+            <node id="1413"/>
+        </edge>
+        <edge>
+            <node id="1313"/>
+            <node id="1214"/>
+        </edge>
+        <edge>
+            <node id="0920"/>
+            <node id="0919"/>
+        </edge>
+        <edge>
+            <node id="0920"/>
+            <node id="0820"/>
+        </edge>
+        <edge>
+            <node id="0920"/>
+            <node id="1020"/>
+        </edge>
+        <edge>
+            <node id="1009"/>
+            <node id="0909"/>
+        </edge>
+        <edge>
+            <node id="1009"/>
+            <node id="1108"/>
+        </edge>
+        <edge>
+            <node id="1009"/>
+            <node id="1011"/>
+        </edge>
+        <edge>
+            <node id="0307"/>
+            <node id="0407"/>
+        </edge>
+        <edge>
+            <node id="0307"/>
+            <node id="0406"/>
+        </edge>
+        <edge>
+            <node id="0307"/>
+            <node id="0107"/>
+        </edge>
+        <edge>
+            <node id="0307"/>
+            <node id="0209"/>
+        </edge>
+        <edge>
+            <node id="1514"/>
+            <node id="1515"/>
+        </edge>
+        <edge>
+            <node id="1514"/>
+            <node id="1513"/>
+        </edge>
+        <edge>
+            <node id="1514"/>
+            <node id="1414"/>
+        </edge>
+        <edge>
+            <node id="1514"/>
+            <node id="1413"/>
+        </edge>
+        <edge>
+            <node id="0810"/>
+            <node id="0811"/>
+        </edge>
+        <edge>
+            <node id="0810"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0810"/>
+            <node id="0909"/>
+        </edge>
+        <edge>
+            <node id="0810"/>
+            <node id="0711"/>
+        </edge>
+        <edge>
+            <node id="1119"/>
+            <node id="1120"/>
+        </edge>
+        <edge>
+            <node id="1119"/>
+            <node id="1020"/>
+        </edge>
+        <edge>
+            <node id="1119"/>
+            <node id="1218"/>
+        </edge>
+        <edge>
+            <node id="1119"/>
+            <node id="1319"/>
+        </edge>
+        <edge>
+            <node id="1502"/>
+            <node id="1501"/>
+        </edge>
+        <edge>
+            <node id="1502"/>
+            <node id="1403"/>
+        </edge>
+        <edge>
+            <node id="1502"/>
+            <node id="1301"/>
+        </edge>
+        <edge>
+            <node id="1104"/>
+            <node id="1103"/>
+        </edge>
+        <edge>
+            <node id="1104"/>
+            <node id="1105"/>
+        </edge>
+        <edge>
+            <node id="1104"/>
+            <node id="1204"/>
+        </edge>
+        <edge>
+            <node id="1104"/>
+            <node id="1004"/>
+        </edge>
+        <edge>
+            <node id="0116"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="0116"/>
+            <node id="0117"/>
+        </edge>
+        <edge>
+            <node id="0116"/>
+            <node id="0217"/>
+        </edge>
+        <edge>
+            <node id="0116"/>
+            <node id="0017"/>
+        </edge>
+        <edge>
+            <node id="1317"/>
+            <node id="1318"/>
+        </edge>
+        <edge>
+            <node id="1317"/>
+            <node id="1316"/>
+        </edge>
+        <edge>
+            <node id="1317"/>
+            <node id="1217"/>
+        </edge>
+        <edge>
+            <node id="1317"/>
+            <node id="1417"/>
+        </edge>
+        <edge>
+            <node id="1105"/>
+            <node id="1106"/>
+        </edge>
+        <edge>
+            <node id="1105"/>
+            <node id="1205"/>
+        </edge>
+        <edge>
+            <node id="1105"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="0111"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="0111"/>
+            <node id="0211"/>
+        </edge>
+        <edge>
+            <node id="0111"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0103"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0204"/>
+        </edge>
+        <edge>
+            <node id="0104"/>
+            <node id="0004"/>
+        </edge>
+        <edge>
+            <node id="0301"/>
+            <node id="0302"/>
+        </edge>
+        <edge>
+            <node id="0301"/>
+            <node id="0300"/>
+        </edge>
+        <edge>
+            <node id="0301"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0103"/>
+            <node id="0004"/>
+        </edge>
+        <edge>
+            <node id="0103"/>
+            <node id="0002"/>
+        </edge>
+        <edge>
+            <node id="1504"/>
+            <node id="1505"/>
+        </edge>
+        <edge>
+            <node id="1504"/>
+            <node id="1404"/>
+        </edge>
+        <edge>
+            <node id="1504"/>
+            <node id="1405"/>
+        </edge>
+        <edge>
+            <node id="1208"/>
+            <node id="1108"/>
+        </edge>
+        <edge>
+            <node id="1208"/>
+            <node id="1308"/>
+        </edge>
+        <edge>
+            <node id="0300"/>
+            <node id="0100"/>
+        </edge>
+        <edge>
+            <node id="0300"/>
+            <node id="0701"/>
+        </edge>
+        <edge>
+            <node id="1218"/>
+            <node id="1217"/>
+        </edge>
+        <edge>
+            <node id="1218"/>
+            <node id="1318"/>
+        </edge>
+        <edge>
+            <node id="1218"/>
+            <node id="1117"/>
+        </edge>
+        <edge>
+            <node id="0914"/>
+            <node id="0913"/>
+        </edge>
+        <edge>
+            <node id="0914"/>
+            <node id="0815"/>
+        </edge>
+        <edge>
+            <node id="0914"/>
+            <node id="0813"/>
+        </edge>
+        <edge>
+            <node id="0914"/>
+            <node id="1015"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0607"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0609"/>
+        </edge>
+        <edge>
+            <node id="0508"/>
+            <node id="0409"/>
+        </edge>
+        <edge>
+            <node id="0415"/>
+            <node id="0416"/>
+        </edge>
+        <edge>
+            <node id="0415"/>
+            <node id="0515"/>
+        </edge>
+        <edge>
+            <node id="0415"/>
+            <node id="0316"/>
+        </edge>
+        <edge>
+            <node id="0415"/>
+            <node id="0314"/>
+        </edge>
+        <edge>
+            <node id="0820"/>
+            <node id="0919"/>
+        </edge>
+        <edge>
+            <node id="0820"/>
+            <node id="0520"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0205"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0204"/>
+        </edge>
+        <edge>
+            <node id="0305"/>
+            <node id="0406"/>
+        </edge>
+        <edge>
+            <node id="1316"/>
+            <node id="1216"/>
+        </edge>
+        <edge>
+            <node id="1316"/>
+            <node id="1416"/>
+        </edge>
+        <edge>
+            <node id="0904"/>
+            <node id="0905"/>
+        </edge>
+        <edge>
+            <node id="0904"/>
+            <node id="0804"/>
+        </edge>
+        <edge>
+            <node id="0904"/>
+            <node id="1004"/>
+        </edge>
+        <edge>
+            <node id="0817"/>
+            <node id="0717"/>
+        </edge>
+        <edge>
+            <node id="0817"/>
+            <node id="0718"/>
+        </edge>
+        <edge>
+            <node id="0817"/>
+            <node id="0815"/>
+        </edge>
+        <edge>
+            <node id="0817"/>
+            <node id="1017"/>
+        </edge>
+        <edge>
+            <node id="0900"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="0900"/>
+            <node id="1000"/>
+        </edge>
+        <edge>
+            <node id="0900"/>
+            <node id="0701"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0215"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0314"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0113"/>
+        </edge>
+        <edge>
+            <node id="0214"/>
+            <node id="0212"/>
+        </edge>
+        <edge>
+            <node id="1409"/>
+            <node id="1410"/>
+        </edge>
+        <edge>
+            <node id="1409"/>
+            <node id="1309"/>
+        </edge>
+        <edge>
+            <node id="1409"/>
+            <node id="1510"/>
+        </edge>
+        <edge>
+            <node id="1501"/>
+            <node id="1301"/>
+        </edge>
+        <edge>
+            <node id="1501"/>
+            <node id="1300"/>
+        </edge>
+        <edge>
+            <node id="0519"/>
+            <node id="0520"/>
+        </edge>
+        <edge>
+            <node id="0519"/>
+            <node id="0619"/>
+        </edge>
+        <edge>
+            <node id="0519"/>
+            <node id="0420"/>
+        </edge>
+        <edge>
+            <node id="0519"/>
+            <node id="0618"/>
+        </edge>
+        <edge>
+            <node id="1310"/>
+            <node id="1311"/>
+        </edge>
+        <edge>
+            <node id="1310"/>
+            <node id="1309"/>
+        </edge>
+        <edge>
+            <node id="1310"/>
+            <node id="1210"/>
+        </edge>
+        <edge>
+            <node id="1310"/>
+            <node id="1410"/>
+        </edge>
+        <edge>
+            <node id="0210"/>
+            <node id="0211"/>
+        </edge>
+        <edge>
+            <node id="0210"/>
+            <node id="0209"/>
+        </edge>
+        <edge>
+            <node id="0210"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="1414"/>
+            <node id="1415"/>
+        </edge>
+        <edge>
+            <node id="1414"/>
+            <node id="1413"/>
+        </edge>
+        <edge>
+            <node id="1414"/>
+            <node id="1515"/>
+        </edge>
+        <edge>
+            <node id="0619"/>
+            <node id="0618"/>
+        </edge>
+        <edge>
+            <node id="0619"/>
+            <node id="0520"/>
+        </edge>
+        <edge>
+            <node id="0619"/>
+            <node id="0718"/>
+        </edge>
+        <edge>
+            <node id="1418"/>
+            <node id="1417"/>
+        </edge>
+        <edge>
+            <node id="1418"/>
+            <node id="1318"/>
+        </edge>
+        <edge>
+            <node id="1418"/>
+            <node id="1517"/>
+        </edge>
+        <edge>
+            <node id="1418"/>
+            <node id="1519"/>
+        </edge>
+        <edge>
+            <node id="0616"/>
+            <node id="0515"/>
+        </edge>
+        <edge>
+            <node id="0616"/>
+            <node id="0717"/>
+        </edge>
+        <edge>
+            <node id="0616"/>
+            <node id="0715"/>
+        </edge>
+        <edge>
+            <node id="0616"/>
+            <node id="0416"/>
+        </edge>
+        <edge>
+            <node id="0109"/>
+            <node id="0209"/>
+        </edge>
+        <edge>
+            <node id="0109"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0109"/>
+            <node id="0008"/>
+        </edge>
+        <edge>
+            <node id="0314"/>
+            <node id="0215"/>
+        </edge>
+        <edge>
+            <node id="0314"/>
+            <node id="0413"/>
+        </edge>
+        <edge>
+            <node id="0107"/>
+            <node id="0006"/>
+        </edge>
+        <edge>
+            <node id="0107"/>
+            <node id="0008"/>
+        </edge>
+        <edge>
+            <node id="0107"/>
+            <node id="0209"/>
+        </edge>
+        <edge>
+            <node id="1101"/>
+            <node id="1102"/>
+        </edge>
+        <edge>
+            <node id="1101"/>
+            <node id="1100"/>
+        </edge>
+        <edge>
+            <node id="1101"/>
+            <node id="1001"/>
+        </edge>
+        <edge>
+            <node id="1101"/>
+            <node id="1000"/>
+        </edge>
+        <edge>
+            <node id="1413"/>
+            <node id="1513"/>
+        </edge>
+        <edge>
+            <node id="0909"/>
+            <node id="0808"/>
+        </edge>
+        <edge>
+            <node id="0909"/>
+            <node id="0911"/>
+        </edge>
+        <edge>
+            <node id="1116"/>
+            <node id="1115"/>
+        </edge>
+        <edge>
+            <node id="1116"/>
+            <node id="1117"/>
+        </edge>
+        <edge>
+            <node id="1116"/>
+            <node id="1216"/>
+        </edge>
+        <edge>
+            <node id="1116"/>
+            <node id="1016"/>
+        </edge>
+        <edge>
+            <node id="1213"/>
+            <node id="1214"/>
+        </edge>
+        <edge>
+            <node id="1213"/>
+            <node id="1212"/>
+        </edge>
+        <edge>
+            <node id="1213"/>
+            <node id="1113"/>
+        </edge>
+        <edge>
+            <node id="1515"/>
+            <node id="1516"/>
+        </edge>
+        <edge>
+            <node id="1515"/>
+            <node id="1415"/>
+        </edge>
+        <edge>
+            <node id="0014"/>
+            <node id="0015"/>
+        </edge>
+        <edge>
+            <node id="0014"/>
+            <node id="0113"/>
+        </edge>
+        <edge>
+            <node id="0014"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="0014"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="1217"/>
+            <node id="1216"/>
+        </edge>
+        <edge>
+            <node id="1217"/>
+            <node id="1117"/>
+        </edge>
+        <edge>
+            <node id="1020"/>
+            <node id="1120"/>
+        </edge>
+        <edge>
+            <node id="1020"/>
+            <node id="0919"/>
+        </edge>
+        <edge>
+            <node id="1007"/>
+            <node id="1006"/>
+        </edge>
+        <edge>
+            <node id="1007"/>
+            <node id="0907"/>
+        </edge>
+        <edge>
+            <node id="1007"/>
+            <node id="1107"/>
+        </edge>
+        <edge>
+            <node id="1007"/>
+            <node id="1108"/>
+        </edge>
+        <edge>
+            <node id="0416"/>
+            <node id="0417"/>
+        </edge>
+        <edge>
+            <node id="0416"/>
+            <node id="0316"/>
+        </edge>
+        <edge>
+            <node id="1106"/>
+            <node id="1107"/>
+        </edge>
+        <edge>
+            <node id="1106"/>
+            <node id="1206"/>
+        </edge>
+        <edge>
+            <node id="1106"/>
+            <node id="1006"/>
+        </edge>
+        <edge>
+            <node id="0204"/>
+            <node id="0205"/>
+        </edge>
+        <edge>
+            <node id="0204"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="1300"/>
+            <node id="1301"/>
+        </edge>
+        <edge>
+            <node id="1300"/>
+            <node id="1100"/>
+        </edge>
+        <edge>
+            <node id="1519"/>
+            <node id="1420"/>
+        </edge>
+        <edge>
+            <node id="1519"/>
+            <node id="1517"/>
+        </edge>
+        <edge>
+            <node id="0215"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="0215"/>
+            <node id="0316"/>
+        </edge>
+        <edge>
+            <node id="1214"/>
+            <node id="1114"/>
+        </edge>
+        <edge>
+            <node id="1214"/>
+            <node id="1113"/>
+        </edge>
+        <edge>
+            <node id="1111"/>
+            <node id="1112"/>
+        </edge>
+        <edge>
+            <node id="1111"/>
+            <node id="1211"/>
+        </edge>
+        <edge>
+            <node id="1111"/>
+            <node id="1011"/>
+        </edge>
+        <edge>
+            <node id="1111"/>
+            <node id="1210"/>
+        </edge>
+        <edge>
+            <node id="0002"/>
+            <node id="0101"/>
+        </edge>
+        <edge>
+            <node id="0002"/>
+            <node id="0004"/>
+        </edge>
+        <edge>
+            <node id="0211"/>
+            <node id="0212"/>
+        </edge>
+        <edge>
+            <node id="0211"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0606"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0506"/>
+        </edge>
+        <edge>
+            <node id="0607"/>
+            <node id="0706"/>
+        </edge>
+        <edge>
+            <node id="1000"/>
+            <node id="1001"/>
+        </edge>
+        <edge>
+            <node id="1000"/>
+            <node id="1100"/>
+        </edge>
+        <edge>
+            <node id="0410"/>
+            <node id="0409"/>
+        </edge>
+        <edge>
+            <node id="0410"/>
+            <node id="0411"/>
+        </edge>
+        <edge>
+            <node id="0410"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="0706"/>
+            <node id="0806"/>
+        </edge>
+        <edge>
+            <node id="0706"/>
+            <node id="0606"/>
+        </edge>
+        <edge>
+            <node id="0706"/>
+            <node id="0807"/>
+        </edge>
+        <edge>
+            <node id="0004"/>
+            <node id="0105"/>
+        </edge>
+        <edge>
+            <node id="0605"/>
+            <node id="0606"/>
+        </edge>
+        <edge>
+            <node id="0605"/>
+            <node id="0504"/>
+        </edge>
+        <edge>
+            <node id="1107"/>
+            <node id="1108"/>
+        </edge>
+        <edge>
+            <node id="1206"/>
+            <node id="1205"/>
+        </edge>
+        <edge>
+            <node id="1206"/>
+            <node id="1306"/>
+        </edge>
+        <edge>
+            <node id="1001"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="1001"/>
+            <node id="0902"/>
+        </edge>
+        <edge>
+            <node id="0015"/>
+            <node id="0115"/>
+        </edge>
+        <edge>
+            <node id="0015"/>
+            <node id="0017"/>
+        </edge>
+        <edge>
+            <node id="1212"/>
+            <node id="1211"/>
+        </edge>
+        <edge>
+            <node id="1212"/>
+            <node id="1112"/>
+        </edge>
+        <edge>
+            <node id="1212"/>
+            <node id="1312"/>
+        </edge>
+        <edge>
+            <node id="0711"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0711"/>
+            <node id="0811"/>
+        </edge>
+        <edge>
+            <node id="0100"/>
+            <node id="0101"/>
+        </edge>
+        <edge>
+            <node id="0100"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="0717"/>
+            <node id="0718"/>
+        </edge>
+        <edge>
+            <node id="0717"/>
+            <node id="0618"/>
+        </edge>
+        <edge>
+            <node id="0420"/>
+            <node id="0520"/>
+        </edge>
+        <edge>
+            <node id="0420"/>
+            <node id="0418"/>
+        </edge>
+        <edge>
+            <node id="0806"/>
+            <node id="0807"/>
+        </edge>
+        <edge>
+            <node id="0806"/>
+            <node id="0805"/>
+        </edge>
+        <edge>
+            <node id="0806"/>
+            <node id="0907"/>
+        </edge>
+        <edge>
+            <node id="0808"/>
+            <node id="0807"/>
+        </edge>
+        <edge>
+            <node id="0808"/>
+            <node id="0907"/>
+        </edge>
+        <edge>
+            <node id="0808"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0602"/>
+            <node id="0502"/>
+        </edge>
+        <edge>
+            <node id="0602"/>
+            <node id="0702"/>
+        </edge>
+        <edge>
+            <node id="0602"/>
+            <node id="0501"/>
+        </edge>
+        <edge>
+            <node id="0602"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="1011"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="1112"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="0913"/>
+        </edge>
+        <edge>
+            <node id="1012"/>
+            <node id="0911"/>
+        </edge>
+        <edge>
+            <node id="1417"/>
+            <node id="1416"/>
+        </edge>
+        <edge>
+            <node id="1417"/>
+            <node id="1517"/>
+        </edge>
+        <edge>
+            <node id="1114"/>
+            <node id="1115"/>
+        </edge>
+        <edge>
+            <node id="1114"/>
+            <node id="1113"/>
+        </edge>
+        <edge>
+            <node id="1114"/>
+            <node id="1015"/>
+        </edge>
+        <edge>
+            <node id="0105"/>
+            <node id="0205"/>
+        </edge>
+        <edge>
+            <node id="1410"/>
+            <node id="1510"/>
+        </edge>
+        <edge>
+            <node id="1416"/>
+            <node id="1415"/>
+        </edge>
+        <edge>
+            <node id="1416"/>
+            <node id="1516"/>
+        </edge>
+        <edge>
+            <node id="1319"/>
+            <node id="1318"/>
+        </edge>
+        <edge>
+            <node id="1319"/>
+            <node id="1420"/>
+        </edge>
+        <edge>
+            <node id="1319"/>
+            <node id="1120"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0701"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0703"/>
+        </edge>
+        <edge>
+            <node id="0702"/>
+            <node id="0802"/>
+        </edge>
+        <edge>
+            <node id="0907"/>
+            <node id="0807"/>
+        </edge>
+        <edge>
+            <node id="0606"/>
+            <node id="0506"/>
+        </edge>
+        <edge>
+            <node id="1513"/>
+            <node id="1312"/>
+        </edge>
+        <edge>
+            <node id="1004"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="1004"/>
+            <node id="0905"/>
+        </edge>
+        <edge>
+            <node id="0718"/>
+            <node id="0618"/>
+        </edge>
+        <edge>
+            <node id="1420"/>
+            <node id="1120"/>
+        </edge>
+        <edge>
+            <node id="0117"/>
+            <node id="0017"/>
+        </edge>
+        <edge>
+            <node id="0117"/>
+            <node id="0217"/>
+        </edge>
+        <edge>
+            <node id="0609"/>
+            <node id="0509"/>
+        </edge>
+        <edge>
+            <node id="0609"/>
+            <node id="0710"/>
+        </edge>
+        <edge>
+            <node id="0512"/>
+            <node id="0513"/>
+        </edge>
+        <edge>
+            <node id="0512"/>
+            <node id="0612"/>
+        </edge>
+        <edge>
+            <node id="0512"/>
+            <node id="0412"/>
+        </edge>
+        <edge>
+            <node id="0512"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="1508"/>
+            <node id="1507"/>
+        </edge>
+        <edge>
+            <node id="1508"/>
+            <node id="1510"/>
+        </edge>
+        <edge>
+            <node id="1308"/>
+            <node id="1309"/>
+        </edge>
+        <edge>
+            <node id="0006"/>
+            <node id="0008"/>
+        </edge>
+        <edge>
+            <node id="0006"/>
+            <node id="0205"/>
+        </edge>
+        <edge>
+            <node id="1103"/>
+            <node id="1102"/>
+        </edge>
+        <edge>
+            <node id="1103"/>
+            <node id="1203"/>
+        </edge>
+        <edge>
+            <node id="0905"/>
+            <node id="0805"/>
+        </edge>
+        <edge>
+            <node id="0905"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="1204"/>
+            <node id="1205"/>
+        </edge>
+        <edge>
+            <node id="1204"/>
+            <node id="1203"/>
+        </edge>
+        <edge>
+            <node id="1204"/>
+            <node id="1304"/>
+        </edge>
+        <edge>
+            <node id="1017"/>
+            <node id="1016"/>
+        </edge>
+        <edge>
+            <node id="1017"/>
+            <node id="1117"/>
+        </edge>
+        <edge>
+            <node id="1017"/>
+            <node id="0919"/>
+        </edge>
+        <edge>
+            <node id="1403"/>
+            <node id="1404"/>
+        </edge>
+        <edge>
+            <node id="1403"/>
+            <node id="1304"/>
+        </edge>
+        <edge>
+            <node id="0509"/>
+            <node id="0409"/>
+        </edge>
+        <edge>
+            <node id="1309"/>
+            <node id="1210"/>
+        </edge>
+        <edge>
+            <node id="0101"/>
+            <node id="0201"/>
+        </edge>
+        <edge>
+            <node id="1301"/>
+            <node id="1102"/>
+        </edge>
+        <edge>
+            <node id="0902"/>
+            <node id="0901"/>
+        </edge>
+        <edge>
+            <node id="0902"/>
+            <node id="0802"/>
+        </edge>
+        <edge>
+            <node id="0406"/>
+            <node id="0407"/>
+        </edge>
+        <edge>
+            <node id="0406"/>
+            <node id="0506"/>
+        </edge>
+        <edge>
+            <node id="0911"/>
+            <node id="0811"/>
+        </edge>
+        <edge>
+            <node id="0911"/>
+            <node id="1011"/>
+        </edge>
+        <edge>
+            <node id="0515"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0515"/>
+            <node id="0614"/>
+        </edge>
+        <edge>
+            <node id="0813"/>
+            <node id="0913"/>
+        </edge>
+        <edge>
+            <node id="0813"/>
+            <node id="0714"/>
+        </edge>
+        <edge>
+            <node id="0113"/>
+            <node id="0112"/>
+        </edge>
+        <edge>
+            <node id="0113"/>
+            <node id="0212"/>
+        </edge>
+        <edge>
+            <node id="0417"/>
+            <node id="0418"/>
+        </edge>
+        <edge>
+            <node id="0417"/>
+            <node id="0317"/>
+        </edge>
+        <edge>
+            <node id="0417"/>
+            <node id="0318"/>
+        </edge>
+        <edge>
+            <node id="1211"/>
+            <node id="1210"/>
+        </edge>
+        <edge>
+            <node id="1211"/>
+            <node id="1311"/>
+        </edge>
+        <edge>
+            <node id="1405"/>
+            <node id="1404"/>
+        </edge>
+        <edge>
+            <node id="1405"/>
+            <node id="1505"/>
+        </edge>
+        <edge>
+            <node id="1405"/>
+            <node id="1506"/>
+        </edge>
+        <edge>
+            <node id="1312"/>
+            <node id="1311"/>
+        </edge>
+        <edge>
+            <node id="1404"/>
+            <node id="1304"/>
+        </edge>
+        <edge>
+            <node id="0409"/>
+            <node id="0407"/>
+        </edge>
+        <edge>
+            <node id="0008"/>
+            <node id="0010"/>
+        </edge>
+        <edge>
+            <node id="0703"/>
+            <node id="0704"/>
+        </edge>
+        <edge>
+            <node id="0815"/>
+            <node id="0715"/>
+        </edge>
+        <edge>
+            <node id="0815"/>
+            <node id="0714"/>
+        </edge>
+        <edge>
+            <node id="1306"/>
+            <node id="1205"/>
+        </edge>
+        <edge>
+            <node id="1306"/>
+            <node id="1506"/>
+        </edge>
+        <edge>
+            <node id="1516"/>
+            <node id="1517"/>
+        </edge>
+        <edge>
+            <node id="0506"/>
+            <node id="0407"/>
+        </edge>
+        <edge>
+            <node id="0504"/>
+            <node id="0503"/>
+        </edge>
+        <edge>
+            <node id="1112"/>
+            <node id="1113"/>
+        </edge>
+        <edge>
+            <node id="0612"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="1216"/>
+            <node id="1115"/>
+        </edge>
+        <edge>
+            <node id="0112"/>
+            <node id="0212"/>
+        </edge>
+        <edge>
+            <node id="0804"/>
+            <node id="0805"/>
+        </edge>
+        <edge>
+            <node id="0804"/>
+            <node id="0704"/>
+        </edge>
+        <edge>
+            <node id="0614"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0614"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0614"/>
+            <node id="0714"/>
+        </edge>
+        <edge>
+            <node id="1506"/>
+            <node id="1507"/>
+        </edge>
+        <edge>
+            <node id="1506"/>
+            <node id="1505"/>
+        </edge>
+        <edge>
+            <node id="0901"/>
+            <node id="0802"/>
+        </edge>
+        <edge>
+            <node id="0513"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0513"/>
+            <node id="0613"/>
+        </edge>
+        <edge>
+            <node id="0513"/>
+            <node id="0413"/>
+        </edge>
+        <edge>
+            <node id="0019"/>
+            <node id="0018"/>
+        </edge>
+        <edge>
+            <node id="0411"/>
+            <node id="0412"/>
+        </edge>
+        <edge>
+            <node id="0411"/>
+            <node id="0311"/>
+        </edge>
+        <edge>
+            <node id="1304"/>
+            <node id="1203"/>
+        </edge>
+        <edge>
+            <node id="1006"/>
+            <node id="1005"/>
+        </edge>
+        <edge>
+            <node id="0501"/>
+            <node id="0502"/>
+        </edge>
+        <edge>
+            <node id="0501"/>
+            <node id="0402"/>
+        </edge>
+        <edge>
+            <node id="0714"/>
+            <node id="0715"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0302"/>
+        </edge>
+        <edge>
+            <node id="0402"/>
+            <node id="0502"/>
+        </edge>
+        <edge>
+            <node id="0413"/>
+            <node id="0412"/>
+        </edge>
+        <edge>
+            <node id="0413"/>
+            <node id="0514"/>
+        </edge>
+        <edge>
+            <node id="0318"/>
+            <node id="0317"/>
+        </edge>
+        <edge>
+            <node id="0318"/>
+            <node id="0218"/>
+        </edge>
+        <edge>
+            <node id="0318"/>
+            <node id="0418"/>
+        </edge>
+        <edge>
+            <node id="0017"/>
+            <node id="0018"/>
+        </edge>
+        <edge>
+            <node id="0503"/>
+            <node id="0502"/>
+        </edge>
+        <edge>
+            <node id="0802"/>
+            <node id="0701"/>
+        </edge>
+        <edge>
+            <node id="0317"/>
+            <node id="0316"/>
+        </edge>
+        <edge>
+            <node id="0317"/>
+            <node id="0217"/>
+        </edge>
+        <edge>
+            <node id="0217"/>
+            <node id="0218"/>
+        </edge>
+        <edge>
+            <node id="1115"/>
+            <node id="1015"/>
+        </edge>
+        <edge>
+            <node id="1203"/>
+            <node id="1102"/>
+        </edge>
+        <edge>
+            <node id="1016"/>
+            <node id="1015"/>
+        </edge>
+        <edge>
+            <node id="0704"/>
+            <node id="0805"/>
+        </edge>
+    </edge_list>
+    <Game>
+        <sideToMove color="Black"/>
+        <Position type="setup">
+            <stone>
+                <node id="1516"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1317"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1418"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0817"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0820"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1316"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1120"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0210"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1520"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0812"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0407"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0417"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0017"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1408"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0019"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1113"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0702"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1420"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0920"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0807"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1417"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1006"/>
+                <color val="White"/>
+            </stone>
+        </Position>
+        <move_list>
+            <move>
+                <node id="0903"/>
+                <color val="Black"/>
+                <movenum num="23"/>
+            </move>
+            <move>
+                <node id="1319"/>
+                <color val="White"/>
+                <movenum num="24"/>
+            </move>
+            <move>
+                <node id="1017"/>
+                <color val="Black"/>
+                <movenum num="25"/>
+            </move>
+            <move>
+                <node id="0614"/>
+                <color val="White"/>
+                <movenum num="26"/>
+            </move>
+            <move>
+                <node id="1506"/>
+                <color val="Black"/>
+                <movenum num="27"/>
+            </move>
+            <move>
+                <node id="0704"/>
+                <color val="White"/>
+                <movenum num="28"/>
+            </move>
+            <move>
+                <node id="0815"/>
+                <color val="Black"/>
+                <movenum num="29"/>
+            </move>
+            <move>
+                <node id="0218"/>
+                <color val="White"/>
+                <movenum num="30"/>
+            </move>
+            <move>
+                <node id="0217"/>
+                <color val="Black"/>
+                <movenum num="31"/>
+            </move>
+            <move>
+                <node id="0416"/>
+                <color val="White"/>
+                <movenum num="32"/>
+            </move>
+            <move>
+                <node id="0300"/>
+                <color val="Black"/>
+                <movenum num="33"/>
+            </move>
+            <move>
+                <node id="0404"/>
+                <color val="White"/>
+                <movenum num="34"/>
+            </move>
+            <move>
+                <node id="0914"/>
+                <color val="Black"/>
+                <movenum num="35"/>
+            </move>
+            <move>
+                <node id="1012"/>
+                <color val="White"/>
+                <movenum num="36"/>
+            </move>
+            <move>
+                <node id="0616"/>
+                <color val="Black"/>
+                <movenum num="37"/>
+            </move>
+            <move>
+                <node id="1117"/>
+                <color val="White"/>
+                <movenum num="38"/>
+            </move>
+            <move>
+                <node id="0618"/>
+                <color val="Black"/>
+                <movenum num="39"/>
+            </move>
+            <move>
+                <node id="0514"/>
+                <color val="White"/>
+                <movenum num="40"/>
+            </move>
+            <move>
+                <node id="1015"/>
+                <color val="Black"/>
+                <movenum num="41"/>
+            </move>
+            <move>
+                <node id="0415"/>
+                <color val="White"/>
+                <movenum num="42"/>
+            </move>
+            <move>
+                <node id="0314"/>
+                <color val="Black"/>
+                <movenum num="43"/>
+            </move>
+            <move>
+                <node id="0116"/>
+                <color val="White"/>
+                <movenum num="44"/>
+            </move>
+            <move>
+                <node id="0418"/>
+                <color val="Black"/>
+                <movenum num="45"/>
+            </move>
+            <move>
+                <node id="1108"/>
+                <color val="White"/>
+                <movenum num="46"/>
+            </move>
+            <move>
+                <node id="1011"/>
+                <color val="Black"/>
+                <movenum num="47"/>
+            </move>
+            <move>
+                <node id="0111"/>
+                <color val="White"/>
+                <movenum num="48"/>
+            </move>
+            <move>
+                <node id="0607"/>
+                <color val="Black"/>
+                <movenum num="49"/>
+            </move>
+            <move>
+                <node id="1318"/>
+                <color val="White"/>
+                <movenum num="50"/>
+            </move>
+            <move>
+                <node id="1511"/>
+                <color val="Black"/>
+                <movenum num="51"/>
+            </move>
+            <move>
+                <node id="1102"/>
+                <color val="White"/>
+                <movenum num="52"/>
+            </move>
+            <move>
+                <node id="1105"/>
+                <color val="Black"/>
+                <movenum num="53"/>
+            </move>
+            <move>
+                <node id="1115"/>
+                <color val="White"/>
+                <movenum num="54"/>
+            </move>
+            <move>
+                <node id="1208"/>
+                <color val="Black"/>
+                <movenum num="55"/>
+            </move>
+            <move>
+                <node id="1112"/>
+                <color val="White"/>
+                <movenum num="56"/>
+            </move>
+            <move>
+                <node id="0714"/>
+                <color val="Black"/>
+                <movenum num="57"/>
+            </move>
+            <move>
+                <node id="1301"/>
+                <color val="White"/>
+                <movenum num="58"/>
+            </move>
+            <move>
+                <node id="0710"/>
+                <color val="Black"/>
+                <movenum num="59"/>
+            </move>
+            <move>
+                <node id="0318"/>
+                <color val="White"/>
+                <movenum num="60"/>
+            </move>
+            <move>
+                <node id="0510"/>
+                <color val="Black"/>
+                <movenum num="61"/>
+            </move>
+            <move>
+                <node id="0907"/>
+                <color val="White"/>
+                <movenum num="62"/>
+            </move>
+            <move>
+                <node id="1007"/>
+                <color val="Black"/>
+                <movenum num="63"/>
+            </move>
+            <move>
+                <node id="1114"/>
+                <color val="White"/>
+                <movenum num="64"/>
+            </move>
+            <move>
+                <node id="0409"/>
+                <color val="Black"/>
+                <movenum num="65"/>
+            </move>
+            <move>
+                <node id="0703"/>
+                <color val="White"/>
+                <movenum num="66"/>
+            </move>
+            <move>
+                <node id="0214"/>
+                <color val="Black"/>
+                <movenum num="67"/>
+            </move>
+            <move>
+                <node id="0515"/>
+                <color val="White"/>
+                <movenum num="68"/>
+            </move>
+            <move>
+                <node id="0311"/>
+                <color val="Black"/>
+                <movenum num="69"/>
+            </move>
+            <move>
+                <node id="1016"/>
+                <color val="White"/>
+                <movenum num="70"/>
+            </move>
+            <move>
+                <node id="0909"/>
+                <color val="Black"/>
+                <movenum num="71"/>
+            </move>
+            <move>
+                <node id="0905"/>
+                <color val="White"/>
+                <movenum num="72"/>
+            </move>
+            <move>
+                <node id="0805"/>
+                <color val="Black"/>
+                <movenum num="73"/>
+            </move>
+            <move>
+                <node id="0211"/>
+                <color val="White"/>
+                <movenum num="74"/>
+            </move>
+            <move>
+                <node id="1104"/>
+                <color val="Black"/>
+                <movenum num="75"/>
+            </move>
+            <move>
+                <node id="1106"/>
+                <color val="White"/>
+                <movenum num="76"/>
+            </move>
+            <move>
+                <node id="1116"/>
+                <color val="Black"/>
+                <movenum num="77"/>
+            </move>
+            <move>
+                <node id="1107"/>
+                <color val="White"/>
+                <movenum num="78"/>
+            </move>
+            <move>
+                <node id="0117"/>
+                <color val="Black"/>
+                <movenum num="79"/>
+            </move>
+            <move>
+                <node id="0913"/>
+                <color val="White"/>
+                <movenum num="80"/>
+            </move>
+            <move>
+                <node id="1415"/>
+                <color val="Black"/>
+                <movenum num="81"/>
+            </move>
+            <move>
+                <node id="1205"/>
+                <color val="White"/>
+                <movenum num="82"/>
+            </move>
+            <move>
+                <node id="1206"/>
+                <color val="Black"/>
+                <movenum num="83"/>
+            </move>
+            <move>
+                <node id="1216"/>
+                <color val="White"/>
+                <movenum num="84"/>
+            </move>
+            <move>
+                <node id="0904"/>
+                <color val="Black"/>
+                <movenum num="85"/>
+            </move>
+            <move>
+                <node id="1309"/>
+                <color val="White"/>
+                <movenum num="86"/>
+            </move>
+            <move>
+                <node id="1204"/>
+                <color val="Black"/>
+                <movenum num="87"/>
+            </move>
+            <move>
+                <node id="1005"/>
+                <color val="White"/>
+                <movenum num="88"/>
+            </move>
+            <move>
+                <node id="1004"/>
+                <color val="Black"/>
+                <movenum num="89"/>
+            </move>
+            <move>
+                <node id="1111"/>
+                <color val="White"/>
+                <movenum num="90"/>
+            </move>
+            <move>
+                <node id="0902"/>
+                <color val="Black"/>
+                <movenum num="91"/>
+            </move>
+            <move>
+                <node id="1207"/>
+                <color val="White"/>
+                <movenum num="92"/>
+            </move>
+            <move>
+                <node id="0706"/>
+                <color val="Black"/>
+                <movenum num="93"/>
+            </move>
+            <move>
+                <node id="0806"/>
+                <color val="White"/>
+                <movenum num="94"/>
+            </move>
+            <move>
+                <node id="0413"/>
+                <color val="Black"/>
+                <movenum num="95"/>
+            </move>
+            <move>
+                <node id="0305"/>
+                <color val="White"/>
+                <movenum num="96"/>
+            </move>
+            <move>
+                <node id="1306"/>
+                <color val="Black"/>
+                <movenum num="97"/>
+            </move>
+            <move>
+                <node id="1016"/>
+                <color val="White"/>
+                <movenum num="98"/>
+            </move>
+            <move>
+                <node id="0420"/>
+                <color val="Black"/>
+                <movenum num="99"/>
+            </move>
+            <move>
+                <node id="0804"/>
+                <color val="White"/>
+                <movenum num="100"/>
+            </move>
+            <move>
+                <node id="1009"/>
+                <color val="Black"/>
+                <movenum num="101"/>
+            </move>
+            <move>
+                <node id="0609"/>
+                <color val="White"/>
+                <movenum num="102"/>
+            </move>
+            <move>
+                <node id="0412"/>
+                <color val="Black"/>
+                <movenum num="103"/>
+            </move>
+            <move>
+                <node id="1307"/>
+                <color val="White"/>
+                <movenum num="104"/>
+            </move>
+            <move>
+                <node id="0602"/>
+                <color val="Black"/>
+                <movenum num="105"/>
+            </move>
+            <move>
+                <node id="0018"/>
+                <color val="White"/>
+                <movenum num="106"/>
+            </move>
+            <move>
+                <node id="0717"/>
+                <color val="Black"/>
+                <movenum num="107"/>
+            </move>
+            <move>
+                <node id="0919"/>
+                <color val="White"/>
+                <movenum num="108"/>
+            </move>
+            <move>
+                <node id="0118"/>
+                <color val="Black"/>
+                <movenum num="109"/>
+            </move>
+            <move>
+                <node id="0503"/>
+                <color val="White"/>
+                <movenum num="110"/>
+            </move>
+            <move>
+                <node id="0604"/>
+                <color val="Black"/>
+                <movenum num="111"/>
+            </move>
+            <move>
+                <node id="1502"/>
+                <color val="White"/>
+                <movenum num="112"/>
+            </move>
+            <move>
+                <node id="0301"/>
+                <color val="Black"/>
+                <movenum num="113"/>
+            </move>
+            <move>
+                <node id="0506"/>
+                <color val="White"/>
+                <movenum num="114"/>
+            </move>
+            <move>
+                <node id="0509"/>
+                <color val="Black"/>
+                <movenum num="115"/>
+            </move>
+            <move>
+                <node id="0805"/>
+                <color val="White"/>
+                <movenum num="116"/>
+            </move>
+            <move>
+                <node id="1100"/>
+                <color val="Black"/>
+                <movenum num="117"/>
+            </move>
+            <move>
+                <node id="1508"/>
+                <color val="White"/>
+                <movenum num="118"/>
+            </move>
+            <move>
+                <node id="0006"/>
+                <color val="Black"/>
+                <movenum num="119"/>
+            </move>
+            <move>
+                <node id="0202"/>
+                <color val="White"/>
+                <movenum num="120"/>
+            </move>
+            <move>
+                <node id="0105"/>
+                <color val="Black"/>
+                <movenum num="121"/>
+            </move>
+            <move>
+                <node id="0014"/>
+                <color val="White"/>
+                <movenum num="122"/>
+            </move>
+            <move>
+                <node id="0307"/>
+                <color val="Black"/>
+                <movenum num="123"/>
+            </move>
+            <move>
+                <node id="0115"/>
+                <color val="White"/>
+                <movenum num="124"/>
+            </move>
+            <move>
+                <node id="0107"/>
+                <color val="Black"/>
+                <movenum num="125"/>
+            </move>
+            <move>
+                <node id="1210"/>
+                <color val="White"/>
+                <movenum num="126"/>
+            </move>
+            <move>
+                <node id="0316"/>
+                <color val="Black"/>
+                <movenum num="127"/>
+            </move>
+            <move>
+                <node id="1020"/>
+                <color val="White"/>
+                <movenum num="128"/>
+            </move>
+            <move>
+                <node id="1405"/>
+                <color val="Black"/>
+                <movenum num="129"/>
+            </move>
+            <move>
+                <node id="0900"/>
+                <color val="White"/>
+                <movenum num="130"/>
+            </move>
+            <move>
+                <node id="0519"/>
+                <color val="Black"/>
+                <movenum num="131"/>
+            </move>
+            <move>
+                <node id="0119"/>
+                <color val="White"/>
+                <movenum num="132"/>
+            </move>
+            <move>
+                <node id="0606"/>
+                <color val="Black"/>
+                <movenum num="133"/>
+            </move>
+            <move>
+                <node id="0605"/>
+                <color val="White"/>
+                <movenum num="134"/>
+            </move>
+            <move>
+                <node id="0512"/>
+                <color val="Black"/>
+                <movenum num="135"/>
+            </move>
+            <move>
+                <node id="0508"/>
+                <color val="White"/>
+                <movenum num="136"/>
+            </move>
+            <move>
+                <node id="0607"/>
+                <color val="Black"/>
+                <movenum num="137"/>
+            </move>
+            <move>
+                <node id="0205"/>
+                <color val="White"/>
+                <movenum num="138"/>
+            </move>
+            <move>
+                <node id="0513"/>
+                <color val="Black"/>
+                <movenum num="139"/>
+            </move>
+            <move>
+                <node id="1119"/>
+                <color val="White"/>
+                <movenum num="140"/>
+            </move>
+            <move>
+                <node id="0613"/>
+                <color val="Black"/>
+                <movenum num="141"/>
+            </move>
+            <move>
+                <node id="0810"/>
+                <color val="White"/>
+                <movenum num="142"/>
+            </move>
+            <move>
+                <node id="0402"/>
+                <color val="Black"/>
+                <movenum num="143"/>
+            </move>
+            <move>
+                <node id="1504"/>
+                <color val="White"/>
+                <movenum num="144"/>
+            </move>
+            <move>
+                <node id="0201"/>
+                <color val="Black"/>
+                <movenum num="145"/>
+            </move>
+            <move>
+                <node id="0215"/>
+                <color val="White"/>
+                <movenum num="146"/>
+            </move>
+            <move>
+                <node id="0317"/>
+                <color val="Black"/>
+                <movenum num="147"/>
+            </move>
+            <move>
+                <node id="0802"/>
+                <color val="White"/>
+                <movenum num="148"/>
+            </move>
+            <move>
+                <node id="1101"/>
+                <color val="Black"/>
+                <movenum num="149"/>
+            </move>
+            <move>
+                <node id="0808"/>
+                <color val="White"/>
+                <movenum num="150"/>
+            </move>
+            <move>
+                <node id="0411"/>
+                <color val="Black"/>
+                <movenum num="151"/>
+            </move>
+            <move>
+                <node id="0302"/>
+                <color val="White"/>
+                <movenum num="152"/>
+            </move>
+            <move>
+                <node id="0901"/>
+                <color val="Black"/>
+                <movenum num="153"/>
+            </move>
+            <move>
+                <node id="0004"/>
+                <color val="White"/>
+                <movenum num="154"/>
+            </move>
+            <move>
+                <node id="0002"/>
+                <color val="Black"/>
+                <movenum num="155"/>
+            </move>
+            <move>
+                <node id="0508"/>
+                <color val="White"/>
+                <movenum num="156"/>
+            </move>
+            <move>
+                <node id="0502"/>
+                <color val="Black"/>
+                <movenum num="157"/>
+            </move>
+            <move>
+                <node id="1300"/>
+                <color val="White"/>
+                <movenum num="158"/>
+            </move>
+            <move>
+                <node id="1001"/>
+                <color val="Black"/>
+                <movenum num="159"/>
+            </move>
+            <move>
+                <node id="1404"/>
+                <color val="White"/>
+                <movenum num="160"/>
+            </move>
+            <move>
+                <node id="0606"/>
+                <color val="Black"/>
+                <movenum num="161"/>
+            </move>
+            <move>
+                <node id="0706"/>
+                <color val="White"/>
+                <movenum num="162"/>
+            </move>
+            <move>
+                <node id="0701"/>
+                <color val="Black"/>
+                <movenum num="163"/>
+            </move>
+            <move>
+                <node id="0103"/>
+                <color val="White"/>
+                <movenum num="164"/>
+            </move>
+            <move>
+                <node id="0718"/>
+                <color val="Black"/>
+                <movenum num="165"/>
+            </move>
+            <move>
+                <node id="1017"/>
+                <color val="White"/>
+                <movenum num="166"/>
+            </move>
+            <move>
+                <node id="1513"/>
+                <color val="Black"/>
+                <movenum num="167"/>
+            </move>
+            <move>
+                <node id="0515"/>
+                <color val="White"/>
+                <movenum num="168"/>
+            </move>
+            <move>
+                <node id="1507"/>
+                <color val="Black"/>
+                <movenum num="169"/>
+            </move>
+            <move>
+                <node id="1505"/>
+                <color val="White"/>
+                <movenum num="170"/>
+            </move>
+            <move>
+                <node id="1503"/>
+                <color val="Black"/>
+                <movenum num="171"/>
+            </move>
+            <move>
+                <node id="1410"/>
+                <color val="White"/>
+                <movenum num="172"/>
+            </move>
+            <move>
+                <node id="1517"/>
+                <color val="Black"/>
+                <movenum num="173"/>
+            </move>
+            <move>
+                <node id="0711"/>
+                <color val="White"/>
+                <movenum num="174"/>
+            </move>
+            <move>
+                <node id="0609"/>
+                <color val="Black"/>
+                <movenum num="175"/>
+            </move>
+            <move>
+                <node id="0101"/>
+                <color val="White"/>
+                <movenum num="176"/>
+            </move>
+            <move>
+                <node id="1304"/>
+                <color val="Black"/>
+                <movenum num="177"/>
+            </move>
+            <move>
+                <node id="1403"/>
+                <color val="White"/>
+                <movenum num="178"/>
+            </move>
+            <move>
+                <node id="0008"/>
+                <color val="Black"/>
+                <movenum num="179"/>
+            </move>
+            <move>
+                <node id="1310"/>
+                <color val="White"/>
+                <movenum num="180"/>
+            </move>
+            <move>
+                <node id="1205"/>
+                <color val="Black"/>
+                <movenum num="181"/>
+            </move>
+            <move>
+                <node id="0606"/>
+                <color val="White"/>
+                <movenum num="182"/>
+            </move>
+            <move>
+                <node id="1313"/>
+                <color val="Black"/>
+                <movenum num="183"/>
+            </move>
+            <move>
+                <node id="1510"/>
+                <color val="White"/>
+                <movenum num="184"/>
+            </move>
+            <move>
+                <node id="0204"/>
+                <color val="Black"/>
+                <movenum num="185"/>
+            </move>
+            <move>
+                <node id="0015"/>
+                <color val="White"/>
+                <movenum num="186"/>
+            </move>
+            <move>
+                <node id="0607"/>
+                <color val="Black"/>
+                <movenum num="187"/>
+            </move>
+            <move>
+                <node id="0112"/>
+                <color val="White"/>
+                <movenum num="188"/>
+            </move>
+            <move>
+                <node id="1315"/>
+                <color val="Black"/>
+                <movenum num="189"/>
+            </move>
+            <move>
+                <node id="1000"/>
+                <color val="White"/>
+                <movenum num="190"/>
+            </move>
+            <move>
+                <node id="0504"/>
+                <color val="Black"/>
+                <movenum num="191"/>
+            </move>
+            <move>
+                <node id="1217"/>
+                <color val="White"/>
+                <movenum num="192"/>
+            </move>
+            <move>
+                <node id="0100"/>
+                <color val="Black"/>
+                <movenum num="193"/>
+            </move>
+            <move>
+                <node id="1211"/>
+                <color val="White"/>
+                <movenum num="194"/>
+            </move>
+            <move>
+                <node id="0520"/>
+                <color val="Black"/>
+                <movenum num="195"/>
+            </move>
+            <move>
+                <node id="1213"/>
+                <color val="White"/>
+                <movenum num="196"/>
+            </move>
+            <move>
+                <node id="0119"/>
+                <color val="Black"/>
+                <movenum num="197"/>
+            </move>
+            <move>
+                <node id="0911"/>
+                <color val="White"/>
+                <movenum num="198"/>
+            </move>
+            <move>
+                <node id="0813"/>
+                <color val="Black"/>
+                <movenum num="199"/>
+            </move>
+            <move>
+                <node id="0415"/>
+                <color val="White"/>
+                <movenum num="200"/>
+            </move>
+            <move>
+                <node id="0113"/>
+                <color val="Black"/>
+                <movenum num="201"/>
+            </move>
+            <move>
+                <node id="0614"/>
+                <color val="White"/>
+                <movenum num="202"/>
+            </move>
+            <move>
+                <node id="0104"/>
+                <color val="Black"/>
+                <movenum num="203"/>
+            </move>
+            <move>
+                <node id="1413"/>
+                <color val="White"/>
+                <movenum num="204"/>
+            </move>
+            <move>
+                <node id="0504"/>
+                <color val="Black"/>
+                <movenum num="205"/>
+            </move>
+            <move>
+                <node id="0416"/>
+                <color val="White"/>
+                <movenum num="206"/>
+            </move>
+            <move>
+                <node id="0109"/>
+                <color val="Black"/>
+                <movenum num="207"/>
+            </move>
+            <move>
+                <node id="0900"/>
+                <color val="White"/>
+                <movenum num="208"/>
+            </move>
+            <move>
+                <node id="0010"/>
+                <color val="Black"/>
+                <movenum num="209"/>
+            </move>
+            <move>
+                <node id="0401"/>
+                <color val="White"/>
+                <movenum num="210"/>
+            </move>
+            <move>
+                <node id="0018"/>
+                <color val="Black"/>
+                <movenum num="211"/>
+            </move>
+            <move>
+                <node id="0715"/>
+                <color val="White"/>
+                <movenum num="212"/>
+            </move>
+            <move>
+                <node id="1203"/>
+                <color val="Black"/>
+                <movenum num="213"/>
+            </move>
+            <move>
+                <node id="1218"/>
+                <color val="White"/>
+                <movenum num="214"/>
+            </move>
+            <move>
+                <node id="0714"/>
+                <color val="Black"/>
+                <movenum num="215"/>
+            </move>
+            <move>
+                <node id="1212"/>
+                <color val="White"/>
+                <movenum num="216"/>
+            </move>
+            <move>
+                <node id="0815"/>
+                <color val="Black"/>
+                <movenum num="217"/>
+            </move>
+            <move>
+                <node id="0604"/>
+                <color val="White"/>
+                <movenum num="218"/>
+            </move>
+            <move>
+                <node id="0110"/>
+                <color val="Black"/>
+                <movenum num="219"/>
+            </move>
+            <move>
+                <node id="0218"/>
+                <color val="White"/>
+                <movenum num="220"/>
+            </move>
+            <move>
+                <node id="0105"/>
+                <color val="Black"/>
+                <movenum num="221"/>
+            </move>
+            <move>
+                <node id="1514"/>
+                <color val="White"/>
+                <movenum num="222"/>
+            </move>
+            <move>
+                <node id="0909"/>
+                <color val="Black"/>
+                <movenum num="223"/>
+            </move>
+            <move>
+                <node id="0020"/>
+                <color val="White"/>
+                <movenum num="224"/>
+            </move>
+            <move>
+                <node id="1414"/>
+                <color val="Black"/>
+                <movenum num="225"/>
+            </move>
+            <move>
+                <node id="0417"/>
+                <color val="White"/>
+                <movenum num="226"/>
+            </move>
+            <move>
+                <node id="PASS"/>
+                <color val="White"/>
+                <movenum num="227"/>
+            </move>
+            <move>
+                <node id="0318"/>
+                <color val="White"/>
+                <movenum num="228"/>
+            </move>
+            <move>
+                <node id="0018"/>
+                <color val="Black"/>
+                <movenum num="229"/>
+            </move>
+            <move>
+                <node id="0117"/>
+                <color val="White"/>
+                <movenum num="230"/>
+            </move>
+            <move>
+                <node id="0104"/>
+                <color val="Black"/>
+                <movenum num="231"/>
+            </move>
+            <move>
+                <node id="0019"/>
+                <color val="White"/>
+                <movenum num="232"/>
+            </move>
+            <move>
+                <node id="1011"/>
+                <color val="Black"/>
+                <movenum num="233"/>
+            </move>
+            <move>
+                <node id="1311"/>
+                <color val="White"/>
+                <movenum num="234"/>
+            </move>
+            <move>
+                <node id="0813"/>
+                <color val="Black"/>
+                <movenum num="235"/>
+            </move>
+            <move>
+                <node id="1009"/>
+                <color val="White"/>
+                <movenum num="236"/>
+            </move>
+            <move>
+                <node id="0119"/>
+                <color val="Black"/>
+                <movenum num="237"/>
+            </move>
+            <move>
+                <node id="0212"/>
+                <color val="White"/>
+                <movenum num="238"/>
+            </move>
+            <move>
+                <node id="PASS"/>
+                <color val="White"/>
+                <movenum num="239"/>
+            </move>
+            <move>
+                <node id="0811"/>
+                <color val="White"/>
+                <movenum num="240"/>
+            </move>
+            <move>
+                <node id="1000"/>
+                <color val="Black"/>
+                <movenum num="241"/>
+            </move>
+            <move>
+                <node id="0118"/>
+                <color val="White"/>
+                <movenum num="242"/>
+            </move>
+            <move>
+                <node id="1312"/>
+                <color val="Black"/>
+                <movenum num="243"/>
+            </move>
+            <move>
+                <node id="0204"/>
+                <color val="White"/>
+                <movenum num="244"/>
+            </move>
+            <move>
+                <node id="1500"/>
+                <color val="Black"/>
+                <movenum num="245"/>
+            </move>
+            <move>
+                <node id="0406"/>
+                <color val="White"/>
+                <movenum num="246"/>
+            </move>
+            <move>
+                <node id="1015"/>
+                <color val="Black"/>
+                <movenum num="247"/>
+            </move>
+            <move>
+                <node id="1519"/>
+                <color val="White"/>
+                <movenum num="248"/>
+            </move>
+            <move>
+                <node id="0316"/>
+                <color val="Black"/>
+                <movenum num="249"/>
+            </move>
+            <move>
+                <node id="0514"/>
+                <color val="White"/>
+                <movenum num="250"/>
+            </move>
+            <move>
+                <node id="1214"/>
+                <color val="Black"/>
+                <movenum num="251"/>
+            </move>
+            <move>
+                <node id="0504"/>
+                <color val="White"/>
+                <movenum num="252"/>
+            </move>
+            <move>
+                <node id="0320"/>
+                <color val="Black"/>
+                <movenum num="253"/>
+            </move>
+            <move>
+                <node id="0105"/>
+                <color val="White"/>
+                <movenum num="254"/>
+            </move>
+            <move>
+                <node id="1313"/>
+                <color val="Black"/>
+                <movenum num="255"/>
+            </move>
+            <move>
+                <node id="1513"/>
+                <color val="White"/>
+                <movenum num="256"/>
+            </move>
+            <move>
+                <node id="0020"/>
+                <color val="Black"/>
+                <movenum num="257"/>
+            </move>
+            <move>
+                <node id="1214"/>
+                <color val="White"/>
+                <movenum num="258"/>
+            </move>
+            <move>
+                <node id="PASS"/>
+                <color val="White"/>
+                <movenum num="259"/>
+            </move>
+            <move>
+                <node id="1011"/>
+                <color val="White"/>
+                <movenum num="260"/>
+            </move>
+            <move>
+                <node id="PASS"/>
+                <color val="White"/>
+                <movenum num="261"/>
+            </move>
+            <move>
+                <node id="1103"/>
+                <color val="White"/>
+                <movenum num="262"/>
+            </move>
+            <move>
+                <node id="1312"/>
+                <color val="Black"/>
+                <movenum num="263"/>
+            </move>
+            <move>
+                <node id="1007"/>
+                <color val="White"/>
+                <movenum num="264"/>
+            </move>
+            <move>
+                <node id="1313"/>
+                <color val="Black"/>
+                <movenum num="265"/>
+            </move>
+            <move>
+                <node id="0501"/>
+                <color val="White"/>
+                <movenum num="266"/>
+            </move>
+            <move>
+                <node id="0715"/>
+                <color val="Black"/>
+                <movenum num="267"/>
+            </move>
+            <move>
+                <node id="1515"/>
+                <color val="White"/>
+                <movenum num="268"/>
+            </move>
+            <move>
+                <node id="0209"/>
+                <color val="Black"/>
+                <movenum num="269"/>
+            </move>
+            <move>
+                <node id="1416"/>
+                <color val="White"/>
+                <movenum num="270"/>
+            </move>
+            <move>
+                <node id="1501"/>
+                <color val="Black"/>
+                <movenum num="271"/>
+            </move>
+            <move>
+                <node id="0017"/>
+                <color val="White"/>
+                <movenum num="272"/>
+            </move>
+            <move>
+                <node id="PASS"/>
+                <color val="White"/>
+                <movenum num="273"/>
+            </move>
+            <move>
+                <node id="1520"/>
+                <color val="White"/>
+                <movenum num="274"/>
+            </move>
+            <move>
+                <node id="1501"/>
+                <color val="Black"/>
+                <movenum num="275"/>
+            </move>
+            <move>
+                <node id="1517"/>
+                <color val="White"/>
+                <movenum num="276"/>
+            </move>
+            <move>
+                <node id="1500"/>
+                <color val="Black"/>
+                <movenum num="277"/>
+            </move>
+            <move>
+                <node id="0508"/>
+                <color val="White"/>
+                <movenum num="278"/>
+            </move>
+            <move>
+                <node id="1501"/>
+                <color val="Black"/>
+                <movenum num="279"/>
+            </move>
+            <move>
+                <node id="0914"/>
+                <color val="White"/>
+                <movenum num="280"/>
+            </move>
+            <move>
+                <node id="1417"/>
+                <color val="Black"/>
+                <movenum num="281"/>
+            </move>
+            <move>
+                <node id="0019"/>
+                <color val="White"/>
+                <movenum num="282"/>
+            </move>
+            <move>
+                <node id="1414"/>
+                <color val="Black"/>
+                <movenum num="283"/>
+            </move>
+            <move>
+                <node id="0619"/>
+                <color val="White"/>
+                <movenum num="284"/>
+            </move>
+            <move>
+                <node id="0717"/>
+                <color val="Black"/>
+                <movenum num="285"/>
+            </move>
+            <move>
+                <node id="0714"/>
+                <color val="White"/>
+                <movenum num="286"/>
+            </move>
+            <move>
+                <node id="1308"/>
+                <color val="Black"/>
+                <movenum num="287"/>
+            </move>
+            <move>
+                <node id="0520"/>
+                <color val="White"/>
+                <movenum num="288"/>
+            </move>
+            <move>
+                <node id="0020"/>
+                <color val="Black"/>
+                <movenum num="289"/>
+            </move>
+            <move>
+                <node id="0320"/>
+                <color val="White"/>
+                <movenum num="290"/>
+            </move>
+            <move>
+                <node id="0616"/>
+                <color val="Black"/>
+                <movenum num="291"/>
+            </move>
+            <move>
+                <node id="1511"/>
+                <color val="White"/>
+                <movenum num="292"/>
+            </move>
+            <move>
+                <node id="0820"/>
+                <color val="Black"/>
+                <movenum num="293"/>
+            </move>
+            <move>
+                <node id="0000"/>
+                <color val="White"/>
+                <movenum num="294"/>
+            </move>
+            <move>
+                <node id="0018"/>
+                <color val="Black"/>
+                <movenum num="295"/>
+            </move>
+            <move>
+                <node id="0401"/>
+                <color val="White"/>
+                <movenum num="296"/>
+            </move>
+            <move>
+                <node id="0920"/>
+                <color val="Black"/>
+                <movenum num="297"/>
+            </move>
+            <move>
+                <node id="0418"/>
+                <color val="White"/>
+                <movenum num="298"/>
+            </move>
+            <move>
+                <node id="1315"/>
+                <color val="Black"/>
+                <movenum num="299"/>
+            </move>
+            <move>
+                <node id="0501"/>
+                <color val="White"/>
+                <movenum num="300"/>
+            </move>
+            <move>
+                <node id="0612"/>
+                <color val="Black"/>
+                <movenum num="301"/>
+            </move>
+            <move>
+                <node id="0217"/>
+                <color val="White"/>
+                <movenum num="302"/>
+            </move>
+            <move>
+                <node id="0317"/>
+                <color val="Black"/>
+                <movenum num="303"/>
+            </move>
+            <move>
+                <node id="0501"/>
+                <color val="White"/>
+                <movenum num="304"/>
+            </move>
+            <move>
+                <node id="1418"/>
+                <color val="Black"/>
+                <movenum num="305"/>
+            </move>
+            <move>
+                <node id="1120"/>
+                <color val="White"/>
+                <movenum num="306"/>
+            </move>
+            <move>
+                <node id="1208"/>
+                <color val="Black"/>
+                <movenum num="307"/>
+            </move>
+            <move>
+                <node id="1415"/>
+                <color val="White"/>
+                <movenum num="308"/>
+            </move>
+            <move>
+                <node id="0119"/>
+                <color val="Black"/>
+                <movenum num="309"/>
+            </move>
+            <move>
+                <node id="0618"/>
+                <color val="White"/>
+                <movenum num="310"/>
+            </move>
+            <move>
+                <node id="1418"/>
+                <color val="Black"/>
+                <movenum num="311"/>
+            </move>
+            <move>
+                <node id="0020"/>
+                <color val="White"/>
+                <movenum num="312"/>
+            </move>
+            <move>
+                <node id="1417"/>
+                <color val="Black"/>
+                <movenum num="313"/>
+            </move>
+            <move>
+                <node id="0401"/>
+                <color val="White"/>
+                <movenum num="314"/>
+            </move>
+            <move>
+                <node id="0920"/>
+                <color val="Black"/>
+                <movenum num="315"/>
+            </move>
+            <move>
+                <node id="0420"/>
+                <color val="White"/>
+                <movenum num="316"/>
+            </move>
+            <move>
+                <node id="0715"/>
+                <color val="Black"/>
+                <movenum num="317"/>
+            </move>
+            <move>
+                <node id="0815"/>
+                <color val="White"/>
+                <movenum num="318"/>
+            </move>
+            <move>
+                <node id="0820"/>
+                <color val="Black"/>
+                <movenum num="319"/>
+            </move>
+            <move>
+                <node id="0607"/>
+                <color val="White"/>
+                <movenum num="320"/>
+            </move>
+            <move>
+                <node id="0119"/>
+                <color val="Black"/>
+                <movenum num="321"/>
+            </move>
+            <move>
+                <node id="1409"/>
+                <color val="White"/>
+                <movenum num="322"/>
+            </move>
+        </move_list>
+        <Position type="after-play">
+            <stone>
+                <node id="0000"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0020"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1520"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0903"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1307"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0404"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0604"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0202"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1408"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0119"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1207"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0110"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1511"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0510"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0812"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0320"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0118"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1313"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1009"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0307"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1514"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0810"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1119"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1502"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1104"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0116"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1317"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1105"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0111"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0301"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0103"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1504"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1208"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0300"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1218"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0914"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0508"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0415"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0305"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1316"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0904"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0817"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0214"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1409"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1501"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1310"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0210"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0619"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0616"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0109"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0314"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0107"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1101"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1413"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1213"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1515"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0014"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1217"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0209"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1020"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1007"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0416"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1106"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0204"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1300"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1519"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0215"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1214"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1111"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0211"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0607"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1000"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0706"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0004"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0605"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1107"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1206"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1001"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0015"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1212"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0711"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0100"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0717"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0420"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0806"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0808"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0602"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1012"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1108"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1114"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0105"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1410"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0115"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1416"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1319"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0702"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0907"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0606"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1513"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1004"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1420"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0117"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0609"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0512"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1508"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0006"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1103"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0905"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1204"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1017"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1403"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0509"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1309"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0101"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1301"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0902"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0406"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0911"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1100"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0515"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0618"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0811"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0113"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0417"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1211"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1405"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1404"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0409"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0008"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0703"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0815"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1306"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0506"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1318"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0520"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1311"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0504"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1112"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0612"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1113"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1216"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0112"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1517"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0804"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0614"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0010"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1506"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0901"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0513"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0019"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0407"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0212"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0411"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1304"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1006"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0714"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0205"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0402"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0715"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0413"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0514"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0318"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0913"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1415"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0919"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0017"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0503"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0302"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0502"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0412"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1505"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0201"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0217"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1210"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0701"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0613"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1205"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1115"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1011"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1203"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0418"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1005"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0807"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1510"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1120"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0311"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="0218"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1016"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0704"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="1507"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1117"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0805"/>
+                <color val="White"/>
+            </stone>
+            <stone>
+                <node id="0710"/>
+                <color val="Black"/>
+            </stone>
+            <stone>
+                <node id="1102"/>
+                <color val="White"/>
+            </stone>
+        </Position>
+    </Game>
+</IrrGoBoard>

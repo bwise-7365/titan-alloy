@@ -2,6 +2,9 @@
 +++ = partially fixed
 --- = totally fixed
 
+===
+*** 26 Loading graph of different size crashes
+XML needs to record grid dimensions
 
 ====
 *** 2026-04-24 NegaMax seems to just pick the lowest index

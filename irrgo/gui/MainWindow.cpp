@@ -302,7 +302,9 @@ void MainWindow::buildMenuBar() {
     connect(fileMenu->addAction("Save"),     &QAction::triggered, this, &MainWindow::onSave);
     connect(fileMenu->addAction("Save As..."), &QAction::triggered, this, &MainWindow::onSaveAs);
     fileMenu->addSeparator();
-    fileMenu->addAction("Load");
+    connect(fileMenu->addAction("Load..."), &QAction::triggered, this, &MainWindow::onLoad);
+    fileMenu->addSeparator();
+    connect(fileMenu->addAction("Quit"), &QAction::triggered, this, &QWidget::close);
 
     // Board
     auto* boardMenu = menuBar()->addMenu("Board");

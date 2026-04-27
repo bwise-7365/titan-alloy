@@ -41,6 +41,7 @@ private slots:
     void onPlayMctsGo();
     void onSave();
     void onSaveAs();
+    void onLoad();
 
 private:
     void buildMenuBar();
