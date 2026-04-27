@@ -402,4 +402,8 @@ terminalCount: 297460
 terminalCount: 31645
 terminalCount: 28941
 terminalCount: 27544
-terminalCoun
+terminalCount: 34493
+terminalCount: 24836
+terminalCount: 30954
+terminalCount: 31180
+terminalCount: 37886

@@ -7,6 +7,7 @@ add_library(irrgo_lib STATIC
     LoadedGraph.cpp
     Game.cpp
     DVR.cpp
+    EyeEval.cpp
     utils.cpp
     utils.h
 )

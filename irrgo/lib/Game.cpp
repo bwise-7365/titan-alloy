@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "Game.h"
 #include "DVR.h"
+#include "EyeEval.h"
 #include <limits>
 #include <queue>
 #include <random>
@@ -206,13 +207,17 @@ bool Game::applyMove(AbsGame::MoveId mv) {
 }
 
 double Game::staticEval() const {
-    // Lightweight stone-count heuristic — O(N), no allocation.
-    // The full Voronoi score() is reserved for end-of-game display.
+    // Stone count + single-point eye bonus — O(N+E), no allocation.
+    // The eye bonus (weight > 1) makes filling a secure eye slightly negative
+    // under Chinese area scoring, correcting the raw stone-count bias.
     double black = 0.0, white = komi_;
     for (Color c : board_) {
         if      (c == Color::Black) ++black;
         else if (c == Color::White) ++white;
     }
+    auto [eb, ew] = singleEyeBonus(*this);
+    black += eb;
+    white += ew;
     return (current_ == Player::Black) ? black - white : white - black;
 }
 
@@ -233,8 +238,9 @@ double Game::negamaxEval() const {
     double blackDvr = DVR(*this, Color::Black, kRadius).size();
     double whiteDvr = DVR(*this, Color::White, kRadius).size();
 
-    double blackScore = (1.0 + areaPremium) * blackDvr - areaPremium * blackStones;
-    double whiteScore = (1.0 + areaPremium) * whiteDvr - areaPremium * whiteStones + komi_;
+    EyeEval eyes(*this);
+    double blackScore = (1.0 + areaPremium) * blackDvr - areaPremium * blackStones + eyes.blackBonus();
+    double whiteScore = (1.0 + areaPremium) * whiteDvr - areaPremium * whiteStones + komi_ + eyes.whiteBonus();
 
     return (current_ == Player::Black) ? blackScore - whiteScore : whiteScore - blackScore;
 }
