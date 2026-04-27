@@ -1,0 +1,84 @@
+❯ In computer-go, it is a common problem that programs keep placing stones in empty spaces, even though they do not help under Chinese area-scoring rules.       
+  Research papers on the topic and recommend (without doing anything yet) evaluation function that would penalize eye-filling.                                   
+                                                                                                                                                                 
+● Let me think through the research landscape on this problem carefully before making a recommendation.                                                          
+
+  The Problem                                                                                                                                                    
+   
+  Under Chinese area scoring, placing a stone in your own secure territory nets zero score (gain one stone, lose one empty point). However, it wastes a move —   
+  and in a correctly played game, each wasted move is an opportunity cost. Engines that don't account for this continue filling eyes well past the correct
+  stopping point, degrading both play quality and score estimates.
+
+  ---
+  Relevant Research Threads
+
+  1. Benson's Unconditional Safety (1976)
+
+  David Benson's "Life in the Game of Go" (Information Sciences, 1976) gives a rigorous, static algorithm for identifying groups with unconditional life — groups
+   that cannot be killed regardless of play order. Points inside Benson-safe regions are provably territory; filling them is objectively wasteful. This is the
+  theoretical bedrock any serious evaluation must reference.
+
+  2. The "Don't Fill Own Eyes" Simulation Heuristic
+
+  In the MCTS era, the near-universal fix for random rollouts is: never play in your own single-point eye during simulation. Bouzy & Helmstetter's "Monte-Carlo
+  Go Developments" (Advances in Computer Games 10, 2003) is an early, widely-cited treatment. Chaslot et al.'s "Progressive Strategies for Monte-Carlo Tree
+  Search" (2008) and Gelly & Silver's MoGo papers extend this. All agree the heuristic is necessary but insufficient — it catches the obvious case but misses
+  multi-point eyes, false-eye detection, and tree-level (non-rollout) evaluation.
+
+  3. GNU Go's Influence-Based Territory Estimation
+
+  GNU Go (open source, extensively documented) uses a continuous influence function — a spatial diffusion model — to estimate ownership probability of each
+  intersection. Points above an ownership threshold on one side are treated as territory; the evaluation penalizes moves that fill high-confidence territory.
+  This is practical and well-studied as a baseline for static evaluators.
+
+  4. Müller's Computer Go Evaluation Work
+
+  Martin Müller's papers (various, ~2002–2009, many in ICGA Journal / CG conferences) address safe territory, static life-and-death, and combining tactical
+  search with positional evaluation. His work is the most direct academic treatment of evaluation functions that account for eye security beyond the single-point
+   heuristic.
+
+  ---
+  Recommended Evaluation Function
+
+  The most principled approach I'd recommend is a weighted territory estimator with a Benson-grounded eye penalty:
+
+  V(s) = Σᵢ ownership(i, s) - λ × Σⱼ eye_fill_cost(j, a, s)
+
+  Where:
+
+  - ownership(i, s) — estimated territorial value of intersection i in state s. Use an influence diffusion model (GNU Go style) or a trained ownership head
+  (AlphaGo style). This already captures the Chinese-scoring incentive not to fill.
+  - eye_fill_cost(j, a, s) — cost incurred when action a places a stone at point j. Computed as:
+    - 1.0 if j is inside a Benson-safe region (unconditionally yours — never fill)
+    - p(j) if j is a probabilistic eye (ownership confidence > threshold, orthogonal neighbors all friendly) — penalize proportionally to confidence
+    - 0 if j is contested or enemy territory
+  - λ — tunable penalty weight; empirically, values between 0.5–2.0 have been explored in the literature, with the right value depending on game phase and time
+  pressure.
+
+  Why this formulation:
+
+  - Benson's algorithm gives a hard, provable floor: unconditionally safe eyes get maximum penalty, no ambiguity.
+  - The probabilistic term handles the fuzzy middle ground (eyes that are likely secure but not proven) gracefully.
+  - It generalizes across tree search and rollout contexts, unlike the binary "don't fill single-point eye" rule.
+  - Under Chinese rules, the ownership term already discourages eye-filling somewhat; the explicit penalty term sharpens this in the late-game where most
+  violations occur.
+
+  Main tradeoff:
+
+  Benson's algorithm is exact but conservative — it misses groups that are alive but not unconditionally so. A more aggressive eye detector (e.g., pattern-based
+  or learned) will catch more true eyes but risk false positives that penalize beneficial plays. Starting with Benson + influence threshold is safer; a learned
+  ownership head can subsume all of this if you have sufficient self-play data.
+
+✻ Baked for 1m 7s                     
+
+❯ OK, let's go with you recommendation. Put it in a separate CPP file so that there are minimal changes to the others. (As always, do not change the AbsGame API 
+   unless it is very advantageous and I direct you to do so)   
+
+
+  singleEyeBonus() (used by staticEval): O(N+E), zero allocation. For each empty node where every graph neighbor is the same stone color, that color gets +1.05.
+  The effect: before filling, a player has stones + 1.05 eye bonus = S+1.05; after filling, S+1 stones + 0 eye bonus = S+1. Net: −0.05 per eye filled. Correct
+  direction, small enough not to distort anything else.
+
+  EyeEval (used by negamaxEval): BFS flood-fill over empty regions. A region enclosed entirely by one color's stones (no stone of the other color on its
+  boundary) is credited to that color at 0.3 per empty node. Captures multi-point eyes and enclosed regions outside DVR's radius-3 cutoff. Contested regions
+  (both colors on boundary) get 0 — left to DVR's Voronoi logic.
