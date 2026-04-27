@@ -27,7 +27,7 @@ public class LogisticalAdjudicatorTest {
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
         SerialRecord srA = la.new SerialRecord(currTime, "testSerial_A", LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, "trans_A", "node1");
         SerialRecord srB = la.new SerialRecord(currTime, "testSerial_B", LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, "trans_A", "node1");
-        TransportRecord tr1 = la.new TransportRecord(currTime, "trans_A", LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, serials, "node1");
+        TransportRecord tr1 = la.new TransportRecord(currTime, "trans_A", LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, "node1", 0, 0, serials);
 
         System.out.println(srA);
         System.out.println(srB);
@@ -44,7 +44,7 @@ public class LogisticalAdjudicatorTest {
      */
     @Test
     public void testItnry() throws IOException {
-        double runTimeHours = 150;
+        double runTimeHours = 650;
         ReadDCVRScenarioCSV.ScenarioRecord sRec = ReadDCVRScenarioCSV.readStandardTestCase();
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
         List<LogisticalAdjudicator.LogRecord> records = la.adjudicator(runTimeHours);

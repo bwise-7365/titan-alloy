@@ -3,8 +3,10 @@
 #include "DVR.h"
 #include "Game.h"
 #include <QColor>
+#include <QPixmap>
 #include <QString>
 #include <QWidget>
+#include <vector>
 
 class QTimer;
 
@@ -32,6 +34,7 @@ public:
 
     // Mark the most recently placed stone with a contrasting dot; -1 clears it.
     void setLastMove(int nodeId);
+    void setUseTexture(bool on);
 
 signals:
     void moveRequested(int nodeId);
@@ -49,8 +52,12 @@ private:
     int  nodeAt(QPointF pos) const;
 
     // Shared helper: draws a stone-sized disc with a coloured border.
+    // nodeId is used to select the texture variant; -1 → variant 0.
     void paintStoneBordered(QPainter& p, QPointF pt,
-                            bool isBlack, QColor borderColor) const;
+                            bool isBlack, QColor borderColor, int nodeId = -1) const;
+
+    void loadTextures();
+    void rescaleTextures();
 
     const IrrGo::Game* game_      = nullptr;
     QColor      bgColor_   { "#DBAD6B" };
@@ -69,6 +76,11 @@ private:
     bool    showNeighborhoodSize_ = false;
     bool    showLabels_           = false;
     QTimer* confirmTimer_    = nullptr;
+
+    // Texture stone images: source (full-res) and scaled to current stoneR_
+    bool useTexture_ = false;
+    std::vector<QPixmap> blackSrc_,    whiteSrc_;
+    std::vector<QPixmap> blackScaled_, whiteScaled_;
 
     // Cached transform — updated on resize / graph change
     float minX_=0, minY_=0, rangeX_=1, rangeY_=1;

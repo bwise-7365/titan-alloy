@@ -86,6 +86,14 @@ public class Transport  implements  CountedItem {
     Itinerary itinerary = null;
     ItineraryBuilder iBuilder = null;
 
+    public double getCargoArea() {
+        return cargoArea;
+    }
+
+    public double getCargoWeight() {
+        return cargoWeight;
+    }
+
     /**
      * The numerical ID is mostly for identifying almost-anonymous
      * data structures during debugging. See the comments on CountedItem class.

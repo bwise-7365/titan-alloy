@@ -337,12 +337,6 @@ void MainWindow::buildMenuBar() {
         bgCombo_->setCurrentIndex(checked ? 2 : 0);  // 2=Teal, 0=Tan
     });
 
-    bgCombo_ = new QComboBox(bmw);
-    for (const auto& bg : kBgColors) bgCombo_->addItem(bg.label);
-    form->addRow("Background:", bgCombo_);
-    connect(bgCombo_, &QComboBox::currentIndexChanged,
-            this, &MainWindow::onBgColorChanged);
-
     auto* sep = new QFrame(bmw);
     sep->setFrameShape(QFrame::HLine);
     vbox->addWidget(sep);
@@ -524,6 +518,36 @@ void MainWindow::buildMenuBar() {
     auto* rwa = new QWidgetAction(randomMenu);
     rwa->setDefaultWidget(rmw);
     randomMenu->addAction(rwa);
+
+    // ── Theme ─────────────────────────────────────────────────────────────────
+    auto* themeMenu = menuBar()->addMenu("Theme");
+
+    auto* tmw  = new QWidget;
+    tmw->setMinimumWidth(200);
+    auto* tvbox = new QVBoxLayout(tmw);
+    tvbox->setContentsMargins(8, 6, 8, 6);
+    auto* tform = new QFormLayout;
+    tform->setSpacing(6);
+    tvbox->addLayout(tform);
+
+    bgCombo_ = new QComboBox(tmw);
+    for (const auto& bg : kBgColors) bgCombo_->addItem(bg.label);
+    tform->addRow("Background:", bgCombo_);
+    connect(bgCombo_, &QComboBox::currentIndexChanged,
+            this, &MainWindow::onBgColorChanged);
+
+    auto* tsep = new QFrame(tmw);
+    tsep->setFrameShape(QFrame::HLine);
+    tvbox->addWidget(tsep);
+
+    auto* textureCheck = new QCheckBox("Texture", tmw);
+    tvbox->addWidget(textureCheck);
+    connect(textureCheck, &QCheckBox::toggled,
+            boardWidget_,  &BoardWidget::setUseTexture);
+
+    auto* twa = new QWidgetAction(themeMenu);
+    twa->setDefaultWidget(tmw);
+    themeMenu->addAction(twa);
 }
 
 // ── Board generation ──────────────────────────────────────────────────────────

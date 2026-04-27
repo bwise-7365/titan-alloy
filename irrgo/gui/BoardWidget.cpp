@@ -3,6 +3,8 @@
 #include "RectangularGraph.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <QDebug>
+#include <QString>
 #include <QTimer>
 #include <algorithm>
 #include <limits>
@@ -29,6 +31,42 @@ BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
         tentativeNode_ = -1;
         update();
     });
+    loadTextures();
+}
+
+void BoardWidget::loadTextures() {
+    for (int i = 1; i <= 7; ++i) {
+        QPixmap pm(QString(":/stones/black%1.png").arg(i, 2, 10, QChar('0')));
+        if (!pm.isNull()) blackSrc_.push_back(pm);
+    }
+    for (int i = 1; i <= 6; ++i) {
+        QPixmap pm(QString(":/stones/white%1.png").arg(i, 2, 10, QChar('0')));
+        if (!pm.isNull()) whiteSrc_.push_back(pm);
+    }
+    qDebug() << "BoardWidget::loadTextures:" << blackSrc_.size() << "black," << whiteSrc_.size() << "white";
+}
+
+void BoardWidget::rescaleTextures() {
+    if (!useTexture_ || blackSrc_.empty() || whiteSrc_.empty()) return;
+    int sz = std::max(1, static_cast<int>(stoneR_ * 2.0f));
+    blackScaled_.clear();
+    for (const auto& pm : blackSrc_)
+        blackScaled_.push_back(
+            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    whiteScaled_.clear();
+    for (const auto& pm : whiteSrc_)
+        whiteScaled_.push_back(
+            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
+
+void BoardWidget::setUseTexture(bool on) {
+
+    qDebug() << "setUseTexture" << on << "blackScaled size after rescale:"
+             << (on ? blackScaled_.size() : 0);
+    useTexture_ = on;
+    if (on) rescaleTextures();
+    else { blackScaled_.clear(); whiteScaled_.clear(); }
+    update();
 }
 
 void BoardWidget::setGame(const IrrGo::Game* game) {
@@ -147,6 +185,7 @@ void BoardWidget::updateTransform() {
     float usedH = paddedRY * scale_;
     offX_ = (width()  - usedW) / 2.0f + 2.0f * stoneR_;
     offY_ = (height() - usedH) / 2.0f + 2.0f * stoneR_;
+    rescaleTextures();
 }
 
 int BoardWidget::nodeAt(QPointF pos) const {
@@ -168,7 +207,19 @@ int BoardWidget::nodeAt(QPointF pos) const {
 // ── Shared bordered-stone helper ──────────────────────────────────────────────
 
 void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
-                                     bool isBlack, QColor borderColor) const {
+                                     bool isBlack, QColor borderColor, int nodeId) const {
+    const auto& scaled = isBlack ? blackScaled_ : whiteScaled_;
+    if (useTexture_ && !scaled.empty()) {
+        int idx = (nodeId >= 0 ? nodeId : 0) % static_cast<int>(scaled.size());
+        p.drawPixmap(QPointF(pt.x() - stoneR_, pt.y() - stoneR_), scaled[idx]);
+        // Overlay border ring only — no fill
+        float penW = stoneR_ * 2.0f * 0.1f;
+        float ellR = stoneR_ - penW * 0.5f;
+        p.setPen(QPen(borderColor, penW));
+        p.setBrush(Qt::NoBrush);
+        p.drawEllipse(pt, ellR, ellR);
+        return;
+    }
     float penW = stoneR_ * 2.0f * 0.1f;
     float ellR = stoneR_ - penW * 0.5f;
     p.setPen(QPen(borderColor, penW));
@@ -330,9 +381,16 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         for (const auto& nd : nodes) {
             Color c = game_->colorAt(nd.id);
             if (c == Color::Empty) continue;
-            p.setPen(Qt::NoPen);
-            p.setBrush(c == Color::Black ? Qt::black : Qt::white);
-            p.drawEllipse(toWidget(nd.x, nd.y), stoneR_, stoneR_);
+            QPointF pt = toWidget(nd.x, nd.y);
+            const auto& scaled = (c == Color::Black) ? blackScaled_ : whiteScaled_;
+            if (useTexture_ && !scaled.empty()) {
+                int idx = nd.id % static_cast<int>(scaled.size());
+                p.drawPixmap(QPointF(pt.x() - stoneR_, pt.y() - stoneR_), scaled[idx]);
+            } else {
+                p.setPen(Qt::NoPen);
+                p.setBrush(c == Color::Black ? Qt::black : Qt::white);
+                p.drawEllipse(pt, stoneR_, stoneR_);
+            }
         }
 
         // Last-move marker: small contrasting dot on the most recently placed stone
@@ -349,16 +407,23 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         // Suggested move — green bordered disc (drawn over any stone on that node)
         if (suggestedNode_ >= 0 && suggestedNode_ < static_cast<int>(nodes.size())) {
             paintStoneBordered(p, toWidget(nodes[suggestedNode_].x, nodes[suggestedNode_].y),
-                               suggestIsBlack_, kGreen);
+                               suggestIsBlack_, kGreen, suggestedNode_);
         }
 
         // Tentative stone: player colour with grey cross-hatch
         if (tentativeNode_ >= 0) {
             QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
             bool isBlack = (game_->toMove() == Player::Black);
+            const auto& scaled = isBlack ? blackScaled_ : whiteScaled_;
+            if (useTexture_ && !scaled.empty()) {
+                int idx = tentativeNode_ % static_cast<int>(scaled.size());
+                p.drawPixmap(QPointF(pt.x() - stoneR_, pt.y() - stoneR_), scaled[idx]);
+            } else {
+                p.setPen(Qt::NoPen);
+                p.setBrush(isBlack ? Qt::black : Qt::white);
+                p.drawEllipse(pt, stoneR_, stoneR_);
+            }
             p.setPen(Qt::NoPen);
-            p.setBrush(isBlack ? Qt::black : Qt::white);
-            p.drawEllipse(pt, stoneR_, stoneR_);
             p.setBrush(QBrush(QColor(130, 130, 130), Qt::DiagCrossPattern));
             p.drawEllipse(pt, stoneR_, stoneR_);
         }
@@ -367,7 +432,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
             QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
             if (game_->colorAt(hoverNode_) == Color::Empty) {
-                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange);
+                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange, hoverNode_);
             } else {
                 p.setPen(Qt::NoPen);
                 p.setBrush(kRed);

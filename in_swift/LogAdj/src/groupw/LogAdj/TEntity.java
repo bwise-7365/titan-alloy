@@ -13,6 +13,7 @@ import groupw.Logistics.Manifest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TEntity extends Entity {
 
@@ -54,6 +55,7 @@ public class TEntity extends Entity {
         legIdx = 0;
         atSrc = true;
         atSrtTime = true;
+        onBoard = new Manifest();
         state = State.Transfer;
         mySim.addEvent(new EntEvent(this, mySim,itinerary.legs.get(0).src.transferSrtTime));
     }
@@ -67,7 +69,8 @@ public class TEntity extends Entity {
             // T1: loading starts at src
             String nodeName = leg.src.node.name;
             List<String> sns = itemNames(leg.src.transfer);
-            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, sns, nodeName);
+            int[] pct = pctAreaWeight(onBoard);
+            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
             }
@@ -78,6 +81,9 @@ public class TEntity extends Entity {
             // T2: loading ends; depart
             String nodeName = leg.src.node.name;
             List<String> sns = itemNames(leg.src.transfer);
+            onBoard = Manifest.add(onBoard, leg.src.transfer);
+            int[] pct = pctAreaWeight(onBoard);
+            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
                 Serial s = VRController.TheVRC.getSerialMap().get(sn);
@@ -95,7 +101,9 @@ public class TEntity extends Entity {
             // T4: unloading ends
             String nodeName = leg.dst.node.name;
             List<String> sns = itemNames(leg.dst.transfer);
-            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, sns, nodeName);
+            onBoard = Manifest.sub(onBoard, leg.dst.transfer);
+            int[] pct = pctAreaWeight(onBoard);
+            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
                 Serial s = VRController.TheVRC.getSerialMap().get(sn);
@@ -125,7 +133,8 @@ public class TEntity extends Entity {
         String vName = myTrans.name;
         String nodeName = leg.dst.node.name;
         List<String> sns = itemNames(leg.dst.transfer);
-        recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, sns, nodeName);
+        int[] pct = pctAreaWeight(onBoard);
+        recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
         for (String sn : sns) {
             recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
         }
@@ -145,9 +154,17 @@ public class TEntity extends Entity {
     }
 
     private void recordTransport(double time, String transportName, LogisticalAdjudicator.StartFinish sf,
-                                 LogisticalAdjudicator.LoadUnload lu, List<String> serialNames, String nodeName) {
-        LogisticalAdjudicator.LogRecord r = myAdj.new TransportRecord(time, transportName, sf, lu, serialNames, nodeName);
+                                 LogisticalAdjudicator.LoadUnload lu, String nodeName,
+                                 int pctArea, int pctWeight, List<String> serialNames) {
+        LogisticalAdjudicator.LogRecord r = myAdj.new TransportRecord(time, transportName, sf, lu, nodeName, pctArea, pctWeight, serialNames);
         r.recordEvent(r);
+    }
+
+    private int[] pctAreaWeight(Manifest m) {
+        Map<String, Serial> sMap = VRController.TheVRC.getSerialMap();
+        int pa = (int) Math.round(100.0 * ItineraryBuilder.manifestArea(m, sMap)   / myTrans.getCargoArea());
+        int pw = (int) Math.round(100.0 * ItineraryBuilder.manifestWeight(m, sMap) / myTrans.getCargoWeight());
+        return new int[]{pa, pw};
     }
 
     public State state;
@@ -155,6 +172,7 @@ public class TEntity extends Entity {
     final Transport myTrans;
     final LogisticalAdjudicator myAdj;
     Itinerary itinerary = null;
+    Manifest onBoard = new Manifest();
     int legIdx = 0;
     boolean atSrc = true;
     boolean atSrtTime = true;

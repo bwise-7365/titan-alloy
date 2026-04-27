@@ -3,4 +3,19 @@
     <qresource prefix="/icons">
         <file alias="irrgo.png">../images/irrgo-logo-gold-v2.png</file>
     </qresource>
+    <qresource prefix="/stones">
+        <file alias="black01.png">../images/black01.png</file>
+        <file alias="black02.png">../images/black02.png</file>
+        <file alias="black03.png">../images/black03.png</file>
+        <file alias="black04.png">../images/black04.png</file>
+        <file alias="black05.png">../images/black05.png</file>
+        <file alias="black06.png">../images/black06.png</file>
+        <file alias="black07.png">../images/black07.png</file>
+        <file alias="white01.png">../images/white01.png</file>
+        <file alias="white02.png">../images/white02.png</file>
+        <file alias="white03.png">../images/white03.png</file>
+        <file alias="white04.png">../images/white04.png</file>
+        <file alias="white05.png">../images/white05.png</file>
+        <file alias="white06.png">../images/white06.png</file>
+    </qresource>
 </RCC>

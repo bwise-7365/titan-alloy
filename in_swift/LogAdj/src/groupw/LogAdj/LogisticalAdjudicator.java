@@ -98,23 +98,28 @@ public class LogisticalAdjudicator {
         public final String transportName;
         public final StartFinish startFinish;
         public final LoadUnload loadUnload;
-        public final List<String> serialNames;
         public final String nodeName;
+        public final int pctArea;
+        public final int pctWeight;
+        public final List<String> serialNames;
 
         public TransportRecord(double time, String transportName, StartFinish startFinish,
-                               LoadUnload loadUnload, List<String> serialNames, String nodeName) {
+                               LoadUnload loadUnload, String nodeName, int pctArea, int pctWeight,
+                               List<String> serialNames) {
             super(time);
             this.transportName = transportName;
             this.startFinish = startFinish;
             this.loadUnload = loadUnload;
-            this.serialNames = new ArrayList<>(serialNames);
             this.nodeName = nodeName;
+            this.pctArea = pctArea;
+            this.pctWeight = pctWeight;
+            this.serialNames = new ArrayList<>(serialNames);
         }
 
         @Override
         public String toString() {
-            return String.format("%08.4f hours, Transport, %s, %s, %s, %s, %s",
-                    time, transportName, startFinish, loadUnload, serialNames, nodeName);
+            return String.format("%08.4f hours, Transport, %s, %s, %s, %s, %d%%, %d%%, %s",
+                    time, transportName, startFinish, loadUnload, nodeName, pctArea, pctWeight, serialNames);
         }
     }
 
