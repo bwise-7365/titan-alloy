@@ -271,10 +271,11 @@ void BoardWidget::mousePressEvent(QMouseEvent* e) {
 void BoardWidget::paintEvent(QPaintEvent*) {
 
     // trying to figure out why textures do not show
+	/*
     qDebug() << "useTexture:" << useTexture_
              << "fabricScaled isNull:" << fabricScaled_.isNull()
              << "size:" << fabricScaled_.size();
-
+     */
 
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
