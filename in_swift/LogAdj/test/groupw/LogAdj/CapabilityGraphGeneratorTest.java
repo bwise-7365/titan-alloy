@@ -2,12 +2,16 @@ package groupw.LogAdj;
 
 import org.junit.Test;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import static org.junit.Assert.*;
 
 public class CapabilityGraphGeneratorTest {
+
+    /** Hard-coded paths for testing on known files
+     *
+     * @throws IOException
+     */
     @Test
     public void testParsingAndCalculation() throws IOException {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
@@ -29,11 +33,11 @@ public class CapabilityGraphGeneratorTest {
         assertTrue("Expected some units to have deliveries in logrun.txt", foundDeliveries);
 
         timeline.forEach((unit, data) -> {
-            System.out.println("[DEBUG_LOG] Unit: " + unit + ", Data points: " + data.size());
+            System.out.println("Unit " + unit + ", had "+ data.size()+" data points");
             if (data.size() > 1) {
                 double lastCap = data.lastEntry().getValue();
-                System.out.println("[DEBUG_LOG]   Final Capability: " + lastCap + "%");
-                System.out.println("[DEBUG_LOG]   Final Time: " + data.lastKey());
+                System.out.printf("Final percent capability: %.3f \n", lastCap);
+                System.out.printf("Final time: %.3f \n", data.lastKey()); // kind of redundant, now
                 assertTrue("Cumulative capability should be non-decreasing", isNonDecreasing(data));
             }
         });
@@ -47,11 +51,11 @@ public class CapabilityGraphGeneratorTest {
         generator.parseLogFile("logrun.txt");
         
         String outputPath = "capability_graph_test.png";
-        generator.saveChartAsPNG(outputPath);
+        generator.saveGraph(outputPath);
         
         java.io.File file = new java.io.File(outputPath);
         assertTrue("Graph image should be created", file.exists());
-        System.out.println("[DEBUG_LOG] Test-generated graph image available at: " + file.getAbsolutePath());
+        System.out.println("Test-generated graph image: " + file.getAbsolutePath());
     }
 
     private boolean isNonDecreasing(TreeMap<Double, Double> data) {

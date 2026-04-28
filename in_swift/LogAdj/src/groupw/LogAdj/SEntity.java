@@ -12,6 +12,16 @@ import groupw.Network.NWUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This encodes a finite state machine to represent what Serials do.
+ *
+ * The most important thing they do is estimate how long it would take to get to
+ * the destination of their parent unit, then join the backlog the corresponding transport.
+ * This involves a lot of A*-like estimation of delivery times, even when they cannot
+ * go directly to the destination.
+ * See the DCVRP library for more details.
+ *
+ */
 public class SEntity extends Entity {
 
     public enum State { Select, Wait, Move, Delivered }

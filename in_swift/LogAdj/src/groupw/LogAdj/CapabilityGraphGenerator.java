@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.*;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -17,6 +16,14 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import java.awt.BasicStroke;
 import java.io.File;
 
+
+/**
+ * Draw a basic multi-line graph of delivered unit capability over time.
+ *
+ * The key part is to keep track of the relationship between serials and their parent
+ * unit, so we can determine whether they have arrived at the destination, and
+ * how much of the unit's capability each serial represents.
+ */
 public class CapabilityGraphGenerator {
     private Map<String, String> serialToUnit = new HashMap<>();
     private Map<String, Double> serialToCapability = new HashMap<>();
@@ -186,8 +193,8 @@ public class CapabilityGraphGenerator {
                 PlotOrientation.VERTICAL,
                 true, true, false);
 
-        // Customize the line width
-        float lineWidth = 2.5f;
+
+        float lineWidth = 2.5f; // 'float' required to avoid compiler complaints
         XYPlot plot = chart.getXYPlot();
         XYStepRenderer renderer = new XYStepRenderer();
         BasicStroke stroke = new BasicStroke(lineWidth);
@@ -199,18 +206,11 @@ public class CapabilityGraphGenerator {
         return chart;
     }
 
-    public void generatePlot() {
-        JFreeChart chart = createChart();
-        ChartFrame frame = new ChartFrame("Capability Graph", chart);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public void saveChartAsPNG(String filePath) throws IOException {
+    public void saveGraph(String filePath) throws IOException {
         JFreeChart chart = createChart();
         File imageFile = new File(filePath);
+        System.out.println("Graph will be saved to: " + imageFile.getAbsolutePath());
         ChartUtilities.saveChartAsPNG(imageFile, chart, 1200, 600);
-        System.out.println("[DEBUG_LOG] Chart saved to: " + imageFile.getAbsolutePath());
     }
 
     public static void main(String[] args) {
@@ -219,12 +219,8 @@ public class CapabilityGraphGenerator {
             generator.readUnitData("test/Data/unit-B2.csv");
             generator.readSerialData("test/Data/serial-B2.csv");
             generator.parseLogFile("logrun.txt");
-            
-            // Save as PNG by default so it's easily accessible
-            generator.saveChartAsPNG("capability_graph.png");
-            
-            // Also attempt to show the interactive plot
-            generator.generatePlot();
+            generator.saveGraph("capability_graph.png");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

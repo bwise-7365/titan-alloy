@@ -16,8 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static groupw.Network.NWUtils.DefaultSeedPRNG;
-
+/**
+ * This is the bridges between the DCVRP and DESim.
+ *
+ * It takes in a ScenarioRecord, configures the DESim with SEntity and TEntity objects,
+ * then runs it to build the List of LogRecords. The key method is adjudicate().
+ */
 public class LogisticalAdjudicator {
 
     public LogisticalAdjudicator(ReadDCVRScenarioCSV.ScenarioRecord sr, int rngSeed) {
@@ -29,7 +33,7 @@ public class LogisticalAdjudicator {
         mySim.setPRNG(offSet + rngSeed);
     }
 
-    public List<LogRecord> adjudicator(double simDuration) {
+    public List<LogRecord> adjudicate(double simDuration) {
         logRecords.clear();
         initializeDESim();
         mySim.run(simDuration);
@@ -55,6 +59,9 @@ public class LogisticalAdjudicator {
     public enum LoadUnload  { load, unload }
     public enum StartFinish { start, finish }
 
+    /**
+     * Base class for the two kinds of records.
+     */
     public abstract class LogRecord {
         public final double time;
 
@@ -94,6 +101,12 @@ public class LogisticalAdjudicator {
         }
     }
 
+    /**
+     * TransportRecord shows what was transferred where and when.
+     *
+     * It includes the percentage of weight and space used, so we can
+     * more easily see inefficient planning.
+     */
     public class TransportRecord extends LogRecord {
         public final String transportName;
         public final StartFinish startFinish;
@@ -123,10 +136,8 @@ public class LogisticalAdjudicator {
         }
     }
 
-    public int rngSeed;
     boolean useMinTimeP = false;
     boolean randomTransportOrder = true;
-    boolean randomSerialOrder = true;
 
     public final ReadDCVRScenarioCSV.ScenarioRecord scenRec;
     public final Scheduler mySim;

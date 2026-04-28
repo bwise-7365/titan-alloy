@@ -15,6 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This encodes a finite state machine to represent what Transports do.
+ *
+ * Timewise, the main thing they do is follow Itineraries, picking up and dropping off as they go.
+ * However, they use the ItineraryBuilder to decide which of the many available Serials
+ * to pick up in order to minimize total (estimated) weighted quadratic lateness.
+ * Currently, I don't explicitly destroy transports mid-Leg, but MAST does.
+ * The planning involves several sub-optimization, such as weighted TSP.
+ * See the DCVRP library for more details.
+ */
 public class TEntity extends Entity {
 
     public enum State { Plan, Transfer, Move }
