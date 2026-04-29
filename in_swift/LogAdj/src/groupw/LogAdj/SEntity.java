@@ -1,4 +1,5 @@
 // Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.LogAdj;
 
 import groupw.BaseSim.EntEvent;
@@ -6,11 +7,13 @@ import groupw.BaseSim.Entity;
 import groupw.DCVRP.Backlog;
 import groupw.DCVRP.Serial;
 import groupw.DCVRP.Transport;
-import groupw.DCVRP.VRController;
 import groupw.Network.NWUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static groupw.DCVRP.VRController.TheVRC;
 
 /**
  * This encodes a finite state machine to represent what Serials do.
@@ -23,6 +26,13 @@ import java.util.List;
  *
  */
 public class SEntity extends Entity {
+    // trigger breakpoints for debugging
+    static final String  monitoredSerial = "9-INF-BDE-MTBR-010";
+    static final List<String>  monitoredTransports = new ArrayList<>(Arrays.asList("LSM-03-SD" , "LSM-02-SJ", "LSM-01-IDM"));
+
+    // if nothing to do, wait this many hours (4 is reasonable)
+    public static final double SCAN_INTERVAL = 1.0;
+
 
     public enum State { Select, Wait, Move, Delivered }
 
@@ -46,7 +56,14 @@ public class SEntity extends Entity {
     }
 
     public void doSelect() {
-        List<Transport> transports = new ArrayList<>(VRController.TheVRC.getVehicleMap().values());
+
+
+        if (monitoredSerial.equalsIgnoreCase(mySerial.name)) {
+            System.out.println("DEBUG: SEntity.doSelect() - doSelect by monitored serial: " + monitoredSerial);
+            System.out.flush();
+        }
+
+        List<Transport> transports = TheVRC.transportsAtNode(this.mySerial.currentNodeName);
         if (myAdj.randomTransportOrder) {
             transports = NWUtils.shuffle(transports, mySim.prng);
         }
@@ -58,7 +75,7 @@ public class SEntity extends Entity {
             mySerial.currBacklog = t.backlog;
             state = State.Wait;
         } else {
-            mySim.addEvent(new EntEvent(this, mySim,mySim.getCurrTime() + TEntity.PLAN_INTERVAL));
+            mySim.addEvent(new EntEvent(this, mySim,mySim.getCurrTime() + SCAN_INTERVAL));
         }
     }
 
@@ -78,4 +95,5 @@ public class SEntity extends Entity {
     final Serial mySerial;
     final LogisticalAdjudicator myAdj;
 }
+
 // Copyright Group W, SPA. All Rights Reserved.

@@ -150,6 +150,10 @@ public class ReadDCVRScenarioCSV {
         return sRec;
     }
 
+    /**
+     * This was the first testing scenario
+     * @return
+     */
     public static ReadDCVRScenarioCSV.ScenarioRecord readStandardTestCase() {
 
         // The next section reads a consistent set of files,
@@ -173,6 +177,68 @@ public class ReadDCVRScenarioCSV {
         ReadDCVRScenarioCSV.ScenarioRecord rslt = ReadDCVRScenarioCSV.readCSVs(ifPath, arcFileName, nodeFileName, unitFileName,
                 serialFileName, transportFileName, transTypeFileName, transDomainFileName,
                 portAccessFileName);
+        return rslt;
+    }
+
+    /**
+     * Network from the 'standard scenario', everything else version B2
+     * @return
+     */
+    public static ReadDCVRScenarioCSV.ScenarioRecord readScenarioB2() {
+
+        // The next section reads a consistent set of files,
+        // checks that they have the expected number of records,
+        // and builds Lists of DataField
+        String currentDir = System.getProperty("user.dir") + File.separator + "test";
+        System.out.printf("Current directory: >%s< \n", currentDir);
+        String ifPath = currentDir + File.separator + "Data";
+
+        // This is a consistent set of files which
+        // (as of 25 February 2026) were verified by other tests.
+        String arcFileName = "geograph-arcs-A1.csv";
+        String nodeFileName = "geograph-nodes-A1.csv";
+        String unitFileName = "unit-B2.csv";
+        String serialFileName = "serial-B2.csv";
+        String transportFileName = "transportvehicle-B2.csv";
+        String transTypeFileName = "transporttype-B2.csv";
+        String transDomainFileName = "transportdomains-B2.csv";
+        String portAccessFileName = "portaccess-B2.csv";
+
+        ReadDCVRScenarioCSV.ScenarioRecord rslt = ReadDCVRScenarioCSV.readCSVs(ifPath, arcFileName, nodeFileName, unitFileName,
+                                                                               serialFileName, transportFileName, transTypeFileName, transDomainFileName,
+                                                                               portAccessFileName);
+        return rslt;
+    }
+
+
+    /**
+     * Network from the 'standard scenario', everything else version C1.
+     * No LST, more LSM-100, more KC-130 in Cuba.
+     * @return
+     */
+    public static ReadDCVRScenarioCSV.ScenarioRecord readScenarioC1() {
+
+        // The next section reads a consistent set of files,
+        // checks that they have the expected number of records,
+        // and builds Lists of DataField
+        String currentDir = System.getProperty("user.dir") + File.separator + "test";
+        System.out.printf("Current directory: >%s< \n", currentDir);
+        String ifPath = currentDir + File.separator + "Data";
+
+        // This is a consistent set of files which
+        // (as of 25 February 2026) were verified by other tests.
+        String arcFileName = "geograph-arcs-A1.csv";
+        String nodeFileName = "geograph-nodes-A1.csv";
+        String unitFileName = "unit-C1.csv";
+        String serialFileName = "serial-C1.csv";
+        String transportFileName = "transportvehicle-C1.csv";
+        String transTypeFileName = "transporttype-C1.csv";
+        String transDomainFileName = "transportdomains-C1.csv";
+        String portAccessFileName = "portaccess-C1.csv";
+
+        ReadDCVRScenarioCSV.ScenarioRecord rslt = ReadDCVRScenarioCSV.readCSVs(ifPath, arcFileName, nodeFileName, unitFileName,
+                                                                               serialFileName, transportFileName, transTypeFileName, transDomainFileName,
+                                                                               portAccessFileName);
         return rslt;
     }
 

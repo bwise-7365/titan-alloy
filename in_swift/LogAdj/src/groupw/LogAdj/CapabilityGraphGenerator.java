@@ -1,3 +1,5 @@
+// Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.LogAdj;
 
 import java.io.BufferedReader;
@@ -145,6 +147,7 @@ public class CapabilityGraphGenerator {
     }
 
     public Map<String, TreeMap<Double, Double>> calculateCumulativeCapability() {
+        double tolerance = 1E-6;
         Map<String, TreeMap<Double, Double>> unitTimeline = new HashMap<>();
         for (String unit : unitToDeliveryNode.keySet()) {
             List<DeliveryEvent> events = unitDeliveries.getOrDefault(unit, new ArrayList<>());
@@ -156,6 +159,10 @@ public class CapabilityGraphGenerator {
 
             for (DeliveryEvent event : events) {
                 cumulative += event.capability;
+                if (100+tolerance < cumulative) {
+                    // this really should have been checked at data-construction time
+                    throw new RuntimeException("Cumulative capability over 100%: "+ cumulative);
+                }
                 timeline.put(event.time, cumulative);
             }
             // Extend the line to the end of the simulation
@@ -213,11 +220,16 @@ public class CapabilityGraphGenerator {
         ChartUtilities.saveChartAsPNG(imageFile, chart, 1200, 600);
     }
 
+    /**
+     * This testing function has to be kept synchronized with
+     * the logistical adjudicator test scenario
+     * @param args
+     */
     public static void main(String[] args) {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
         try {
-            generator.readUnitData("test/Data/unit-B2.csv");
-            generator.readSerialData("test/Data/serial-B2.csv");
+            generator.readUnitData("test/Data/unit-C1.csv");
+            generator.readSerialData("test/Data/serial-C1.csv");
             generator.parseLogFile("logrun.txt");
             generator.saveGraph("capability_graph.png");
 
@@ -226,3 +238,5 @@ public class CapabilityGraphGenerator {
         }
     }
 }
+
+// Copyright Group W, SPA. All Rights Reserved.

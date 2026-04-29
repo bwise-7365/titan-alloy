@@ -12,8 +12,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static groupw.DCVRP.ItineraryBuilder.TheIB;
-import static groupw.DCVRP.ReadDCVRScenarioCSV.readHighCapacityTestCase;
-import static groupw.DCVRP.ReadDCVRScenarioCSV.readStandardTestCase;
+import static groupw.DCVRP.ReadDCVRScenarioCSV.*;
 import static groupw.DCVRP.VRController.TheVRC;
 import static groupw.Network.NWUtils.DefaultSeedPRNG;
 import static java.lang.Math.abs;
@@ -29,7 +28,7 @@ public class VRControllerTest {
 
     @Test
     public void testMatchSerialsToBacklogs() {
-        ReadDCVRScenarioCSV.ScenarioRecord sRec = readStandardTestCase(); // readHighCapacityTestCase();
+        ReadDCVRScenarioCSV.ScenarioRecord sRec = readScenarioC1(); // readStandardTestCase(); // readHighCapacityTestCase();
         int sd = DefaultSeedPRNG;
         sd = 259522115; // 0;
         VRController.initialize(sRec, sd);

@@ -1,23 +1,19 @@
 // Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.LogAdj;
 
 import groupw.BaseSim.Scheduler;
-import groupw.DCVRP.ItineraryBuilder;
-import groupw.DCVRP.ReadDCVRScenarioCSV;
-import groupw.DCVRP.ReadSerialCSV;
-import groupw.DCVRP.ReadUnitCSV;
-import groupw.DCVRP.Serial;
-import groupw.DCVRP.SerialController;
-import groupw.DCVRP.Transport;
-import groupw.DCVRP.VRController;
+import groupw.DCVRP.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static groupw.DCVRP.VRController.TheVRC;
+
 /**
- * This is the bridges between the DCVRP and DESim.
+ * This is the bridge between the DCVRP and DESim.
  *
  * It takes in a ScenarioRecord, configures the DESim with SEntity and TEntity objects,
  * then runs it to build the List of LogRecords. The key method is adjudicate().
@@ -41,13 +37,20 @@ public class LogisticalAdjudicator {
     }
 
     public void initializeDESim() {
-        for (Transport t : VRController.TheVRC.getVehicleMap().values()) {
+        Map<String, ReadTransportVehicleCSV.DataField> vehicleDataMap = TheVRC.getVehicleDataMap();
+        Map<String, Transport> vehicleMap = TheVRC.getVehicleMap();
+        Map<String, Serial> serialMap = TheVRC.getSerialMap();
+        Map<String, ReadSerialCSV.DataField> sRecMap = TheVRC.getSerialRecordMap();
+        Map<String, ReadUnitCSV.DataField> unitMap = TheVRC.getUnitMap();
+
+        for (String vName : vehicleDataMap.keySet()) {
+            ReadTransportVehicleCSV.DataField vData = vehicleDataMap.get(vName);
+            Transport t = vehicleMap.get(vName);
             new TEntity(t, this);
+            System.out.flush();
         }
-        Map<String, ReadSerialCSV.DataField> sRecMap = VRController.TheVRC.getSerialRecordMap();
-        Map<String, ReadUnitCSV.DataField>   unitMap  = VRController.TheVRC.getUnitMap();
-        for (Serial s : VRController.TheVRC.getSerialMap().values()) {
-            String unitName = sRecMap.get(s.name).unitName;
+        for (Serial s : serialMap.values()) {
+            String unitName =  sRecMap.get(s.name).unitName;
             s.currentNodeName = unitMap.get(unitName).startNodeName;
             if (s.controller == null) {
                 new SerialController(s, ItineraryBuilder.TheIB);
@@ -56,8 +59,9 @@ public class LogisticalAdjudicator {
         }
     }
 
-    public enum LoadUnload  { load, unload }
-    public enum StartFinish { start, finish }
+    public enum LoadUnload {load, unload}
+
+    public enum StartFinish {start, finish}
 
     /**
      * Base class for the two kinds of records.
@@ -103,7 +107,7 @@ public class LogisticalAdjudicator {
 
     /**
      * TransportRecord shows what was transferred where and when.
-     *
+     * <p>
      * It includes the percentage of weight and space used, so we can
      * more easily see inefficient planning.
      */
@@ -145,4 +149,5 @@ public class LogisticalAdjudicator {
     public final Map<Transport, TEntity> transportEntityMap = new HashMap<>();
     private final List<LogRecord> logRecords = new ArrayList<>();
 }
+
 // Copyright Group W, SPA. All Rights Reserved.

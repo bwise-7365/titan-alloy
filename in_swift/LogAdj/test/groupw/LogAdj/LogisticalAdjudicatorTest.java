@@ -13,13 +13,15 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static groupw.DCVRP.ReadDCVRScenarioCSV.readScenarioC1;
+import static groupw.DCVRP.ReadDCVRScenarioCSV.readStandardTestCase;
 import static groupw.Network.NWUtils.DefaultSeedPRNG;
 
 public class LogisticalAdjudicatorTest {
 
     @Test
     public void testCreate() {
-        ReadDCVRScenarioCSV.ScenarioRecord sRec = ReadDCVRScenarioCSV.readStandardTestCase();
+        ReadDCVRScenarioCSV.ScenarioRecord sRec = readStandardTestCase();
         double currTime = 17.2020430980028; // hours, which is 17 hours and 12 minutes and 7.35515281 seconds
         List<String> serials = new ArrayList<>();
         serials.add("testSerial_A");
@@ -44,8 +46,8 @@ public class LogisticalAdjudicatorTest {
      */
     @Test
     public void testItnry() throws IOException {
-        double runTimeHours = 650;
-        ReadDCVRScenarioCSV.ScenarioRecord sRec = ReadDCVRScenarioCSV.readStandardTestCase();
+        double runTimeHours = 2000; // even with 2000 hours, scenario C1 runs out of events around 1467 hours
+        ReadDCVRScenarioCSV.ScenarioRecord sRec = readScenarioC1(); // must be synchronized with graph generator test
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
         List<LogisticalAdjudicator.LogRecord> records = la.adjudicate(runTimeHours);
         records.sort((a, b) -> Double.compare(a.time, b.time));

@@ -2,23 +2,23 @@ Vehicle Name, Type, Home Base
 # we need roughly the following 130 vehicles
 # MV-22    80: 40 in Guadeloupe, 20 in USVI, 20 in Dominica
 # CH-53K   24: 12 in Plata, 12 in Esperanza
-# LST-100   5:  2 in Cuba, 1 at SantoDomingo, 1 at SanJuan, 1 and IslaDeMona
-# LSM       5:  2 in Cuba, 1 at SantoDomingo, 1 at SanJuan, 1 and IslaDeMona
+# LSM      13:  8 in Cuba, 2 at SantoDomingo, 2 at SanJuan, 1 and IslaDeMona
 # KC-130   16:  9 in Cuba, 6 in Hispaniola, 1 in USVI
 #
 # One boat of each type in each middle port
 ##
-LST-01-IDM, LST-100, IslaDeMona
-LST-02-SJ, LST-100, SanJuan
-LST-03-SD, LST-100, SantoDomingo
-LST-04-HVN, LST-100, Havana
-LST-05-JRG, LST-100, Juragua
-#
-LSM-01-IDM, LSM, IslaDeMona
-LSM-02-SJ, LSM, SanJuan
-LSM-03-SD, LSM, SantoDomingo
-LSM-04-HVN, LSM, Havana
-LSM-05-JRG, LSM, Juragua
+
+LSM-01-HVN, LSM, Havana
+LSM-02-HVN, LSM, Havana
+LSM-03-HVN, LSM, Palma
+LSM-04-HVN, LSM, Palma
+LSM-05-HVN, LSM, Juragua
+LSM-06-HVN, LSM, Juragua
+LSM-07-HVN, LSM, Santiago
+LSM-08-HVN, LSM, Santiago
+LSM-09-SD, LSM, SantoDomingo
+LSM-10-SJ, LSM, SanJuan
+LSM-11-IDM, LSM, IslaDeMona
 #
 # KC-130 cargo jets
 KC130-01-HVN, KC-130, Havana

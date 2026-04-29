@@ -11,6 +11,8 @@ import java.util.*;
 import groupw.DCVRP.Backlog.Reservation;
 import groupw.Network.NWUtils;
 import groupw.Network.NWUtils.Tuple2;
+import groupw.DCVRP.VRGraph.VRNode;
+import groupw.DCVRP.VRGraph.VREdge;
 
 import static groupw.BaseSim.DSUtils.NAUTICAL_MILE;
 import static groupw.BaseSim.DSUtils.greatCircleDistance;
@@ -147,7 +149,7 @@ public class VRController {
      * @return
      */
     public Map<String, Backlog> makeRandomBacklogs(String nodeName) {
-        VRGraph.VRNode homeBaseNode = getNodeMap().get(nodeName);
+        VRNode homeBaseNode = getNodeMap().get(nodeName);
         if (null == homeBaseNode) {
             return null; // not just devoid of vehicles but undefined
         }
@@ -229,7 +231,7 @@ public class VRController {
      * @return List of transport-names
      */
     public List<String> transportsAtHomeBase(String nodeName, boolean randomOrder) {
-        VRGraph.VRNode homeBaseNode = getNodeMap().get(nodeName);
+        VRNode homeBaseNode = getNodeMap().get(nodeName);
         if (null == homeBaseNode) {
             return null; // not just devoid of vehicles but undefined
         }
@@ -252,6 +254,55 @@ public class VRController {
     }
 
     /**
+     * Get the list of transport names which are at the given node at this moment.
+     *
+     * @param nodeName name of the node at which to search
+     * @return List of transports at the specified node
+     */
+    public List<Transport> transportsAtNode(String nodeName) {
+        List<Transport> transports = new ArrayList<>(1);
+        getVehicleMap(); // make sure it is initialized before scanning hundreds
+        for (Map.Entry<String, ReadTransportVehicleCSV.DataField> entry : vehicleDataMap.entrySet()) {
+            String vName = entry.getValue().name;
+            Transport vehicle = vehicleMap.get(vName);
+            if (vehicle.aliveP && (vehicle.currNode != null)) { // in-transit, no node assigned
+                if (nodeName.equalsIgnoreCase(vehicle.currNode.name)) {
+                    transports.add(vehicle);
+                }
+            }
+        }
+        return transports;
+    }
+
+    /**
+     * A node is a dead end if it is NOT the destination and is NOT the home base of a transport that can carry this serial
+     *
+     * TODO: cache this data, rather than recomputing constantly
+     *
+     * @param nodeName
+     * @param randomOrder
+     * @return
+     */
+    public boolean isDeadEnd(VRNode node, Serial serial) {
+        boolean deadEnd = (!node.name.equals(serial.deliveryNodeName)); // destination is never a dead end.
+        if (deadEnd) {
+            TheVRC.getVehicleDataMap();
+            TheVRC.getVehicleTypeMap();
+            for (Map.Entry<String, ReadTransportVehicleCSV.DataField> entry : TheVRC.vehicleDataMap.entrySet()) {
+                if (entry.getValue().homeBase.equalsIgnoreCase(node.name)) {
+                    String vType = entry.getValue().type;
+                    ReadTransportTypeCSV.DataField vData = TheVRC.getVehicleTypeMap().get(vType);
+                    if ((serial.area <= vData.cargoArea) && (serial.weight <= vData.cargoWeight)) {
+                        deadEnd = false;
+                    }
+                }
+            }
+        }
+        return deadEnd;
+    }
+
+
+    /**
      * Get the list of serials which are at the given node at this moment.
      *
      * Optionally, shuffle them.
@@ -261,7 +312,7 @@ public class VRController {
      * @return List of serial-names
      */
     public List<String> serialsAtNode(String nodeName, boolean randomOrder) {
-        VRGraph.VRNode referenceNode = getNodeMap().get(nodeName);
+        VRNode referenceNode = getNodeMap().get(nodeName);
         if (null == referenceNode) {
             return null; // not just devoid of serials but undefined
         }
@@ -279,14 +330,14 @@ public class VRController {
     }
 
     // access functions to build / retrieve various useful Maps
-    public Map<String, VRGraph.VRNode> getNodeMap() {
+    public Map<String, VRNode> getNodeMap() {
         if (null == nodeMap) {
             nodeMap = scenRecord.vrg.makeNodeMap();
         }
         return nodeMap;
     }
 
-    public Map<String, VRGraph.VREdge> getEdgeMap() {
+    public Map<String, VREdge> getEdgeMap() {
         if (null == edgeMap) {
             edgeMap = scenRecord.vrg.makeEdgeMap();
         }
@@ -387,8 +438,8 @@ public class VRController {
     // Various useful Maps to speed data access
     // All are package-private.
     ReadDCVRScenarioCSV.ScenarioRecord scenRecord = null;
-    Map<String, VRGraph.VRNode> nodeMap = null;
-    Map<String, VRGraph.VREdge> edgeMap = null;
+    Map<String, VRNode> nodeMap = null;
+    Map<String, VREdge> edgeMap = null;
     Map<String, ReadUnitCSV.DataField> unitMap = null; // map from unit-names to unit data records
     Map<String, ReadTransportTypeCSV.DataField> vehicleTypeMap = null; // map from vehicle-type names to vehicle-type data records
     Map<String, ReadTransportVehicleCSV.DataField> vehicleDataMap = null; // map from vehicle names to vehicle data records

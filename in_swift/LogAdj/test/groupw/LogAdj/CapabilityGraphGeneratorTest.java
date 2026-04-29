@@ -1,3 +1,4 @@
+// Copyright Group W, SPA. All Rights Reserved.
 package groupw.LogAdj;
 
 import org.junit.Test;
@@ -8,15 +9,18 @@ import static org.junit.Assert.*;
 
 public class CapabilityGraphGeneratorTest {
 
-    /** Hard-coded paths for testing on known files
+    /** Hard-coded paths for testing on known files.
+     *
+     * In particular, it must be synchronized with the
+     * scenario files used in the logistical adjudicator test
      *
      * @throws IOException
      */
     @Test
     public void testParsingAndCalculation() throws IOException {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
-        generator.readUnitData("test/Data/unit-B2.csv");
-        generator.readSerialData("test/Data/serial-B2.csv");
+        generator.readUnitData("test/Data/unit-C1.csv");
+        generator.readSerialData("test/Data/serial-C1.csv");
         generator.parseLogFile("logrun.txt");
 
         Map<String, TreeMap<Double, Double>> timeline = generator.calculateCumulativeCapability();
@@ -46,8 +50,8 @@ public class CapabilityGraphGeneratorTest {
     @Test
     public void testGenerateGraphImage() throws IOException {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
-        generator.readUnitData("test/Data/unit-B2.csv");
-        generator.readSerialData("test/Data/serial-B2.csv");
+        generator.readUnitData("test/Data/unit-C1.csv");
+        generator.readSerialData("test/Data/serial-C1.csv");
         generator.parseLogFile("logrun.txt");
         
         String outputPath = "capability_graph_test.png";
@@ -67,3 +71,5 @@ public class CapabilityGraphGeneratorTest {
         return true;
     }
 }
+
+// Copyright Group W, SPA. All Rights Reserved.

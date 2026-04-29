@@ -63,7 +63,7 @@ public class ReadTransportVehicleCSV {
         try (BufferedReader in = new BufferedReader(new FileReader(ifPath))) {
             String str;
             while ((str = in.readLine()) != null) {
-                if (csvCommentChar == str.charAt(0)) {
+                if ((str.isEmpty()) || (csvCommentChar == str.charAt(0))) {
                     commentNum++;
                     //System.out.printf("Skipping comment %d on line %d\n", commentNum, lineNum);
                 } else {

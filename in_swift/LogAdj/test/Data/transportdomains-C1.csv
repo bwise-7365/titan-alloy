@@ -1,0 +1,19 @@
+Type, Domain
+#
+# Notice that we subdivide the type of Land
+#
+# Land
+Two-Ton-Truck, ImprovedRoad
+Two-Ton-Truck, UnimprovedRoad
+Two-Ton-Truck, CrossCountry
+AMK970-Semitrailer, ImprovedRoad
+# rotary
+MV-22, Air
+CH-53K, Air
+# naval
+LST-100, Sea
+LSM, Sea
+# cargo jet
+KC-130, Air
+#
+#end of file

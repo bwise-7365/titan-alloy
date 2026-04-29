@@ -79,12 +79,14 @@ public class Transport  implements  CountedItem {
     public String name = "";
     public String type = "";
     boolean aliveP = true; // a reasonable initial default
-    VRNode currNode = null;
+    public VRNode currNode = null;
     double cargoArea = 0.0; // square units (feet, meters) for cargo
     double cargoWeight = 0.0; // typical max cargo on realistic mission (not manufacturer's "max that can takeoff")
     public Backlog backlog = null;
     Itinerary itinerary = null;
     ItineraryBuilder iBuilder = null;
+
+
 
     public double getCargoArea() {
         return cargoArea;

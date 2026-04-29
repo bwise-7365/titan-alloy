@@ -1,19 +1,21 @@
 // Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.LogAdj;
 
 import groupw.BaseSim.EntEvent;
 import groupw.BaseSim.Entity;
 import groupw.DCVRP.ItineraryBuilder;
 import groupw.DCVRP.Itinerary;
-import groupw.DCVRP.ReadTransportVehicleCSV;
+
 import groupw.DCVRP.Serial;
 import groupw.DCVRP.Transport;
-import groupw.DCVRP.VRController;
 import groupw.Logistics.Manifest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static groupw.DCVRP.VRController.TheVRC;
 
 /**
  * This encodes a finite state machine to represent what Transports do.
@@ -22,43 +24,60 @@ import java.util.Map;
  * However, they use the ItineraryBuilder to decide which of the many available Serials
  * to pick up in order to minimize total (estimated) weighted quadratic lateness.
  * Currently, I don't explicitly destroy transports mid-Leg, but MAST does.
- * The planning involves several sub-optimization, such as weighted TSP.
+ * The planning involves several suboptimizations, such as weighted TSP.
  * See the DCVRP library for more details.
  */
 public class TEntity extends Entity {
 
-    public enum State { Plan, Transfer, Move }
+    // trigger breakpoints for debugging
+    static final String  monitoredSerial = "9-INF-BDE-MTBR-010";
+    static final String  monitoredTransport = "LSM-03-SD";
 
+    public enum State {Plan, Transfer, Move}
+
+    // if nothing to do, wait this many hours (4 is reasonable)
     public static final double PLAN_INTERVAL = 1.0;
 
+    /**
+     * Create a new transport entity, at its home base, ready to plan.
+     * @param tr
+     * @param adj
+     */
     public TEntity(Transport tr, LogisticalAdjudicator adj) {
         super(adj.mySim);
         myTrans = tr;
         myAdj = adj;
         state = State.Plan;
-        currentNodeName = VRController.TheVRC.getVehicleDataMap().get(tr.name).homeBase;
+        currentNodeName = TheVRC.getVehicleDataMap().get(tr.name).homeBase;
+        myTrans.currNode = TheVRC.getNodeMap().get(currentNodeName);
         adj.transportEntityMap.put(tr, this);
-        mySim.addEvent(new EntEvent(this, mySim,0.0));
+        mySim.addEvent(new EntEvent(this, mySim, 0.0));
     }
 
     @Override
     public void process() {
         switch (state) {
-            case Plan:     doPlan();     break;
-            case Transfer: doTransfer(); break;
-            case Move:     doMove();     break;
+            case Plan:
+                doPlan();
+                break;
+            case Transfer:
+                doTransfer();
+                break;
+            case Move:
+                doMove();
+                break;
         }
     }
 
     public void doPlan() {
         if (myTrans.backlog == null || myTrans.backlog.numReservations() == 0) {
-            mySim.addEvent(new EntEvent(this, mySim,mySim.getCurrTime() + PLAN_INTERVAL));
+            mySim.addEvent(new EntEvent(this, mySim, mySim.getCurrTime() + PLAN_INTERVAL));
             return;
         }
         itinerary = ItineraryBuilder.TheIB.itineraryFromBacklog(
                 myTrans.name, myTrans.backlog, mySim.getCurrTime(), myAdj.useMinTimeP);
         if (itinerary == null || itinerary.numLegs() == 0) {
-            mySim.addEvent(new EntEvent(this, mySim,mySim.getCurrTime() + PLAN_INTERVAL));
+            mySim.addEvent(new EntEvent(this, mySim, mySim.getCurrTime() + PLAN_INTERVAL));
             return;
         }
         ItineraryBuilder.TheIB.setTimeTable(itinerary, myTrans.name, mySim.getCurrTime());
@@ -67,13 +86,15 @@ public class TEntity extends Entity {
         atSrtTime = true;
         onBoard = new Manifest();
         state = State.Transfer;
-        mySim.addEvent(new EntEvent(this, mySim,itinerary.legs.get(0).src.transferSrtTime));
+        mySim.addEvent(new EntEvent(this, mySim, itinerary.legs.get(0).src.transferSrtTime));
     }
 
     public void doTransfer() {
         Itinerary.Leg leg = itinerary.legs.get(legIdx);
         double t = mySim.getCurrTime();
         String vName = myTrans.name;
+
+
 
         if (atSrc && atSrtTime) {
             // T1: loading starts at src
@@ -83,9 +104,16 @@ public class TEntity extends Entity {
             recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
+
+                if (monitoredSerial.equalsIgnoreCase(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - start loading monitored serial: " + monitoredSerial);
+                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                    System.out.flush();
+                }
+
             }
             atSrtTime = false;
-            mySim.addEvent(new EntEvent(this, mySim,leg.src.transferEndTime));
+            mySim.addEvent(new EntEvent(this, mySim, leg.src.transferEndTime));
 
         } else if (atSrc) {
             // T2: loading ends; depart
@@ -96,8 +124,15 @@ public class TEntity extends Entity {
             recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
-                Serial s = VRController.TheVRC.getSerialMap().get(sn);
+                Serial s = TheVRC.getSerialMap().get(sn);
                 s.recordPickup(vName);
+
+                if (monitoredSerial.equalsIgnoreCase(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish loading monitored serial: " + monitoredSerial);
+                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                    System.out.flush();
+                }
+
                 SEntity se = myAdj.serialEntityMap.get(s);
                 if (se != null) {
                     se.state = SEntity.State.Move;
@@ -105,7 +140,7 @@ public class TEntity extends Entity {
                 }
             }
             state = State.Move;
-            mySim.addEvent(new EntEvent(this, mySim,leg.dst.transferSrtTime));
+            mySim.addEvent(new EntEvent(this, mySim, leg.dst.transferSrtTime));
 
         } else {
             // T4: unloading ends
@@ -116,9 +151,16 @@ public class TEntity extends Entity {
             recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
-                Serial s = VRController.TheVRC.getSerialMap().get(sn);
+                Serial s = TheVRC.getSerialMap().get(sn);
                 boolean atDest = nodeName.equals(s.deliveryNodeName);
                 s.recordDropoff(nodeName, false);
+
+                if (monitoredSerial.equalsIgnoreCase(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish unloading monitored serial: " + monitoredSerial);
+                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                    System.out.flush();
+                }
+
                 SEntity se = myAdj.serialEntityMap.get(s);
                 if (se != null) {
                     se.state = atDest ? SEntity.State.Delivered : SEntity.State.Select;
@@ -129,10 +171,10 @@ public class TEntity extends Entity {
                 legIdx++;
                 atSrc = true;
                 atSrtTime = true;
-                mySim.addEvent(new EntEvent(this, mySim,itinerary.legs.get(legIdx).src.transferSrtTime));
+                mySim.addEvent(new EntEvent(this, mySim, itinerary.legs.get(legIdx).src.transferSrtTime));
             } else {
                 state = State.Plan;
-                mySim.addEvent(new EntEvent(this, mySim,t + PLAN_INTERVAL));
+                mySim.addEvent(new EntEvent(this, mySim, t + PLAN_INTERVAL));
             }
         }
     }
@@ -147,10 +189,17 @@ public class TEntity extends Entity {
         recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
         for (String sn : sns) {
             recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
+
+            if (monitoredSerial.equalsIgnoreCase(sn)) {
+                System.out.println("DEBUG: EntTransfer.doTransfer() - start unloading monitored serial: " + monitoredSerial);
+                Serial sTmp = TheVRC.getSerialMap().get(sn);
+                System.out.flush();
+            }
+
         }
         state = State.Transfer;
         atSrc = false;
-        mySim.addEvent(new EntEvent(this, mySim,leg.dst.transferEndTime));
+        mySim.addEvent(new EntEvent(this, mySim, leg.dst.transferEndTime));
     }
 
     private static List<String> itemNames(Manifest m) {
@@ -171,8 +220,8 @@ public class TEntity extends Entity {
     }
 
     private int[] pctAreaWeight(Manifest m) {
-        Map<String, Serial> sMap = VRController.TheVRC.getSerialMap();
-        int pa = (int) Math.round(100.0 * ItineraryBuilder.manifestArea(m, sMap)   / myTrans.getCargoArea());
+        Map<String, Serial> sMap = TheVRC.getSerialMap();
+        int pa = (int) Math.round(100.0 * ItineraryBuilder.manifestArea(m, sMap) / myTrans.getCargoArea());
         int pw = (int) Math.round(100.0 * ItineraryBuilder.manifestWeight(m, sMap) / myTrans.getCargoWeight());
         return new int[]{pa, pw};
     }
@@ -187,4 +236,5 @@ public class TEntity extends Entity {
     boolean atSrc = true;
     boolean atSrtTime = true;
 }
+
 // Copyright Group W, SPA. All Rights Reserved.

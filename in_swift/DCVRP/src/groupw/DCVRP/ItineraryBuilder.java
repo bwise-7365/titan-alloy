@@ -198,9 +198,11 @@ public class ItineraryBuilder {
      * Because there might be several edges between the same pair of nodes,
      * we build a list of edges from the transport's home base to nodes
      * rather than a list of nodes.
-     * The destination node must handle the transport and the edge must be
+     * The destination node must handle the transport, and the edge must be
      * one of the transport's domains.
-     * For now, this requires that the serial start from the transport's homebase
+     * For now, this requires that the serial start from the transport's home base.
+     * TODO: make sure the intermediate node is not a dead end.
+     * It must be the home base of at least one transport that can carry this serial.
      *
      * @param transportName
      * @param serialName
@@ -248,7 +250,10 @@ public class ItineraryBuilder {
                     // the minimal possible complete itinerary is a triangle that goes to the midpoint then the end point then returns.
                     if ((smDist + meDist <= maxDetourFactor * seDist) && (meDist <= maxRemainDist * seDist)) {
                         if (TheVRC.getPortAccessMap().get(midNode.name).contains(vRec.type)) {
-                            potentialMiddleNodes.add(midNode);
+
+                            if (!TheVRC.isDeadEnd(midNode, serial)) {
+                                potentialMiddleNodes.add(midNode);
+                            }
                         }
                     }
                 }
