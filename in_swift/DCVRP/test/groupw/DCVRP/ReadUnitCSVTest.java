@@ -1,9 +1,5 @@
-/*
- *  ---------------------------------------------------
- *         Copyright Group W. All Rights Reserved.
- *  ---------------------------------------------------
- * 
- */
+// Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.DCVRP;
 
 import java.io.File;

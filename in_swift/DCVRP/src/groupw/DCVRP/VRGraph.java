@@ -1,3 +1,5 @@
+// Copyright Group W, SPA. All Rights Reserved.
+
 package groupw.DCVRP;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
