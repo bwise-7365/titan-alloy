@@ -46,22 +46,24 @@ public class ReadUnitCSV {
      */
     static public class DataField {
 
-        public DataField(String name, String startNodeName, double dp, double dt, double dw, String dnn) {
+        public DataField(String name, String startNodeName, double dp, double dt, double dw, String dnn, double w) {
             this.name = name;
             this.startNodeName = startNodeName;
             this.deliveryPriority = dp;
             this.deliveryTime = dt;
             this.deliveryWindow = dw;
             this.deliveryNodeName = dnn;
+            this.weight = w;
         }
 
-        final public static int numFields = 6;
+        final public static int numFields = 7;
         public String name;
         public String startNodeName;
         public double deliveryPriority;
         public double deliveryTime;  // seconds since scenario start, presumably converted from DD:HH
         public double deliveryWindow; // seconds, presumably as hours * 3600
         public String deliveryNodeName;
+        public double weight;
     }
 
     /**
@@ -74,6 +76,7 @@ public class ReadUnitCSV {
     static public List<DataField> readCSV(String ifDir, String ifName) {
         List<DataField> result = new ArrayList<>(0);
         boolean success = true;
+        String msg = "";
         int lineNum = 0;
         int commentNum = 0;
         String ifPath = ifDir + File.separator + ifName;
@@ -88,8 +91,7 @@ public class ReadUnitCSV {
                     String[] fields = str.split(",");
                     if (DataField.numFields != fields.length) {
                         success = false;
-                        String msg = lineString + " expected " + DataField.numFields + " fields: " + fields.length;
-                        throw new IllegalArgumentException(msg);
+                        msg = lineString + " expected " + DataField.numFields + " fields: " + fields.length;
 
                     }
                     if (0 < lineNum) { // skip headers, except to verify number of fields
@@ -102,40 +104,43 @@ public class ReadUnitCSV {
                         double deliveryTime = Double.parseDouble(fields[3]);
                         double deliveryWindow = Double.parseDouble(fields[4]);
                         String deliveryNodeName = fields[5];
+                        double weight = Double.parseDouble(fields[6]);
 
 
                         if (name.length() < MinimumNameLength) {
                             success = false;
-                            String msg = lineString + " unit name should have at least " + MinimumNameLength + " characters: " + name.length();
-                            throw new IllegalArgumentException(msg);
+                            msg = lineString + " unit name should have at least " + MinimumNameLength + " characters: " + name.length();
                         }
                         if (startNodeName.length() < MinimumNameLength) {
                             success = false;
-                            String msg = lineString + " start node name should have at least " + MinimumNameLength + " characters: " + startNodeName.length();
-                            throw new IllegalArgumentException(msg);
+                            msg = lineString + " start node name should have at least " + MinimumNameLength + " characters: " + startNodeName.length();
                         }
                         if (deliveryNodeName.length() < MinimumNameLength) {
                             success = false;
-                            String msg = lineString + " delivery node name should have at least " + MinimumNameLength + " characters: " + deliveryNodeName.length();
-                            throw new IllegalArgumentException(msg);
+                            msg = lineString + " delivery node name should have at least " + MinimumNameLength + " characters: " + deliveryNodeName.length();
                         }
                         if (priority <= 0.0) {
                             success = false;
-                            String msg = lineString + " should have positive priority: " + priority;
-                            throw new IllegalArgumentException(msg);
+                            msg = lineString + " should have positive priority: " + priority;
                         }
                         if (deliveryTime <= 0.0) {
                             success = false;
-                            String msg = lineString + " should have positive deliveryTime: " + deliveryTime;
-                            throw new IllegalArgumentException(msg);
+                            msg = lineString + " should have positive deliveryTime: " + deliveryTime;
                         }
                         if (deliveryWindow <= 0.0) {
                             success = false;
-                            String msg = lineString + " should have positive deliveryWindow: " + deliveryWindow;
+                            msg = lineString + " should have positive deliveryWindow: " + deliveryWindow;
+                        }
+                        if (weight <= 0.0) {
+                            success = false;
+                            msg = lineString + " should have positive weight: " + weight;
+                            throw new IllegalArgumentException(msg);
+                        }
+                        if (!success) {
                             throw new IllegalArgumentException(msg);
                         }
 
-                        DataField df = new DataField(name, startNodeName, priority, deliveryTime, deliveryWindow, deliveryNodeName);
+                        DataField df = new DataField(name, startNodeName, priority, deliveryTime, deliveryWindow, deliveryNodeName, weight);
                         result.add(df);
                     }
                 }

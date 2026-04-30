@@ -1,4 +1,4 @@
-Unit Name,Start Node, priority, due date (hours), delivery window (hours), delivery node
-117 INF Btln,HB1,5,113,12, Node 37A
-27 INF Btln,HB1,23,96,12, Node 37B
-56 INF Btln,HB1,432000,12, Node 37C,
+Unit Name,Start Node, priority, due date (hours), delivery window (hours), delivery node , Unit Weight
+117 INF Btln,HB1,5,113,12, Node 37A, 800
+27 INF Btln,HB1,23,96,12, Node 37B, 800
+56 INF Btln,HB1,432000,12, Node 37C, 800

@@ -40,7 +40,8 @@ public class ItineraryBuilderTest {
 
         int numPotentialEdges = potentialEdges.size();
         System.out.printf("Number of potential edges: %d\n", numPotentialEdges);
-        assertTrue(9 == numPotentialEdges); // known result for this test case
+        // there are 9 in good positions, but one is a dead-end
+        assertTrue(8 == numPotentialEdges); // known result for this test case
         return;
     }
 
