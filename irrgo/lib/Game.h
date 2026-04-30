@@ -66,18 +66,20 @@ private:
     std::vector<Move> moveHistory_;
     bool setupMode_ = false;
 
-    void initZobrist();
-    void getGroup(int nodeId, std::vector<int>& group, std::vector<bool>& visited) const;
-    int  libertyCount(const std::vector<int>& group) const;
-    void removeGroup(const std::vector<int>& group);
-    bool isLegalPlacement(int nodeId) const;   // renamed from isLegalMove
+    // ── Union-Find for incremental group and liberty tracking ───────────────
+    // Only occupied nodes participate meaningfully; dsu_parent_[i]==i is a root.
+    // Liberty sets and member lists are stored only at the current root.
+    // Union by group size (smaller absorbed into larger) without path
+    // compression gives O(log N) find depth — negligible for Go board sizes.
+    std::vector<int>                     dsu_parent_;
+    std::vector<std::unordered_set<int>> dsu_libset_;   // empty-neighbor IDs, per root
+    std::vector<std::vector<int>>        dsu_members_;  // stone IDs, per root
 
-    // Scratch buffers for isLegalPlacement — reused across calls to avoid heap churn.
-    // mutable because isLegalPlacement is const; contents are not part of logical state.
-    mutable std::vector<Color> lp_board_;
-    mutable std::vector<bool>  lp_vis_outer_;
-    mutable std::vector<bool>  lp_vis_inner_;
-    mutable std::vector<int>   lp_grp_;
+    void initZobrist();
+    int  dsuFind(int i) const;
+    void dsuUnite(int a, int b);
+    void dsuCaptureGroup(int root, Color capturedColor);
+    bool isLegalPlacement(int nodeId) const;
 };
 
 } // namespace IrrGo
