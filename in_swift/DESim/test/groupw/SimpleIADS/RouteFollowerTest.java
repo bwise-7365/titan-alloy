@@ -34,7 +34,7 @@ public class RouteFollowerTest {
         int sd0 = DefaultSeedPRNG;
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 

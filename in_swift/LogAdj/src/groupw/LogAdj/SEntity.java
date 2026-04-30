@@ -58,6 +58,7 @@ public class SEntity extends Entity {
     public void doSelect() {
 
 
+        //String tStamp = this.mySim.timeStamp();
         if (monitoredSerial.equalsIgnoreCase(mySerial.name)) {
             System.out.println("DEBUG: SEntity.doSelect() - doSelect by monitored serial: " + monitoredSerial);
             System.out.flush();

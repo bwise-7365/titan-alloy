@@ -106,8 +106,8 @@ public class SimpleMissile
 
     @Override
     public void process() {
-        boolean highP = rLevelLE(High, mySim.rLevel);
-        boolean dbgP = rLevelLE(Debugging, mySim.rLevel);
+        boolean highP = rLevelLE(High, mySim.schedRLevel);
+        boolean dbgP = rLevelLE(Debugging, mySim.schedRLevel);
         if (highP) {
             System.out.println("");
             System.out.printf("%s SimpleMissile.process() %4d \n",

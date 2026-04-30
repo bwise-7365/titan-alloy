@@ -133,7 +133,7 @@ public class Scheduler {
         while (continueP) {
             step();
         }
-        if (rLevelLE(Low, rLevel)) {
+        if (rLevelLE(Low, schedRLevel)) {
             System.out.printf("%s  desim.Scheduler finished run(); last event at %.2f sec\n",
                     this.timeStamp(), currTime);
         }
@@ -153,7 +153,7 @@ public class Scheduler {
         while (continueP) {
             step(endTime);
         }
-        if (rLevelLE(Low, rLevel)) {
+        if (rLevelLE(Low, schedRLevel)) {
             System.out.printf("%s  desim.Scheduler finished run(endTime); last event at %.2f sec\n",
                     this.timeStamp(), currTime);
             System.out.printf("There are %d events in the queue. \n",
@@ -170,7 +170,7 @@ public class Scheduler {
         // at which was scheduled to occur.
         continueP = (0 < eventQueue.size());
         if (continueP) {
-            if (rLevelLE(High, rLevel)) {
+            if (rLevelLE(High, schedRLevel)) {
                 System.out.printf("%s Step() at time %.6f with %3d events \n",
                         timeStamp(), getCurrTime(), eventQueue.size());
             }
@@ -193,7 +193,7 @@ public class Scheduler {
     public void step(double maxTime) {
         continueP = (getCurrTime() <= maxTime) && (0 < eventQueue.size());
         if (continueP) {
-            if (rLevelLE(High, rLevel)) {
+            if (rLevelLE(High, schedRLevel)) {
                 System.out.printf("%s Step(%.4f) at time %.6f with %3d events \n",
                         timeStamp(), maxTime, getCurrTime(), eventQueue.size());
             }
@@ -242,7 +242,7 @@ public class Scheduler {
     private boolean continueP = true;
     private final PriorityQueue<Event> eventQueue;
     private double currTime = 0.0;
-    public ReportingLevel rLevel = Silent;
+    public ReportingLevel schedRLevel = Silent;
 
     /**
      * Map storing all the entities (dead or alive, physical or disembodied) in

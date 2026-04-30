@@ -36,7 +36,7 @@ public abstract class Hull
     }
 
     public void showPVDT(double dt) {
-        if (rLevelLE(High, mySim.rLevel)) {
+        if (rLevelLE(High, mySim.schedRLevel)) {
             double tNow = mySim.getCurrTime();
             RealVector pTmp = this.drCurrPos(tNow);
             System.out.printf("Hull %4d position:\n", getID());

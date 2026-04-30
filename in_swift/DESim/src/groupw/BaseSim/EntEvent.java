@@ -1,6 +1,8 @@
 package groupw.BaseSim;
 
 import static groupw.BaseSim.DSUtils.SECONDS_PER_HOUR;
+import static groupw.Network.NWUtils.ReportingLevel.High;
+import static groupw.Network.NWUtils.rLevelLE;
 
 /**
  *
@@ -28,17 +30,25 @@ public class EntEvent
      */
     @Override
     public void process() {
-        System.out.printf("%s Processing EntEvent %4d \n",
-                mySim.timeStamp(), getID());
+
+        boolean printP = rLevelLE(High, mySim.schedRLevel);
+        if (printP) {
+            System.out.printf("%s Processing EntEvent %4d \n", mySim.timeStamp(), getID());
+        }
+
         if (myEntity.isActive()) {
-            System.out.printf("Entity %4d is active and processing at time %.4f sec / %.2f hours \n",
-                    myEntity.getID(), mySim.getCurrTime(), mySim.getCurrTime() / SECONDS_PER_HOUR);
             myEntity.process();
-        } else {
+
+            if (printP) {
+                System.out.printf("Entity %4d is active and processing at time %.4f sec / %.2f hours \n",
+                                  myEntity.getID(), mySim.getCurrTime(), mySim.getCurrTime() / SECONDS_PER_HOUR);
+            }
+        } else if (printP) {
             System.out.printf("Entity %4d is inactive and not processing at time %.4f sec / %.2f hours \n",
-                    myEntity.getID(), mySim.getCurrTime(), mySim.getCurrTime() / SECONDS_PER_HOUR);
+                              myEntity.getID(), mySim.getCurrTime(), mySim.getCurrTime() / SECONDS_PER_HOUR);
         }
     }
+
 
 
     final protected Entity myEntity;

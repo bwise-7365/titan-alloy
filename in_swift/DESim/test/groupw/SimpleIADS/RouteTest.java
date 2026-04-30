@@ -33,7 +33,7 @@ public class RouteTest {
         double dTol = 0.001; // meters
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 
@@ -70,7 +70,7 @@ public class RouteTest {
         double dTol = 0.001; // meters
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 
@@ -108,7 +108,7 @@ public class RouteTest {
         double dTol = 0.001; // meters
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 
@@ -215,7 +215,7 @@ public class RouteTest {
         double zMax = 0.0;
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 
@@ -273,7 +273,7 @@ public class RouteTest {
         double zMax = 0.0;
         //sd0 = 0;
         Scheduler sim = new Scheduler();
-        sim.rLevel = High;
+        sim.schedRLevel = High;
         //sim.rLevel = Silent;
         sim.setPRNG(sd0);
 

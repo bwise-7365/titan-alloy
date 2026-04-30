@@ -102,7 +102,7 @@ public class SimpleAirFrame
 
     @Override
     public void process() {
-        if (rLevelLE(High, mySim.rLevel)) {
+        if (rLevelLE(High, mySim.schedRLevel)) {
             System.out.println("");
             System.out.printf("%s SimpleAirframe.process() %4d \n",
                     mySim.timeStamp(), getID());
