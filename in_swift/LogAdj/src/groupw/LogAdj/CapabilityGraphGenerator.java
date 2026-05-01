@@ -30,6 +30,7 @@ public class CapabilityGraphGenerator {
     private Map<String, String> serialToUnit = new HashMap<>();
     private Map<String, Double> serialToCapability = new HashMap<>();
     private Map<String, String> unitToDeliveryNode = new HashMap<>();
+    private Map<String, Double> unitToWeight = new HashMap<>();
     private Map<String, List<DeliveryEvent>> unitDeliveries = new HashMap<>();
     private double maxTime = 0.0;
 
@@ -62,12 +63,17 @@ public class CapabilityGraphGenerator {
                 } else {
                     String unitName = null;
                     String deliveryNode = null;
+                    Double unitWeight = null;
                     for (int i = 0; i < Math.min(parts.length, headers.length); i++) {
                         if (headers[i].equalsIgnoreCase("Unit Name")) unitName = parts[i].trim();
                         if (headers[i].equalsIgnoreCase("Delivery Node")) deliveryNode = parts[i].trim();
+                        if (headers[i].equalsIgnoreCase("Unit Weight")) unitWeight = Double.parseDouble(parts[i].trim());
                     }
                     if (unitName != null && deliveryNode != null) {
                         unitToDeliveryNode.put(unitName, deliveryNode);
+                    }
+                    if (unitName != null && unitWeight != null) {
+                        unitToWeight.put(unitName, unitWeight);
                     }
                 }
             }
@@ -178,7 +184,11 @@ public class CapabilityGraphGenerator {
         return unitDeliveries;
     }
 
-    public JFreeChart createChart() {
+    /**
+     * Create a PNG chart of percent cumulative capability over time, one line for each unit
+     * @return
+     */
+    public JFreeChart createUnitsChart() {
         XYSeriesCollection dataset = new XYSeriesCollection();
         Map<String, TreeMap<Double, Double>> unitTimeline = calculateCumulativeCapability();
 
@@ -193,13 +203,12 @@ public class CapabilityGraphGenerator {
         }
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Cumulative Capability Delivered",
+                "Cumulative Capability Delivered, by Unit.",
                 "Simulation Time (hours)",
                 "Capability (%)",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true, true, false);
-
 
         float lineWidth = 2.5f; // 'float' required to avoid compiler complaints
         XYPlot plot = chart.getXYPlot();
@@ -213,8 +222,69 @@ public class CapabilityGraphGenerator {
         return chart;
     }
 
-    public void saveGraph(String filePath) throws IOException {
-        JFreeChart chart = createChart();
+    /**
+     * Create a PNG chart of percent cumulative capability over time of all units aggregated.
+     * @return
+     */
+    public JFreeChart createTotalChart() {
+        Map<String, TreeMap<Double, Double>> unitTimeline = calculateCumulativeCapability();
+
+        // Collect all distinct time points across all units
+        TreeSet<Double> allTimes = new TreeSet<>();
+        for (TreeMap<Double, Double> timeline : unitTimeline.values()) {
+            allTimes.addAll(timeline.keySet());
+        }
+
+        // Sum weights for all units that appear in the timeline
+        double totalWeight = 0.0;
+        for (String unit : unitTimeline.keySet()) {
+            totalWeight += unitToWeight.getOrDefault(unit, 0.0);
+        }
+
+        // At each time point, weighted average = sum(weight_i * cap_i(t)) / totalWeight
+        // We need 'floorEntry' to get the greatest key <= the specified time,
+        // and only TreeMap provides that.
+        XYSeries series = new XYSeries("Total");
+        for (double time : allTimes) {
+            double weightedSum = 0.0;
+            for (Map.Entry<String, TreeMap<Double, Double>> entry : unitTimeline.entrySet()) {
+                Map.Entry<Double, Double> floorEntry = entry.getValue().floorEntry(time);
+                double cap = (floorEntry != null) ? floorEntry.getValue() : 0.0;
+                double weight = unitToWeight.getOrDefault(entry.getKey(), 0.0);
+                weightedSum += weight * cap;
+            }
+            series.add(time,  weightedSum / totalWeight);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Cumulative Capability Delivered, Total",
+                "Simulation Time (hours)",
+                "Capability (%)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
+
+        float lineWidth = 2.5f; // 'float' required to avoid compiler complaints
+        XYPlot plot = chart.getXYPlot();
+        XYStepRenderer renderer = new XYStepRenderer();
+        renderer.setSeriesStroke(0, new BasicStroke(lineWidth));
+        plot.setRenderer(renderer);
+
+        return chart;
+    }
+
+    public void saveUnitsGraph(String filePath) throws IOException {
+        JFreeChart chart = createUnitsChart();
+        File imageFile = new File(filePath);
+        System.out.println("Graph will be saved to: " + imageFile.getAbsolutePath());
+        ChartUtilities.saveChartAsPNG(imageFile, chart, 1200, 600);
+    }
+
+    public void saveTotalGraph(String filePath) throws IOException {
+        JFreeChart chart = createTotalChart();
         File imageFile = new File(filePath);
         System.out.println("Graph will be saved to: " + imageFile.getAbsolutePath());
         ChartUtilities.saveChartAsPNG(imageFile, chart, 1200, 600);
@@ -228,10 +298,11 @@ public class CapabilityGraphGenerator {
     public static void main(String[] args) {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
         try {
-            generator.readUnitData("test/Data/unit-C1.csv");
+            generator.readUnitData("test/Data/unit-'C1'.csv");
             generator.readSerialData("test/Data/serial-C1.csv");
             generator.parseLogFile("logrun.txt");
-            generator.saveGraph("capability_graph.png");
+            generator.saveUnitsGraph("capability_graph_units.png");
+            generator.saveTotalGraph("capability_graph_total.png");
 
         } catch (IOException e) {
             e.printStackTrace();

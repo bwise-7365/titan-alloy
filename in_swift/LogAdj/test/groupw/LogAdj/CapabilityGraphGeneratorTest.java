@@ -47,19 +47,36 @@ public class CapabilityGraphGeneratorTest {
         });
     }
 
+
     @Test
-    public void testGenerateGraphImage() throws IOException {
+    public void testGenerateUnitGraph() throws IOException {
         CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
         generator.readUnitData("test/Data/unit-C1.csv");
         generator.readSerialData("test/Data/serial-C1.csv");
         generator.parseLogFile("logrun.txt");
         
-        String outputPath = "capability_graph_test.png";
-        generator.saveGraph(outputPath);
+        String outputPath = "capability_graph_units.png";
+        generator.saveUnitsGraph(outputPath);
         
         java.io.File file = new java.io.File(outputPath);
         assertTrue("Graph image should be created", file.exists());
-        System.out.println("Test-generated graph image: " + file.getAbsolutePath());
+        System.out.println("Units graph image: " + file.getAbsolutePath());
+    }
+
+
+    @Test
+    public void testGenerateTotalGraph() throws IOException {
+        CapabilityGraphGenerator generator = new CapabilityGraphGenerator();
+        generator.readUnitData("test/Data/unit-C1.csv");
+        generator.readSerialData("test/Data/serial-C1.csv");
+        generator.parseLogFile("logrun.txt");
+
+        String outputPath = "capability_graph_total.png";
+        generator.saveTotalGraph(outputPath);
+
+        java.io.File file = new java.io.File(outputPath);
+        assertTrue("Graph image should be created", file.exists());
+        System.out.println("Total graph image: " + file.getAbsolutePath());
     }
 
     private boolean isNonDecreasing(TreeMap<Double, Double> data) {
