@@ -136,6 +136,12 @@ MainWindow::MainWindow(QWidget* parent)
             this, &MainWindow::onMoveRequested);
     connect(boardWidget_, &BoardWidget::clearSuggestionRequested,
             this, &MainWindow::clearSuggestion);
+    connect(boardWidget_, &BoardWidget::hoverChanged, this, [this](int nodeId) {
+        if (nodeId >= 0 && game_)
+            hoverCoordLabel_->setText(QString::fromStdString(game_->graph().node(nodeId).label));
+        else
+            hoverCoordLabel_->setText("----");
+    });
 
     // ── Right panel ───────────────────────────────────────────────────────────
     auto* panel = new QWidget(this);
@@ -155,7 +161,12 @@ MainWindow::MainWindow(QWidget* parent)
     stopBtn_->setFixedWidth(44);
     { auto sp = stopBtn_->sizePolicy(); sp.setRetainSizeWhenHidden(true); stopBtn_->setSizePolicy(sp); }
     stopBtn_->hide();
+    hoverCoordLabel_ = new QLabel("----", statusRow);
+    hoverCoordLabel_->setFixedWidth(44);
+    hoverCoordLabel_->setAlignment(Qt::AlignCenter);
+    hoverCoordLabel_->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     statusHBox->addWidget(currentPlayerLabel_, 1);
+    statusHBox->addWidget(hoverCoordLabel_);
     statusHBox->addWidget(stopBtn_);
     pv->addWidget(statusRow);
     connect(stopBtn_, &QPushButton::clicked, this, &MainWindow::cancelSearch);

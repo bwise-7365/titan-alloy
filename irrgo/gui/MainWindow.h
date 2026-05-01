@@ -71,6 +71,7 @@ private:
     // Central UI
     BoardWidget*  boardWidget_;
     QLabel*       currentPlayerLabel_;
+    QLabel*       hoverCoordLabel_     = nullptr;
     QPushButton*  stopBtn_;
     QPushButton*  blackPassBtn_;
     QPushButton*  whitePassBtn_;

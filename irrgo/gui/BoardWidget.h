@@ -39,6 +39,7 @@ public:
 signals:
     void moveRequested(int nodeId);
     void clearSuggestionRequested();  // any left-click anywhere in the board area
+    void hoverChanged(int nodeId);    // -1 when no node is highlighted
 
 protected:
     void paintEvent(QPaintEvent*) override;

@@ -170,6 +170,7 @@ void BoardWidget::resizeEvent(QResizeEvent*) {
 void BoardWidget::leaveEvent(QEvent*) {
     hoverNode_ = -1;
     update();
+    emit hoverChanged(-1);
 }
 
 void BoardWidget::updateTransform() {
@@ -245,7 +246,7 @@ void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
 void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
     if (searching_) return;
     int n = nodeAt(e->position());
-    if (n != hoverNode_) { hoverNode_ = n; update(); }
+    if (n != hoverNode_) { hoverNode_ = n; update(); emit hoverChanged(n); }
 }
 
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
