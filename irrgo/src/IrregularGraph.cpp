@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <numbers>
-#include <queue>
+//#include <queue>
 #include <random>
 #include <sstream>
 
@@ -22,7 +22,7 @@ static double orient(float ax, float ay, float bx, float by, float px, float py)
 }
 
 int IrregularGraph::expandGrid(int n) {
-    int m = (int)(0.5 + (6.25 * n) / 5);
+    const int m = static_cast<int>(round((6.0 * n) / 5.0));
     return m;
 }
 
@@ -160,8 +160,8 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
                 if (d < vDist) { vDist = d; vNbr = i; }
             }
         }
-        if (hNbr >= 0) { addEdge(c, hNbr); edges_.push_back({c, hNbr}); }
-        if (vNbr >= 0 && vNbr != hNbr) { addEdge(c, vNbr); edges_.push_back({c, vNbr}); }
+        if (hNbr >= 0) { addEdge(c, hNbr); edges_.emplace_back(c, hNbr); }
+        if (vNbr >= 0 && vNbr != hNbr) { addEdge(c, vNbr); edges_.emplace_back(c, vNbr); }
     }
 
     // Greedily add remaining edges shortest-first
@@ -176,7 +176,7 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
 
         if (canAddEdge(pe.a, pe.b)) {
             addEdge(pe.a, pe.b);
-            edges_.push_back({pe.a, pe.b});
+            edges_.emplace_back(pe.a, pe.b);
         }
     }
 }

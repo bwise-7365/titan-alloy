@@ -4,11 +4,11 @@
 #include "RectangularGraph.h"
 #include <QActionGroup>
 #include <QCheckBox>
-#include <QFile>
+//#include <QFile>
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <QXmlStreamReader>
+//#include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <unordered_map>
 

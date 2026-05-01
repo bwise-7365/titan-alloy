@@ -16,7 +16,7 @@ static int starCoord(int n) { return n < 11 ? 2 : 3; }
 static const QColor kOrange    { 255, 140,   0 };
 static const QColor kGreen     {   0, 200,   0 };
 static const QColor kMedPurple { 147, 112, 219 };
-static const QColor kDarkBlue  { 0, 0, 128 };
+//static const QColor kDarkBlue  { 0, 0, 128 };
 static const QColor kRed       { 220,   0,   0, 180 };
 static constexpr float kStoneRPhys      = 0.875f / 2.0f;
 static constexpr float kGridLineThickness = 2.5f; // normally 1.5f;

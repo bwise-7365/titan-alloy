@@ -13,7 +13,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMenu>
+//#include <QMenu>
 #include <QMenuBar>
 #include <QProgressBar>
 #include <QPushButton>
@@ -22,7 +22,7 @@
 #include <QSpinBox>
 #include <QTextEdit>
 #include <QTimer>
-#include <QVBoxLayout>
+//#include <QVBoxLayout>
 #include <QWidget>
 #include <QWidgetAction>
 #include <algorithm>
@@ -387,28 +387,28 @@ void MainWindow::buildMenuBar() {
 
         auto* mctsMenu = new QMenu(this);
         auto* widget   = new QWidget;
-        auto* vbox     = new QVBoxLayout(widget);
-        vbox->setContentsMargins(8, 6, 8, 6);
-        auto* form     = new QFormLayout;
-        form->setSpacing(6);
-        vbox->addLayout(form);
+        auto* vbox2     = new QVBoxLayout(widget);
+        vbox2->setContentsMargins(8, 6, 8, 6);
+        auto* form2     = new QFormLayout;
+        form2->setSpacing(6);
+        vbox2->addLayout(form2);
 
         playMctsSecCombo_ = new QComboBox(widget);
         for (const auto& o : kMctsOptions)
             playMctsSecCombo_->addItem(o.label, o.secs);
-        form->addRow("Time:", playMctsSecCombo_);
+        form2->addRow("Time:", playMctsSecCombo_);
 
         playMctsTurnsSpin_ = new QSpinBox(widget);
         playMctsTurnsSpin_->setRange(1, 999);
         playMctsTurnsSpin_->setValue(10);
-        form->addRow("Turns:", playMctsTurnsSpin_);
+        form2->addRow("Turns:", playMctsTurnsSpin_);
 
-        auto* sep = new QFrame(widget);
-        sep->setFrameShape(QFrame::HLine);
-        vbox->addWidget(sep);
+        auto* sep2 = new QFrame(widget);
+        sep2->setFrameShape(QFrame::HLine);
+        vbox2->addWidget(sep2);
 
         auto* goBtn = new QPushButton("Go!", widget);
-        vbox->addWidget(goBtn);
+        vbox2->addWidget(goBtn);
         connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
 
@@ -443,23 +443,23 @@ void MainWindow::buildMenuBar() {
 
         auto* mctsMenu   = new QMenu(this);
         auto* widget     = new QWidget;
-        auto* vbox       = new QVBoxLayout(widget);
-        vbox->setContentsMargins(8, 6, 8, 6);
-        auto* form       = new QFormLayout;
-        form->setSpacing(6);
-        vbox->addLayout(form);
+        auto* vbox2       = new QVBoxLayout(widget);
+        vbox2->setContentsMargins(8, 6, 8, 6);
+        auto* form2       = new QFormLayout;
+        form2->setSpacing(6);
+        vbox2->addLayout(form2);
 
         suggestMctsSecCombo_ = new QComboBox(widget);
         for (const auto& o : kMctsOptions)
             suggestMctsSecCombo_->addItem(o.label, o.secs);
-        form->addRow("Time:", suggestMctsSecCombo_);
+        form2->addRow("Time:", suggestMctsSecCombo_);
 
-        auto* sep = new QFrame(widget);
-        sep->setFrameShape(QFrame::HLine);
-        vbox->addWidget(sep);
+        auto* sep2 = new QFrame(widget);
+        sep2->setFrameShape(QFrame::HLine);
+        vbox2->addWidget(sep2);
 
         auto* goBtn = new QPushButton("Go!", widget);
-        vbox->addWidget(goBtn);
+        vbox2->addWidget(goBtn);
         connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
 

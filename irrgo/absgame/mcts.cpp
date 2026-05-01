@@ -1,7 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "Searcher.h"
 #include <chrono>
-#include <cmath>
+//#include <cmath>
 #include <cstdio>
 #include <limits>
 #include <random>
@@ -14,8 +14,8 @@ namespace {
 
 using AbsGame::MoveId;
 
-static constexpr double kUctExpFactor    = 1.0;
-static constexpr int    kMaxRolloutDepth = 200;
+ constexpr double kUctExpFactor    = 1.0;
+ constexpr int    kMaxRolloutDepth = 200;
 
 struct MctsNode {
     std::unique_ptr<AbsGame::Game>         game;
