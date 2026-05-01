@@ -22,7 +22,7 @@ static constexpr float kStoneRPhys      = 0.875f / 2.0f;
 static constexpr float kGridLineThickness = 2.5f; // normally 1.5f;
 
 BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
-    setMinimumSize(400, 400);
+    setMinimumSize(500, 250);
     setMouseTracking(true);
     confirmTimer_ = new QTimer(this);
     confirmTimer_->setSingleShot(true);

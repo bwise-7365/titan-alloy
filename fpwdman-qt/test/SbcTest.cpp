@@ -5,7 +5,7 @@
 using namespace SBC;
 
 TEST(SbcTest, QTransW128MatchesW64) {
-    W128 v;
+    W128 v{};
     v.first = 1234567890ULL;
     v.second = 9876543210ULL;
 

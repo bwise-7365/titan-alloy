@@ -15,7 +15,7 @@ static constexpr float kRowSpacing = 0.93f;
 static constexpr double kMinAngleDeg   = 15.0;
 static constexpr float  kNodeClearance = 0.3f; // min distance from segment to any non-endpoint node
 
-// Orientation of point p relative to directed line a→b (sign of cross product)
+// Orientation of point p relative to directed line a→b (sign of cross-product)
 static double orient(float ax, float ay, float bx, float by, float px, float py) {
     return static_cast<double>(bx - ax) * (py - ay)
          - static_cast<double>(by - ay) * (px - ax);
@@ -114,7 +114,7 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
         if (!isCorner[i]) candidates.push_back(i);
 
     int needed = m * n - 4;
-    std::shuffle(candidates.begin(), candidates.end(), rng);
+    std::ranges::shuffle(candidates, rng);
     if (needed > static_cast<int>(candidates.size()))
         needed = static_cast<int>(candidates.size());
     candidates.resize(needed);
@@ -140,8 +140,8 @@ IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
             float dy = nodes_[j].y - nodes_[i].y;
             potEdges.push_back({i, j, std::sqrt(dx*dx + dy*dy)});
         }
-    std::sort(potEdges.begin(), potEdges.end(),
-              [](const PotEdge& a, const PotEdge& b) { return a.len < b.len; });
+    std::ranges::sort(potEdges,
+                      [](const PotEdge& a, const PotEdge& b) { return a.len < b.len; });
 
     // Connect each corner to its nearest horizontal and vertical game-node neighbor
     for (int c = 0; c < 4; ++c) {

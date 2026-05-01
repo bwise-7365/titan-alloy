@@ -29,7 +29,7 @@ Game::Game(const Graph& graph, double komi, int handicap)
 // ── Zobrist Hashing ────────────────────────────────────────────────────────────
 
 void Game::initZobrist() {
-    std::mt19937_64 rng(42); // we want this predictable
+    std::mt19937_64 rng(1116601267); // we want this reproducible
     int N = graph_.nodeCount();
     zobBlack_.resize(N);
     zobWhite_.resize(N);
