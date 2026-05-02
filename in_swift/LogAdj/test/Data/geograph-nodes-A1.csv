@@ -1,5 +1,7 @@
 Name, Lattitude, Longitude
 # Everything starts in Cuba
+# Note that 'NewGuinea' is actually Isla de la Juventud,
+# the large island on the south side opposite Havana.
 Havana,   23.09, -82.48
 Juragua,  22.06, -80.51
 NewGuinea,21.9,  -82.77

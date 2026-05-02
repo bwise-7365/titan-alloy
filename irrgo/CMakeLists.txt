@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(absgame)
-add_subdirectory(src)
+add_subdirectory(irrgo_game)
 add_subdirectory(driver)
-add_subdirectory(gui)
+add_subdirectory(irrgo_gui)
+add_subdirectory(mancala_game)
+add_subdirectory(mancala_gui)
 # Copyright Ben Paul Wise. All Rights Reserved.
