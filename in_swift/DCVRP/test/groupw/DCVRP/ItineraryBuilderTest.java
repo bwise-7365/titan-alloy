@@ -129,6 +129,10 @@ public class ItineraryBuilderTest {
         final String vehicleType = TheVRC.getVehicleDataMap().get(vehicleName).type;
         final ReadTransportTypeCSV.DataField vtRec = TheVRC.getVehicleTypeMap().get(vehicleType);
 
+        TheVRC.getSerialMap();
+        TheVRC.getVehicleDomainMap();
+        TheVRC.getPortAccessMap();
+
         // the current time is chosen so that some of the high-priority serials
         // (average transit time suggests they might be late from current location)
         // can get there on time using some edges but will be late using others.
@@ -141,27 +145,28 @@ public class ItineraryBuilderTest {
         TheIB.setTimeTable(it, vehicleName, currTime);
         //it.displayManifests();
 
+        assert(it.validP(vtRec, TheVRC.serialMap, TheVRC.vehicleDomainMap, TheVRC.portAccessMap));
         assert (it.checkWellFormed());
         assert (it.checkFeasible(vtRec,
-                TheVRC.getSerialMap(),
-                TheVRC.getVehicleDomainMap(),
-                TheVRC.getPortAccessMap()));
+                                 TheVRC.serialMap,
+                                 TheVRC.vehicleDomainMap,
+                                 TheVRC.portAccessMap));
 
         Itinerary it2 = TheIB.reorderCircularItinerary(it, vtRec);
-        if (null == it2){
+        if (null == it2) {
             System.out.println("No reordering produced.");
-        }
-        else {
+        } else {
             double twd2 = it2.totalWeightDistance(TheVRC.getSerialMap());
             System.out.printf("Reordered itinerary %d, WD=%.4E: %s\n", it2.getID(), twd2, it2.listLegNodes());
             // the only reason to reorder is to reduce total weight-distance,
             // and sometimes reordering just recreates the same plan
             assert (twd2 <= twd);
+            TheIB.setTimeTable(it2, vehicleName, currTime);
             assert (it2.checkWellFormed());
             assert (it2.checkFeasible(vtRec,
-                    TheVRC.getSerialMap(),
-                    TheVRC.getVehicleDomainMap(),
-                    TheVRC.getPortAccessMap()));
+                                      TheVRC.serialMap,
+                                      TheVRC.vehicleDomainMap,
+                                      TheVRC.portAccessMap));
         }
         return;
     }

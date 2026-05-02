@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.Set;
 
+import static groupw.DCVRP.ItineraryBuilder.TheIB;
 import static groupw.DCVRP.ReadDCVRScenarioCSV.readStandardTestCase;
 import static java.lang.Math.abs;
 import static org.junit.Assert.assertNotNull;
@@ -33,6 +34,9 @@ public class ItineraryTest {
 
         ItemCounter.reset(1000);
         ReadDCVRScenarioCSV.ScenarioRecord sRec = readStandardTestCase();
+        VRController.initialize(sRec, 1173);
+        ItineraryBuilder.initialize();
+
         VRGraph g = sRec.vrg;
         Map<String, ReadUnitCSV.DataField> uMap = ReadUnitCSV.makeUnitMap(sRec.unitRecords);
         Map<String, ReadTransportTypeCSV.DataField> vtMap = ReadTransportTypeCSV.makeVTypeMap(sRec.vtRecords);
@@ -121,6 +125,8 @@ public class ItineraryTest {
         System.out.printf("Nodes visited: %s \n", itnry.visitedNodes());
         System.out.printf("Nodes in Legs: %s \n", itnry.listLegNodes());
 
+        TheIB.setTimeTable(itnry, vRec.name , 0.0);
+
         // verify that this no-cargo itinerary fits in very tight space and weight limits
         assertTrue(itnry.checkWellFormed());
         boolean itFits00 = itnry.checkAreaWeightLimits(vtRec.cargoArea / 100.0, vtRec.cargoWeight / 100.0, sMap);
@@ -157,6 +163,7 @@ public class ItineraryTest {
         legC.dst.transfer.addInventory(serial01.name, oneSerial);
         legC.dst.transfer.addInventory(serial04.name, oneSerial);
 
+        TheIB.setTimeTable(itnry, vRec.name, 0.0);
         boolean itFits01 = itnry.checkAreaWeightLimits(vtRec.cargoArea / 10.0, vtRec.cargoWeight / 10.0, sMap);
         assertTrue(!itFits01);
         boolean itFits02 = itnry.checkAreaWeightLimits(vtRec.cargoArea, vtRec.cargoWeight, sMap);
@@ -175,6 +182,7 @@ public class ItineraryTest {
         System.out.printf("Nodes visited: %s \n", itnry.visitedNodes());
         System.out.printf("Nodes in Legs: %s \n", itnry.listLegNodes());
 
+        TheIB.setTimeTable(itnry, vRec.name, 0.0);
         assertTrue(itnry.checkWellFormed());
         double itLength02 = itnry.getLength();
         System.out.printf("Itinerary %d has %d legs and is %.4f nautical miles long\n",

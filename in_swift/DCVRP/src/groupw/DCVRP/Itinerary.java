@@ -492,6 +492,15 @@ public class Itinerary implements CountedItem {
         return ok;
     }
 
+    public boolean validP(final ReadTransportTypeCSV.DataField tType,
+                          final Map<String, Serial> sMap,
+                          final Map<String, Set<String>> tdMap,
+                          final Map<String, Set<String>> paMap) {
+        boolean ok = checkWellFormed();
+        ok = ok && checkFeasible(tType, sMap, tdMap, paMap);
+        return ok;
+    }
+
     /**
      * Check if any legs of the itinerary exceed the maximum area or weight.
      * Zero-length routes are thus OK because it is impossible for a leg to
@@ -507,11 +516,71 @@ public class Itinerary implements CountedItem {
         boolean ok = true;
         int numLegs = legs.size();
         if (0 < numLegs) {
-            Manifest carried = new Manifest(); // empty hence zero area and weight
             for (int i = 0; ok && (i < numLegs); i++) {
                 if (displayP) {
                     System.out.printf("Leg %02d src: %s, dst: %s\n",
                             i, legs.get(i).src.node.name, legs.get(i).dst.node.name);
+                }
+                // pickup at src of this leg
+                final Manifest srcPickUp = legs.get(i).src.transfer;
+                if (null != srcPickUp) {
+                    if (displayP) {
+                        System.out.printf("  Src pickup: %s\n", srcPickUp.toString());
+                    }
+                }
+                if (null == legs.get(i).carry) {
+                    ok = false;
+                }
+                if (displayP){
+                    System.out.printf("   Carry: %s\n", legs.get(i).carry);
+                }
+                double as = manifestArea(legs.get(i).carry, sMap);
+                double ws = manifestWeight(legs.get(i).carry, sMap);
+                if ((maxArea < as) || (maxWeight < ws)) {
+                    ok = false;
+                }
+                if (displayP) {
+                    System.out.printf("Leg %02d carried from src to dst: as = %.2f , ws = %.2f ,",
+                            i, as, ws);
+                    System.out.printf("  %s\n", legs.get(i).carry.toString());
+                }
+
+                // dropoff at dst of this leg
+                final Manifest dstDropOff = legs.get(i).dst.transfer;
+                if (null != dstDropOff) {
+                    if (displayP) {
+                        System.out.printf("  Dst dropoff: %s\n", dstDropOff.toString());
+                    }
+                }
+                /* Dropoff can only decrease cargo, so no need to check here
+                double ad = manifestArea(carried, sMap);
+                double wd = manifestWeight(carried, sMap);
+                if ((maxArea < ad) || (maxWeight < wd)) {
+                    ok = false;
+                }
+                */
+
+                if (displayP) {
+                    System.out.printf("Leg %02d finished with Manifest:", i);
+                    System.out.printf("  %s\n", legs.get(i).carry.toString());
+                    System.out.println("====");
+                }
+            }
+        }
+        return ok;
+    }
+
+
+    public boolean checkAreaWeightLimits_From_Scratch(double maxArea, double maxWeight, final Map<String, Serial> sMap) {
+        final boolean displayP = false;
+        boolean ok = true;
+        int numLegs = legs.size();
+        if (0 < numLegs) {
+            Manifest carried = new Manifest(); // empty hence zero area and weight
+            for (int i = 0; ok && (i < numLegs); i++) {
+                if (displayP) {
+                    System.out.printf("Leg %02d src: %s, dst: %s\n",
+                                      i, legs.get(i).src.node.name, legs.get(i).dst.node.name);
                     System.out.printf("Leg %02d started with Manifest:", i);
                     System.out.printf("  %s\n", carried.toString());
                 }
@@ -530,7 +599,7 @@ public class Itinerary implements CountedItem {
                 }
                 if (displayP) {
                     System.out.printf("Leg %02d carried from src to dst: as = %.2f , ws = %.2f ,",
-                            i, as, ws);
+                                      i, as, ws);
                     System.out.printf("  %s\n", carried.toString());
                 }
 
@@ -559,6 +628,8 @@ public class Itinerary implements CountedItem {
         }
         return ok;
     }
+
+
 
     /**
      * Sum of weight times distance over all legs

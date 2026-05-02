@@ -474,6 +474,7 @@ public class ItineraryBuilder {
         String vType = TheVRC.getVehicleDataMap().get(vName).type;
         double speed = TheVRC.getVehicleTypeMap().get(vType).cruiseSpd;
 
+        Manifest runningManifest = new  Manifest();
         for (int i = 0; i < nLegs; i++) {
             if (0 == i) {
                 lastTime = startTime;
@@ -485,12 +486,19 @@ public class ItineraryBuilder {
             double pickUpInterval = transferTime(vName, itnry.legs.get(i).src.transfer);
             lastTime = lastTime + pickUpInterval;
             itnry.legs.get(i).src.transferEndTime = lastTime; // time when pickups at src #1 should end
+            runningManifest = Manifest.add(runningManifest, itnry.legs.get(i).src.transfer);
+
             double moveInterval = itnry.legs.get(i).edge.trueLength / speed;
             lastTime = lastTime +  moveInterval;
+
+            itnry.legs.get(i).carry = Manifest.add(runningManifest, null); // makes a fresh copy
+
             itnry.legs.get(i).dst.transferSrtTime = lastTime; // time when dropoffs at dst #i should start
             double dropOffInterval = transferTime(vName, itnry.legs.get(i).dst.transfer);
             lastTime = lastTime + dropOffInterval;
             itnry.legs.get(i).dst.transferEndTime = lastTime; // time when dropoffs at dst #1 should end
+            runningManifest = Manifest.sub(runningManifest, itnry.legs.get(i).dst.transfer);
+
         }
         return lastTime;
     }

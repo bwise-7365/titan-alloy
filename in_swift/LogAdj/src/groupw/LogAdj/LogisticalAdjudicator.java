@@ -140,6 +140,47 @@ public class LogisticalAdjudicator {
         }
     }
 
+    public Map<String, String> entityLocations() {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
+            result.put(e.getKey().name, e.getValue().status());
+        }
+        for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
+            result.put(e.getKey().name, e.getValue().status());
+        }
+        return result;
+    }
+
+
+    public void reportLocations(double cTime, String s) {
+        final double minTime = 1600.383; //70.0;
+        final double maxTime = 1600.385; //100.0;
+        if ((minTime < cTime) && (cTime < maxTime)) {
+            System.out.printf("\n\n Entity locations\n");
+            Map<String, String> eLoc = entityLocations();
+            int nTrn = 0;
+            int nSrl = 0;
+            int nStk = 0;
+            for (var entry : eLoc.entrySet()) {
+                String msg= entry.getValue();
+                if (msg.contains("Serial")) {
+                    nSrl++;
+                    if (!msg.contains("Delivered")) {
+                        nStk++;
+                        System.out.println(msg);
+                    }
+                }
+                if (msg.contains("Transport")  && !msg.contains("MV22-")) {
+                    nTrn++;
+                    System.out.println(msg);
+                }
+            }
+            System.out.printf("%4.3f track %d entities, %d serials  (%d stuck) and %d transports \n",
+                              cTime, eLoc.size(), nSrl, nStk, nTrn);
+            System.out.flush();
+        }
+    }
+
     boolean useMinTimeP = false;
     boolean randomTransportOrder = true;
 

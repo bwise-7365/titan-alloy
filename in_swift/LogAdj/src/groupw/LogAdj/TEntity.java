@@ -3,7 +3,6 @@
 package groupw.LogAdj;
 
 import groupw.BaseSim.EntEvent;
-import groupw.BaseSim.Entity;
 import groupw.DCVRP.ItineraryBuilder;
 import groupw.DCVRP.Itinerary;
 
@@ -27,11 +26,7 @@ import static groupw.DCVRP.VRController.TheVRC;
  * The planning involves several suboptimizations, such as weighted TSP.
  * See the DCVRP library for more details.
  */
-public class TEntity extends Entity {
-
-    // trigger breakpoints for debugging
-    static final String  monitoredSerial = "9-INF-BDE-MTBR-010";
-    static final String  monitoredTransport = "LSM-03-SD";
+public class TEntity extends LEntity {
 
     public enum State {Plan, Transfer, Move}
 
@@ -54,8 +49,26 @@ public class TEntity extends Entity {
         mySim.addEvent(new EntEvent(this, mySim, 0.0));
     }
 
+    public String status() {
+        String hb0 = TheVRC.getVehicleDataMap().get(myTrans.name).homeBase;
+        String hb1 = (null == hb0) ? "----" : hb0;
+        String cnn = (null == myTrans.currNode) ? "----" : myTrans.currNode.name;
+        String cTime = String.format("%08.3f", mySim.getCurrTime());
+        String msg = "Transport " +String.format("%14s", myTrans.name)
+                + " time " + cTime
+                + " from " + hb1
+                + " is at " + cnn
+                + " in state " + state;
+        return msg;
+    }
+
     @Override
     public void process() {
+        if (monitoredTransports.contains(myTrans.name)) {
+            System.out.println("DEBUG: TEntity.process() - "+ status());
+            // already have the transport
+            System.out.flush();
+        }
         switch (state) {
             case Plan:
                 doPlan();
@@ -67,6 +80,7 @@ public class TEntity extends Entity {
                 doMove();
                 break;
         }
+        myAdj.reportLocations(mySim.getCurrTime(),  mySim.timeStamp());
     }
 
     public void doPlan() {
@@ -94,7 +108,9 @@ public class TEntity extends Entity {
         double t = mySim.getCurrTime();
         String vName = myTrans.name;
 
-
+        if (atSrc) {
+            myTrans.currNode = leg.src.node;
+        }
 
         if (atSrc && atSrtTime) {
             // T1: loading starts at src
@@ -105,9 +121,10 @@ public class TEntity extends Entity {
             for (String sn : sns) {
                 recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
 
-                if (monitoredSerial.equalsIgnoreCase(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - start loading monitored serial: " + monitoredSerial);
-                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                if (monitoredSerials.contains(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - start loading monitored serial: " + sn);
+                    System.out.println();
                     System.out.flush();
                 }
 
@@ -115,7 +132,8 @@ public class TEntity extends Entity {
             atSrtTime = false;
             mySim.addEvent(new EntEvent(this, mySim, leg.src.transferEndTime));
 
-        } else if (atSrc) {
+        }
+        else if (atSrc) {
             // T2: loading ends; depart
             String nodeName = leg.src.node.name;
             List<String> sns = itemNames(leg.src.transfer);
@@ -127,9 +145,10 @@ public class TEntity extends Entity {
                 Serial s = TheVRC.getSerialMap().get(sn);
                 s.recordPickup(vName);
 
-                if (monitoredSerial.equalsIgnoreCase(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish loading monitored serial: " + monitoredSerial);
-                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                if (monitoredSerials.contains(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish loading monitored serial: " + sn);
+                    System.out.println();
                     System.out.flush();
                 }
 
@@ -140,11 +159,14 @@ public class TEntity extends Entity {
                 }
             }
             state = State.Move;
+            myTrans.currNode = null; // moving
             mySim.addEvent(new EntEvent(this, mySim, leg.dst.transferSrtTime));
 
-        } else {
+        }
+        else {
             // T4: unloading ends
             String nodeName = leg.dst.node.name;
+            myTrans.currNode = leg.dst.node; // still there
             List<String> sns = itemNames(leg.dst.transfer);
             onBoard = Manifest.sub(onBoard, leg.dst.transfer);
             int[] pct = pctAreaWeight(onBoard);
@@ -155,11 +177,13 @@ public class TEntity extends Entity {
                 boolean atDest = nodeName.equals(s.deliveryNodeName);
                 s.recordDropoff(nodeName, false);
 
-                if (monitoredSerial.equalsIgnoreCase(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish unloading monitored serial: " + monitoredSerial);
-                    Serial sTmp = TheVRC.getSerialMap().get(sn);
+                if (monitoredSerials.contains(sn)) {
+                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
+                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish unloading monitored serial: " + sn);
+                    System.out.println();
                     System.out.flush();
                 }
+
 
                 SEntity se = myAdj.serialEntityMap.get(s);
                 if (se != null) {
@@ -184,15 +208,17 @@ public class TEntity extends Entity {
         double t = mySim.getCurrTime();
         String vName = myTrans.name;
         String nodeName = leg.dst.node.name;
+        myTrans.currNode = leg.dst.node;
         List<String> sns = itemNames(leg.dst.transfer);
         int[] pct = pctAreaWeight(onBoard);
         recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
         for (String sn : sns) {
             recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
 
-            if (monitoredSerial.equalsIgnoreCase(sn)) {
-                System.out.println("DEBUG: EntTransfer.doTransfer() - start unloading monitored serial: " + monitoredSerial);
-                Serial sTmp = TheVRC.getSerialMap().get(sn);
+            if (monitoredSerials.contains(sn)) {
+                System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
+                System.out.println("DEBUG: EntTransfer.doTransfer() - start unloading monitored serial: " + sn);
+                System.out.println();
                 System.out.flush();
             }
 
