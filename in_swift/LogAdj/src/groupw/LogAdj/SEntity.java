@@ -22,6 +22,8 @@ import static groupw.DCVRP.VRController.TheVRC;
  */
 public class SEntity extends LEntity {
 
+    public static int numCompleted;
+
     public enum State {Start, Scanning, Waiting, Loading, Moving, Unloading, Stop}
 
     static final double SCAN_INTERVAL = 2.0;
@@ -147,6 +149,7 @@ public class SEntity extends LEntity {
                               mySerial.name, mySerial.currentNodeName,
                               t.myTrans.name, t.getCurrLoc(),
                               mySim.getCurrTime());
+            numCompleted++;
         } else {
             state = State.Scanning;
             doScanning();

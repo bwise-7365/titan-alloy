@@ -75,6 +75,9 @@ public class TEntity extends LEntity {
             case Unloading: doUnloading(); break;
             case Stop: break;
         }
+
+        // only during a specified time interval
+        myAdj.reportLocations(mySim.getCurrTime());
     }
 
     // ---- state handlers ----

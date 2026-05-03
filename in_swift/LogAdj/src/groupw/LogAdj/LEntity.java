@@ -16,7 +16,7 @@ public abstract class LEntity extends Entity {
 
     static final List<String> monitoredSerials =
             new ArrayList<>(Arrays.asList(
-            //"413-INF-BN-SQD-0003"
+            "9-INF-BDE-SQD-0409"
             ));
     static final List<String> monitoredTransports =
             new ArrayList<>(Arrays.asList(

@@ -169,9 +169,9 @@ public class LogisticalAdjudicator {
     }
 
 
-    public void reportLocations(double cTime, String s) {
-        final double minTime = 1600.383;
-        final double maxTime = 1600.385;
+    public void reportLocations(double cTime) {
+        final double minTime = 72.45;
+        final double maxTime = 73.00;
         if ((minTime < cTime) && (cTime < maxTime)) {
             System.out.printf("\n\n Entity locations at t=%8.3f\n", cTime);
             int nSrl = 0, nStk = 0, nTrn = 0;
