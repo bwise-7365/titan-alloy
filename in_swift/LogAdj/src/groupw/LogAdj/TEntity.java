@@ -32,9 +32,8 @@ public class TEntity extends LEntity {
     static final double PLAN_INTERVAL = 2.0;
 
     public TEntity(Transport tr, LogisticalAdjudicator adj) {
-        super(adj.mySim);
+        super(adj);
         myTrans = tr;
-        myAdj = adj;
         state = State.Start;
         adj.transportEntityMap.put(tr, this);
         scheduleAt(0.0);
@@ -67,13 +66,29 @@ public class TEntity extends LEntity {
             System.out.println("DEBUG TEntity.process(): " + status() + " at time "+ String.format("%.4f", mySim.getCurrTime()));
             System.out.flush();
         }
-        switch (state) {
-            case Start:     doStart();     break;
-            case Scanning:  doScanning();  break;
-            case Loading:   doLoading();   break;
-            case Moving:    doMoving();    break;
-            case Unloading: doUnloading(); break;
-            case Stop: break;
+        if (myTrans.isAliveP()) {
+            switch (state) {
+                case Start:
+                    doStart();
+                    break;
+                case Scanning:
+                    doScanning();
+                    break;
+                case Loading:
+                    doLoading();
+                    break;
+                case Moving:
+                    doMoving();
+                    break;
+                case Unloading:
+                    doUnloading();
+                    break;
+                case Stop:
+                    break;
+            }
+        }
+        else {
+            state = State.Stop;
         }
 
         // only during a specified time interval
@@ -352,14 +367,13 @@ public class TEntity extends LEntity {
 
     @Override
     String status() {
-        return String.format("Transport %s @ %s [%s]", myTrans.name, myTrans.currentNodeName, state);
+        return String.format("Transport %s @ %s [%s, %b]", myTrans.name, myTrans.currentNodeName, state, myTrans.isAliveP());
     }
 
     // ---- fields ----
 
     public State state;
     final Transport myTrans;
-    final LogisticalAdjudicator myAdj;
     Manifest onBoard = new Manifest();
     int legIdx = 0;
     int pickupCounter = -1;

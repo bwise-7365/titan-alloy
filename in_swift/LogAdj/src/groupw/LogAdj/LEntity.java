@@ -74,9 +74,14 @@ public abstract class LEntity extends Entity {
 
     abstract String status();
 
-    public LEntity(Scheduler s) {
-        super(s);
+    public LEntity(LogisticalAdjudicator adj) {
+
+        super(adj.mySim);
+
+        myAdj = adj;
     }
+
+    LogisticalAdjudicator myAdj;
 }
 
 // Copyright Group W, SPA. All Rights Reserved.

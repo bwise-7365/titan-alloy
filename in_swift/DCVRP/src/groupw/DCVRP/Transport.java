@@ -40,18 +40,20 @@ public class Transport  implements  CountedItem {
             backlog = null;
         }
 
-        // we clear the itinerary, marking every serial in it as no longer
-        // in an itinerary. In addition, if the serial is aboard this vehicle, then it dies.
+        // we clear the itinerary, marking every serial in it as no longer in an itinerary.
+        // If the serial is aboard this vehicle at this sim-moment, then it dies also.
         if (null != itinerary) {
             for (Itinerary.Leg lg : itinerary.legs) {
                 Manifest pum = lg.pickup();
-                for (String sName : pum.getItemNames()) {
-                    Serial s = TheVRC.getSerialMap().get(sName);
-                    s.inTransitP = false;
-                    s.inItineraryP = false;
-                    s.currBacklog = null;
-                    if (name.equals(s.currentNodeName)) {
-                        s.die();
+                if (null != pum) {
+                    for (String sName : pum.getItemNames()) {
+                        Serial s = TheVRC.getSerialMap().get(sName);
+                        s.inTransitP = false;
+                        s.inItineraryP = false;
+                        s.currBacklog = null;
+                        if (name.equals(s.currentNodeName)) {
+                            s.die();
+                        }
                     }
                 }
             }
@@ -83,7 +85,9 @@ public class Transport  implements  CountedItem {
     public Backlog backlog = null;
     public Itinerary itinerary = null;
 
-
+    public boolean isAliveP() {
+        return aliveP;
+    }
 
     public double getCargoArea() {
         return cargoArea;

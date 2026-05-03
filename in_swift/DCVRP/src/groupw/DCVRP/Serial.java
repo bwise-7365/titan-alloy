@@ -95,6 +95,10 @@ public class Serial implements  CountedItem {
     boolean inTransitP = false;
     boolean aliveP = true; // a reasonable initial default
 
+    public boolean isAliveP() {
+        return aliveP;
+    }
+
     /**
      * The numerical ID is mostly for identifying almost-anonymous
      * data structures during debugging. See the comments on CountedItem class.

@@ -28,7 +28,7 @@ public class SEntity extends LEntity {
     static final double SCAN_INTERVAL = 2.0;
 
     public SEntity(Serial sr, LogisticalAdjudicator adj) {
-        super(adj.mySim);
+        super(adj);
         mySerial = sr;
         myAdj = adj;
         myTL = new TravelLog();
@@ -209,14 +209,13 @@ public class SEntity extends LEntity {
 
     @Override
     String status() {
-        return String.format("Serial %s @ %s [%s]", mySerial.name, mySerial.currentNodeName, state);
+        return String.format("Serial %s @ %s [%s, %b]", mySerial.name, mySerial.currentNodeName, state, mySerial.isAliveP());
     }
 
     // ---- fields ----
 
     public State state;
     final Serial mySerial;
-    final LogisticalAdjudicator myAdj;
     final TravelLog myTL;
     private TravelLog.Stop pendingPickupStop = null;
 }
