@@ -1,49 +1,58 @@
 @startuml TEntity
-title TEntity — State Machine
-' Internal context: legIdx (int), atSrc (boolean)
+title TEntity — State Machine (6 states)
 
 hide empty description
 
-[*] --> Plan
+[*] --> Start
 
-Plan --> Plan     : [backlog empty]\n/ schedule(now + PLAN_INTERVAL)
+Start --> Scanning : doStart()
 
-Plan --> Transfer : [backlog non-empty]\n/ itinerary = buildItineraryFromBacklog()\n/ legIdx = 0, atSrc = true\n/ schedule(leg[0].src.transferSrtTime)
+Scanning --> Scanning : [backlog empty]\n/ schedule(now + PLAN_INTERVAL)
+Scanning --> Loading  : [backlog non-empty]\n/ buildAndValidateItinerary()\n/ initLegState(0)\n/ schedule(leg[0].src.transferSrtTime)
 
-Transfer --> Move : [atSrc, at src.transferEndTime]\n/ SerialRecord(finish, load) × N\n/ SEntities.state = Move\n/ schedule each SE\n/ schedule(TE, dst.transferSrtTime)
+Loading --> Loading  : [pickupCounter < 0, at T_start]\n/ validateItinerary() assert\n/ assertSerialsAtNode(src)\n/ record(Transport+Serials, start, load)\n/ pickupCounter=0, schedule(staggered[0])
 
-Move --> Transfer : [at dst.transferSrtTime]\n/ TransportRecord(start, unload)\n/ SerialRecord(start, unload) × N\n/ atSrc = false\n/ schedule(dst.transferEndTime)
+Loading --> Loading  : [0 ≤ pickupCounter < N]\n/ executePickup(sn[i]): onBoard+=sn[i]\n/ notifyPickUp → SEntity.receivePickUp\n/ schedule(staggered[i+1] or T_end)
 
-Transfer --> Transfer : [!atSrc, more legs remain]\n/ legIdx++, atSrc = true\n/ schedule(next src.transferSrtTime)
+Loading --> Moving   : [pickupCounter == N, at T_end]\n/ assertSerialsOnTransport(name)\n/ record(Serials+Transport, finish, load)\n/ notifyAllDeparture → SEntity.notifyDeparture\n/ schedule(leg.dst.transferSrtTime)
 
-Transfer --> Plan : [!atSrc, no legs remain]\n/ schedule(now + PLAN_INTERVAL)
+Moving --> Unloading : (at T3 = leg.dst.transferSrtTime)\n/ arriveAtDst(): setLoc(dstNode)\n/ notifyAllArrival → SEntity.notifyArrival\n/ dropoffCounter = -1\n/ schedule(T3) [same time → triggers doUnloading]
 
-note right of Transfer
-  atSrc=true, at transferSrtTime:
-    recordEvent(TransportRecord(start, load, [serials], srcNode))
-    recordEvent(SerialRecord(start, load, serial, transport, srcNode)) × N
-    schedule(src.transferEndTime)
+Unloading --> Unloading : [dropoffCounter < 0, at T3]\n/ assertSerialsOnTransport(name)\n/ record(Transport+Serials, start, unload)\n/ dropoffCounter=0, schedule(staggered[0])
 
-  atSrc=true, at transferEndTime:
-    recordEvent(SerialRecord(finish, load, serial, transport, srcNode)) × N
-    SEntities.state = Move  [see transition label]
+Unloading --> Unloading : [0 ≤ dropoffCounter < N]\n/ executeDropoff(sn[i]): onBoard-=sn[i]\n/ notifyDropOff → SEntity.receiveDO\n/ schedule(staggered[i+1] or T_end)
 
-  atSrc=false, at transferSrtTime:
-    [handled on transition from Move — see label]
+Unloading --> Loading  : [dropoffCounter == N, more legs remain]\n/ assertSerialsAtNode(dst)\n/ record(Serials+Transport, finish, unload)\n/ initLegState(legIdx+1)\n/ schedule(next leg src.transferSrtTime)
 
-  atSrc=false, at transferEndTime:
-    recordEvent(TransportRecord(finish, unload, [serials], dstNode))
-    recordEvent(SerialRecord(finish, unload, serial, transport, dstNode)) × N
-    SEntities.state = Delivered or Select
+Unloading --> Scanning : [dropoffCounter == N, no legs remain]\n/ assertSerialsAtNode(dst)\n/ record(Serials+Transport, finish, unload)\n/ schedule(now + PLAN_INTERVAL)
+
+note right of Loading
+  Staggered pickup timing:
+    staggeredTime(i) =
+      T_start + (i+1)·(T_end−T_start) / (N+2)
+  N = items in leg.src.transfer
+  T_start = src.transferSrtTime
+
+  Itinerary re-validated (validP) at
+  start of EVERY leg's Loading phase.
+  PLAN_INTERVAL = 4.0 h
 end note
 
-note right of Move
-  Traveling to dst.
-  No records emitted here.
-  TransportRecord(start, unload)
-  and SerialRecord(start, unload)
-  are emitted on the transition
-  INTO Transfer (atSrc=false).
+note right of Unloading
+  Staggered dropoff timing:
+    staggeredTime(i) =
+      T_start + (i+1)·(T_end−T_start) / (N+2)
+  N = items in leg.dst.transfer
+  T_start = dst.transferSrtTime
+
+  onBoard carries across legs;
+  reset to empty only at legIdx=0.
+end note
+
+note right of Moving
+  No DES events fire during transit
+  [T_end .. T3].
+  TEntity is scheduled only at T3.
 end note
 
 @enduml

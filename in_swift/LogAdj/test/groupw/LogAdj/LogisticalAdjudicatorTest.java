@@ -46,7 +46,7 @@ public class LogisticalAdjudicatorTest {
      */
     @Test
     public void testItnry() throws IOException {
-        double runTimeHours = 2000; // even with 2000 hours, scenario C1 runs out of events around 1467 hours
+        double runTimeHours = 24 * 20; // even with 2000 hours, scenario C1 runs out of events around 1467 hours
         ReadDCVRScenarioCSV.ScenarioRecord sRec = readScenarioC1(); // must be synchronized with graph generator test
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
         List<LogisticalAdjudicator.LogRecord> records = la.adjudicate(runTimeHours);

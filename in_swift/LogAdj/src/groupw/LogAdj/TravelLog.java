@@ -42,7 +42,7 @@ public class TravelLog  implements CountedItem {
         return legs.size();
     }
 
-    List<Leg> legs;
+    public List<Leg> legs;
 
     public boolean validP() {
         boolean ok = validLegs();

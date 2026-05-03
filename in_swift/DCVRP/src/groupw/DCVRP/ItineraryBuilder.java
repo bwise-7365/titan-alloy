@@ -466,6 +466,10 @@ public class ItineraryBuilder {
     }
 
     public double setTimeTable(Itinerary itnry, String vName, double startTime) {
+        if (null == itnry){
+            System.out.println("Found null itnry 2");
+            System.out.flush();
+        }
         double lastTime = startTime;
         int nLegs = itnry.numLegs();
         if (0 == nLegs) {
@@ -741,7 +745,11 @@ public class ItineraryBuilder {
             if (!added) {
 
                 // big splice goes here
-                Itinerary newIT = bestSplice(itnry,s, tType, serialEdgeMap);
+                if (null == itnry){
+                    System.out.printf("Found null itnry\n");
+                    System.out.flush();
+                }
+                Itinerary newIT = bestSplice(vehicleName, itnry, s, currTime, tType, serialEdgeMap);
                 if (null != newIT) {
                     itnry = newIT;
                     added = true;
@@ -792,7 +800,13 @@ public class ItineraryBuilder {
      * @param serialEdgeMap Map from serial-name to sorted list of potential edges
      * @return improved Itinerary, if possible; NULL otherwise.
      */
-    public Itinerary bestSplice(Itinerary itnry, final Serial s, final ReadTransportTypeCSV.DataField tType, final Map<String, List<VREdge>> serialEdgeMap) {
+    public Itinerary bestSplice(String vehicleName, Itinerary itnry, final Serial s, double currTime, final ReadTransportTypeCSV.DataField tType, final Map<String, List<VREdge>> serialEdgeMap) {
+
+        if (null == itnry){
+            System.out.println("Found null itnry 1");
+            System.out.flush();
+        }
+
         final double one = 1.0;
         Itinerary splicedIT = null;
         String serialName = s.name;
@@ -856,7 +870,7 @@ public class ItineraryBuilder {
 
                         double nWD = it2.totalWeightDistance(TheVRC.serialMap);
                         if (0.001 < abs(currentWD - nWD)) {
-                            System.out.printf("bad it2\n");
+                            System.out.printf("bad it2, currentWD vs nWD\n");
                         }
 
                             it2.legs.get(0).src.transfer.addInventory(serialName, one);
@@ -866,12 +880,19 @@ public class ItineraryBuilder {
                                     doManifest);
                             double nl2 = it2.getLength();
                             double nWD2 = it2.totalWeightDistance(TheVRC.getSerialMap());
+                            TheIB.setTimeTable(it2, vehicleName, currTime); // vName, startTime
                             boolean wf2 = it2.checkWellFormed();
                             boolean fs2 = it2.checkFeasible(tType, TheVRC.serialMap, TheVRC.getVehicleDomainMap(), TheVRC.getPortAccessMap());
-                            // because distances are not symmetric, (nWD2 < currentWD) is actually true sometimes,
+                            // because distances are not symmetric, (nWD2 < currentWD) is sometimes true,
                             // especially when nodes are almost on a line
-                            if (!wf2 || !fs2 || (0.001 < abs(newLen - nl2)) ) {
-                                System.out.printf("bad it2\n");
+                            if (!wf2  ) {
+                                System.out.printf("bad it2, WF\n");
+                            }
+                            if (!fs2 ) {
+                                System.out.printf("bad it2, FS\n");
+                            }
+                            if (0.001 < abs(newLen - nl2)) {
+                                System.out.printf("bad it2, newLen\n");
                             }
                             if (nWD2 < minWD) {
                                 splicedIT = it2;
@@ -888,6 +909,9 @@ public class ItineraryBuilder {
                 }
             }
             //System.out.flush();
+        }
+        if (null != splicedIT) {
+            TheIB.setTimeTable(splicedIT, vehicleName, currTime);
         }
         return splicedIT;
     }

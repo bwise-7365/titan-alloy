@@ -2,10 +2,10 @@
 
 package groupw.LogAdj;
 
-import groupw.BaseSim.EntEvent;
 import groupw.DCVRP.Backlog;
 import groupw.DCVRP.Serial;
 import groupw.DCVRP.Transport;
+import groupw.DCVRP.TravelLog;
 import groupw.Network.NWUtils;
 
 import java.util.List;
@@ -13,107 +13,200 @@ import java.util.List;
 import static groupw.DCVRP.VRController.TheVRC;
 
 /**
- * This encodes a finite state machine to represent what Serials do.
+ * Finite state machine for a Serial in the DES.
  *
- * The most important thing they do is estimate how long it would take to get to
- * the destination of their parent unit, then join the backlog the corresponding transport.
- * This involves a lot of A*-like estimation of delivery times, even when they cannot
- * go directly to the destination.
- * See the DCVRP library for more details.
+ * States: Start → Scanning ⇄ Waiting → Loading → Moving → Unloading → (Scanning | Stop)
  *
+ * Loading, Moving, and Unloading are passive: process() is a no-op for them.
+ * All transitions through those states are driven by TEntity notification calls.
  */
 public class SEntity extends LEntity {
 
-    // if nothing to do, wait this many hours (4 is reasonable)
-    public static final double SCAN_INTERVAL = 1.0;
+    public enum State {Start, Scanning, Waiting, Loading, Moving, Unloading, Stop}
 
-
-    public enum State { Select, Wait, Move, Delivered }
+    static final double SCAN_INTERVAL = 2.0;
 
     public SEntity(Serial sr, LogisticalAdjudicator adj) {
         super(adj.mySim);
         mySerial = sr;
         myAdj = adj;
-        state = State.Select;
+        myTL = new TravelLog();
+        state = State.Start;
         adj.serialEntityMap.put(sr, this);
-        mySim.addEvent(new EntEvent(this, mySim,0.0));
+        scheduleAt(0.0);
     }
 
-    public String status() {
-        String cnn = (null == mySerial.currentNodeName) ? "----" : mySerial.currentNodeName;
-        if (cnn.equalsIgnoreCase("")) {
-            cnn = "----";
-        }
-        String cTime = String.format("%08.3f", mySim.getCurrTime());
-        String msg = "Serial " + mySerial.name
-                + " time " + cTime
-                + " is at " + cnn
-                + " bound for " + mySerial.deliveryNodeName
-                + " in state " + state;
-        return msg;
+    // ---- Location interface ----
+
+    @Override
+    protected void setLoc(String name) {
+        mySerial.currentNodeName = name;
     }
+
+    @Override
+    public String getCurrLoc() {
+        return mySerial.currentNodeName;
+    }
+
+
+
+    // ---- DES entry point ----
 
     @Override
     public void process() {
         switch (state) {
-            case Select:    doSelect();  break;
-            case Wait:      doWait();    break;
-            case Move:      doMove();    break;
-            case Delivered: finish();    break;
+            case Start:
+                doStart();
+                break;
+            case Scanning:
+                doScanning();
+                break;
+            case Waiting:
+                doWaiting();
+                break;
+            default:
+                break;  // Loading, Moving, Unloading, Stop — driven by TEntity
         }
-        myAdj.reportLocations(mySim.getCurrTime(), mySim.timeStamp());
     }
 
-    public void doSelect() {
+    // ---- active state handlers ----
 
-        if (monitoredSerials.contains(mySerial.name)) {
-            System.out.println("DEBUG: SEntity.doSelect(): " + status());
-            System.out.flush();
+    private void doStart() {
+        if (mySerial.currentNodeName.equals(mySerial.deliveryNodeName)) {
+            state = State.Stop;
+        } else {
+            state = State.Scanning;
+            doScanning();
         }
+    }
 
-        List<Transport> transports = TheVRC.transportsAtNode(this.mySerial.currentNodeName);
+    private void doScanning() {
+        List<Transport> transports = TheVRC.transportsAtNode(mySerial.currentNodeName);
         if (myAdj.randomTransportOrder) {
             transports = NWUtils.shuffle(transports, mySim.prng);
         }
         NWUtils.Tuple2<Transport, Backlog.Reservation> result =
                 mySerial.controller.selectBacklog(transports, mySim.getCurrTime(), myAdj.useMinTimeP);
         if (result != null) {
-            Transport t = result.get0();
-            t.backlog.appendReservation(result.get1());
-            mySerial.currBacklog = t.backlog;
-            state = State.Wait;
+            result.get0().backlog.appendReservation(result.get1());
+            mySerial.currBacklog = result.get0().backlog;
+            state = State.Waiting;
         } else {
-            mySim.addEvent(new EntEvent(this, mySim,mySim.getCurrTime() + SCAN_INTERVAL));
+            scheduleAt(mySim.getCurrTime() + SCAN_INTERVAL);
         }
     }
 
-    public void doWait() {
-        if (monitoredSerials.contains(mySerial.name)) {
-            System.out.println("DEBUG: SEntity.doWait(): " + status());
-            System.out.flush();
-            // passive — TEntity drives the transition to Move
+    private void doWaiting() {
+        // passive placeholder — TEntity drives the next transition
+    }
+
+    // ---- TEntity notifications ----
+
+    public void receivePickUp(TEntity t) {
+
+        if (monitoredSerials.contains(mySerial.name) || monitoredTransports.contains(t.myTrans.name)) {
+            System.out.printf("Serial %s @ %s received pickup by %s @ %s at time %.4f\n",
+                              mySerial.name, mySerial.currentNodeName,
+                              t.myTrans.name, t.getCurrLoc(),
+                              mySim.getCurrTime());
+        }
+
+        verifyPrePickup(t);
+        setLoc(t.myTrans.name);
+        logPickUp(t.getCurrLoc(), t.myTrans.name);
+        mySerial.recordPickup(t.myTrans.name);
+        state = State.Loading;
+        verifyPostPickup(t);
+    }
+
+    public void notifyDeparture(TEntity t) {
+        state = State.Moving;
+    }
+
+    public void notifyArrival(TEntity t) {
+        state = State.Unloading;
+    }
+
+    public void receiveDO(TEntity t) {
+
+        if (monitoredSerials.contains(mySerial.name) || monitoredTransports.contains(t.myTrans.name)) {
+            System.out.printf("Serial %s @ %s received drop off by %s @ %s at time %.4f\n",
+                              mySerial.name, mySerial.currentNodeName,
+                              t.myTrans.name, t.getCurrLoc(),
+                              mySim.getCurrTime());
+        }
+
+        verifyPreDropoff(t);
+        setLoc(t.getCurrLoc());
+        mySerial.recordDropoff(t.getCurrLoc(), false);
+        logDropOff(t.getCurrLoc(), t.myTrans.name);
+        verifyPostDropoff(t);
+        if (mySerial.currentNodeName.equals(mySerial.deliveryNodeName)) {
+            state = State.Stop;
+            System.out.printf("Serial %s @ %s delivered to final node by %s @ %s at time %.4f\n",
+                              mySerial.name, mySerial.currentNodeName,
+                              t.myTrans.name, t.getCurrLoc(),
+                              mySim.getCurrTime());
+        } else {
+            state = State.Scanning;
+            doScanning();
         }
     }
 
-    public void doMove() {
-        if (monitoredSerials.contains(mySerial.name)) {
-            System.out.println("DEBUG: SEntity.doMove(): " + status());
-            System.out.flush();
-            // passive — TEntity drives the transition to Delivered or Select
+    // ---- TravelLog management ----
+
+    private void logPickUp(String nodeName, String transName) {
+        pendingPickupStop = new TravelLog.Stop(nodeName, mySim.getCurrTime());
+    }
+
+    private void logDropOff(String dropNode, String transName) {
+        TravelLog.Stop dstStop = new TravelLog.Stop(dropNode, mySim.getCurrTime());
+        myTL.legs.add(new TravelLog.Leg(pendingPickupStop, transName, dstStop));
+        pendingPickupStop = null;
+    }
+
+    // ---- verification helpers ----
+
+    private void verifyPrePickup(TEntity t) {
+        boolean ok = myTL.validP();
+        if (!ok) {
+            assert ok : "TravelLog invalid before pickup: " + mySerial.name;
+        }
+        verifyNode(t.getCurrLoc());
+        assertLocsEqual(mySerial.currentNodeName, t.getCurrLoc());
+    }
+
+    private void verifyPostPickup(TEntity t) {
+        verifyNode(t.getCurrLoc());
+        assertLocsEqual(mySerial.currentNodeName, t.myTrans.name);
+    }
+
+    private void verifyPreDropoff(TEntity t) {
+        verifyNode(t.getCurrLoc());
+        assertLocsEqual(mySerial.currentNodeName, t.myTrans.name);
+    }
+
+    private void verifyPostDropoff(TEntity t) {
+        verifyNode(t.getCurrLoc());
+        assertLocsEqual(mySerial.currentNodeName, t.getCurrLoc());
+        boolean ok = myTL.validP();
+        if (!ok) {
+            assert ok : "TravelLog invalid after dropoff: " + mySerial.name;
         }
     }
 
-    public void finish() {
-        if (monitoredSerials.contains(mySerial.name)) {
-            System.out.println("DEBUG: SEntity.finish(): " + status());
-            System.out.flush();
-            // terminal state
-        }
+    @Override
+    String status() {
+        return String.format("Serial %s @ %s [%s]", mySerial.name, mySerial.currentNodeName, state);
     }
+
+    // ---- fields ----
 
     public State state;
     final Serial mySerial;
     final LogisticalAdjudicator myAdj;
+    final TravelLog myTL;
+    private TravelLog.Stop pendingPickupStop = null;
 }
 
 // Copyright Group W, SPA. All Rights Reserved.

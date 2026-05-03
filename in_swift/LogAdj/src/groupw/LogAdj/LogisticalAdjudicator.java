@@ -7,8 +7,10 @@ import groupw.DCVRP.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static groupw.DCVRP.VRController.TheVRC;
 
@@ -37,6 +39,7 @@ public class LogisticalAdjudicator {
     }
 
     public void initializeDESim() {
+        verifyDistinctNames();
         Map<String, ReadTransportVehicleCSV.DataField> vehicleDataMap = TheVRC.getVehicleDataMap();
         Map<String, Transport> vehicleMap = TheVRC.getVehicleMap();
         Map<String, Serial> serialMap = TheVRC.getSerialMap();
@@ -44,18 +47,32 @@ public class LogisticalAdjudicator {
         Map<String, ReadUnitCSV.DataField> unitMap = TheVRC.getUnitMap();
 
         for (String vName : vehicleDataMap.keySet()) {
-            ReadTransportVehicleCSV.DataField vData = vehicleDataMap.get(vName);
             Transport t = vehicleMap.get(vName);
-            new TEntity(t, this);
-            System.out.flush();
+            TEntity te = new TEntity(t, this);
+            te.initLocation(vehicleDataMap.get(vName).homeBase);
         }
         for (Serial s : serialMap.values()) {
-            String unitName =  sRecMap.get(s.name).unitName;
-            s.currentNodeName = unitMap.get(unitName).startNodeName;
+            String unitName = sRecMap.get(s.name).unitName;
+            String startNode = unitMap.get(unitName).startNodeName;
+            s.currentNodeName = startNode;  // DCVRP library still needs this
             if (s.controller == null) {
                 new SerialController(s, ItineraryBuilder.TheIB);
             }
-            new SEntity(s, this);
+            SEntity se = new SEntity(s, this);
+            se.initLocation(startNode);
+        }
+    }
+
+    private void verifyDistinctNames() {
+        Set<String> allNames = new HashSet<>();
+        for (String n : TheVRC.getNodeMap().keySet()) {
+            assert allNames.add(n) : "Duplicate name among nodes: " + n;
+        }
+        for (String n : TheVRC.getVehicleMap().keySet()) {
+            assert allNames.add(n) : "Name collision (transport vs node): " + n;
+        }
+        for (String n : TheVRC.getSerialMap().keySet()) {
+            assert allNames.add(n) : "Name collision (serial vs node/transport): " + n;
         }
     }
 
@@ -143,40 +160,40 @@ public class LogisticalAdjudicator {
     public Map<String, String> entityLocations() {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
-            result.put(e.getKey().name, e.getValue().status());
+            result.put(e.getKey().name, e.getValue().getCurrLoc());
         }
         for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
-            result.put(e.getKey().name, e.getValue().status());
+            result.put(e.getKey().name, e.getValue().getCurrLoc());
         }
         return result;
     }
 
 
     public void reportLocations(double cTime, String s) {
-        final double minTime = 1600.383; //70.0;
-        final double maxTime = 1600.385; //100.0;
+        final double minTime = 1600.383;
+        final double maxTime = 1600.385;
         if ((minTime < cTime) && (cTime < maxTime)) {
-            System.out.printf("\n\n Entity locations\n");
-            Map<String, String> eLoc = entityLocations();
-            int nTrn = 0;
-            int nSrl = 0;
-            int nStk = 0;
-            for (var entry : eLoc.entrySet()) {
-                String msg= entry.getValue();
-                if (msg.contains("Serial")) {
-                    nSrl++;
-                    if (!msg.contains("Delivered")) {
-                        nStk++;
-                        System.out.println(msg);
-                    }
-                }
-                if (msg.contains("Transport")  && !msg.contains("MV22-")) {
-                    nTrn++;
-                    System.out.println(msg);
+            System.out.printf("\n\n Entity locations at t=%8.3f\n", cTime);
+            int nSrl = 0, nStk = 0, nTrn = 0;
+            for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
+                nSrl++;
+                SEntity se = e.getValue();
+                if (se.state != SEntity.State.Stop) {
+                    nStk++;
+                    System.out.printf("  Serial %s @ %s [%s]%n",
+                            e.getKey().name, se.getCurrLoc(), se.state);
                 }
             }
-            System.out.printf("%4.3f track %d entities, %d serials  (%d stuck) and %d transports \n",
-                              cTime, eLoc.size(), nSrl, nStk, nTrn);
+            for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
+                TEntity te = e.getValue();
+                if (!te.myTrans.name.startsWith("MV22-")) {// Skip the many MV22's for now
+                    nTrn++;
+                    System.out.printf("  Transport %s @ %s [%s]%n",
+                            te.myTrans.name, te.getCurrLoc(), te.state);
+                }
+            }
+            System.out.printf("%8.3f: %d serials (%d stuck), %d transports%n",
+                              cTime, nSrl, nStk, nTrn);
             System.out.flush();
         }
     }

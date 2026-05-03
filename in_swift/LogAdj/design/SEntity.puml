@@ -1,25 +1,50 @@
 @startuml SEntity
-title SEntity — State Machine
+title SEntity — State Machine (7 states)
 
 hide empty description
 
-[*] --> Select
+[*] --> Start
 
-Select --> Wait : doSelect()\n/ selectBacklog()\n[SEntity does not self-schedule;\nTEntity drives all further events]
+Start --> Stop     : [currLoc == deliveryNodeName]
+Start --> Scanning : [currLoc != deliveryNodeName]\n/ doScanning()
 
-Wait --> Move : [TEntity departs src]\n/ scheduled by TEntity at src.transferEndTime
+Scanning --> Scanning : [no transport selected]\n/ schedule(now + SCAN_INTERVAL)
+Scanning --> Waiting  : [backlog selected]\n/ appendReservation()\n(TEntity drives next transition)
 
-Move --> Delivered : [serial.deliveryNodeName == currNode]\n/ scheduled by TEntity at dst.transferEndTime
-Move --> Select    : [serial.deliveryNodeName != currNode]\n/ scheduled by TEntity at dst.transferEndTime
+Waiting --> Loading   : TEntity calls notifyPickUp(serial)\n→ SEntity.receivePickUp(t)\n/ verifyPrePickup(), setLoc(t.name)\n/ logPickUp(), recordPickup()
 
-Delivered --> [*]
+Loading --> Moving    : TEntity.finaliseLoading() calls\nnotifyDeparture(this SEntity)\n/ state = Moving
 
-note right of Wait
-  SEntity never calls
-  mySim.addEvent() for itself
-  after joining a backlog.
-  All state changes are
-  driven by TEntity.
+Moving --> Unloading  : TEntity.doMoving() calls\nnotifyArrival(this SEntity)\n/ state = Unloading
+
+Unloading --> Stop    : TEntity calls notifyDropOff(serial)\n→ SEntity.receiveDO(t)\n[currLoc == deliveryNodeName]\n/ setLoc(node), logDropOff()\n/ verifyPostDropoff()
+
+Unloading --> Scanning : TEntity calls notifyDropOff(serial)\n→ SEntity.receiveDO(t)\n[currLoc != deliveryNodeName]\n/ setLoc(node), logDropOff()\n/ verifyPostDropoff(), doScanning()
+
+Stop --> [*]
+
+note right of Waiting
+  Loading, Moving, and Unloading
+  are passive: process() is a no-op.
+  All transitions are driven by
+  direct TEntity method calls,
+  not DES EntEvents.
+end note
+
+note right of Scanning
+  Uses SerialController.selectBacklog()
+  on transports at currLoc.
+  SCAN_INTERVAL = 2.0 h
+
+  currLoc is ALWAYS set:
+    node name      — when at a node
+    transport name — when aboard
+end note
+
+note right of Loading
+  TravelLog.validP() checked:
+    BEFORE receivePickUp (pre-condition)
+    AFTER  receiveDO     (post-condition)
 end note
 
 @enduml

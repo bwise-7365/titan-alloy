@@ -261,8 +261,8 @@ public class VRController {
         for (Map.Entry<String, ReadTransportVehicleCSV.DataField> entry : vehicleDataMap.entrySet()) {
             String vName = entry.getValue().name;
             Transport vehicle = vehicleMap.get(vName);
-            if (vehicle.aliveP && (vehicle.currNode != null)) { // in-transit, no node assigned
-                if (nodeName.equalsIgnoreCase(vehicle.currNode.name)) {
+            if (vehicle.aliveP && (vehicle.currentNodeName != null)) { // in-transit, no node assigned
+                if (nodeName.equalsIgnoreCase(vehicle.currentNodeName)) {
                     transports.add(vehicle);
                 }
             }

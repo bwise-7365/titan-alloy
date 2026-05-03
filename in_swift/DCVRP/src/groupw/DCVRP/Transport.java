@@ -49,14 +49,14 @@ public class Transport  implements  CountedItem {
                     s.inTransitP = false;
                     s.inItineraryP = false;
                     s.currBacklog = null;
-                    if (name.equals(s.aboardVehicle)) {
+                    if (name.equals(s.currentNodeName)) {
                         s.die();
                     }
                 }
             }
             itinerary = null;
         }
-        currNode = null;
+        currentNodeName = null;
     }
 
     /**
@@ -75,7 +75,8 @@ public class Transport  implements  CountedItem {
     public String name = "";
     public String type = "";
     boolean aliveP = true; // a reasonable initial default
-    public VRNode currNode = null;
+    public String currentNodeName = "";
+    //public VRNode currNode = null;
     double cargoArea = 0.0; // square units (feet, meters) for cargo
     double cargoWeight = 0.0; // typical max cargo on realistic mission (not manufacturer's "max that can takeoff")
     public Backlog backlog = null;

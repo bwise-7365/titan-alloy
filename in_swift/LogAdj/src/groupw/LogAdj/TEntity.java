@@ -2,10 +2,9 @@
 
 package groupw.LogAdj;
 
-import groupw.BaseSim.EntEvent;
 import groupw.DCVRP.ItineraryBuilder;
 import groupw.DCVRP.Itinerary;
-
+import groupw.DCVRP.ReadTransportTypeCSV;
 import groupw.DCVRP.Serial;
 import groupw.DCVRP.Transport;
 import groupw.Logistics.Manifest;
@@ -13,236 +12,317 @@ import groupw.Logistics.Manifest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static groupw.DCVRP.VRController.TheVRC;
 
 /**
- * This encodes a finite state machine to represent what Transports do.
+ * Finite state machine for a Transport in the DES.
  *
- * Timewise, the main thing they do is follow Itineraries, picking up and dropping off as they go.
- * However, they use the ItineraryBuilder to decide which of the many available Serials
- * to pick up in order to minimize total (estimated) weighted quadratic lateness.
- * Currently, I don't explicitly destroy transports mid-Leg, but MAST does.
- * The planning involves several suboptimizations, such as weighted TSP.
- * See the DCVRP library for more details.
+ * States: Start → Scanning → Loading → Moving → Unloading → (Loading | Scanning)
+ *
+ * Loading and Unloading each fire N+2 DES events per leg: one initial precondition check,
+ * N staggered individual serial pickups/dropoffs, then one final postcondition check.
+ * Staggered time for item i: T_start + (i+1)·(T_end−T_start)/(N+2)
  */
 public class TEntity extends LEntity {
 
-    public enum State {Plan, Transfer, Move}
+    public enum State { Start, Scanning, Loading, Moving, Unloading, Stop }
 
-    // if nothing to do, wait this many hours (4 is reasonable)
-    public static final double PLAN_INTERVAL = 1.0;
+    static final double PLAN_INTERVAL = 4.0;
 
-    /**
-     * Create a new transport entity, at its home base, ready to plan.
-     * @param tr
-     * @param adj
-     */
     public TEntity(Transport tr, LogisticalAdjudicator adj) {
         super(adj.mySim);
         myTrans = tr;
         myAdj = adj;
-        state = State.Plan;
-        currentNodeName = TheVRC.getVehicleDataMap().get(tr.name).homeBase;
-        myTrans.currNode = TheVRC.getNodeMap().get(currentNodeName);
+        state = State.Start;
         adj.transportEntityMap.put(tr, this);
-        mySim.addEvent(new EntEvent(this, mySim, 0.0));
+        scheduleAt(0.0);
     }
 
-    public String status() {
-        String hb0 = TheVRC.getVehicleDataMap().get(myTrans.name).homeBase;
-        String hb1 = (null == hb0) ? "----" : hb0;
-        String cnn = (null == myTrans.currNode) ? "----" : myTrans.currNode.name;
-        String cTime = String.format("%08.3f", mySim.getCurrTime());
-        String msg = "Transport " +String.format("%14s", myTrans.name)
-                + " time " + cTime
-                + " from " + hb1
-                + " is at " + cnn
-                + " in state " + state;
-        return msg;
+    /** Also sets myTrans.currNode, which DCVRP planning needs. */
+    @Override
+    public void initLocation(String nodeName) {
+        super.initLocation(nodeName);
+        myTrans.currentNodeName = nodeName; // TheVRC.getNodeMap().get(nodeName);
     }
+
+    // ---- Location interface ----
+
+    @Override
+    protected void setLoc(String name) {
+        myTrans.currentNodeName = name;
+    }
+
+    @Override
+    public String getCurrLoc() {
+        return myTrans.currentNodeName;
+    }
+
+    // ---- DES entry point ----
 
     @Override
     public void process() {
         if (monitoredTransports.contains(myTrans.name)) {
-            System.out.println("DEBUG: TEntity.process() - "+ status());
-            // already have the transport
+            System.out.println("DEBUG TEntity.process(): " + status() + " at time "+ String.format("%.4f", mySim.getCurrTime()));
             System.out.flush();
         }
         switch (state) {
-            case Plan:
-                doPlan();
-                break;
-            case Transfer:
-                doTransfer();
-                break;
-            case Move:
-                doMove();
-                break;
+            case Start:     doStart();     break;
+            case Scanning:  doScanning();  break;
+            case Loading:   doLoading();   break;
+            case Moving:    doMoving();    break;
+            case Unloading: doUnloading(); break;
+            case Stop: break;
         }
-        myAdj.reportLocations(mySim.getCurrTime(),  mySim.timeStamp());
     }
 
-    public void doPlan() {
+    // ---- state handlers ----
+
+    private void doStart() {
+        state = State.Scanning;
+        doScanning();
+    }
+
+    private void doScanning() {
         if (myTrans.backlog == null || myTrans.backlog.numReservations() == 0) {
-            mySim.addEvent(new EntEvent(this, mySim, mySim.getCurrTime() + PLAN_INTERVAL));
+            scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
             return;
         }
-        itinerary = ItineraryBuilder.TheIB.itineraryFromBacklog(
+        buildAndValidateItinerary();
+        if (myItinerary == null || myItinerary.numLegs() == 0) {
+            scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
+            return;
+        }
+        initLegState(0);
+        state = State.Loading;
+        scheduleAt(currentLeg().src.transferSrtTime);
+    }
+
+    private void doLoading() {
+        List<String> sns = getItems(currentLeg().src.transfer);
+        int N = sns.size();
+        if (pickupCounter < 0) {
+            verifyLoadPreconditions(sns);
+            pickupCounter = 0;
+            scheduleAt(staggeredTime(0, currentLeg().src));
+        } else if (pickupCounter < N) {
+            executePickup(sns.get(pickupCounter));
+            pickupCounter++;
+            double nextT = (pickupCounter < N)
+                    ? staggeredTime(pickupCounter, currentLeg().src)
+                    : currentLeg().src.transferEndTime;
+            scheduleAt(nextT);
+        } else {
+            finaliseLoading(sns);
+        }
+    }
+
+    private void doMoving() {
+        arriveAtDst();
+        notifyAllArrival();
+        dropoffCounter = -1;
+        state = State.Unloading;
+        scheduleAt(mySim.getCurrTime());  // fire doUnloading at same sim time (T3)
+    }
+
+    /**
+     * This steps through the serials, unloading them at even intervals.
+     * Notice that each becomes eligible for pickup the instant it is dropped off,
+     * so we cannot do any "final check" of them all, as the early ones
+     * might have been picked up before we dropped off the last.
+     */
+    private void doUnloading() {
+        List<String> sns = getItems(currentLeg().dst.transfer);
+        int N = sns.size();
+        if (dropoffCounter < 0) {
+            verifyUnloadPreconditions(sns);
+            dropoffCounter = 0;
+            scheduleAt(staggeredTime(0, currentLeg().dst));
+        } else if (dropoffCounter < N) {
+            executeDropoff(sns.get(dropoffCounter));
+            dropoffCounter++;
+            double nextT = (dropoffCounter < N)
+                    ? staggeredTime(dropoffCounter, currentLeg().dst)
+                    : currentLeg().dst.transferEndTime;
+            scheduleAt(nextT);
+        } else {
+          //  finaliseUnloading(sns);
+        }
+    }
+
+    // ---- leg lifecycle ----
+
+    private void buildAndValidateItinerary() {
+        myItinerary = ItineraryBuilder.TheIB.itineraryFromBacklog(
                 myTrans.name, myTrans.backlog, mySim.getCurrTime(), myAdj.useMinTimeP);
-        if (itinerary == null || itinerary.numLegs() == 0) {
-            mySim.addEvent(new EntEvent(this, mySim, mySim.getCurrTime() + PLAN_INTERVAL));
-            return;
-        }
-        ItineraryBuilder.TheIB.setTimeTable(itinerary, myTrans.name, mySim.getCurrTime());
-        legIdx = 0;
-        atSrc = true;
-        atSrtTime = true;
-        onBoard = new Manifest();
-        state = State.Transfer;
-        mySim.addEvent(new EntEvent(this, mySim, itinerary.legs.get(0).src.transferSrtTime));
-    }
-
-    public void doTransfer() {
-        Itinerary.Leg leg = itinerary.legs.get(legIdx);
-        double t = mySim.getCurrTime();
-        String vName = myTrans.name;
-
-        if (atSrc) {
-            myTrans.currNode = leg.src.node;
-        }
-
-        if (atSrc && atSrtTime) {
-            // T1: loading starts at src
-            String nodeName = leg.src.node.name;
-            List<String> sns = itemNames(leg.src.transfer);
-            int[] pct = pctAreaWeight(onBoard);
-            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
-            for (String sn : sns) {
-                recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
-
-                if (monitoredSerials.contains(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - start loading monitored serial: " + sn);
-                    System.out.println();
-                    System.out.flush();
-                }
-
-            }
-            atSrtTime = false;
-            mySim.addEvent(new EntEvent(this, mySim, leg.src.transferEndTime));
-
-        }
-        else if (atSrc) {
-            // T2: loading ends; depart
-            String nodeName = leg.src.node.name;
-            List<String> sns = itemNames(leg.src.transfer);
-            onBoard = Manifest.add(onBoard, leg.src.transfer);
-            int[] pct = pctAreaWeight(onBoard);
-            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
-            for (String sn : sns) {
-                recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, vName, nodeName);
-                Serial s = TheVRC.getSerialMap().get(sn);
-                s.recordPickup(vName);
-
-                if (monitoredSerials.contains(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish loading monitored serial: " + sn);
-                    System.out.println();
-                    System.out.flush();
-                }
-
-                SEntity se = myAdj.serialEntityMap.get(s);
-                if (se != null) {
-                    se.state = SEntity.State.Move;
-                    mySim.addEvent(new EntEvent(se, mySim, t));
-                }
-            }
-            state = State.Move;
-            myTrans.currNode = null; // moving
-            mySim.addEvent(new EntEvent(this, mySim, leg.dst.transferSrtTime));
-
-        }
-        else {
-            // T4: unloading ends
-            String nodeName = leg.dst.node.name;
-            myTrans.currNode = leg.dst.node; // still there
-            List<String> sns = itemNames(leg.dst.transfer);
-            onBoard = Manifest.sub(onBoard, leg.dst.transfer);
-            int[] pct = pctAreaWeight(onBoard);
-            recordTransport(t, vName, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
-            for (String sn : sns) {
-                recordSerial(t, sn, LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
-                Serial s = TheVRC.getSerialMap().get(sn);
-                boolean atDest = nodeName.equals(s.deliveryNodeName);
-                s.recordDropoff(nodeName, false);
-
-                if (monitoredSerials.contains(sn)) {
-                    System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
-                    System.out.println("DEBUG: EntTransfer.doTransfer() - finish unloading monitored serial: " + sn);
-                    System.out.println();
-                    System.out.flush();
-                }
-
-
-                SEntity se = myAdj.serialEntityMap.get(s);
-                if (se != null) {
-                    se.state = atDest ? SEntity.State.Delivered : SEntity.State.Select;
-                    mySim.addEvent(new EntEvent(se, mySim, t));
-                }
-            }
-            if (legIdx + 1 < itinerary.numLegs()) {
-                legIdx++;
-                atSrc = true;
-                atSrtTime = true;
-                mySim.addEvent(new EntEvent(this, mySim, itinerary.legs.get(legIdx).src.transferSrtTime));
-            } else {
-                state = State.Plan;
-                mySim.addEvent(new EntEvent(this, mySim, t + PLAN_INTERVAL));
-            }
+        if (myItinerary != null && myItinerary.numLegs() > 0) {
+            ItineraryBuilder.TheIB.setTimeTable(myItinerary, myTrans.name, mySim.getCurrTime());
+            validateItinerary();
         }
     }
 
-    public void doMove() {
-        Itinerary.Leg leg = itinerary.legs.get(legIdx);
-        double t = mySim.getCurrTime();
-        String vName = myTrans.name;
-        String nodeName = leg.dst.node.name;
-        myTrans.currNode = leg.dst.node;
-        List<String> sns = itemNames(leg.dst.transfer);
+    private boolean validateItinerary() {
+        ReadTransportTypeCSV.DataField tType = TheVRC.getVehicleTypeMap().get(myTrans.type);
+        Map<String, Serial> sMap = TheVRC.getSerialMap();
+        Map<String, Set<String>> tdMap = TheVRC.getVehicleDomainMap();
+        Map<String, Set<String>> paMap = TheVRC.getPortAccessMap();
+        boolean ok = myItinerary.validP(tType, sMap, tdMap, paMap);
+        if (!ok){
+            System.out.flush();
+        }
+        return ok;
+    }
+
+    private void initLegState(int idx) {
+        legIdx = idx;
+        pickupCounter = -1;
+        dropoffCounter = -1;
+        if (idx == 0) onBoard = new Manifest();
+    }
+
+    private Itinerary.Leg currentLeg() {
+        return myItinerary.legs.get(legIdx);
+    }
+
+    private void arriveAtDst() {
+        String dstName = currentLeg().dst.node.name;
+        setLoc(dstName);
+        myTrans.currentNodeName = currentLeg().dst.node.name;
+    }
+
+    private void advanceToNextLegOrScan() {
+        if (legIdx + 1 < myItinerary.numLegs()) {
+            initLegState(legIdx + 1);
+            state = State.Loading;
+            scheduleAt(currentLeg().src.transferSrtTime);
+        } else {
+            state = State.Scanning;
+            scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
+        }
+    }
+
+    // ---- loading phase ----
+
+    private void verifyLoadPreconditions(List<String> sns) {
+        boolean ok = validateItinerary();
+        if (!ok) {
+            assert ok : "Itinerary invalid at start of leg " + legIdx + " for: " + myTrans.name;
+        }
+        String nodeName = currentLeg().src.node.name;
+        assertSerialsAtNode(nodeName, sns);
         int[] pct = pctAreaWeight(onBoard);
-        recordTransport(t, vName, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
-        for (String sn : sns) {
-            recordSerial(t, sn, LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, vName, nodeName);
+        recordTransport(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
+        recordSerials(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, sns);
+    }
 
-            if (monitoredSerials.contains(sn)) {
-                System.out.println("DEBUG: EntTransfer.doTransfer(): " + status());
-                System.out.println("DEBUG: EntTransfer.doTransfer() - start unloading monitored serial: " + sn);
-                System.out.println();
-                System.out.flush();
-            }
+    private void executePickup(String sn) {
+        Double qty = currentLeg().src.transfer.getAvailable(sn);
+        onBoard.addInventory(sn, qty != null ? qty : 1.0);
+        notifyPickUp(TheVRC.getSerialMap().get(sn));
+    }
 
+    private void finaliseLoading(List<String> sns) {
+        String nodeName = currentLeg().src.node.name;
+        assertSerialsOnTransport(myTrans.name, sns);
+        int[] pct = pctAreaWeight(onBoard);
+        recordSerials(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, sns);
+        recordTransport(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
+        notifyAllDeparture();
+        state = State.Moving;
+        scheduleAt(currentLeg().dst.transferSrtTime);
+    }
+
+    // ---- unloading phase ----
+
+    private void verifyUnloadPreconditions(List<String> sns) {
+        assertSerialsOnTransport(myTrans.name, sns);
+        String nodeName = currentLeg().dst.node.name;
+        int[] pct = pctAreaWeight(onBoard);
+        recordTransport(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
+        recordSerials(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, sns);
+    }
+
+    private void executeDropoff(String sn) {
+        Double qty = onBoard.getAvailable(sn);
+        if (qty != null) onBoard.subtractInventory(sn, qty);
+        notifyDropOff(TheVRC.getSerialMap().get(sn));
+    }
+
+    private void finaliseUnloading(List<String> sns) {
+        String nodeName = currentLeg().dst.node.name;
+        assertSerialsAtNode(nodeName, sns);
+        int[] pct = pctAreaWeight(onBoard);
+        recordSerials(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, sns);
+        recordTransport(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
+        advanceToNextLegOrScan();
+    }
+
+    // ---- serial notifications ----
+
+    private void notifyPickUp(Serial s) {
+        SEntity se = myAdj.serialEntityMap.get(s);
+        if (se != null) se.receivePickUp(this);
+    }
+
+    private void notifyDropOff(Serial s) {
+        SEntity se = myAdj.serialEntityMap.get(s);
+        if (se != null) se.receiveDO(this);
+    }
+
+    private void notifyAllDeparture() {
+        for (String sn : getItems(onBoard)) {
+            SEntity se = myAdj.serialEntityMap.get(TheVRC.getSerialMap().get(sn));
+            if (se != null) se.notifyDeparture(this);
         }
-        state = State.Transfer;
-        atSrc = false;
-        mySim.addEvent(new EntEvent(this, mySim, leg.dst.transferEndTime));
     }
 
-    private static List<String> itemNames(Manifest m) {
-        return (m != null) ? new ArrayList<>(m.getItemNames()) : new ArrayList<>();
+    private void notifyAllArrival() {
+        for (String sn : getItems(onBoard)) {
+            SEntity se = myAdj.serialEntityMap.get(TheVRC.getSerialMap().get(sn));
+            if (se != null) se.notifyArrival(this);
+        }
     }
 
-    private void recordSerial(double time, String serialName, LogisticalAdjudicator.StartFinish sf,
-                              LogisticalAdjudicator.LoadUnload lu, String transportName, String nodeName) {
-        LogisticalAdjudicator.LogRecord r = myAdj.new SerialRecord(time, serialName, sf, lu, transportName, nodeName);
+    // ---- assertion helpers ----
+
+    private void assertSerialsAtNode(String nodeName, List<String> sns) {
+        for (String sn : sns) {
+            SEntity se = myAdj.serialEntityMap.get(TheVRC.getSerialMap().get(sn));
+            if (se != null) assertLocsEqual(se.getCurrLoc(), nodeName);
+        }
+    }
+
+    private void assertSerialsOnTransport(String tname, List<String> sns) {
+        for (String sn : sns) {
+            SEntity se = myAdj.serialEntityMap.get(TheVRC.getSerialMap().get(sn));
+            if (se != null) assertLocsEqual(se.getCurrLoc(), tname);
+        }
+    }
+
+    // ---- timing ----
+
+    private double staggeredTime(int i, Itinerary.Stop stop) {
+        int N = getItems(stop.transfer).size();
+        return stop.transferSrtTime + (i + 1.0) * (stop.transferEndTime - stop.transferSrtTime) / (N + 2);
+    }
+
+    // ---- record helpers ----
+
+    private void recordTransport(LogisticalAdjudicator.StartFinish sf, LogisticalAdjudicator.LoadUnload lu,
+                                 String nodeName, int pctArea, int pctWeight, List<String> sns) {
+        LogisticalAdjudicator.LogRecord r = myAdj.new TransportRecord(
+                mySim.getCurrTime(), myTrans.name, sf, lu, nodeName, pctArea, pctWeight, sns);
         r.recordEvent(r);
     }
 
-    private void recordTransport(double time, String transportName, LogisticalAdjudicator.StartFinish sf,
-                                 LogisticalAdjudicator.LoadUnload lu, String nodeName,
-                                 int pctArea, int pctWeight, List<String> serialNames) {
-        LogisticalAdjudicator.LogRecord r = myAdj.new TransportRecord(time, transportName, sf, lu, nodeName, pctArea, pctWeight, serialNames);
-        r.recordEvent(r);
+    private void recordSerials(LogisticalAdjudicator.StartFinish sf, LogisticalAdjudicator.LoadUnload lu,
+                               String nodeName, List<String> sns) {
+        double t = mySim.getCurrTime();
+        for (String sn : sns) {
+            LogisticalAdjudicator.LogRecord r = myAdj.new SerialRecord(t, sn, sf, lu, myTrans.name, nodeName);
+            r.recordEvent(r);
+        }
     }
 
     private int[] pctAreaWeight(Manifest m) {
@@ -252,15 +332,25 @@ public class TEntity extends LEntity {
         return new int[]{pa, pw};
     }
 
+    private static List<String> getItems(Manifest m) {
+        return (m != null) ? new ArrayList<>(m.getItemNames()) : new ArrayList<>();
+    }
+
+    @Override
+    String status() {
+        return String.format("Transport %s @ %s [%s]", myTrans.name, myTrans.currentNodeName, state);
+    }
+
+    // ---- fields ----
+
     public State state;
-    public String currentNodeName;
     final Transport myTrans;
     final LogisticalAdjudicator myAdj;
-    Itinerary itinerary = null;
+    Itinerary myItinerary = null;
     Manifest onBoard = new Manifest();
     int legIdx = 0;
-    boolean atSrc = true;
-    boolean atSrtTime = true;
+    int pickupCounter = -1;
+    int dropoffCounter = -1;
 }
 
 // Copyright Group W, SPA. All Rights Reserved.

@@ -19,7 +19,6 @@ public class Serial implements  CountedItem {
 
         // reasonable initial defaults
         currentNodeName = "";
-        aboardVehicle = "";
         inItineraryP = false;
         inTransitP = false;
         aliveP = true;
@@ -47,8 +46,7 @@ public class Serial implements  CountedItem {
      * @param vehicleName name of vehicle by which picked up
      */
     public void recordPickup(String vehicleName) {
-        currentNodeName = "";
-        aboardVehicle = vehicleName;
+        currentNodeName = vehicleName;
         inTransitP = true;
         inItineraryP = true; // trivially
         currBacklog = null; // trivially
@@ -76,7 +74,6 @@ public class Serial implements  CountedItem {
         inItineraryP = false;
         currBacklog = null;
         currentNodeName = "";
-        aboardVehicle = "";
     }
 
     /**
@@ -87,14 +84,12 @@ public class Serial implements  CountedItem {
      */
     public void recordDropoff(String nodeName, boolean moreScheduledP) {
         currentNodeName = nodeName;
-        aboardVehicle = "";
         inTransitP = false;
         inItineraryP = moreScheduledP;
         currBacklog = null;
     }
 
     public String currentNodeName = ""; // non-empty if stationary at this node at current simulation-time
-    public String aboardVehicle = ""; // non-empty if in transit on that vehicle at current simulation-time
     boolean inItineraryP = false; // included in an Itinerary in progress by a live vehicle (waiting or in transit)
     public Backlog currBacklog = null; // null if not in a backlog
     boolean inTransitP = false;
