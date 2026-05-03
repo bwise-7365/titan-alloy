@@ -172,30 +172,31 @@ public class LogisticalAdjudicator {
 
 
     public void reportLocations(double cTime) {
-        final double minTime = 72.45;
-        final double maxTime = 73.00;
+        final double minTime = 1290.60;
+        final double maxTime = 1290.64;
         if ((minTime < cTime) && (cTime < maxTime)) {
-            System.out.printf("\n\n Entity locations at t=%8.3f\n", cTime);
-            int nSrl = 0, nStk = 0, nTrn = 0;
+            System.out.printf("\n\n Entity locations at t=%8.4f\n", cTime);
+            int nSrl = 0, nStk = 0, nTrn = 0, nOsp = 0;
             for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
                 nSrl++;
                 SEntity se = e.getValue();
                 if (se.state != SEntity.State.Stop) {
                     nStk++;
                     System.out.printf("  Serial %s @ %s [%s]%n",
-                            e.getKey().name, se.getCurrLoc(), se.state);
+                                      e.getKey().name, se.getCurrLoc(), se.state);
                 }
             }
             for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
                 TEntity te = e.getValue();
-                if (!te.myTrans.name.startsWith("MV22-")) {// Skip the many MV22's for now
-                    nTrn++;
-                    System.out.printf("  Transport %s @ %s [%s]%n",
-                            te.myTrans.name, te.getCurrLoc(), te.state);
+                nTrn++;
+                if (te.myTrans.name.startsWith("MV22-")) {// Skip the many MV22's for now
+                    nOsp++;
                 }
+                System.out.printf("  Transport %s @ %s [%s]%n",
+                                  te.myTrans.name, te.getCurrLoc(), te.state);
             }
-            System.out.printf("%8.3f: %d serials (%d stuck), %d transports%n",
-                              cTime, nSrl, nStk, nTrn);
+            System.out.printf("%8.3f: %d serials (%d stuck), %d transports (%d MV22)%n",
+                              cTime, nSrl, nStk, nTrn, nOsp);
             System.out.flush();
         }
     }

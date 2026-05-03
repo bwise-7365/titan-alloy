@@ -152,10 +152,10 @@ public class SEntity extends LEntity {
         verifyPostDropoff(t);
         if (mySerial.currentNodeName.equals(mySerial.deliveryNodeName)) {
             state = State.Stop;
-            System.out.printf("Serial %s @ %s delivered to final node by %s @ %s at time %.4f\n",
-                              mySerial.name, mySerial.currentNodeName,
-                              t.myTrans.name, t.getCurrLoc(),
-                              mySim.getCurrTime());
+            //System.out.printf("Serial %s @ %s delivered to final node by %s @ %s at time %.4f\n",
+            //                  mySerial.name, mySerial.currentNodeName,
+            //                  t.myTrans.name, t.getCurrLoc(),
+            //                  mySim.getCurrTime());
             myAdj.numCompleted++;
         } else {
             state = State.Scanning;

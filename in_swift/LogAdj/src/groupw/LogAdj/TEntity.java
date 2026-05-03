@@ -29,7 +29,7 @@ public class TEntity extends LEntity {
 
     public enum State { Start, Scanning, Loading, Moving, Unloading, Stop }
 
-    static final double PLAN_INTERVAL = 4.0;
+    static final double PLAN_INTERVAL = 2.0;
 
     public TEntity(Transport tr, LogisticalAdjudicator adj) {
         super(adj.mySim);

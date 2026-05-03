@@ -16,11 +16,15 @@ LSM-05-JRG, LSM, Juragua
 LSM-06-JRG, LSM, Juragua
 LSM-07-ST,  LSM, Santiago
 LSM-08-ST,  LSM, Santiago
-LSM-09-SD, LSM, SantoDomingo
-LSM-10-SJ, LSM, SanJuan
+LSM-09-SD,  LSM, SantoDomingo
+LSM-10-SJ,  LSM, SanJuan
 LSM-11-IDM, LSM, IslaDeMona
 LSM-12-NG, LSM, NewGuinea
 LSM-13-NG, LSM, NewGuinea
+LSM-14-USV, LSM, USVI
+LSM-15-USV, LSM, USVI
+LSM-16-USV, LSM, USVI
+LSM-17-USV, LSM, USVI
 #
 # KC-130 cargo jets
 KC130-01-HVN, KC-130, Havana
