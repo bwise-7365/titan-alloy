@@ -17,6 +17,9 @@ public:
     void setGame(const Mancala::Game* game);
     void setBgColor(QColor c);
 
+    // Returns the exact pixel size needed to display N circular pits with fixed radius.
+    QSize preferredSize() const;
+
     // Highlight a pit as the AI-suggested move; pitIndex -1 clears it.
     void setSuggestion(int pitIndex);
     void clearSuggestion();

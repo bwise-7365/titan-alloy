@@ -39,6 +39,7 @@ private:
     void startSearchIndicator(int budgetSeconds = 0);
     void stopSearchIndicator();
     void cancelSearch();
+    void updateWindowSize();
 
     // Central UI
     MancalaWidget* boardWidget_;

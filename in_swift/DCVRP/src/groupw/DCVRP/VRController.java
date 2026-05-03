@@ -109,7 +109,7 @@ public class VRController {
             Serial s = serialMap.get(sn);
             SerialController sc = s.controller;
             if (null == sc) {
-                sc = new SerialController(s, iBuilder);
+                sc = new SerialController(s);
             }
             Tuple2<Transport, Reservation> pr =  sc.selectBacklog(transports, currTime, useMinTime);
             if (null != pr) {

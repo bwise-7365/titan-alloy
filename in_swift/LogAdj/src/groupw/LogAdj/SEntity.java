@@ -8,6 +8,7 @@ import groupw.DCVRP.Transport;
 import groupw.DCVRP.TravelLog;
 import groupw.Network.NWUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static groupw.DCVRP.VRController.TheVRC;
@@ -21,8 +22,6 @@ import static groupw.DCVRP.VRController.TheVRC;
  * All transitions through those states are driven by TEntity notification calls.
  */
 public class SEntity extends LEntity {
-
-    public static int numCompleted;
 
     public enum State {Start, Scanning, Waiting, Loading, Moving, Unloading, Stop}
 
@@ -82,10 +81,16 @@ public class SEntity extends LEntity {
         }
     }
 
-    private void doScanning() {
-        List<Transport> transports = TheVRC.transportsAtNode(mySerial.currentNodeName);
-        if (myAdj.randomTransportOrder) {
-            transports = NWUtils.shuffle(transports, mySim.prng);
+    private void doScanning() {if (monitoredSerials.contains(mySerial.name)) {
+        System.out.printf("Serial %s @ %s scanning at time %.4f\n",
+                          mySerial.name, mySerial.currentNodeName,
+                          mySim.getCurrTime());
+        System.out.flush();
+    }
+        List<String> transportNames = TheVRC.transportsAtHomeBase(mySerial.currentNodeName, myAdj.randomTransportOrder);
+        List<Transport> transports = new ArrayList<>();
+        for (String tn : transportNames){
+            transports.add(TheVRC.getVehicleMap().get(tn));
         }
         NWUtils.Tuple2<Transport, Backlog.Reservation> result =
                 mySerial.controller.selectBacklog(transports, mySim.getCurrTime(), myAdj.useMinTimeP);
@@ -111,6 +116,7 @@ public class SEntity extends LEntity {
                               mySerial.name, mySerial.currentNodeName,
                               t.myTrans.name, t.getCurrLoc(),
                               mySim.getCurrTime());
+            System.out.flush();
         }
 
         verifyPrePickup(t);
@@ -136,6 +142,7 @@ public class SEntity extends LEntity {
                               mySerial.name, mySerial.currentNodeName,
                               t.myTrans.name, t.getCurrLoc(),
                               mySim.getCurrTime());
+            System.out.flush();
         }
 
         verifyPreDropoff(t);
@@ -149,7 +156,7 @@ public class SEntity extends LEntity {
                               mySerial.name, mySerial.currentNodeName,
                               t.myTrans.name, t.getCurrLoc(),
                               mySim.getCurrTime());
-            numCompleted++;
+            myAdj.numCompleted++;
         } else {
             state = State.Scanning;
             doScanning();

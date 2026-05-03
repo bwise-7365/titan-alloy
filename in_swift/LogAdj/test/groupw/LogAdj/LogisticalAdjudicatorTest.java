@@ -46,10 +46,10 @@ public class LogisticalAdjudicatorTest {
      */
     @Test
     public void testItnry() throws IOException {
-        SEntity.numCompleted = 0;
         double runTimeHours = 24 * 5; // even with 2000 hours, scenario C1 runs out of events around 1467 hours
         ReadDCVRScenarioCSV.ScenarioRecord sRec = readScenarioC1(); // must be synchronized with graph generator test
         LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
+        la.numCompleted = 0;
         List<LogisticalAdjudicator.LogRecord> records = la.adjudicate(runTimeHours);
         records.sort((a, b) -> Double.compare(a.time, b.time));
         try (PrintWriter pw = new PrintWriter(new FileWriter("logrun.txt"))) {
@@ -58,7 +58,7 @@ public class LogisticalAdjudicatorTest {
             }
         }
 
-        System.out.printf("Completed %d deliveries\n", SEntity.numCompleted);
+        System.out.printf("Completed %d deliveries\n", la.numCompleted);
     }
 }
 // Copyright Group W, SPA. All Rights Reserved.

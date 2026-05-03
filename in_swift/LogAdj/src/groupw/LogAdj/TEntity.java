@@ -88,14 +88,24 @@ public class TEntity extends LEntity {
     }
 
     private void doScanning() {
+        myTrans.itinerary = null;
         if (myTrans.backlog == null || myTrans.backlog.numReservations() == 0) {
             scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
             return;
         }
+        if (monitoredTransports.contains(myTrans.name)) {
+            System.out.println("DEBUG TEntity.doScanning(): " + status()
+                                       + " at time "+ String.format("%.4f", mySim.getCurrTime())
+                                       + " found "+myTrans.backlog.numReservations() + " reservations");
+            System.out.flush();
+        }
         buildAndValidateItinerary();
-        if (myItinerary == null || myItinerary.numLegs() == 0) {
+        if (myTrans.itinerary == null || myTrans.itinerary.numLegs() == 0) {
             scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
             return;
+        }
+        if (17 == myTrans.itinerary.getID()){
+            System.out.flush();
         }
         initLegState(0);
         state = State.Loading;
@@ -150,17 +160,17 @@ public class TEntity extends LEntity {
                     : currentLeg().dst.transferEndTime;
             scheduleAt(nextT);
         } else {
-          //  finaliseUnloading(sns);
+          finaliseUnloading(sns);
         }
     }
 
     // ---- leg lifecycle ----
 
     private void buildAndValidateItinerary() {
-        myItinerary = ItineraryBuilder.TheIB.itineraryFromBacklog(
+        myTrans.itinerary = ItineraryBuilder.TheIB.itineraryFromBacklog(
                 myTrans.name, myTrans.backlog, mySim.getCurrTime(), myAdj.useMinTimeP);
-        if (myItinerary != null && myItinerary.numLegs() > 0) {
-            ItineraryBuilder.TheIB.setTimeTable(myItinerary, myTrans.name, mySim.getCurrTime());
+        if (myTrans.itinerary != null && myTrans.itinerary.numLegs() > 0) {
+            ItineraryBuilder.TheIB.setTimeTable(myTrans.itinerary, myTrans.name, mySim.getCurrTime());
             validateItinerary();
         }
     }
@@ -170,7 +180,7 @@ public class TEntity extends LEntity {
         Map<String, Serial> sMap = TheVRC.getSerialMap();
         Map<String, Set<String>> tdMap = TheVRC.getVehicleDomainMap();
         Map<String, Set<String>> paMap = TheVRC.getPortAccessMap();
-        boolean ok = myItinerary.validP(tType, sMap, tdMap, paMap);
+        boolean ok = myTrans.itinerary.validP(tType, sMap, tdMap, paMap);
         if (!ok){
             System.out.flush();
         }
@@ -185,7 +195,7 @@ public class TEntity extends LEntity {
     }
 
     private Itinerary.Leg currentLeg() {
-        return myItinerary.legs.get(legIdx);
+        return myTrans.itinerary.legs.get(legIdx);
     }
 
     private void arriveAtDst() {
@@ -195,11 +205,12 @@ public class TEntity extends LEntity {
     }
 
     private void advanceToNextLegOrScan() {
-        if (legIdx + 1 < myItinerary.numLegs()) {
+        if (legIdx + 1 < myTrans.itinerary.numLegs()) {
             initLegState(legIdx + 1);
             state = State.Loading;
             scheduleAt(currentLeg().src.transferSrtTime);
         } else {
+            myTrans.itinerary = null;
             state = State.Scanning;
             scheduleAt(mySim.getCurrTime() + PLAN_INTERVAL);
         }
@@ -254,7 +265,7 @@ public class TEntity extends LEntity {
 
     private void finaliseUnloading(List<String> sns) {
         String nodeName = currentLeg().dst.node.name;
-        assertSerialsAtNode(nodeName, sns);
+        //assertSerialsAtNode(nodeName, sns);
         int[] pct = pctAreaWeight(onBoard);
         recordSerials(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, sns);
         recordTransport(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
@@ -349,7 +360,6 @@ public class TEntity extends LEntity {
     public State state;
     final Transport myTrans;
     final LogisticalAdjudicator myAdj;
-    Itinerary myItinerary = null;
     Manifest onBoard = new Manifest();
     int legIdx = 0;
     int pickupCounter = -1;

@@ -5,6 +5,7 @@ package groupw.DCVRP;
 import groupw.DCVRP.VRGraph.VRNode;
 import groupw.Logistics.Manifest;
 
+import static groupw.DCVRP.ItineraryBuilder.TheIB;
 import static groupw.DCVRP.VRController.TheVRC;
 
 /**
@@ -65,10 +66,10 @@ public class Transport  implements  CountedItem {
      */
     public Itinerary buildItineraryFromBacklog(double currTime, boolean useMinTimeP) {
         Itinerary it = null;
-        if ((null == backlog) || (null == iBuilder)) {
-            return it;
+        if ((null == backlog) || (null == TheIB)) {
+            return null;
         }
-        it = iBuilder.itineraryFromBacklog(name, backlog, currTime, useMinTimeP);
+        it = TheIB.itineraryFromBacklog(name, backlog, currTime, useMinTimeP);
         return it;
     }
 
@@ -80,8 +81,7 @@ public class Transport  implements  CountedItem {
     double cargoArea = 0.0; // square units (feet, meters) for cargo
     double cargoWeight = 0.0; // typical max cargo on realistic mission (not manufacturer's "max that can takeoff")
     public Backlog backlog = null;
-    Itinerary itinerary = null;
-    ItineraryBuilder iBuilder = null;
+    public Itinerary itinerary = null;
 
 
 

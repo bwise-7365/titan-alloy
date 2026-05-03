@@ -5,16 +5,18 @@
 
 // ── Layout constants ──────────────────────────────────────────────────────────
 namespace {
-constexpr double kMargin      = 12.0;
-constexpr double kStoreWFrac  = 0.10;
-constexpr double kRowGapFrac  = 0.08;
+constexpr int kPitRadius = 28;   // fixed circle radius (pixels)
+constexpr int kPitGap    = 6;    // gap between adjacent circles
+constexpr int kStoreW    = 56;   // store width
+constexpr int kRowGap    = 10;   // vertical gap between the two pit rows
+constexpr int kMargin    = 12;   // border margin
+constexpr int kLabelH    = 20;   // bottom status-label area height
 }
 
 MancalaWidget::MancalaWidget(QWidget* parent)
     : QWidget(parent)
 {
     setMouseTracking(true);
-    setMinimumSize(400, 180);
 }
 
 void MancalaWidget::setGame(const Mancala::Game* game) {
@@ -53,33 +55,35 @@ void MancalaWidget::setSearching(bool s) {
 
 // ── Geometry ──────────────────────────────────────────────────────────────────
 
+QSize MancalaWidget::preferredSize() const {
+    int N    = game_ ? game_->numPits() : 6;
+    int diam = 2 * kPitRadius;
+    int w    = 2*kMargin + 2*kStoreW + N*diam + (N-1)*kPitGap;
+    int h    = 2*kMargin + 2*diam  + kRowGap + kLabelH;
+    return {w, h};
+}
+
 void MancalaWidget::rebuildGeometry() {
     int N = game_ ? game_->numPits() : 6;
     pitRects_.assign(game_ ? game_->totalSlots() : 14, QRectF{});
 
-    double W = width(), H = height();
-    double storeW = W * kStoreWFrac;
-    double boardW = W - 2.0 * kMargin - 2.0 * storeW;
-    double boardH = H - 2.0 * kMargin;
-    double pitW   = boardW / N;
-    double pitH   = (boardH - boardH * kRowGapFrac) / 2.0;
-    double gapH   = boardH * kRowGapFrac;
-    double pitX0  = kMargin + storeW;
-    double rowY0  = kMargin;
-    double rowY1  = kMargin + pitH + gapH;
+    constexpr int diam  = 2 * kPitRadius;
+    int pitX0  = kMargin + kStoreW;
+    int rowY0  = kMargin;
+    int rowY1  = kMargin + diam + kRowGap;
+    int storeH = 2*diam + kRowGap;
 
     // P0 pits (bottom row): indices 0 .. N-1, left to right.
     for (int i = 0; i < N; ++i)
-        pitRects_[i] = QRectF(pitX0 + i * pitW, rowY1, pitW, pitH);
+        pitRects_[i] = QRectF(pitX0 + i*(diam + kPitGap), rowY1, diam, diam);
 
     // P1 pits (top row): indices 2N, 2N-1, ... N+1 — left to right.
-    // This places pit 2N above pit 0 and pit N+1 above pit N-1 (matching opposites).
     for (int i = 0; i < N; ++i)
-        pitRects_[2*N - i] = QRectF(pitX0 + i * pitW, rowY0, pitW, pitH);
+        pitRects_[2*N - i] = QRectF(pitX0 + i*(diam + kPitGap), rowY0, diam, diam);
 
-    // Stores span the full board height.
-    storeRect1_ = QRectF(kMargin,              kMargin, storeW, boardH);  // P1 store, left
-    storeRect0_ = QRectF(W - kMargin - storeW, kMargin, storeW, boardH);  // P0 store, right
+    // Stores span both rows.
+    storeRect1_ = QRectF(kMargin,                               kMargin, kStoreW, storeH);
+    storeRect0_ = QRectF(pitX0 + N*diam + (N-1)*kPitGap, kMargin, kStoreW, storeH);
     if (game_) {
         pitRects_[game_->p0Store()] = storeRect0_;
         pitRects_[game_->p1Store()] = storeRect1_;
@@ -114,11 +118,13 @@ void MancalaWidget::drawPit(QPainter& p, int index) const {
                                : (index > N && index <= 2*N);
     bool terminal = game_ && game_->isTerminal();
 
-    // Pit fill colour.
+    // Pit fill colour.  P1 pits share the greenish hue of the P1 store.
+    bool   isP1Pit = (index > N && index <= 2*N);
+    QColor base    = isP1Pit ? QColor("#8BC8B0") : bgColor_;
     QColor fill;
-    if (terminal || searching_)       fill = bgColor_.darker(115);
-    else if (isOwn && stones > 0)     fill = bgColor_.lighter(130);
-    else                              fill = bgColor_.darker(110);
+    if (terminal || searching_)       fill = base.darker(115);
+    else if (isOwn && stones > 0)     fill = base.lighter(130);
+    else                              fill = base.darker(110);
 
     // Border colour: suggestion > last move > hover > default.
     QColor border;
@@ -181,16 +187,15 @@ void MancalaWidget::paintEvent(QPaintEvent*) {
     p.fillRect(rect(), bgColor_);
 
     double W = width(), H = height();
-    double storeW = W * kStoreWFrac;
-    QRectF board(kMargin + storeW - 4, kMargin - 4,
-                 W - 2*kMargin - 2*storeW + 8, H - 2*kMargin + 8);
+    int N = game_ ? game_->numPits() : 6;
+    constexpr int diam = 2 * kPitRadius;
+    QRectF board(kMargin + kStoreW - 4,            kMargin - 4,
+                 N*(diam + kPitGap) - kPitGap + 8, 2*diam + kRowGap + 8);
     p.setPen(QPen(bgColor_.darker(160), 2));
     p.setBrush(bgColor_.darker(105));
     p.drawRoundedRect(board, 6, 6);
 
     if (!game_) return;
-
-    int N = game_->numPits();
     drawStore(p, 0);
     drawStore(p, 1);
     for (int i = 0;   i <  N;       ++i) drawPit(p, i);

@@ -22,6 +22,8 @@ import static groupw.DCVRP.VRController.TheVRC;
  */
 public class LogisticalAdjudicator {
 
+    public int numCompleted;
+
     public LogisticalAdjudicator(ReadDCVRScenarioCSV.ScenarioRecord sr, int rngSeed) {
         scenRec = sr;
         VRController.initialize(scenRec, rngSeed);
@@ -56,7 +58,7 @@ public class LogisticalAdjudicator {
             String startNode = unitMap.get(unitName).startNodeName;
             s.currentNodeName = startNode;  // DCVRP library still needs this
             if (s.controller == null) {
-                new SerialController(s, ItineraryBuilder.TheIB);
+                new SerialController(s);
             }
             SEntity se = new SEntity(s, this);
             se.initLocation(startNode);

@@ -5,6 +5,7 @@ package groupw.DCVRP;
 import java.util.ArrayList;
 import java.util.List;
 
+import static groupw.DCVRP.ItineraryBuilder.TheIB;
 import static groupw.DCVRP.VRController.TheVRC;
 import static java.lang.Math.abs;
 
@@ -26,12 +27,10 @@ import groupw.DCVRP.Backlog.Reservation;
 public class SerialController implements CountedItem {
 
     public Serial s = null;  // thus visible to MAST, z.b.
-    ItineraryBuilder iBuilder = null;
 
-    public SerialController(Serial s, ItineraryBuilder iB) {
+    public SerialController(Serial s) {
         this.s = s;
         s.controller = this;
-        this.iBuilder = iB;
         this.idNum = ItemCounter.makeID();
     }
 
@@ -75,14 +74,14 @@ public class SerialController implements CountedItem {
                 VRNode dNode = TheVRC.nodeMap.get(s.deliveryNodeName);
 
                 // These have the most promising ones (if any) first
-                List<VREdge> pEdges = iBuilder.potentialIntermediateEdges(t.name, s.name, currTime);
+                List<VREdge> pEdges = TheIB.potentialIntermediateEdges(t.name, s.name, currTime);
                 if (0 < pEdges.size()) {
                     VRNode intNode = TheVRC.nodeMap.get(pEdges.get(0).tgtName);
                     double estTransitHours = 0.0;
                     if (useMinTime) {
-                        estTransitHours = iBuilder.estMinTransitTime(s, intNode, dNode);
+                        estTransitHours = TheIB.estMinTransitTime(s, intNode, dNode);
                     } else {
-                        estTransitHours = iBuilder.estAverageTransitTime(s, intNode, dNode);
+                        estTransitHours = TheIB.estAverageTransitTime(s, intNode, dNode);
                     }
 
                     double stDist = greatCircleDistance(tNode.latitude, tNode.longitude, dNode.latitude, dNode.longitude) / NAUTICAL_MILE;

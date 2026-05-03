@@ -10,12 +10,12 @@ Vehicle Name, Type, Home Base
 
 LSM-01-HVN, LSM, Havana
 LSM-02-HVN, LSM, Havana
-LSM-03-HVN, LSM, Palma
-LSM-04-HVN, LSM, Palma
-LSM-05-HVN, LSM, Juragua
-LSM-06-HVN, LSM, Juragua
-LSM-07-HVN, LSM, Santiago
-LSM-08-HVN, LSM, Santiago
+LSM-03-PLM, LSM, Palma
+LSM-04-PLM, LSM, Palma
+LSM-05-JRG, LSM, Juragua
+LSM-06-JRG, LSM, Juragua
+LSM-07-ST,  LSM, Santiago
+LSM-08-ST,  LSM, Santiago
 LSM-09-SD, LSM, SantoDomingo
 LSM-10-SJ, LSM, SanJuan
 LSM-11-IDM, LSM, IslaDeMona

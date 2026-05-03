@@ -22,8 +22,8 @@
 // ── Static data ───────────────────────────────────────────────────────────────
 
 static const struct { int secs; const char* label; } kMctsOptions[] = {
+    {  1, "1 sec" }, {  2, "2 sec" }, {  5, "5 sec" },
     {  10, "10 sec" }, {  30, "30 sec" }, {  60, "60 sec" },
-    {  90, "90 sec" }, { 120, "2 min"  }, { 300, "5 min"  },
 };
 
 // ── Constructor ───────────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     // ── Right panel ────────────────────────────────────────────────────────────
     auto* panel = new QWidget(this);
-    panel->setFixedWidth(200);
+    panel->setFixedWidth(240);
     auto* pv = new QVBoxLayout(panel);
     pv->setAlignment(Qt::AlignTop);
     root->addWidget(panel);
@@ -134,7 +134,6 @@ MainWindow::MainWindow(QWidget* parent)
     pv->addWidget(moveLog_, 1);
 
     buildMenuBar();
-    resize(800, 440);
     onNewGame();
 }
 
@@ -370,7 +369,15 @@ void MainWindow::onNewGame() {
     moveLog_->clear();
     game_ = std::make_unique<Mancala::Game>(numPits_, stonesPerPit_);
     boardWidget_->setGame(game_.get());
+    updateWindowSize();
     updateControls();
+}
+
+void MainWindow::updateWindowSize() {
+    boardWidget_->setFixedSize(boardWidget_->preferredSize());
+    // Defer one tick so the layout chain recalculates before we snap the
+    // window to fit.  The window itself remains freely user-resizable.
+    QTimer::singleShot(0, this, [this]() { adjustSize(); });
 }
 
 void MainWindow::onMoveRequested(int pitIndex) {
