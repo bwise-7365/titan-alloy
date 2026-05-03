@@ -30,7 +30,8 @@ public class LogisticalAdjudicator {
         ItineraryBuilder.initialize();
         mySim = new Scheduler();
         int offSet = 1173;
-        mySim.setPRNG(offSet + rngSeed);
+        mySim.setPRNG( offSet + rngSeed);
+        numCompleted = 0;
     }
 
     public List<LogRecord> adjudicate(double simDuration) {
@@ -135,12 +136,12 @@ public class LogisticalAdjudicator {
         public final StartFinish startFinish;
         public final LoadUnload loadUnload;
         public final String nodeName;
-        public final int pctArea;
-        public final int pctWeight;
+        public final double pctArea;
+        public final double pctWeight;
         public final List<String> serialNames;
 
         public TransportRecord(double time, String transportName, StartFinish startFinish,
-                               LoadUnload loadUnload, String nodeName, int pctArea, int pctWeight,
+                               LoadUnload loadUnload, String nodeName, double pctArea, double pctWeight,
                                List<String> serialNames) {
             super(time);
             this.transportName = transportName;
@@ -154,8 +155,10 @@ public class LogisticalAdjudicator {
 
         @Override
         public String toString() {
-            return String.format("%08.4f hours, Transport, %s, %s, %s, %s, %d%%, %d%%, %s",
-                    time, transportName, startFinish, loadUnload, nodeName, pctArea, pctWeight, serialNames);
+            return String.format("%08.4f hours, Transport, %s, %s, %s, %s, %.2f%%, %.2f%%, %s",
+                    time, transportName, startFinish, loadUnload, nodeName,
+                                 pctArea, pctWeight,
+                                 serialNames);
         }
     }
 
@@ -172,7 +175,7 @@ public class LogisticalAdjudicator {
 
 
     public void reportLocations(double cTime) {
-        final double minTime = 1290.60;
+        final double minTime = 2000; //1290.60;
         final double maxTime = 1290.64;
         if ((minTime < cTime) && (cTime < maxTime)) {
             System.out.printf("\n\n Entity locations at t=%8.4f\n", cTime);

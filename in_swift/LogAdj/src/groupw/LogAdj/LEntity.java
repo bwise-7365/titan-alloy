@@ -16,11 +16,13 @@ public abstract class LEntity extends Entity {
 
     static final List<String> monitoredSerials =
             new ArrayList<>(Arrays.asList(
-            //"Supply-Co-3A-SQD-0010"
+                    //"2-INF-BDE-MTBR-230",
+                    //"2-INF-BDE-MTBR-241"
             ));
     static final List<String> monitoredTransports =
             new ArrayList<>(Arrays.asList(
-            //"LSM-12-NG"
+            //"LSM-06-JRG",
+            //"LSM-09-SD"
             ));
 
     // ---- location — single source of truth ----

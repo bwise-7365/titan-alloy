@@ -543,22 +543,10 @@ public class NWUtils {
         return num / dnm;
     }
 
-    static public int cleanSeedPRNG(int sd) {
-        int m = 1000 * 1000 * 1000;
-        sd = iMod(sd, m); // almost always nine digits
-        return sd;
-    }
-    
     static public final int DefaultSeedPRNG = 27185305;
 
     static public Random makePRNG(int sd, Boolean verbose) {
-        if (0 == sd) {
-            //System.out.printf("Truly random seed will be generated.\n");
-            Random prng0 = new Random();
-            while (0 == sd) {
-                sd = cleanSeedPRNG(prng0.nextInt());
-            }
-        }
+        sd = makeSeed(sd);
 
         if (verbose) {
             System.out.printf("Using PRNG seed %9d \n", sd);
@@ -566,6 +554,17 @@ public class NWUtils {
         Random prng = new Random();
         prng.setSeed(sd);
         return prng;
+    }
+
+    static public int makeSeed(int sd) {
+        if (0 == sd) {
+            final int m = 1000 * 1000 * 1000;
+            Random prng0 = new Random(); // seeded with a value 'very likely to be distinct'
+            while (0 == sd) {
+                sd = iMod(prng0.nextInt(), m);
+            }
+        }
+        return sd;
     }
 
     static public double roundN(double x, int n){
@@ -581,13 +580,7 @@ public class NWUtils {
     }
 
     static public Random makePRNG(int sd, ReportingLevel rl) {
-        if (0 == sd) {
-            //System.out.printf("Truly random seed will be generated.\n");
-            Random prng0 = new Random();
-            while (0 == sd) {
-                sd = cleanSeedPRNG(prng0.nextInt());
-            }
-        }
+        sd = makeSeed(sd);
 
         if (rLevelLE(Medium, rl)) {
             System.out.printf("Using PRNG seed %09d \n", sd);

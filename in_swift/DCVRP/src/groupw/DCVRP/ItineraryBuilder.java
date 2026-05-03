@@ -465,7 +465,20 @@ public class ItineraryBuilder {
         return destList;
     }
 
+    /**
+     * Use nominal speed/transfer times to plan length of itinerary
+     *
+     * This is sometimes used as the exact timing of the itinerary (e.g. LogAdj),
+     * so I added small random variations to travel time and larger to transfer times.
+     *
+     * @param itnry
+     * @param vName
+     * @param startTime
+     * @return
+     */
     public double setTimeTable(Itinerary itnry, String vName, double startTime) {
+        double transferTimeRange = 0.05;// value of 0.05 == between 0% and 5% random increase in transfer interval
+        double moveTimeRange = 0.01; // value of 0.01 == between 0% and 1% random increase in move interval
         if (null == itnry){
             System.out.println("Found null itnry 2");
             System.out.flush();
@@ -488,17 +501,29 @@ public class ItineraryBuilder {
 
             itnry.legs.get(i).src.transferSrtTime = lastTime; // time when pickups at src #i should start
             double pickUpInterval = transferTime(vName, itnry.legs.get(i).src.transfer);
+
+            // add random delays to pick up interval.
+            pickUpInterval = (1.0 + (transferTimeRange * TheVRC.prng.nextDouble())) *  pickUpInterval;
+
             lastTime = lastTime + pickUpInterval;
             itnry.legs.get(i).src.transferEndTime = lastTime; // time when pickups at src #1 should end
             runningManifest = Manifest.add(runningManifest, itnry.legs.get(i).src.transfer);
 
             double moveInterval = itnry.legs.get(i).edge.trueLength / speed;
+
+            // add random delays to move interval.
+            moveInterval = (1.0 + (moveTimeRange * TheVRC.prng.nextDouble())) *  moveInterval;
+
             lastTime = lastTime +  moveInterval;
 
             itnry.legs.get(i).carry = Manifest.add(runningManifest, null); // makes a fresh copy
 
             itnry.legs.get(i).dst.transferSrtTime = lastTime; // time when dropoffs at dst #i should start
             double dropOffInterval = transferTime(vName, itnry.legs.get(i).dst.transfer);
+
+            // add random delays to drop off interval.
+            dropOffInterval = (1.0 + (transferTimeRange * TheVRC.prng.nextDouble())) *  dropOffInterval;
+
             lastTime = lastTime + dropOffInterval;
             itnry.legs.get(i).dst.transferEndTime = lastTime; // time when dropoffs at dst #1 should end
             runningManifest = Manifest.sub(runningManifest, itnry.legs.get(i).dst.transfer);

@@ -87,14 +87,14 @@ public class Itinerary implements CountedItem {
             src = s;
             dst = d;
             edge = g.domainPickEdge(src.node.name, dst.node.name, dmn);
-            carry = null;
+            carry = new Manifest();
         }
 
         public Leg(Stop s, Stop d, VREdge e) {
             src = s;
             dst = d;
             edge = e;
-            carry = null;
+            carry = new Manifest();
         }
 
         public Manifest pickup() {
@@ -481,19 +481,23 @@ public class Itinerary implements CountedItem {
                                  final Map<String, Set<String>> tdMap,
                                  final Map<String, Set<String>> paMap) {
         // simplest / fastest checks are done first
+        // It would be more efficient to do 'ok = ok && fn(x,y,z)'
+        // to avoid function calls after it was known bad, but
+        // that would lose the ability to inspect later
 
-        // TODO: Eliminate the length fudge factor.
-        // I have ONE route that the builder produces of length 517 NM under the constraint of being less than 500.
-        double TMP_DISTANCE_FACTOR = 1.1;
+        // TODO: Eliminate the magic length fudge factor.
+        // I have ONE route that the builder produces of length 517.4 NM under the constraint of being less than 500.
+        double TMP_DISTANCE_FACTOR = 1.035;
         double itLen = getLength();
-        boolean ok = (itLen <=  TMP_DISTANCE_FACTOR * tType.oneWayRange);
-        ok = ok && (undefinedCargo(sMap).isEmpty()); //TODO: make that value available for inspection
-
-        ok = ok && (excessDropoff()); // but might not drop off everything
-
-        ok = ok && checkPortAccess(tType.type, tdMap, paMap);
-
-        ok = ok && checkAreaWeightLimits(tType.cargoArea, tType.cargoWeight, sMap);
+        boolean ok_Dist = (itLen <= TMP_DISTANCE_FACTOR * tType.oneWayRange);
+        boolean ok_Cargo = (undefinedCargo(sMap).isEmpty()); //TODO: make that value available for inspection
+        boolean ok_DropOff = (excessDropoff()); // but might not drop off everything
+        boolean ok_Access = checkPortAccess(tType.type, tdMap, paMap);
+        boolean ok_Limits = checkAreaWeightLimits(tType.cargoArea, tType.cargoWeight, sMap);
+        boolean ok = ok_Dist && ok_Cargo && ok_DropOff && ok_Access && ok_Limits;
+        if (!ok || (tType.oneWayRange < itLen)) {
+            System.out.flush();
+        }
         return ok;
     }
 

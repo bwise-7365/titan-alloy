@@ -6,6 +6,7 @@ import org.junit.Test;
 import groupw.DCVRP.ReadDCVRScenarioCSV;
 import groupw.LogAdj.LogisticalAdjudicator.SerialRecord;
 import groupw.LogAdj.LogisticalAdjudicator.TransportRecord;
+import groupw.LogAdj.LogisticalAdjudicator.LogRecord;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.List;
 import static groupw.DCVRP.ReadDCVRScenarioCSV.readScenarioC1;
 import static groupw.DCVRP.ReadDCVRScenarioCSV.readStandardTestCase;
 import static groupw.Network.NWUtils.DefaultSeedPRNG;
+import static groupw.Network.NWUtils.makeSeed;
 
 public class LogisticalAdjudicatorTest {
 
@@ -40,25 +42,51 @@ public class LogisticalAdjudicatorTest {
      * This runs the DCVRP adjudication using the DESim API
      *
      * The SEntity and TEntity classes are the 'bridge' between the DESim API and the DCVRP API.
-     * The most interesting time-frames for the standardTestCase are 150 and 650 hours.
      * I did not bother to convert units, so they print as seconds from DESim.
      * @throws IOException
      */
     @Test
-    public void testItnry() throws IOException {
-        double runTimeHours = 24 * 60; // scenario C1 finishes around 1191.6763 hours ~49.7 days)
+    public void testUnopposed() throws IOException {
+        double runTimeHours = 24 * 60; // 60 days == 1440 hours, scenario C1 finishes around 1300-1306 hours, about 54.3 days)
         ReadDCVRScenarioCSV.ScenarioRecord sRec = readScenarioC1(); // must be synchronized with graph generator test
-        LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, DefaultSeedPRNG);
-        la.numCompleted = 0;
-        List<LogisticalAdjudicator.LogRecord> records = la.adjudicate(runTimeHours);
-        records.sort((a, b) -> Double.compare(a.time, b.time));
-        try (PrintWriter pw = new PrintWriter(new FileWriter("logrun.txt"))) {
-            for (LogisticalAdjudicator.LogRecord r : records) {
-                pw.println(r);
+        int numSerials = sRec.sRecords.size();
+        int numRuns = 5;
+        double minLogTime = Double.MAX_VALUE;
+        double maxLogTime = 0.0;
+        double minSimTime = Double.MAX_VALUE;
+        double maxSimTime = 0.0;
+
+        // run it several times to look for invariant-violations
+        for (int i = 0; i < numRuns; i++) {
+
+            long timeStart = System.currentTimeMillis();
+            LogisticalAdjudicator la = new LogisticalAdjudicator(sRec, makeSeed(0)); //DefaultSeedPRNG
+            List<LogRecord> records = la.adjudicate(runTimeHours);
+            records.sort((a, b) -> Double.compare(a.time, b.time));
+            try (PrintWriter pw = new PrintWriter(new FileWriter("logrun.txt"))) {
+                for (LogRecord r : records) {
+                    pw.println(r);
+                }
             }
+
+            LogRecord lastLR = records.get(records.size()-1);
+            System.out.printf("Last log record: %s \n", lastLR);
+            minLogTime = Math.min(minLogTime, lastLR.time);
+            maxLogTime = Math.max(maxLogTime, lastLR.time);
+            System.out.printf("Run %d/%d completed %d deliveries\n\n",
+                              i+1, numRuns, la.numCompleted);
+            assert(numSerials == la.numCompleted); // must eventually deliver all in C1
+            System.out.flush();
+            long timeEnd = System.currentTimeMillis();
+            double simTime = (timeEnd - timeStart)/1000.0;
+            maxSimTime = Math.max(maxSimTime, simTime);
+            minSimTime = Math.min(minSimTime, simTime);
         }
 
-        System.out.printf("Completed %d deliveries\n", la.numCompleted);
+
+
+        System.out.printf("Completed %d runs, mean sim time [%.2f, %.2f] seconds, delivery times [%.2f, %.2f]\n",
+                          numRuns, minSimTime, maxSimTime, minLogTime, maxLogTime);
     }
 }
 // Copyright Group W, SPA. All Rights Reserved.

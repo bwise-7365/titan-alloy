@@ -225,7 +225,7 @@ public class TEntity extends LEntity {
         }
         String nodeName = currentLeg().src.node.name;
         assertSerialsAtNode(nodeName, sns);
-        int[] pct = pctAreaWeight(onBoard);
+        double[] pct = pctAreaWeight(onBoard);
         recordTransport(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
         recordSerials(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.load, nodeName, sns);
     }
@@ -239,7 +239,7 @@ public class TEntity extends LEntity {
     private void finaliseLoading(List<String> sns) {
         String nodeName = currentLeg().src.node.name;
         assertSerialsOnTransport(myTrans.name, sns);
-        int[] pct = pctAreaWeight(onBoard);
+        double[] pct = pctAreaWeight(onBoard);
         recordSerials(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, sns);
         recordTransport(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.load, nodeName, pct[0], pct[1], sns);
         notifyAllDeparture();
@@ -252,7 +252,7 @@ public class TEntity extends LEntity {
     private void verifyUnloadPreconditions(List<String> sns) {
         assertSerialsOnTransport(myTrans.name, sns);
         String nodeName = currentLeg().dst.node.name;
-        int[] pct = pctAreaWeight(onBoard);
+        double[] pct = pctAreaWeight(onBoard);
         recordTransport(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
         recordSerials(LogisticalAdjudicator.StartFinish.start, LogisticalAdjudicator.LoadUnload.unload, nodeName, sns);
     }
@@ -266,7 +266,7 @@ public class TEntity extends LEntity {
     private void finaliseUnloading(List<String> sns) {
         String nodeName = currentLeg().dst.node.name;
         //assertSerialsAtNode(nodeName, sns);
-        int[] pct = pctAreaWeight(onBoard);
+        double[] pct = pctAreaWeight(onBoard);
         recordSerials(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, sns);
         recordTransport(LogisticalAdjudicator.StartFinish.finish, LogisticalAdjudicator.LoadUnload.unload, nodeName, pct[0], pct[1], sns);
         advanceToNextLegOrScan();
@@ -324,7 +324,7 @@ public class TEntity extends LEntity {
     // ---- record helpers ----
 
     private void recordTransport(LogisticalAdjudicator.StartFinish sf, LogisticalAdjudicator.LoadUnload lu,
-                                 String nodeName, int pctArea, int pctWeight, List<String> sns) {
+                                 String nodeName, double pctArea, double pctWeight, List<String> sns) {
         LogisticalAdjudicator.LogRecord r = myAdj.new TransportRecord(
                 mySim.getCurrTime(), myTrans.name, sf, lu, nodeName, pctArea, pctWeight, sns);
         r.recordEvent(r);
@@ -339,11 +339,11 @@ public class TEntity extends LEntity {
         }
     }
 
-    private int[] pctAreaWeight(Manifest m) {
+    private double[] pctAreaWeight(Manifest m) {
         Map<String, Serial> sMap = TheVRC.getSerialMap();
-        int pa = (int) Math.round(100.0 * ItineraryBuilder.manifestArea(m, sMap) / myTrans.getCargoArea());
-        int pw = (int) Math.round(100.0 * ItineraryBuilder.manifestWeight(m, sMap) / myTrans.getCargoWeight());
-        return new int[]{pa, pw};
+        double pa = 100.0 * ItineraryBuilder.manifestArea(m, sMap) / myTrans.getCargoArea();
+        double pw = 100.0 * ItineraryBuilder.manifestWeight(m, sMap) / myTrans.getCargoWeight();
+        return new double[]{pa, pw};
     }
 
     private static List<String> getItems(Manifest m) {
