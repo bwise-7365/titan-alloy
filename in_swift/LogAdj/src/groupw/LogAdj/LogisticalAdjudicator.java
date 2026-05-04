@@ -162,35 +162,54 @@ public class LogisticalAdjudicator {
         }
     }
 
-    public Map<String, String> entityLocations() {
-        Map<String, String> result = new HashMap<>();
-        for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
-            result.put(e.getKey().name, e.getValue().getCurrLoc());
-        }
+    /**
+     * Get a List of all TEntities, in ordered by ID
+     *
+     * Java's Hash uses its own PRNG, so iterating over Map is non-deterministic.
+     * This uses a consistent comparator to ensure the same order each time.
+     * @return
+     */
+    public List<TEntity> listTEntity() {
+        List<TEntity> eList = new ArrayList<>();
         for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
-            result.put(e.getKey().name, e.getValue().getCurrLoc());
+            eList.add(e.getValue());
         }
-        return result;
+        eList.sort((TEntity e1, TEntity e2) -> Long.compare(e1.getID(), e2.getID()));
+        return eList;
     }
 
+    /**
+     * Get a List of all SEntities, ordered by ID
+     *
+     * Java's Hash uses its own PRNG, so iterating over Map is non-deterministic.
+     * This uses a consistent comparator to ensure the same order each time.
+     * @return
+     */
+    public List<SEntity> listSEntity() {
+        List<SEntity> eList = new ArrayList<>();
+        for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
+            SEntity te = e.getValue();
+            eList.add(e.getValue());
+        }
+        eList.sort((SEntity e1, SEntity e2) -> Long.compare(e1.getID(), e2.getID()));
+        return eList;
+    }
 
     public void reportLocations(double cTime) {
-        final double minTime = 2000; //1290.60;
+        final double minTime = 1290.60;
         final double maxTime = 1290.64;
         if ((minTime < cTime) && (cTime < maxTime)) {
             System.out.printf("\n\n Entity locations at t=%8.4f\n", cTime);
             int nSrl = 0, nStk = 0, nTrn = 0, nOsp = 0;
-            for (Map.Entry<Serial, SEntity> e : serialEntityMap.entrySet()) {
+            for (SEntity  se : listSEntity()) {
                 nSrl++;
-                SEntity se = e.getValue();
                 if (se.state != SEntity.State.Stop) {
                     nStk++;
                     System.out.printf("  Serial %s @ %s [%s]%n",
-                                      e.getKey().name, se.getCurrLoc(), se.state);
+                                      se.mySerial.name, se.getCurrLoc(), se.state);
                 }
             }
-            for (Map.Entry<Transport, TEntity> e : transportEntityMap.entrySet()) {
-                TEntity te = e.getValue();
+            for (TEntity te : listTEntity()) {
                 nTrn++;
                 if (te.myTrans.name.startsWith("MV22-")) {// Skip the many MV22's for now
                     nOsp++;

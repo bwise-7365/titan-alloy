@@ -31,6 +31,10 @@ public class ItemRegistry {
         highestID = 1000; // arbitrary starting value to help line up output
     }
 
+    // necessary for complete determinism: reset between runs
+    static public void reset() {
+        theItemRegistry = null;
+    }
     /**
      * Return the next unused item ID number.
      * Notice that the ItemRegistry will automatically initialize on first call.

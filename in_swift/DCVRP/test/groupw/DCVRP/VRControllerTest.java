@@ -100,21 +100,21 @@ public class VRControllerTest {
             final ReadTransportTypeCSV.DataField vtRec = TheVRC.getVehicleTypeMap().get(vehicleType);
             Backlog b = entry.getValue();
             Itinerary it = TheIB.itineraryFromBacklog(vehicleName, b, currTime, useMinTimeP);
-            TheIB.setTimeTable(it, vehicleName, currTime);
+            TheIB.setTimeTable(it, vehicleName, currTime); // depends on PRNG seed
             double twd = it.totalWeightDistance(TheVRC.getSerialMap());
             System.out.printf("Itinerary for %s, WD=%.4E: %s\n", vehicleName, twd, it.listLegNodes());
             System.out.printf("Itinerary ends at %.5f\n", it.finalDropOffTime());
             //it.displayManifests();
             Itinerary it2 = TheIB.reorderCircularItinerary(it, vtRec);
             if (null != it2) {
-                TheIB.setTimeTable(it2, vehicleName, currTime);
+                TheIB.setTimeTable(it2, vehicleName, currTime); // depends on PRNG seed
                 double twd2 = it2.totalWeightDistance(TheVRC.getSerialMap());
                 System.out.printf("Reordered for %s, WD=%.4E: %s\n", vehicleName, twd2, it2.listLegNodes());
 
                 // This will pass only for the regular capacity test case, seed == 259522115
                 if (5 == it2.numLegs()) {
                     double endTime = it2.finalDropOffTime();
-                    double expEndTime = 199.002;
+                    double expEndTime = 199.947;
                     double timeTol = 0.001;
                     System.out.printf("Reordered 5-leg itinerary ends at %.5f\n", endTime);
                     assert(abs(endTime - expEndTime) < timeTol);

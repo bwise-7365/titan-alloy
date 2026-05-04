@@ -92,7 +92,7 @@ public class TEntity extends LEntity {
         }
 
         // only during a specified time interval
-        myAdj.reportLocations(mySim.getCurrTime());
+        //myAdj.reportLocations(mySim.getCurrTime());
     }
 
     // ---- state handlers ----

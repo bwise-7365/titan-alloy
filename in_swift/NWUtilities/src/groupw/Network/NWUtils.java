@@ -561,8 +561,12 @@ public class NWUtils {
             final int m = 1000 * 1000 * 1000;
             Random prng0 = new Random(); // seeded with a value 'very likely to be distinct'
             while (0 == sd) {
-                sd = iMod(prng0.nextInt(), m);
+                sd = abs(prng0.nextInt());
+                sd = iMod(sd, m);
             }
+        }
+        else {
+            sd = abs(sd);
         }
         return sd;
     }

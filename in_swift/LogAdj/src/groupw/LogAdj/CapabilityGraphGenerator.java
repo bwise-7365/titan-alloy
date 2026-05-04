@@ -10,6 +10,7 @@ import java.util.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -269,6 +270,8 @@ public class CapabilityGraphGenerator {
 
         float lineWidth = 2.5f; // 'float' required to avoid compiler complaints
         XYPlot plot = chart.getXYPlot();
+        NumberAxis rangeAxis = (NumberAxis)plot.getRangeAxis();
+        rangeAxis.setRange(0.0, 105.0);
         XYStepRenderer renderer = new XYStepRenderer();
         renderer.setSeriesStroke(0, new BasicStroke(lineWidth));
         plot.setRenderer(renderer);

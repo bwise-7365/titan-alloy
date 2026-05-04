@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static groupw.DCVRP.VRController.TheVRC;
+import static groupw.LogAdj.TEntity.State.*;
 import static groupw.Network.NWUtils.shuffle;
 
 public class KEntity extends LEntity {
@@ -28,7 +29,7 @@ public class KEntity extends LEntity {
         attackTargets();
 
         // add random delays to search interval.
-        double dt = (1.0 + (searchTimeRange * TheVRC.prng.nextDouble())) * SEARCH_INTERVAL;
+        double dt = (1.0 + (searchTimeRange * mySim.prng.nextDouble())) * SEARCH_INTERVAL;
         scheduleAt(now + dt);
     }
 
@@ -55,14 +56,13 @@ public class KEntity extends LEntity {
     }
 
     /**
-     * Randomly target 10% of MV22, 10% of the rest, and set random order
+     * Randomly target 10% of MV22, 10% of the rest, and set random order.
      *
      */
     private void buildTargetList() {
         List<TEntity> targetMV22 = new ArrayList<>();
         List<TEntity> targetOthers = new ArrayList<>();
-        for (Map.Entry<Transport, TEntity> e : myAdj.transportEntityMap.entrySet()) {
-            TEntity te = e.getValue();
+        for (TEntity te : myAdj.listTEntity()) {
             if (te.myTrans.name.startsWith("MV22-")) {// Skip the many MV22's for now
                 targetMV22.add(te);
             } else {
@@ -80,7 +80,7 @@ public class KEntity extends LEntity {
 
         double numTargets = targets.size();
         double numCycles = 1300.0/((1.0 + searchTimeRange)*SEARCH_INTERVAL); // I know it is about 1300 seconds
-        pHit = numTargets / numCycles;
+        pHit = (5.0 * numTargets) / numCycles; // try to hit them early
     }
 
     private List<TEntity> selectTargets(List<TEntity> targets) {
@@ -93,7 +93,7 @@ public class KEntity extends LEntity {
         TEntity tgt = null;
         for (int i = 0; ((i<targets.size()) && (null == tgt)); i++) {
             TEntity v = targets.get(i);
-            if (v.myTrans.isAliveP()){
+            if (v.myTrans.isAliveP() && ((Moving == v.state) || (Loading == v.state) || (Unloading == v.state))) {
                 v.myTrans.die(); // all its Serials as well
                 tgt = v;
             }
@@ -118,7 +118,7 @@ public class KEntity extends LEntity {
 
 
     List<TEntity> targets = null;
-    double hitFrac = 0.1;
+    double hitFrac = 0.15; // we plan to hit this fraction of the MV22 and of the non-MV22's
     double pHit = 0.0; // probability of hitting a target in one cycle
     int numHits = 0;
     double searchTimeRange = 0.33;// value of 0.10 == between 0% and 10% random increase in search interval

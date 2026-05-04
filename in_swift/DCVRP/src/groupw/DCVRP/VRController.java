@@ -37,12 +37,9 @@ public class VRController {
      * @return
      */
     public static VRController initialize(ReadDCVRScenarioCSV.ScenarioRecord sr, int seed) {
-        if (null != sr) {
-            TheVRC = new VRController(sr, seed);
-        }
-        else {
-            TheVRC = new VRController();
-        }
+        clear();
+        TheVRC = new VRController(sr, seed);
+        TheVRC.resetMaps();
         return TheVRC;
     }
 
@@ -50,6 +47,9 @@ public class VRController {
      * Rarely, it makes sense to clear and reset the VRController singleton
      */
     public static void clear() {
+        if (null != TheVRC){
+            TheVRC.resetMaps();
+        }
         TheVRC = null;
     }
 
@@ -71,6 +71,19 @@ public class VRController {
         this.scenRecord = null;
         final boolean verboseP = true;
         prng = null;
+    }
+
+    private void resetMaps() {
+        nodeMap = null;
+        edgeMap = null;
+        unitMap = null;
+        vehicleTypeMap = null;
+        vehicleDataMap = null;
+        portAccessMap = null;
+        serialMap = null;
+        vehicleMap = null;
+        serialRecordMap = null;
+        vehicleDomainMap = null; // map from vehicle-type names to Set of domain-names
     }
 
     public static VRController TheVRC = null;
@@ -170,7 +183,7 @@ public class VRController {
         for (String sn : serialNames) {
             Serial srl = serialMap.get(sn);
             if (nodeName.equals(srl.currentNodeName)) {
-                int startNdx = prng.nextInt(numVehicles);
+                int startNdx = TheVRC.prng.nextInt(numVehicles);
                 boolean unassigned = true;
                 for (int i = 0; unassigned && (i < numVehicles); i++) {
                     // This is not a uniform selection, but it will do for now.
