@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QPlainTextEdit>
 #include <QApplication>
+#include <algorithm>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -22,13 +23,13 @@
 #include <QDialog>
 #include <QPalette>
 #include <QColor>
-#include "ViewSiteEntry.h"
 #include "EditSiteEntry.h"
+#include "ViewSiteEntry.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_lastFoundIndex(-1) {
     setWindowTitle("fpwdman-qt");
-    resize(300, 480);
+    resize(250, 360);
 
     // Set tooltip style using QPalette
     /*
@@ -73,8 +74,10 @@ void MainWindow::setupMenus() {
     editMenu->addAction(tr("&Delete"));
     connect(editAction, &QAction::triggered, this, &MainWindow::onEditActionTriggered);
 
-    // Tools, Help menus (empty for now)
-    menuBar->addMenu(tr("&Tools"));
+    QMenu *toolsMenu = menuBar->addMenu(tr("&Tools"));
+    QAction *sortAction = toolsMenu->addAction(tr("&Sort Sites"));
+    connect(sortAction, &QAction::triggered, this, &MainWindow::onSortSitesTriggered);
+
     menuBar->addMenu(tr("&Help"));
 }
 
@@ -84,15 +87,6 @@ void MainWindow::setupCentralWidget() {
 
     m_textOutput = new QPlainTextEdit(this);
     m_textOutput->setReadOnly(true);
-
-    // Styling: Background #FFFFDD, Black monospaced font
-    m_textOutput->setStyleSheet(
-        "QPlainTextEdit {"
-        "background-color: #FFFFDD;"
-        "color: black;"
-        "font-family: 'Consolas', 'Monaco', 'Courier New', monospace;"
-        "}"
-    );
 
     // Generate 250 site entries
     for (int i = 1; i <= 250; ++i) {
@@ -185,6 +179,13 @@ void MainWindow::onEditActionTriggered() {
             m_textOutput->ensureCursorVisible();
         }
     }
+}
+
+void MainWindow::onSortSitesTriggered() {
+    std::sort(m_entries.begin(), m_entries.end(), [](const SiteEntry &a, const SiteEntry &b) {
+        return a.Title.compare(b.Title, Qt::CaseInsensitive) < 0;
+    });
+    updateTextOutput();
 }
 
 void MainWindow::onSaveActionTriggered() {
@@ -388,12 +389,14 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
     if (watched == m_textOutput->viewport() && event->type() == QEvent::MouseButtonDblClick) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
         QTextCursor cursor = m_textOutput->cursorForPosition(mouseEvent->pos());
+        cursor.select(QTextCursor::LineUnderCursor);
+        m_textOutput->setTextCursor(cursor);
         int lineIndex = cursor.blockNumber();
         if (lineIndex >= 0 && lineIndex < static_cast<int>(m_entries.size())) {
             ViewSiteEntry dialog(&m_entries[lineIndex], this);
             dialog.exec();
-            return true;
         }
+        return true;
     }
     return QMainWindow::eventFilter(watched, event);
 }

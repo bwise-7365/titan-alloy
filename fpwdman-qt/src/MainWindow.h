@@ -27,6 +27,7 @@ private slots:
     void onSaveActionTriggered();
     void onSaveAsActionTriggered();
     void onLoadActionTriggered();
+    void onSortSitesTriggered();
 
 private:
     void setupMenus();
