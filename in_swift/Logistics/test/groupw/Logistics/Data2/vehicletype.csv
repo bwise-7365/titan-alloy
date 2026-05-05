@@ -1,7 +1,0 @@
-VehicleType,Availability,FuelType,FuelEfficiency,MaxRange,Domains,MaxSpeed
-Truck-2Ton,0.85,FuelGallon,1,400,"ImprovedRoad,UnimprovedRoad",40
-Truck-10Ton,0.85,FuelGallon,0.4,600,ImprovedRoad,50
-FWA-Medium,0.77,FuelGallon,0.5,1100,Air,290
-FWA-Large,0.77,FuelGallon,0.3,4800,Air,450
-Ship-Small,0.9,FuelGallon,0.1,2000,Sea,14.3
-Ship-Medium,0.95,FuelGallon,0.05,12000,Sea,15

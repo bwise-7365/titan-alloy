@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Logistics">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../Logistics/out/artifacts/Logistics_jar/Logistics.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

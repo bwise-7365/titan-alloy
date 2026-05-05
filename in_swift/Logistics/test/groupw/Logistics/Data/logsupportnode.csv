@@ -1,4 +1,0 @@
-Name,LogDistNodeName,Dispatcher,rail 00,rail 01,rail 02,rail 03,rail 04,rail 05,truck 01
-C2Node1,airbaseA,dispatchA,0,0,0,0,0,5,0
-C2Node2,airbaseA,dispatchA,0,0,2,0,0,0,12
-C2Node3,seaportA,dispatchB,0,0,2,0,0,5,20

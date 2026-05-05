@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="NWUtilities">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../NWUtilities/out/artifacts/NWUtilities_jar/NWUtilities.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
