@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     palette_widgets::MainWindow window;
     window.setWindowTitle("Palette Selector");
-    window.resize(560, 660);
+    window.resize(500, 400);
     window.show();
     return app.exec();
 }
