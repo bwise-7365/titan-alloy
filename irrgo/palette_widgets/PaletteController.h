@@ -32,7 +32,7 @@ signals:
 
 private:
     Mode mode_ = Mode::Background;
-    palette::Harmony harmony_ = palette::Harmony::SplitComplement;
+    palette::Harmony harmony_ = palette::Harmony::Triad;
     palette::Constraints constraints_{};
     palette::Srgb background_{1.0, 1.0, 0.8667}; // beige RGB(255,255,221)
     palette::Srgb piece1_{1.0, 0.0, 0.0};

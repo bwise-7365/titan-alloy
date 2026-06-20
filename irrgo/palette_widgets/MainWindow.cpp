@@ -137,7 +137,7 @@ void MainWindow::buildUi() {
     harmonyCombo_->addItem("Complement");
     harmonyCombo_->addItem("Split-Complement");
     harmonyCombo_->addItem("Triad");
-    harmonyCombo_->setCurrentIndex(1); // Split-Complement default
+    harmonyCombo_->setCurrentIndex(2); // Triad default
     spreadCheck_ = new QCheckBox("Spread piece luminance", central);
     spreadCheck_->setChecked(true);
     optionRow->addWidget(harmonyCombo_);
