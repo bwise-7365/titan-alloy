@@ -1,0 +1,60 @@
+@startuml overview
+title IrrGo Project — Package Overview
+
+package "absgame" <<Library>> {
+    abstract class "AbsGame::Game" {
+        +currentPlayer() : int
+        +getLegalMoves() : vector<MoveId>
+        +isLegalMove(MoveId) : bool
+        +applyMove(MoveId) : bool
+        +isTerminal() : bool
+        +staticEval() : double
+        +negamaxEval() : double
+        +clone() : unique_ptr<Game>
+    }
+    class "AbsGame::Searcher" {
+        {static} +bestMove(game, depth, timeLimitMs) : MoveId
+        {static} +mcts(game, nodeMin, nodeMax) : MoveId
+        {static} +mcts(game, seconds) : MoveId
+    }
+    note right of "AbsGame::Searcher"
+        NegaMax with alpha-beta pruning
+        MCTS-UCT with node or time budget
+        Both work with any Game subclass
+    end note
+}
+
+package "src (irrgo_lib)" <<Library>> {
+    class "IrrGo::Game" extends "AbsGame::Game" {
+        Go on irregular/rectangular graphs
+    }
+    class "IrrGo::Graph"
+    class "IrrGo::RectangularGraph" extends "IrrGo::Graph"
+    class "IrrGo::IrregularGraph" extends "IrrGo::Graph"
+    "IrrGo::Game" --> "IrrGo::Graph" : uses
+}
+
+package "mancala (mancala_lib)" <<Library>> {
+    class "Mancala::Game" extends "AbsGame::Game" {
+        Kalah variant, 14-slot board
+        Extra turns, captures
+    }
+}
+
+package "gui (irrgo_gui)" <<Executable>> {
+    class "MainWindow (Go)"
+    class "BoardWidget"
+    "MainWindow (Go)" --> "IrrGo::Game" : owns
+    "MainWindow (Go)" ..> "AbsGame::Searcher" : calls
+    "BoardWidget" --> "IrrGo::Game" : observes
+}
+
+package "mancala_gui" <<Executable>> {
+    class "MainWindow (Mancala)"
+    class "MancalaWidget"
+    "MainWindow (Mancala)" --> "Mancala::Game" : owns
+    "MainWindow (Mancala)" ..> "AbsGame::Searcher" : calls
+    "MancalaWidget" --> "Mancala::Game" : observes
+}
+
+@enduml

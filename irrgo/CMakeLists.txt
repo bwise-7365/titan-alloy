@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(palette_core)
+add_subdirectory(palette_widgets)
 add_subdirectory(absgame)
 add_subdirectory(irrgo_game)
 add_subdirectory(driver)

@@ -1,0 +1,98 @@
+@startuml mancala_gui
+title mancala_gui — GUI Class Detail
+
+class QMainWindow <<Qt>>
+class QWidget <<Qt>>
+
+class MainWindow extends QMainWindow {
+    -boardWidget_ : MancalaWidget*
+    -statusLabel_ : QLabel*
+    -stopBtn_ : QPushButton*
+    -moveLog_ : QTextEdit*
+    -suggestedLog_ : QTextEdit*
+    -game_ : unique_ptr<Mancala::Game>
+    -stonesPerPit_ : int
+    -- Search state --
+    -searchProgress_ : QProgressBar*
+    -turnProgress_ : QProgressBar*
+    -searchBarTimer_ : QTimer*
+    -searchElapsed_ : QElapsedTimer
+    -isSearching_ : bool
+    -searchGen_ : unsigned
+    -playTurnsRemaining_ : int
+    -- Slots --
+    +onNewGame()
+    +onMoveRequested(pitIndex : int)
+    +onPlayNegamaxGo()
+    +onPlayMctsGo()
+    +onSuggestNegamaxGo()
+    +onSuggestMctsGo()
+    -- Private --
+    -applyComputedMove(mv : MoveId)
+    -startSearchIndicator(budgetSec)
+    -stopSearchIndicator()
+    -cancelSearch()
+    -updateControls()
+    -logMove(pitIndex, player)
+    -buildMenuBar()
+}
+
+class MancalaWidget extends QWidget {
+    -game_ : const Mancala::Game*
+    -bgColor_ : QColor
+    -searching_ : bool
+    -hoverPit_ : int
+    -lastMove_ : int
+    -suggested_ : int
+    -pitRects_ : vector<QRectF>
+    -- Signals --
+    +moveRequested(pitIndex : int)
+    -- Public slots / API --
+    +setGame(game : const Mancala::Game*)
+    +setBgColor(c : QColor)
+    +setSuggestion(pitIndex : int)
+    +clearSuggestion()
+    +setLastMove(pitIndex : int)
+    +setSearching(s : bool)
+    -- Protected --
+    #paintEvent(QPaintEvent*)
+    #mouseMoveEvent(QMouseEvent*)
+    #mousePressEvent(QMouseEvent*)
+    #leaveEvent(QEvent*)
+    #resizeEvent(QResizeEvent*)
+    -- Private --
+    -rebuildGeometry()
+    -pitAt(pos) : int
+    -drawPit(p, index)
+    -drawStore(p, player)
+}
+
+class "Mancala::Game" {
+    +pit(index) : int
+    +storeOf(player) : int
+    +isTerminal() : bool
+    +currentPlayer() : int
+    +isExtraTurnPending() : bool
+}
+
+class "AbsGame::Searcher" {
+    {static} +bestMove(game, depth, timeLimitMs) : MoveId
+    {static} +mcts(game, seconds) : MoveId
+}
+
+MainWindow "1" *-- "1" MancalaWidget
+MainWindow "1" *-- "1" "Mancala::Game"
+MainWindow ..> "AbsGame::Searcher" : calls in detached thread
+MancalaWidget ..> "Mancala::Game" : observes (const*)
+
+note bottom of MainWindow
+  AI search runs in a detached std::thread.
+  Result posted back to UI thread via
+  QMetaObject::invokeMethod(..., Qt::QueuedConnection).
+  searchGen_ invalidates stale callbacks on board reset.
+  Extra-turn chain: if currentPlayer() unchanged after
+  applyComputedMove(), the caller (onPlayNegamaxGo /
+  onPlayMctsGo) auto-triggers the next search turn.
+end note
+
+@enduml

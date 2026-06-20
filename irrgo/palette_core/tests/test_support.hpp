@@ -40,6 +40,18 @@ inline void expectThrows(const std::function<void()>& fn, const char* what,
     }
 }
 
+// Runs `fn`, treating any escaping exception as a failed expectation.
+inline void expectNoThrow(const std::function<void()>& fn, const char* what,
+                          const char* file, int line) {
+    ++g_checks;
+    try {
+        fn();
+    } catch (...) {
+        ++g_failures;
+        std::printf("  FAIL [%s:%d] unexpected exception: %s\n", file, line, what);
+    }
+}
+
 inline int summarize(const char* suite) {
     std::printf("[%s] %d checks, %d failures\n", suite, g_checks, g_failures);
     return g_failures == 0 ? 0 : 1;
@@ -55,6 +67,9 @@ inline int summarize(const char* suite) {
 
 #define CHECK_THROWS(stmt) \
     ::palette_test::expectThrows([&]() { stmt; }, #stmt, __FILE__, __LINE__)
+
+#define CHECK_THROWS_NOT(stmt) \
+    ::palette_test::expectNoThrow([&]() { stmt; }, #stmt, __FILE__, __LINE__)
 
 #endif // PALETTE_TEST_SUPPORT_HPP
 // Copyright Ben Paul Wise. All Rights Reserved.

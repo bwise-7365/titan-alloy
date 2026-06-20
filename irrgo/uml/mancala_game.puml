@@ -1,0 +1,71 @@
+@startuml mancala_game
+title Mancala::Game — Class Detail
+
+abstract class "AbsGame::Game" {
+    {abstract} +currentPlayer() : int
+    {abstract} +getLegalMoves() : vector<MoveId>
+    {abstract} +isLegalMove(MoveId) : bool
+    {abstract} +applyMove(MoveId) : bool
+    {abstract} +isTerminal() : bool
+    {abstract} +staticEval() : double
+    +negamaxEval() : double
+    {abstract} +clone() : unique_ptr<Game>
+}
+
+class "Mancala::Game" extends "AbsGame::Game" {
+    .. Board layout (14 slots) ..
+    pits_[0..5]  : P0 pits
+    pits_[6]     : P0 store (kP0Store)
+    pits_[7..12] : P1 pits
+    pits_[13]    : P1 store (kP1Store)
+    currentPlayer_ : int
+    gameOver_ : bool
+    extraTurnPending_ : bool
+    --
+    +Game(stonesPerPit = 4)
+    +currentPlayer() : int
+    +getLegalMoves() : vector<MoveId>
+    +isLegalMove(MoveId) : bool
+    +applyMove(MoveId) : bool
+    +isTerminal() : bool
+    +staticEval() : double
+    +clone() : unique_ptr<Game>
+    --
+    +pit(index) : int
+    +storeOf(player) : int
+    +totalStones() : int
+    +isExtraTurnPending() : bool
+    +moveDescription(MoveId) : string
+    --
+    -{static} opposite(i) : int
+    -{static} isOwnPit(i, player) : bool
+    -{static} myStore(p) : int
+    -{static} oppStore(p) : int
+    -sideEmpty(player) : bool
+    -sweepRemaining()
+    -checkTerminal()
+}
+
+note right of "Mancala::Game"
+  <b>Sowing rule:</b>
+  Increment index mod 14, skip opponent's store.
+
+  <b>Extra turn:</b>
+  Last stone in own store → currentPlayer_ unchanged.
+  NegaMax has minor scoring bias here; MCTS is exact.
+
+  <b>Capture:</b>
+  Last stone in own empty pit AND opposite non-empty
+  → sweep both into own store, then switch player.
+
+  <b>Terminal:</b>
+  One side all-empty → sweep remaining, set gameOver_.
+
+  <b>staticEval:</b>
+  myStore - oppStore  (±1000 sentinel at terminal)
+
+  <b>opposite(i) = 12 - i</b>
+  (valid for all non-store indices 0-5 and 7-12)
+end note
+
+@enduml
