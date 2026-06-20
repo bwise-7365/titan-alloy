@@ -1,4 +1,4 @@
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "LoadedGraph.h"
 #include <unordered_map>
 
@@ -31,4 +31,4 @@ LoadedGraph::LoadedGraph(const std::vector<NodeData>& nodeData,
 }
 
 } // namespace IrrGo
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.
