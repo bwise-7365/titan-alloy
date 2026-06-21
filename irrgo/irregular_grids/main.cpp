@@ -22,8 +22,9 @@
 int main(int argc, char** argv) {
     games::board::GridSpec spec{4, 4, 0.6, 0.5};
 
-    spec.rows = 8;
-    spec.columns = 8;
+    spec.rows = 8; // 6 - 12;
+    spec.columns = 10; // 6 - 12;
+    spec.stonesPerSide = (int)(3.0*spec.rows*spec.columns/16.0);
     spec.roughness = 0.1;
     spec.smoothing = 0.95;
     std::string outPath = "grid.svg";
@@ -59,6 +60,34 @@ int main(int argc, char** argv) {
             throw std::runtime_error("failed while writing: " + disc_path);
         }
         std::cerr << "wrote " << disc_path << '\n';
+    }
+
+    // A populated board: the 8x8 grid above plus 20 pastel-green and 20 purplish
+    // discs, each generated separately and dropped in the centre of a distinct
+    // random square. 40 discs on 64 squares leaves 24 empty. Disc shape reuses
+    // the preferred roughness/smoothing/point_count; radius 0.4 fits one per cell.
+    games::board::BoardSpec board;
+    board.grid = spec;
+    board.disc = games::board::DiscSpec{0.4, 0.25, 0.95, 90};
+    board.pieces = {
+        games::board::PieceSet{"#2aa85a", spec.stonesPerSide},  // pastel green
+        games::board::PieceSet{"#c76fe8", spec.stonesPerSide},  // purplish
+    };
+    board.outline = "#000000";          // thin black outline
+    board.outline_width_units = 0.02;
+
+    const std::string board_svg = games::board::generate_board_svg(board);
+    {
+        const std::string board_path = "board.svg";
+        std::ofstream file(board_path, std::ios::binary);
+        if (!file) {
+            throw std::runtime_error("could not open output file: " + board_path);
+        }
+        file << board_svg;
+        if (!file) {
+            throw std::runtime_error("failed while writing: " + board_path);
+        }
+        std::cerr << "wrote " << board_path << '\n';
     }
 
     return EXIT_SUCCESS;

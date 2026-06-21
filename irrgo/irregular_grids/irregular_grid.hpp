@@ -55,6 +55,7 @@ struct Polyline {
 struct GridSpec {
     int rows;
     int columns;
+    int stonesPerSide;
     double roughness;
     double smoothing;
 };
@@ -71,7 +72,7 @@ struct SvgStyle {
     std::string background = "#ffffee"; //"#f4ecd8";
     std::string ink = "#000060"; //"#3a2f1a";
     double stroke_width_units = 0.0375;  // square-width units
-    double margin_units = 0.5;         // square-width units
+    double margin_units = 0.75;         // square-width units
 };
 
 struct GridGeometry {
@@ -128,6 +129,34 @@ std::string to_svg(const DiscGeometry& geometry,
 std::string generate_disc_svg(const DiscSpec& spec,
                               const RenderConfig& config = {},
                               const SvgStyle& style = {});
+
+// One colour of piece and how many to place on the board.
+struct PieceSet {
+    std::string fill;   // disc fill colour, e.g. "#2aa85a"
+    int count;          // number of discs of this colour (>= 0)
+};
+
+// A populated board: the grid, the disc shape shared by every piece, and the
+// coloured piece sets to scatter across the squares. Each disc is generated
+// separately (independent noise) and placed in the centre of a distinct,
+// randomly chosen square; no square receives two discs. Every disc carries a
+// thin outline. To fit one disc per 1x1 cell, disc.radius must be <= 0.5.
+struct BoardSpec {
+    GridSpec grid;
+    DiscSpec disc;                    // radius/roughness/smoothing/point_count, shared
+    std::vector<PieceSet> pieces;
+    std::string outline = "#000000";  // outline drawn on every disc
+    double outline_width_units = 0.02;
+};
+
+// Builds the grid plus all requested discs in one composite SVG document. The
+// random square choice and every disc's noise are driven by config.seed, so the
+// whole board is deterministic across platforms.
+// Throws std::invalid_argument if the pieces cannot fit (more discs than
+// squares) or disc.radius > 0.5; propagates the build/relax exceptions.
+std::string generate_board_svg(const BoardSpec& board,
+                               const RenderConfig& config = {},
+                               const SvgStyle& style = {});
 
 }  // namespace games::board
 
