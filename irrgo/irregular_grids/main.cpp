@@ -1,16 +1,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 //
-// Command-line driver for the irregular-grid generator. Builds a hand-scratched
-// grid and writes a standalone SVG document to stdout (or to a file given as the
-// last argument). The library itself performs no I/O; this is the I/O boundary.
-//
-// Usage:
-//   irregular_grid_demo [rows] [columns] [roughness] [smoothing] [out.svg]
-//
-// All arguments are optional and positional. Missing trailing arguments keep
-// their defaults. roughness and smoothing must lie in [0,1]; rows and columns
-// must be >= 1 (the library validates and throws otherwise).
+// Command-line driver for the irregular-grid generator. Writes three standalone
+// SVG documents -- grid.svg, disc.svg and board.svg -- to the current directory.
+// All parameters come from the board_params / draw_params modules; this file is
+// only the I/O boundary.
 
+#include "board_params.hpp"
+#include "draw_params.hpp"
 #include "irregular_grid.hpp"
 
 #include <cstdlib>
@@ -19,77 +15,60 @@
 #include <stdexcept>
 #include <string>
 
-int main(int argc, char** argv) {
-    // create a spec with default values which will be overwritten soon.
-    games::board::GridSpec spec{8, 8, 20, 0.5};
+namespace {
 
-    // rows and columns can be independently varied in the 6-12 range
-    spec.rows = 8; // 6 - 12;
-    spec.columns = 10; // 6 - 12;
-    spec.stonesPerSide =  (int)(3.0*spec.rows*spec.columns/16.0);
-    spec.roughness = 0.1;
-    spec.smoothing = 0.95;
-    std::string outPath = "grid.svg";
-
-        const std::string svg = games::board::generate_svg(spec);
-
-        if (outPath.empty()) {
-            std::cout << svg;
-        } else {
-            std::ofstream file(outPath, std::ios::binary);
-            if (!file) {
-                throw std::runtime_error("could not open output file: " + outPath);
-            }
-            file << svg;
-            if (!file) {
-                throw std::runtime_error("failed while writing: " + outPath);
-            }
-            std::cerr << "wrote " << outPath << '\n';
-        }
-
-    // A slightly irregular filled disc, by the same noise-then-smooth idea.
-    const games::board::DiscSpec disc{2.0, 0.25, 0.95, 360/4};
-    const std::string disc_svg = games::board::generate_disc_svg(disc);
-
-    {
-        const std::string disc_path = "disc.svg";
-        std::ofstream file(disc_path, std::ios::binary);
-        if (!file) {
-            throw std::runtime_error("could not open output file: " + disc_path);
-        }
-        file << disc_svg;
-        if (!file) {
-            throw std::runtime_error("failed while writing: " + disc_path);
-        }
-        std::cerr << "wrote " << disc_path << '\n';
+void write_file(const std::string& path, const std::string& contents) {
+    std::ofstream file(path, std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("could not open output file: " + path);
     }
+    file << contents;
+    if (!file) {
+        throw std::runtime_error("failed while writing: " + path);
+    }
+    std::cerr << "wrote " << path << '\n';
+}
 
-    // A populated board: the 8x8 grid above plus 20 pastel-green and 20 purplish
-    // discs, each generated separately and dropped in the centre of a distinct
-    // random square. 40 discs on 64 squares leaves 24 empty. Disc shape reuses
-    // the preferred roughness/smoothing/point_count; radius 0.4 fits one per cell.
-    games::board::BoardSpec board;
-    board.grid = spec;
-    board.disc = games::board::DiscSpec{0.4, 0.25, 0.95, 90};
-    board.pieces = {
-        games::board::PieceSet{"#2aa85a", spec.stonesPerSide},  // pastel green
-        games::board::PieceSet{"#c76fe8", spec.stonesPerSide},  // purplish
-    };
-    board.outline = "#000000";          // thin black outline
-    board.outline_width_units = 0.02;
+}  // namespace
 
-    const std::string board_svg = games::board::generate_board_svg(board);
-    {
-        const std::string board_path = "board.svg";
-        std::ofstream file(board_path, std::ios::binary);
-        if (!file) {
-            throw std::runtime_error("could not open output file: " + board_path);
-        }
-        file << board_svg;
-        if (!file) {
-            throw std::runtime_error("failed while writing: " + board_path);
-        }
-        std::cerr << "wrote " << board_path << '\n';
+int main() {
+    using namespace games::board;
+
+    try {
+        // Two independent seeds. A non-zero value is reproducible; 0 means
+        // "derive a fresh one from the clock" (see AbsGame::makeSeed).
+
+        // Board seed: 10359638071647919499  Render seed: 17277167099289001355
+        const std::uint64_t render_seed = AbsGame::makeSeed(0);
+        const std::uint64_t board_seed = AbsGame::makeSeed(0);
+
+        const BoardParams params;  // rows/columns/stone_fraction/roughness/smoothing
+        RenderConfig config = default_render_config();
+        config.seed = render_seed;
+        const SvgStyle style = default_svg_style();
+
+        // The plain grid and a standalone demo disc.
+        write_file("grid.svg", generate_svg(to_grid_spec(params), config, style));
+        write_file("disc.svg", generate_disc_svg(standalone_disc_spec(), config, style));
+
+        // The populated board: grid + the two piece sets, with the X on every
+        // immobilised disc.
+        const PieceColors colors = piece_colors();
+        const int per_side = stones_per_side(params);
+
+        BoardSpec board;
+        board.grid = to_grid_spec(params);
+        board.seed = board_seed;
+        board.pieces = {
+            PieceSet{colors.side_a, per_side},
+            PieceSet{colors.side_b, per_side},
+        };
+        apply_draw_defaults(board);  // disc, outline, outer box, X-mark
+
+        write_file("board.svg", generate_board_svg(board, config, style));
+    } catch (const std::exception& error) {
+        std::cerr << "error: " << error.what() << '\n';
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;

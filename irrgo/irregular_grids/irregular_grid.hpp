@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "AbsGame.h"  // AbsGame::makeSeed for the default RNG seed
+
 // Generates "hand-scratched" game-board grids.
 //
 // Model:
@@ -40,8 +42,6 @@
 
 namespace games::board {
 
-    uint64_t makeSeed(uint64_t s);
-
 struct Point {
     double x;
     double y;
@@ -52,21 +52,22 @@ struct Polyline {
     std::string label;          // e.g. "vertical-3", "horizontal-0"
 };
 
-// The four conceptual parameters. roughness and smoothing must lie in [0,1];
-// rows and columns must be >= 1. Out-of-range values throw std::invalid_argument.
+// The renderer's view of a grid. rows and columns must be >= 1; roughness and
+// smoothing must lie in [0,1]. Out-of-range values throw std::invalid_argument.
+// Game-level size limits live in board_params.hpp, not here.
 struct GridSpec {
-    int rows;
-    int columns;
-    int stonesPerSide;
-    double roughness;
-    double smoothing;
+    int rows = 8;
+    int columns = 8;
+    double roughness = 0.1;
+    double smoothing = 0.95;
 };
 
 // Resolution and the pixel scale used only at SVG-render time.
 struct RenderConfig {
     double square_size = 100.0;     // pixels per square (SVG output only)
     int points_per_edge = 10;     // samples per square along each line
-    std::uint64_t seed = makeSeed(3109643833l);        // deterministic across platforms, given non-zero seed value
+    // Deterministic across platforms given a non-zero seed; 0 means "clock-derived".
+   std::uint64_t seed = AbsGame::makeSeed(3109643833l);
 };
 
 // Cosmetic SVG settings. An empty background string omits the background rect.
@@ -75,6 +76,8 @@ struct SvgStyle {
     std::string ink = "#000060"; //"#3a2f1a";
     double stroke_width_units = 0.0375;  // square-width units
     double margin_units = 1.0;          // square-width units (gutter on every side)
+    double label_gap_units = 0.30;      // board edge -> coordinate label centre
+    double label_font_units = 0.32;     // coordinate label height
 };
 
 struct GridGeometry {
@@ -147,6 +150,9 @@ struct BoardSpec {
     GridSpec grid;
     DiscSpec disc;                    // radius/roughness/smoothing/point_count, shared
     std::vector<PieceSet> pieces;
+    // The board-configuration seed: fixes the random piece placement, independent
+    // of RenderConfig::seed (which drives the hand-scratched line/disc/X noise).
+    std::uint64_t seed = AbsGame::makeSeed(2654435761l);
     std::string outline = "#000000";  // outline drawn on every disc
     double outline_width_units = 0.02;
     // The outer black box framing the whole diagram (board + labels): its inset
@@ -154,11 +160,16 @@ struct BoardSpec {
     // gap to the inner border is then margin_units - outer_margin_units, equal on
     // all four sides.
     double outer_margin_units = 0.25;
+    // The "X" stamped on every immobilised disc.
+    std::string mark_color = "#000000";
+    double mark_length_fraction = 0.6;        // arm length as a fraction of disc diameter
+    double mark_stroke_width_units = 0.0375;  // X line weight, square-width units
 };
 
-// Builds the grid plus all requested discs in one composite SVG document. The
-// random square choice and every disc's noise are driven by config.seed, so the
-// whole board is deterministic across platforms.
+// Builds the grid plus all requested discs in one composite SVG document. Two
+// independent seeds drive it deterministically across platforms: board.seed
+// fixes the piece placement, config.seed fixes the hand-scratched line/disc/X
+// noise.
 // Throws std::invalid_argument if the pieces cannot fit (more discs than
 // squares) or disc.radius > 0.5; propagates the build/relax exceptions.
 std::string generate_board_svg(const BoardSpec& board,

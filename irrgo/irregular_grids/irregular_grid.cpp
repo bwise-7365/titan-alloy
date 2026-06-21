@@ -10,105 +10,23 @@
 #include <stdexcept>
 #include <utility>
 
-#include <chrono>  // high resolution clock
-#include <cstdio>
-#include <ostream>
+#include <cstdio>  // printf seed diagnostic
 
 namespace games::board {
 
-    using std::chrono::duration;
-    using std::chrono::time_point;
-    using std::chrono::system_clock;
-
-    const int WordLen = 64;
-    const uint64_t MASK64 = 0xFFFFFFFFFFFFFFFF; // 2^^64 - 1
-
-
-    uint64_t qTrans(const uint64_t s) {
-        // This is derived from the 1-to-1 quadratic mapping, 'f', developed by
-        // Rivest et al for their RC6 cipher entry in the AES contest.
-        //
-        // It is true but not obvious that these parameter setting insure:
-        // (A) The mapping is 1-to-1
-        // (B) There are no fixed points where x=qTrans(x)
-        //
-        // The 'f' in RC6 always kept the lowest bit unchanged.
-        // Similarly, qTrans always flips the lowest bit,
-        // so it is often advisable to rotate left or right.
-
-        const uint64_t a = 1; // this can be any positive number
-        const uint64_t n = 4; // this can be any positive even number
-        const uint64_t c = 3; // this can be any odd number
-
-        // This is intended to do modular arithmetic,
-        // so the rollovers are a feature, not a bug.
-        uint64_t rslt = (s + a) * ((n * s) + c);
-
-        return rslt;
-    }
-
-    uint64_t rotl(const uint64_t x, unsigned int n) {
-        uint64_t z = x;
-        n = n % WordLen;
-        if (0 != n) {
-            z = (x << n) | (x >> (WordLen - n));
-        }
-        return z;
-    }
-
-    uint64_t rotr(const uint64_t x, unsigned int n) {
-        uint64_t z = x;
-        n = n % WordLen;
-        if (0 != n) {
-            z = (x >> n) | (x << (WordLen - n));
-        }
-        return z;
-    }
-
-    uint64_t msRandom() {
-
-        using std::chrono::microseconds;
-        using std::chrono::duration_cast;
-
-        microseconds ms = duration_cast<microseconds>(system_clock::now().time_since_epoch());
-        uint64_t s2 = ms.count(); // microseconds since the Unix Epoch
-        s2 = rotr(s2, 3); // roll some low-order bits up to the top
-        return qTrans(s2);
-    }
-
-    uint64_t makeSeed(uint64_t s) {
-        uint64_t s2 = s;
-        if (0 == s2) {
-            s2 = msRandom();
-        }
-        return s2;
-    }
 namespace {
-
-
-
 
 constexpr double kTolerance = 1E-4;  // fraction of a square width
 constexpr int kMaxSweeps = 250;
 constexpr double kPi = 3.14159265358979323846;  // std::numbers::pi needs C++20 <numbers>
 
 void validate(const GridSpec& spec) {
-    int minRC = 6;
-    int maxRC = 12;
-    if (spec.rows < minRC) {
-        throw std::invalid_argument("validate: too few rows");
+    if (spec.rows < 1) {
+        throw std::invalid_argument("rows must be >= 1");
     }
-    if (spec.columns < minRC) {
-        throw std::invalid_argument("validate: too few columns");
+    if (spec.columns < 1) {
+        throw std::invalid_argument("columns must be >= 1");
     }
-
-    if (maxRC < spec.rows) {
-        throw std::invalid_argument("validate: too many rows");
-    }
-    if (maxRC < spec.columns) {
-        throw std::invalid_argument("validate: too many columns");
-    }
-
     if (!(spec.roughness >= 0.0 && spec.roughness <= 1.0)) {
         throw std::invalid_argument("roughness must be in [0,1]");
     }
@@ -261,14 +179,14 @@ void emit_points(std::ostream& os, const std::vector<Point>& points,
 // serif face is used so capital I keeps its top/bottom bars and stays distinct
 // from L (and from the digit 1). `offset` is the units-to-pixels translation
 // already applied to the board.
-void emit_edge_labels(std::ostream& os, int rows, int columns,
-                      double scale, double offset) {
+void emit_edge_labels(std::ostream& os, int rows, int columns, double scale,
+                      double offset, double label_gap_units, double label_font_units) {
     const double left_x = offset;
     const double right_x = offset + static_cast<double>(columns) * scale;
     const double top_y = offset;
     const double bottom_y = offset + static_cast<double>(rows) * scale;
-    const double gap = 0.30 * scale;   // board edge -> label centre
-    const double font = 0.32 * scale;  // label height
+    const double gap = label_gap_units * scale;    // board edge -> label centre
+    const double font = label_font_units * scale;  // label height
 
     os << "  <g font-family=\"serif\" font-size=\"" << font
        << "\" fill=\"#000000\" text-anchor=\"middle\" dominant-baseline=\"central\">\n";
@@ -610,11 +528,16 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         throw std::invalid_argument("more discs requested than there are squares");
     }
 
-    // One engine drives both the square choice and every disc's noise, so the
-    // whole board is reproducible from config.seed.
-        printf("Using seed: %ul \n", config.seed);
-    std::mt19937_64 engine(config.seed);
-    const std::vector<int> squares = choose_squares(square_count, requested, engine);
+    // Two independent engines: the board engine (board.seed) fixes the layout --
+    // which squares are occupied by which colour -- while the render engine
+    // (config.seed) drives all the hand-scratched noise (disc shapes, the X). The
+    // two seeds can be varied independently, both from main.cpp.
+    printf("Board seed: %llu  Render seed: %llu\n",
+           static_cast<unsigned long long>(board.seed),
+           static_cast<unsigned long long>(config.seed));
+    std::mt19937_64 board_engine(board.seed);
+    std::mt19937_64 render_engine(config.seed);
+    const std::vector<int> squares = choose_squares(square_count, requested, board_engine);
 
     const double scale = config.square_size;
     const double margin = style.margin_units * scale;
@@ -691,7 +614,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             disc_color.push_back(color_index);
             occupant[static_cast<std::size_t>(square)] = color_index;
 
-            DiscGeometry disc = build_disc_core(board.disc, engine);
+            DiscGeometry disc = build_disc_core(board.disc, render_engine);
             for (Point& p : disc.boundary.points) {  // origin-centred -> square centre
                 p.x += center.x;
                 p.y += center.y;
@@ -729,14 +652,15 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     }
 
     if (!marked_centers.empty()) {
-        const double x_length = 1.2 * board.disc.radius;  // 60% of the nominal diameter
+        // Arm length is a fraction of the nominal disc diameter (2 * radius).
+        const double x_length = board.mark_length_fraction * 2.0 * board.disc.radius;
         const std::vector<Polyline> x_template =
             build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
-                             config.points_per_edge, engine);
-        const double x_stroke = style.stroke_width_units * scale;
+                             config.points_per_edge, render_engine);
+        const double x_stroke = board.mark_stroke_width_units * scale;
 
         os << std::setprecision(3);
-        os << "  <g fill=\"none\" stroke=\"#000000\" stroke-width=\"" << x_stroke
+        os << "  <g fill=\"none\" stroke=\"" << board.mark_color << "\" stroke-width=\"" << x_stroke
            << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
         os << std::setprecision(2);
         for (const Point& c : marked_centers) {
@@ -754,7 +678,8 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         os << "  </g>\n";
     }
 
-    emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset);
+    emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset,
+                     style.label_gap_units, style.label_font_units);
 
     os << "</svg>\n";
     return os.str();

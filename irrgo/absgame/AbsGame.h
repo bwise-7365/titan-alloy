@@ -1,9 +1,20 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
+#include <cstdint>
 #include <memory>
 #include <vector>
 
 namespace AbsGame {
+
+// ---- PRNG / seed utilities (see Prng.cpp) --------------------------------
+// A small, platform-independent quadratic bit-mixer and seed maker, used to
+// turn a chosen (or clock-derived) value into a usable RNG seed.
+
+// A fresh seed derived from the microsecond wall clock (non-reproducible).
+uint64_t msRandom();
+
+// The seed to use: `s` if non-zero (reproducible), else a clock-derived one.
+uint64_t makeSeed(uint64_t s);
 
 // Integer move identifier. -1 (kPass) means "pass"; >= 0 is a board position.
 using MoveId = int;

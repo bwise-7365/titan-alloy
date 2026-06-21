@@ -3,7 +3,7 @@
 #include "AbsGame.h"
 #include "IrregularGraph.h"
 #include "RectangularGraph.h"
-#include "utils.h"
+#include "../absgame/utils.h"
 #include <chrono>
 #include <QAction>
 #include <QActionGroup>
