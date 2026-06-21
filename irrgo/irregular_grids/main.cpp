@@ -22,6 +22,7 @@
 int main(int argc, char** argv) {
     games::board::GridSpec spec{4, 4, 0.6, 0.5};
 
+    // rows and columns can be independently varied in the 6-12 range
     spec.rows = 8; // 6 - 12;
     spec.columns = 10; // 6 - 12;
     spec.stonesPerSide = (int)(3.0*spec.rows*spec.columns/16.0);

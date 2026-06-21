@@ -414,6 +414,10 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     if (board.grid.columns > 26) {
         throw std::invalid_argument("column labels run A..Z; columns must be <= 26");
     }
+    if (!(board.outer_margin_units >= 0.0 && board.outer_margin_units < style.margin_units)) {
+        throw std::invalid_argument("outer_margin_units must be in [0, margin_units): "
+                                    "the outer box sits between the canvas edge and the inner border");
+    }
 
     int requested = 0;
     for (const PieceSet& set : board.pieces) {
@@ -437,13 +441,11 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 
     const double scale = config.square_size;
     const double margin = style.margin_units * scale;
-    // Shift the whole board right and down by half a square. The canvas grows by
-    // the same amount so nothing clips: this widens the top/left gutter to 1.5x
-    // the base margin while keeping the base margin on the bottom/right.
-    const double shift = 0.5 * scale;
-    const double offset = margin + shift;
-    const double width = grid.width_units * scale + 2.0 * margin + shift;
-    const double height = grid.height_units * scale + 2.0 * margin + shift;
+    // One margin on every side, so the gutter -- and hence the gap between the
+    // inner and outer boxes -- is equal all around.
+    const double offset = margin;
+    const double width = grid.width_units * scale + 2.0 * margin;
+    const double height = grid.height_units * scale + 2.0 * margin;
     const double grid_stroke = style.stroke_width_units * scale;
     const double outline_stroke = board.outline_width_units * scale;
 
@@ -475,6 +477,14 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     os << "  <rect x=\"" << offset << "\" y=\"" << offset
        << "\" width=\"" << grid.width_units * scale
        << "\" height=\"" << grid.height_units * scale
+       << "\" fill=\"none\" stroke=\"#000000\" stroke-width=\"" << grid_stroke << "\"/>\n";
+
+    // A second, outer black box framing the whole diagram (board plus the edge
+    // labels), inset from the canvas border by the configurable outer margin.
+    const double box_inset = board.outer_margin_units * scale;
+    os << "  <rect x=\"" << box_inset << "\" y=\"" << box_inset
+       << "\" width=\"" << (width - 2.0 * box_inset)
+       << "\" height=\"" << (height - 2.0 * box_inset)
        << "\" fill=\"none\" stroke=\"#000000\" stroke-width=\"" << grid_stroke << "\"/>\n";
 
     // Each disc is generated separately (its own noise) and placed at the centre

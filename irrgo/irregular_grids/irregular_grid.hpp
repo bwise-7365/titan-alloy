@@ -72,7 +72,7 @@ struct SvgStyle {
     std::string background = "#ffffee"; //"#f4ecd8";
     std::string ink = "#000060"; //"#3a2f1a";
     double stroke_width_units = 0.0375;  // square-width units
-    double margin_units = 0.75;         // square-width units
+    double margin_units = 1.0;          // square-width units (gutter on every side)
 };
 
 struct GridGeometry {
@@ -147,6 +147,11 @@ struct BoardSpec {
     std::vector<PieceSet> pieces;
     std::string outline = "#000000";  // outline drawn on every disc
     double outline_width_units = 0.02;
+    // The outer black box framing the whole diagram (board + labels): its inset
+    // in square-widths from the canvas edge. Must be in [0, margin_units); the
+    // gap to the inner border is then margin_units - outer_margin_units, equal on
+    // all four sides.
+    double outer_margin_units = 0.25;
 };
 
 // Builds the grid plus all requested discs in one composite SVG document. The
