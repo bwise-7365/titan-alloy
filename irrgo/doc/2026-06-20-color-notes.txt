@@ -1,0 +1,64 @@
+Colors from Mancala:
+
+B1: #d1a566, 209, 165, 102
+P1: #7eb6a0, 126, 182, 160
+P2: #ffd69a, 255, 214, 154
+
+255
+128
+383
+
+(255 + 128)/2 = 191.5, round to 192
+
+ ff  c0  80
+255 192 128
+
+ ff  ff  dd
+255 255 221
+
+
+---------------------
+This section records my experiments
+with B1 -> (p1, p2) -> B2
+
+With TRIAD and Split complement, the angles
+are obvious, but the radii are unclear.
+
+If the background is pale beige, should
+the two pieces be pale, medium or dark?
+
+If the two pieces are pale, should the background be dark,
+or should it be medium or pale at user choice with black outline on pieces?
+Think of a pale Go board with solid White stones outlined in black, and solid Black stones.
+---------------------
+Split complement
+background ff00f2
+
+p1  f2f9ed
+p2  224b46
+---------------------
+
+Split complement
+p1  f2f9ed
+p2  224b46
+
+background 9f8c7a
+---------------------
+Split complement
+background 9f8c7a
+
+p1  f7f7f5
+p2  6c1790
+---------------------
+TRIAD
+B1  ffffdd (pale beige)
+
+P1 2aa85a (greenish)
+P2 c76fe8  (purplish)
+
+B2 5f412c (dark brown)
+
+P1  ddffff
+p2  ffddff
+
+
