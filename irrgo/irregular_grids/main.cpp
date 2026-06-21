@@ -40,8 +40,8 @@ int main() {
 
         // 8x10 Board seed: 1600304105177925591  Render seed: 6210208043131634036
         // 8x10 Board seed: 1289915031459806163  Render seed: 5901601049887194067
-        const std::uint64_t render_seed = AbsGame::makeSeed(0);
-        const std::uint64_t board_seed = AbsGame::makeSeed(0);
+        const std::uint64_t render_seed = AbsGame::makeSeed(603205);
+        const std::uint64_t board_seed = AbsGame::makeSeed(144532);
 
         const BoardParams params;  // rows/columns/stone_fraction/roughness/smoothing
         RenderConfig config = default_render_config();
