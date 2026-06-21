@@ -268,6 +268,45 @@ DiscGeometry build_disc_core(const DiscSpec& spec, std::mt19937_64& engine) {
     return geometry;
 }
 
+// Builds the "X" template: two crossed irregular lines at +/-45 degrees, each of
+// the given length and centred on the origin. Each line is drawn with the same
+// algorithm as the grid edges -- a straight local axis with perpendicular noise,
+// relaxed -- then rotated into place. Same roughness/smoothing and the same
+// per-square sample density as the edges. Square-width units.
+std::vector<Polyline> build_x_template(double length, double roughness, double smoothing,
+                                       int points_per_edge, std::mt19937_64& engine) {
+    int samples = static_cast<int>(std::lround(length * static_cast<double>(points_per_edge))) + 1;
+    if (samples < 2) {
+        samples = 2;
+    }
+    const double half = 0.5 * length;
+    const double angle[2] = {kPi / 4.0, -kPi / 4.0};  // the two crossed diagonals
+
+    std::vector<Polyline> lines;
+    lines.reserve(2);
+    for (int a = 0; a < 2; ++a) {
+        // Perpendicular deviation about a straight line (perfect value 0), exactly
+        // as an edge is built, with both ends pinned.
+        const std::vector<double> noise = make_noise(0.0, samples,  roughness, engine);
+        const std::vector<double> perp = relax(noise, 0.8 * smoothing, /*closed=*/false);
+        const double ct = std::cos(angle[a]);
+        const double st = std::sin(angle[a]);
+
+        Polyline line;
+        line.label = "x-" + std::to_string(a);
+        line.points.reserve(static_cast<std::size_t>(samples));
+        for (int k = 0; k < samples; ++k) {
+            const double u = -half + length * static_cast<double>(k) /
+                                              static_cast<double>(samples - 1);
+            const double v = perp[static_cast<std::size_t>(k)];
+            // Rotate the local (u, v) by the diagonal angle; the centre is the origin.
+            line.points.push_back(Point{u * ct - v * st, u * st + v * ct});
+        }
+        lines.push_back(std::move(line));
+    }
+    return lines;
+}
+
 }  // namespace
 
 GridGeometry build_grid(const GridSpec& spec, const RenderConfig& config) {
@@ -490,6 +529,8 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     // Each disc is generated separately (its own noise) and placed at the centre
     // of its randomly chosen square. squares[] holds the colour assignment order:
     // the first set's discs take the first slots, the next set the following, etc.
+    std::vector<Point> disc_centers;
+    disc_centers.reserve(static_cast<std::size_t>(requested));
     std::size_t slot = 0;
     for (const PieceSet& set : board.pieces) {
         for (int n = 0; n < set.count; ++n) {
@@ -499,6 +540,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             const int row = square / board.grid.columns;
             const Point center{static_cast<double>(column) + 0.5,
                                static_cast<double>(row) + 0.5};
+            disc_centers.push_back(center);
 
             DiscGeometry disc = build_disc_core(board.disc, engine);
             for (Point& p : disc.boundary.points) {  // origin-centred -> square centre
@@ -514,6 +556,39 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             emit_points(os, disc.boundary.points, scale, offset);
             os << "\"/>\n";
         }
+    }
+
+    // Mark a random 10% of the placed discs with the crossed "X". The template is
+    // generated once, centred on the origin, then stamped at each chosen disc's
+    // centre. Drawn after every disc so it always sits on top.
+    const int mark_count =
+        static_cast<int>(std::lround(0.10 * static_cast<double>(requested)));
+    if (mark_count > 0) {
+        const std::vector<int> marked = choose_squares(requested, mark_count, engine);
+        const double x_length = 1.2 * board.disc.radius;  // 60% of the nominal diameter
+        const std::vector<Polyline> x_template =
+            build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
+                             config.points_per_edge, engine);
+        const double x_stroke = style.stroke_width_units * scale;
+
+        os << std::setprecision(3);
+        os << "  <g fill=\"none\" stroke=\"#000000\" stroke-width=\"" << x_stroke
+           << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
+        os << std::setprecision(2);
+        for (const int idx : marked) {
+            const Point c = disc_centers[static_cast<std::size_t>(idx)];
+            for (const Polyline& line : x_template) {
+                std::vector<Point> placed;
+                placed.reserve(line.points.size());
+                for (const Point& p : line.points) {  // template centre -> disc centre
+                    placed.push_back(Point{p.x + c.x, p.y + c.y});
+                }
+                os << "    <polyline points=\"";
+                emit_points(os, placed, scale, offset);
+                os << "\"/>\n";
+            }
+        }
+        os << "  </g>\n";
     }
 
     emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset);
