@@ -14,4 +14,5 @@ add_subdirectory(driver)
 add_subdirectory(irrgo_gui)
 add_subdirectory(mancala_game)
 add_subdirectory(mancala_gui)
+add_subdirectory(irregular_grids)
 # Copyright Ben Paul Wise. All Rights Reserved.
