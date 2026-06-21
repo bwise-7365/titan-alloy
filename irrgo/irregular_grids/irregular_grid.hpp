@@ -40,6 +40,8 @@
 
 namespace games::board {
 
+    uint64_t makeSeed(uint64_t s);
+
 struct Point {
     double x;
     double y;
@@ -64,7 +66,7 @@ struct GridSpec {
 struct RenderConfig {
     double square_size = 100.0;     // pixels per square (SVG output only)
     int points_per_edge = 10;     // samples per square along each line
-    std::uint64_t seed = 1453;        // deterministic across platforms
+    std::uint64_t seed = makeSeed(3109643833l);        // deterministic across platforms, given non-zero seed value
 };
 
 // Cosmetic SVG settings. An empty background string omits the background rect.

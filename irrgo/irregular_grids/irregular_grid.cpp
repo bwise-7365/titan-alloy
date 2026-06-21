@@ -10,21 +10,105 @@
 #include <stdexcept>
 #include <utility>
 
+#include <chrono>  // high resolution clock
+#include <cstdio>
+#include <ostream>
+
 namespace games::board {
 
+    using std::chrono::duration;
+    using std::chrono::time_point;
+    using std::chrono::system_clock;
+
+    const int WordLen = 64;
+    const uint64_t MASK64 = 0xFFFFFFFFFFFFFFFF; // 2^^64 - 1
+
+
+    uint64_t qTrans(const uint64_t s) {
+        // This is derived from the 1-to-1 quadratic mapping, 'f', developed by
+        // Rivest et al for their RC6 cipher entry in the AES contest.
+        //
+        // It is true but not obvious that these parameter setting insure:
+        // (A) The mapping is 1-to-1
+        // (B) There are no fixed points where x=qTrans(x)
+        //
+        // The 'f' in RC6 always kept the lowest bit unchanged.
+        // Similarly, qTrans always flips the lowest bit,
+        // so it is often advisable to rotate left or right.
+
+        const uint64_t a = 1; // this can be any positive number
+        const uint64_t n = 4; // this can be any positive even number
+        const uint64_t c = 3; // this can be any odd number
+
+        // This is intended to do modular arithmetic,
+        // so the rollovers are a feature, not a bug.
+        uint64_t rslt = (s + a) * ((n * s) + c);
+
+        return rslt;
+    }
+
+    uint64_t rotl(const uint64_t x, unsigned int n) {
+        uint64_t z = x;
+        n = n % WordLen;
+        if (0 != n) {
+            z = (x << n) | (x >> (WordLen - n));
+        }
+        return z;
+    }
+
+    uint64_t rotr(const uint64_t x, unsigned int n) {
+        uint64_t z = x;
+        n = n % WordLen;
+        if (0 != n) {
+            z = (x >> n) | (x << (WordLen - n));
+        }
+        return z;
+    }
+
+    uint64_t msRandom() {
+
+        using std::chrono::microseconds;
+        using std::chrono::duration_cast;
+
+        microseconds ms = duration_cast<microseconds>(system_clock::now().time_since_epoch());
+        uint64_t s2 = ms.count(); // microseconds since the Unix Epoch
+        s2 = rotr(s2, 3); // roll some low-order bits up to the top
+        return qTrans(s2);
+    }
+
+    uint64_t makeSeed(uint64_t s) {
+        uint64_t s2 = s;
+        if (0 == s2) {
+            s2 = msRandom();
+        }
+        return s2;
+    }
 namespace {
+
+
+
 
 constexpr double kTolerance = 1E-4;  // fraction of a square width
 constexpr int kMaxSweeps = 250;
 constexpr double kPi = 3.14159265358979323846;  // std::numbers::pi needs C++20 <numbers>
 
 void validate(const GridSpec& spec) {
-    if (spec.rows < 1) {
-        throw std::invalid_argument("rows must be >= 1");
+    int minRC = 6;
+    int maxRC = 12;
+    if (spec.rows < minRC) {
+        throw std::invalid_argument("validate: too few rows");
     }
-    if (spec.columns < 1) {
-        throw std::invalid_argument("columns must be >= 1");
+    if (spec.columns < minRC) {
+        throw std::invalid_argument("validate: too few columns");
     }
+
+    if (maxRC < spec.rows) {
+        throw std::invalid_argument("validate: too many rows");
+    }
+    if (maxRC < spec.columns) {
+        throw std::invalid_argument("validate: too many columns");
+    }
+
     if (!(spec.roughness >= 0.0 && spec.roughness <= 1.0)) {
         throw std::invalid_argument("roughness must be in [0,1]");
     }
@@ -307,6 +391,59 @@ std::vector<Polyline> build_x_template(double length, double roughness, double s
     return lines;
 }
 
+// The colour index occupying square (column, row), or -1 if empty or off-board.
+int occupant_at(const std::vector<int>& occupant, int columns, int rows,
+                int column, int row) {
+    if (column < 0 || column >= columns || row < 0 || row >= rows) {
+        return -1;
+    }
+    return occupant[static_cast<std::size_t>(row * columns + column)];
+}
+
+// True if (column, row) holds an enemy of `me` that can still pin it: occupied,
+// a different colour, AND not itself already marked immobilised. A disc that has
+// already been marked "X" no longer immobilises its neighbours.
+bool active_enemy(const std::vector<int>& occupant, const std::vector<bool>& marked,
+                  int columns, int rows, int column, int row, int me) {
+    const int o = occupant_at(occupant, columns, rows, column, row);
+    if (o == -1 || o == me) {
+        return false;
+    }
+    return !marked[static_cast<std::size_t>(row * columns + column)];
+}
+
+// Latrunculi immobilisation of the piece of colour `me` on square (column, row):
+//   - bracketed: squeezed between two enemy pieces on opposite sides, either
+//     left/right or top/bottom; or
+//   - corner: the piece is at a board corner and its two in-board orthogonal
+//     neighbours (the "L" at the angle) are both enemies.
+// Each pair is judged independently, and a pinning piece counts only if it is an
+// *active* enemy (see active_enemy): an already-marked disc does not pin. So a
+// piece can be free of the L/R pair yet still immobilised by the T/B pair.
+bool is_immobilized(const std::vector<int>& occupant, const std::vector<bool>& marked,
+                    int columns, int rows, int column, int row, int me) {
+    const bool left_enemy = active_enemy(occupant, marked, columns, rows, column - 1, row, me);
+    const bool right_enemy = active_enemy(occupant, marked, columns, rows, column + 1, row, me);
+    const bool top_enemy = active_enemy(occupant, marked, columns, rows, column, row - 1, me);
+    const bool bottom_enemy = active_enemy(occupant, marked, columns, rows, column, row + 1, me);
+
+    if ((left_enemy && right_enemy) || (top_enemy && bottom_enemy)) {
+        return true;
+    }
+
+    const bool on_left_or_right_edge = (column == 0 || column == columns - 1);
+    const bool on_top_or_bottom_edge = (row == 0 || row == rows - 1);
+    if (on_left_or_right_edge && on_top_or_bottom_edge) {
+        const bool horizontal_enemy = (column == 0) ? right_enemy : left_enemy;
+        const bool vertical_enemy = (row == 0) ? bottom_enemy : top_enemy;
+        if (horizontal_enemy && vertical_enemy) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 }  // namespace
 
 GridGeometry build_grid(const GridSpec& spec, const RenderConfig& config) {
@@ -475,6 +612,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 
     // One engine drives both the square choice and every disc's noise, so the
     // whole board is reproducible from config.seed.
+        printf("Using seed: %ul \n", config.seed);
     std::mt19937_64 engine(config.seed);
     const std::vector<int> squares = choose_squares(square_count, requested, engine);
 
@@ -530,8 +668,16 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     // of its randomly chosen square. squares[] holds the colour assignment order:
     // the first set's discs take the first slots, the next set the following, etc.
     std::vector<Point> disc_centers;
+    std::vector<int> disc_square;
+    std::vector<int> disc_color;
     disc_centers.reserve(static_cast<std::size_t>(requested));
+    disc_square.reserve(static_cast<std::size_t>(requested));
+    disc_color.reserve(static_cast<std::size_t>(requested));
+    // Board occupancy by colour index (-1 == empty), for the immobilisation test.
+    std::vector<int> occupant(static_cast<std::size_t>(square_count), -1);
+
     std::size_t slot = 0;
+    int color_index = 0;
     for (const PieceSet& set : board.pieces) {
         for (int n = 0; n < set.count; ++n) {
             const int square = squares[slot];
@@ -541,6 +687,9 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             const Point center{static_cast<double>(column) + 0.5,
                                static_cast<double>(row) + 0.5};
             disc_centers.push_back(center);
+            disc_square.push_back(square);
+            disc_color.push_back(color_index);
+            occupant[static_cast<std::size_t>(square)] = color_index;
 
             DiscGeometry disc = build_disc_core(board.disc, engine);
             for (Point& p : disc.boundary.points) {  // origin-centred -> square centre
@@ -556,15 +705,30 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             emit_points(os, disc.boundary.points, scale, offset);
             os << "\"/>\n";
         }
+        ++color_index;
     }
 
-    // Mark a random 10% of the placed discs with the crossed "X". The template is
-    // generated once, centred on the origin, then stamped at each chosen disc's
-    // centre. Drawn after every disc so it always sits on top.
-    const int mark_count =
-        static_cast<int>(std::lround(0.10 * static_cast<double>(requested)));
-    if (mark_count > 0) {
-        const std::vector<int> marked = choose_squares(requested, mark_count, engine);
+    // Mark every immobilised piece (Latrunculi) with the crossed "X". The template
+    // is generated once, centred on the origin, then stamped at each immobilised
+    // disc's centre. Drawn after every disc so it always sits on top.
+    //
+    // The scan is a single pass in disc-placement order, and a disc marked earlier
+    // in the pass no longer pins later discs (see active_enemy). The result is
+    // therefore order-dependent by design, and reproducible from the seed.
+    std::vector<Point> marked_centers;
+    std::vector<bool> marked_square(static_cast<std::size_t>(square_count), false);
+    for (std::size_t i = 0; i < disc_centers.size(); ++i) {
+        const int square = disc_square[i];
+        const int column = square % board.grid.columns;
+        const int row = square / board.grid.columns;
+        if (is_immobilized(occupant, marked_square, board.grid.columns, board.grid.rows,
+                           column, row, disc_color[i])) {
+            marked_square[static_cast<std::size_t>(square)] = true;
+            marked_centers.push_back(disc_centers[i]);
+        }
+    }
+
+    if (!marked_centers.empty()) {
         const double x_length = 1.2 * board.disc.radius;  // 60% of the nominal diameter
         const std::vector<Polyline> x_template =
             build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
@@ -575,8 +739,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         os << "  <g fill=\"none\" stroke=\"#000000\" stroke-width=\"" << x_stroke
            << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
         os << std::setprecision(2);
-        for (const int idx : marked) {
-            const Point c = disc_centers[static_cast<std::size_t>(idx)];
+        for (const Point& c : marked_centers) {
             for (const Polyline& line : x_template) {
                 std::vector<Point> placed;
                 placed.reserve(line.points.size());
