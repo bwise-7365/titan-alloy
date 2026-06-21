@@ -1,9 +1,9 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/minimax.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include "palette/minimax.h"
 
 namespace palette {
 

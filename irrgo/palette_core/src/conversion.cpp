@@ -1,9 +1,10 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/conversion.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+
+#include "palette/conversion.h"
 
 namespace palette {
 

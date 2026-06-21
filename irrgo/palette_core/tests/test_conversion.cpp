@@ -1,8 +1,9 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/conversion.hpp"
-#include "palette/color.hpp"
-#include "palette/types.hpp"
-#include "test_support.hpp"
+
+#include "palette/conversion.h"
+#include "palette/color.h"
+#include "palette/types.h"
+#include "test_support.h"
 
 #include <cmath>
 

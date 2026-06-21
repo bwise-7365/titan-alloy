@@ -2,7 +2,7 @@
 #ifndef PALETTE_HARMONY_HPP
 #define PALETTE_HARMONY_HPP
 
-#include "palette/types.hpp"
+#include "palette/types.h"
 
 // Pure angular harmony helpers on the RYB wheel (DESIGN.md §1). All angles are
 // degrees; inputs may be any real, outputs are normalized to [0,360).

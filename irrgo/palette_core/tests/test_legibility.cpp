@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/legibility.hpp"
-#include "test_support.hpp"
+
+#include "palette/legibility.h"
+#include "test_support.h"
 
 using palette::Srgb;
 using palette::contrastRatio;

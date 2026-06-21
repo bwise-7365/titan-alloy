@@ -1,15 +1,15 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "modes_internal.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <utility>
 #include <vector>
 
-#include "palette/conversion.hpp"
-#include "palette/harmony.hpp"
-#include "palette/legibility.hpp"
-#include "palette/minimax.hpp"
+#include "modes_internal.h"
+#include "palette/conversion.h"
+#include "palette/harmony.h"
+#include "palette/legibility.h"
+#include "palette/minimax.h"
 
 namespace palette {
 namespace detail {

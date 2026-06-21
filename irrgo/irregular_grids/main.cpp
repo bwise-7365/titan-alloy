@@ -2,18 +2,18 @@
 //
 // Command-line driver for the irregular-grid generator. Writes three standalone
 // SVG documents -- grid.svg, disc.svg and board.svg -- to the current directory.
-// All parameters come from the board_params / draw_params modules; this file is
-// only the I/O boundary.
-
-#include "board_params.hpp"
-#include "draw_params.hpp"
-#include "irregular_grid.hpp"
+// All parameters come from the board_params / draw_params modules.
+// This just does the setup.
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+
+#include "board_params.h"
+#include "draw_params.h"
+#include "irregular_grid.h"
 
 namespace {
 

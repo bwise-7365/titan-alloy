@@ -2,8 +2,8 @@
 #ifndef PALETTE_MODES_INTERNAL_HPP
 #define PALETTE_MODES_INTERNAL_HPP
 
-#include "palette/color.hpp"
-#include "palette/types.hpp"
+#include "palette/color.h"
+#include "palette/types.h"
 
 // Shared helpers used by two or more modes. Internal to palette_core (not
 // installed). Definitions live in modes_internal.cpp.

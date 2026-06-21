@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "irregular_grid.hpp"  // RenderConfig, SvgStyle, DiscSpec, BoardSpec
+#include "irregular_grid.h"  // RenderConfig, SvgStyle, DiscSpec, BoardSpec
 
 namespace games::board {
 

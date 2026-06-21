@@ -1,9 +1,10 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/minimax.hpp"
-#include "test_support.hpp"
 
 #include <algorithm>
 #include <cmath>
+
+#include "palette/minimax.h"
+#include "test_support.h"
 
 using palette::minimaxBackgroundLuminance;
 

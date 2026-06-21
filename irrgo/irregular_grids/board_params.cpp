@@ -1,6 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
-#include "board_params.hpp"
+#include "board_params.h"
 
 #include <cmath>
 #include <stdexcept>

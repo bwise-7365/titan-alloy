@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "palette/color.hpp"
+#include "palette/color.h"
 
 // Value types for the harmony layer and the mode results (DESIGN.md §6).
 // All are small immutable aggregates. `Srgb` lives in color.hpp.

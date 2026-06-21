@@ -1,11 +1,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/modes.hpp"
-#include "palette/color.hpp"
-#include "palette/conversion.hpp"
-#include "palette/types.hpp"
-#include "test_support.hpp"
 
 #include <cmath>
+
+#include "palette/modes.h"
+#include "palette/color.h"
+#include "palette/conversion.h"
+#include "palette/types.h"
+#include "test_support.h"
 
 using namespace palette;
 

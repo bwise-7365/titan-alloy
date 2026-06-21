@@ -1,7 +1,8 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/harmony.hpp"
 
 #include <cmath>
+
+#include "palette/harmony.h"
 
 namespace palette {
 

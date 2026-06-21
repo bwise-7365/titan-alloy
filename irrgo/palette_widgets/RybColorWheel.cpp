@@ -12,7 +12,7 @@
 #include <QRectF>
 
 #include "ColorConvert.h"
-#include "palette/conversion.hpp"
+#include "palette/conversion.h"
 
 namespace palette_widgets {
 

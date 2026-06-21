@@ -2,7 +2,7 @@
 #ifndef PALETTE_LEGIBILITY_HPP
 #define PALETTE_LEGIBILITY_HPP
 
-#include "palette/color.hpp"
+#include "palette/color.h"
 
 namespace palette {
 

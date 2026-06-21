@@ -1,10 +1,10 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/modes.hpp"
 
-#include "modes_internal.hpp"
-#include "palette/conversion.hpp"
-#include "palette/harmony.hpp"
-#include "palette/legibility.hpp"
+#include "palette/modes.h"
+#include "modes_internal.h"
+#include "palette/conversion.h"
+#include "palette/harmony.h"
+#include "palette/legibility.h"
 
 namespace palette {
 

@@ -1,7 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "PaletteController.h"
 
-#include "palette/modes.hpp"
+#include "PaletteController.h"
+#include "palette/modes.h"
 
 namespace palette_widgets {
 

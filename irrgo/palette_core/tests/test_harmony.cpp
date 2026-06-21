@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/harmony.hpp"
-#include "test_support.hpp"
+
+#include "palette/harmony.h"
+#include "test_support.h"
 
 using namespace palette;
 

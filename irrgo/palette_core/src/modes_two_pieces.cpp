@@ -1,7 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/modes.hpp"
 
-#include "modes_internal.hpp"
+#include "palette/modes.h"
+#include "modes_internal.h"
 
 namespace palette {
 

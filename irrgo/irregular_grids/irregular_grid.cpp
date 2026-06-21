@@ -1,4 +1,6 @@
-#include "irregular_grid.hpp"
+// Copyright Ben Paul Wise. All Rights Reserved.
+
+#include "irregular_grid.h"
 
 #include <cmath>
 #include <cstddef>
@@ -686,3 +688,5 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 }
 
 }  // namespace games::board
+
+// Copyright Ben Paul Wise. All Rights Reserved.

@@ -2,8 +2,8 @@
 #ifndef PALETTE_MODES_HPP
 #define PALETTE_MODES_HPP
 
-#include "palette/color.hpp"
-#include "palette/types.hpp"
+#include "palette/color.h"
+#include "palette/types.h"
 
 // The three pure entry modes (DESIGN.md §4). Each returns a complete `Palette`
 // (chosen colors + diagnostics + any least-bad-accommodation warnings). They

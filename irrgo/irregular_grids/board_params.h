@@ -1,7 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 
-#include "irregular_grid.hpp"  // GridSpec
+#include "irregular_grid.h"  // GridSpec
 
 namespace games::board {
 

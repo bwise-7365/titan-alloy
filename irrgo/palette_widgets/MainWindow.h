@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QMainWindow>
 
-#include "palette/types.hpp"
+#include "palette/types.h"
 
 class QCheckBox;
 class QComboBox;

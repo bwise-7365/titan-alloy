@@ -1,6 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
-#include "draw_params.hpp"
+#include "draw_params.h"
 
 namespace games::board {
 

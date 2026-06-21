@@ -1,5 +1,5 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#include "palette/legibility.hpp"
+#include "palette/legibility.h"
 
 #include <algorithm>
 #include <cmath>

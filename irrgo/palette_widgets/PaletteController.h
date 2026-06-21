@@ -3,8 +3,8 @@
 
 #include <QObject>
 
-#include "palette/color.hpp"
-#include "palette/types.hpp"
+#include "palette/color.h"
+#include "palette/types.h"
 
 // Thin bridge between the Qt UI and the pure palette_core. This is the ONLY
 // class that calls palette::fromBackground / fromOnePiece / fromTwoPieces. It

@@ -3,7 +3,7 @@
 
 #include <QColor>
 
-#include "palette/color.hpp"
+#include "palette/color.h"
 
 // The single QColor<->Srgb boundary (DESIGN.md §6). Everything Qt-side speaks
 // QColor; everything core-side speaks palette::Srgb; conversion happens only

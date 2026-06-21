@@ -2,8 +2,8 @@
 #ifndef PALETTE_CONVERSION_HPP
 #define PALETTE_CONVERSION_HPP
 
-#include "palette/color.hpp"
-#include "palette/types.hpp"
+#include "palette/color.h"
+#include "palette/types.h"
 
 // The RYB<->sRGB bridge (DESIGN.md §1). The cube corner constants and the
 // numerically-fit inverse are PORTED from ProfJski/ArtColors (RYB.cpp), not

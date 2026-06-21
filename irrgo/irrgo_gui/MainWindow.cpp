@@ -520,7 +520,7 @@ void MainWindow::buildMenuBar() {
                 duration_cast<microseconds>(
                     steady_clock::now().time_since_epoch()).count());
             uint64_t rotated = (us << 7) | (us >> 57);
-            int s = static_cast<int>(utils::qTrans(rotated) & 0x7FFFFFFF);
+            int s = static_cast<int>(AbsGame::qTrans(rotated) & 0x7FFFFFFF);
             if (s == 0) s = 1;
             randomSeedEdit_->setText(QString::number(s));
         }

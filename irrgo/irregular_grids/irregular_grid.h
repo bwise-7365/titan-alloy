@@ -1,3 +1,5 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
+
 #ifndef GAMES_BOARD_IRREGULAR_GRID_HPP
 #define GAMES_BOARD_IRREGULAR_GRID_HPP
 
@@ -179,3 +181,4 @@ std::string generate_board_svg(const BoardSpec& board,
 }  // namespace games::board
 
 #endif  // GAMES_BOARD_IRREGULAR_GRID_HPP
+// Copyright Ben Paul Wise. All Rights Reserved.
