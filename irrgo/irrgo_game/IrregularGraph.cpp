@@ -10,8 +10,6 @@
 
 namespace IrrGo {
 
-static constexpr float kColSpacing = 0.87f;
-static constexpr float kRowSpacing = 0.93f;
 static constexpr double kMinAngleDeg   = 15.0;
 static constexpr float  kNodeClearance = 0.3f; // min distance from segment to any non-endpoint node
 

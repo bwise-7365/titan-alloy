@@ -4,9 +4,6 @@
 
 namespace IrrGo {
 
-static constexpr float kColSpacing = 0.87f;
-static constexpr float kRowSpacing = 0.93f;
-
 RectangularGraph::RectangularGraph(int rows, int cols)
     : rows_(rows), cols_(cols)
 {

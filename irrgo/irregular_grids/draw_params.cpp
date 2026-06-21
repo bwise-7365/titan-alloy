@@ -4,6 +4,16 @@
 
 namespace games::board {
 
+namespace {
+// Disc shape shared by the board pieces and the standalone demo disc; only the
+// radius differs between the two.
+constexpr double kDiscRoughness = 0.25;
+constexpr double kDiscSmoothing = 0.95;
+constexpr int kDiscPointCount = 90;
+constexpr double kBoardDiscRadius = 0.4;       // fits one disc per 1x1 cell
+constexpr double kStandaloneDiscRadius = 2.0;  // the large standalone demo disc
+}  // namespace
+
 RenderConfig default_render_config() {
     // Struct defaults already hold square_size, points_per_edge and the seed.
     return RenderConfig{};
@@ -15,11 +25,11 @@ SvgStyle default_svg_style() {
 }
 
 DiscSpec board_disc_spec() {
-    return DiscSpec{0.4, 0.25, 0.95, 90};
+    return DiscSpec{kBoardDiscRadius, kDiscRoughness, kDiscSmoothing, kDiscPointCount};
 }
 
 DiscSpec standalone_disc_spec() {
-    return DiscSpec{2.0, 0.25, 0.95, 90};
+    return DiscSpec{kStandaloneDiscRadius, kDiscRoughness, kDiscSmoothing, kDiscPointCount};
 }
 
 PieceColors piece_colors() {
@@ -28,12 +38,12 @@ PieceColors piece_colors() {
 
 void apply_draw_defaults(BoardSpec& board) {
     board.disc = board_disc_spec();
-    board.outline = "#000000";
-    board.outline_width_units = 0.02;
-    board.outer_margin_units = 0.25;
-    board.mark_color = "#000000";
-    board.mark_length_fraction = 0.6;
-    board.mark_stroke_width_units = 0.0375;
+    board.outline = kBlackInk;
+    board.outline_width_units = kOutlineWidthUnits;
+    board.outer_margin_units = kOuterMarginUnits;
+    board.mark_color = kBlackInk;
+    board.mark_length_fraction = kMarkLengthFraction;
+    board.mark_stroke_width_units = kMarkStrokeWidthUnits;
 }
 
 }  // namespace games::board

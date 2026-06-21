@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 namespace IrrGo {
@@ -80,6 +81,8 @@ private:
     void dsuUnite(int a, int b);
     void dsuCaptureGroup(int root, Color capturedColor);
     bool isLegalPlacement(int nodeId) const;
+    // Raw stone counts {black, white} over the board (komi added by callers).
+    std::pair<int, int> countStones() const;
 };
 
 } // namespace IrrGo

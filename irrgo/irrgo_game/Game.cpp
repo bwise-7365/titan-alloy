@@ -229,15 +229,22 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     return placeStone(mv);
 }
 
+std::pair<int, int> Game::countStones() const {
+    int black = 0, white = 0;
+    for (Color c : board_) {
+        if      (c == Color::Black) { ++black; }
+        else if (c == Color::White) { ++white; }
+    }
+    return {black, white};
+}
+
 double Game::staticEval() const {
     // Stone count + single-point eye bonus — O(N+E), no allocation.
     // The eye bonus (weight > 1) makes filling a secure eye slightly negative
     // under Chinese area scoring, correcting the raw stone-count bias.
-    double black = 0.0, white = komi_;
-    for (Color c : board_) {
-        if      (c == Color::Black) ++black;
-        else if (c == Color::White) ++white;
-    }
+    auto [blackStones, whiteStones] = countStones();
+    double black = blackStones;
+    double white = komi_ + whiteStones;
     auto [eb, ew] = singleEyeBonus(*this);
     black += eb;
     white += ew;
@@ -252,11 +259,7 @@ double Game::negamaxEval() const {
     constexpr int    kRadius     = 3;
     constexpr double areaPremium = 0.05;
 
-    int blackStones = 0, whiteStones = 0;
-    for (Color c : board_) {
-        if      (c == Color::Black) ++blackStones;
-        else if (c == Color::White) ++whiteStones;
-    }
+    auto [blackStones, whiteStones] = countStones();
 
     double blackDvr = DVR(*this, Color::Black, kRadius).size();
     double whiteDvr = DVR(*this, Color::White, kRadius).size();

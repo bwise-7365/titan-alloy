@@ -16,6 +16,9 @@ using AbsGame::MoveId;
 
  constexpr double kUctExpFactor    = 1.0;
  constexpr int    kMaxRolloutDepth = 200;
+ // c^2 in the UCB1 exploration term: sqrt(kUctExplorationC2 * ln(N)/n) equals
+ // c * sqrt(ln(N)/n) with the classical c = sqrt(2). kUctExpFactor scales it.
+ constexpr double kUctExplorationC2 = 2.0;
 
 struct MctsNode {
     std::unique_ptr<AbsGame::Game>         game;
@@ -48,7 +51,7 @@ double uctScore(const MctsNode& parent, const MctsNode& child,
     if (parent.game->currentPlayer() != rootPlayer)
         mean = -mean;
     double exploration = expFactor *
-        std::sqrt(2.0 * std::log(static_cast<double>(parent.visitCount))
+        std::sqrt(kUctExplorationC2 * std::log(static_cast<double>(parent.visitCount))
                       / child.visitCount);
     return mean + exploration;
 }

@@ -7,6 +7,12 @@
 
 namespace IrrGo {
 
+// Physical spacing between grid columns and rows when assigning node display
+// coordinates (cells are intentionally slightly non-square for a hand-made look).
+// Shared by every Graph subclass that lays out a rectangular lattice.
+inline constexpr float kColSpacing = 0.87f;
+inline constexpr float kRowSpacing = 0.93f;
+
 class Graph {
 public:
     virtual ~Graph() = default;

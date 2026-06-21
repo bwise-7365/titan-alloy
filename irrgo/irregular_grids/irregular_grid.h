@@ -54,6 +54,19 @@ struct Polyline {
     std::string label;          // e.g. "vertical-3", "horizontal-0"
 };
 
+// Default drawing parameters (square-width units unless noted). These are the
+// single source of truth: both the struct defaults below and the draw_params
+// factories reference them, so the two cannot drift apart.
+inline constexpr const char* kBlackInk = "#000000";
+inline constexpr double kStrokeWidthUnits = 0.0375;
+inline constexpr double kMarginUnits = 1.0;
+inline constexpr double kLabelGapUnits = 0.30;
+inline constexpr double kLabelFontUnits = 0.32;
+inline constexpr double kOutlineWidthUnits = 0.02;
+inline constexpr double kOuterMarginUnits = 0.25;
+inline constexpr double kMarkLengthFraction = 0.6;
+inline constexpr double kMarkStrokeWidthUnits = 0.0375;
+
 // The renderer's view of a grid. rows and columns must be >= 1; roughness and
 // smoothing must lie in [0,1]. Out-of-range values throw std::invalid_argument.
 // Game-level size limits live in board_params.hpp, not here.
@@ -76,10 +89,10 @@ struct RenderConfig {
 struct SvgStyle {
     std::string background = "#ffffee"; //"#f4ecd8";
     std::string ink = "#000060"; //"#3a2f1a";
-    double stroke_width_units = 0.0375;  // square-width units
-    double margin_units = 1.0;          // square-width units (gutter on every side)
-    double label_gap_units = 0.30;      // board edge -> coordinate label centre
-    double label_font_units = 0.32;     // coordinate label height
+    double stroke_width_units = kStrokeWidthUnits;  // square-width units
+    double margin_units = kMarginUnits;             // gutter on every side
+    double label_gap_units = kLabelGapUnits;        // board edge -> label centre
+    double label_font_units = kLabelFontUnits;      // coordinate label height
 };
 
 struct GridGeometry {
@@ -155,17 +168,17 @@ struct BoardSpec {
     // The board-configuration seed: fixes the random piece placement, independent
     // of RenderConfig::seed (which drives the hand-scratched line/disc/X noise).
     std::uint64_t seed = AbsGame::makeSeed(2654435761l);
-    std::string outline = "#000000";  // outline drawn on every disc
-    double outline_width_units = 0.02;
+    std::string outline = kBlackInk;  // outline drawn on every disc
+    double outline_width_units = kOutlineWidthUnits;
     // The outer black box framing the whole diagram (board + labels): its inset
     // in square-widths from the canvas edge. Must be in [0, margin_units); the
     // gap to the inner border is then margin_units - outer_margin_units, equal on
     // all four sides.
-    double outer_margin_units = 0.25;
+    double outer_margin_units = kOuterMarginUnits;
     // The "X" stamped on every immobilised disc.
-    std::string mark_color = "#000000";
-    double mark_length_fraction = 0.6;        // arm length as a fraction of disc diameter
-    double mark_stroke_width_units = 0.0375;  // X line weight, square-width units
+    std::string mark_color = kBlackInk;
+    double mark_length_fraction = kMarkLengthFraction;       // fraction of disc diameter
+    double mark_stroke_width_units = kMarkStrokeWidthUnits;  // X line weight, square-width units
 };
 
 // Builds the grid plus all requested discs in one composite SVG document. Two

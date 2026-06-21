@@ -4,9 +4,6 @@
 
 namespace IrrGo {
 
-static constexpr float kColSpacing = 0.87f;
-static constexpr float kRowSpacing = 0.93f;
-
 LoadedGraph::LoadedGraph(const std::vector<NodeData>& nodeData,
                          const std::vector<EdgeData>& edgeData,
                          uint64_t seed)

@@ -10,6 +10,7 @@
 #include <random>
 #include <sstream>
 #include <stdexcept>
+#include <string_view>
 #include <utility>
 
 #include <cstdio>  // printf seed diagnostic
@@ -21,6 +22,8 @@ namespace {
 constexpr double kTolerance = 1E-4;  // fraction of a square width
 constexpr int kMaxSweeps = 250;
 constexpr double kPi = 3.14159265358979323846;  // std::numbers::pi needs C++20 <numbers>
+constexpr double kTwoPow53 = 9007199254740992.0;  // 2^53, the double mantissa span
+constexpr double kDiagonalAngleRad = kPi / 4.0;   // the X arms run at +/-45 degrees
 
 void validate(const GridSpec& spec) {
     if (spec.rows < 1) {
@@ -66,7 +69,7 @@ void validate(const DiscSpec& spec) {
 // std::uniform_real_distribution, whose algorithm is implementation-defined.
 double canonical_uniform(std::mt19937_64& engine) {
     const std::uint64_t bits = engine() >> 11;  // top 53 bits
-    return static_cast<double>(bits) * (1.0 / 9007199254740992.0);  // / 2^53
+    return static_cast<double>(bits) * (1.0 / kTwoPow53);
 }
 
 // Noisy perpendicular coordinate for one line. Endpoints carry the exact perfect
@@ -161,17 +164,62 @@ Polyline zip_polyline(const std::vector<double>& xs, const std::vector<double>& 
 }
 
 // Writes an SVG points list "x0,y0 x1,y1 ..." in pixels, applying the shared
-// units-to-pixels transform. Used by every polyline and polygon emitter.
+// units-to-pixels transform. The optional (tx, ty) translation (square-width
+// units) is added before scaling, so a template/origin-centred shape can be
+// stamped at a board position without first copying and translating its points.
 void emit_points(std::ostream& os, const std::vector<Point>& points,
-                 double scale, double margin) {
+                 double scale, double margin, double tx = 0.0, double ty = 0.0) {
     bool first = true;
     for (const Point& p : points) {
         if (!first) {
             os << ' ';
         }
         first = false;
-        os << (p.x * scale + margin) << ',' << (p.y * scale + margin);
+        os << ((p.x + tx) * scale + margin) << ',' << ((p.y + ty) * scale + margin);
     }
+}
+
+// Opens an SVG document: the <svg> header and an optional background <rect>.
+// Sets fixed/precision(2) (the default for coordinates) on the stream.
+void emit_svg_open(std::ostream& os, double width, double height,
+                   const std::string& background) {
+    os << std::fixed << std::setprecision(2);
+    os << "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" << width
+       << "\" height=\"" << height << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
+    if (!background.empty()) {
+        os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
+           << "\" fill=\"" << background << "\"/>\n";
+    }
+}
+
+// Opens an unfilled, stroked <g> with round caps/joins. The stroke width prints
+// at precision 3; the stream is left at precision 2 for the group's contents.
+void emit_open_stroke_group(std::ostream& os, std::string_view stroke,
+                            double stroke_width) {
+    os << std::setprecision(3);
+    os << "  <g fill=\"none\" stroke=\"" << stroke << "\" stroke-width=\"" << stroke_width
+       << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
+    os << std::setprecision(2);
+}
+
+// Opens a filled <polygon> tag up to (but not including) its points list. The
+// stroke width prints at precision 3; the stream is left at precision 2 ready
+// for emit_points, which the caller follows with "\"/>\n".
+void emit_filled_polygon_open(std::ostream& os, std::string_view fill,
+                              std::string_view stroke, double stroke_width) {
+    os << std::setprecision(3);
+    os << "  <polygon fill=\"" << fill << "\" stroke=\"" << stroke
+       << "\" stroke-width=\"" << stroke_width << "\" stroke-linejoin=\"round\"\n";
+    os << std::setprecision(2);
+    os << "    points=\"";
+}
+
+// Emits an unfilled, stroked <rect> at the stream's current precision.
+void emit_rect(std::ostream& os, double x, double y, double w, double h,
+               std::string_view stroke, double stroke_width) {
+    os << "  <rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << w
+       << "\" height=\"" << h << "\" fill=\"none\" stroke=\"" << stroke
+       << "\" stroke-width=\"" << stroke_width << "\"/>\n";
 }
 
 // Writes the board coordinate labels: capital letters A, B, C, ... centred
@@ -191,7 +239,7 @@ void emit_edge_labels(std::ostream& os, int rows, int columns, double scale,
     const double font = label_font_units * scale;  // label height
 
     os << "  <g font-family=\"serif\" font-size=\"" << font
-       << "\" fill=\"#000000\" text-anchor=\"middle\" dominant-baseline=\"central\">\n";
+       << "\" fill=\"" << kBlackInk << "\" text-anchor=\"middle\" dominant-baseline=\"central\">\n";
 
     for (int c = 0; c < columns; ++c) {
         const double x = offset + (static_cast<double>(c) + 0.5) * scale;
@@ -284,7 +332,7 @@ std::vector<Polyline> build_x_template(double length, double roughness, double s
         samples = 2;
     }
     const double half = 0.5 * length;
-    const double angle[2] = {kPi / 4.0, -kPi / 4.0};  // the two crossed diagonals
+    const double angle[2] = {kDiagonalAngleRad, -kDiagonalAngleRad};  // the two crossed diagonals
 
     std::vector<Polyline> lines;
     lines.reserve(2);
@@ -411,19 +459,8 @@ std::string to_svg(const GridGeometry& geometry, const RenderConfig& config,
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    os << std::fixed << std::setprecision(2);
-
-    os << "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" << width
-       << "\" height=\"" << height << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
-    if (!style.background.empty()) {
-        os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
-           << "\" fill=\"" << style.background << "\"/>\n";
-    }
-
-    os << std::setprecision(3);
-    os << "  <g fill=\"none\" stroke=\"" << style.ink << "\" stroke-width=\"" << stroke
-       << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
-    os << std::setprecision(2);
+    emit_svg_open(os, width, height, style.background);
+    emit_open_stroke_group(os, style.ink, stroke);
 
     for (const Polyline& line : geometry.lines) {
         os << "    <!-- " << line.label << " -->\n";
@@ -473,20 +510,8 @@ std::string to_svg(const DiscGeometry& geometry, const RenderConfig& config,
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    os << std::fixed << std::setprecision(2);
-
-    os << "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" << width
-       << "\" height=\"" << height << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
-    if (!style.background.empty()) {
-        os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
-           << "\" fill=\"" << style.background << "\"/>\n";
-    }
-
-    os << std::setprecision(3);
-    os << "  <polygon fill=\"" << style.ink << "\" stroke=\"" << style.ink
-       << "\" stroke-width=\"" << stroke << "\" stroke-linejoin=\"round\"\n";
-    os << std::setprecision(2);
-    os << "    points=\"";
+    emit_svg_open(os, width, height, style.background);
+    emit_filled_polygon_open(os, style.ink, style.ink, stroke);
     emit_points(os, geometry.boundary.points, scale, margin);
     os << "\"/>\n";
     os << "</svg>\n";
@@ -553,19 +578,8 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    os << std::fixed << std::setprecision(2);
-
-    os << "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" << width
-       << "\" height=\"" << height << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
-    if (!style.background.empty()) {
-        os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
-           << "\" fill=\"" << style.background << "\"/>\n";
-    }
-
-    os << std::setprecision(3);
-    os << "  <g fill=\"none\" stroke=\"" << style.ink << "\" stroke-width=\"" << grid_stroke
-       << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
-    os << std::setprecision(2);
+    emit_svg_open(os, width, height, style.background);
+    emit_open_stroke_group(os, style.ink, grid_stroke);
     for (const Polyline& line : grid.lines) {
         os << "    <polyline points=\"";
         emit_points(os, line.points, scale, offset);
@@ -575,19 +589,14 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 
     // A crisp, perfectly straight black edge framing the grid extent (over the
     // hand-scratched outer lines).
-    os << std::setprecision(2);
-    os << "  <rect x=\"" << offset << "\" y=\"" << offset
-       << "\" width=\"" << grid.width_units * scale
-       << "\" height=\"" << grid.height_units * scale
-       << "\" fill=\"none\" stroke=\"#000000\" stroke-width=\"" << grid_stroke << "\"/>\n";
+    emit_rect(os, offset, offset, grid.width_units * scale, grid.height_units * scale,
+              kBlackInk, grid_stroke);
 
     // A second, outer black box framing the whole diagram (board plus the edge
     // labels), inset from the canvas border by the configurable outer margin.
     const double box_inset = board.outer_margin_units * scale;
-    os << "  <rect x=\"" << box_inset << "\" y=\"" << box_inset
-       << "\" width=\"" << (width - 2.0 * box_inset)
-       << "\" height=\"" << (height - 2.0 * box_inset)
-       << "\" fill=\"none\" stroke=\"#000000\" stroke-width=\"" << grid_stroke << "\"/>\n";
+    emit_rect(os, box_inset, box_inset, width - 2.0 * box_inset, height - 2.0 * box_inset,
+              kBlackInk, grid_stroke);
 
     // Each disc is generated separately (its own noise) and placed at the centre
     // of its randomly chosen square. squares[] holds the colour assignment order:
@@ -616,18 +625,10 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
             disc_color.push_back(color_index);
             occupant[static_cast<std::size_t>(square)] = color_index;
 
-            DiscGeometry disc = build_disc_core(board.disc, render_engine);
-            for (Point& p : disc.boundary.points) {  // origin-centred -> square centre
-                p.x += center.x;
-                p.y += center.y;
-            }
-
-            os << std::setprecision(3);
-            os << "  <polygon fill=\"" << set.fill << "\" stroke=\"" << board.outline
-               << "\" stroke-width=\"" << outline_stroke << "\" stroke-linejoin=\"round\"\n";
-            os << std::setprecision(2);
-            os << "    points=\"";
-            emit_points(os, disc.boundary.points, scale, offset);
+            // Origin-centred disc; emit_points stamps it at the square centre.
+            const DiscGeometry disc = build_disc_core(board.disc, render_engine);
+            emit_filled_polygon_open(os, set.fill, board.outline, outline_stroke);
+            emit_points(os, disc.boundary.points, scale, offset, center.x, center.y);
             os << "\"/>\n";
         }
         ++color_index;
@@ -661,19 +662,11 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
                              config.points_per_edge, render_engine);
         const double x_stroke = board.mark_stroke_width_units * scale;
 
-        os << std::setprecision(3);
-        os << "  <g fill=\"none\" stroke=\"" << board.mark_color << "\" stroke-width=\"" << x_stroke
-           << "\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n";
-        os << std::setprecision(2);
+        emit_open_stroke_group(os, board.mark_color, x_stroke);
         for (const Point& c : marked_centers) {
-            for (const Polyline& line : x_template) {
-                std::vector<Point> placed;
-                placed.reserve(line.points.size());
-                for (const Point& p : line.points) {  // template centre -> disc centre
-                    placed.push_back(Point{p.x + c.x, p.y + c.y});
-                }
+            for (const Polyline& line : x_template) {  // template centre -> disc centre
                 os << "    <polyline points=\"";
-                emit_points(os, placed, scale, offset);
+                emit_points(os, line.points, scale, offset, c.x, c.y);
                 os << "\"/>\n";
             }
         }
