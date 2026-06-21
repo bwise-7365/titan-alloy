@@ -44,6 +44,23 @@ int main(int argc, char** argv) {
             std::cerr << "wrote " << outPath << '\n';
         }
 
+    // A slightly irregular filled disc, by the same noise-then-smooth idea.
+    const games::board::DiscSpec disc{2.0, 0.25, 0.95, 360/4};
+    const std::string disc_svg = games::board::generate_disc_svg(disc);
+
+    {
+        const std::string disc_path = "disc.svg";
+        std::ofstream file(disc_path, std::ios::binary);
+        if (!file) {
+            throw std::runtime_error("could not open output file: " + disc_path);
+        }
+        file << disc_svg;
+        if (!file) {
+            throw std::runtime_error("failed while writing: " + disc_path);
+        }
+        std::cerr << "wrote " << disc_path << '\n';
+    }
+
     return EXIT_SUCCESS;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

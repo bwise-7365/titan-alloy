@@ -23,6 +23,17 @@
 //   smoothing = 0 reproduces the raw noise; smoothing = 1 collapses each line to
 //   a straight segment regardless of roughness; roughness = 0 is always straight.
 //
+// Also generates "hand-scratched" filled discs by the same idea applied to a
+// closed loop instead of an open line:
+//   1. A perfect circle of the given radius, sampled at point_count evenly
+//      spaced angles.
+//   2. Each sample's radius is perturbed by roughness * radius * (U(0,1) - 0.5):
+//      up to +/-0.5 * radius at roughness = 1. Unlike a line, every sample is
+//      perturbed (a loop has no endpoints to pin).
+//   3. The radii are relaxed toward the same fixed point, but with periodic
+//      neighbours, so the loop stays closed. smoothing = 1 collapses the loop to
+//      a perfect circle of the mean radius; roughness = 0 is always a circle.
+//
 // All geometry is returned in square-width units (one square == 1.0). Pixels are
 // introduced only by to_svg via RenderConfig::square_size. The library performs
 // no I/O and keeps no global state.
@@ -50,9 +61,9 @@ struct GridSpec {
 
 // Resolution and the pixel scale used only at SVG-render time.
 struct RenderConfig {
-    double square_size = 80.0;     // pixels per square (SVG output only)
+    double square_size = 100.0;     // pixels per square (SVG output only)
     int points_per_edge = 10;     // samples per square along each line
-    std::uint64_t seed = 1;        // deterministic across platforms
+    std::uint64_t seed = 1453;        // deterministic across platforms
 };
 
 // Cosmetic SVG settings. An empty background string omits the background rect.
@@ -66,6 +77,24 @@ struct SvgStyle {
 struct GridGeometry {
     std::vector<Polyline> lines;
     double width_units = 0.0;
+    double height_units = 0.0;
+};
+
+// The conceptual parameters for an irregular disc. radius must be > 0;
+// point_count must be >= 3; roughness and smoothing must lie in [0,1].
+// Out-of-range values throw std::invalid_argument.
+struct DiscSpec {
+    double radius;       // perfect radius, square-width units
+    double roughness;    // noise magnitude as a fraction of the radius
+    double smoothing;    // relaxation strength toward a perfect circle
+    int point_count;     // evenly spaced samples around the loop
+};
+
+struct DiscGeometry {
+    Polyline boundary;        // closed loop of boundary points, square-width units
+    Point center{0.0, 0.0};   // in square-width units
+    double radius_units = 0.0;
+    double width_units = 0.0;  // bounding box, for SVG sizing
     double height_units = 0.0;
 };
 
@@ -83,6 +112,22 @@ std::string to_svg(const GridGeometry& geometry,
 std::string generate_svg(const GridSpec& spec,
                          const RenderConfig& config = {},
                          const SvgStyle& style = {});
+
+// Builds the relaxed disc boundary (square-width units). config.points_per_edge
+// is unused here; resolution comes from DiscSpec::point_count.
+// Throws std::invalid_argument on bad parameters, std::runtime_error if the
+// relaxation fails to converge within its internal sweep cap.
+DiscGeometry build_disc(const DiscSpec& spec, const RenderConfig& config);
+
+// Serialises a disc to a standalone SVG document as a single filled polygon.
+std::string to_svg(const DiscGeometry& geometry,
+                   const RenderConfig& config,
+                   const SvgStyle& style);
+
+// Convenience: build_disc followed by to_svg.
+std::string generate_disc_svg(const DiscSpec& spec,
+                              const RenderConfig& config = {},
+                              const SvgStyle& style = {});
 
 }  // namespace games::board
 
