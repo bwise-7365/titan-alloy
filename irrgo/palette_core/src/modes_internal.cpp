@@ -82,7 +82,26 @@ Palette completeFromPieces(const Srgb& p1, const Srgb& p2, Harmony t,
                            const Constraints& c) {
     const double l1 = relativeLuminance(p1);
     const double l2 = relativeLuminance(p2);
-    const double targetBgL = minimaxBackgroundLuminance(l1, l2);
+    double targetBgL = minimaxBackgroundLuminance(l1, l2);
+
+    // The minimax may pick a pure extreme (L = 0 or 1) when it maximizes
+    // figure-ground contrast. A pure black/white background, however, erases any
+    // background hue. When an extreme is chosen, back off to the least-extreme
+    // luminance on that same side that still meets the contrast floor against
+    // both pieces, leaving headroom for chroma. (Clamped: if even the extreme is
+    // the only luminance that meets the floor, it stays.)
+    {
+        const double floor = c.minPieceBgContrast;
+        const double shiftedLo = std::min(l1, l2) + 0.05; // darker piece
+        const double shiftedHi = std::max(l1, l2) + 0.05; // lighter piece
+        if (targetBgL <= 0.0) {
+            // Lightest dark-side background still at the floor (binds darker piece).
+            targetBgL = clampUnit(shiftedLo / floor - 0.05);
+        } else if (targetBgL >= 1.0) {
+            // Darkest light-side background still at the floor (binds lighter piece).
+            targetBgL = clampUnit(floor * shiftedHi - 0.05);
+        }
+    }
 
     const double h1 = hueOfSrgb(p1);
     const double h2 = hueOfSrgb(p2);

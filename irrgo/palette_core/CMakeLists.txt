@@ -52,4 +52,9 @@ add_executable(test_modes tests/test_modes.cpp)
 target_link_libraries(test_modes PRIVATE palette_core)
 target_include_directories(test_modes PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME modes COMMAND test_modes)
+
+add_executable(test_roundtrip tests/test_roundtrip.cpp)
+target_link_libraries(test_roundtrip PRIVATE palette_core)
+target_include_directories(test_roundtrip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+add_test(NAME roundtrip COMMAND test_roundtrip)
 # Copyright Ben Paul Wise. All Rights Reserved.

@@ -27,31 +27,71 @@ double clampUnit(double v) {
     return v;
 }
 
-double lerp(double a, double b, double t) {
-    return a + (b - a) * t;
-}
+struct Vec3 {
+    double x;
+    double y;
+    double z;
+};
 
-Srgb lerp(const Srgb& a, const Srgb& b, double t) {
-    return Srgb{lerp(a.r, b.r, t), lerp(a.g, b.g, t), lerp(a.b, b.b, t)};
-}
+// RYB cube corners in sRGB (ArtColors RYB.cpp Xform_RYB2RGB, "artist's color
+// wheel" set), indexed by idx = (r?1:0) + (y?2:0) + (b?4:0). 000 = black,
+// 111 = white. These ported constants define the FORWARD map; the inverse below
+// is a true numerical inversion of this same cube (DESIGN.md §7/§8 #5), so that
+// srgbToRyb is a consistent inverse of rybToSrgb and hues round-trip.
+const Vec3 kForwardCorners[8] = {
+    {0.0, 0.0, 0.0},  // 000 black
+    {1.0, 0.0, 0.0},  // 100 red
+    {0.9, 0.9, 0.0},  // 010 yellow
+    {1.0, 0.6, 0.0},  // 110 orange (red + yellow)
+    {0.0, 0.36, 1.0}, // 001 blue
+    {0.6, 0.0, 1.0},  // 101 purple (red + blue)
+    {0.0, 0.9, 0.2},  // 011 green  (yellow + blue)
+    {1.0, 1.0, 1.0},  // 111 white
+};
 
-Ryb lerp(const Ryb& a, const Ryb& b, double t) {
-    return Ryb{lerp(a.r, b.r, t), lerp(a.y, b.y, t), lerp(a.b, b.b, t)};
-}
-
-// Increase RYB saturation toward the most-saturated color of the same hue.
-// Ported from ArtColors Saturate() (positive-sat branch only, as the inverse
-// transform calls it with sat = 0.5).
-Ryb saturateRyb(const Ryb& in, double sat) {
-    if (std::fabs(sat) < 0.004) {
-        return in;
+// Trilinear (multilinear) interpolation of the cube at (r,y,b).
+Vec3 forwardCube(double r, double y, double b) {
+    Vec3 out{0.0, 0.0, 0.0};
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            for (int k = 0; k < 2; ++k) {
+                const double w =
+                    (i ? r : 1.0 - r) * (j ? y : 1.0 - y) * (k ? b : 1.0 - b);
+                const Vec3& corner = kForwardCorners[i + 2 * j + 4 * k];
+                out.x += w * corner.x;
+                out.y += w * corner.y;
+                out.z += w * corner.z;
+            }
+        }
     }
-    if (in.r == 0.0 && in.y == 0.0 && in.b == 0.0) {
-        return in; // avoid division by zero on black
+    return out;
+}
+
+double dot3(const double a[3], const double b[3]) {
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+// Solve the symmetric 3x3 system A d = g via Cramer's rule. Returns false if A
+// is (near) singular.
+bool solve3x3(const double a[3][3], const double g[3], double d[3]) {
+    const double det =
+        a[0][0] * (a[1][1] * a[2][2] - a[1][2] * a[2][1]) -
+        a[0][1] * (a[1][0] * a[2][2] - a[1][2] * a[2][0]) +
+        a[0][2] * (a[1][0] * a[2][1] - a[1][1] * a[2][0]);
+    if (std::fabs(det) < 1e-18) {
+        return false;
     }
-    const double mx = std::max(std::max(in.r, in.y), in.b);
-    const Ryb maxsat{in.r / mx, in.y / mx, in.b / mx};
-    return lerp(in, maxsat, sat);
+    const double inv = 1.0 / det;
+    d[0] = inv * (g[0] * (a[1][1] * a[2][2] - a[1][2] * a[2][1]) -
+                  a[0][1] * (g[1] * a[2][2] - a[1][2] * g[2]) +
+                  a[0][2] * (g[1] * a[2][1] - a[1][1] * g[2]));
+    d[1] = inv * (a[0][0] * (g[1] * a[2][2] - a[1][2] * g[2]) -
+                  g[0] * (a[1][0] * a[2][2] - a[1][2] * a[2][0]) +
+                  a[0][2] * (a[1][0] * g[2] - g[1] * a[2][0]));
+    d[2] = inv * (a[0][0] * (a[1][1] * g[2] - g[1] * a[2][1]) -
+                  a[0][1] * (a[1][0] * g[2] - g[1] * a[2][0]) +
+                  g[0] * (a[1][0] * a[2][1] - a[1][1] * a[2][0]));
+    return true;
 }
 
 } // namespace
@@ -60,56 +100,100 @@ Srgb rybToSrgb(const Ryb& v) {
     requireUnit(v.r, "Ryb.r outside [0,1]");
     requireUnit(v.y, "Ryb.y outside [0,1]");
     requireUnit(v.b, "Ryb.b outside [0,1]");
-    const double rin = clampUnit(v.r);
-    const double yin = clampUnit(v.y);
-    const double bin = clampUnit(v.b);
-
-    // RYB-cube corners in sRGB (ArtColors RYB.cpp Xform_RYB2RGB, "artist's
-    // color wheel" set). 000 = black, 111 = white.
-    const Srgb CG000{0.0, 0.0, 0.0};  // black
-    const Srgb CG100{1.0, 0.0, 0.0};  // red
-    const Srgb CG010{0.9, 0.9, 0.0};  // yellow
-    const Srgb CG001{0.0, 0.36, 1.0}; // blue
-    const Srgb CG011{0.0, 0.9, 0.2};  // green   (yellow + blue)
-    const Srgb CG110{1.0, 0.6, 0.0};  // orange  (red + yellow)
-    const Srgb CG101{0.6, 0.0, 1.0};  // purple  (red + blue)
-    const Srgb CG111{1.0, 1.0, 1.0};  // white
-
-    const Srgb c00 = lerp(CG000, CG100, rin);
-    const Srgb c01 = lerp(CG001, CG101, rin);
-    const Srgb c10 = lerp(CG010, CG110, rin);
-    const Srgb c11 = lerp(CG011, CG111, rin);
-    const Srgb c0 = lerp(c00, c10, yin);
-    const Srgb c1 = lerp(c01, c11, yin);
-    return lerp(c0, c1, bin);
+    const Vec3 c = forwardCube(clampUnit(v.r), clampUnit(v.y), clampUnit(v.b));
+    return Srgb{c.x, c.y, c.z};
 }
 
 Ryb srgbToRyb(const Srgb& c) {
     requireUnit(c.r, "Srgb.r outside [0,1]");
     requireUnit(c.g, "Srgb.g outside [0,1]");
     requireUnit(c.b, "Srgb.b outside [0,1]");
-    const double rin = clampUnit(c.r);
-    const double gin = clampUnit(c.g);
-    const double bin = clampUnit(c.b);
+    const double tx = clampUnit(c.r);
+    const double ty = clampUnit(c.g);
+    const double tz = clampUnit(c.b);
 
-    // RGB-cube corners in RYB (ArtColors RYB.cpp Xform_RGB2RYB, fitted inverse).
-    const Ryb CG000{0.0, 0.0, 0.0};     // black
-    const Ryb CG100{0.891, 0.0, 0.0};   // red
-    const Ryb CG010{0.0, 0.714, 0.374}; // green = RYB yellow + blue
-    const Ryb CG001{0.07, 0.08, 0.893}; // blue
-    const Ryb CG011{0.0, 0.116, 0.313}; // cyan  = RYB green + blue
-    const Ryb CG110{0.0, 0.915, 0.0};   // yellow
-    const Ryb CG101{0.554, 0.0, 0.1};   // magenta = RYB red + blue
-    const Ryb CG111{1.0, 1.0, 1.0};     // white
+    // Levenberg-Marquardt inversion of the forward trilinear cube: find the RYB
+    // in [0,1]^3 whose forward map best matches the target sRGB. For colors in
+    // the forward gamut (e.g. anything rybToSrgb produced) this recovers the RYB
+    // essentially exactly, so the hue round-trips.
+    const auto cost = [&](double r, double y, double b) {
+        const Vec3 f = forwardCube(r, y, b);
+        const double dx = f.x - tx;
+        const double dy = f.y - ty;
+        const double dz = f.z - tz;
+        return dx * dx + dy * dy + dz * dz;
+    };
 
-    const Ryb c00 = lerp(CG000, CG100, rin);
-    const Ryb c01 = lerp(CG001, CG101, rin);
-    const Ryb c10 = lerp(CG010, CG110, rin);
-    const Ryb c11 = lerp(CG011, CG111, rin);
-    const Ryb c0 = lerp(c00, c10, gin);
-    const Ryb c1 = lerp(c01, c11, gin);
-    const Ryb mixed = lerp(c0, c1, bin);
-    return saturateRyb(mixed, 0.5);
+    double r = 0.5;
+    double y = 0.5;
+    double b = 0.5;
+    double lambda = 1e-2;
+    double curCost = cost(r, y, b);
+
+    for (int iter = 0; iter < 80 && curCost > 1e-20; ++iter) {
+        const Vec3 f = forwardCube(r, y, b);
+        const double res[3] = {f.x - tx, f.y - ty, f.z - tz};
+
+        // Analytic Jacobian columns (d forwardCube / d r, / d y, / d b).
+        double jr[3] = {0.0, 0.0, 0.0};
+        double jy[3] = {0.0, 0.0, 0.0};
+        double jb[3] = {0.0, 0.0, 0.0};
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                for (int k = 0; k < 2; ++k) {
+                    const Vec3& corner = kForwardCorners[i + 2 * j + 4 * k];
+                    const double dr = (i ? 1.0 : -1.0) * (j ? y : 1.0 - y) *
+                                      (k ? b : 1.0 - b);
+                    const double dy = (i ? r : 1.0 - r) * (j ? 1.0 : -1.0) *
+                                      (k ? b : 1.0 - b);
+                    const double db = (i ? r : 1.0 - r) * (j ? y : 1.0 - y) *
+                                      (k ? 1.0 : -1.0);
+                    jr[0] += dr * corner.x;
+                    jr[1] += dr * corner.y;
+                    jr[2] += dr * corner.z;
+                    jy[0] += dy * corner.x;
+                    jy[1] += dy * corner.y;
+                    jy[2] += dy * corner.z;
+                    jb[0] += db * corner.x;
+                    jb[1] += db * corner.y;
+                    jb[2] += db * corner.z;
+                }
+            }
+        }
+
+        // A = J^T J + lambda I ; g = J^T res.
+        double a[3][3];
+        a[0][0] = dot3(jr, jr) + lambda;
+        a[0][1] = dot3(jr, jy);
+        a[0][2] = dot3(jr, jb);
+        a[1][0] = a[0][1];
+        a[1][1] = dot3(jy, jy) + lambda;
+        a[1][2] = dot3(jy, jb);
+        a[2][0] = a[0][2];
+        a[2][1] = a[1][2];
+        a[2][2] = dot3(jb, jb) + lambda;
+        const double g[3] = {dot3(jr, res), dot3(jy, res), dot3(jb, res)};
+
+        double d[3];
+        if (!solve3x3(a, g, d)) {
+            break;
+        }
+        const double nr = clampUnit(r - d[0]);
+        const double ny = clampUnit(y - d[1]);
+        const double nb = clampUnit(b - d[2]);
+        const double nc = cost(nr, ny, nb);
+        if (nc < curCost) {
+            r = nr;
+            y = ny;
+            b = nb;
+            curCost = nc;
+            lambda = std::max(lambda * 0.5, 1e-9);
+        } else {
+            lambda = std::min(lambda * 4.0, 1e6);
+        }
+    }
+
+    return Ryb{r, y, b};
 }
 
 Ryb hsvRybToRyb(const HsvRyb& h) {

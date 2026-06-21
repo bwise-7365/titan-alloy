@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "palette/modes.hpp"
 #include "palette/color.hpp"
+#include "palette/conversion.hpp"
 #include "palette/types.hpp"
 #include "test_support.hpp"
 
@@ -56,9 +57,11 @@ void testMode3LuminanceMidband() {
 
 void testMode3NoHarmonicBackground() {
     const Constraints c;
-    // Pure red vs pure (RGB) green: recovered hue gap (~150 deg) matches no
-    // recognized scheme -> neutral background + warning.
-    const Palette p = fromTwoPieces(Srgb{1.0, 0.0, 0.0}, Srgb{0.0, 1.0, 0.0}, c);
+    // Two in-gamut hues 95 deg apart: matches no recognized scheme separation
+    // ({0,30,60,120,180}) -> neutral background + warning.
+    const Srgb piece1 = srgbAtHsvRyb(HsvRyb{0.0, 1.0, 0.6});
+    const Srgb piece2 = srgbAtHsvRyb(HsvRyb{95.0, 1.0, 0.6});
+    const Palette p = fromTwoPieces(piece1, piece2, c);
     CHECK(hasWarning(p, Warning::NoHarmonicBackground));
     // Background is neutral (near-zero chroma): R, G, B nearly equal.
     const Srgb bg = p.background;
