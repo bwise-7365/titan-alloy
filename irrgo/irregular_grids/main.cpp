@@ -38,7 +38,8 @@ int main() {
         // Two independent seeds. A non-zero value is reproducible; 0 means
         // "derive a fresh one from the clock" (see AbsGame::makeSeed).
 
-        // Board seed: 10359638071647919499  Render seed: 17277167099289001355
+        // 8x10 Board seed: 1600304105177925591  Render seed: 6210208043131634036
+        // 8x10 Board seed: 1289915031459806163  Render seed: 5901601049887194067
         const std::uint64_t render_seed = AbsGame::makeSeed(0);
         const std::uint64_t board_seed = AbsGame::makeSeed(0);
 
