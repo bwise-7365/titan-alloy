@@ -12,6 +12,10 @@ namespace {
 
 constexpr double kUnitEps = 1e-9;
 
+// HSV hue geometry: a full turn and the six 60-degree primary/secondary sectors.
+constexpr double kFullCircleDeg = 360.0;
+constexpr double kHueSegmentDeg = 60.0;
+
 void requireUnit(double v, const char* what) {
     if (v < -kUnitEps || v > 1.0 + kUnitEps) {
         throw std::out_of_range(what);
@@ -203,31 +207,31 @@ Ryb hsvRybToRyb(const HsvRyb& h) {
     const double sat = clampUnit(h.sat);
     const double val = clampUnit(h.val);
 
-    double hue = std::fmod(h.hueDeg, 360.0);
+    double hue = std::fmod(h.hueDeg, kFullCircleDeg);
     if (hue < 0.0) {
-        hue += 360.0;
+        hue += kFullCircleDeg;
     }
 
     const double chroma = val * sat;
-    const double x = chroma * (1.0 - std::fabs(std::fmod(hue / 60.0, 2.0) - 1.0));
+    const double x = chroma * (1.0 - std::fabs(std::fmod(hue / kHueSegmentDeg, 2.0) - 1.0));
     const double m = val - chroma;
 
     double r1 = 0.0;
     double y1 = 0.0;
     double b1 = 0.0;
-    if (hue < 60.0) {
+    if (hue < kHueSegmentDeg) {
         r1 = chroma;
         y1 = x;
-    } else if (hue < 120.0) {
+    } else if (hue < 2.0 * kHueSegmentDeg) {
         r1 = x;
         y1 = chroma;
-    } else if (hue < 180.0) {
+    } else if (hue < 3.0 * kHueSegmentDeg) {
         y1 = chroma;
         b1 = x;
-    } else if (hue < 240.0) {
+    } else if (hue < 4.0 * kHueSegmentDeg) {
         y1 = x;
         b1 = chroma;
-    } else if (hue < 300.0) {
+    } else if (hue < 5.0 * kHueSegmentDeg) {
         r1 = x;
         b1 = chroma;
     } else {
@@ -252,15 +256,15 @@ HsvRyb rybToHsvRyb(const Ryb& v) {
     double hue = 0.0;
     if (d > 0.0) {
         if (mx == r) {
-            hue = 60.0 * std::fmod((y - b) / d, 6.0);
+            hue = kHueSegmentDeg * std::fmod((y - b) / d, 6.0);
         } else if (mx == y) {
-            hue = 60.0 * (((b - r) / d) + 2.0);
+            hue = kHueSegmentDeg * (((b - r) / d) + 2.0);
         } else {
-            hue = 60.0 * (((r - y) / d) + 4.0);
+            hue = kHueSegmentDeg * (((r - y) / d) + 4.0);
         }
     }
     if (hue < 0.0) {
-        hue += 360.0;
+        hue += kFullCircleDeg;
     }
 
     double sat = 0.0;

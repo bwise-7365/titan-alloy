@@ -2,6 +2,7 @@
 #pragma once
 
 #include <QColor>
+#include <QPixmap>
 #include <QWidget>
 
 // Display-only RYB color wheel (DESIGN.md §6). Paints the wheel and overlays
@@ -24,6 +25,9 @@ private:
     QColor background_{Qt::gray};
     QColor piece1_{Qt::black};
     QColor piece2_{Qt::white};
+    // The coloured wheel depends only on widget geometry, not the palette, so it
+    // is cached here and regenerated only when the device-pixel size changes.
+    QPixmap wheelCache_;
 };
 
 } // namespace palette_widgets

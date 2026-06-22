@@ -25,7 +25,7 @@ uint64_t msRandom() {
 
 uint64_t makeSeed(const uint64_t s) {
     uint64_t s2 = s;
-    if (0 == s2) {
+    while (0 == s2) {
         s2 = msRandom();
     }
     return s2;

@@ -15,5 +15,7 @@ namespace AbsGame {
     uint64_t rotr(uint64_t x, unsigned int n);
 
 
+    static constexpr uint64_t dSeed = 0xFE69A87450C4301C; // still my favorite
+
 } // namespace AbsGame
 // Copyright Ben Paul Wise. All Rights Reserved.

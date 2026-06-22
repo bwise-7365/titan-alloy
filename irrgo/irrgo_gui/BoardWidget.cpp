@@ -11,7 +11,15 @@
 
 using namespace IrrGo;
 
-static int starCoord(int n) { return n < 11 ? 2 : 3; }
+// Board layout / rendering tuning.
+static constexpr int   kStarSmallBoardMax  = 11;   // boards < this use 2-2 star points
+static constexpr int   kStarCenterMinCells = 100;  // add centre/side stars at/above this many cells
+static constexpr float kStonePaddingStones = 4.0f; // viewport padding, in stone radii
+static constexpr float kDotRadiusMinPx     = 2.0f;
+static constexpr float kDotRadiusFactor    = 0.3f; // node-dot radius / stone radius
+static constexpr float kLabelTextScale     = 0.6f; // label pixel size / stone radius
+
+static int starCoord(int n) { return n < kStarSmallBoardMax ? 2 : 3; }
 
 static const QColor kOrange    { 255, 140,   0 };
 static const QColor kGreen     {   0, 200,   0 };
@@ -187,8 +195,8 @@ void BoardWidget::updateTransform() {
     rangeX_ = (maxX - minX_ < 1e-4f) ? 1.0f : maxX - minX_;
     rangeY_ = (maxY - minY_ < 1e-4f) ? 1.0f : maxY - minY_;
 
-    float paddedRX = rangeX_ + 4.0f * kStoneRPhys;
-    float paddedRY = rangeY_ + 4.0f * kStoneRPhys;
+    float paddedRX = rangeX_ + kStonePaddingStones * kStoneRPhys;
+    float paddedRY = rangeY_ + kStonePaddingStones * kStoneRPhys;
     const float kExtra = 10.0f;
     scale_ = std::min((width()  - 2.0f * kExtra) / paddedRX,
                       (height() - 2.0f * kExtra) / paddedRY);
@@ -321,7 +329,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     // Node dots: all nodes for irregular; corner star points for rectangular
     {
-        float dotR = std::max(2.0f, stoneR_ * 0.3f);
+        float dotR = std::max(kDotRadiusMinPx, stoneR_ * kDotRadiusFactor);
         p.setPen(Qt::NoPen);
         p.setBrush(lineColor_);
         if (!rg) {
@@ -337,7 +345,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                     p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
                 }
             // If large enough, draw center + 4 side star points
-            if (rows * cols >= 100) {
+            if (rows * cols >= kStarCenterMinCells) {
                 int cr = rows / 2, cc = cols / 2;
                 p.drawEllipse(toWidget(nodes[rg->nodeId(cr, cc)].x,
                                        nodes[rg->nodeId(cr, cc)].y), dotR, dotR);
@@ -353,7 +361,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     if (showLabels_) {
         QFont f = p.font();
-        float textScale = 0.6f;
+        float textScale = kLabelTextScale;
         f.setPixelSize(qBound(4, qRound(stoneR_ * textScale), 9));
         f.setBold(true);
         p.setFont(f);

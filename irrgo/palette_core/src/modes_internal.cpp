@@ -109,20 +109,22 @@ Palette completeFromPieces(const Srgb& p1, const Srgb& p2, Harmony t,
     const double alpha = c.splitComplementAlphaDeg;
 
     // Recognize a harmonic separation, else neutralize the background.
-    constexpr double kRecogTol = 18.0; // provisional (DESIGN §8 #4)
+    constexpr double kRecogTol = 18.0;     // provisional (DESIGN §8 #4)
+    constexpr double kTriadDeg = 120.0;    // triadic separation
+    constexpr double kComplementDeg = 180.0;  // complementary separation
     const auto matches = [](double value, double target) {
         return std::fabs(value - target) <= kRecogTol;
     };
     const bool recognized = matches(gap, 0.0) || matches(gap, alpha) ||
-                            matches(gap, 2.0 * alpha) || matches(gap, 120.0) ||
-                            matches(gap, 180.0);
+                            matches(gap, 2.0 * alpha) || matches(gap, kTriadDeg) ||
+                            matches(gap, kComplementDeg);
 
     std::vector<Warning> warnings;
     Srgb background;
     if (!recognized) {
         background = realizeAtLuminance(0.0, targetBgL, 0.0); // neutral gray
         warnings.push_back(Warning::NoHarmonicBackground);
-    } else if (matches(gap, 180.0)) {
+    } else if (matches(gap, kComplementDeg)) {
         background = realizeAtLuminance(0.0, targetBgL, 0.0); // complements: neutral
     } else {
         const double bgHue = complementHue(circularMidpoint(h1, h2));

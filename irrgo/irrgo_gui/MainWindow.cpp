@@ -515,13 +515,7 @@ void MainWindow::buildMenuBar() {
 
     connect(resetBtn, &QPushButton::clicked, [this]() {
         if (randomSeedEdit_->text().toInt() == 0) {
-            using namespace std::chrono;
-            uint64_t us = static_cast<uint64_t>(
-                duration_cast<microseconds>(
-                    steady_clock::now().time_since_epoch()).count());
-            uint64_t rotated = (us << 7) | (us >> 57);
-            int s = static_cast<int>(AbsGame::qTrans(rotated) & 0x7FFFFFFF);
-            if (s == 0) s = 1;
+            int s = static_cast<int>( AbsGame::msRandom());
             randomSeedEdit_->setText(QString::number(s));
         }
     });
