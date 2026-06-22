@@ -21,7 +21,7 @@ RenderConfig default_render_config() {
 }
 
 SvgStyle default_svg_style() {
-    // Struct defaults already hold colours, strokes, margins and label sizing.
+    // Struct defaults already hold colors, strokes, margins and label sizing.
     return SvgStyle{};
 }
 

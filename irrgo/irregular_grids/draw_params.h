@@ -50,13 +50,13 @@ struct SvgStyle {
 // canonical source for the look of the output; the struct defaults above are kept
 // consistent with them and serve the convenience `= {}` overloads.
 
-// Fill colours for the two opposing sides.
+// Fill colors for the two opposing sides.
 struct PieceColors {
     //std::string side_a = "#2aa85a";  // pastel green
     //std::string side_b = "#c76fe8";  // purplish
 
     std::string side_a = "#FAE5BE"; // pale beige
-    std::string side_b = "#852532";  // brick-red
+    std::string side_b = "#852532"; // brick-red
 };
 
 // Pixel scale, sampling and RNG seed.
@@ -71,7 +71,7 @@ DiscSpec board_disc_spec();
 // The large disc used for the standalone disc.svg demo.
 DiscSpec standalone_disc_spec();
 
-// The two side colours.
+// The two side colors.
 PieceColors piece_colors();
 
 // Sets every drawing-related field of `board` (disc shape, piece outline, outer

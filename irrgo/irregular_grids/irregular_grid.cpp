@@ -351,7 +351,7 @@ std::vector<Polyline> build_x_template(double length, double roughness, double s
     return lines;
 }
 
-// The colour index occupying square (column, row), or -1 if empty or off-board.
+// The color index occupying square (column, row), or -1 if empty or off-board.
 int occupant_at(const std::vector<int>& occupant, int columns, int rows,
                 int column, int row) {
     if (column < 0 || column >= columns || row < 0 || row >= rows) {
@@ -361,7 +361,7 @@ int occupant_at(const std::vector<int>& occupant, int columns, int rows,
 }
 
 // True if (column, row) holds an enemy of `me` that can still pin it: occupied,
-// a different colour, AND not itself already marked immobilised. A disc that has
+// a different color, AND not itself already marked immobilised. A disc that has
 // already been marked "X" no longer immobilises its neighbours.
 bool active_enemy(const std::vector<int>& occupant, const std::vector<bool>& marked,
                   int columns, int rows, int column, int row, int me) {
@@ -372,7 +372,7 @@ bool active_enemy(const std::vector<int>& occupant, const std::vector<bool>& mar
     return !marked[static_cast<std::size_t>(row * columns + column)];
 }
 
-// Latrunculi immobilisation of the piece of colour `me` on square (column, row):
+// Latrunculi immobilisation of the piece of color `me` on square (column, row):
 //   - bracketed: squeezed between two enemy pieces on opposite sides, either
 //     left/right or top/bottom; or
 //   - corner: the piece is at a board corner and its two in-board orthogonal
@@ -548,7 +548,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     }
 
     // Two independent engines: the board engine (board.seed) fixes the layout --
-    // which squares are occupied by which colour -- while the render engine
+    // which squares are occupied by which color -- while the render engine
     // (config.seed) drives all the hand-scratched noise (disc shapes, the X). The
     // two seeds can be varied independently, both from main.cpp.
     printf("Render seed: %llu, Board seed: %llu\n", // same order as main.cpp
@@ -591,7 +591,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
               kBlackInk, grid_stroke);
 
     // Each disc is generated separately (its own noise) and placed at the centre
-    // of its randomly chosen square. squares[] holds the colour assignment order:
+    // of its randomly chosen square. squares[] holds the color assignment order:
     // the first set's discs take the first slots, the next set the following, etc.
     std::vector<Point> disc_centers;
     std::vector<int> disc_square;
@@ -599,7 +599,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     disc_centers.reserve(static_cast<std::size_t>(requested));
     disc_square.reserve(static_cast<std::size_t>(requested));
     disc_color.reserve(static_cast<std::size_t>(requested));
-    // Board occupancy by colour index (-1 == empty), for the immobilisation test.
+    // Board occupancy by color index (-1 == empty), for the immobilisation test.
     std::vector<int> occupant(static_cast<std::size_t>(square_count), -1);
 
     std::size_t slot = 0;

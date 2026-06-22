@@ -130,14 +130,14 @@ std::string generate_disc_svg(const DiscSpec& spec,
                               const RenderConfig& config = {},
                               const SvgStyle& style = {});
 
-// One colour of piece and how many to place on the board.
+// One color of piece and how many to place on the board.
 struct PieceSet {
-    std::string fill;   // disc fill colour, e.g. "#2aa85a"
-    int count;          // number of discs of this colour (>= 0)
+    std::string fill;   // disc fill color, e.g. "#2aa85a"
+    int count;          // number of discs of this color (>= 0)
 };
 
 // A populated board: the grid, the disc shape shared by every piece, and the
-// coloured piece sets to scatter across the squares. Each disc is generated
+// colored piece sets to scatter across the squares. Each disc is generated
 // separately (independent noise) and placed in the centre of a distinct,
 // randomly chosen square; no square receives two discs. Every disc carries a
 // thin outline. To fit one disc per 1x1 cell, disc.radius must be <= 0.5.
