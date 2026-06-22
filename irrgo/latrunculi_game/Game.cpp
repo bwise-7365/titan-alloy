@@ -115,6 +115,10 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
     if (current_ != 0 && current_ != 1) {
         throw std::invalid_argument("Latrunculi: current player must be 0 or 1");
     }
+    // Build the scan order BEFORE any terminal recompute: checkImmobilizationTerminal()
+    // below calls enumerateLegalMoves(), which indexes scanOrder_, so it must already
+    // be sized to squares_.
+    initScanOrder();
     // Recompute terminal status from the restored position so a loaded game that
     // is already decided reports correctly. Win by reduction (a side reduced to one
     // disc) takes precedence; otherwise the side to move may be immobilised.
@@ -129,7 +133,6 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
             checkImmobilizationTerminal();
         }
     }
-    initScanOrder();
 }
 
 void Game::initScanOrder() {

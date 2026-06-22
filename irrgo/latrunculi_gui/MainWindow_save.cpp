@@ -7,6 +7,7 @@
 // its repetition set from the restored position (a documented limitation).
 #include "MainWindow.h"
 
+#include <QColor>
 #include <QFile>
 #include <QFileDialog>
 #include <QLatin1String>
@@ -45,13 +46,11 @@ void MainWindow::onSave() {
     if (!game_) {
         return;
     }
-    QString path = currentFilePath_;
+    // "Save As...": always let the user choose the destination file.
+    const QString path = QFileDialog::getSaveFileName(this, "Save Game As", QString(),
+        "Latrunculi XML files (*.xml);;All files (*)");
     if (path.isEmpty()) {
-        path = QFileDialog::getSaveFileName(this, "Save Game", QString(),
-            "Latrunculi XML files (*.xml);;All files (*)");
-        if (path.isEmpty()) {
-            return;
-        }
+        return;
     }
     currentFilePath_ = path;
     saveToFile(path);
@@ -82,6 +81,8 @@ void MainWindow::saveToFile(const QString& path) {
     xml.setAutoFormatting(true);
     xml.writeStartDocument();
     xml.writeStartElement("LatrunculiBoard");
+    xml.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    xml.writeAttribute("xsi:noNamespaceSchemaLocation", "latrunculi.xsd");
 
     xml.writeEmptyElement("dims");
     xml.writeAttribute("rows", QString::number(game_->rows()));
@@ -110,6 +111,13 @@ void MainWindow::saveToFile(const QString& path) {
     xml.writeEmptyElement("placed");
     xml.writeAttribute("p0", QString::number(placed0));
     xml.writeAttribute("p1", QString::number(placed1));
+
+    // Side and background colours (the only cosmetic data stored; the hand-scratched
+    // line/disc geometry is omitted, being reproducible from a PRNG seed).
+    xml.writeEmptyElement("colours");
+    xml.writeAttribute("sideA", colorA_.name());
+    xml.writeAttribute("sideB", colorB_.name());
+    xml.writeAttribute("background", background_.name());
 
     // Authoritative board state: non-empty cells only.
     xml.writeStartElement("Position");
@@ -157,6 +165,10 @@ bool MainWindow::loadFromFile(const QString& path) {
     std::vector<Latrunculi::Cell> board;
     std::vector<Latrunculi::Move> history;
     bool haveDims = false;
+    // Default to the current colours, so a file lacking <colours> keeps them.
+    QColor loadedColorA = colorA_;
+    QColor loadedColorB = colorB_;
+    QColor loadedBg     = background_;
 
     QXmlStreamReader xml(&file);
     while (!xml.atEnd()) {
@@ -183,6 +195,13 @@ bool MainWindow::loadFromFile(const QString& path) {
         } else if (name == QLatin1String("placed")) {
             placed0 = a.value(QLatin1String("p0")).toInt();
             placed1 = a.value(QLatin1String("p1")).toInt();
+        } else if (name == QLatin1String("colours")) {
+            const QColor ca(a.value(QLatin1String("sideA")).toString());
+            const QColor cb(a.value(QLatin1String("sideB")).toString());
+            const QColor bg(a.value(QLatin1String("background")).toString());
+            if (ca.isValid()) { loadedColorA = ca; }
+            if (cb.isValid()) { loadedColorB = cb; }
+            if (bg.isValid()) { loadedBg = bg; }
         } else if (name == QLatin1String("cell")) {
             if (!haveDims) {
                 continue;
@@ -230,6 +249,10 @@ bool MainWindow::loadFromFile(const QString& path) {
         logMove(m);
     }
     suggestedLog_->clear();
+    // Adopt the loaded colours (or the retained defaults if the file had none).
+    colorA_     = loadedColorA;
+    colorB_     = loadedColorB;
+    background_ = loadedBg;
     // Repoint the board at the loaded game before any colour rebuild (the make_unique
     // above freed the previous game; see the note in MainWindow::newGame).
     boardWidget_->setGame(game_.get());

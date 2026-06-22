@@ -10,8 +10,10 @@
 #include <QColorDialog>
 #include <QComboBox>
 #include <QFont>
+#include <QFontMetrics>
 #include <QFormLayout>
 #include <QFrame>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
@@ -35,7 +37,8 @@ namespace gb = games::board;
 static const guicommon::MctsOption kMctsOptions[] = {
     {  5, "5 sec"  }, { 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
-    { 90, "90 sec" }, { 120, "120 sec" },
+    { 90, "90 sec" }, { 120, "2 min" },
+    { 240, "4 min" }, { 480, "8 min" },
 };
 
 // ── Constructor ───────────────────────────────────────────────────────────────
@@ -85,7 +88,9 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
 
     // Right panel.
     auto* panel = new QWidget(row);
-    panel->setFixedWidth(280);  // right column width
+    // The right column must be fairly wide because
+    // a move might have several leaps and a capture.
+    panel->setFixedWidth(300);  // right column width
     auto* pv = new QVBoxLayout(panel);
     pv->setAlignment(Qt::AlignTop);
     rowH->addWidget(panel);
@@ -105,9 +110,38 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     pv->addWidget(statusRow);
     connect(stopBtn_, &QPushButton::clicked, this, [this]() { search().cancelSearch(); });
 
-    tallyLabel_ = new QLabel(panel);
-    tallyLabel_->setTextFormat(Qt::PlainText);
-    pv->addWidget(tallyLabel_);
+    // Per-side tallies, each led by a colour swatch (~ the size of a capital "A")
+    // that identifies the side; the counts sit two em-spaces to the right of it.
+    auto* tallyWidget = new QWidget(panel);
+    auto* tallyGrid   = new QGridLayout(tallyWidget);
+    tallyGrid->setContentsMargins(0, 0, 0, 0);
+    tallyGrid->setVerticalSpacing(2);
+    {
+        const QFontMetrics fm(tallyWidget->font());
+        int em = fm.horizontalAdvance(QChar(0x2003));  // EM SPACE: advance == 1 em
+        if (em <= 0) {
+            em = fm.height();
+        }
+        tallyGrid->setHorizontalSpacing(0.5 * em);       // counts shifted right by 2 em
+        int cap = 1.75 * fm.capHeight();                      // height of a capital "A"
+        if (cap <= 0) {
+            cap = fm.ascent();
+        }
+        swatchA_ = new QLabel(tallyWidget);
+        swatchB_ = new QLabel(tallyWidget);
+        swatchA_->setFixedSize(cap, cap);
+        swatchB_->setFixedSize(cap, cap);
+    }
+    tallyA_ = new QLabel(tallyWidget);
+    tallyB_ = new QLabel(tallyWidget);
+    tallyA_->setTextFormat(Qt::PlainText);
+    tallyB_->setTextFormat(Qt::PlainText);
+    tallyGrid->addWidget(swatchA_, 0, 0);
+    tallyGrid->addWidget(tallyA_,  0, 1);
+    tallyGrid->addWidget(swatchB_, 1, 0);
+    tallyGrid->addWidget(tallyB_,  1, 1);
+    pv->addWidget(tallyWidget);
+    updateSwatches();
 
     pv->addSpacing(8);
     pv->addWidget(new QLabel("Suggested:", panel));
@@ -157,7 +191,7 @@ void MainWindow::buildMenuBar() {
     auto* fileMenu = menuBar()->addMenu("File");
     connect(fileMenu->addAction("New Game"), &QAction::triggered, this, &MainWindow::onNewGame);
     fileMenu->addSeparator();
-    connect(fileMenu->addAction("Save..."), &QAction::triggered, this, &MainWindow::onSave);
+    connect(fileMenu->addAction("Save As..."), &QAction::triggered, this, &MainWindow::onSave);
     connect(fileMenu->addAction("Load..."), &QAction::triggered, this, &MainWindow::onLoad);
     fileMenu->addSeparator();
     connect(fileMenu->addAction("Quit"), &QAction::triggered, this, &QWidget::close);
@@ -464,6 +498,7 @@ void MainWindow::onPickColorA() {
     if (c.isValid()) {
         colorA_ = c;
         boardWidget_->setSideColors(colorA_, colorB_);
+        updateSwatches();
     }
 }
 
@@ -472,6 +507,7 @@ void MainWindow::onPickColorB() {
     if (c.isValid()) {
         colorB_ = c;
         boardWidget_->setSideColors(colorA_, colorB_);
+        updateSwatches();
     }
 }
 
@@ -490,22 +526,35 @@ void MainWindow::refreshBoard() {
     updateControls();
 }
 
+void MainWindow::updateSwatches() {
+    if (swatchA_ != nullptr) {
+        swatchA_->setStyleSheet(
+            QString("background-color: %1; border: 1px solid #555;").arg(colorA_.name()));
+    }
+    if (swatchB_ != nullptr) {
+        swatchB_->setStyleSheet(
+            QString("background-color: %1; border: 1px solid #555;").arg(colorB_.name()));
+    }
+}
+
 void MainWindow::updateControls() {
     const bool searching = search().isSearching();
     stopBtn_->setVisible(searching);
     boardWidget_->setSearching(searching);
     menuBar()->setEnabled(!searching);
     clearSuggestBtn_->setEnabled(!searching);
+    updateSwatches();  // keep the tally squares in step with the side colours
 
     if (!game_) {
         statusLabel_->setText("No game");
-        tallyLabel_->clear();
+        tallyA_->clear();
+        tallyB_->clear();
         return;
     }
-    tallyLabel_->setText(
-        QString("A: %1  (%2 free, %3 bound)\nB: %4  (%5 free, %6 bound)")
-            .arg(game_->totalDiscs(0)).arg(game_->freeDiscs(0)).arg(game_->boundDiscs(0))
-            .arg(game_->totalDiscs(1)).arg(game_->freeDiscs(1)).arg(game_->boundDiscs(1)));
+    tallyA_->setText(QString("A: %1  (%2 free, %3 bound)")
+        .arg(game_->totalDiscs(0)).arg(game_->freeDiscs(0)).arg(game_->boundDiscs(0)));
+    tallyB_->setText(QString("B: %1  (%2 free, %3 bound)")
+        .arg(game_->totalDiscs(1)).arg(game_->freeDiscs(1)).arg(game_->boundDiscs(1)));
 
     if (game_->isOver()) {
         const int w = game_->winner();

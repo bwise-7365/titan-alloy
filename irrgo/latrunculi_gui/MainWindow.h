@@ -56,6 +56,7 @@ private:
     void newGame(int rows, int columns, int perSide);
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
+    void updateSwatches();               // recolour the side A/B tally squares
     void refreshBoard();                 // board update + controls + tallies
     void logMove(const Latrunculi::Move& m);
     QString notate(int square) const;    // chess-like, matching the board labels
@@ -72,7 +73,10 @@ private:
 
     // Right panel.
     QLabel*      statusLabel_     = nullptr;
-    QLabel*      tallyLabel_      = nullptr;
+    QLabel*      swatchA_         = nullptr;  // colour square for side A's tally
+    QLabel*      swatchB_         = nullptr;  // colour square for side B's tally
+    QLabel*      tallyA_          = nullptr;  // side A disc counts
+    QLabel*      tallyB_          = nullptr;  // side B disc counts
     QPushButton* stopBtn_         = nullptr;
     QTextEdit*   suggestedLog_    = nullptr;
     QPushButton* clearSuggestBtn_ = nullptr;
