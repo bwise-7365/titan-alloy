@@ -58,6 +58,44 @@ Game::Game(int rows, int columns, int perSide)
     }
 }
 
+Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
+           Phase phase, int current, int placed0, int placed1,
+           std::vector<Move> history, std::unordered_set<std::uint64_t> seen)
+    : rows_(rows),
+      columns_(columns),
+      perSide_(perSide),
+      squares_(rows * columns),
+      board_(std::move(board)),
+      current_(current),
+      phase_(phase),
+      placed_{placed0, placed1},
+      moveHistory_(std::move(history)),
+      seenPositions_(std::move(seen)) {
+    if (rows < 1 || columns < 1) {
+        throw std::invalid_argument("Latrunculi: rows and columns must be >= 1");
+    }
+    if (static_cast<int>(board_.size()) != squares_) {
+        throw std::invalid_argument("Latrunculi: board size must equal rows*columns");
+    }
+    if (current_ != 0 && current_ != 1) {
+        throw std::invalid_argument("Latrunculi: current player must be 0 or 1");
+    }
+    // Recompute terminal status from the restored position so a loaded game that
+    // is already decided reports correctly. Win by reduction (a side reduced to one
+    // disc) takes precedence; otherwise the side to move may be immobilised.
+    if (phase_ == Phase::Movement) {
+        if (totalDiscs(0) <= 1) {
+            gameOver_ = true;
+            winner_ = 1;
+        } else if (totalDiscs(1) <= 1) {
+            gameOver_ = true;
+            winner_ = 0;
+        } else {
+            checkImmobilizationTerminal();
+        }
+    }
+}
+
 // ── Counting ─────────────────────────────────────────────────────────────────
 
 int Game::totalDiscs(int player) const {

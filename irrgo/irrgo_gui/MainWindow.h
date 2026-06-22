@@ -3,8 +3,7 @@
 #include "BoardWidget.h"
 #include "Game.h"
 #include "Graph.h"
-#include "Searcher.h"
-#include <QElapsedTimer>
+#include "GameMainWindow.h"
 #include <QMainWindow>
 #include <memory>
 #include <random>
@@ -22,7 +21,7 @@ class QTextEdit;
 class QProgressBar;
 class QTimer;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public guicommon::GameMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget* parent = nullptr);
@@ -45,34 +44,16 @@ private slots:
 
 private:
     void buildMenuBar();
-    void updateControls();
+    void updateControls() override;
     void logLastMove();
     void stopStoneSetup();
     void clearSuggestion();
 
-    // Search progress bar helpers — reused by NegaMax and MCTS.
-    // budgetSeconds == 0  →  indeterminate sweep animation (NegaMax)
-    // budgetSeconds  > 0  →  elapsed-time fraction updated every 250 ms (MCTS)
-    void startSearchIndicator(int budgetSeconds = 0);
-    void stopSearchIndicator();
-    void cancelSearch();     // invalidates any in-flight search and hides bar
+    // guicommon::GameMainWindow hooks.
+    AbsGame::Game* currentGame() override;
+    void applyComputedMove(AbsGame::MoveId mv) override;
+    bool extraSearchBlock() const override;   // true while the stone setup animates
 
-    // Builds a NegaMax submenu action and attaches it to parent / group.
-    // depthOut / turnsOut are set to the created spinboxes.
-    // connectGo: if true the Go! button is wired to onSuggestGo().
-    // Returns the Go! button so the caller can connect it to any slot.
-    QPushButton* buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
-                                  QSpinBox*& depthOut, QSpinBox*& turnsOut,
-                                  bool withTurns = true);
-
-    // Builds an MCTS submenu action and attaches it to parent / group. secOut is
-    // set to the created time combo; turnsOut to the Turns spinbox, or nullptr
-    // when withTurns is false. Returns the Go! button for the caller to connect.
-    QPushButton* buildMctsMenu(QMenu* parent, QActionGroup* group,
-                               QComboBox*& secOut, QSpinBox*& turnsOut,
-                               bool withTurns = true);
-
-    void applyComputedMove(AbsGame::MoveId mv);
     void saveToFile(const QString& path);
 
     // Central UI
@@ -127,16 +108,5 @@ private:
     int              setupPlaced_ = 0;
     int              setupTarget_ = 0;
     std::mt19937_64  setupRng_;
-
-    // Search state (shared by NegaMax and MCTS)
-    QProgressBar*  searchProgress_  = nullptr;
-    QProgressBar*  turnProgress_    = nullptr;  // fraction of planned turns completed
-    QTimer*        searchBarTimer_  = nullptr;
-    QElapsedTimer  searchElapsed_;          // wall-clock timer for MCTS progress
-    int            searchBudgetMs_  = 0;   // 0 = sweep mode; >0 = timed mode
-    bool           isSearching_     = false;
-    unsigned       searchGen_       = 0;   // incremented on board reset to discard stale results
-    int            playTurnsRemaining_ = 0; // counts down during auto-play; 0 = idle
-    int            playTurnsTotal_     = 0; // total turns for the current auto-play run
 };
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -52,6 +52,7 @@ endif()
 
 target_link_libraries(irrgo_gui PRIVATE
     Qt6::Widgets
+    gui_common
     irrgo_lib
 )
 # Copyright Ben Paul Wise. All Rights Reserved.

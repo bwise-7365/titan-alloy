@@ -47,6 +47,15 @@ public:
     Game(int rows = 8, int columns = 8, int perSide = 20);
     Game(const Game&) = default;
 
+    // Reconstruct an arbitrary mid-game position (used by the GUI's Load). `board`
+    // must hold rows*columns cells. Terminal status is recomputed from the
+    // position; `seen` (the super-ko history) may be empty. The movement-ply / draw
+    // counter is not restored (the draw rule is not yet implemented).
+    Game(int rows, int columns, int perSide, std::vector<Cell> board,
+         Phase phase, int current, int placed0, int placed1,
+         std::vector<Move> history = {},
+         std::unordered_set<std::uint64_t> seen = {});
+
     // ── AbsGame::Game overrides ──────────────────────────────────────────────
     int currentPlayer() const override { return current_; }
     std::vector<AbsGame::MoveId> getLegalMoves() const override;

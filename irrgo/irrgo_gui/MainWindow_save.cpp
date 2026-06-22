@@ -273,7 +273,7 @@ void MainWindow::onLoad() {
         }
     }
 
-    cancelSearch();
+    search().cancelSearch();
     stopStoneSetup();
     clearSuggestion();
 
