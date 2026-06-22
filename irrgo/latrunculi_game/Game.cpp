@@ -85,6 +85,10 @@ int Game::enemyCaptiveCount(int me) const {
     return boundDiscs(1 - me);
 }
 
+int Game::ownerAt(int square) const {
+    return playerOf(board_[static_cast<std::size_t>(square)]);
+}
+
 // ── Capture geometry ─────────────────────────────────────────────────────────
 
 bool Game::freeAt(const std::vector<Cell>& b, int row, int column, int player) const {

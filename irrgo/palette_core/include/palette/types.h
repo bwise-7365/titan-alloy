@@ -7,7 +7,7 @@
 #include "palette/color.h"
 
 // Value types for the harmony layer and the mode results (DESIGN.md §6).
-// All are small immutable aggregates. `Srgb` lives in color.hpp.
+// All are small immutable aggregates. `Srgb` lives in color.h.
 namespace palette {
 
 // RYB cube coordinates, each in [0, 1] (ArtColors convention: 0,0,0 = black,

@@ -81,12 +81,18 @@ int main() {
             {sq(4, 4), colors.side_b, false},
             {sq(6, 7), colors.side_b, false},
             {sq(6, 8), colors.side_a, true},   // immobilised
+            {sq(6, 9), colors.side_b, false},
         };
         write_file("position.svg", generate_position_svg(board, position, config, style));
 
-        // Chess-like notation for the move log (column letter + row, 1 at bottom).
+        // Chess-like notation (column letter + row, 1 at bottom), labelled by side
+        // (A = side_a, B = side_b). This is the static position.svg demo, NOT a
+        // game move log -- the Latrunculi self-play log is latrunculi_selfplay.
+        std::cerr << "position.svg pieces (static demo on " << params.rows << "x"
+                  << params.columns << " board):\n";
         for (const PlacedPiece& piece : position) {
-            std::cerr << "  square " << piece.square << " = "
+            const char side = (piece.fill == colors.side_a) ? 'A' : 'B';
+            std::cerr << "  " << side << ": square " << piece.square << " = "
                       << square_to_notation(piece.square, params.rows, params.columns)
                       << (piece.immobilized ? " (X)" : "") << '\n';
         }

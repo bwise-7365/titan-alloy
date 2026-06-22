@@ -67,7 +67,7 @@ inline void requireUnit(double value, const char* name) {
 
 // The renderer's view of a grid. rows and columns must be >= 1; roughness and
 // smoothing must lie in [0,1]. Out-of-range values throw std::invalid_argument.
-// Game-level size limits live in board_params.hpp, not here.
+// Game-level size limits live in board_params.h, not here.
 struct GridSpec {
     int rows = 8;
     int columns = 8;

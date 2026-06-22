@@ -52,6 +52,7 @@ public:
     int squareCount() const { return squares_; }
     Phase phase() const { return phase_; }
     Cell cellAt(int square) const { return board_[static_cast<std::size_t>(square)]; }
+    int ownerAt(int square) const;  // -1 if empty, else the owning player (0 or 1)
     int perSide() const { return perSide_; }
     bool isOver() const { return gameOver_; }
     int winner() const { return winner_; }  // valid only when isOver()
