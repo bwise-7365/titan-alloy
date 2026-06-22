@@ -36,6 +36,13 @@ Cell boundCell(int player) {
 
 constexpr double kWinBase = 1000.0;  // an actual win/loss dominates the leaf score
 
+// Draw rule (MD spec): if neither side wins within z*M*N movement plies on an MxN
+// board, the game ends. The MD suggests z = 2 or 3; placement plies do not count.
+// Unlike a textbook draw (scored 0), the ended position is evaluated by the
+// material-balance v(M,N) below -- a flat 0 would blind MCTS, whose random
+// rollouts almost always reach this limit rather than a real win/immobilisation.
+constexpr int kDrawPliesFactor = 3;
+
 // The material-balance score s = 3M / (3M + 2N) for a side with M discs facing an
 // opponent with N. This is the game's terminal score for the winner, and also the
 // basis of the search's leaf evaluation, so reducing the opponent's pieces
@@ -386,10 +393,35 @@ bool Game::isLegalPlacement(int square) const {
     if (board_[static_cast<std::size_t>(square)] != Cell::Empty) {
         return false;
     }
-    // No captures occur during placement (vagi are never captured), so a disc may
-    // not be set down where two enemies would flank it -- that is an immediate
-    // self-capture, which the rules forbid in the Placement Phase.
-    return !pinnedOn(board_, square, 1 - current_);
+    // No captures of ANY kind may be made during the Placement Phase. Simulate the
+    // placement and reject it if it would custodially capture any disc -- the placed
+    // disc itself (self-capture) or an adjacent enemy it would flank.
+    const int me = current_;
+    const int opp = 1 - me;
+    std::vector<Cell> b = board_;
+    b[static_cast<std::size_t>(square)] = freeCell(me);
+
+    // (a) Self-capture: the placed disc flanked by enemy Free discs.
+    if (pinnedOn(b, square, opp)) {
+        return false;
+    }
+    // (b) Capturing an enemy: any adjacent enemy Free disc the placement would pin.
+    const int dr[4] = {-1, 1, 0, 0};
+    const int dc[4] = {0, 0, -1, 1};
+    const int r = square / columns_;
+    const int c = square % columns_;
+    for (int k = 0; k < 4; ++k) {
+        const int nr = r + dr[k];
+        const int nc = c + dc[k];
+        if (!inBounds(nr, nc)) {
+            continue;
+        }
+        const int n = idx(nr, nc);
+        if (b[static_cast<std::size_t>(n)] == freeCell(opp) && pinnedOn(b, n, me)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
@@ -554,6 +586,14 @@ bool Game::applyMove(AbsGame::MoveId mv) {
 
     current_ = 1 - current_;
     checkImmobilizationTerminal();  // win by immobilisation, checked at turn start
+
+    // Draw by move limit: only if neither side has just won (reduction or
+    // immobilisation take precedence). winner_ == -1 marks the drawn end; staticEval
+    // scores it by material balance rather than 0 so the search keeps a gradient.
+    if (!gameOver_ && movementPlies_ >= kDrawPliesFactor * rows_ * columns_) {
+        gameOver_ = true;
+        winner_ = -1;
+    }
     return true;
 }
 
@@ -563,16 +603,20 @@ double Game::staticEval() const {
     const int me = current_;
     const int opp = 1 - me;
 
-    if (gameOver_) {
+    // A decisive result (win by reduction or immobilisation, winner_ >= 0) dominates
+    // the leaf score. A move-limit draw (winner_ == -1) deliberately does NOT return
+    // here: it falls through to the material-balance score below, so the search still
+    // values captures/removals instead of treating the cut-off position as a flat 0.
+    if (gameOver_ && winner_ >= 0) {
         const double s = materialScore(totalDiscs(winner_), totalDiscs(1 - winner_));
-        const double terminal = kWinBase + kWinBase * s;  // an actual result dominates
+        const double terminal = kWinBase + kWinBase * s;
         return (winner_ == me) ? terminal : -terminal;
     }
 
-    // Search-leaf (non-terminal) evaluation: the rules' material-balance score from
-    // the mover's perspective. The side with more material (M) scores
-    // v(M, N) = 3M/(3M+2N); the other scores -v(M, N); equal material scores 0.
-    // (This is the MD-document score, not the symmetric difference v(M,N)-v(N,M).)
+    // Search-leaf evaluation (non-terminal, or a move-limit draw): the rules'
+    // material-balance score from the mover's perspective. The side with more
+    // material (M) scores v(M, N) = 3M/(3M+2N); the other scores -v(M, N); equal
+    // material scores 0. (The MD-document score, not the difference v(M,N)-v(N,M).)
     // Each side's material counts Free discs fully and Bound (immobilised) discs at
     // immobilizationDiscount, so both immobilising and removing the opponent help.
     const double myMaterial = freeDiscs(me) + immobilizationDiscount * boundDiscs(me);
