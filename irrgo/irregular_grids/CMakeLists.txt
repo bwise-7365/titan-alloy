@@ -13,11 +13,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(irregular_grid STATIC
     irregular_grid.cpp
-    irregular_grid.hpp
+    irregular_grid.h
     board_params.cpp
-    board_params.hpp
+    board_params.h
     draw_params.cpp
-    draw_params.hpp
+    draw_params.h
 )
 target_include_directories(irregular_grid PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(irregular_grid PUBLIC cxx_std_20)

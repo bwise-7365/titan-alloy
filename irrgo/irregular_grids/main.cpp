@@ -10,6 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "board_params.h"
 #include "draw_params.h"
@@ -67,6 +68,28 @@ int main() {
         apply_draw_defaults(board);  // disc, outline, outer box, X-mark
 
         write_file("board.svg", generate_board_svg(board, config, style));
+
+        // An EXPLICIT position (what a game renders from its own state): pieces at
+        // chosen squares, two of them immobilised (shown with the "X").
+        const int cols = params.columns;
+        const auto sq = [cols](int row, int col) { return row * cols + col; };
+        const std::vector<PlacedPiece> position = {
+            {sq(1, 1), colors.side_a, false},
+            {sq(1, 2), colors.side_b, true},   // immobilised (flanked left/right)
+            {sq(1, 3), colors.side_a, false},
+            {sq(3, 4), colors.side_a, false},
+            {sq(4, 4), colors.side_b, false},
+            {sq(6, 7), colors.side_b, false},
+            {sq(6, 8), colors.side_a, true},   // immobilised
+        };
+        write_file("position.svg", generate_position_svg(board, position, config, style));
+
+        // Chess-like notation for the move log (column letter + row, 1 at bottom).
+        for (const PlacedPiece& piece : position) {
+            std::cerr << "  square " << piece.square << " = "
+                      << square_to_notation(piece.square, params.rows, params.columns)
+                      << (piece.immobilized ? " (X)" : "") << '\n';
+        }
     } catch (const std::exception& error) {
         std::cerr << "error: " << error.what() << '\n';
         return EXIT_FAILURE;

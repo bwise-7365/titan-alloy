@@ -171,6 +171,35 @@ std::string generate_board_svg(const BoardSpec& board,
                                const RenderConfig& config = {},
                                const SvgStyle& style = {});
 
+// One disc placed at an explicit square (square = row * columns + column),
+// with its own fill colour and an optional immobilised "X" marker.
+struct PlacedPiece {
+    int square;
+    std::string fill;
+    bool immobilized = false;
+};
+
+// Renders an EXPLICIT position: the grid/frame/labels from `board`, plus a disc
+// at each PlacedPiece's square (Pieces layer) and an "X" on each immobilised one
+// (Markers layer). Unlike generate_board_svg, placement is caller-specified, so
+// this is what a game uses to draw its current state. board.pieces and
+// board.seed are ignored; board.grid/disc/outline/outer_margin/mark_* supply the
+// look. Each disc's noise is seeded by its square index, so a square's wobble is
+// stable across renders as pieces move.
+// Throws std::invalid_argument on bad parameters or an out-of-range square.
+std::string generate_position_svg(const BoardSpec& board,
+                                  const std::vector<PlacedPiece>& pieces,
+                                  const RenderConfig& config = {},
+                                  const SvgStyle& style = {});
+
+// Chess-like coordinate notation matching the SVG edge labels (for move logs):
+// the column letter is 'A' + column (left to right) and the row number counts
+// with 1 at the BOTTOM (row 0 is the top). On an 8-row board, the square at
+// (row 1, col 2) is "C7" and (row 6, col 8) is "I2". `square = row*columns + col`.
+// Requires 1 <= columns <= 26. Throws std::invalid_argument on bad input.
+std::string square_to_notation(int square, int rows, int columns);
+int notation_to_square(const std::string& notation, int rows, int columns);
+
 }  // namespace games::board
 
 #endif  // GAMES_BOARD_IRREGULAR_GRID_HPP

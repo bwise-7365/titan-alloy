@@ -2,6 +2,7 @@
 
 #include "irregular_grid.h"
 
+#include <cctype>
 #include <cmath>
 #include <cstddef>
 #include <iomanip>
@@ -422,6 +423,54 @@ bool is_immobilized(const std::vector<int>& occupant, const std::vector<bool>& m
     return false;
 }
 
+// Emits the complete Background layer (bottom): the background rect, the
+// hand-scratched grid, the inner/outer frames, and the coordinate labels. Shared
+// verbatim by generate_board_svg and generate_position_svg.
+void emit_background_layer(std::ostream& os, const GridGeometry& grid, int rows,
+                           int columns, double scale, double offset, double width,
+                           double height, const SvgStyle& style, double grid_stroke,
+                           double box_inset) {
+    emit_open_layer(os, "Background", "layer-background");
+    emit_background_rect(os, width, height, style.background);
+    emit_open_stroke_group(os, style.ink, grid_stroke);
+    for (const Polyline& line : grid.lines) {
+        os << "    <polyline points=\"";
+        emit_points(os, line.points, scale, offset);
+        os << "\"/>\n";
+    }
+    os << "  </g>\n";
+    // Crisp straight black edge framing the grid extent (over the wavy outer lines).
+    emit_rect(os, offset, offset, grid.width_units * scale, grid.height_units * scale,
+              kBlackInk, grid_stroke);
+    // Second, outer black box framing the whole diagram (board plus labels).
+    emit_rect(os, box_inset, box_inset, width - 2.0 * box_inset, height - 2.0 * box_inset,
+              kBlackInk, grid_stroke);
+    emit_edge_labels(os, rows, columns, scale, offset,
+                     style.label_gap_units, style.label_font_units);
+    os << "  </g>\n";  // close Background layer
+}
+
+// Emits the Markers layer (top): the prebuilt "X" template stamped at each
+// immobilised disc's centre. The layer is always emitted (possibly empty) so the
+// document keeps a consistent three-layer structure. Shared by both renderers.
+void emit_markers_layer(std::ostream& os, const std::vector<Point>& marked_centers,
+                        const std::vector<Polyline>& x_template, double scale,
+                        double offset, std::string_view mark_color, double x_stroke) {
+    emit_open_layer(os, "Markers", "layer-markers");
+    if (!marked_centers.empty()) {
+        emit_open_stroke_group(os, mark_color, x_stroke);
+        for (const Point& c : marked_centers) {
+            for (const Polyline& line : x_template) {  // template centre -> disc centre
+                os << "    <polyline points=\"";
+                emit_points(os, line.points, scale, offset, c.x, c.y);
+                os << "\"/>\n";
+            }
+        }
+        os << "  </g>\n";
+    }
+    os << "  </g>\n";  // close Markers layer
+}
+
 }  // namespace
 
 GridGeometry build_grid(const GridSpec& spec, const RenderConfig& config) {
@@ -592,31 +641,9 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
     emit_svg_open(os, width, height, /*with_layers=*/true);
 
-    // ── Background layer (bottom): background, grid, frame, labels ─────────────
-    emit_open_layer(os, "Background", "layer-background");
-    emit_background_rect(os, width, height, style.background);
-    emit_open_stroke_group(os, style.ink, grid_stroke);
-    for (const Polyline& line : grid.lines) {
-        os << "    <polyline points=\"";
-        emit_points(os, line.points, scale, offset);
-        os << "\"/>\n";
-    }
-    os << "  </g>\n";
-
-    // A crisp, perfectly straight black edge framing the grid extent (over the
-    // hand-scratched outer lines).
-    emit_rect(os, offset, offset, grid.width_units * scale, grid.height_units * scale,
-              kBlackInk, grid_stroke);
-
-    // A second, outer black box framing the whole diagram (board plus the edge
-    // labels), inset from the canvas border by the configurable outer margin.
     const double box_inset = board.outer_margin_units * scale;
-    emit_rect(os, box_inset, box_inset, width - 2.0 * box_inset, height - 2.0 * box_inset,
-              kBlackInk, grid_stroke);
-
-    emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset,
-                     style.label_gap_units, style.label_font_units);
-    os << "  </g>\n";  // close Background layer
+    emit_background_layer(os, grid, board.grid.rows, board.grid.columns, scale, offset,
+                          width, height, style, grid_stroke, box_inset);
 
     // ── Pieces layer (middle): one disc per chosen square ─────────────────────
     // Each disc is generated separately (its own noise) and placed at the centre
@@ -675,31 +702,142 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         }
     }
 
-    emit_open_layer(os, "Markers", "layer-markers");
+    std::vector<Polyline> x_template;
+    const double x_stroke = board.mark_stroke_width_units * scale;
     if (!marked_centers.empty()) {
-        // The template is generated once, centred on the origin, then stamped at
-        // each immobilised disc's centre. Arm length is a fraction of the nominal
-        // disc diameter (2 * radius).
+        // Arm length is a fraction of the nominal disc diameter (2 * radius). Built
+        // once, consuming the render engine only when there are marks to draw.
         const double x_length = board.mark_length_fraction * 2.0 * board.disc.radius;
-        const std::vector<Polyline> x_template =
-            build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
-                             config.points_per_edge, render_engine);
-        const double x_stroke = board.mark_stroke_width_units * scale;
-
-        emit_open_stroke_group(os, board.mark_color, x_stroke);
-        for (const Point& c : marked_centers) {
-            for (const Polyline& line : x_template) {  // template centre -> disc centre
-                os << "    <polyline points=\"";
-                emit_points(os, line.points, scale, offset, c.x, c.y);
-                os << "\"/>\n";
-            }
-        }
-        os << "  </g>\n";
+        x_template = build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
+                                      config.points_per_edge, render_engine);
     }
-    os << "  </g>\n";  // close Markers layer
+    emit_markers_layer(os, marked_centers, x_template, scale, offset,
+                       board.mark_color, x_stroke);
 
     os << "</svg>\n";
     return os.str();
+}
+
+std::string generate_position_svg(const BoardSpec& board,
+                                  const std::vector<PlacedPiece>& pieces,
+                                  const RenderConfig& config, const SvgStyle& style) {
+    validate(board.disc);
+    validate(config);
+
+    if (!(board.disc.radius <= 0.5)) {
+        throw std::invalid_argument("disc.radius must be <= 0.5 to fit one disc per square");
+    }
+    if (board.grid.columns > 26) {
+        throw std::invalid_argument("column labels run A..Z; columns must be <= 26");
+    }
+    if (!(board.outer_margin_units >= 0.0 && board.outer_margin_units < style.margin_units)) {
+        throw std::invalid_argument("outer_margin_units must be in [0, margin_units): "
+                                    "the outer box sits between the canvas edge and the inner border");
+    }
+
+    const GridGeometry grid = build_grid(board.grid, config);
+    const int square_count = board.grid.rows * board.grid.columns;
+
+    const double scale = config.square_size;
+    const double margin = style.margin_units * scale;
+    const double offset = margin;
+    const double width = grid.width_units * scale + 2.0 * margin;
+    const double height = grid.height_units * scale + 2.0 * margin;
+    const double grid_stroke = style.stroke_width_units * scale;
+    const double outline_stroke = board.outline_width_units * scale;
+    const double box_inset = board.outer_margin_units * scale;
+
+    std::ostringstream os;
+    os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
+    emit_svg_open(os, width, height, /*with_layers=*/true);
+
+    emit_background_layer(os, grid, board.grid.rows, board.grid.columns, scale, offset,
+                          width, height, style, grid_stroke, box_inset);
+
+    // ── Pieces layer: one disc per caller-specified square ────────────────────
+    // Each disc's noise is seeded by the square index (mixed with config.seed), so
+    // a given square's hand-scratched wobble is stable as pieces move across renders.
+    emit_open_layer(os, "Pieces", "layer-pieces");
+    std::vector<Point> marked_centers;
+    for (const PlacedPiece& piece : pieces) {
+        if (piece.square < 0 || piece.square >= square_count) {
+            throw std::invalid_argument("PlacedPiece.square out of range");
+        }
+        const int column = piece.square % board.grid.columns;
+        const int row = piece.square / board.grid.columns;
+        const Point center{static_cast<double>(column) + 0.5,
+                           static_cast<double>(row) + 0.5};
+
+        std::mt19937_64 engine(
+            AbsGame::qTrans(config.seed + static_cast<std::uint64_t>(piece.square)));
+        const DiscGeometry disc = build_disc_core(board.disc, engine);
+        emit_filled_polygon_open(os, piece.fill, board.outline, outline_stroke);
+        emit_points(os, disc.boundary.points, scale, offset, center.x, center.y);
+        os << "\"/>\n";
+
+        if (piece.immobilized) {
+            marked_centers.push_back(center);
+        }
+    }
+    os << "  </g>\n";  // close Pieces layer
+
+    // ── Markers layer: the "X" on every immobilised piece ─────────────────────
+    std::vector<Polyline> x_template;
+    const double x_stroke = board.mark_stroke_width_units * scale;
+    if (!marked_centers.empty()) {
+        const double x_length = board.mark_length_fraction * 2.0 * board.disc.radius;
+        std::mt19937_64 x_engine(config.seed);
+        x_template = build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
+                                      config.points_per_edge, x_engine);
+    }
+    emit_markers_layer(os, marked_centers, x_template, scale, offset,
+                       board.mark_color, x_stroke);
+
+    os << "</svg>\n";
+    return os.str();
+}
+
+std::string square_to_notation(int square, int rows, int columns) {
+    if (rows < 1 || columns < 1 || columns > 26) {
+        throw std::invalid_argument("square_to_notation: need rows >= 1 and 1 <= columns <= 26");
+    }
+    if (square < 0 || square >= rows * columns) {
+        throw std::invalid_argument("square_to_notation: square out of range");
+    }
+    const int column = square % columns;
+    const int row = square / columns;
+    std::string out(1, static_cast<char>('A' + column));
+    out += std::to_string(rows - row);  // row number: 1 at the bottom
+    return out;
+}
+
+int notation_to_square(const std::string& notation, int rows, int columns) {
+    if (rows < 1 || columns < 1 || columns > 26) {
+        throw std::invalid_argument("notation_to_square: need rows >= 1 and 1 <= columns <= 26");
+    }
+    if (notation.size() < 2) {
+        throw std::invalid_argument("notation_to_square: notation too short (need e.g. \"C7\")");
+    }
+    const char letter =
+        static_cast<char>(std::toupper(static_cast<unsigned char>(notation[0])));
+    if (letter < 'A' || letter >= static_cast<char>('A' + columns)) {
+        throw std::invalid_argument("notation_to_square: column letter out of range");
+    }
+    const int column = letter - 'A';
+
+    int number = 0;
+    for (std::size_t i = 1; i < notation.size(); ++i) {
+        const char digit = notation[i];
+        if (digit < '0' || digit > '9') {
+            throw std::invalid_argument("notation_to_square: row number must be digits");
+        }
+        number = number * 10 + (digit - '0');
+    }
+    if (number < 1 || number > rows) {
+        throw std::invalid_argument("notation_to_square: row number out of range");
+    }
+    const int row = rows - number;  // invert: 1 at the bottom
+    return row * columns + column;
 }
 
 }  // namespace games::board
