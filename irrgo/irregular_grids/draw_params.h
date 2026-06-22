@@ -38,7 +38,7 @@ struct RenderConfig {
 
 // Cosmetic SVG settings. An empty background string omits the background rect.
 struct SvgStyle {
-    std::string background = "#FFFFF4";  // "#ffffee";
+    std::string background = "#8C8E7E";
     std::string ink = "#000060";
     double stroke_width_units = kStrokeWidthUnits;  // square-width units
     double margin_units = kMarginUnits;             // gutter on every side
@@ -54,9 +54,11 @@ struct SvgStyle {
 struct PieceColors {
     //std::string side_a = "#2aa85a";  // pastel green
     //std::string side_b = "#c76fe8";  // purplish
+    // these might go well with a nearly white background like "FFFFEE" or "#FFFFF4";
 
     std::string side_a = "#FAE5BE"; // pale beige
     std::string side_b = "#852532"; // brick-red
+    // these might go well with a nearly white "#FFFFF4" or complementary #8C8E7E
 };
 
 // Pixel scale, sampling and RNG seed.

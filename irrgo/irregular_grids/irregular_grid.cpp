@@ -171,17 +171,35 @@ void emit_points(std::ostream& os, const std::vector<Point>& points,
     }
 }
 
-// Opens an SVG document: the <svg> header and an optional background <rect>.
-// Sets fixed/precision(2) (the default for coordinates) on the stream.
+// Opens an SVG document's root <svg> tag. When with_layers is true, also declares
+// the Inkscape namespace so child <g inkscape:groupmode="layer"> elements are
+// valid. Sets fixed/precision(2) (the default for coordinates) on the stream.
 void emit_svg_open(std::ostream& os, double width, double height,
-                   const std::string& background) {
+                   bool with_layers = false) {
     os << std::fixed << std::setprecision(2);
-    os << "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" << width
-       << "\" height=\"" << height << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
-    if (!background.empty()) {
-        os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
-           << "\" fill=\"" << background << "\"/>\n";
+    os << "<svg xmlns=\"http://www.w3.org/2000/svg\"";
+    if (with_layers) {
+        os << " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"";
     }
+    os << " width=\"" << width << "\" height=\"" << height
+       << "\" viewBox=\"0 0 " << width << ' ' << height << "\">\n";
+}
+
+// Emits the full-canvas background <rect> (skipped when fill is empty).
+void emit_background_rect(std::ostream& os, double width, double height,
+                          const std::string& fill) {
+    if (fill.empty()) {
+        return;
+    }
+    os << "  <rect x=\"0\" y=\"0\" width=\"" << width << "\" height=\"" << height
+       << "\" fill=\"" << fill << "\"/>\n";
+}
+
+// Opens an Inkscape layer group (a <g> the editor treats as a named layer).
+// Close with "  </g>\n".
+void emit_open_layer(std::ostream& os, const char* label, const char* id) {
+    os << "  <g inkscape:groupmode=\"layer\" inkscape:label=\"" << label
+       << "\" id=\"" << id << "\">\n";
 }
 
 // Opens an unfilled, stroked <g> with round caps/joins. The stroke width prints
@@ -451,7 +469,8 @@ std::string to_svg(const GridGeometry& geometry, const RenderConfig& config,
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    emit_svg_open(os, width, height, style.background);
+    emit_svg_open(os, width, height);
+    emit_background_rect(os, width, height, style.background);
     emit_open_stroke_group(os, style.ink, stroke);
 
     for (const Polyline& line : geometry.lines) {
@@ -502,7 +521,8 @@ std::string to_svg(const DiscGeometry& geometry, const RenderConfig& config,
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    emit_svg_open(os, width, height, style.background);
+    emit_svg_open(os, width, height);
+    emit_background_rect(os, width, height, style.background);
     emit_filled_polygon_open(os, style.ink, style.ink, stroke);
     emit_points(os, geometry.boundary.points, scale, margin);
     os << "\"/>\n";
@@ -570,7 +590,11 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
 
     std::ostringstream os;
     os.imbue(std::locale::classic());  // force '.' decimal separator on every platform
-    emit_svg_open(os, width, height, style.background);
+    emit_svg_open(os, width, height, /*with_layers=*/true);
+
+    // ── Background layer (bottom): background, grid, frame, labels ─────────────
+    emit_open_layer(os, "Background", "layer-background");
+    emit_background_rect(os, width, height, style.background);
     emit_open_stroke_group(os, style.ink, grid_stroke);
     for (const Polyline& line : grid.lines) {
         os << "    <polyline points=\"";
@@ -590,9 +614,15 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     emit_rect(os, box_inset, box_inset, width - 2.0 * box_inset, height - 2.0 * box_inset,
               kBlackInk, grid_stroke);
 
+    emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset,
+                     style.label_gap_units, style.label_font_units);
+    os << "  </g>\n";  // close Background layer
+
+    // ── Pieces layer (middle): one disc per chosen square ─────────────────────
     // Each disc is generated separately (its own noise) and placed at the centre
     // of its randomly chosen square. squares[] holds the color assignment order:
     // the first set's discs take the first slots, the next set the following, etc.
+    emit_open_layer(os, "Pieces", "layer-pieces");
     std::vector<Point> disc_centers;
     std::vector<int> disc_square;
     std::vector<int> disc_color;
@@ -625,14 +655,13 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         }
         ++color_index;
     }
+    os << "  </g>\n";  // close Pieces layer
 
-    // Mark every immobilised piece (Latrunculi) with the crossed "X". The template
-    // is generated once, centred on the origin, then stamped at each immobilised
-    // disc's centre. Drawn after every disc so it always sits on top.
-    //
-    // The scan is a single pass in disc-placement order, and a disc marked earlier
-    // in the pass no longer pins later discs (see active_enemy). The result is
-    // therefore order-dependent by design, and reproducible from the seed.
+    // ── Markers layer (top): the crossed "X" on every immobilised piece ───────
+    // Mark every immobilised piece (Latrunculi). The scan is a single pass in
+    // disc-placement order, and a disc marked earlier in the pass no longer pins
+    // later discs (see active_enemy): order-dependent by design, reproducible
+    // from the seed.
     std::vector<Point> marked_centers;
     std::vector<bool> marked_square(static_cast<std::size_t>(square_count), false);
     for (std::size_t i = 0; i < disc_centers.size(); ++i) {
@@ -646,8 +675,11 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         }
     }
 
+    emit_open_layer(os, "Markers", "layer-markers");
     if (!marked_centers.empty()) {
-        // Arm length is a fraction of the nominal disc diameter (2 * radius).
+        // The template is generated once, centred on the origin, then stamped at
+        // each immobilised disc's centre. Arm length is a fraction of the nominal
+        // disc diameter (2 * radius).
         const double x_length = board.mark_length_fraction * 2.0 * board.disc.radius;
         const std::vector<Polyline> x_template =
             build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
@@ -664,9 +696,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
         }
         os << "  </g>\n";
     }
-
-    emit_edge_labels(os, board.grid.rows, board.grid.columns, scale, offset,
-                     style.label_gap_units, style.label_font_units);
+    os << "  </g>\n";  // close Markers layer
 
     os << "</svg>\n";
     return os.str();
