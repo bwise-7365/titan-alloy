@@ -30,12 +30,15 @@ the two pieces be pale, medium or dark?
 If the two pieces are pale, should the background be dark,
 or should it be medium or pale at user choice with black outline on pieces?
 Think of a pale Go board with solid White stones outlined in black, and solid Black stones.
+
+#EBD3B2
+#ebd3b2
 ---------------------
 Split complement
 background ff00f2
 
-p1  f2f9ed
-p2  224b46
+p1  #852532  dark red brick
+p2  #ffffdd  pale beige
 ---------------------
 
 Split complement

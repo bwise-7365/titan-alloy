@@ -65,6 +65,13 @@ private:
                                   QSpinBox*& depthOut, QSpinBox*& turnsOut,
                                   bool withTurns = true);
 
+    // Builds an MCTS submenu action and attaches it to parent / group. secOut is
+    // set to the created time combo; turnsOut to the Turns spinbox, or nullptr
+    // when withTurns is false. Returns the Go! button for the caller to connect.
+    QPushButton* buildMctsMenu(QMenu* parent, QActionGroup* group,
+                               QComboBox*& secOut, QSpinBox*& turnsOut,
+                               bool withTurns = true);
+
     void applyComputedMove(AbsGame::MoveId mv);
     void saveToFile(const QString& path);
 

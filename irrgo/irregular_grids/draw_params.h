@@ -14,8 +14,11 @@ namespace games::board {
 
 // Fill colours for the two opposing sides.
 struct PieceColors {
-    std::string side_a = "#2aa85a";  // pastel green
-    std::string side_b = "#c76fe8";  // purplish
+    //std::string side_a = "#2aa85a";  // pastel green
+    //std::string side_b = "#c76fe8";  // purplish
+
+    std::string side_a = "#ffffdd"; // pale beige
+    std::string side_b = "#852532";  // brick-red
 };
 
 // Pixel scale, sampling and RNG seed.
@@ -38,4 +41,5 @@ PieceColors piece_colors();
 void apply_draw_defaults(BoardSpec& board);
 
 }  // namespace games::board
+
 // Copyright Ben Paul Wise. All Rights Reserved.

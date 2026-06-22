@@ -56,6 +56,15 @@ void BoardWidget::loadTextures() {
         qDebug() << "BoardWidget: texture_bg.png not found in resources";
 }
 
+// Rescale every pixmap in `src` to sz x sz (smooth, aspect-preserving) into `dst`.
+static void scaleStones(const std::vector<QPixmap>& src,
+                        std::vector<QPixmap>& dst, int sz) {
+    dst.clear();
+    dst.reserve(src.size());
+    for (const auto& pm : src)
+        dst.push_back(pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
+
 void BoardWidget::rescaleTextures() {
     if (!useTexture_) return;
     // Texture background — stretch to fill widget, no aspect-ratio constraint
@@ -68,14 +77,8 @@ void BoardWidget::rescaleTextures() {
     // Stone textures
     if (blackSrc_.empty() || whiteSrc_.empty()) return;
     int sz = std::max(1, static_cast<int>(stoneR_ * 2.0f));
-    blackScaled_.clear();
-    for (const auto& pm : blackSrc_)
-        blackScaled_.push_back(
-            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    whiteScaled_.clear();
-    for (const auto& pm : whiteSrc_)
-        whiteScaled_.push_back(
-            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    scaleStones(blackSrc_, blackScaled_, sz);
+    scaleStones(whiteSrc_, whiteScaled_, sz);
 }
 
 void BoardWidget::setUseTexture(bool on) {

@@ -83,6 +83,10 @@ private:
     bool isLegalPlacement(int nodeId) const;
     // Raw stone counts {black, white} over the board (komi added by callers).
     std::pair<int, int> countStones() const;
+    // Append a move (auto-numbered); pass defaults (Empty, -1, -1, -1).
+    void recordMove(Color color, int nodeId = -1, int row = -1, int col = -1);
+    // Advance the side to move.
+    void togglePlayer();
 };
 
 } // namespace IrrGo

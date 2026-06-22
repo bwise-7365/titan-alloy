@@ -187,21 +187,26 @@ bool Game::placeStone(int nodeId) {
 
     history_.insert(hash_);
     passCount_ = 0;
-    moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
-                            myColor,
-                            nodeId,
-                            graph_.node(nodeId).row, graph_.node(nodeId).col});
-    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
+    recordMove(myColor, nodeId, graph_.node(nodeId).row, graph_.node(nodeId).col);
+    togglePlayer();
     return true;
 }
 
 bool Game::pass() {
     if (isTerminal()) return false;
     ++passCount_;
-    moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
-                            Color::Empty, -1, -1});
-    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
+    recordMove(Color::Empty);
+    togglePlayer();
     return true;
+}
+
+void Game::recordMove(Color color, int nodeId, int row, int col) {
+    moveHistory_.push_back(
+        Move{static_cast<int>(moveHistory_.size()) + 1, color, nodeId, row, col});
+}
+
+void Game::togglePlayer() {
+    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
 }
 
 // ── AbsGame::Game overrides ───────────────────────────────────────────────────

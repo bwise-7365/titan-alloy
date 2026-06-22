@@ -78,6 +78,26 @@ static const struct { double fraction; const char* label; } kStones[] = {
     { 1.00, "Solid (100%)"  },
 };
 
+static constexpr int kStatusBarHeightPx = 14;
+
+// Keep a widget's layout slot reserved while it is hidden (avoids reflow jitter).
+static void retainSizeWhenHidden(QWidget* w) {
+    auto sp = w->sizePolicy();
+    sp.setRetainSizeWhenHidden(true);
+    w->setSizePolicy(sp);
+}
+
+// A thin, text-less 0-100 status progress bar that holds its slot while hidden.
+static QProgressBar* makeStatusBar(QWidget* parent) {
+    auto* bar = new QProgressBar(parent);
+    bar->setRange(0, 100);
+    bar->setFixedHeight(kStatusBarHeightPx);
+    bar->setTextVisible(false);
+    retainSizeWhenHidden(bar);
+    bar->hide();
+    return bar;
+}
+
 // ── Constructor ───────────────────────────────────────────────────────────────
 
 MainWindow::MainWindow(QWidget* parent)
@@ -109,27 +129,9 @@ MainWindow::MainWindow(QWidget* parent)
     boardVBox->setSpacing(4);
     boardWidget_ = new BoardWidget(boardArea);
     boardVBox->addWidget(boardWidget_, 1);
-    turnProgress_ = new QProgressBar(boardArea);
-    turnProgress_->setRange(0, 100);
-    turnProgress_->setFixedHeight(14);
-    turnProgress_->setTextVisible(false);
-    {
-        auto sp = turnProgress_->sizePolicy();
-        sp.setRetainSizeWhenHidden(true);
-        turnProgress_->setSizePolicy(sp);
-    }
-    turnProgress_->hide();
+    turnProgress_ = makeStatusBar(boardArea);
     boardVBox->addWidget(turnProgress_);
-    searchProgress_ = new QProgressBar(boardArea);
-    searchProgress_->setRange(0, 100);
-    searchProgress_->setFixedHeight(14);
-    searchProgress_->setTextVisible(false);
-    {
-        auto sp = searchProgress_->sizePolicy();
-        sp.setRetainSizeWhenHidden(true);
-        searchProgress_->setSizePolicy(sp);
-    }
-    searchProgress_->hide();
+    searchProgress_ = makeStatusBar(boardArea);
     boardVBox->addWidget(searchProgress_);
     root->addWidget(boardArea, 1);
     connect(boardWidget_, &BoardWidget::moveRequested,
@@ -159,7 +161,7 @@ MainWindow::MainWindow(QWidget* parent)
     stopBtn_ = new QPushButton("Stop", statusRow);
     stopBtn_->setStyleSheet("QPushButton { background-color: #FFCC99; color: black; }");
     stopBtn_->setFixedWidth(44);
-    { auto sp = stopBtn_->sizePolicy(); sp.setRetainSizeWhenHidden(true); stopBtn_->setSizePolicy(sp); }
+    retainSizeWhenHidden(stopBtn_);
     stopBtn_->hide();
     hoverCoordLabel_ = new QLabel("----", statusRow);
     hoverCoordLabel_->setFixedWidth(44);
@@ -305,6 +307,57 @@ QPushButton* MainWindow::buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
     return goBtn;
 }
 
+QPushButton* MainWindow::buildMctsMenu(QMenu* parent, QActionGroup* group,
+                                       QComboBox*& secOut, QSpinBox*& turnsOut,
+                                       bool withTurns)
+{
+    auto* action = new QAction("MCTS", this);
+    action->setCheckable(true);
+    group->addAction(action);
+    parent->addAction(action);
+
+    auto* mctsMenu = new QMenu(this);
+    auto* widget   = new QWidget;
+    auto* vbox     = new QVBoxLayout(widget);
+    vbox->setContentsMargins(8, 6, 8, 6);
+    auto* form     = new QFormLayout;
+    form->setSpacing(6);
+    vbox->addLayout(form);
+
+    secOut = new QComboBox(widget);
+    for (const auto& o : kMctsOptions) {
+        secOut->addItem(o.label, o.secs);
+    }
+    form->addRow("Time:", secOut);
+
+    if (withTurns) {
+        turnsOut = new QSpinBox(widget);
+        turnsOut->setRange(1, 999);
+        turnsOut->setValue(10);
+        form->addRow("Turns:", turnsOut);
+    } else {
+        turnsOut = nullptr;
+    }
+
+    auto* sep = new QFrame(widget);
+    sep->setFrameShape(QFrame::HLine);
+    vbox->addWidget(sep);
+
+    auto* goBtn = new QPushButton("Go!", widget);
+    vbox->addWidget(goBtn);
+    connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+
+    auto* wa = new QWidgetAction(mctsMenu);
+    wa->setDefaultWidget(widget);
+    mctsMenu->addAction(wa);
+    action->setMenu(mctsMenu);
+
+    connect(mctsMenu, &QMenu::aboutToShow, this, [action]() {
+        action->setChecked(true);
+    });
+    return goBtn;
+}
+
 // ── Menu bar ──────────────────────────────────────────────────────────────────
 
 void MainWindow::buildMenuBar() {
@@ -391,46 +444,10 @@ void MainWindow::buildMenuBar() {
     }
 
     {
-        auto* mctsAction = new QAction("MCTS", this);
-        mctsAction->setCheckable(true);
-        playGroup->addAction(mctsAction);
-        playMenu->addAction(mctsAction);
-
-        auto* mctsMenu = new QMenu(this);
-        auto* widget   = new QWidget;
-        auto* vbox2     = new QVBoxLayout(widget);
-        vbox2->setContentsMargins(8, 6, 8, 6);
-        auto* form2     = new QFormLayout;
-        form2->setSpacing(6);
-        vbox2->addLayout(form2);
-
-        playMctsSecCombo_ = new QComboBox(widget);
-        for (const auto& o : kMctsOptions)
-            playMctsSecCombo_->addItem(o.label, o.secs);
-        form2->addRow("Time:", playMctsSecCombo_);
-
-        playMctsTurnsSpin_ = new QSpinBox(widget);
-        playMctsTurnsSpin_->setRange(1, 999);
-        playMctsTurnsSpin_->setValue(10);
-        form2->addRow("Turns:", playMctsTurnsSpin_);
-
-        auto* sep2 = new QFrame(widget);
-        sep2->setFrameShape(QFrame::HLine);
-        vbox2->addWidget(sep2);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox2->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        auto* goBtn = buildMctsMenu(playMenu, playGroup,
+                                    playMctsSecCombo_, playMctsTurnsSpin_,
+                                    /* withTurns= */ true);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
-
-        auto* wa = new QWidgetAction(mctsMenu);
-        wa->setDefaultWidget(widget);
-        mctsMenu->addAction(wa);
-        mctsAction->setMenu(mctsMenu);
-
-        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() {
-            mctsAction->setChecked(true);
-        });
     }
 
     // ── Suggest (NegaMax Go! is wired up) ────────────────────────────────────
@@ -447,41 +464,11 @@ void MainWindow::buildMenuBar() {
 
     // MCTS suggest submenu
     {
-        auto* mctsAction = new QAction("MCTS", this);
-        mctsAction->setCheckable(true);
-        suggestGroup->addAction(mctsAction);
-        suggestMenu->addAction(mctsAction);
-
-        auto* mctsMenu   = new QMenu(this);
-        auto* widget     = new QWidget;
-        auto* vbox2       = new QVBoxLayout(widget);
-        vbox2->setContentsMargins(8, 6, 8, 6);
-        auto* form2       = new QFormLayout;
-        form2->setSpacing(6);
-        vbox2->addLayout(form2);
-
-        suggestMctsSecCombo_ = new QComboBox(widget);
-        for (const auto& o : kMctsOptions)
-            suggestMctsSecCombo_->addItem(o.label, o.secs);
-        form2->addRow("Time:", suggestMctsSecCombo_);
-
-        auto* sep2 = new QFrame(widget);
-        sep2->setFrameShape(QFrame::HLine);
-        vbox2->addWidget(sep2);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox2->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        QSpinBox* unusedTurns = nullptr;  // suggest MCTS has no Turns control
+        auto* goBtn = buildMctsMenu(suggestMenu, suggestGroup,
+                                    suggestMctsSecCombo_, unusedTurns,
+                                    /* withTurns= */ false);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
-
-        auto* wa = new QWidgetAction(mctsMenu);
-        wa->setDefaultWidget(widget);
-        mctsMenu->addAction(wa);
-        mctsAction->setMenu(mctsMenu);
-
-        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() {
-            mctsAction->setChecked(true);
-        });
     }
 
     // Keep Play and Suggest depth spinboxes in sync

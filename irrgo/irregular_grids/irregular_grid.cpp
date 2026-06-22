@@ -32,12 +32,8 @@ void validate(const GridSpec& spec) {
     if (spec.columns < 1) {
         throw std::invalid_argument("columns must be >= 1");
     }
-    if (!(spec.roughness >= 0.0 && spec.roughness <= 1.0)) {
-        throw std::invalid_argument("roughness must be in [0,1]");
-    }
-    if (!(spec.smoothing >= 0.0 && spec.smoothing <= 1.0)) {
-        throw std::invalid_argument("smoothing must be in [0,1]");
-    }
+    requireUnit(spec.roughness, "roughness");
+    requireUnit(spec.smoothing, "smoothing");
 }
 
 void validate(const RenderConfig& config) {
@@ -56,12 +52,8 @@ void validate(const DiscSpec& spec) {
     if (spec.point_count < 3) {
         throw std::invalid_argument("point_count must be >= 3");
     }
-    if (!(spec.roughness >= 0.0 && spec.roughness <= 1.0)) {
-        throw std::invalid_argument("roughness must be in [0,1]");
-    }
-    if (!(spec.smoothing >= 0.0 && spec.smoothing <= 1.0)) {
-        throw std::invalid_argument("smoothing must be in [0,1]");
-    }
+    requireUnit(spec.roughness, "roughness");
+    requireUnit(spec.smoothing, "smoothing");
 }
 
 // 53-bit mantissa uniform in [0,1). Built directly from the standardised
@@ -559,9 +551,9 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     // which squares are occupied by which colour -- while the render engine
     // (config.seed) drives all the hand-scratched noise (disc shapes, the X). The
     // two seeds can be varied independently, both from main.cpp.
-    printf("Board seed: %llu  Render seed: %llu\n",
-           static_cast<unsigned long long>(board.seed),
-           static_cast<unsigned long long>(config.seed));
+    printf("Render seed: %llu, Board seed: %llu\n", // same order as main.cpp
+           static_cast<unsigned long long>(config.seed),
+           static_cast<unsigned long long>(board.seed));
     std::mt19937_64 board_engine(board.seed);
     std::mt19937_64 render_engine(config.seed);
     const std::vector<int> squares = choose_squares(square_count, requested, board_engine);

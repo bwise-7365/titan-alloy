@@ -4,10 +4,12 @@
 #define GAMES_BOARD_IRREGULAR_GRID_HPP
 
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "AbsGame.h"  // AbsGame::makeSeed for the default RNG seed
+#include "utils.h"
 
 // Generates "hand-scratched" game-board grids.
 //
@@ -67,6 +69,14 @@ inline constexpr double kOuterMarginUnits = 0.25;
 inline constexpr double kMarkLengthFraction = 0.6;
 inline constexpr double kMarkStrokeWidthUnits = 0.0375;
 
+// Throws std::invalid_argument(name + " must be in [0,1]") unless value is in
+// [0,1]. Shared by the renderer's and board_params' parameter validation.
+inline void requireUnit(double value, const char* name) {
+    if (!(value >= 0.0 && value <= 1.0)) {
+        throw std::invalid_argument(std::string(name) + " must be in [0,1]");
+    }
+}
+
 // The renderer's view of a grid. rows and columns must be >= 1; roughness and
 // smoothing must lie in [0,1]. Out-of-range values throw std::invalid_argument.
 // Game-level size limits live in board_params.hpp, not here.
@@ -82,7 +92,7 @@ struct RenderConfig {
     double square_size = 100.0;     // pixels per square (SVG output only)
     int points_per_edge = 10;     // samples per square along each line
     // Deterministic across platforms given a non-zero seed; 0 means "clock-derived".
-   std::uint64_t seed = AbsGame::makeSeed(3109643833l);
+   std::uint64_t seed = AbsGame::makeSeed(AbsGame::dSeed);
 };
 
 // Cosmetic SVG settings. An empty background string omits the background rect.
