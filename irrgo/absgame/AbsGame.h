@@ -2,6 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <memory>
+#include <random>
 #include <vector>
 
 namespace AbsGame {
@@ -51,6 +52,16 @@ public:
 
     // Deep copy: board state is duplicated; the underlying graph is shared.
     virtual std::unique_ptr<Game> clone() const = 0;
+
+    // Rollout (playout) move policy used by MCTS simulations. The default is a
+    // uniform-random pick over `legal` (the classic "light" playout). A game may
+    // override it with an informed ("heavy") policy -- e.g. an epsilon-greedy bias
+    // toward aggressive moves -- so rollouts stay informative in domains where
+    // random play rarely reaches a terminal. `legal` must be non-empty. See
+    // mcts.cpp (rollout) and Latrunculi::Game::chooseRolloutMove for the rationale
+    // and the supporting literature.
+    virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal,
+                                     std::mt19937_64& rng) const;
 
 };
 

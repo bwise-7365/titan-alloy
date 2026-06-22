@@ -223,15 +223,19 @@ bool MainWindow::loadFromFile(const QString& path) {
         return false;
     }
 
+    stopSeed();
     search().cancelSearch();
     moveLog_->clear();
     for (const Latrunculi::Move& m : game_->history()) {
         logMove(m);
     }
     suggestedLog_->clear();
+    // Repoint the board at the loaded game before any colour rebuild (the make_unique
+    // above freed the previous game; see the note in MainWindow::newGame).
+    boardWidget_->setGame(game_.get());
     boardWidget_->setSideColors(colorA_, colorB_);
     boardWidget_->setBackgroundColor(background_);
-    refreshBoard();
+    updateControls();
     return true;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

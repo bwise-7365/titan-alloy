@@ -1,0 +1,198 @@
+Dealing with long / non-terminating MCTS rollouts in Latrunculi — literature review + recommendation                                                 
+
+ Context (the problem)
+
+ The shared MCTS (absgame/mcts.cpp) uses uniform-random rollouts capped at
+ kMaxRolloutDepth = 200, falling back to staticEval() (the v(M,N) material-balance score) when
+ the cap is hit. For Latrunculi this rollout is nearly worthless: random play almost never sets up a
+ custodial capture, so (a) rollouts almost never reach a terminal (hence terminalCount ≈ 0), and
+ (b) because random play barely changes material, the v(M,N) returned at the cap ≈ v(M,N) at the
+ rollout's start node — the 200 random moves add cost but little information. MCTS is effectively
+ doing noisy single-node evaluation. This is a known weakness of vanilla MCTS in tactical,
+ slow-to-terminate games (Świechowski et al. review; Baier & Winands). Goal: make MCTS informative
+ on Latrunculi without harming the irrgo/mancala GUIs that share mcts.cpp.
+
+ Three literature-backed approaches
+
+ A. Informed ("heavy") playouts — capture-biased ε-greedy, with a decisive-move shortcut
+
+ Replace the uniform rollout policy with a domain-biased one: with probability ε play a uniform
+ random move (keep exploration), otherwise play a heuristically "good" — here aggressive
+ (capturing / removing / immobilising) — move; and as a cheap special case, if a move wins
+ immediately, take it (Teytaud & Teytaud "decisive moves"). Heavy playouts (Drake & Uurtamo 2007)
+ and ε-greedy playouts are the standard fix for uninformative random rollouts; ε≈0.3 is a common
+ sweet spot and ε=0 (greedy-only) is known to be harmful (Scopone, Amazons studies). This makes
+ rollouts actually reduce material → reach reduction/immobilisation terminals more often, and the
+ truncated v(M,N) reflects realistic aggressive play rather than aimless shuffling.
+
+ B. Eval-as-leaf — drastic truncation, evaluation replaces the rollout
+
+ Cut the rollout to ~0 plies (or a handful) and back up staticEval() directly. Literature on
+ truncated rollouts / early playout termination shows the optimal cutoff is often very early
+ (~6 moves), and even a weak evaluation beats a long random playout ("Using evaluation functions
+ in MCTS"; review paper). Since Latrunculi's random rollout adds almost nothing, replacing it with a
+ direct v(M,N) is cheap and gives many more tree iterations per second.
+
+ C. MCTS-minimax node priors / implicit-minimax backups
+
+ Use a shallow minimax with the v(M,N) eval to seed node priors (and/or keep a minimax-backed value
+ beside the visit-average). Baier & Winands (JAIR 2018) found minimax-computed node priors the
+ strongest of their hybrids in tactical domains (Othello, Breakthrough, Catch-the-Lion); "implicit
+ minimax backups" (Lanctot et al. 2014) is the lighter cousin. Addresses MCTS's trap-blindness, but
+ is the heaviest lift and overlaps the project's existing negamax searcher.
+
+ Comparison
+
+ ┌───────────────────┬───────────────────────────┬──────────────────────────────────────┬─────────────────────────────────────────────┬──────────────────────────────┐
+ │                   │   Fixes long rollouts?    │        Cost in this codebase         │            Risk to irrgo/mancala            │      Latrunculi payoff       │
+ ├───────────────────┼───────────────────────────┼──────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+ │                   │ Yes — rollouts capture,   │ Moderate: one per-game               │                                             │ High — targets the root      │
+ │ A. capture-biased │ so they terminate and the │ rollout-policy hook on AbsGame::Game │ Low (default unchanged)                     │ cause; matches the "bias     │
+ │  ε-greedy         │  eval reflects real play  │  (default stays uniform) + a         │                                             │ toward aggressive moves"     │
+ │                   │                           │ Latrunculi policy                    │                                             │ instinct                     │
+ ├───────────────────┼───────────────────────────┼──────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+ │                   │                           │                                      │ Medium: mancala/irrgo rollouts do terminate │                              │
+ │ B. eval-as-leaf   │ Sidesteps it — no random  │ Trivial (a few lines in mcts.cpp)    │  and inform; removing them may weaken them; │ Medium — simple, fast, but   │
+ │                   │ walk to terminate         │ but shared, so needs a per-game gate │  MCTS converges toward negamax (less        │ no lookahead beyond the eval │
+ │                   │                           │                                      │ diversity)                                  │                              │
+ ├───────────────────┼───────────────────────────┼──────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+ │ C. minimax node   │ Indirectly (eval drives   │                                      │                                             │ High strength, but large     │
+ │ priors            │ selection)                │ High                                 │ Higher (complex shared change)              │ effort and redundant with    │
+ │                   │                           │                                      │                                             │ negamax                      │
+ └───────────────────┴───────────────────────────┴──────────────────────────────────────┴─────────────────────────────────────────────┴──────────────────────────────┘
+
+ Recommendation: A — capture-biased ε-greedy heavy playout, with the decisive-move shortcut
+
+ Best fit for the Latrunculi project because:
+ - It attacks the actual cause — random play never captures. Biasing toward captures/removals makes
+ rollouts progress toward decisive endings (so terminalCount rises and rollouts terminate) and
+ makes the truncated v(M,N) meaningful. It improves both symptoms at once, where B only papers over
+ one and C is overkill.
+ - It is exactly the user's instinct, and the best-validated, moderate-cost option in the
+ literature (heavy playouts / ε-greedy / decisive moves are decades-proven, low-overhead).
+ - It can be added per-game so irrgo and mancala are untouched — important since mcts.cpp is
+ shared. B's simplest form is a shared change that risks the other two games.
+ - The engine already exposes everything needed to recognise an aggressive move: a movement MoveId
+ decodes to (removeSquare, from, to) (a removal is decisive material loss for the opponent), and
+ the existing pinnedOn / boundDiscs logic identifies a move that immobilises an enemy.
+
+ If minimal effort is ever preferred over peak strength, B is the cheap fallback (and A's policy
+ can also justify lowering kMaxRolloutDepth, since biased rollouts settle faster). They compose:
+ A + a shorter cap is a reasonable end state.
+
+ Sketch of the recommended implementation (for a later pass)
+
+ - absgame/AbsGame.h — add a virtual rollout-policy hook, default = uniform random:
+ virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal, std::mt19937_64& rng) const;
+ Base implementation picks uniformly (so irrgo/mancala are unchanged).
+ - absgame/mcts.cpp — in rollout(), replace the uniform dist(rng) pick with
+ game->chooseRolloutMove(moves, rng). Keep the depth cap + staticEval fallback.
+ - latrunculi_game/Game.{h,cpp} — override chooseRolloutMove: with prob ε (~0.4) return a
+ uniform pick; else prefer, in order, (1) an immediately-winning move (decisive), (2) a
+ capture/removal-creating move (a removeSquare >= 0 removal, or a move that raises
+ boundDiscs(opp)), (3) uniform random. Keep detection cheap (decode the MoveId; only
+ scratch-apply a small sampled subset, never all moves every ply) so rollouts stay fast.
+ - Tune ε on self-play; consider lowering kMaxRolloutDepth once rollouts terminate sooner.
+
+ Verification (user builds)
+
+ cmake --build build --target latrunculi_lib latrunculi_selfplay latrunculi_gui. Run a movement-phase
+ MCTS: terminalCount should become clearly non-zero, and MCTS move quality (and self-play decisiveness)
+ should improve over the uniform-rollout baseline. Confirm irrgo/mancala MCTS behaviour is unchanged
+ (they keep the default uniform policy).
+
+ Sources
+
+ - Świechowski et al., MCTS: A Review of Recent Modifications and Applications — https://arxiv.org/pdf/2103.04931 ;
+ https://link.springer.com/article/10.1007/s10462-022-10228-y
+ - Using evaluation functions in Monte-Carlo Tree Search (early termination / truncated rollouts) — https://www.sciencedirect.com/science/article/pii/S0304397516302717
+ - Teytaud & Teytaud, On the Huge Benefit of Decisive Moves in MCTS — https://inria.hal.science/inria-00495078/en
+ - Baier & Winands, MCTS-Minimax Hybrids with State Evaluations (JAIR 2018) — https://www.jair.org/index.php/jair/article/download/11208/26419/20772
+ - Lanctot, Winands et al., MCTS with Heuristic Evaluations using Implicit Minimax Backups — https://arxiv.org/pdf/1406.0486
+ - ε-greedy playouts in practice — Scopone: https://arxiv.org/pdf/1807.06813 ; Amazons: https://www.researchgate.net/publication/372199962
+ - Heavy playouts / move bias overview (Drake & Uurtamo 2007, via the review above)
+ rollouts progress toward decisive endings (so terminalCount rises and rollouts terminate) and
+ makes the truncated v(M,N) meaningful. It improves both symptoms at once, where B only papers over
+ one and C is overkill.
+ - It is exactly the user's instinct, and the best-validated, moderate-cost option in the
+ literature (heavy playouts / ε-greedy / decisive moves are decades-proven, low-overhead).
+ - It can be added per-game so irrgo and mancala are untouched — important since mcts.cpp is
+ shared. B's simplest form is a shared change that risks the other two games.
+ - The engine already exposes everything needed to recognise an aggressive move: a movement MoveId
+ decodes to (removeSquare, from, to) (a removal is decisive material loss for the opponent), and
+ the existing pinnedOn / boundDiscs logic identifies a move that immobilises an enemy.
+
+ If minimal effort is ever preferred over peak strength, B is the cheap fallback (and A's policy
+ can also justify lowering kMaxRolloutDepth, since biased rollouts settle faster). They compose:
+ A + a shorter cap is a reasonable end state.
+
+ Sketch of the recommended implementation (for a later pass)
+
+ - absgame/AbsGame.h — add a virtual rollout-policy hook, default = uniform random:
+ virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal, std::mt19937_64& rng) const;
+ Base implementation picks uniformly (so irrgo/mancala are unchanged).
+ - absgame/mcts.cpp — in rollout(), replace the uniform dist(rng) pick with
+ game->chooseRolloutMove(moves, rng). Keep the depth cap + staticEval fallback.
+ - latrunculi_game/Game.{h,cpp} — override chooseRolloutMove: with prob ε (~0.4) return a
+ uniform pick; else prefer, in order, (1) an immediately-winning move (decisive), (2) a
+ capture/removal-creating move (a removeSquare >= 0 removal, or a move that raises
+ boundDiscs(opp)), (3) uniform random. Keep detection cheap (decode the MoveId; only
+ scratch-apply a small sampled subset, never all moves every ply) so rollouts stay fast.
+ - Tune ε on self-play; consider lowering kMaxRolloutDepth once rollouts terminate sooner.
+
+ Verification (user builds)
+
+ cmake --build build --target latrunculi_lib latrunculi_selfplay latrunculi_gui. Run a movement-phase
+ MCTS: terminalCount should become clearly non-zero, and MCTS move quality (and self-play decisiveness)
+ should improve over the uniform-rollout baseline. Confirm irrgo/mancala MCTS behaviour is unchanged
+ (they keep the default uniform policy).
+
+ Sources
+
+ - Świechowski et al., MCTS: A Review of Recent Modifications and Applications — https://arxiv.org/pdf/2103.04931 ;
+ https://link.springer.com/article/10.1007/s10462-022-10228-y
+ - Using evaluation functions in Monte-Carlo Tree Search (early termination / truncated rollouts) — https://www.sciencedirect.com/science/article/pii/S0304397516302717
+ - Teytaud & Teytaud, On the Huge Benefit of Decisive Moves in MCTS — https://inria.hal.science/inria-00495078/en
+ - Baier & Winands, MCTS-Minimax Hybrids with State Evaluations (JAIR 2018) — https://www.jair.org/index.php/jair/article/download/11208/26419/20772
+ - Lanctot, Winands et al., MCTS with Heuristic Evaluations using Implicit Minimax Backups — https://arxiv.org/pdf/1406.0486
+ - ε-greedy playouts in practice — Scopone: https://arxiv.org/pdf/1807.06813 ; Amazons: https://www.researchgate.net/publication/372199962
+ - Heavy playouts / move bias overview (Drake & Uurtamo 2007, via the review above)
+ - absgame/AbsGame.h — add a virtual rollout-policy hook, default = uniform random:
+ virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal, std::mt19937_64& rng) const;
+ Base implementation picks uniformly (so irrgo/mancala are unchanged).
+ - absgame/mcts.cpp — in rollout(), replace the uniform dist(rng) pick with
+ game->chooseRolloutMove(moves, rng). Keep the depth cap + staticEval fallback.
+ - latrunculi_game/Game.{h,cpp} — override chooseRolloutMove: with prob ε (~0.4) return a
+ uniform pick; else prefer, in order, (1) an immediately-winning move (decisive), (2) a
+ capture/removal-creating move (a removeSquare >= 0 removal, or a move that raises
+ boundDiscs(opp)), (3) uniform random. Keep detection cheap (decode the MoveId; only
+ scratch-apply a small sampled subset, never all moves every ply) so rollouts stay fast.
+ - Tune ε on self-play; consider lowering kMaxRolloutDepth once rollouts terminate sooner.
+
+ Verification (user builds)
+
+ cmake --build build --target latrunculi_lib latrunculi_selfplay latrunculi_gui. Run a movement-phase
+ MCTS: terminalCount should become clearly non-zero, and MCTS move quality (and self-play decisiveness)
+ should improve over the uniform-rollout baseline. Confirm irrgo/mancala MCTS behaviour is unchanged
+ (they keep the default uniform policy).
+
+ Sources
+
+ - Świechowski et al., MCTS: A Review of Recent Modifications and Applications — https://arxiv.org/pdf/2103.04931 ;
+ https://link.springer.com/article/10.1007/s10462-022-10228-y
+ - Using evaluation functions in Monte-Carlo Tree Search (early termination / truncated rollouts) — https://www.sciencedirect.com/science/article/pii/S0304397516302717
+ - Teytaud & Teytaud, On the Huge Benefit of Decisive Moves in MCTS — https://inria.hal.science/inria-00495078/en
+ - Baier & Winands, MCTS-Minimax Hybrids with State Evaluations (JAIR 2018) — https://www.jair.org/index.php/jair/article/download/11208/26419/20772
+ - Lanctot, Winands et al., MCTS with Heuristic Evaluations using Implicit Minimax Backups — https://arxiv.org/pdf/1406.0486
+ - ε-greedy playouts in practice — Scopone: https://arxiv.org/pdf/1807.06813 ; Amazons: https://www.researchgate.net/publication/372199962
+ - Heavy playouts / move bias overview (Drake & Uurtamo 2007, via the review above)
+
+
+---------------------
+User notes: shallow cut-offs would probably not work very well in Latrunculi unless the static evaluation included factors other than
+material balance. Again, because the first 40 moves or so are prohibited from capture, even a 10-deep lookahead will yield nothing 
+for the first 30 placements at least. In the movement phase, it would confront the same problem of random moves being very unlikely
+to capture. I suspect a useful static evaluation function would have to include some of the classic factors from Chess, such
+as mobility, control of central areas, and so on. (Yes, I know that deep fast search with plain material balance does better
+than sophisticated measures over fewer positions. Neural nets beat both.)
+==============================================================================================

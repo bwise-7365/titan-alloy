@@ -8,6 +8,7 @@
 #include <QColor>
 #include <QString>
 #include <memory>
+#include <random>
 
 class QAction;
 class QComboBox;
@@ -15,6 +16,7 @@ class QLabel;
 class QPushButton;
 class QSpinBox;
 class QTextEdit;
+class QTimer;
 
 // The Latrunculi main window. Derives guicommon::GameMainWindow to reuse the
 // shared NegaMax/MCTS Play orchestration, the threaded SearchController, and the
@@ -39,6 +41,8 @@ private slots:
     void onPickColorA();
     void onPickColorB();
     void onPickBackground();
+    void onSeedSelected(QAction* action);  // seed the placement phase to a percentage
+    void onSeedTick();                      // place one seeded disc (animation)
     void onSave();
     void onLoad();
 
@@ -47,8 +51,11 @@ private:
     void updateControls() override;
     AbsGame::Game* currentGame() override;
     void applyComputedMove(AbsGame::MoveId mv) override;
+    bool extraSearchBlock() const override;  // true while the seed animation runs
 
     void newGame(int rows, int columns, int perSide);
+    void stopSeed();                     // halt any running seed animation
+    bool seeding() const;                // true while the seed timer is active
     void refreshBoard();                 // board update + controls + tallies
     void logMove(const Latrunculi::Move& m);
     QString notate(int square) const;    // chess-like, matching the board labels
@@ -90,5 +97,12 @@ private:
 
     std::unique_ptr<Latrunculi::Game> game_;
     QString currentFilePath_;
+
+    // Placement-seeding animation (analogous to IrrGo's stone setup): places a
+    // percentage of each side's discs at random no-capture squares, one at a time.
+    QTimer*         seedTimer_  = nullptr;
+    int             seedPlaced_ = 0;   // discs placed so far this run
+    int             seedTarget_ = 0;   // total discs to place this run (both sides)
+    std::mt19937_64 seedRng_;
 };
 // Copyright Ben Paul Wise. All Rights Reserved.

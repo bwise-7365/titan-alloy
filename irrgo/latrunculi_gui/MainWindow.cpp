@@ -14,31 +14,38 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTextEdit>
-#include <QVBoxLayout>
+#include <QTimer>
+//#include <QVBoxLayout>
 #include <QWidget>
 #include <QWidgetAction>
 #include <iterator>
-#include <stdexcept>
+//#include <stdexcept>
 
 namespace gb = games::board;
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
 static const guicommon::MctsOption kMctsOptions[] = {
-    {  1, "1 sec"  }, {  5, "5 sec"  }, { 15, "15 sec" },
+    {  5, "5 sec"  }, { 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
+    { 90, "90 sec" }, { 120, "120 sec" },
 };
 
 // ── Constructor ───────────────────────────────────────────────────────────────
 
 MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     setWindowTitle("Ludus Latrunculorum");
+
+    seedTimer_ = new QTimer(this);
+    connect(seedTimer_, &QTimer::timeout, this, &MainWindow::onSeedTick);
+    seedRng_.seed(AbsGame::makeSeed(0));  // clock-derived: a different layout each run
 
     auto* central = new QWidget(this);
     setCentralWidget(central);
@@ -78,7 +85,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
 
     // Right panel.
     auto* panel = new QWidget(row);
-    panel->setFixedWidth(360);  // wider right column -> ~50% wider move log
+    panel->setFixedWidth(280);  // right column width
     auto* pv = new QVBoxLayout(panel);
     pv->setAlignment(Qt::AlignTop);
     rowH->addWidget(panel);
@@ -129,8 +136,8 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     buildMenuBar();
     resize(1040, 720);
 
-    const int perSide = gb::stones_per_side(gb::BoardParams{8, 8});
-    newGame(8, 8, perSide);
+    const int perSide = gb::stones_per_side(gb::BoardParams{6, 8});
+    newGame(6, 8, perSide);
 }
 
 void MainWindow::setBannerFont(const QString& family) {
@@ -167,7 +174,7 @@ void MainWindow::buildMenuBar() {
 
     rowsSpin_ = new QSpinBox(bmw);
     rowsSpin_->setRange(gb::kMinRowsCols, gb::kMaxRowsCols);
-    rowsSpin_->setValue(8);
+    rowsSpin_->setValue(6);
     form->addRow("Rows:", rowsSpin_);
 
     colsSpin_ = new QSpinBox(bmw);
@@ -177,15 +184,19 @@ void MainWindow::buildMenuBar() {
 
     perSideSpin_ = new QSpinBox(bmw);
     perSideSpin_->setRange(1, (gb::kMaxRowsCols * gb::kMaxRowsCols) / 2);
-    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{8, 8}));
+    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{6, 8}));
     form->addRow("Discs/side:", perSideSpin_);
 
-    // Keep the per-side maximum consistent with the board area (no invalid input).
-    auto syncPerSideMax = [this]() {
-        perSideSpin_->setMaximum((rowsSpin_->value() * colsSpin_->value()) / 2);
+    // When the board size changes, cap the per-side maximum to the area and reset the
+    // count to the default fraction (kDefaultStoneFraction = 20/64) of the new area.
+    auto syncPerSide = [this]() {
+        const int r = rowsSpin_->value();
+        const int c = colsSpin_->value();
+        perSideSpin_->setMaximum((r * c) / 2);
+        perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{r, c}));
     };
-    connect(rowsSpin_, &QSpinBox::valueChanged, this, [syncPerSideMax](int) { syncPerSideMax(); });
-    connect(colsSpin_, &QSpinBox::valueChanged, this, [syncPerSideMax](int) { syncPerSideMax(); });
+    connect(rowsSpin_, &QSpinBox::valueChanged, this, [syncPerSide](int) { syncPerSide(); });
+    connect(colsSpin_, &QSpinBox::valueChanged, this, [syncPerSide](int) { syncPerSide(); });
 
     auto* colorABtn = new QPushButton("Side A colour...", bmw);
     auto* colorBBtn = new QPushButton("Side B colour...", bmw);
@@ -208,6 +219,19 @@ void MainWindow::buildMenuBar() {
     auto* bwa = new QWidgetAction(boardMenu);
     bwa->setDefaultWidget(bmw);
     boardMenu->addAction(bwa);
+
+    // Setup: seed the placement phase with random no-capture placements. Each
+    // option pre-places that percentage of EACH side's quota, one disc at a time.
+    // Plain one-shot actions (clicking re-seeds a fresh game); the chosen percentage
+    // is carried as the action's data.
+    auto* setupMenu = menuBar()->addMenu("Setup");
+    static const struct { int pct; const char* label; } kSeedOptions[] = {
+        {0, "0%"}, {25, "25%"}, {50, "50%"}, {75, "75%"}, {100, "100%"},
+    };
+    for (const auto& o : kSeedOptions) {
+        setupMenu->addAction(o.label)->setData(o.pct);
+    }
+    connect(setupMenu, &QMenu::triggered, this, &MainWindow::onSeedSelected);
 
     // Play.
     auto* playMenu  = menuBar()->addMenu("Play");
@@ -259,6 +283,7 @@ void MainWindow::buildMenuBar() {
 // ── Game control ──────────────────────────────────────────────────────────────
 
 void MainWindow::newGame(int rows, int columns, int perSide) {
+    stopSeed();
     if (2 * perSide > rows * columns) {
         QMessageBox::warning(this, "Latrunculi",
             QString("Too many discs: 2 x %1 must be <= %2 x %3 squares.")
@@ -275,17 +300,84 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     currentFilePath_.clear();
     moveLog_->clear();
     suggestedLog_->clear();
+    // Repoint the board at the new game BEFORE any colour rebuild. The make_unique
+    // above freed the previous game, leaving the widget's observer pointer dangling
+    // until setGame() updates it; setSideColors/setBackgroundColor each rebuild, so
+    // doing them first would dereference the freed game.
+    boardWidget_->setGame(game_.get());
     boardWidget_->setSideColors(colorA_, colorB_);
     boardWidget_->setBackgroundColor(background_);
-    refreshBoard();
+    updateControls();
 }
 
 void MainWindow::onNewGame() {
     newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
 }
 
+// ── Placement seeding (analogous to IrrGo's stone setup) ──────────────────────
+
+bool MainWindow::seeding() const {
+    return seedTimer_ != nullptr && seedTimer_->isActive();
+}
+
+void MainWindow::stopSeed() {
+    if (seedTimer_ != nullptr) {
+        seedTimer_->stop();
+    }
+}
+
+bool MainWindow::extraSearchBlock() const {
+    return seeding();  // don't let a search start while the seed animation runs
+}
+
+void MainWindow::onSeedSelected(QAction* action) {
+    const int pct = action->data().toInt();
+    // Start a fresh game at the current board settings, then seed it. newGame()
+    // calls stopSeed(), so any in-progress seeding is cancelled first.
+    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
+    if (!game_) {
+        return;  // invalid board size; newGame already reported it
+    }
+    const int eachSide = (game_->perSide() * pct + 50) / 100;  // rounded
+    seedTarget_ = 2 * eachSide;  // both sides, placed alternately
+    seedPlaced_ = 0;
+    if (seedTarget_ <= 0) {
+        return;  // 0% -> leave the empty board
+    }
+    // <= 20 discs: one every 500 ms; more: pace so all land within 10 seconds.
+    const int interval = (seedTarget_ <= 20) ? 500 : (10000 / seedTarget_);
+    seedTimer_->setInterval(interval);
+    seedTimer_->start();
+    updateControls();
+}
+
+void MainWindow::onSeedTick() {
+    if (!game_ || seedPlaced_ >= seedTarget_ ||
+        game_->phase() != Latrunculi::Phase::Placement) {
+        stopSeed();
+        updateControls();
+        return;
+    }
+    const std::vector<AbsGame::MoveId> moves = game_->getLegalMoves();
+    if (moves.empty()) {
+        stopSeed();  // no legal no-capture square left (rare); stop early
+        updateControls();
+        return;
+    }
+    const AbsGame::MoveId mv = moves[seedRng_() % moves.size()];
+    game_->applyMove(mv);
+    if (!game_->history().empty()) {
+        logMove(game_->history().back());
+    }
+    ++seedPlaced_;
+    if (seedPlaced_ >= seedTarget_) {
+        stopSeed();
+    }
+    refreshBoard();
+}
+
 void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
-    if (!game_ || game_->isTerminal() || search().isSearching()) {
+    if (!game_ || game_->isTerminal() || search().isSearching() || seeding()) {
         return;
     }
     if (!game_->isLegalMove(mv)) {
@@ -334,7 +426,7 @@ void MainWindow::onPlayMctsGo() {
 }
 
 void MainWindow::onSuggestNegamaxGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching()) {
+    if (!game_ || game_->isTerminal() || search().isSearching() || seeding()) {
         return;
     }
     guicommon::SearchController::Params p;
@@ -351,7 +443,7 @@ void MainWindow::onSuggestNegamaxGo() {
 }
 
 void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching()) {
+    if (!game_ || game_->isTerminal() || search().isSearching() || seeding()) {
         return;
     }
     guicommon::SearchController::Params p;
@@ -422,6 +514,10 @@ void MainWindow::updateControls() {
     }
     if (searching) {
         statusLabel_->setText("Thinking...");
+        return;
+    }
+    if (seeding()) {
+        statusLabel_->setText("Seeding...");
         return;
     }
     const int cur = game_->currentPlayer();

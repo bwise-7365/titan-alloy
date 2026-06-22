@@ -52,6 +52,30 @@ double materialScore(double M, double N) {
     return (denom > 0.0) ? (3.0 * M) / denom : 0.0;
 }
 
+// MCTS rollout policy (epsilon-greedy "heavy playout"). Random rollouts in
+// Latrunculi almost never set up a capture, so they neither terminate nor move the
+// material eval -- the playout is uninformative and MCTS degrades toward noise.
+// With probability kRolloutEpsilon we still play a uniform-random move (keeping
+// exploration); otherwise we bias toward aggressive (capturing / decisive) moves,
+// sampling at most kRolloutSampleCap candidates per ply to stay cheap. epsilon ~
+// 0.3 is the literature sweet spot; pure greedy (epsilon = 0) is known to harm
+// strength. Design references (kept here so the rationale is retrievable):
+//   Swiechowski et al., "MCTS: A Review of Recent Modifications and Applications":
+//       https://arxiv.org/pdf/2103.04931
+//   Heavy playouts: Drake & Uurtamo (2007) -- no stable open URL; see review above.
+//   Teytaud & Teytaud, "On the Huge Benefit of Decisive Moves in MCTS" (2010):
+//       https://inria.hal.science/inria-00495078/en
+//   epsilon-greedy playouts in practice (Scopone; best epsilon ~ 0.3):
+//       https://arxiv.org/pdf/1807.06813
+//   "Using evaluation functions in MCTS" (truncated rollouts / early termination):
+//       https://www.sciencedirect.com/science/article/pii/S0304397516302717
+//   Baier & Winands, "MCTS-Minimax Hybrids with State Evaluations" (alternative):
+//       https://www.jair.org/index.php/jair/article/download/11208/26419/20772
+//   Lanctot et al., "MCTS with Heuristic Evaluations using Implicit Minimax Backups":
+//       https://arxiv.org/pdf/1406.0486
+constexpr double kRolloutEpsilon  = 0.3;
+constexpr int    kRolloutSampleCap = 12;
+
 }  // namespace
 
 Game::Game(int rows, int columns, int perSide)
@@ -632,6 +656,52 @@ double Game::staticEval() const {
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
     return std::make_unique<Game>(*this);
+}
+
+// Epsilon-greedy heavy playout (see kRolloutEpsilon comment + references above).
+AbsGame::MoveId Game::chooseRolloutMove(const std::vector<AbsGame::MoveId>& legal,
+                                        std::mt19937_64& rng) const {
+    std::uniform_int_distribution<std::size_t> pick(0, legal.size() - 1);
+
+    // Placement moves never capture (the rules forbid it); and with probability
+    // kRolloutEpsilon we explore. In both cases fall back to a uniform pick.
+    std::uniform_real_distribution<double> coin(0.0, 1.0);
+    if (phase_ != Phase::Movement || coin(rng) < kRolloutEpsilon) {
+        return legal[pick(rng)];
+    }
+
+    // Greedy branch: scan a bounded random sample for an aggressive move. Take an
+    // immediate reduction win (decisive) at once; otherwise keep the first move that
+    // lowers the opponent's effective material (an immobilisation or a removal).
+    const int me = current_;
+    const int opp = 1 - me;
+    const double oppEffBefore =
+        freeDiscs(opp) + immobilizationDiscount * boundDiscs(opp);
+    AbsGame::MoveId capturing = -1;
+    const std::size_t draws = std::min<std::size_t>(legal.size(), kRolloutSampleCap);
+    for (std::size_t i = 0; i < draws; ++i) {
+        const AbsGame::MoveId mv = legal[pick(rng)];
+        int rem = -1, from = -1, to = -1;
+        decodeMovement(mv, rem, from, to);
+        std::vector<Cell> b = board_;
+        applyRemoveMoveCapturesTo(b, rem, from, to, me);
+        int oppFree = 0, oppBound = 0;
+        for (Cell c : b) {
+            if (c == freeCell(opp)) {
+                ++oppFree;
+            } else if (c == boundCell(opp)) {
+                ++oppBound;
+            }
+        }
+        if (oppFree + oppBound <= 1) {
+            return mv;  // decisive: opponent reduced to a single disc
+        }
+        if (capturing < 0 &&
+            oppFree + immobilizationDiscount * oppBound < oppEffBefore - 1e-9) {
+            capturing = mv;
+        }
+    }
+    return (capturing >= 0) ? capturing : legal[pick(rng)];
 }
 
 }  // namespace Latrunculi

@@ -103,8 +103,11 @@ double rollout(const MctsNode& node, int rootPlayer, std::mt19937_64& rng) {
         }
         auto moves = game->getLegalMoves();
         if (moves.empty()) break;
-        std::uniform_int_distribution<int> dist(0, static_cast<int>(moves.size()) - 1);
-        game->applyMove(moves[dist(rng)]);
+        // Rollout move comes from the game's playout policy: uniform-random by
+        // default, but a game may override chooseRolloutMove() with an informed
+        // ("heavy") policy so rollouts stay meaningful where random play rarely
+        // reaches a terminal (see Latrunculi::Game::chooseRolloutMove).
+        game->applyMove(game->chooseRolloutMove(moves, rng));
     }
     double eval = game->staticEval();
     return (game->currentPlayer() == rootPlayer) ? eval : -eval;

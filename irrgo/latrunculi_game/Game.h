@@ -64,6 +64,11 @@ public:
     bool isTerminal() const override { return gameOver_; }
     double staticEval() const override;
     std::unique_ptr<AbsGame::Game> clone() const override;
+    // Informed ("heavy") MCTS playout policy: epsilon-greedy bias toward aggressive
+    // moves so rollouts capture, terminate, and carry a meaningful eval. See the
+    // rationale and literature references in Game.cpp.
+    AbsGame::MoveId chooseRolloutMove(const std::vector<AbsGame::MoveId>& legal,
+                                      std::mt19937_64& rng) const override;
 
     // ── Accessors for the GUI / renderer / move log ──────────────────────────
     int rows() const { return rows_; }

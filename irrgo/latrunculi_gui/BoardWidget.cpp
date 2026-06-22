@@ -2,7 +2,7 @@
 #include "BoardWidget.h"
 
 #include <QByteArray>
-#include <QMouseEvent>
+//#include <QMouseEvent>
 #include <QPainter>
 #include <QResizeEvent>
 #include <QSvgRenderer>
