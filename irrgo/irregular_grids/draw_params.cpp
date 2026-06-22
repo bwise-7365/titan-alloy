@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
 #include "draw_params.h"
+#include "irregular_grid.h"  // complete DiscSpec / BoardSpec for the factory bodies
 
 namespace games::board {
 

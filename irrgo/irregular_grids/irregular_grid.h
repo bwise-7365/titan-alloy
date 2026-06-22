@@ -10,6 +10,7 @@
 
 #include "AbsGame.h"  // AbsGame::makeSeed for the default RNG seed
 #include "utils.h"
+#include "draw_params.h"  // RenderConfig, SvgStyle and the drawing constants
 
 // Generates "hand-scratched" game-board grids.
 //
@@ -56,19 +57,6 @@ struct Polyline {
     std::string label;          // e.g. "vertical-3", "horizontal-0"
 };
 
-// Default drawing parameters (square-width units unless noted). These are the
-// single source of truth: both the struct defaults below and the draw_params
-// factories reference them, so the two cannot drift apart.
-inline constexpr const char* kBlackInk = "#000000";
-inline constexpr double kStrokeWidthUnits = 0.0375;
-inline constexpr double kMarginUnits = 1.0;
-inline constexpr double kLabelGapUnits = 0.30;
-inline constexpr double kLabelFontUnits = 0.32;
-inline constexpr double kOutlineWidthUnits = 0.02;
-inline constexpr double kOuterMarginUnits = 0.25;
-inline constexpr double kMarkLengthFraction = 0.6;
-inline constexpr double kMarkStrokeWidthUnits = 0.0375;
-
 // Throws std::invalid_argument(name + " must be in [0,1]") unless value is in
 // [0,1]. Shared by the renderer's and board_params' parameter validation.
 inline void requireUnit(double value, const char* name) {
@@ -85,24 +73,6 @@ struct GridSpec {
     int columns = 8;
     double roughness = 0.1;
     double smoothing = 0.95;
-};
-
-// Resolution and the pixel scale used only at SVG-render time.
-struct RenderConfig {
-    double square_size = 100.0;     // pixels per square (SVG output only)
-    int points_per_edge = 10;     // samples per square along each line
-    // Deterministic across platforms given a non-zero seed; 0 means "clock-derived".
-   std::uint64_t seed = AbsGame::makeSeed(AbsGame::dSeed);
-};
-
-// Cosmetic SVG settings. An empty background string omits the background rect.
-struct SvgStyle {
-    std::string background = "#ffffee"; //"#f4ecd8";
-    std::string ink = "#000060"; //"#3a2f1a";
-    double stroke_width_units = kStrokeWidthUnits;  // square-width units
-    double margin_units = kMarginUnits;             // gutter on every side
-    double label_gap_units = kLabelGapUnits;        // board edge -> label centre
-    double label_font_units = kLabelFontUnits;      // coordinate label height
 };
 
 struct GridGeometry {
