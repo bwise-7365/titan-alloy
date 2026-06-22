@@ -6,12 +6,12 @@
 // in for the not-yet-implemented super-ko / draw rule so the game always ends.
 
 #include "Game.h"
-#include "Searcher.h"
-#include "utils.h"  // AbsGame::dSeed
+#include "Searcher.h"  // AbsGame::Searcher, AbsGame::makeSeed (via AbsGame.h)
 
 #include "draw_params.h"
 #include "irregular_grid.h"  // generate_position_svg, BoardSpec, PlacedPiece
 
+#include <cstdint>
 #include <iostream>
 #include <random>
 #include <string>
@@ -105,7 +105,20 @@ std::string format_move(const Latrunculi::Move& m, int rows, int columns) {
     if (m.from < 0) {
         out += "place " + notate(m.to, rows, columns);
     } else {
-        out += notate(m.from, rows, columns) + "-" + notate(m.to, rows, columns);
+        // from -> landing -> ... -> to (a slide is two squares; a multi-leap lists
+        // each landing so the leapt-over squares are implied between them).
+        if (m.path.empty()) {
+            out += notate(m.from, rows, columns) + " -> " + notate(m.to, rows, columns);
+        } else {
+            bool first = true;
+            for (int sq : m.path) {
+                if (!first) {
+                    out += " -> ";
+                }
+                first = false;
+                out += notate(sq, rows, columns);
+            }
+        }
         if (m.removed >= 0) {
             out += "  (remove " + notate(m.removed, rows, columns) + ")";
         }
@@ -122,7 +135,7 @@ int main(int argc, char** argv) {
     const int rows = 6;
     const int columns = 6;
     const int perSide = 9;               // 18 discs on 36 squares, placed apart
-    const int searchDepth = 3;
+    const int searchDepth = 4;
     const int searchMs = 1000;
     const int maxMovementPlies = 2 * rows * columns;  // safety cap (no super-ko yet)
 
@@ -143,7 +156,14 @@ int main(int argc, char** argv) {
 
     bool announcedMovement = false;
     int movementPlies = 0;
-    std::mt19937_64 rng(AbsGame::dSeed);
+    // Placement RNG seed: 0 => clock-derived (a different game each run); set to a
+    // printed value to reproduce a particular game.
+    // 5824362463858583254
+    // 9659779445541695208
+    const std::uint64_t seedInput = 0;
+    const std::uint64_t placementSeed = AbsGame::makeSeed(seedInput);
+    std::mt19937_64 rng(placementSeed);
+    std::cout << "placement seed: " << placementSeed << '\n';
 
     std::cout << "-- placement phase (" << 2 * perSide << " placements) --\n";
     while (!game.isTerminal()) {

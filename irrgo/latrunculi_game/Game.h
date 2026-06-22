@@ -5,13 +5,15 @@
 
 #include <cstdint>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
-// Latrunculi ("Ludus Latrunculorum"), Milestone 1: two-phase play (placement then
-// movement), single-step orthogonal moves, custodial capture -> immobilisation,
-// mandatory remove-one-captive-then-move, and the two win conditions with the
-// gradient score s = 3M / (3M + 2N). Leaping, freeing chains, super-ko and the
-// draw counter are later stages (see doc/latrunculi-implementation-plan.md).
+// Latrunculi ("Ludus Latrunculorum"): two-phase play (placement then movement),
+// movement = an orthogonal step OR own-colour multi-leaps (Stage 2), custodial
+// capture -> immobilisation, mandatory remove-one-captive-then-move, and the two
+// win conditions with the gradient score s = 3M / (3M + 2N), and super-ko (no
+// board position may repeat). Freeing chains and the draw counter are later
+// stages (see doc/latrunculi-implementation-plan.md).
 namespace Latrunculi {
 
 // A board cell. "Bound" == immobilised (flipped to show the X): it cannot move
@@ -19,6 +21,11 @@ namespace Latrunculi {
 enum class Cell : std::uint8_t { Empty, P0Free, P0Bound, P1Free, P1Bound };
 
 enum class Phase { Placement, Movement };
+
+// Weight of an immobilised (Bound) disc relative to a Free disc in the search's
+// material evaluation: a captured-but-not-yet-removed disc counts as this fraction
+// of a full piece, so immobilising an opponent is rewarded as partial progress.
+inline constexpr double immobilizationDiscount = 0.375;
 
 // A logged ply (for the move log). During placement from == -1; removed == -1
 // when no captive was removed that turn.
@@ -28,6 +35,9 @@ struct Move {
     int from = -1;     // origin square in movement; -1 in placement
     int to = -1;       // placement square, or movement destination
     int removed = -1;  // enemy captive removed this turn, or -1
+    // Movement path {from, landings..., to} (a slide is {from, to}, a multi-leap
+    // lists each landing). Empty for placement.
+    std::vector<int> path;
 };
 
 class Game : public AbsGame::Game {
@@ -81,6 +91,10 @@ private:
     bool gameOver_ = false;
     int winner_ = -1;
     std::vector<Move> moveHistory_;
+    // Super-ko: hashes of every end-of-turn board position seen this game. A move
+    // that would recreate one is illegal. The board only (not the side to move) is
+    // hashed, per the rule "it does not matter whose turn it is".
+    std::unordered_set<std::uint64_t> seenPositions_;
 
     int idx(int row, int column) const { return row * columns_ + column; }
     bool inBounds(int row, int column) const {
@@ -93,11 +107,30 @@ private:
     // (flanked left/right or top/bottom, or corner-trapped). Mirrors the renderer's
     // is_immobilized rule: an already-Bound flanker does not pin.
     bool pinnedOn(const std::vector<Cell>& b, int pos, int byPlayer) const;
+    // Moves the disc from->to on board b and resolves the captures it triggers (no
+    // removal). applyRemoveMoveCapturesTo prepends an optional captive removal.
+    void moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const;
     void applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
                                    int from, int to, int me) const;
+    // Empty squares reachable from `from` on board b: orthogonal single steps plus
+    // own-colour multi-leaps (hop a single own-colour disc to the empty square
+    // beyond, chaining over distinct discs in any directions).
+    std::vector<bool> reachableMask(const std::vector<Cell>& b, int from, int me) const;
+    void collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
+                      std::vector<bool>& reach, int me) const;
+    // FNV-1a hash of the board arrangement (occupancy + bound flags), for super-ko.
+    std::uint64_t hashBoard(const std::vector<Cell>& b) const;
+    // True if moving from->to on the post-removal board `b` is legal: it neither
+    // self-captures (the moved disc pinned by surviving enemy Free discs) nor
+    // recreates a previously-seen position (super-ko).
+    bool moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me) const;
+    // A representative path {from, landings..., to} for the move log.
+    std::vector<int> movePath(const std::vector<Cell>& b, int from, int to, int me) const;
+    bool findLeapPath(const std::vector<Cell>& b, int pos, int to,
+                      std::vector<bool>& leapt, int me, std::vector<int>& path) const;
     bool isLegalMovement(int removeSquare, int from, int to) const;
     std::vector<AbsGame::MoveId> enumerateLegalMoves() const;
-    void recordMove(int from, int to, int removed);
+    void recordMove(int from, int to, int removed, const std::vector<int>& path = {});
     void checkImmobilizationTerminal();
 };
 

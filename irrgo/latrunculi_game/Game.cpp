@@ -31,7 +31,16 @@ Cell boundCell(int player) {
     return (player == 0) ? Cell::P0Bound : Cell::P1Bound;
 }
 
-constexpr double kWinBase = 1000.0;  // dominates non-terminal piece heuristics
+constexpr double kWinBase = 1000.0;  // an actual win/loss dominates the leaf score
+
+// The material-balance score s = 3M / (3M + 2N) for a side with M discs facing an
+// opponent with N. This is the game's terminal score for the winner, and also the
+// basis of the search's leaf evaluation, so reducing the opponent's pieces
+// (capturing then removing) raises the score.
+double materialScore(double M, double N) {
+    const double denom = 3.0 * M + 2.0 * N;
+    return (denom > 0.0) ? (3.0 * M) / denom : 0.0;
+}
 
 }  // namespace
 
@@ -123,11 +132,7 @@ bool Game::pinnedOn(const std::vector<Cell>& b, int pos, int byPlayer) const {
     return false;
 }
 
-void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
-                                     int from, int to, int me) const {
-    if (removeSquare >= 0 && removeSquare < squares_) {
-        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
-    }
+void Game::moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const {
     b[static_cast<std::size_t>(to)] = b[static_cast<std::size_t>(from)];
     b[static_cast<std::size_t>(from)] = Cell::Empty;
 
@@ -151,6 +156,134 @@ void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
     }
 }
 
+void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
+                                     int from, int to, int me) const {
+    if (removeSquare >= 0 && removeSquare < squares_) {
+        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
+    }
+    moveAndCapture(b, from, to, me);
+}
+
+// ── Reachability: single step + own-colour multi-leaps ───────────────────────
+
+void Game::collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
+                        std::vector<bool>& reach, int me) const {
+    const int dr[4] = {-1, 1, 0, 0};
+    const int dc[4] = {0, 0, -1, 1};
+    const int pr = pos / columns_;
+    const int pc = pos % columns_;
+    for (int k = 0; k < 4; ++k) {
+        const int mr = pr + dr[k];
+        const int mc = pc + dc[k];      // disc to leap over
+        const int lr = pr + 2 * dr[k];
+        const int lc = pc + 2 * dc[k];  // landing square
+        if (!inBounds(mr, mc) || !inBounds(lr, lc)) {
+            continue;
+        }
+        const int mid = idx(mr, mc);
+        const int land = idx(lr, lc);
+        if (playerOf(b[static_cast<std::size_t>(mid)]) == me &&
+            b[static_cast<std::size_t>(land)] == Cell::Empty &&
+            !leapt[static_cast<std::size_t>(mid)]) {
+            reach[static_cast<std::size_t>(land)] = true;
+            leapt[static_cast<std::size_t>(mid)] = true;  // can't leap the same disc twice
+            collectLeaps(b, land, leapt, reach, me);
+            leapt[static_cast<std::size_t>(mid)] = false;
+        }
+    }
+}
+
+std::vector<bool> Game::reachableMask(const std::vector<Cell>& b, int from, int me) const {
+    std::vector<bool> reach(static_cast<std::size_t>(squares_), false);
+    const int dr[4] = {-1, 1, 0, 0};
+    const int dc[4] = {0, 0, -1, 1};
+    const int fr = from / columns_;
+    const int fc = from % columns_;
+    for (int k = 0; k < 4; ++k) {  // single orthogonal step onto an empty square
+        const int nr = fr + dr[k];
+        const int nc = fc + dc[k];
+        if (inBounds(nr, nc) && b[static_cast<std::size_t>(idx(nr, nc))] == Cell::Empty) {
+            reach[static_cast<std::size_t>(idx(nr, nc))] = true;
+        }
+    }
+    std::vector<bool> leapt(static_cast<std::size_t>(squares_), false);
+    collectLeaps(b, from, leapt, reach, me);  // `from` stays occupied in b, blocking returns
+    return reach;
+}
+
+std::uint64_t Game::hashBoard(const std::vector<Cell>& b) const {
+    std::uint64_t h = 1469598103934665603ULL;  // FNV-1a 64-bit offset basis
+    for (Cell c : b) {
+        h ^= static_cast<std::uint64_t>(static_cast<std::uint8_t>(c));
+        h *= 1099511628211ULL;  // FNV-1a 64-bit prime
+    }
+    return h;
+}
+
+bool Game::moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me) const {
+    std::vector<Cell> result = b;
+    moveAndCapture(result, from, to, me);
+    if (pinnedOn(result, to, 1 - me)) {
+        return false;  // self-capture
+    }
+    if (seenPositions_.find(hashBoard(result)) != seenPositions_.end()) {
+        return false;  // super-ko: this exact board has occurred earlier this game
+    }
+    return true;
+}
+
+// ── Move path for the move log ───────────────────────────────────────────────
+
+bool Game::findLeapPath(const std::vector<Cell>& b, int pos, int to,
+                        std::vector<bool>& leapt, int me, std::vector<int>& path) const {
+    if (pos == to) {
+        return true;
+    }
+    const int dr[4] = {-1, 1, 0, 0};
+    const int dc[4] = {0, 0, -1, 1};
+    const int pr = pos / columns_;
+    const int pc = pos % columns_;
+    for (int k = 0; k < 4; ++k) {
+        const int mr = pr + dr[k];
+        const int mc = pc + dc[k];
+        const int lr = pr + 2 * dr[k];
+        const int lc = pc + 2 * dc[k];
+        if (!inBounds(mr, mc) || !inBounds(lr, lc)) {
+            continue;
+        }
+        const int mid = idx(mr, mc);
+        const int land = idx(lr, lc);
+        if (playerOf(b[static_cast<std::size_t>(mid)]) == me &&
+            b[static_cast<std::size_t>(land)] == Cell::Empty &&
+            !leapt[static_cast<std::size_t>(mid)]) {
+            path.push_back(land);
+            leapt[static_cast<std::size_t>(mid)] = true;
+            if (findLeapPath(b, land, to, leapt, me, path)) {
+                return true;
+            }
+            leapt[static_cast<std::size_t>(mid)] = false;
+            path.pop_back();
+        }
+    }
+    return false;
+}
+
+std::vector<int> Game::movePath(const std::vector<Cell>& b, int from, int to, int me) const {
+    const int dr = (to / columns_) - (from / columns_);
+    const int dc = (to % columns_) - (from % columns_);
+    const int adr = dr < 0 ? -dr : dr;
+    const int adc = dc < 0 ? -dc : dc;
+    if (adr + adc == 1) {
+        return {from, to};  // a single orthogonal slide
+    }
+    std::vector<int> path{from};
+    std::vector<bool> leapt(static_cast<std::size_t>(squares_), false);
+    if (findLeapPath(b, from, to, leapt, me, path)) {
+        return path;
+    }
+    return {from, to};  // fallback (should not happen for a legal move)
+}
+
 // ── Move legality ────────────────────────────────────────────────────────────
 
 bool Game::isLegalMovement(int removeSquare, int from, int to) const {
@@ -161,14 +294,6 @@ bool Game::isLegalMovement(int removeSquare, int from, int to) const {
         return false;
     }
     if (to < 0 || to >= squares_) {
-        return false;
-    }
-    // Single orthogonal step.
-    const int dr = (to / columns_) - (from / columns_);
-    const int dc = (to % columns_) - (from % columns_);
-    const int adr = dr < 0 ? -dr : dr;
-    const int adc = dc < 0 ? -dc : dc;
-    if (!((adr == 1 && adc == 0) || (adr == 0 && adc == 1))) {
         return false;
     }
 
@@ -187,21 +312,17 @@ bool Game::isLegalMovement(int removeSquare, int from, int to) const {
         }
     }
 
-    // Destination must be empty, or the square just vacated by the removal.
-    const bool open = (board_[static_cast<std::size_t>(to)] == Cell::Empty) ||
-                      (removeSquare >= 0 && to == removeSquare);
-    if (!open) {
-        return false;
-    }
-
-    // Reject self-capture: simulate, then check the moved disc is not pinned by
-    // surviving enemy Free discs (capturing one flanker does not save the others).
+    // On the post-removal board, `to` must be reachable (single step or leap chain)
+    // -- which also requires it to be empty -- and not a self-capture.
     std::vector<Cell> b = board_;
-    applyRemoveMoveCapturesTo(b, removeSquare, from, to, me);
-    if (pinnedOn(b, to, opp)) {
+    if (removeSquare >= 0) {
+        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
+    }
+    const std::vector<bool> reach = reachableMask(b, from, me);
+    if (!reach[static_cast<std::size_t>(to)]) {
         return false;
     }
-    return true;
+    return moveIsLegalOn(b, from, to, me);
 }
 
 // ── Legal-move enumeration ───────────────────────────────────────────────────
@@ -232,23 +353,19 @@ std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
         removals.push_back(-1);  // no removal
     }
 
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     for (int rem : removals) {
+        std::vector<Cell> b = board_;
+        if (rem >= 0) {
+            b[static_cast<std::size_t>(rem)] = Cell::Empty;
+        }
         for (int from = 0; from < squares_; ++from) {
             if (board_[static_cast<std::size_t>(from)] != freeCell(me)) {
                 continue;
             }
-            const int fr = from / columns_;
-            const int fc = from % columns_;
-            for (int k = 0; k < 4; ++k) {
-                const int nr = fr + dr[k];
-                const int nc = fc + dc[k];
-                if (!inBounds(nr, nc)) {
-                    continue;
-                }
-                const int to = idx(nr, nc);
-                if (isLegalMovement(rem, from, to)) {
+            const std::vector<bool> reach = reachableMask(b, from, me);
+            for (int to = 0; to < squares_; ++to) {
+                if (reach[static_cast<std::size_t>(to)] &&
+                    moveIsLegalOn(b, from, to, me)) {
                     moves.push_back(movementMove(from, to, rem));
                 }
             }
@@ -296,13 +413,14 @@ void Game::decodeMovement(AbsGame::MoveId mv, int& removeSquare, int& from, int&
 
 // ── Applying moves ───────────────────────────────────────────────────────────
 
-void Game::recordMove(int from, int to, int removed) {
+void Game::recordMove(int from, int to, int removed, const std::vector<int>& path) {
     Move m;
     m.turn = static_cast<int>(moveHistory_.size()) + 1;
     m.player = current_;
     m.from = from;
     m.to = to;
     m.removed = removed;
+    m.path = path;
     moveHistory_.push_back(m);
 }
 
@@ -328,6 +446,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
         }
         board_[static_cast<std::size_t>(mv)] = freeCell(current_);
         ++placed_[current_];
+        seenPositions_.insert(hashBoard(board_));
         recordMove(-1, mv, -1);
         if (placed_[0] >= perSide_ && placed_[1] >= perSide_) {
             phase_ = Phase::Movement;
@@ -345,9 +464,18 @@ bool Game::applyMove(AbsGame::MoveId mv) {
         return false;
     }
 
+    // Reconstruct a representative path for the move log (post-removal board, with
+    // the disc still at `from`) before mutating the real board.
+    std::vector<Cell> b = board_;
+    if (removeSquare >= 0) {
+        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
+    }
+    const std::vector<int> path = movePath(b, from, to, current_);
+
     applyRemoveMoveCapturesTo(board_, removeSquare, from, to, current_);
+    seenPositions_.insert(hashBoard(board_));
     ++movementPlies_;
-    recordMove(from, to, removeSquare);
+    recordMove(from, to, removeSquare, path);
 
     // Win by reduction: the opponent (whose captive was just removable) is down
     // to a single disc.
@@ -369,20 +497,26 @@ double Game::staticEval() const {
     const int opp = 1 - me;
 
     if (gameOver_) {
-        const int M = totalDiscs(winner_);
-        const int N = totalDiscs(1 - winner_);
-        const double denom = 3.0 * M + 2.0 * N;
-        const double s = (denom > 0.0) ? (3.0 * M) / denom : 0.0;
-        const double terminal = kWinBase + kWinBase * s;
+        const double s = materialScore(totalDiscs(winner_), totalDiscs(1 - winner_));
+        const double terminal = kWinBase + kWinBase * s;  // an actual result dominates
         return (winner_ == me) ? terminal : -terminal;
     }
 
-    // Non-terminal heuristic from the mover's perspective: Free discs are mobile
-    // and can capture (full weight); Bound discs count half (enemy captives are an
-    // advantage, our own captives a liability).
-    const double freeDiff = static_cast<double>(freeDiscs(me) - freeDiscs(opp));
-    const double boundDiff = static_cast<double>(boundDiscs(opp) - boundDiscs(me));
-    return freeDiff + 0.5 * boundDiff;
+    // Search-leaf (non-terminal) evaluation: the rules' material-balance score from
+    // the mover's perspective. The side with more material (M) scores
+    // v(M, N) = 3M/(3M+2N); the other scores -v(M, N); equal material scores 0.
+    // (This is the MD-document score, not the symmetric difference v(M,N)-v(N,M).)
+    // Each side's material counts Free discs fully and Bound (immobilised) discs at
+    // immobilizationDiscount, so both immobilising and removing the opponent help.
+    const double myMaterial = freeDiscs(me) + immobilizationDiscount * boundDiscs(me);
+    const double opMaterial = freeDiscs(opp) + immobilizationDiscount * boundDiscs(opp);
+    if (myMaterial > opMaterial) {
+        return materialScore(myMaterial, opMaterial);   // mover ahead: +v(M, N)
+    }
+    if (opMaterial > myMaterial) {
+        return -materialScore(opMaterial, myMaterial);  // opponent ahead: -v(M, N)
+    }
+    return 0.0;  // equal material
 }
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
