@@ -2,7 +2,10 @@
 
 #include "Game.h"
 
+#include <algorithm>
 #include <cstddef>
+#include <numeric>
+#include <random>
 #include <stdexcept>
 
 namespace Latrunculi {
@@ -56,6 +59,7 @@ Game::Game(int rows, int columns, int perSide)
     if (perSide < 0 || 2 * perSide > squares_) {
         throw std::invalid_argument("Latrunculi: need 2*perSide <= rows*columns");
     }
+    initScanOrder();
 }
 
 Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
@@ -94,6 +98,16 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
             checkImmobilizationTerminal();
         }
     }
+    initScanOrder();
+}
+
+void Game::initScanOrder() {
+    scanOrder_.resize(static_cast<std::size_t>(squares_));
+    std::iota(scanOrder_.begin(), scanOrder_.end(), 0);
+    // Clock-derived seed: a fresh random scan order for each new game. clone()
+    // copies scanOrder_, so a search sees the same order as the live game.
+    std::mt19937_64 rng(AbsGame::makeSeed(0));
+    std::shuffle(scanOrder_.begin(), scanOrder_.end(), rng);
 }
 
 // ── Counting ─────────────────────────────────────────────────────────────────
@@ -365,11 +379,25 @@ bool Game::isLegalMovement(int removeSquare, int from, int to) const {
 
 // ── Legal-move enumeration ───────────────────────────────────────────────────
 
+bool Game::isLegalPlacement(int square) const {
+    if (square < 0 || square >= squares_) {
+        return false;
+    }
+    if (board_[static_cast<std::size_t>(square)] != Cell::Empty) {
+        return false;
+    }
+    // No captures occur during placement (vagi are never captured), so a disc may
+    // not be set down where two enemies would flank it -- that is an immediate
+    // self-capture, which the rules forbid in the Placement Phase.
+    return !pinnedOn(board_, square, 1 - current_);
+}
+
 std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
     std::vector<AbsGame::MoveId> moves;
     if (phase_ == Phase::Placement) {
-        for (int s = 0; s < squares_; ++s) {
-            if (board_[static_cast<std::size_t>(s)] == Cell::Empty) {
+        for (int i = 0; i < squares_; ++i) {
+            const int s = scanOrder_[static_cast<std::size_t>(i)];
+            if (isLegalPlacement(s)) {
                 moves.push_back(placementMove(s));
             }
         }
@@ -382,7 +410,8 @@ std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
 
     std::vector<int> removals;
     if (have_captives) {
-        for (int s = 0; s < squares_; ++s) {
+        for (int i = 0; i < squares_; ++i) {
+            const int s = scanOrder_[static_cast<std::size_t>(i)];
             if (board_[static_cast<std::size_t>(s)] == boundCell(opp)) {
                 removals.push_back(s);
             }
@@ -396,12 +425,14 @@ std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
         if (rem >= 0) {
             b[static_cast<std::size_t>(rem)] = Cell::Empty;
         }
-        for (int from = 0; from < squares_; ++from) {
+        for (int fi = 0; fi < squares_; ++fi) {
+            const int from = scanOrder_[static_cast<std::size_t>(fi)];
             if (board_[static_cast<std::size_t>(from)] != freeCell(me)) {
                 continue;
             }
             const std::vector<bool> reach = reachableMask(b, from, me);
-            for (int to = 0; to < squares_; ++to) {
+            for (int ti = 0; ti < squares_; ++ti) {
+                const int to = scanOrder_[static_cast<std::size_t>(ti)];
                 if (reach[static_cast<std::size_t>(to)] &&
                     moveIsLegalOn(b, from, to, me)) {
                     moves.push_back(movementMove(from, to, rem));
@@ -424,8 +455,7 @@ bool Game::isLegalMove(AbsGame::MoveId mv) const {
         return false;
     }
     if (phase_ == Phase::Placement) {
-        return mv >= 0 && mv < squares_ &&
-               board_[static_cast<std::size_t>(mv)] == Cell::Empty;
+        return isLegalPlacement(mv);
     }
     int removeSquare = -1;
     int from = -1;
@@ -478,8 +508,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     }
 
     if (phase_ == Phase::Placement) {
-        if (mv < 0 || mv >= squares_ ||
-            board_[static_cast<std::size_t>(mv)] != Cell::Empty) {
+        if (!isLegalPlacement(mv)) {
             return false;
         }
         board_[static_cast<std::size_t>(mv)] = freeCell(current_);

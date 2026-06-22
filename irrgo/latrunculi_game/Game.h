@@ -104,6 +104,10 @@ private:
     // that would recreate one is illegal. The board only (not the side to move) is
     // hashed, per the rule "it does not matter whose turn it is".
     std::unordered_set<std::uint64_t> seenPositions_;
+    // A shuffled permutation of 0..squares-1, fixed once per game (copied by
+    // clone()). Move generation scans squares in this order so the engine does not
+    // favour the top-left when several moves are equally good.
+    std::vector<int> scanOrder_;
 
     int idx(int row, int column) const { return row * columns_ + column; }
     bool inBounds(int row, int column) const {
@@ -138,9 +142,14 @@ private:
     bool findLeapPath(const std::vector<Cell>& b, int pos, int to,
                       std::vector<bool>& leapt, int me, std::vector<int>& path) const;
     bool isLegalMovement(int removeSquare, int from, int to) const;
+    // A placement is legal iff the square is empty and the placed disc would not be
+    // self-captured. No captures occur during placement, so a disc may not be set
+    // down where two enemies would flank it (MD rule: no placing between enemies).
+    bool isLegalPlacement(int square) const;
     std::vector<AbsGame::MoveId> enumerateLegalMoves() const;
     void recordMove(int from, int to, int removed, const std::vector<int>& path = {});
     void checkImmobilizationTerminal();
+    void initScanOrder();  // fill scanOrder_ with a fresh shuffle (per-game)
 };
 
 }  // namespace Latrunculi

@@ -17,4 +17,5 @@ add_subdirectory(mancala_game)
 add_subdirectory(mancala_gui)
 add_subdirectory(irregular_grids)
 add_subdirectory(latrunculi_game)
+add_subdirectory(latrunculi_gui)
 # Copyright Ben Paul Wise. All Rights Reserved.
