@@ -2,5 +2,6 @@
 <RCC version="1.0">
     <qresource prefix="/fonts">
         <file alias="Marcellus-Regular.ttf">fonts/Marcellus-Regular.ttf</file>
+        <file alias="Constantine.ttf">fonts/Constantine.ttf</file>
     </qresource>
 </RCC>

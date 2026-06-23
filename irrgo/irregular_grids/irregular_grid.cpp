@@ -241,13 +241,18 @@ void emit_rect(std::ostream& os, double x, double y, double w, double h,
 // from L (and from the digit 1). `offset` is the units-to-pixels translation
 // already applied to the board.
 void emit_edge_labels(std::ostream& os, int rows, int columns, double scale,
-                      double offset, double label_gap_units, double label_font_units) {
+                      double offset, double height, double box_inset,
+                      double label_gap_units, double label_font_units) {
     const double left_x = offset;
     const double right_x = offset + static_cast<double>(columns) * scale;
     const double top_y = offset;
     const double bottom_y = offset + static_cast<double>(rows) * scale;
     const double gap = label_gap_units * scale;    // board edge -> label centre
     const double font = label_font_units * scale;  // label height
+    // Lower-edge letters: centre them vertically in the gutter between the inner
+    // frame (board bottom edge, bottom_y) and the outer frame (the outer box bottom
+    // edge, height - box_inset), rather than a fixed gap below the board.
+    const double bottom_label_y = (bottom_y + (height - box_inset)) / 2.0;
 
     os << "  <g font-family=\"serif\" font-size=\"" << font
        << "\" fill=\"" << kBlackInk << "\" text-anchor=\"middle\" dominant-baseline=\"central\">\n";
@@ -256,7 +261,7 @@ void emit_edge_labels(std::ostream& os, int rows, int columns, double scale,
         const double x = offset + (static_cast<double>(c) + 0.5) * scale;
         const std::string letter(1, static_cast<char>('A' + c));
         os << "    <text x=\"" << x << "\" y=\"" << (top_y - gap) << "\">" << letter << "</text>\n";
-        os << "    <text x=\"" << x << "\" y=\"" << (bottom_y + gap) << "\">" << letter << "</text>\n";
+        os << "    <text x=\"" << x << "\" y=\"" << bottom_label_y << "\">" << letter << "</text>\n";
     }
     for (int r = 0; r < rows; ++r) {
         const double y = offset + (static_cast<double>(r) + 0.5) * scale;
@@ -445,7 +450,7 @@ void emit_background_layer(std::ostream& os, const GridGeometry& grid, int rows,
     // Second, outer black box framing the whole diagram (board plus labels).
     emit_rect(os, box_inset, box_inset, width - 2.0 * box_inset, height - 2.0 * box_inset,
               kBlackInk, grid_stroke);
-    emit_edge_labels(os, rows, columns, scale, offset,
+    emit_edge_labels(os, rows, columns, scale, offset, height, box_inset,
                      style.label_gap_units, style.label_font_units);
     os << "  </g>\n";  // close Background layer
 }

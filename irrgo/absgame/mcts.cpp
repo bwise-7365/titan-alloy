@@ -178,7 +178,7 @@ MoveId Searcher::mcts(const Game& game, int nodeMin, int nodeMax) {
     }
 
     fprintf(stderr, "terminalCount: %d\n", terminalCount);
-    printf("terminalCount: %d\n", terminalCount);
+    //printf("terminalCount: %d\n", terminalCount);
 
     MctsNode* rc = robustChild(*root);
     return rc ? rc->incomingMove : kPass;
@@ -200,7 +200,7 @@ MoveId Searcher::mcts(const Game& game, int seconds) {
         growTree(*root, kUctExpFactor, rootPlayer, rng);
 
     fprintf(stderr, "terminalCount: %d\n", terminalCount);
-    printf("terminalCount: %d\n", terminalCount);
+    //printf("terminalCount: %d\n", terminalCount);
 
     MctsNode* rc = robustChild(*root);
     return rc ? rc->incomingMove : kPass;

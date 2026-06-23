@@ -591,7 +591,7 @@ QString MainWindow::notate(int square) const {
 
 QString MainWindow::moveDescription(const Latrunculi::Move& m) const {
     const char side = (m.player == 0) ? 'A' : 'B';
-    QString s = QString("%1. %2: ").arg(m.turn).arg(side);
+    QString s = QString("%1. %2: ").arg(m.turn, 3, 10, QChar('0')).arg(side);
     if (m.from < 0) {
         s += "place " + notate(m.to);
         return s;
