@@ -423,6 +423,7 @@ void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
     }
     suggestedLog_->clear();
     refreshBoard();
+    boardWidget_->setLastMove(game_->history().back().to);  // last-move dot
 }
 
 // ── GameMainWindow hooks ──────────────────────────────────────────────────────
@@ -441,6 +442,7 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
     }
     suggestedLog_->clear();
     refreshBoard();
+    boardWidget_->setLastMove(game_->history().back().to);  // last-move dot
 }
 
 // ── AI play / suggest ─────────────────────────────────────────────────────────

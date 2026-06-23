@@ -29,9 +29,8 @@ static const QColor kRed       { 220,   0,   0, 180 };
 static constexpr float kStoneRPhys      = 0.875f / 2.0f;
 static constexpr float kGridLineThickness = 2.5f; // normally 1.5f;
 
-BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
+BoardWidget::BoardWidget(QWidget* parent) : guicommon::BoardWidgetBase(parent) {
     setMinimumSize(500, 250);
-    setMouseTracking(true);
     confirmTimer_ = new QTimer(this);
     confirmTimer_->setSingleShot(true);
     confirmTimer_->setInterval(3000);
@@ -95,10 +94,9 @@ void BoardWidget::setUseTexture(bool on) {
 
 void BoardWidget::setGame(const IrrGo::Game* game) {
     game_         = game;
-    hoverNode_    = -1;
+    resetFeedback();          // clears the hover + last-move markers (base)
     tentativeNode_= -1;
     suggestedNode_= -1;
-    lastMoveNode_ = -1;
     showBlackDvr_         = false;
     showWhiteDvr_         = false;
     showNeighborhoodSize_ = false;
@@ -122,16 +120,6 @@ void BoardWidget::clearSuggestion() {
 void BoardWidget::setBoardInfo(const QString& info) {
     boardInfoRight_ = info;
     update();
-}
-
-void BoardWidget::setLastMove(int nodeId) {
-    lastMoveNode_ = nodeId;
-    update();
-}
-
-void BoardWidget::setSearching(bool s) {
-    searching_ = s;
-    if (s) { hoverNode_ = -1; update(); }
 }
 
 void BoardWidget::setShowBlackDvr(bool show) {
@@ -178,12 +166,6 @@ void BoardWidget::resizeEvent(QResizeEvent*) {
     updateTransform();
 }
 
-void BoardWidget::leaveEvent(QEvent*) {
-    hoverNode_ = -1;
-    update();
-    emit hoverChanged(-1);
-}
-
 void BoardWidget::updateTransform() {
     if (!game_ || game_->graph().nodeCount() == 0) return;
     const auto& nodes = game_->graph().nodes();
@@ -213,7 +195,7 @@ void BoardWidget::updateTransform() {
     rescaleTextures();
 }
 
-int BoardWidget::nodeAt(QPointF pos) const {
+int BoardWidget::cellAt(const QPointF& pos) const {
     if (!game_) return -1;
     float r2   = stoneR_ * stoneR_;
     int   found = -1;
@@ -254,17 +236,11 @@ void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
 
 // ── Mouse events ──────────────────────────────────────────────────────────────
 
-void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
-    if (searching_) return;
-    int n = nodeAt(e->position());
-    if (n != hoverNode_) { hoverNode_ = n; update(); emit hoverChanged(n); }
-}
-
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
-    if (searching_) return;
+    if (isSearching()) return;
     if (e->button() != Qt::LeftButton || !game_) return;
     emit clearSuggestionRequested();
-    int n = nodeAt(e->position());
+    int n = cellAt(e->position());
     if (n < 0 || game_->colorAt(n) != Color::Empty) return;
 
     if (n == tentativeNode_) {
@@ -323,9 +299,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                            toWidget(nodes[nb].x, nodes[nb].y));
 
     // Non-rectangular hover: incident edges in medium purple
-    if (!rg && hoverNode_ >= 0) {
+    if (!rg && hoverCell() >= 0) {
         p.setPen(QPen(kMedPurple, 2.5)); // normally kMedPurple kDarkBlue
-        const auto& hn = nodes[hoverNode_];
+        const auto& hn = nodes[hoverCell()];
         for (int nb : hn.neighbors)
             p.drawLine(toWidget(hn.x, hn.y), toWidget(nodes[nb].x, nodes[nb].y));
     }
@@ -430,13 +406,14 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         }
 
         // Last-move marker: small contrasting dot on the most recently placed stone
-        if (lastMoveNode_ >= 0 && lastMoveNode_ < static_cast<int>(nodes.size())) {
-            Color lmc = game_->colorAt(lastMoveNode_);
+        const int lm = lastMoveCell();
+        if (lm >= 0 && lm < static_cast<int>(nodes.size())) {
+            Color lmc = game_->colorAt(lm);
             if (lmc != Color::Empty) {
                 float dotR = stoneR_ * 0.28f;
                 p.setPen(Qt::NoPen);
                 p.setBrush(lmc == Color::Black ? Qt::white : lineColor_);
-                p.drawEllipse(toWidget(nodes[lastMoveNode_].x, nodes[lastMoveNode_].y), dotR, dotR);
+                p.drawEllipse(toWidget(nodes[lm].x, nodes[lm].y), dotR, dotR);
             }
         }
 
@@ -465,10 +442,11 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         }
 
         // Hover effect
-        if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
-            QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
-            if (game_->colorAt(hoverNode_) == Color::Empty) {
-                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange, hoverNode_);
+        const int hv = hoverCell();
+        if (hv >= 0 && hv != tentativeNode_) {
+            QPointF pt = toWidget(nodes[hv].x, nodes[hv].y);
+            if (game_->colorAt(hv) == Color::Empty) {
+                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange, hv);
             } else {
                 p.setPen(Qt::NoPen);
                 p.setBrush(kRed);

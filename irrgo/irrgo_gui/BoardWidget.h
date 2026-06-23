@@ -1,16 +1,16 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
+#include "BoardWidgetBase.h"
 #include "DVR.h"
 #include "Game.h"
 #include <QColor>
 #include <QPixmap>
 #include <QString>
-#include <QWidget>
 #include <vector>
 
 class QTimer;
 
-class BoardWidget : public QWidget {
+class BoardWidget : public guicommon::BoardWidgetBase {
     Q_OBJECT
 public:
     explicit BoardWidget(QWidget* parent = nullptr);
@@ -23,7 +23,6 @@ public:
     void clearSuggestion();
     void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
 
-    void setSearching(bool s);
     void setShowBlackDvr(bool show);
     void setShowWhiteDvr(bool show);
     void setDvrRadius(int r);
@@ -32,25 +31,20 @@ public:
     void showLabels();
     void hideLabels();
 
-    // Mark the most recently placed stone with a contrasting dot; -1 clears it.
-    void setLastMove(int nodeId);
     void setUseTexture(bool on);
 
 signals:
     void moveRequested(int nodeId);
     void clearSuggestionRequested();  // any left-click anywhere in the board area
-    void hoverChanged(int nodeId);    // -1 when no node is highlighted
 
 protected:
     void paintEvent(QPaintEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
-    void leaveEvent(QEvent*) override;
     void resizeEvent(QResizeEvent*) override;
+    int  cellAt(const QPointF& pos) const override;  // pixel -> node id (or -1)
 
 private:
     void updateTransform();
-    int  nodeAt(QPointF pos) const;
 
     // Shared helper: draws a stone-sized disc with a coloured border.
     // nodeId is used to select the texture variant; -1 → variant 0.
@@ -65,12 +59,9 @@ private:
     QColor      lineColor_ { "#373C65" };
     QString     boardInfoRight_;            // right corner label, set via setBoardInfo()
 
-    bool    searching_       = false;
-    int     hoverNode_       = -1;
     int     tentativeNode_   = -1;
     int     suggestedNode_   = -1;
     bool    suggestIsBlack_  = true;
-    int     lastMoveNode_    = -1;
     bool    showBlackDvr_         = false;
     bool    showWhiteDvr_         = false;
     int     dvrRadius_            = 4;

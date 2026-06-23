@@ -14,15 +14,13 @@ constexpr int kLabelH    = 20;   // bottom status-label area height
 }
 
 MancalaWidget::MancalaWidget(QWidget* parent)
-    : QWidget(parent)
+    : guicommon::BoardWidgetBase(parent)
 {
-    setMouseTracking(true);
 }
 
 void MancalaWidget::setGame(const Mancala::Game* game) {
     game_      = game;
-    hoverPit_  = -1;
-    lastMove_  = -1;
+    resetFeedback();   // clears the hover + last-move markers (base)
     suggested_ = -1;
     rebuildGeometry();
     update();
@@ -40,16 +38,6 @@ void MancalaWidget::setSuggestion(int pitIndex) {
 
 void MancalaWidget::clearSuggestion() {
     suggested_ = -1;
-    update();
-}
-
-void MancalaWidget::setLastMove(int pitIndex) {
-    lastMove_ = pitIndex;
-    update();
-}
-
-void MancalaWidget::setSearching(bool s) {
-    searching_ = s;
     update();
 }
 
@@ -95,7 +83,7 @@ QRectF MancalaWidget::pitRect(int index) const {
     return pitRects_[index];
 }
 
-int MancalaWidget::pitAt(QPointF pos) const {
+int MancalaWidget::cellAt(const QPointF& pos) const {
     if (!game_) return -1;
     int N = game_->numPits();
     for (int i = 0; i < N; ++i)
@@ -122,7 +110,7 @@ void MancalaWidget::drawPit(QPainter& p, int index) const {
     bool   isP1Pit = (index > N && index <= 2*N);
     QColor base    = isP1Pit ? QColor("#8BC8B0") : bgColor_;
     QColor fill;
-    if (terminal || searching_)       fill = base.darker(115);
+    if (terminal || isSearching())    fill = base.darker(115);
     else if (isOwn && stones > 0)     fill = base.lighter(130);
     else                              fill = base.darker(110);
 
@@ -131,9 +119,9 @@ void MancalaWidget::drawPit(QPainter& p, int index) const {
     double borderWidth = 1.5;
     if (index == suggested_) {
         border = QColor("#00AAFF");  borderWidth = 3.0;
-    } else if (index == lastMove_) {
+    } else if (index == lastMoveCell()) {
         border = (cp == 1) ? Qt::white : Qt::black;  borderWidth = 3.0;
-    } else if (index == hoverPit_ && isOwn && stones > 0 && !terminal && !searching_) {
+    } else if (index == hoverCell() && isOwn && stones > 0 && !terminal && !isSearching()) {
         border = QColor("#FFD700");  borderWidth = 2.5;
     } else {
         border = bgColor_.darker(140);
@@ -159,7 +147,7 @@ void MancalaWidget::drawStore(QPainter& p, int player) const {
 
     QColor fill = (player == 0) ? QColor("#C8A86B").lighter(110)
                                 : QColor("#8BC8B0").lighter(110);
-    if (searching_) fill = fill.darker(120);
+    if (isSearching()) fill = fill.darker(120);
 
     p.setPen(QPen(bgColor_.darker(150), 2.0));
     p.setBrush(fill);
@@ -203,7 +191,7 @@ void MancalaWidget::paintEvent(QPaintEvent*) {
 
     if (!game_->isTerminal()) {
         int cp = game_->currentPlayer();
-        QString label = searching_ ? "Thinking..."
+        QString label = isSearching() ? "Thinking..."
                       : (cp == 0   ? "Player 0 (South) to move"
                                    : "Player 1 (North) to move");
         p.setPen(bgColor_.darker(200));
@@ -231,20 +219,9 @@ void MancalaWidget::resizeEvent(QResizeEvent*) {
     rebuildGeometry();
 }
 
-void MancalaWidget::mouseMoveEvent(QMouseEvent* ev) {
-    int prev  = hoverPit_;
-    hoverPit_ = pitAt(ev->position());
-    if (hoverPit_ != prev) update();
-}
-
 void MancalaWidget::mousePressEvent(QMouseEvent* ev) {
     if (ev->button() != Qt::LeftButton) return;
-    int idx = pitAt(ev->position());
+    int idx = cellAt(ev->position());
     if (idx >= 0) emit moveRequested(idx);
-}
-
-void MancalaWidget::leaveEvent(QEvent*) {
-    hoverPit_ = -1;
-    update();
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

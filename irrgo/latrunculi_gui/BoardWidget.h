@@ -1,13 +1,13 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 #include "AbsGame.h"
+#include "BoardWidgetBase.h"
 #include "Game.h"            // Latrunculi::Game, Cell, Phase
 #include "draw_params.h"     // RenderConfig, SvgStyle
 #include "irregular_grid.h"  // BoardSpec, generate_position_svg, PlacedPiece
 
 #include <QColor>
 #include <QPixmap>
-#include <QWidget>
 #include <string>
 #include <vector>
 
@@ -21,7 +21,7 @@
 // FIRST click selects an enemy Bound disc to remove (mandatory); then click an
 // own Free disc (the origin) and finally a highlighted destination. In the
 // placement phase a single click on an empty square places a disc.
-class BoardWidget : public QWidget {
+class BoardWidget : public guicommon::BoardWidgetBase {
     Q_OBJECT
 public:
     explicit BoardWidget(QWidget* parent = nullptr);
@@ -31,7 +31,6 @@ public:
     void setBackgroundColor(const QColor& c);
     void setSuggestion(AbsGame::MoveId mv);
     void clearSuggestion();
-    void setSearching(bool searching);
     void clearSelection();  // drop any in-progress two-click selection
 
     QSize sizeHint() const override { return QSize(640, 640); }
@@ -44,10 +43,10 @@ protected:
     void paintEvent(QPaintEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
     void resizeEvent(QResizeEvent*) override;
+    int  cellAt(const QPointF& pos) const override;  // widget pixel -> square, or -1
 
 private:
     void rebuild();                            // regenerate the SVG pixmap + geometry
-    int  squareAt(const QPointF& pos) const;   // widget pixel -> square, or -1
     QPointF squareCenter(int square) const;    // square -> widget pixel centre
     std::vector<int> legalDestinations(int from) const;
     bool currentHasCaptives() const;           // side to move has enemy Bound discs
@@ -78,7 +77,5 @@ private:
     AbsGame::MoveId suggestion_ = AbsGame::kPass;
     int suggestionFrom_ = -1;
     int suggestionTo_   = -1;
-
-    bool searching_ = false;
 };
 // Copyright Ben Paul Wise. All Rights Reserved.

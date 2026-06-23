@@ -10,8 +10,7 @@
 
 namespace gb = games::board;
 
-BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
-    setMouseTracking(false);
+BoardWidget::BoardWidget(QWidget* parent) : guicommon::BoardWidgetBase(parent) {
     style_  = gb::default_svg_style();
     render_ = gb::default_render_config();  // fixed noise seed -> stable look
 }
@@ -20,6 +19,7 @@ void BoardWidget::setGame(const Latrunculi::Game* game) {
     game_ = game;
     clearSelection();
     clearSuggestion();
+    resetFeedback();  // clear the hover + last-move markers (base)
     rebuild();
     update();
 }
@@ -60,11 +60,6 @@ void BoardWidget::setSuggestion(AbsGame::MoveId mv) {
         suggestionFrom_ = from;
         suggestionTo_   = to;
     }
-    update();
-}
-
-void BoardWidget::setSearching(bool searching) {
-    searching_ = searching;
     update();
 }
 
@@ -137,7 +132,7 @@ QPointF BoardWidget::squareCenter(int square) const {
                    offY_ + margin_ + (row + 0.5) * scale_);
 }
 
-int BoardWidget::squareAt(const QPointF& pos) const {
+int BoardWidget::cellAt(const QPointF& pos) const {
     if (!game_ || scale_ <= 0.0) {
         return -1;
     }
@@ -196,6 +191,40 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         p.setBrush(QColor(45, 123, 240, 110));
         p.drawEllipse(c, 0.18 * scale_, 0.18 * scale_);
     }
+
+    // Last-move dot: a small mark on the disc that last moved / was placed,
+    // contrasting with its colour (white on a dark piece, near-black on a light one).
+    const int lm = lastMoveCell();
+    if (lm >= 0 && game_->ownerAt(lm) >= 0) {
+        const QColor piece = (game_->ownerAt(lm) == 0) ? colorA_ : colorB_;
+        const QColor dot = (piece.lightnessF() < 0.5) ? QColor(255, 255, 255)
+                                                      : QColor(25, 25, 25);
+        p.setPen(Qt::NoPen);
+        p.setBrush(dot);
+        p.drawEllipse(squareCenter(lm), 0.15 * scale_, 0.15 * scale_);
+    }
+
+    // Hover ghost: a translucent disc in the to-move side's colour with a bright
+    // outline, previewing where a click would act.
+    const int hv = hoverCell();
+    if (!isSearching() && hv >= 0 && !game_->isOver()) {
+        bool show = false;
+        if (game_->phase() == Latrunculi::Phase::Placement) {
+            show = game_->isLegalMove(game_->placementMove(hv));  // only legal squares
+        } else if (selectedFrom_ >= 0) {
+            show = std::find(destinations_.begin(), destinations_.end(), hv)
+                   != destinations_.end();  // movement: preview the landing
+        }
+        if (show) {
+            QColor fill = (game_->currentPlayer() == 0) ? colorA_ : colorB_;
+            fill.setAlpha(110);
+            QPen pen(QColor("#FF8C00"));
+            pen.setWidthF(2.5);
+            p.setPen(pen);
+            p.setBrush(fill);
+            p.drawEllipse(squareCenter(hv), 0.40 * scale_, 0.40 * scale_);
+        }
+    }
 }
 
 // ── Interaction ───────────────────────────────────────────────────────────────
@@ -221,10 +250,10 @@ std::vector<int> BoardWidget::legalDestinations(int from) const {
 }
 
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
-    if (!game_ || searching_ || game_->isOver() || e->button() != Qt::LeftButton) {
+    if (!game_ || isSearching() || game_->isOver() || e->button() != Qt::LeftButton) {
         return;
     }
-    const int sq = squareAt(e->position());
+    const int sq = cellAt(e->position());
     if (sq < 0) {
         clearSelection();
         update();
