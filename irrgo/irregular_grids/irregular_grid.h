@@ -172,7 +172,7 @@ std::string generate_board_svg(const BoardSpec& board,
                                const SvgStyle& style = {});
 
 // One disc placed at an explicit square (square = row * columns + column),
-// with its own fill colour and an optional immobilised "X" marker.
+// with its own fill color and an optional immobilised "X" marker.
 struct PlacedPiece {
     int square;
     std::string fill;

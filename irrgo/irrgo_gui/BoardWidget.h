@@ -18,7 +18,7 @@ public:
     void setGame(const IrrGo::Game* game);
     void setBgColor(QColor c);
 
-    // Highlight a suggested move with a coloured border; -1 clears it.
+    // Highlight a suggested move with a colored border; -1 clears it.
     void setSuggestion(int nodeId, bool isBlack);
     void clearSuggestion();
     void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
@@ -46,7 +46,7 @@ protected:
 private:
     void updateTransform();
 
-    // Shared helper: draws a stone-sized disc with a coloured border.
+    // Shared helper: draws a stone-sized disc with a colored border.
     // nodeId is used to select the texture variant; -1 → variant 0.
     void paintStoneBordered(QPainter& p, QPointF pt,
                             bool isBlack, QColor borderColor, int nodeId = -1) const;

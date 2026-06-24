@@ -2,8 +2,8 @@
 //
 // Self-play validation driver for the Milestone-1 Latrunculi engine. Plays a full
 // game (placement is filled deterministically; movement uses NegaMax) and prints
-// the move log in chess-like notation, then the result. A movement-ply cap stands
-// in for the not-yet-implemented super-ko / draw rule so the game always ends.
+// the move log in chess-like notation, then the result. The game plays to its end:
+// the engine guarantees termination via super-ko and the Pacific quiet-game rule.
 
 #include "Game.h"
 #include "Searcher.h"  // AbsGame::Searcher, AbsGame::makeSeed (via AbsGame.h)
@@ -50,7 +50,7 @@ void render_svg_to_png(const std::string& svg, const std::string& path) {
 }
 
 // Renders the current position to pos_NN.png: a disc per occupied square
-// (A = side_a colour, B = side_b), an X on each Bound (immobilised) disc.
+// (A = side_a color, B = side_b), an X on each Bound (immobilised) disc.
 void write_position_png(const Latrunculi::Game& game, const gb::BoardSpec& look,
                         const gb::RenderConfig& config, const gb::SvgStyle& style,
                         const gb::PieceColors& colors, int frame) {
@@ -137,7 +137,6 @@ int main(int argc, char** argv) {
     const int perSide = 9;               // 18 discs on 36 squares, placed apart
     const int searchDepth = 4;
     const int searchMs = 1000;
-    const int maxMovementPlies = 2 * rows * columns;  // safety cap (no super-ko yet)
 
     Game game(rows, columns, perSide);
 
@@ -205,11 +204,6 @@ int main(int argc, char** argv) {
         std::cout << format_move(game.history().back(), rows, columns) << '\n';
         write_position_png(game, look, renderCfg, svgStyle, pieceColors,
                            static_cast<int>(game.history().size()));
-
-        if (movementPlies >= maxMovementPlies) {
-            std::cout << "\n[movement-ply cap reached -> treat as a draw]\n";
-            break;
-        }
     }
 
     std::cout << "\n--- Result ---\n";

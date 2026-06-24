@@ -193,7 +193,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     }
 
     // Last-move dot: a small mark on the disc that last moved / was placed,
-    // contrasting with its colour (white on a dark piece, near-black on a light one).
+    // contrasting with its color (white on a dark piece, near-black on a light one).
     const int lm = lastMoveCell();
     if (lm >= 0 && game_->ownerAt(lm) >= 0) {
         const QColor piece = (game_->ownerAt(lm) == 0) ? colorA_ : colorB_;
@@ -204,7 +204,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         p.drawEllipse(squareCenter(lm), 0.15 * scale_, 0.15 * scale_);
     }
 
-    // Hover ghost: a translucent disc in the to-move side's colour with a bright
+    // Hover ghost: a translucent disc in the to-move side's color with a bright
     // outline, previewing where a click would act.
     const int hv = hoverCell();
     if (!isSearching() && hv >= 0 && !game_->isOver()) {

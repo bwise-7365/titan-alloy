@@ -423,7 +423,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                                suggestIsBlack_, kGreen, suggestedNode_);
         }
 
-        // Tentative stone: player colour with grey cross-hatch
+        // Tentative stone: player color with grey cross-hatch
         if (tentativeNode_ >= 0) {
             QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
             bool isBlack = (game_->toMove() == Player::Black);

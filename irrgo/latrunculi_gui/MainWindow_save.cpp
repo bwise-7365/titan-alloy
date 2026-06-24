@@ -113,9 +113,9 @@ void MainWindow::saveToFile(const QString& path) {
     xml.writeAttribute("p0", QString::number(placed0));
     xml.writeAttribute("p1", QString::number(placed1));
 
-    // Side and background colours (the only cosmetic data stored; the hand-scratched
+    // Side and background colors (the only cosmetic data stored; the hand-scratched
     // line/disc geometry is omitted, being reproducible from a PRNG seed).
-    xml.writeEmptyElement("colours");
+    xml.writeEmptyElement("colors");
     xml.writeAttribute("sideA", colorA_.name());
     xml.writeAttribute("sideB", colorB_.name());
     xml.writeAttribute("background", background_.name());
@@ -166,7 +166,7 @@ bool MainWindow::loadFromFile(const QString& path) {
     std::vector<Latrunculi::Cell> board;
     std::vector<Latrunculi::Move> history;
     bool haveDims = false;
-    // Default to the current colours, so a file lacking <colours> keeps them.
+    // Default to the current colors, so a file lacking <colors> keeps them.
     QColor loadedColorA = colorA_;
     QColor loadedColorB = colorB_;
     QColor loadedBg     = background_;
@@ -196,7 +196,7 @@ bool MainWindow::loadFromFile(const QString& path) {
         } else if (name == QLatin1String("placed")) {
             placed0 = a.value(QLatin1String("p0")).toInt();
             placed1 = a.value(QLatin1String("p1")).toInt();
-        } else if (name == QLatin1String("colours")) {
+        } else if (name == QLatin1String("colors")) {
             const QColor ca(a.value(QLatin1String("sideA")).toString());
             const QColor cb(a.value(QLatin1String("sideB")).toString());
             const QColor bg(a.value(QLatin1String("background")).toString());
@@ -252,11 +252,11 @@ bool MainWindow::loadFromFile(const QString& path) {
     tlCols_ = cols;
     tlPerSide_ = perSide;
     suggestedLog_->clear();
-    // Adopt the loaded colours (or the retained defaults if the file had none).
+    // Adopt the loaded colors (or the retained defaults if the file had none).
     colorA_     = loadedColorA;
     colorB_     = loadedColorB;
     background_ = loadedBg;
-    // Repoint the board at the (valid) final game before any colour rebuild, then
+    // Repoint the board at the (valid) final game before any color rebuild, then
     // step the replay back to the start.
     boardWidget_->setGame(game_.get());
     boardWidget_->setSideColors(colorA_, colorB_);

@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     pv->addWidget(statusRow);
     connect(stopBtn_, &QPushButton::clicked, this, [this]() { search().cancelSearch(); });
 
-    // Per-side tallies, each led by a colour swatch (~ the size of a capital "A")
+    // Per-side tallies, each led by a color swatch (~ the size of a capital "A")
     // that identifies the side; the counts sit two em-spaces to the right of it.
     auto* tallyWidget = new QWidget(panel);
     auto* tallyGrid   = new QGridLayout(tallyWidget);
@@ -233,9 +233,9 @@ void MainWindow::buildMenuBar() {
     connect(rowsSpin_, &QSpinBox::valueChanged, this, [syncPerSide](int) { syncPerSide(); });
     connect(colsSpin_, &QSpinBox::valueChanged, this, [syncPerSide](int) { syncPerSide(); });
 
-    auto* colorABtn = new QPushButton("Side A colour...", bmw);
-    auto* colorBBtn = new QPushButton("Side B colour...", bmw);
-    auto* bgBtn     = new QPushButton("Background colour...", bmw);
+    auto* colorABtn = new QPushButton("Side A color...", bmw);
+    auto* colorBBtn = new QPushButton("Side B color...", bmw);
+    auto* bgBtn     = new QPushButton("Background color...", bmw);
     vbox->addWidget(colorABtn);
     vbox->addWidget(colorBBtn);
     vbox->addWidget(bgBtn);
@@ -339,7 +339,7 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     timeline_.clear();
     rebuildMoveList();
     suggestedLog_->clear();
-    // Repoint the board at the new game BEFORE any colour rebuild. The make_unique
+    // Repoint the board at the new game BEFORE any color rebuild. The make_unique
     // above freed the previous game, leaving the widget's observer pointer dangling
     // until setGame() updates it; setSideColors/setBackgroundColor each rebuild, so
     // doing them first would dereference the freed game.
@@ -489,7 +489,7 @@ void MainWindow::onSuggestMctsGo() {
 }
 
 void MainWindow::onPickColorA() {
-    const QColor c = QColorDialog::getColor(colorA_, this, "Side A colour");
+    const QColor c = QColorDialog::getColor(colorA_, this, "Side A color");
     if (c.isValid()) {
         colorA_ = c;
         boardWidget_->setSideColors(colorA_, colorB_);
@@ -498,7 +498,7 @@ void MainWindow::onPickColorA() {
 }
 
 void MainWindow::onPickColorB() {
-    const QColor c = QColorDialog::getColor(colorB_, this, "Side B colour");
+    const QColor c = QColorDialog::getColor(colorB_, this, "Side B color");
     if (c.isValid()) {
         colorB_ = c;
         boardWidget_->setSideColors(colorA_, colorB_);
@@ -507,7 +507,7 @@ void MainWindow::onPickColorB() {
 }
 
 void MainWindow::onPickBackground() {
-    const QColor c = QColorDialog::getColor(background_, this, "Background colour");
+    const QColor c = QColorDialog::getColor(background_, this, "Background color");
     if (c.isValid()) {
         background_ = c;
         boardWidget_->setBackgroundColor(background_);
@@ -538,7 +538,7 @@ void MainWindow::updateControls() {
     boardWidget_->setSearching(searching);
     menuBar()->setEnabled(!searching);
     clearSuggestBtn_->setEnabled(!searching);
-    updateSwatches();  // keep the tally squares in step with the side colours
+    updateSwatches();  // keep the tally squares in step with the side colors
 
     if (!game_) {
         statusLabel_->setText("No game");
@@ -667,7 +667,7 @@ void MainWindow::rebuildToPly(int ply) {
         }
     }
     game_ = std::move(g);                 // frees the old game...
-    boardWidget_->setGame(game_.get());   // ...so repoint before any colour rebuild
+    boardWidget_->setGame(game_.get());   // ...so repoint before any color rebuild
     boardWidget_->setLastMove(k > 0 ? timeline_[static_cast<std::size_t>(k - 1)].to : -1);
     updateControls();
 }

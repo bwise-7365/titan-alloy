@@ -36,17 +36,10 @@ Cell boundCell(int player) {
 
 constexpr double kWinBase = 1000.0;  // an actual win/loss dominates the leaf score
 
-// Draw rule (MD spec): if neither side wins within z*M*N movement plies on an MxN
-// board, the game ends. The MD suggests z = 2 or 3; placement plies do not count.
-// Unlike a textbook draw (scored 0), the ended position is evaluated by the
-// material-balance v(M,N) below -- a flat 0 would blind MCTS, whose random
-// rollouts almost always reach this limit rather than a real win/immobilisation.
-constexpr int kDrawPliesFactor = 3;
-
 // The material-balance score s = 3M / (3M + 2N) for a side with M discs facing an
-// opponent with N. This is the game's terminal score for the winner, and also the
-// basis of the search's leaf evaluation, so reducing the opponent's pieces
-// (capturing then removing) raises the score.
+// opponent with N. Shapes the magnitude of a decisive terminal score in staticEval;
+// the non-terminal leaf uses the pressure score there instead. Higher M (capturing
+// then removing the opponent's pieces) raises the score.
 double materialScore(double M, double N) {
     const double denom = 3.0 * M + 2.0 * N;
     return (denom > 0.0) ? (3.0 * M) / denom : 0.0;
@@ -250,7 +243,7 @@ void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
     moveAndCapture(b, from, to, me);
 }
 
-// ── Reachability: single step + own-colour multi-leaps ───────────────────────
+// ── Reachability: single step + own-color multi-leaps ───────────────────────
 
 void Game::collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
                         std::vector<bool>& reach, int me) const {
@@ -598,14 +591,29 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     }
     const std::vector<int> path = movePath(b, from, to, current_);
 
+    // Capture detection for the Pacific counter: a custodial capture binds an enemy
+    // Free disc, so the opponent's Free-disc count drops. (Removal only touches Bound
+    // discs, so it is tracked separately via removeSquare below.)
+    const int opp = 1 - current_;
+    const int oppFreeBefore = freeDiscs(opp);
+
     applyRemoveMoveCapturesTo(board_, removeSquare, from, to, current_);
     seenPositions_.insert(hashBoard(board_));
-    ++movementPlies_;
     recordMove(from, to, removeSquare, path);
+
+    // Pacific (quiet-game) counter: a turn that captures (opponent's Free count drops)
+    // or removes a captive (removeSquare >= 0) is "active" and resets the counter; a
+    // purely positional turn advances it.
+    const bool captured = freeDiscs(opp) < oppFreeBefore;
+    const bool removed = removeSquare >= 0;
+    if (captured || removed) {
+        pacificPlies_ = 0;
+    } else {
+        ++pacificPlies_;
+    }
 
     // Win by reduction: the opponent (whose captive was just removable) is down
     // to a single disc.
-    const int opp = 1 - current_;
     if (totalDiscs(opp) <= 1) {
         gameOver_ = true;
         winner_ = current_;
@@ -614,47 +622,82 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     current_ = 1 - current_;
     checkImmobilizationTerminal();  // win by immobilisation, checked at turn start
 
-    // Draw by move limit: only if neither side has just won (reduction or
-    // immobilisation take precedence). winner_ == -1 marks the drawn end; staticEval
-    // scores it by material balance rather than 0 so the search keeps a gradient.
-    if (!gameOver_ && movementPlies_ >= kDrawPliesFactor * rows_ * columns_) {
+    // Quiet-game ("Pacific") termination: pacificMoveLimit consecutive plies with no
+    // capture or removal. Reduction/immobilisation take precedence (guarded by
+    // !gameOver_). Decided on Free-disc material plus komi for player 1, so an even
+    // Free count goes to the second player and there is never a draw.
+    if (!gameOver_ && pacificPlies_ >= pacificMoveLimit) {
+        const double freeP0 = freeDiscs(0);
+        const double freeP1 = freeDiscs(1) + komi;
         gameOver_ = true;
-        winner_ = -1;
+        winner_ = (freeP1 > freeP0) ? 1 : 0;
     }
     return true;
 }
 
 // ── Evaluation ───────────────────────────────────────────────────────────────
 
+// See the header: one definition of "material count", shared by the terminal score and
+// the leaf evaluation. Free discs count fully, Bound (immobilised) discs at
+// immobilizationDiscount, and player 1 (the second player) gets komi.
+double Game::effectiveMaterial(int player) const {
+    double material = freeDiscs(player) + immobilizationDiscount * boundDiscs(player);
+    if (player == 1) {
+        material += komi;
+    }
+    return material;
+}
+
 double Game::staticEval() const {
     const int me = current_;
     const int opp = 1 - me;
 
-    // A decisive result (win by reduction or immobilisation, winner_ >= 0) dominates
-    // the leaf score. A move-limit draw (winner_ == -1) deliberately does NOT return
-    // here: it falls through to the material-balance score below, so the search still
-    // values captures/removals instead of treating the cut-off position as a flat 0.
-    if (gameOver_ && winner_ >= 0) {
-        const double s = materialScore(totalDiscs(winner_), totalDiscs(1 - winner_));
+    // A decisive result (reduction, immobilisation, or quiet-game termination) dominates
+    // the leaf range. Komi rides along inside effectiveMaterial. Draws no longer exist,
+    // so a terminal position always names a winner; surface the impossible state rather
+    // than papering over it with a fallback score.
+    if (gameOver_) {
+        if (winner_ < 0) {
+            throw std::logic_error("Latrunculi: terminal position has no winner");
+        }
+        const double s = materialScore(effectiveMaterial(winner_),
+                                       effectiveMaterial(1 - winner_));
         const double terminal = kWinBase + kWinBase * s;
         return (winner_ == me) ? terminal : -terminal;
     }
 
-    // Search-leaf evaluation (non-terminal, or a move-limit draw): the rules'
-    // material-balance score from the mover's perspective. The side with more
-    // material (M) scores v(M, N) = 3M/(3M+2N); the other scores -v(M, N); equal
-    // material scores 0. (The MD-document score, not the difference v(M,N)-v(N,M).)
-    // Each side's material counts Free discs fully and Bound (immobilised) discs at
-    // immobilizationDiscount, so both immobilising and removing the opponent help.
-    const double myMaterial = freeDiscs(me) + immobilizationDiscount * boundDiscs(me);
-    const double opMaterial = freeDiscs(opp) + immobilizationDiscount * boundDiscs(opp);
-    if (myMaterial > opMaterial) {
-        return materialScore(myMaterial, opMaterial);   // mover ahead: +v(M, N)
+    // Unified leaf evaluation: a "pressure" score per side, for every non-terminal
+    // position in both phases. A side wins as its opponent's reach M (squares the
+    // opponent could step to) or material D heads to zero. The product M*D vanishes iff
+    // EITHER factor does, so 1 - M*D/(Mmax*Dmax) rises to 1 near a win and is insensitive
+    // to whichever axis is already far from winning. The score is pressure(opp) -
+    // pressure(me), from the mover's perspective. D is effectiveMaterial (discounted
+    // Bound + komi) minus 1, so komi tilts an even count toward player 1, and Dmax =
+    // (perSide_ - 1) + komi is > 0 for any perSide_ >= 1 -- no divide-by-zero, no
+    // degenerate special case. Mmax/Dmax are shared positive scales that keep the leaf
+    // range well inside the kWinBase terminal band. In the placement phase reachCount is
+    // 0, so the score is 0: placement makes no captures, so material there reflects only
+    // turn order, not advantage.
+    const double Dmax = (perSide_ - 1) + komi;
+    const double Mmax = squares_;
+    auto pressure = [&](int b) {                       // my score when pressuring side b
+        const double M = reachCount(b);                // squares b's discs can reach
+        const double D = effectiveMaterial(b) - 1.0;   // b's material minus the loss line
+        return 1.0 - (M * D) / (Mmax * Dmax);
+    };
+    return pressure(opp) - pressure(me);
+}
+
+// See the header: reach M of staticEval, double-counting intentional. We flip the
+// side to move on a throwaway copy because enumerateLegalMoves() only ever speaks
+// for current_; reach is a property of the position, not of whose turn it is.
+int Game::reachCount(int player) const {
+    if (phase_ != Phase::Movement) {
+        return 0;
     }
-    if (opMaterial > myMaterial) {
-        return -materialScore(opMaterial, myMaterial);  // opponent ahead: -v(M, N)
-    }
-    return 0.0;  // equal material
+    Game probe(*this);
+    probe.current_ = player;
+    return static_cast<int>(probe.enumerateLegalMoves().size());
 }
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {

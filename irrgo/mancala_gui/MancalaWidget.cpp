@@ -106,7 +106,7 @@ void MancalaWidget::drawPit(QPainter& p, int index) const {
                                : (index > N && index <= 2*N);
     bool terminal = game_ && game_->isTerminal();
 
-    // Pit fill colour.  P1 pits share the greenish hue of the P1 store.
+    // Pit fill color.  P1 pits share the greenish hue of the P1 store.
     bool   isP1Pit = (index > N && index <= 2*N);
     QColor base    = isP1Pit ? QColor("#8BC8B0") : bgColor_;
     QColor fill;
@@ -114,7 +114,7 @@ void MancalaWidget::drawPit(QPainter& p, int index) const {
     else if (isOwn && stones > 0)     fill = base.lighter(130);
     else                              fill = base.darker(110);
 
-    // Border colour: suggestion > last move > hover > default.
+    // Border color: suggestion > last move > hover > default.
     QColor border;
     double borderWidth = 1.5;
     if (index == suggested_) {

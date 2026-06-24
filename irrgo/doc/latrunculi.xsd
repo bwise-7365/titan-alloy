@@ -2,15 +2,15 @@
 <!--
   XML Schema for a saved Latrunculi ("Ludus Latrunculorum") game, as written by the
   latrunculi_gui "Save As..." command. It records the authoritative board state, the
-  side/background colours, and a move log (for display). The hand-scratched grid-line
+  side/background colors, and a move log (for display). The hand-scratched grid-line
   and disc geometry is deliberately NOT stored: it is cosmetic and reproducible from a
   PRNG seed if desired. (No XML declaration so the copyright comment can be the first
   line, per project convention; UTF-8 is the XML default.)
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <!-- An #rrggbb hex colour, e.g. #fae5be (QColor::name() form). -->
-  <xs:simpleType name="hexColour">
+  <!-- An #rrggbb hex color, e.g. #fae5be (QColor::name() form). -->
+  <xs:simpleType name="hexColor">
     <xs:restriction base="xs:string">
       <xs:pattern value="#[0-9a-fA-F]{6}"/>
     </xs:restriction>
@@ -83,12 +83,12 @@
           </xs:complexType>
         </xs:element>
 
-        <!-- Side and background colours (the only cosmetic data that is stored). -->
-        <xs:element name="colours">
+        <!-- Side and background colors (the only cosmetic data that is stored). -->
+        <xs:element name="colors">
           <xs:complexType>
-            <xs:attribute name="sideA"      type="hexColour" use="required"/>
-            <xs:attribute name="sideB"      type="hexColour" use="required"/>
-            <xs:attribute name="background" type="hexColour" use="required"/>
+            <xs:attribute name="sideA"      type="hexColor" use="required"/>
+            <xs:attribute name="sideB"      type="hexColor" use="required"/>
+            <xs:attribute name="background" type="hexColor" use="required"/>
           </xs:complexType>
         </xs:element>
 

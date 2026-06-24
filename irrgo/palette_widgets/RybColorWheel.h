@@ -25,7 +25,7 @@ private:
     QColor background_{Qt::gray};
     QColor piece1_{Qt::black};
     QColor piece2_{Qt::white};
-    // The coloured wheel depends only on widget geometry, not the palette, so it
+    // The colored wheel depends only on widget geometry, not the palette, so it
     // is cached here and regenerated only when the device-pixel size changes.
     QPixmap wheelCache_;
 };

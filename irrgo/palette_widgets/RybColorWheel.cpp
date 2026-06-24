@@ -23,7 +23,7 @@ constexpr double kPi = std::numbers::pi;
 
 // Wheel geometry and marker rendering.
 constexpr double kWheelMarginPx = 8.0;          // inset from the widget's short side
-constexpr double kWheelHueStepDeg = 3.0;        // coloured-wedge width
+constexpr double kWheelHueStepDeg = 3.0;        // colored-wedge width
 constexpr double kFullCircleDeg = 360.0;
 constexpr double kQtTopOffsetDeg = 90.0;        // rotates hue 0 to the top (12 o'clock)
 constexpr double kQtAnglePerDegree = 16.0;      // Qt pie angles are in 1/16 of a degree
@@ -65,7 +65,7 @@ void RybColorWheel::paintEvent(QPaintEvent* /*event*/) {
     const double radius = side / 2.0;
     const QRectF box(cx - radius, cy - radius, side, side);
 
-    // The coloured wheel depends only on geometry, not the palette. Regenerate it
+    // The colored wheel depends only on geometry, not the palette. Regenerate it
     // only when the device-pixel size changes; otherwise reuse the cached pixmap
     // and just repaint the (palette-dependent) markers below.
     const qreal dpr = devicePixelRatioF();

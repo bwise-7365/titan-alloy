@@ -127,7 +127,7 @@ bool Game::isLegalPlacement(int nodeId) const {
                 }
             }
         } else {  // nc == myColor
-            // A same-colour neighbour contributes a liberty if its group has any
+            // A same-color neighbour contributes a liberty if its group has any
             // empty neighbour other than nodeId.
             int root = dsuFind(nb);
             const auto& libs = dsu_libset_[root];
@@ -155,7 +155,7 @@ bool Game::placeStone(int nodeId) {
     board_[nodeId] = myColor;
 
     // Initialise DSU for the new stone.  Its initial liberties are all currently
-    // empty neighbours (same-colour neighbours will be united below).
+    // empty neighbours (same-color neighbours will be united below).
     dsu_parent_[nodeId]  = nodeId;
     dsu_libset_[nodeId].clear();
     dsu_members_[nodeId] = {nodeId};
@@ -175,7 +175,7 @@ bool Game::placeStone(int nodeId) {
         if (board_[nb] == opColor && dsu_libset_[dsuFind(nb)].empty())
             dsuCaptureGroup(dsuFind(nb), opColor);
 
-    // Merge the new stone into every adjacent same-colour group.
+    // Merge the new stone into every adjacent same-color group.
     for (int nb : graph_.node(nodeId).neighbors)
         if (board_[nb] == myColor)
             dsuUnite(nodeId, nb);

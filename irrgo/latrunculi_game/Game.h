@@ -9,11 +9,13 @@
 #include <vector>
 
 // Latrunculi ("Ludus Latrunculorum"): two-phase play (placement then movement),
-// movement = an orthogonal step OR own-colour multi-leaps (Stage 2), custodial
+// movement = an orthogonal step OR own-color multi-leaps (Stage 2), custodial
 // capture -> immobilisation, mandatory remove-one-captive-then-move, and the two
 // win conditions with the gradient score s = 3M / (3M + 2N), and super-ko (no
-// board position may repeat). Freeing chains and the draw counter are later
-// stages (see doc/latrunculi-implementation-plan.md).
+// board position may repeat). The second player gets a half-point komi in every
+// disc-count score, and a quiet-game ("Pacific") rule ends a movement phase that
+// runs pacificMoveLimit plies with no capture or removal. Freeing chains are a
+// later stage (see doc/latrunculi-implementation-plan.md).
 namespace Latrunculi {
 
 // A board cell. "Bound" == immobilised (flipped to show the X): it cannot move
@@ -26,6 +28,16 @@ enum class Phase { Placement, Movement };
 // material evaluation: a captured-but-not-yet-removed disc counts as this fraction
 // of a full piece, so immobilising an opponent is rewarded as partial progress.
 inline constexpr double immobilizationDiscount = 0.375;
+
+// Half-point komi credited to player 1 (the second player) in every disc-count
+// evaluation, compensating for the first-move disadvantage. Used uniformly, an even
+// disc count resolves in player 1's favour and integer-count ties never draw.
+inline constexpr double komi = 0.5;
+
+// Quiet-game ("Pacific") termination: if the movement phase runs this many consecutive
+// plies with no capture and no captive removal, the game ends and is decided on
+// free-disc material plus komi.
+inline constexpr int pacificMoveLimit = 40;
 
 // A logged ply (for the move log). During placement from == -1; removed == -1
 // when no captive was removed that turn.
@@ -49,8 +61,8 @@ public:
 
     // Reconstruct an arbitrary mid-game position (used by the GUI's Load). `board`
     // must hold rows*columns cells. Terminal status is recomputed from the
-    // position; `seen` (the super-ko history) may be empty. The movement-ply / draw
-    // counter is not restored (the draw rule is not yet implemented).
+    // position; `seen` (the super-ko history) may be empty. The Pacific (no-capture)
+    // ply counter is not restored -- it resets to 0 on Load.
     Game(int rows, int columns, int perSide, std::vector<Cell> board,
          Phase phase, int current, int placed0, int placed1,
          std::vector<Move> history = {},
@@ -101,7 +113,7 @@ private:
     int current_ = 0;
     Phase phase_ = Phase::Placement;
     int placed_[2] = {0, 0};
-    int movementPlies_ = 0;  // movement-only ply counter (Stage 4 draw rule)
+    int pacificPlies_ = 0;  // consecutive movement plies with no capture or removal
     bool gameOver_ = false;
     int winner_ = -1;
     std::vector<Move> moveHistory_;
@@ -131,7 +143,7 @@ private:
     void applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
                                    int from, int to, int me) const;
     // Empty squares reachable from `from` on board b: orthogonal single steps plus
-    // own-colour multi-leaps (hop a single own-colour disc to the empty square
+    // own-color multi-leaps (hop a single own-color disc to the empty square
     // beyond, chaining over distinct discs in any directions).
     std::vector<bool> reachableMask(const std::vector<Cell>& b, int from, int me) const;
     void collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
@@ -152,6 +164,14 @@ private:
     // down where two enemies would flank it (MD rule: no placing between enemies).
     bool isLegalPlacement(int square) const;
     std::vector<AbsGame::MoveId> enumerateLegalMoves() const;
+    // Number of squares `player` could step to if it were that player's turn (the
+    // disc-mobility "reach" M of staticEval). Double-counts when several discs reach
+    // the same square -- that is intentional. Zero outside the Movement phase.
+    int reachCount(int player) const;
+    // One definition of "material count": free discs at full weight, Bound (immobilised)
+    // discs at immobilizationDiscount, plus komi for player 1. Used by both the terminal
+    // score and the leaf evaluation in staticEval.
+    double effectiveMaterial(int player) const;
     void recordMove(int from, int to, int removed, const std::vector<int>& path = {});
     void checkImmobilizationTerminal();
     void initScanOrder();  // fill scanOrder_ with a fresh shuffle (per-game)

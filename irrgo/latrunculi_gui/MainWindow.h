@@ -59,7 +59,7 @@ private:
     void newGame(int rows, int columns, int perSide);
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
-    void updateSwatches();               // recolour the side A/B tally squares
+    void updateSwatches();               // recolor the side A/B tally squares
     void refreshBoard();                 // board update + controls + tallies
     void afterMoveApplied();             // common tail once a move is applied to game_
     void rebuildMoveList();              // repopulate the clickable move list + bar
@@ -77,8 +77,8 @@ private:
 
     // Right panel.
     QLabel*      statusLabel_     = nullptr;
-    QLabel*      swatchA_         = nullptr;  // colour square for side A's tally
-    QLabel*      swatchB_         = nullptr;  // colour square for side B's tally
+    QLabel*      swatchA_         = nullptr;  // color square for side A's tally
+    QLabel*      swatchB_         = nullptr;  // color square for side B's tally
     QLabel*      tallyA_          = nullptr;  // side A disc counts
     QLabel*      tallyB_          = nullptr;  // side B disc counts
     QPushButton* stopBtn_         = nullptr;
