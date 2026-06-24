@@ -39,7 +39,7 @@ struct RenderConfig {
 // Cosmetic SVG settings. An empty background string omits the background rect.
 struct SvgStyle {
     std::string background = "#8C8E7E";
-    std::string ink = "#000060";
+    std::string ink = "#000000";
     double stroke_width_units = kStrokeWidthUnits;  // square-width units
     double margin_units = kMarginUnits;             // gutter on every side
     double label_gap_units = kLabelGapUnits;        // board edge -> label centre

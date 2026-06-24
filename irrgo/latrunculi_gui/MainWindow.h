@@ -91,9 +91,9 @@ private:
     QSpinBox* rowsSpin_    = nullptr;
     QSpinBox* colsSpin_    = nullptr;
     QSpinBox* perSideSpin_ = nullptr;
-    QColor    colorA_{0xFA, 0xE5, 0xBE};  // pale beige (side_a)
-    QColor    colorB_{0x85, 0x25, 0x32};  // brick-red  (side_b)
-    QColor    background_{0x8C, 0x8E, 0x7E};  // SvgStyle default background
+    QColor    colorA_{0x1F, 0x20, 0x14};
+    QColor    colorB_{0x85, 0x25, 0x32};
+    QColor    background_{0xF5, 0xE8, 0xC7};
 
     // Play / Suggest menu controls.
     QAction*   manualAction_        = nullptr;

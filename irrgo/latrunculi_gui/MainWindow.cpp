@@ -169,7 +169,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     registerPlayback(playback_, moveList_);
 
     buildMenuBar();
-    resize(1040, 720);
+    resize(1125, 760);
 
     const int perSide = gb::stones_per_side(gb::BoardParams{6, 8});
     newGame(6, 8, perSide);

@@ -33,7 +33,7 @@ public:
     void clearSuggestion();
     void clearSelection();  // drop any in-progress two-click selection
 
-    QSize sizeHint() const override { return QSize(640, 640); }
+    QSize sizeHint() const override { return QSize(850, 680); }
     QSize minimumSizeHint() const override { return QSize(360, 360); }
 
 signals:
