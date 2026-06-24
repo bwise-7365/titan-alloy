@@ -2,6 +2,8 @@
 #include "MainWindow.h"
 #include "LoadedGraph.h"
 #include "RectangularGraph.h"
+#include "PlaybackBar.h"
+#include <algorithm>
 #include <QActionGroup>
 #include <QCheckBox>
 //#include <QFile>
@@ -282,6 +284,17 @@ void MainWindow::onLoad() {
     setupPlaced_     = newSetupPlaced;
     currentFilePath_ = path;
 
+    // Split the reconstructed history into the fixed seed (the ply-0 position) and
+    // the play-move timeline the bar steps through.
+    {
+        const auto& h = game_->moveHistory();
+        setupNodes_.clear();
+        const int n = std::min(newSetupPlaced, static_cast<int>(h.size()));
+        for (int i = 0; i < n; ++i)
+            setupNodes_.push_back(h[i].nodeId);
+        timeline_.assign(h.begin() + n, h.end());
+    }
+
     boardWidget_->setGame(game_.get());
     blackDvrCheck_->setChecked(false);
     whiteDvrCheck_->setChecked(false);
@@ -293,17 +306,10 @@ void MainWindow::onLoad() {
         randomSeedEdit_->setText(QString::number(xmlSeed));
     stonesGroup_->actions().first()->setChecked(true);
 
-    moveLog_->clear();
-    for (const auto& mv : game_->moveHistory()) {
-        QString clr = (mv.turn % 2 == 1) ? "B" : "W";
-        QString text = (mv.nodeId < 0)
-            ? QString("%1: %2 PASS").arg(mv.turn, 3).arg(clr)
-            : QString("%1: %2 %3")
-                  .arg(mv.turn, 3).arg(clr)
-                  .arg(QString::fromStdString(game_->graph().node(mv.nodeId).label));
-        moveLog_->append(text);
-    }
-
-    updateControls();
+    // Populate the clickable log, then open the replay at the start (ply 0); the
+    // board steps forward from the seeded position.
+    rebuildMoveList();
+    playback_->setPlyCount(static_cast<int>(timeline_.size()));
+    gotoPly(0);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

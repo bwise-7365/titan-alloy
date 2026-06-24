@@ -4,6 +4,8 @@
 #include "IrregularGraph.h"
 #include "RectangularGraph.h"
 #include "menu_helpers.h"
+#include "MoveListWidget.h"
+#include "PlaybackBar.h"
 #include "../absgame/utils.h"
 #include <QAction>
 #include <QActionGroup>
@@ -20,6 +22,7 @@
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QStringList>
 #include <QTextEdit>
 #include <QTimer>
 //#include <QVBoxLayout>
@@ -208,15 +211,12 @@ MainWindow::MainWindow(QWidget* parent)
 
     pv->addSpacing(8);
 
+    playback_ = new guicommon::PlaybackBar(this);
+    pv->addWidget(playback_);
     pv->addWidget(new QLabel("Move log:", this));
-    moveLog_ = new QTextEdit(this);
-    moveLog_->setReadOnly(true);
-    {
-        QFont font("Monospace");
-        font.setStyleHint(QFont::TypeWriter);
-        moveLog_->setFont(font);
-    }
-    pv->addWidget(moveLog_, 1);
+    moveList_ = new guicommon::MoveListWidget(this);  // monospaced, set in its ctor
+    pv->addWidget(moveList_, 1);
+    registerPlayback(playback_, moveList_);
 
     buildMenuBar();
     resize(1000, 760);
@@ -446,7 +446,10 @@ void MainWindow::generateBoard() {
         .arg(sz.rows).arg(sz.cols).arg(static_cast<int>(seed)));
 
     stonesGroup_->actions().first()->setChecked(true);
-    moveLog_->clear();
+    setupNodes_.clear();
+    timeline_.clear();
+    rebuildMoveList();
+    syncPlaybackToEnd();
     updateControls();
 }
 
@@ -465,7 +468,10 @@ void MainWindow::onStonesSelected(QAction* action) {
     game_.reset();
     game_ = std::make_unique<Game>(*graph_);
     boardWidget_->setGame(game_.get());
-    moveLog_->clear();
+    setupNodes_.clear();
+    timeline_.clear();
+    rebuildMoveList();
+    syncPlaybackToEnd();
     updateControls();
 
     double fraction = action->data().toDouble();
@@ -494,10 +500,10 @@ void MainWindow::onSetupTick() {
             ++setupPlaced_;
             boardWidget_->update();
             updateControls();
-            logLastMove();
             if (setupPlaced_ >= setupTarget_) {
                 stoneTimer_->stop();
                 game_->setSetupMode(false);
+                captureSeed();
                 updateControls();
             }
             return;
@@ -505,6 +511,7 @@ void MainWindow::onSetupTick() {
     }
     stoneTimer_->stop();
     game_->setSetupMode(false);
+    captureSeed();
     boardWidget_->update();
     updateControls();
 }
@@ -519,11 +526,8 @@ void MainWindow::stopStoneSetup() {
 void MainWindow::onMoveRequested(int nodeId) {
     if (!game_ || stoneTimer_->isActive() || search().isSearching()) return;
     if (game_->placeStone(nodeId)) {
-        boardWidget_->setLastMove(nodeId);
         clearSuggestion();
-        boardWidget_->update();
-        updateControls();
-        logLastMove();
+        afterPlayMove();
     }
 }
 
@@ -531,9 +535,7 @@ void MainWindow::onBlackPass() {
     if (!game_ || game_->toMove() != Player::Black || search().isSearching()) return;
     if (game_->pass()) {
         clearSuggestion();
-        boardWidget_->update();
-        updateControls();
-        logLastMove();
+        afterPlayMove();
     }
 }
 
@@ -541,9 +543,7 @@ void MainWindow::onWhitePass() {
     if (!game_ || game_->toMove() != Player::White || search().isSearching()) return;
     if (game_->pass()) {
         clearSuggestion();
-        boardWidget_->update();
-        updateControls();
-        logLastMove();
+        afterPlayMove();
     }
 }
 
@@ -606,11 +606,8 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
         game_->pass();
     } else {
         game_->placeStone(mv);
-        boardWidget_->setLastMove(mv);
     }
-    boardWidget_->update();
-    updateControls();
-    logLastMove();
+    afterPlayMove();
 }
 
 void MainWindow::onPlayNegamaxGo() {
@@ -678,20 +675,100 @@ void MainWindow::updateControls() {
     whitePassBtn_->setEnabled(!bt && !animating && !searching);
 }
 
-void MainWindow::logLastMove() {
-    if (!game_ || game_->moveHistory().empty()) return;
-    const Move& m = game_->moveHistory().back();
-    // After a pass, toMove() has already flipped, so the passer is the other player.
-    QString clr = (m.nodeId < 0)
-        ? (game_->toMove() == Player::White ? "B" : "W")
-        : (m.color == Color::Black ? "B" : "W");
-    QString text = (m.nodeId < 0)
-        ? QString("%1: %2 PASS").arg(m.turn, 3).arg(clr)
-        : QString("%1: %2 %3")
-              .arg(m.turn, 3)
-              .arg(clr)
-              .arg(QString::fromStdString(game_->graph().node(m.nodeId).label));
-    moveLog_->append(text);
+// ── Playback / replay ─────────────────────────────────────────────────────────
+
+// Format a single play move as a log row. Turns are numbered globally from move 1
+// and the side strictly alternates (every placeStone/pass toggles the player), so
+// an odd turn was Black's and an even turn White's — for stones and passes alike.
+QString MainWindow::moveText(const Move& m) const {
+    if (!game_) {
+        return QString();
+    }
+    const QString clr = (m.turn % 2 == 1) ? "B" : "W";
+    if (m.nodeId < 0) {
+        return QString("%1: %2 PASS").arg(m.turn, 3).arg(clr);
+    }
+    return QString("%1: %2 %3")
+        .arg(m.turn, 3)
+        .arg(clr)
+        .arg(QString::fromStdString(game_->graph().node(m.nodeId).label));
+}
+
+void MainWindow::rebuildMoveList() {
+    QStringList rows;
+    rows.reserve(static_cast<int>(timeline_.size()));
+    for (const Move& m : timeline_) {
+        rows << moveText(m);
+    }
+    moveList_->setMoves(rows);
+}
+
+// Record the seed stones (the first setupPlaced_ history entries) as the fixed
+// ply-0 position; the play timeline then starts empty.
+void MainWindow::captureSeed() {
+    setupNodes_.clear();
+    const auto& h = game_->moveHistory();
+    const int n = std::min(setupPlaced_, static_cast<int>(h.size()));
+    for (int i = 0; i < n; ++i) {
+        setupNodes_.push_back(h[i].nodeId);
+    }
+    timeline_.clear();
+    rebuildMoveList();
+    syncPlaybackToEnd();
+}
+
+// Common tail once a play move (or pass) has been applied to game_: refresh the
+// timeline (everything past the seed), the move list, the board, and the bar. A
+// take-over move made mid-replay truncates the superseded future automatically,
+// since the timeline is taken from game_'s own (already-truncated) history.
+void MainWindow::afterPlayMove() {
+    const auto& h = game_->moveHistory();
+    const int start = std::min(static_cast<int>(setupNodes_.size()),
+                               static_cast<int>(h.size()));
+    timeline_.assign(h.begin() + start, h.end());
+    rebuildMoveList();
+    boardWidget_->update();
+    boardWidget_->setLastMove(timeline_.empty() ? -1 : timeline_.back().nodeId);
+    updateControls();
+    syncPlaybackToEnd();
+}
+
+int MainWindow::playbackPlyCount() const {
+    return static_cast<int>(timeline_.size());
+}
+
+// Reconstruct the game at the cursor: a fresh game seeded with setupNodes_ (in
+// setup mode), then the first `ply` play moves replayed. game_ becomes that
+// position; the widget is repointed before any repaint to avoid a dangling game.
+void MainWindow::rebuildToPly(int ply) {
+    if (!graph_) {
+        return;
+    }
+    auto g = std::make_unique<Game>(*graph_);
+    g->setSetupMode(true);
+    for (int nodeId : setupNodes_) {
+        g->placeStone(nodeId);
+    }
+    g->setSetupMode(false);
+
+    const int k = std::min(ply, static_cast<int>(timeline_.size()));
+    for (int i = 0; i < k; ++i) {
+        const Move& m = timeline_[i];
+        if (m.nodeId >= 0) {
+            g->placeStone(m.nodeId);
+        } else {
+            g->pass();
+        }
+    }
+
+    game_ = std::move(g);
+    boardWidget_->setGame(game_.get());   // resets DVR/feedback; re-apply the DVR view
+    boardWidget_->setDvrRadius(dvrRadiusSpin_->value());
+    boardWidget_->setShowBlackDvr(blackDvrCheck_->isChecked());
+    boardWidget_->setShowWhiteDvr(whiteDvrCheck_->isChecked());
+    boardWidget_->setLastMove(k > 0 ? timeline_[k - 1].nodeId : -1);
+    boardWidget_->update();
+    updateControls();
 }
 
 // Copyright Ben Paul Wise. All Rights Reserved.

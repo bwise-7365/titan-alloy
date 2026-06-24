@@ -7,6 +7,7 @@
 // its repetition set from the restored position (a documented limitation).
 #include "MainWindow.h"
 
+#include "PlaybackBar.h"
 #include <QColor>
 #include <QFile>
 #include <QFileDialog>
@@ -244,21 +245,25 @@ bool MainWindow::loadFromFile(const QString& path) {
 
     stopSeed();
     search().cancelSearch();
-    moveLog_->clear();
-    for (const Latrunculi::Move& m : game_->history()) {
-        logMove(m);
-    }
+    // The loaded move list becomes the replay timeline; positions are rebuilt from a
+    // fresh game, so Load opens at ply 0 (empty board) ready to step forward.
+    timeline_.assign(game_->history().begin(), game_->history().end());
+    tlRows_ = rows;
+    tlCols_ = cols;
+    tlPerSide_ = perSide;
     suggestedLog_->clear();
     // Adopt the loaded colours (or the retained defaults if the file had none).
     colorA_     = loadedColorA;
     colorB_     = loadedColorB;
     background_ = loadedBg;
-    // Repoint the board at the loaded game before any colour rebuild (the make_unique
-    // above freed the previous game; see the note in MainWindow::newGame).
+    // Repoint the board at the (valid) final game before any colour rebuild, then
+    // step the replay back to the start.
     boardWidget_->setGame(game_.get());
     boardWidget_->setSideColors(colorA_, colorB_);
     boardWidget_->setBackgroundColor(background_);
-    updateControls();
+    rebuildMoveList();
+    playback_->setPlyCount(static_cast<int>(timeline_.size()));
+    gotoPly(0);
     return true;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

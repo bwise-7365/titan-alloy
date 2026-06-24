@@ -9,6 +9,7 @@
 #include <QString>
 #include <memory>
 #include <random>
+#include <vector>
 
 class QAction;
 class QComboBox;
@@ -52,13 +53,16 @@ private:
     AbsGame::Game* currentGame() override;
     void applyComputedMove(AbsGame::MoveId mv) override;
     bool extraSearchBlock() const override;  // true while the seed animation runs
+    int  playbackPlyCount() const override;  // length of the move timeline (M)
+    void rebuildToPly(int ply) override;     // reconstruct the game at ply (replay)
 
     void newGame(int rows, int columns, int perSide);
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
     void updateSwatches();               // recolour the side A/B tally squares
     void refreshBoard();                 // board update + controls + tallies
-    void logMove(const Latrunculi::Move& m);
+    void afterMoveApplied();             // common tail once a move is applied to game_
+    void rebuildMoveList();              // repopulate the clickable move list + bar
     QString notate(int square) const;    // chess-like, matching the board labels
     QString moveDescription(const Latrunculi::Move& m) const;
     QString describeMoveId(AbsGame::MoveId mv) const;  // for the suggestion text
@@ -80,7 +84,8 @@ private:
     QPushButton* stopBtn_         = nullptr;
     QTextEdit*   suggestedLog_    = nullptr;
     QPushButton* clearSuggestBtn_ = nullptr;
-    QTextEdit*   moveLog_         = nullptr;
+    guicommon::MoveListWidget* moveList_ = nullptr;  // clickable per-ply move log
+    guicommon::PlaybackBar*    playback_ = nullptr;  // replay transport bar
 
     // Board menu controls.
     QSpinBox* rowsSpin_    = nullptr;
@@ -101,6 +106,11 @@ private:
 
     std::unique_ptr<Latrunculi::Game> game_;
     QString currentFilePath_;
+
+    // Replay timeline: the full move list and the board params needed to rebuild
+    // any prefix of it (game_ is always the position at the playback cursor).
+    std::vector<Latrunculi::Move> timeline_;
+    int tlRows_ = 0, tlCols_ = 0, tlPerSide_ = 0;
 
     // Placement-seeding animation (analogous to IrrGo's stone setup): places a
     // percentage of each side's discs at random no-capture squares, one at a time.

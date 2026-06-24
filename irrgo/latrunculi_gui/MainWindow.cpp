@@ -1,6 +1,8 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "MainWindow.h"
 
+#include "MoveListWidget.h"
+#include "PlaybackBar.h"
 #include "board_params.h"    // BoardParams, stones_per_side, kMin/MaxRowsCols
 #include "irregular_grid.h"  // square_to_notation
 #include "menu_helpers.h"
@@ -22,11 +24,13 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QStringList>
 #include <QTextEdit>
 #include <QTimer>
 //#include <QVBoxLayout>
 #include <QWidget>
 #include <QWidgetAction>
+#include <algorithm>
 #include <iterator>
 //#include <stdexcept>
 
@@ -157,15 +161,12 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     });
 
     pv->addSpacing(8);
+    playback_ = new guicommon::PlaybackBar(panel);
+    pv->addWidget(playback_);
     pv->addWidget(new QLabel("Move log:", panel));
-    moveLog_ = new QTextEdit(panel);
-    moveLog_->setReadOnly(true);
-    {
-        QFont font("Monospace");
-        font.setStyleHint(QFont::TypeWriter);
-        moveLog_->setFont(font);
-    }
-    pv->addWidget(moveLog_, 1);
+    moveList_ = new guicommon::MoveListWidget(panel);
+    pv->addWidget(moveList_, 1);
+    registerPlayback(playback_, moveList_);
 
     buildMenuBar();
     resize(1040, 720);
@@ -332,7 +333,11 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     }
     search().cancelSearch();
     currentFilePath_.clear();
-    moveLog_->clear();
+    tlRows_ = rows;
+    tlCols_ = columns;
+    tlPerSide_ = perSide;
+    timeline_.clear();
+    rebuildMoveList();
     suggestedLog_->clear();
     // Repoint the board at the new game BEFORE any colour rebuild. The make_unique
     // above freed the previous game, leaving the widget's observer pointer dangling
@@ -342,6 +347,7 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     boardWidget_->setSideColors(colorA_, colorB_);
     boardWidget_->setBackgroundColor(background_);
     updateControls();
+    syncPlaybackToEnd();  // empty timeline -> the bar shows 0 / 0
 }
 
 void MainWindow::onNewGame() {
@@ -400,14 +406,11 @@ void MainWindow::onSeedTick() {
     }
     const AbsGame::MoveId mv = moves[seedRng_() % moves.size()];
     game_->applyMove(mv);
-    if (!game_->history().empty()) {
-        logMove(game_->history().back());
-    }
     ++seedPlaced_;
     if (seedPlaced_ >= seedTarget_) {
         stopSeed();
     }
-    refreshBoard();
+    afterMoveApplied();
 }
 
 void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
@@ -418,12 +421,7 @@ void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
         return;
     }
     game_->applyMove(mv);
-    if (!game_->history().empty()) {
-        logMove(game_->history().back());
-    }
-    suggestedLog_->clear();
-    refreshBoard();
-    boardWidget_->setLastMove(game_->history().back().to);  // last-move dot
+    afterMoveApplied();
 }
 
 // ── GameMainWindow hooks ──────────────────────────────────────────────────────
@@ -437,12 +435,7 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
         return;
     }
     game_->applyMove(mv);
-    if (!game_->history().empty()) {
-        logMove(game_->history().back());
-    }
-    suggestedLog_->clear();
-    refreshBoard();
-    boardWidget_->setLastMove(game_->history().back().to);  // last-move dot
+    afterMoveApplied();
 }
 
 // ── AI play / suggest ─────────────────────────────────────────────────────────
@@ -632,7 +625,50 @@ QString MainWindow::describeMoveId(AbsGame::MoveId mv) const {
     return s;
 }
 
-void MainWindow::logMove(const Latrunculi::Move& m) {
-    moveLog_->append(moveDescription(m));
+void MainWindow::rebuildMoveList() {
+    QStringList rows;
+    rows.reserve(static_cast<int>(timeline_.size()));
+    for (const Latrunculi::Move& m : timeline_) {
+        rows << moveDescription(m);
+    }
+    moveList_->setMoves(rows);
+}
+
+void MainWindow::afterMoveApplied() {
+    // game_ now holds the post-move position; adopt it as the (possibly truncated)
+    // timeline, then refresh the move list, board, last-move dot and playback bar.
+    timeline_.assign(game_->history().begin(), game_->history().end());
+    rebuildMoveList();
+    suggestedLog_->clear();
+    refreshBoard();
+    if (!timeline_.empty()) {
+        boardWidget_->setLastMove(timeline_.back().to);
+    }
+    syncPlaybackToEnd();
+}
+
+int MainWindow::playbackPlyCount() const {
+    return static_cast<int>(timeline_.size());
+}
+
+void MainWindow::rebuildToPly(int ply) {
+    if (tlRows_ <= 0) {
+        return;
+    }
+    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_);
+    const int k = std::min(ply, static_cast<int>(timeline_.size()));
+    for (int i = 0; i < k; ++i) {
+        const Latrunculi::Move& m = timeline_[static_cast<std::size_t>(i)];
+        const AbsGame::MoveId mid =
+            (m.from < 0) ? g->placementMove(m.to)
+                         : g->movementMove(m.from, m.to, m.removed);
+        if (!g->applyMove(mid)) {
+            break;  // inconsistent saved record; stop the replay here
+        }
+    }
+    game_ = std::move(g);                 // frees the old game...
+    boardWidget_->setGame(game_.get());   // ...so repoint before any colour rebuild
+    boardWidget_->setLastMove(k > 0 ? timeline_[static_cast<std::size_t>(k - 1)].to : -1);
+    updateControls();
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

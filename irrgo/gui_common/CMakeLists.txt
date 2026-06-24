@@ -15,6 +15,8 @@ add_library(gui_common STATIC
     SearchController.h  SearchController.cpp
     GameMainWindow.h    GameMainWindow.cpp
     BoardWidgetBase.h   BoardWidgetBase.cpp
+    PlaybackBar.h       PlaybackBar.cpp
+    MoveListWidget.h    MoveListWidget.cpp
 )
 target_include_directories(gui_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(gui_common PUBLIC cxx_std_20)

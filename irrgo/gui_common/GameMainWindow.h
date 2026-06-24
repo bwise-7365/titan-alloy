@@ -7,6 +7,9 @@
 
 namespace guicommon {
 
+class PlaybackBar;
+class MoveListWidget;
+
 // Base for the game main windows (irrgo, mancala, latrunculi). It owns the
 // SearchController and provides the generic Play orchestration (the auto-play
 // turn loop) that was previously copy-pasted into each window. Each derived
@@ -33,8 +36,24 @@ protected:
     // itself after each completed move (identical to the old per-window loop).
     void startPlay(SearchController::Params params, int turns);
 
+    // ── Playback / review (opt-in) ───────────────────────────────────────────
+    // A game that supports Load-replay creates a PlaybackBar + MoveListWidget,
+    // registers them here, fills the list via the widget, and overrides the two
+    // hooks below. Games that don't (e.g. mancala) leave all of this untouched.
+    void registerPlayback(PlaybackBar* bar, MoveListWidget* list);
+    void syncPlaybackToEnd();          // after a move/load: cursor = M, refresh UI
+    int  playbackCursor() const { return reviewCursor_; }
+
+    virtual int  playbackPlyCount() const { return 0; }  // length of the timeline (M)
+    virtual void rebuildToPly(int ply) { (void)ply; }    // reconstruct the game at ply
+
+    void gotoPly(int ply);             // reconstruct + sync the bar/list to `ply`
+
 private:
     SearchController* search_ = nullptr;
+    PlaybackBar*      playbackBar_  = nullptr;
+    MoveListWidget*   moveListView_ = nullptr;
+    int               reviewCursor_ = 0;
 };
 
 }  // namespace guicommon

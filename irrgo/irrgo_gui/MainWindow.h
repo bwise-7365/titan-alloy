@@ -45,14 +45,19 @@ private slots:
 private:
     void buildMenuBar();
     void updateControls() override;
-    void logLastMove();
     void stopStoneSetup();
     void clearSuggestion();
+    void captureSeed();          // record the seed stones as the replay's ply-0 position
+    void afterPlayMove();        // common tail once a play move is applied to game_
+    void rebuildMoveList();      // repopulate the clickable list from timeline_
+    QString moveText(const IrrGo::Move& m) const;  // one play move -> a log row
 
     // guicommon::GameMainWindow hooks.
     AbsGame::Game* currentGame() override;
     void applyComputedMove(AbsGame::MoveId mv) override;
     bool extraSearchBlock() const override;   // true while the stone setup animates
+    int  playbackPlyCount() const override;   // number of play moves (M)
+    void rebuildToPly(int ply) override;      // reconstruct seed + first `ply` play moves
 
     void saveToFile(const QString& path);
 
@@ -70,7 +75,8 @@ private:
     QCheckBox*    whiteDvrCheck_      = nullptr;
     QPushButton*  labelsBtn_           = nullptr;
     QPushButton*  neighborhoodBtn_    = nullptr;
-    QTextEdit*    moveLog_;
+    guicommon::MoveListWidget* moveList_ = nullptr;  // clickable per-ply move log
+    guicommon::PlaybackBar*    playback_ = nullptr;  // replay transport bar
 
     // Board menu embedded controls
     QComboBox*    sizeCombo_;
@@ -100,6 +106,11 @@ private:
     std::unique_ptr<IrrGo::Graph>  graph_;
     std::unique_ptr<IrrGo::Game>   game_;
     QString currentFilePath_;
+
+    // Replay timeline: the play moves only (the seed is the fixed ply-0 position);
+    // game_ is always the position at the playback cursor.
+    std::vector<IrrGo::Move> timeline_;
+    std::vector<int>         setupNodes_;  // seed stone node ids = initial position
 
     // Setup animation
     QTimer*          stoneTimer_;

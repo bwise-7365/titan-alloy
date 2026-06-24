@@ -1,6 +1,11 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "GameMainWindow.h"
 
+#include "MoveListWidget.h"
+#include "PlaybackBar.h"
+
+#include <algorithm>
+
 namespace guicommon {
 
 GameMainWindow::GameMainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -26,6 +31,31 @@ void GameMainWindow::startPlay(SearchController::Params params, int turns) {
             search().endTurnRun();
         }
     });
+}
+
+// ── Playback / review ─────────────────────────────────────────────────────────
+
+void GameMainWindow::registerPlayback(PlaybackBar* bar, MoveListWidget* list) {
+    playbackBar_  = bar;
+    moveListView_ = list;
+    connect(bar,  &PlaybackBar::seek,          this, &GameMainWindow::gotoPly);
+    connect(list, &MoveListWidget::plyClicked, this, &GameMainWindow::gotoPly);
+}
+
+void GameMainWindow::gotoPly(int ply) {
+    search().cancelSearch();    // navigating away abandons any in-flight search
+    const int k = std::clamp(ply, 0, playbackPlyCount());
+    rebuildToPly(k);            // derived reconstructs the game at ply k + refreshes
+    reviewCursor_ = k;
+    if (playbackBar_)  { playbackBar_->setCursor(k); }
+    if (moveListView_) { moveListView_->setCurrentPly(k); }
+}
+
+void GameMainWindow::syncPlaybackToEnd() {
+    const int m = playbackPlyCount();
+    reviewCursor_ = m;
+    if (playbackBar_)  { playbackBar_->setPlyCount(m); playbackBar_->setCursor(m); }
+    if (moveListView_) { moveListView_->setCurrentPly(m); }
 }
 
 }  // namespace guicommon
