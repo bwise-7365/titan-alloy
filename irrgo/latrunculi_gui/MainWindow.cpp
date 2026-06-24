@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     bannerLabel_->setAlignment(Qt::AlignCenter);
     {
         QFont f = bannerLabel_->font();
-        f.setPointSize(24);
+        f.setPointSize(28);
         f.setBold(true);
         bannerLabel_->setFont(f);
     }
