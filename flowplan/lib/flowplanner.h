@@ -37,9 +37,13 @@ using std::chrono::system_clock;
 time_point<system_clock>  displayProgramStart(string appName = "", string appVersion = "");
 void displayProgramEnd(time_point<system_clock> st);
 
+uint64_t msRandom(); // microseconds since the Unix Epoch, NOT scrambled
+
+constexpr uint64_t dSeed = 0xFE69A87450C4301C; // still my favorite
+
 class FlowPlanner {
     public:
-    explicit FlowPlanner(int ns, int nd);
+    explicit FlowPlanner(int ns, int nd, uint64_t s);
     ~FlowPlanner();
     void run();
     double flowCost();
@@ -51,6 +55,7 @@ class FlowPlanner {
 
     int nSrc;
     int nDst;
+    uint64_t seed;
     std::mt19937 prng;
 
     vector<double>  src; // src[i] is the amount available from source i
@@ -62,6 +67,7 @@ class FlowPlanner {
 
     void showProblem();
     void showPlan();
+    void checkPlan();
 
     protected:
 

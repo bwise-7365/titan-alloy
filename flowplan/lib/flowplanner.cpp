@@ -8,10 +8,10 @@
 #include <iostream>
 #include <random>
 
-FlowPlanner::FlowPlanner(int ns, int nd) {
+FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
     nSrc = ns;
     nDst = nd;
-
+    seed = s;
     initGM();
 }
 
@@ -22,7 +22,7 @@ FlowPlanner::~FlowPlanner() {
 
 void FlowPlanner::initGM() {
 
-    prng.seed(1173);
+    prng.seed(seed);
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
     double flowT = 5000.0;
@@ -82,6 +82,9 @@ double FlowPlanner::flowCost() {
 }
 
 double FlowPlanner::oneStep() {
+
+    checkPlan();
+
     double fc0 = flowCost();
     double bestDecline = - minDecline * fc0;
     bool realDecline = false;
@@ -98,13 +101,17 @@ double FlowPlanner::oneStep() {
                         realDecline = true;
                         flow[i][j] = flow[i][j] + x;
                         flow[i][n] = flow[i][n] - x;
-                        flow[m][n] = flow[m][j] + x;
+                        flow[m][n] = flow[m][n] + x;
                         flow[m][j] = flow[m][j] - x;
                     }
                 }
             }
         }
     }
+
+    checkPlan();
+
+
     double actualDecline = 0.0;
     if (realDecline) {
         actualDecline = bestDecline;
@@ -142,13 +149,13 @@ void FlowPlanner::showProblem() {
 
     printf("Sources\n");
     for (int i = 0; i < nSrc; i++) {
-        printf("Source %3d capacity %6.2f \n", i, src[i]);
+        printf("Source %3d capacity %8.2f \n", i, src[i]);
     }
     cout << endl;
 
     printf("Destinations\n");
     for (int i = 0; i < nDst; i++) {
-        printf("Destination %3d capacity %6.2f \n", i, dst[i]);
+        printf("Destination %3d capacity %8.2f \n", i, dst[i]);
     }
     cout << endl;
 
@@ -191,4 +198,37 @@ void FlowPlanner::showPlan() {
     return;
 }
 
+void FlowPlanner::checkPlan() {
+    double fTotal = 0.0;
+    for (int i = 0; i < nSrc; i++) {
+        for (int j = 0; j < nDst; j++) {
+            fTotal += flow[i][j];
+        }
+    }
+
+    assert (0.0 < fTotal); // must not be zero
+    double tol = fTotal * 1.0E-6;
+
+    double sSum = 0.0;
+    for (int i = 0; i < nSrc; i++) {
+        sSum += src[i];
+    }
+    //printf("%.2f  %.2f \n", sSum, fTotal);
+
+    double dSum = 0.0;
+    for (int j = 0; j < nDst; j++) {
+        dSum += dst[j];
+    }
+    //printf("%.2f  %.2f \n", dSum, fTotal);
+
+    //cout << flush;
+
+    assert(fabs(sSum - fTotal) < tol);
+    assert(fabs(dSum - fTotal) < tol);
+
+    vector<double>  s2; // src[i] is the amount available from source i
+    vector<double>  d2;
+
+    return;
+}
 // Copyright Ben Paul Wise. All Rights Reserved.
