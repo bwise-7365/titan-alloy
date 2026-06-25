@@ -31,7 +31,10 @@ namespace {
 // Zero-padded (>=2 digit) frame file name, e.g. pos_00.png, pos_07.png, pos_42.png.
 std::string frame_name(int n) {
     std::string num = std::to_string(n);
-    if (num.size() < 2) {
+    if (1 == num.size()) {
+        num = "00" + num;
+    }
+    if (2 == num.size()) {
         num = "0" + num;
     }
     return "pos_" + num + ".png";
@@ -135,7 +138,7 @@ int main(int argc, char** argv) {
     const int rows = 6;
     const int columns = 6;
     const int perSide = 9;               // 18 discs on 36 squares, placed apart
-    const int searchDepth = 4;
+    const int searchDepth = 6;
     const int searchMs = 1000;
 
     Game game(rows, columns, perSide);
