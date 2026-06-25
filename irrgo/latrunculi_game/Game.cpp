@@ -119,9 +119,11 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
         if (totalDiscs(0) <= 1) {
             gameOver_ = true;
             winner_ = 1;
+            winReason_ = WinReason::Reduction;
         } else if (totalDiscs(1) <= 1) {
             gameOver_ = true;
             winner_ = 0;
+            winReason_ = WinReason::Reduction;
         } else {
             checkImmobilizationTerminal();
         }
@@ -551,6 +553,7 @@ void Game::checkImmobilizationTerminal() {
     if (enumerateLegalMoves().empty()) {
         gameOver_ = true;
         winner_ = 1 - current_;  // the player to move has no legal move and loses
+        winReason_ = WinReason::Immobilization;
     }
 }
 
@@ -617,6 +620,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     if (totalDiscs(opp) <= 1) {
         gameOver_ = true;
         winner_ = current_;
+        winReason_ = WinReason::Reduction;
     }
 
     current_ = 1 - current_;
@@ -631,6 +635,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
         const double freeP1 = freeDiscs(1) + komi;
         gameOver_ = true;
         winner_ = (freeP1 > freeP0) ? 1 : 0;
+        winReason_ = WinReason::QuietGame;
     }
     return true;
 }
@@ -648,21 +653,23 @@ double Game::effectiveMaterial(int player) const {
     return material;
 }
 
+double Game::winnerScore() const {
+    if (winner_ < 0) {
+        throw std::logic_error("Latrunculi: winnerScore() called with no winner");
+    }
+    return materialScore(effectiveMaterial(winner_), effectiveMaterial(1 - winner_));
+}
+
 double Game::staticEval() const {
     const int me = current_;
     const int opp = 1 - me;
 
     // A decisive result (reduction, immobilisation, or quiet-game termination) dominates
-    // the leaf range. Komi rides along inside effectiveMaterial. Draws no longer exist,
-    // so a terminal position always names a winner; surface the impossible state rather
-    // than papering over it with a fallback score.
+    // the leaf range. Komi rides along inside effectiveMaterial (winnerScore). Draws no
+    // longer exist, so a terminal position always names a winner; winnerScore() surfaces
+    // the impossible state rather than papering over it with a fallback score.
     if (gameOver_) {
-        if (winner_ < 0) {
-            throw std::logic_error("Latrunculi: terminal position has no winner");
-        }
-        const double s = materialScore(effectiveMaterial(winner_),
-                                       effectiveMaterial(1 - winner_));
-        const double terminal = kWinBase + kWinBase * s;
+        const double terminal = kWinBase + kWinBase * winnerScore();
         return (winner_ == me) ? terminal : -terminal;
     }
 

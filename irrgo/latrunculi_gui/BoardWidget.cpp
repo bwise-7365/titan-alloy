@@ -99,9 +99,12 @@ void BoardWidget::rebuild() {
             (c == Latrunculi::Cell::P0Bound || c == Latrunculi::Cell::P1Bound);
         const std::string fill =
             (owner == 0) ? colorA_.name().toStdString() : colorB_.name().toStdString();
-        pieces.push_back(gb::PlacedPiece{s, fill, bound});
+        pieces.push_back(gb::PlacedPiece{s, fill, bound, owner});
     }
 
+    // Immobilisation "X" is drawn in the opponent's color (shows who immobilised it).
+    look_.mark_color_p0 = colorB_.name().toStdString();  // X on an A disc = B's color
+    look_.mark_color_p1 = colorA_.name().toStdString();  // X on a  B disc = A's color
     const std::string svg = gb::generate_position_svg(look_, pieces, render_, style_);
     QSvgRenderer renderer(QByteArray::fromStdString(svg));
     const QSize svgSize = renderer.defaultSize();

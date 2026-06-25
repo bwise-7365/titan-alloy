@@ -42,7 +42,8 @@ void apply_draw_defaults(BoardSpec& board) {
     board.outline = kBlackInk;
     board.outline_width_units = kOutlineWidthUnits;
     board.outer_margin_units = kOuterMarginUnits;
-    board.mark_color = kBlackInk;
+    board.mark_color_p0 = kBlackInk;
+    board.mark_color_p1 = kBlackInk;
     board.mark_length_fraction = kMarkLengthFraction;
     board.mark_stroke_width_units = kMarkStrokeWidthUnits;
 }

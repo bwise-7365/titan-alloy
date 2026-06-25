@@ -3,12 +3,23 @@
 
 #include <QApplication>
 #include <QFontDatabase>
+#include <QIcon>
 #include <QString>
 #include <QStringList>
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
     app.setApplicationName("Latrunculi");
+    // Live window/title-bar/taskbar icon, built from all sizes so each context gets a
+    // crisp native image (the executable's File-Explorer/desktop icon is the embedded
+    // Win32 resource instead; see latrunculi_gui/app_icon.rc.in). Bundled in the Qt
+    // resource so it is found without a deployed file alongside the binary.
+    QIcon appIcon;
+    appIcon.addFile(":/icons/latrunculi16.ico");
+    appIcon.addFile(":/icons/latrunculi32.ico");
+    appIcon.addFile(":/icons/latrunculi48.ico");
+    appIcon.addFile(":/icons/latrunculi256.ico");
+    app.setWindowIcon(appIcon);
 
     // Bundled OFL banner font (a Trajan-style Roman face). A missing or unreadable
     // font is surfaced as a warning rather than silently substituted; the banner

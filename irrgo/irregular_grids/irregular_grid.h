@@ -155,8 +155,12 @@ struct BoardSpec {
     // gap to the inner border is then margin_units - outer_margin_units, equal on
     // all four sides.
     double outer_margin_units = kOuterMarginUnits;
-    // The "X" stamped on every immobilised disc.
-    std::string mark_color = kBlackInk;
+    // The "X" stamped on an immobilised disc is drawn in the OPPONENT's color, to
+    // show which side immobilised it: mark_color_p0 marks player-0 discs (set it to
+    // side B's color), mark_color_p1 marks player-1 discs (side A's color).
+    // generate_board_svg has no sides and uses mark_color_p0 for every mark.
+    std::string mark_color_p0 = kBlackInk;
+    std::string mark_color_p1 = kBlackInk;
     double mark_length_fraction = kMarkLengthFraction;       // fraction of disc diameter
     double mark_stroke_width_units = kMarkStrokeWidthUnits;  // X line weight, square-width units
 };
@@ -171,12 +175,14 @@ std::string generate_board_svg(const BoardSpec& board,
                                const RenderConfig& config = {},
                                const SvgStyle& style = {});
 
-// One disc placed at an explicit square (square = row * columns + column),
-// with its own fill color and an optional immobilised "X" marker.
+// One disc placed at an explicit square (square = row * columns + column), with its
+// own fill color, an optional immobilised "X" marker, and the owning side (0 or 1).
+// `owner` selects which of BoardSpec's two mark colors stamps the "X".
 struct PlacedPiece {
     int square;
     std::string fill;
     bool immobilized = false;
+    int owner = 0;  // 0 or 1; picks mark_color_p0 / mark_color_p1 for the "X"
 };
 
 // Renders an EXPLICIT position: the grid/frame/labels from `board`, plus a disc

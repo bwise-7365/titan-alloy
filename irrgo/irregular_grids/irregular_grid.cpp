@@ -455,24 +455,34 @@ void emit_background_layer(std::ostream& os, const GridGeometry& grid, int rows,
     os << "  </g>\n";  // close Background layer
 }
 
-// Emits the Markers layer (top): the prebuilt "X" template stamped at each
-// immobilised disc's centre. The layer is always emitted (possibly empty) so the
-// document keeps a consistent three-layer structure. Shared by both renderers.
+// Emits one stroke group: the prebuilt "X" template stamped at each centre in a
+// single color. The caller owns the enclosing Markers layer. Empty centres emit
+// nothing, so several groups (one per mark color) can share one layer.
+void emit_mark_group(std::ostream& os, const std::vector<Point>& centers,
+                     const std::vector<Polyline>& x_template, double scale,
+                     double offset, std::string_view mark_color, double x_stroke) {
+    if (centers.empty()) {
+        return;
+    }
+    emit_open_stroke_group(os, mark_color, x_stroke);
+    for (const Point& c : centers) {
+        for (const Polyline& line : x_template) {  // template centre -> disc centre
+            os << "    <polyline points=\"";
+            emit_points(os, line.points, scale, offset, c.x, c.y);
+            os << "\"/>\n";
+        }
+    }
+    os << "  </g>\n";
+}
+
+// Emits the Markers layer (top) as a single colored group. The layer is always
+// emitted (possibly empty) so the document keeps a consistent three-layer
+// structure. Used by generate_board_svg, which has no per-side mark colors.
 void emit_markers_layer(std::ostream& os, const std::vector<Point>& marked_centers,
                         const std::vector<Polyline>& x_template, double scale,
                         double offset, std::string_view mark_color, double x_stroke) {
     emit_open_layer(os, "Markers", "layer-markers");
-    if (!marked_centers.empty()) {
-        emit_open_stroke_group(os, mark_color, x_stroke);
-        for (const Point& c : marked_centers) {
-            for (const Polyline& line : x_template) {  // template centre -> disc centre
-                os << "    <polyline points=\"";
-                emit_points(os, line.points, scale, offset, c.x, c.y);
-                os << "\"/>\n";
-            }
-        }
-        os << "  </g>\n";
-    }
+    emit_mark_group(os, marked_centers, x_template, scale, offset, mark_color, x_stroke);
     os << "  </g>\n";  // close Markers layer
 }
 
@@ -717,7 +727,7 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
                                       config.points_per_edge, render_engine);
     }
     emit_markers_layer(os, marked_centers, x_template, scale, offset,
-                       board.mark_color, x_stroke);
+                       board.mark_color_p0, x_stroke);
 
     os << "</svg>\n";
     return os.str();
@@ -763,10 +773,17 @@ std::string generate_position_svg(const BoardSpec& board,
     // Each disc's noise is seeded by the square index (mixed with config.seed), so
     // a given square's hand-scratched wobble is stable as pieces move across renders.
     emit_open_layer(os, "Pieces", "layer-pieces");
-    std::vector<Point> marked_centers;
+    // Immobilised centres split by owner: a player-0 disc's "X" is drawn in
+    // mark_color_p0, a player-1 disc's in mark_color_p1 (each set to the opponent's
+    // color by the caller, so the mark shows who immobilised the disc).
+    std::vector<Point> marked_p0;
+    std::vector<Point> marked_p1;
     for (const PlacedPiece& piece : pieces) {
         if (piece.square < 0 || piece.square >= square_count) {
             throw std::invalid_argument("PlacedPiece.square out of range");
+        }
+        if (piece.owner != 0 && piece.owner != 1) {
+            throw std::invalid_argument("PlacedPiece.owner must be 0 or 1");
         }
         const int column = piece.square % board.grid.columns;
         const int row = piece.square / board.grid.columns;
@@ -781,22 +798,25 @@ std::string generate_position_svg(const BoardSpec& board,
         os << "\"/>\n";
 
         if (piece.immobilized) {
-            marked_centers.push_back(center);
+            (piece.owner == 0 ? marked_p0 : marked_p1).push_back(center);
         }
     }
     os << "  </g>\n";  // close Pieces layer
 
-    // ── Markers layer: the "X" on every immobilised piece ─────────────────────
+    // ── Markers layer: the "X" on every immobilised piece, in the opponent's color
+    // (one stroke group per side, sharing the single layer and X template) ────────
     std::vector<Polyline> x_template;
     const double x_stroke = board.mark_stroke_width_units * scale;
-    if (!marked_centers.empty()) {
+    if (!marked_p0.empty() || !marked_p1.empty()) {
         const double x_length = board.mark_length_fraction * 2.0 * board.disc.radius;
         std::mt19937_64 x_engine(config.seed);
         x_template = build_x_template(x_length, board.grid.roughness, board.grid.smoothing,
                                       config.points_per_edge, x_engine);
     }
-    emit_markers_layer(os, marked_centers, x_template, scale, offset,
-                       board.mark_color, x_stroke);
+    emit_open_layer(os, "Markers", "layer-markers");
+    emit_mark_group(os, marked_p0, x_template, scale, offset, board.mark_color_p0, x_stroke);
+    emit_mark_group(os, marked_p1, x_template, scale, offset, board.mark_color_p1, x_stroke);
+    os << "  </g>\n";  // close Markers layer
 
     os << "</svg>\n";
     return os.str();

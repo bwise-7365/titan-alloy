@@ -66,7 +66,7 @@ void write_position_png(const Latrunculi::Game& game, const gb::BoardSpec& look,
         const Latrunculi::Cell c = game.cellAt(s);
         const bool bound = (c == Latrunculi::Cell::P0Bound || c == Latrunculi::Cell::P1Bound);
         pieces.push_back(
-            gb::PlacedPiece{s, (owner == 0) ? colors.side_a : colors.side_b, bound});
+            gb::PlacedPiece{s, (owner == 0) ? colors.side_a : colors.side_b, bound, owner});
     }
     render_svg_to_png(gb::generate_position_svg(look, pieces, config, style), frame_name(frame));
 }
@@ -154,6 +154,9 @@ int main(int argc, char** argv) {
     const gb::RenderConfig renderCfg = gb::default_render_config();
     const gb::SvgStyle svgStyle = gb::default_svg_style();
     const gb::PieceColors pieceColors = gb::piece_colors();
+    // Immobilisation "X" is drawn in the opponent's color (shows who immobilised it).
+    look.mark_color_p0 = pieceColors.side_b;  // X on an A (player 0) disc = B's color
+    look.mark_color_p1 = pieceColors.side_a;  // X on a  B (player 1) disc = A's color
     write_position_png(game, look, renderCfg, svgStyle, pieceColors, 0);  // empty board
 
     bool announcedMovement = false;

@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     auto* panel = new QWidget(row);
     // The right column must be fairly wide because
     // a move might have several leaps and a capture.
-    panel->setFixedWidth(300);  // right column width
+    panel->setFixedWidth(350);  // right column width
     auto* pv = new QVBoxLayout(panel);
     pv->setAlignment(Qt::AlignTop);
     rowH->addWidget(panel);
@@ -169,7 +169,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     registerPlayback(playback_, moveList_);
 
     buildMenuBar();
-    resize(1125, 760);
+    resize(1430, 990); // 1175x760 looks nice, 1380x992 shows 40 moves
 
     const int perSide = gb::stones_per_side(gb::BoardParams{6, 8});
     newGame(6, 8, perSide);
@@ -627,11 +627,42 @@ QString MainWindow::describeMoveId(AbsGame::MoveId mv) const {
 
 void MainWindow::rebuildMoveList() {
     QStringList rows;
-    rows.reserve(static_cast<int>(timeline_.size()));
+    rows.reserve(static_cast<int>(timeline_.size()) + 1);
     for (const Latrunculi::Move& m : timeline_) {
         rows << moveDescription(m);
     }
+    // A final, non-ply row announcing the result. Playback stays correct: gotoPly
+    // clamps to the move count and setCurrentPly never highlights this extra row.
+    if (game_->isOver()) {
+        rows << gameOverSummary();
+    }
     moveList_->setMoves(rows);
+}
+
+QString MainWindow::gameOverSummary() const {
+    const QString who = (game_->winner() == 0) ? "A" : "B";
+    QString how;
+    switch (game_->winReason()) {
+        case Latrunculi::WinReason::Reduction: {
+            how = "reduction";
+            break;
+        }
+        case Latrunculi::WinReason::Immobilization: {
+            how = "immobilization";
+            break;
+        }
+        case Latrunculi::WinReason::QuietGame: {
+            how = "the quiet-game rule";
+            break;
+        }
+        case Latrunculi::WinReason::None: {
+            how = "an unknown rule";  // cannot happen once isOver(); flag it if it does
+            break;
+        }
+    }
+    // s = 3M/(3M+2N): the winner's terminal score (the loser scores -s).
+    return QString("Game over. %1 won by %2 (s = %3)")
+        .arg(who, how, QString::number(game_->winnerScore(), 'f', 2));
 }
 
 void MainWindow::afterMoveApplied() {

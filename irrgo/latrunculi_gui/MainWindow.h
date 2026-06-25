@@ -65,6 +65,7 @@ private:
     void rebuildMoveList();              // repopulate the clickable move list + bar
     QString notate(int square) const;    // chess-like, matching the board labels
     QString moveDescription(const Latrunculi::Move& m) const;
+    QString gameOverSummary() const;     // "Game over. A won by +2.5" (game_ must be over)
     QString describeMoveId(AbsGame::MoveId mv) const;  // for the suggestion text
 
     // Save / load (MainWindow_save.cpp).

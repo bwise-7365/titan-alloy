@@ -21,6 +21,39 @@ qt_add_executable(latrunculi_gui
     latrunculi.qrc
 )
 
+# Windows: build a multi-resolution latrunculi.ico from the per-size icons and embed
+# it as the executable's icon (shown by File Explorer, the desktop and the taskbar).
+# tools/merge-ico.ps1 packs the sizes (no external tools); configure_file bakes the
+# merged icon's absolute path into the generated .rc so rc.exe resolves it regardless
+# of its working directory; with MSVC, CMake compiles and links the .rc automatically.
+if(WIN32)
+    set(_lat_icon_srcs
+        "${CMAKE_SOURCE_DIR}/images/latrunculi16.ico"
+        "${CMAKE_SOURCE_DIR}/images/latrunculi32.ico"
+        "${CMAKE_SOURCE_DIR}/images/latrunculi48.ico"
+        "${CMAKE_SOURCE_DIR}/images/latrunculi256.ico")
+    set(_lat_icon "${CMAKE_CURRENT_BINARY_DIR}/latrunculi.ico")
+    # Pass the inputs as one comma-joined argument: powershell -File binds a single
+    # token to the script's -In string, which the script splits on commas.
+    string(REPLACE ";" "," _lat_icon_srcs_csv "${_lat_icon_srcs}")
+    add_custom_command(
+        OUTPUT  "${_lat_icon}"
+        COMMAND powershell -NoProfile -ExecutionPolicy Bypass
+                -File "${CMAKE_SOURCE_DIR}/tools/merge-ico.ps1"
+                -Out "${_lat_icon}" -In "${_lat_icon_srcs_csv}"
+        DEPENDS ${_lat_icon_srcs} "${CMAKE_SOURCE_DIR}/tools/merge-ico.ps1"
+        COMMENT "Merging per-size icons into latrunculi.ico"
+        VERBATIM)
+    # Build the icon before the GUI target so the merged .ico exists when rc.exe runs.
+    add_custom_target(latrunculi_icon DEPENDS "${_lat_icon}")
+    add_dependencies(latrunculi_gui latrunculi_icon)
+
+    set(LATRUNCULI_ICON_PATH "${_lat_icon}")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/app_icon.rc.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc" @ONLY)
+    target_sources(latrunculi_gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc")
+endif()
+
 # Comment this out to get a console window for the qWarning/stderr output.
 #set_target_properties(latrunculi_gui PROPERTIES WIN32_EXECUTABLE TRUE)
 

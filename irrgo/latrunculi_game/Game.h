@@ -24,6 +24,12 @@ enum class Cell : std::uint8_t { Empty, P0Free, P0Bound, P1Free, P1Bound };
 
 enum class Phase { Placement, Movement };
 
+// How a finished game ended (None while the game is still in progress). Reduction =
+// the loser was cut to a single disc; Immobilization = the side to move had no legal
+// move; QuietGame = the Pacific no-capture limit was reached and the winner was
+// decided on material.
+enum class WinReason { None, Reduction, Immobilization, QuietGame };
+
 // Weight of an immobilised (Bound) disc relative to a Free disc in the search's
 // material evaluation: a captured-but-not-yet-removed disc counts as this fraction
 // of a full piece, so immobilising an opponent is rewarded as partial progress.
@@ -92,6 +98,10 @@ public:
     int perSide() const { return perSide_; }
     bool isOver() const { return gameOver_; }
     int winner() const { return winner_; }  // valid only when isOver()
+    WinReason winReason() const { return winReason_; }  // how it ended; valid when isOver()
+    // The winner's terminal score s = 3M/(3M+2N) (the loser scores -s). Valid only
+    // when isOver() with a winner; throws otherwise.
+    double winnerScore() const;
     int totalDiscs(int player) const;
     int freeDiscs(int player) const;
     int boundDiscs(int player) const;
@@ -116,6 +126,7 @@ private:
     int pacificPlies_ = 0;  // consecutive movement plies with no capture or removal
     bool gameOver_ = false;
     int winner_ = -1;
+    WinReason winReason_ = WinReason::None;
     std::vector<Move> moveHistory_;
     // Super-ko: hashes of every end-of-turn board position seen this game. A move
     // that would recreate one is illegal. The board only (not the side to move) is
