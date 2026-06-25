@@ -154,7 +154,7 @@ int BoardWidget::cellAt(const QPointF& pos) const {
 
 void BoardWidget::paintEvent(QPaintEvent*) {
     QPainter p(this);
-    p.fillRect(rect(), QColor("#33332f"));  // dark surround behind the board
+    p.fillRect(rect(), latgui::kBoardSurround);  // dark surround behind the board
     if (cache_.isNull()) {
         return;
     }
@@ -162,7 +162,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     auto ringAt = [&](int square, const QColor& col, double widthPx) {
         const QPointF c = squareCenter(square);
-        const double r = 0.46 * scale_;
+        const double r = latgui::kRingRadiusFrac * scale_;
         QPen pen(col);
         pen.setWidthF(widthPx);
         p.setPen(pen);
@@ -172,27 +172,29 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     // Suggestion (drawn under the interactive selection).
     if (suggestionFrom_ >= 0) {
-        ringAt(suggestionFrom_, QColor("#27c24c"), 2.5);
+        ringAt(suggestionFrom_, latgui::kSuggestionRing, latgui::kThinPenPx);
     }
     if (suggestionTo_ >= 0) {
-        ringAt(suggestionTo_, QColor("#27c24c"), 2.5);
+        ringAt(suggestionTo_, latgui::kSuggestionRing, latgui::kThinPenPx);
     }
     if (suggestionFrom_ < 0 && suggestion_ >= 0) {  // placement suggestion (one square)
-        ringAt(suggestion_, QColor("#27c24c"), 2.5);
+        ringAt(suggestion_, latgui::kSuggestionRing, latgui::kThinPenPx);
     }
 
     // Interactive selection.
     if (pendingRemove_ >= 0) {
-        ringAt(pendingRemove_, QColor("#e23b3b"), 3.0);  // captive to be removed
+        ringAt(pendingRemove_, latgui::kCaptiveRing, latgui::kThickPenPx);  // captive to remove
     }
     if (selectedFrom_ >= 0) {
-        ringAt(selectedFrom_, QColor("#2d7bf0"), 3.0);   // selected origin
+        ringAt(selectedFrom_, latgui::kSelectionBlue, latgui::kThickPenPx);  // selected origin
     }
+    QColor destFill = latgui::kSelectionBlue;
+    destFill.setAlpha(latgui::kOverlayAlpha);
     for (int d : destinations_) {
         const QPointF c = squareCenter(d);
         p.setPen(Qt::NoPen);
-        p.setBrush(QColor(45, 123, 240, 110));
-        p.drawEllipse(c, 0.18 * scale_, 0.18 * scale_);
+        p.setBrush(destFill);
+        p.drawEllipse(c, latgui::kDestinationDotFrac * scale_, latgui::kDestinationDotFrac * scale_);
     }
 
     // Last-move dot: a small mark on the disc that last moved / was placed,
@@ -200,11 +202,12 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     const int lm = lastMoveCell();
     if (lm >= 0 && game_->ownerAt(lm) >= 0) {
         const QColor piece = (game_->ownerAt(lm) == 0) ? colorA_ : colorB_;
-        const QColor dot = (piece.lightnessF() < 0.5) ? QColor(255, 255, 255)
-                                                      : QColor(25, 25, 25);
+        const QColor dot = (piece.lightnessF() < latgui::kPieceDarkThreshold)
+                               ? latgui::kLastMoveDotLight : latgui::kLastMoveDotDark;
         p.setPen(Qt::NoPen);
         p.setBrush(dot);
-        p.drawEllipse(squareCenter(lm), 0.15 * scale_, 0.15 * scale_);
+        p.drawEllipse(squareCenter(lm), latgui::kLastMoveDotFrac * scale_,
+                      latgui::kLastMoveDotFrac * scale_);
     }
 
     // Hover ghost: a translucent disc in the to-move side's color with a bright
@@ -220,12 +223,13 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         }
         if (show) {
             QColor fill = (game_->currentPlayer() == 0) ? colorA_ : colorB_;
-            fill.setAlpha(110);
-            QPen pen(QColor("#FF8C00"));
-            pen.setWidthF(2.5);
+            fill.setAlpha(latgui::kOverlayAlpha);
+            QPen pen(latgui::kHoverOutline);
+            pen.setWidthF(latgui::kThinPenPx);
             p.setPen(pen);
             p.setBrush(fill);
-            p.drawEllipse(squareCenter(hv), 0.40 * scale_, 0.40 * scale_);
+            p.drawEllipse(squareCenter(hv), latgui::kHoverDiscFrac * scale_,
+                          latgui::kHoverDiscFrac * scale_);
         }
     }
 }

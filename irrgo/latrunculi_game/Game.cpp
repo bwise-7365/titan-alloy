@@ -34,15 +34,14 @@ Cell boundCell(int player) {
     return (player == 0) ? Cell::P0Bound : Cell::P1Bound;
 }
 
-constexpr double kWinBase = 1000.0;  // an actual win/loss dominates the leaf score
-
 // The material-balance score s = 3M / (3M + 2N) for a side with M discs facing an
-// opponent with N. Shapes the magnitude of a decisive terminal score in staticEval;
-// the non-terminal leaf uses the pressure score there instead. Higher M (capturing
-// then removing the opponent's pieces) raises the score.
+// opponent with N (weights kMaterialSelfWeight/kMaterialOppWeight from Game.h, kWinBase
+// likewise). Shapes the magnitude of a decisive terminal score in staticEval; the
+// non-terminal leaf uses the pressure score there instead. Higher M (capturing then
+// removing the opponent's pieces) raises the score.
 double materialScore(double M, double N) {
-    const double denom = 3.0 * M + 2.0 * N;
-    return (denom > 0.0) ? (3.0 * M) / denom : 0.0;
+    const double denom = kMaterialSelfWeight * M + kMaterialOppWeight * N;
+    return (denom > 0.0) ? (kMaterialSelfWeight * M) / denom : 0.0;
 }
 
 // MCTS rollout policy (epsilon-greedy "heavy playout"). Random rollouts in

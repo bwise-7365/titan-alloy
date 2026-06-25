@@ -18,6 +18,7 @@ qt_add_executable(latrunculi_gui
     MainWindow_save.cpp
     BoardWidget.h
     BoardWidget.cpp
+    DisplayConstants.h
     latrunculi.qrc
 )
 

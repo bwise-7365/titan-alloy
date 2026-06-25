@@ -45,6 +45,19 @@ inline constexpr double komi = 0.5;
 // free-disc material plus komi.
 inline constexpr int pacificMoveLimit = 40;
 
+// Default board for the no-argument constructor.
+inline constexpr int kDefaultRows = 8;
+inline constexpr int kDefaultColumns = 8;
+inline constexpr int kDefaultPerSide = 20;
+
+// Search scoring. A decisive terminal is scaled by kWinBase so a real win/loss
+// dominates the heuristic (non-terminal) leaf range. The winner's gradient score is
+// s = (kMaterialSelfWeight*M) / (kMaterialSelfWeight*M + kMaterialOppWeight*N) for a
+// side with material M facing an opponent with N.
+inline constexpr double kWinBase = 1000.0;
+inline constexpr double kMaterialSelfWeight = 3.0;
+inline constexpr double kMaterialOppWeight = 2.0;
+
 // A logged ply (for the move log). During placement from == -1; removed == -1
 // when no captive was removed that turn.
 struct Move {
@@ -62,7 +75,7 @@ class Game : public AbsGame::Game {
 public:
     // Empty board; both sides place `perSide` discs (placement phase) before
     // movement begins. Requires rows,columns >= 1 and 2*perSide <= rows*columns.
-    Game(int rows = 8, int columns = 8, int perSide = 20);
+    Game(int rows = kDefaultRows, int columns = kDefaultColumns, int perSide = kDefaultPerSide);
     Game(const Game&) = default;
 
     // Reconstruct an arbitrary mid-game position (used by the GUI's Load). `board`

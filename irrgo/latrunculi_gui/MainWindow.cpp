@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     bannerLabel_->setAlignment(Qt::AlignCenter);
     {
         QFont f = bannerLabel_->font();
-        f.setPointSize(28);
+        f.setPointSize(latgui::kBannerPointSize);
         f.setBold(true);
         bannerLabel_->setFont(f);
     }
@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     auto* panel = new QWidget(row);
     // The right column must be fairly wide because
     // a move might have several leaps and a capture.
-    panel->setFixedWidth(350);  // right column width
+    panel->setFixedWidth(latgui::kPanelWidth);  // right column width
     auto* pv = new QVBoxLayout(panel);
     pv->setAlignment(Qt::AlignTop);
     rowH->addWidget(panel);
@@ -105,7 +105,8 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     statusHBox->setSpacing(4);
     statusLabel_ = new QLabel("No game", statusRow);
     stopBtn_ = new QPushButton("Stop", statusRow);
-    stopBtn_->setStyleSheet("QPushButton { background-color: #FFCC99; color: black; }");
+    stopBtn_->setStyleSheet(QString("QPushButton { background-color: %1; color: black; }")
+                                .arg(latgui::kStopButtonBg.name()));
     stopBtn_->setFixedWidth(44);
     guicommon::retainSizeWhenHidden(stopBtn_);
     stopBtn_->hide();
@@ -151,7 +152,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     pv->addWidget(new QLabel("Suggested:", panel));
     suggestedLog_ = new QTextEdit(panel);
     suggestedLog_->setReadOnly(true);
-    suggestedLog_->setFixedHeight(48);
+    suggestedLog_->setFixedHeight(latgui::kSuggestedLogHeight);
     pv->addWidget(suggestedLog_);
     clearSuggestBtn_ = new QPushButton("Clear", panel);
     pv->addWidget(clearSuggestBtn_);
@@ -169,10 +170,12 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     registerPlayback(playback_, moveList_);
 
     buildMenuBar();
-    resize(1430, 990); // 1175x760 looks nice, 1380x992 shows 40 moves
+    resize(1430, 970); // 1175x760 looks nice, 1380x992 shows 40 moves
+    // 1430, 990
+    // 2149, 1496
 
-    const int perSide = gb::stones_per_side(gb::BoardParams{6, 8});
-    newGame(6, 8, perSide);
+    const int perSide = gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns});
+    newGame(latgui::kStartRows, latgui::kStartColumns, perSide);
 }
 
 void MainWindow::setBannerFont(const QString& family) {
@@ -180,7 +183,7 @@ void MainWindow::setBannerFont(const QString& family) {
         return;
     }
     QFont f(family);
-    f.setPointSize(26);
+    f.setPointSize(latgui::kBannerCustomPtSize);
     f.setBold(true);
     bannerLabel_->setFont(f);
 }
@@ -209,17 +212,17 @@ void MainWindow::buildMenuBar() {
 
     rowsSpin_ = new QSpinBox(bmw);
     rowsSpin_->setRange(gb::kMinRowsCols, gb::kMaxRowsCols);
-    rowsSpin_->setValue(6);
+    rowsSpin_->setValue(latgui::kStartRows);
     form->addRow("Rows:", rowsSpin_);
 
     colsSpin_ = new QSpinBox(bmw);
     colsSpin_->setRange(gb::kMinRowsCols, gb::kMaxRowsCols);
-    colsSpin_->setValue(8);
+    colsSpin_->setValue(latgui::kStartColumns);
     form->addRow("Columns:", colsSpin_);
 
     perSideSpin_ = new QSpinBox(bmw);
     perSideSpin_->setRange(1, (gb::kMaxRowsCols * gb::kMaxRowsCols) / 2);
-    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{6, 8}));
+    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns}));
     form->addRow("Discs/side:", perSideSpin_);
 
     // When the board size changes, cap the per-side maximum to the area and reset the
@@ -522,13 +525,12 @@ void MainWindow::refreshBoard() {
 }
 
 void MainWindow::updateSwatches() {
+    const QString swatchCss = QString("background-color: %1; border: 1px solid %2;");
     if (swatchA_ != nullptr) {
-        swatchA_->setStyleSheet(
-            QString("background-color: %1; border: 1px solid #555;").arg(colorA_.name()));
+        swatchA_->setStyleSheet(swatchCss.arg(colorA_.name(), latgui::kSwatchBorder.name()));
     }
     if (swatchB_ != nullptr) {
-        swatchB_->setStyleSheet(
-            QString("background-color: %1; border: 1px solid #555;").arg(colorB_.name()));
+        swatchB_->setStyleSheet(swatchCss.arg(colorB_.name(), latgui::kSwatchBorder.name()));
     }
 }
 

@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.8)
-project(flowplan)
+cmake_minimum_required(VERSION 3.20)
+project(flowplan LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(GLPK_ROOT "C:/glpk-install")
 
 add_executable(flowplan
 

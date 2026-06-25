@@ -2,6 +2,7 @@
 #pragma once
 #include "AbsGame.h"
 #include "BoardWidget.h"
+#include "DisplayConstants.h"  // latgui display constants
 #include "Game.h"            // Latrunculi::Game, Move
 #include "GameMainWindow.h"
 
@@ -92,9 +93,9 @@ private:
     QSpinBox* rowsSpin_    = nullptr;
     QSpinBox* colsSpin_    = nullptr;
     QSpinBox* perSideSpin_ = nullptr;
-    QColor    colorA_{0x1F, 0x20, 0x14};
-    QColor    colorB_{0x85, 0x25, 0x32};
-    QColor    background_{0xF5, 0xE8, 0xC7};
+    QColor    colorA_ = latgui::kDefaultSideA;
+    QColor    colorB_ = latgui::kDefaultSideB;
+    QColor    background_ = latgui::kDefaultBackground;
 
     // Play / Suggest menu controls.
     QAction*   manualAction_        = nullptr;

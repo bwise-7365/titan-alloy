@@ -1,0 +1,7 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
+// Windows application icon embedded in the executable. Resource id 1 (the lowest)
+// is the icon the shell shows for the .exe itself: in File Explorer, on the
+// desktop and on the taskbar. CMake (configure_file) injects an absolute path so
+// the resource compiler resolves it regardless of its working directory.
+1 ICON "@LATRUNCULI_ICON_PATH@"
+// Copyright Ben Paul Wise. All Rights Reserved.

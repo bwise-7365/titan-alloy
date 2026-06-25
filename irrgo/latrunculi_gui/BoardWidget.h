@@ -2,6 +2,7 @@
 #pragma once
 #include "AbsGame.h"
 #include "BoardWidgetBase.h"
+#include "DisplayConstants.h"  // latgui display constants
 #include "Game.h"            // Latrunculi::Game, Cell, Phase
 #include "draw_params.h"     // RenderConfig, SvgStyle
 #include "irregular_grid.h"  // BoardSpec, generate_position_svg, PlacedPiece
@@ -33,8 +34,10 @@ public:
     void clearSuggestion();
     void clearSelection();  // drop any in-progress two-click selection
 
-    QSize sizeHint() const override { return QSize(850, 680); }
-    QSize minimumSizeHint() const override { return QSize(360, 360); }
+    QSize sizeHint() const override { return QSize(latgui::kBoardHintW, latgui::kBoardHintH); }
+    QSize minimumSizeHint() const override {
+        return QSize(latgui::kBoardMinW, latgui::kBoardMinH);
+    }
 
 signals:
     void moveRequested(AbsGame::MoveId mv);
@@ -54,8 +57,9 @@ private:
     void handleMovementClick(int square);
 
     const Latrunculi::Game* game_ = nullptr;
-    QColor colorA_{0xFA, 0xE5, 0xBE};  // pale beige  (side_a default)
-    QColor colorB_{0x85, 0x25, 0x32};  // brick-red   (side_b default)
+    // Overwritten by setSideColors() before the first paint; kept in sync with MainWindow.
+    QColor colorA_ = latgui::kDefaultSideA;
+    QColor colorB_ = latgui::kDefaultSideB;
 
     // Cached render and the geometry it was built with.
     QPixmap cache_;
