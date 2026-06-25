@@ -58,9 +58,10 @@ class FlowPlanner {
     vector<vector<double>>  flow; // flow[i][j] is the flow from source i to destination j
     vector<vector<double>>  cost; // cost[i][j] is the per-unit cost from source i to destination j
 
-    const double minDecline = 0.0001; // min fractional drop
+    const double minDecline = 1.0e-6; // min fractional drop (more than round-off error)
 
-
+    void showProblem();
+    void showPlan();
 
     protected:
 

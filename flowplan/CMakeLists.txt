@@ -9,6 +9,7 @@ add_executable(flowplan
 
         lib/flowplanner.h
         lib/flowplanner.cpp
+        lib/utils.cpp
 )
 
 target_include_directories(flowplan PRIVATE

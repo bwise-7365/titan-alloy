@@ -7,12 +7,19 @@
 
 int main() {
     auto sTime = displayProgramStart("FlowPlanner", "0.0.1");
-    int ns = 20; // 200;
-    int nd = 12; //50;
+    int ns = 10; //80; // 200;
+    int nd = 6; // 40; //50;
     printf("Making flow planner with %d sources and %d destinations \n",
         ns, nd);
     FlowPlanner fp0 = FlowPlanner(ns, nd);
+    cout << endl;
+    fp0.showProblem();
+    cout << endl;
+    fp0.showPlan();
+    cout << endl;
     fp0.run();
+    cout << endl;
+    fp0.showPlan();
 
     displayProgramEnd(sTime);
     return 0;

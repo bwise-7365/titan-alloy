@@ -90,8 +90,7 @@ double FlowPlanner::oneStep() {
         for (int j = 0; j < nDst; j++) {
             for (int m = 0; m < nSrc; m++) {
                 for (int n = 0; n < nDst; n++) {
-                    double disc = (cost[i][j] + cost[m][n])
-                    - (cost[i][n]+cost[m][j]);
+                    double disc = (cost[i][j] + cost[m][n]) - (cost[i][n]+cost[m][j]);
                     double x = std::min(flow[i][n], flow[m][j]);
                     double decline = disc*x;
                     if (decline < bestDecline) {
@@ -137,54 +136,58 @@ void FlowPlanner::run() {
     printf("Factor reduction:  %5.2f\n", fc0/fc1);
 }
 
-string dateTimeString(time_point<system_clock> ft) {
-    time_t fTime = system_clock::to_time_t(ft);
-    //char* buff = newChars(30); // 25 should suffice
-    //asctime_r(gmtime(&fTime), buff);  // EOL included
-    char* buff = asctime(gmtime(&fTime));  // allocates own memory
-    string s1 = string(buff);
-    int nNdx = (int)(s1.find('\n'));
-    string s2 = s1.substr(0, nNdx); // EOL removed
-    s1.clear();
-    return s2;
+
+void FlowPlanner::showProblem() {
+    printf("Flow planner problem: %d sources, %d destinations\n", nSrc, nDst);
+
+    printf("Sources\n");
+    for (int i = 0; i < nSrc; i++) {
+        printf("Source %3d capacity %6.2f \n", i, src[i]);
+    }
+    cout << endl;
+
+    printf("Destinations\n");
+    for (int i = 0; i < nDst; i++) {
+        printf("Destination %3d capacity %6.2f \n", i, dst[i]);
+    }
+    cout << endl;
+
+
+    printf("Per-unit costs, row = src, col = dst\n");
+    printf("   ");
+    for (int j = 0; j < nDst; j++) {
+        printf("         %3d", j);
+    }
+    cout << endl;
+    for (int i = 0; i < nSrc; i++) {
+        printf("%3d ", i);
+        for (int j = 0; j < nDst; j++) {
+            printf("  %9.2f ", cost[i][j]);
+        }
+        cout << endl << flush;
+    }
+    cout << endl;
+    return;
 }
 
-time_point<system_clock>  displayProgramStart(string appName, string appVersion) {
-    time_point<system_clock> st;
-    st = system_clock::now();
-    string dts = dateTimeString(st);
-    if (0 < appName.size()) {
-        if (0 < appVersion.size()) {
-            cout << "Software version: " << appName.c_str() << " " << " " << appVersion.c_str() << endl;
-        }
-        else {
-            cout << "Software version: " << appName.c_str() << endl;
-        }
+void FlowPlanner::showPlan() {
+    printf("Src->Dst flows, row = src, col = dst\n");
+    printf("   ");
+    for (int j = 0; j < nDst; j++) {
+        printf("         %3d", j);
     }
-    cout << "Start time (UTC): " << dts.c_str() << endl;
-    dts.clear();
-    cout << flush;
-    return st;
-}
+    cout << endl;
+    for (int i = 0; i < nSrc; i++) {
+        printf("%3d ", i);
+        for (int j = 0; j < nDst; j++) {
+            printf("  %9.2f ", flow[i][j]);
+        }
+        cout << endl << flush;
+    }
+    cout << endl;
+    return;
 
-void displayProgramEnd(time_point<system_clock> st) {
-    time_point<system_clock> ft;
-    ft = system_clock::now();
-    duration<double> eTime = ft - st;
-    string dts = dateTimeString(ft);
-    cout << "Finish time (UTC): " << dts.c_str() << endl;
-    dts.clear();
-    double duration = eTime.count();
-    if (duration < 0.01) {
-        printf("Elapsed time: %.6f seconds \n", eTime.count());
-    }
-    else if (duration < 10.0) {
-        printf("Elapsed time: %.4f seconds \n", eTime.count());
-    }
-    else {
-        printf("Elapsed time: %.2f seconds \n", eTime.count());
-    }
-    cout << flush;
+
     return;
 }
 
