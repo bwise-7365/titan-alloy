@@ -1,5 +1,8 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 //
+//
+// NOTE: this is not a backup file.
+//
 // Save / load for the Latrunculi GUI. The file stores the authoritative board
 // state (per-square cells, phase, side to move, placed counts) plus a move log
 // for display; loading reconstructs the game through the engine's state-injecting

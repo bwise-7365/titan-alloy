@@ -1,4 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
+//
+// NOTE: this is not a backup file. It implements the "Save" function for the GUI
+
 #include "MainWindow.h"
 #include "LoadedGraph.h"
 #include "RectangularGraph.h"

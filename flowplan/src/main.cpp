@@ -7,12 +7,12 @@
 
 int main() {
     auto sTime = displayProgramStart("FlowPlanner", "0.0.1");
-    int ns = 10; // 25; // 500;
-    int nd =  6; //8; // 100;
-    int s =  123456; // msRandom();
+    const int ns = 10; // 25; // 500;
+    const int nd =  6; //8; // 100;
+    const int s =  123456; // msRandom();
     printf("Making flow planner with %d sources and %d destinations \n",
         ns, nd);
-    FlowPlanner fp0 = FlowPlanner(ns, nd, s);
+    auto fp0 = FlowPlanner(ns, nd, s);
 
     if (ns * nd <= 100*50) {
         cout << endl;
@@ -38,7 +38,6 @@ int main() {
 
     displayProgramEnd(sTime);
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
 }
 
 // Copyright Ben Paul Wise. All Rights Reserved.
