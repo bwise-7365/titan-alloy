@@ -171,7 +171,7 @@ void FlowPlanner::showProblem() {
 
     printf("Destinations\n");
     for (int i = 0; i < nDst; i++) {
-        printf("Destination %3d capacity %8.2f \n", 1+i, dst[i]);
+        printf("Destination %3d requirement %8.2f \n", 1+i, dst[i]);
     }
     cout << endl;
 

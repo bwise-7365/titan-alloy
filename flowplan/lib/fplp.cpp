@@ -154,8 +154,10 @@ void FlowPlanner::setupLP() {
         cout <<endl << flush;
         printf("Cost from GLPK: %.2f\n", myCost);
         cout << endl;
-        printf("Flows from GLPK:\n");
-        showMatrix(myFlow);
+        if (nSrc*nDst <= 100*50) {
+            printf("Flows from GLPK:\n");
+            showMatrix(myFlow);
+        }
         cout << flush;
     }
 

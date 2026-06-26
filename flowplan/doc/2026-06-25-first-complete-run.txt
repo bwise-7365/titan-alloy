@@ -1,0 +1,117 @@
+
+
+Software version: FlowPlanner  0.0.1
+Start time (UTC): Fri Jun 26 01:48:26 2026
+Making flow planner with 10 sources and 6 destinations
+
+Flow planner problem: 10 sources, 6 destinations
+Sources
+Source   1 capacity   493.00
+Source   2 capacity   861.00
+Source   3 capacity   676.00
+Source   4 capacity   746.00
+Source   5 capacity   893.00
+Source   6 capacity   602.00
+Source   7 capacity   325.00
+Source   8 capacity   206.00
+Source   9 capacity   113.00
+Source  10 capacity    79.00
+
+Destinations
+Destination   1 requirement   647.00
+Destination   2 requirement  1612.00
+Destination   3 requirement  1583.00
+Destination   4 requirement   592.00
+Destination   5 requirement   294.00
+Destination   6 requirement   266.00
+
+Per-unit costs, row = src, col = dst
+              1           2           3           4           5           6
+  1      481.00      156.00      112.00      436.00      424.00      373.00
+  2      472.00      313.00      211.00      157.00      387.00      218.00
+  3      104.00      141.00      482.00      132.00      189.00      225.00
+  4      473.00      295.00      304.00      350.00      303.00      163.00
+  5      212.00      339.00      190.00      243.00      148.00      327.00
+  6      412.00      363.00      364.00      222.00      369.00      461.00
+  7      330.00      477.00      376.00      133.00      144.00      126.00
+  8      218.00      226.00      208.00      184.00      295.00      379.00
+  9      486.00      187.00      105.00      126.00      136.00      240.00
+ 10      428.00      344.00      300.00      423.00      290.00      481.00
+
+
+Gravity model plan:
+Src->Dst flows, row = src, col = dst
+              1           2           3           4           5           6
+  1       63.87      159.13      156.27       58.44       29.02       26.26
+  2      111.55      277.92      272.92      102.06       50.69       45.86
+  3       87.58      218.20      214.28       80.13       39.80       36.01
+  4       96.65      240.80      236.47       88.43       43.92       39.73
+  5      115.69      288.25      283.06      105.86       52.57       47.56
+  6       77.99      194.32      190.82       71.36       35.44       32.06
+  7       42.11      104.91      103.02       38.53       19.13       17.31
+  8       26.69       66.49       65.30       24.42       12.13       10.97
+  9       14.64       36.47       35.82       13.40        6.65        6.02
+ 10       10.23       25.50       25.04        9.36        4.65        4.21
+
+
+Initial cost:  1422257.892
+  1/500 decline:   -82497.313
+  2/500 decline:   -35284.575
+  3/500 decline:   -30493.512
+  4/500 decline:    -9473.743
+  5/500 decline:    -7777.384
+  6/500 decline:    -5357.935
+  7/500 decline:    -4819.857
+  8/500 decline:    -1709.957
+  9/500 decline:    -1131.911
+ 10/500 decline:     -485.624
+ 11/500 decline:     -148.825
+ 12/500 decline:        0.000
+Initial cost:  1422257.892
+Final cost:     989702.880
+Percent reduction: 30.41
+Factor reduction:   1.44
+
+Optimally swapped plan:
+Src->Dst flows, row = src, col = dst
+              1           2           3           4           5           6
+  1        0.00      258.54      234.46        0.00        0.00        0.00
+  2        0.00        0.00      562.76      298.24        0.00        0.00
+  3      583.23       92.77        0.00        0.00        0.00        0.00
+  4        0.00      557.58        0.00        0.00        0.00      188.42
+  5       63.77        0.00      633.72        0.00      195.51        0.00
+  6        0.00      457.17        0.00      144.83        0.00        0.00
+  7        0.00        0.00        0.00      148.93       98.49       77.58
+  8        0.00      206.00        0.00        0.00        0.00        0.00
+  9        0.00        0.00      113.00        0.00        0.00        0.00
+ 10        0.00       39.94       39.06        0.00        0.00        0.00
+
+Writing problem data to 'flow_min_v00.lp.txt'...
+52 lines were written
+GLPK Simplex Optimizer 5.0
+16 rows, 60 columns, 120 non-zeros
+      0: obj =   0.000000000e+00 inf =   4.994e+03 (6)
+     15: obj =   1.356143000e+06 inf =   0.000e+00 (0)
+*    32: obj =   9.723250000e+05 inf =   0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+LP objective: 972325.00
+
+Cost from GLPK: 972325.00
+
+Flows from GLPK:
+              1           2           3           4           5           6
+  1        0.00      493.00        0.00        0.00        0.00        0.00
+  2        0.00        0.00      861.00        0.00        0.00        0.00
+  3      363.00      313.00        0.00        0.00        0.00        0.00
+  4        0.00      511.00        0.00        0.00        0.00      235.00
+  5      284.00        0.00      609.00        0.00        0.00        0.00
+  6        0.00       10.00        0.00      592.00        0.00        0.00
+  7        0.00        0.00        0.00        0.00      294.00       31.00
+  8        0.00      206.00        0.00        0.00        0.00        0.00
+  9        0.00        0.00      113.00        0.00        0.00        0.00
+ 10        0.00       79.00        0.00        0.00        0.00        0.00
+
+Finish time (UTC): Fri Jun 26 01:48:26 2026
+Elapsed time: 0.0233 seconds
+
+Process finished with exit code 0
