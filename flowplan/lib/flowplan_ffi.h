@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-// Solve a transportation / min-cost-flow problem.
+// Solve a min-cost-flow problem.
 //
 //   src      : n_src supply values
 //   dst      : n_dst demand values
@@ -22,9 +22,7 @@ extern "C" {
 //   flow_out : caller-allocated n_src * n_dst buffer, row-major; receives the
 //              optimized flow plan (flow_out[i*n_dst + j]).
 //
-// Preconditions (NOT checked here -- the caller must guarantee them):
-//   - sum(src) == sum(dst) (the problem must be balanced).
-// Values are used as-is; no truncation or rebalancing is performed.
+// NOTE WELL: preconditions are NOT checked here, caller must guarantee them
 //
 // Returns 0 on success, or a negative status code on invalid dimensions /
 // null pointers.
