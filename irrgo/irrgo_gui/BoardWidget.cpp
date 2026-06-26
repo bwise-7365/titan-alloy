@@ -44,15 +44,20 @@ BoardWidget::BoardWidget(QWidget* parent) : guicommon::BoardWidgetBase(parent) {
 void BoardWidget::loadTextures() {
     for (int i = 1; i <= 7; ++i) {
         QPixmap pm(QString(":/stones/black%1.png").arg(i, 2, 10, QChar('0')));
-        if (!pm.isNull()) blackSrc_.push_back(pm);
+        if (!pm.isNull()) {
+            blackSrc_.push_back(pm);
+        }
     }
     for (int i = 1; i <= 6; ++i) {
         QPixmap pm(QString(":/stones/white%1.png").arg(i, 2, 10, QChar('0')));
-        if (!pm.isNull()) whiteSrc_.push_back(pm);
+        if (!pm.isNull()) {
+            whiteSrc_.push_back(pm);
+        }
     }
     fabricSrc_ = QPixmap(":/textures/texture_bg.png");
-    if (fabricSrc_.isNull())
+    if (fabricSrc_.isNull()) {
         qDebug() << "BoardWidget: texture_bg.png not found in resources";
+    }
 }
 
 // Rescale every pixmap in `src` to sz x sz (smooth, aspect-preserving) into `dst`.
@@ -65,16 +70,21 @@ static void scaleStones(const std::vector<QPixmap>& src,
 }
 
 void BoardWidget::rescaleTextures() {
-    if (!useTexture_) return;
+    if (!useTexture_) {
+        return;
+    }
     // Texture background — stretch to fill widget, no aspect-ratio constraint
     int tmpW = width();
     int tmpH = height();
-    if (!fabricSrc_.isNull() && width() > 0 && height() > 0)
+    if (!fabricSrc_.isNull() && width() > 0 && height() > 0) {
         fabricScaled_ = fabricSrc_.scaled(tmpW, tmpH,
                                                 Qt::IgnoreAspectRatio,
                                           Qt::SmoothTransformation);
+    }
     // Stone textures
-    if (blackSrc_.empty() || whiteSrc_.empty()) return;
+    if (blackSrc_.empty() || whiteSrc_.empty()) {
+        return;
+    }
     int sz = std::max(1, static_cast<int>(stoneR_ * 2.0f));
     scaleStones(blackSrc_, blackScaled_, sz);
     scaleStones(whiteSrc_, whiteScaled_, sz);
@@ -167,7 +177,9 @@ void BoardWidget::resizeEvent(QResizeEvent*) {
 }
 
 void BoardWidget::updateTransform() {
-    if (!game_ || game_->graph().nodeCount() == 0) return;
+    if (!game_ || game_->graph().nodeCount() == 0) {
+        return;
+    }
     const auto& nodes = game_->graph().nodes();
 
     minX_ = minY_ =  std::numeric_limits<float>::max();
@@ -185,7 +197,9 @@ void BoardWidget::updateTransform() {
     const float kExtra = 10.0f;
     scale_ = std::min((width()  - 2.0f * kExtra) / paddedRX,
                       (height() - 2.0f * kExtra) / paddedRY);
-    if (scale_ < 1.0f) scale_ = 1.0f;
+    if (scale_ < 1.0f) {
+        scale_ = 1.0f;
+    }
     stoneR_ = kStoneRPhys * scale_;
 
     float usedW = paddedRX * scale_;
@@ -196,7 +210,9 @@ void BoardWidget::updateTransform() {
 }
 
 int BoardWidget::cellAt(const QPointF& pos) const {
-    if (!game_) return -1;
+    if (!game_) {
+        return -1;
+    }
     float r2   = stoneR_ * stoneR_;
     int   found = -1;
     float best  = r2 + 1.0f;
@@ -237,11 +253,17 @@ void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
 // ── Mouse events ──────────────────────────────────────────────────────────────
 
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
-    if (isSearching()) return;
-    if (e->button() != Qt::LeftButton || !game_) return;
+    if (isSearching()) {
+        return;
+    }
+    if (e->button() != Qt::LeftButton || !game_) {
+        return;
+    }
     emit clearSuggestionRequested();
     int n = cellAt(e->position());
-    if (n < 0 || game_->colorAt(n) != Color::Empty) return;
+    if (n < 0 || game_->colorAt(n) != Color::Empty) {
+        return;
+    }
 
     if (n == tentativeNode_) {
         confirmTimer_->stop();
@@ -267,12 +289,15 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    if (useTexture_ && !fabricScaled_.isNull())
+    if (useTexture_ && !fabricScaled_.isNull()) {
         p.drawPixmap(0, 0, fabricScaled_);
-    else
+    } else {
         p.fillRect(rect(), bgColor_);
+    }
 
-    if (!game_ || game_->graph().nodeCount() == 0) return;
+    if (!game_ || game_->graph().nodeCount() == 0) {
+        return;
+    }
 
     const auto& nodes = game_->graph().nodes();
     const auto* rg = dynamic_cast<const RectangularGraph*>(&game_->graph());
@@ -294,9 +319,10 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     p.setPen(QPen(lineColor_, kGridLineThickness));
     for (const auto& nd : nodes)
         for (int nb : nd.neighbors)
-            if (nb > nd.id)
+            if (nb > nd.id) {
                 p.drawLine(toWidget(nd.x, nd.y),
                            toWidget(nodes[nb].x, nodes[nb].y));
+            }
 
     // Non-rectangular hover: incident edges in medium purple
     if (!rg && hoverCell() >= 0) {
@@ -362,8 +388,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         for (const auto& nd : nodes) {
             int count = 0;
             for (const auto& other : nodes)
-                if (qAbs(other.row - nd.row) + qAbs(other.col - nd.col) <= radius)
+                if (qAbs(other.row - nd.row) + qAbs(other.col - nd.col) <= radius) {
                     ++count;
+                }
             QPointF pt = toWidget(nd.x, nd.y);
             QRectF textRect(pt.x() - stoneR_, pt.y() - stoneR_,
                             stoneR_ * 2.0f, stoneR_ * 2.0f);
@@ -392,7 +419,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         // Stones
         for (const auto& nd : nodes) {
             Color c = game_->colorAt(nd.id);
-            if (c == Color::Empty) continue;
+            if (c == Color::Empty) {
+                continue;
+            }
             QPointF pt = toWidget(nd.x, nd.y);
             const auto& scaled = (c == Color::Black) ? blackScaled_ : whiteScaled_;
             if (useTexture_ && !scaled.empty()) {
@@ -473,8 +502,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                       fr.width() * 0.5f - margin,              bandH);
 
         p.drawText(leftR,  Qt::AlignLeft  | Qt::AlignVCenter, "IrrGo");
-        if (!boardInfoRight_.isEmpty())
+        if (!boardInfoRight_.isEmpty()) {
             p.drawText(rightR, Qt::AlignRight | Qt::AlignVCenter, boardInfoRight_);
+        }
     }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

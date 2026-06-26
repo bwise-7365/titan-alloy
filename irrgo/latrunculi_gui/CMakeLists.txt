@@ -5,7 +5,6 @@
 # If Qt6 is not found automatically, point CMake at your installation:
 #   cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64 ...
 
-set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg)
 
 set(CMAKE_AUTOMOC ON)

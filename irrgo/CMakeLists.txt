@@ -42,6 +42,14 @@ if(IRRGO_NATIVE_ARCH AND NOT MSVC)
     add_compile_options("$<$<CONFIG:Release>:-march=native>")
 endif()
 
+# Convenience default for a standard Windows Qt install, applied once for the whole
+# tree. Only used on Windows AND only when the user has not already pointed CMake at
+# Qt (via -DQt6_DIR or -DCMAKE_PREFIX_PATH). Linux/macOS resolve Qt through the normal
+# find_package search, keeping the build portable (see CLAUDE.md: Windows + Debian).
+if(WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
+    set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
+endif()
+
 add_subdirectory(palette_core)
 add_subdirectory(palette_widgets)
 add_subdirectory(absgame)

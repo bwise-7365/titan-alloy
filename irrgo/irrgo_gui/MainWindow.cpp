@@ -111,10 +111,11 @@ MainWindow::MainWindow(QWidget* parent)
     connect(boardWidget_, &BoardWidget::clearSuggestionRequested,
             this, &MainWindow::clearSuggestion);
     connect(boardWidget_, &BoardWidget::hoverChanged, this, [this](int nodeId) {
-        if (nodeId >= 0 && game_)
+        if (nodeId >= 0 && game_) {
             hoverCoordLabel_->setText(QString::fromStdString(game_->graph().node(nodeId).label));
-        else
+        } else {
             hoverCoordLabel_->setText("----");
+        }
     });
 
     // ── Right panel ───────────────────────────────────────────────────────────
@@ -433,8 +434,9 @@ void MainWindow::generateBoard() {
         int maxDeg = kMaxEdges[maxEdgesCombo_->currentIndex()];
         graph_ = std::make_unique<IrregularGraph>(sz.rows, sz.cols, maxDeg, seed);
     }
-    else
+    else {
         graph_ = std::make_unique<RectangularGraph>(sz.rows, sz.cols);
+    }
 
     game_ = std::make_unique<Game>(*graph_);
     setupPlaced_ = 0;
@@ -460,7 +462,9 @@ void MainWindow::onBgColorChanged(int index) {
 // ── Stone setup animation ─────────────────────────────────────────────────────
 
 void MainWindow::onStonesSelected(QAction* action) {
-    if (!game_) return;
+    if (!game_) {
+        return;
+    }
     search().cancelSearch();
     stopStoneSetup();
     clearSuggestion();
@@ -475,10 +479,14 @@ void MainWindow::onStonesSelected(QAction* action) {
     updateControls();
 
     double fraction = action->data().toDouble();
-    if (fraction <= 0.0) return;
+    if (fraction <= 0.0) {
+        return;
+    }
 
     setupTarget_ = static_cast<int>(fraction * graph_->nodeCount());
-    if (setupTarget_ <= 0) return;
+    if (setupTarget_ <= 0) {
+        return;
+    }
 
     setupRng_ = std::mt19937_64(static_cast<uint64_t>(randomSeedEdit_->text().toInt()) ^ 0xABCDEF01ULL);
     pendingSetup_.resize(graph_->nodeCount());
@@ -518,13 +526,17 @@ void MainWindow::onSetupTick() {
 
 void MainWindow::stopStoneSetup() {
     stoneTimer_->stop();
-    if (game_) game_->setSetupMode(false);
+    if (game_) {
+        game_->setSetupMode(false);
+    }
 }
 
 // ── Move handling ─────────────────────────────────────────────────────────────
 
 void MainWindow::onMoveRequested(int nodeId) {
-    if (!game_ || stoneTimer_->isActive() || search().isSearching()) return;
+    if (!game_ || stoneTimer_->isActive() || search().isSearching()) {
+        return;
+    }
     if (game_->placeStone(nodeId)) {
         clearSuggestion();
         afterPlayMove();
@@ -532,7 +544,9 @@ void MainWindow::onMoveRequested(int nodeId) {
 }
 
 void MainWindow::onBlackPass() {
-    if (!game_ || game_->toMove() != Player::Black || search().isSearching()) return;
+    if (!game_ || game_->toMove() != Player::Black || search().isSearching()) {
+        return;
+    }
     if (game_->pass()) {
         clearSuggestion();
         afterPlayMove();
@@ -540,7 +554,9 @@ void MainWindow::onBlackPass() {
 }
 
 void MainWindow::onWhitePass() {
-    if (!game_ || game_->toMove() != Player::White || search().isSearching()) return;
+    if (!game_ || game_->toMove() != Player::White || search().isSearching()) {
+        return;
+    }
     if (game_->pass()) {
         clearSuggestion();
         afterPlayMove();
@@ -550,7 +566,9 @@ void MainWindow::onWhitePass() {
 // ── NegaMax suggestion ────────────────────────────────────────────────────────
 
 void MainWindow::onSuggestGo() {
-    if (!game_ || game_->isGameOver() || search().isSearching() || stoneTimer_->isActive()) return;
+    if (!game_ || game_->isGameOver() || search().isSearching() || stoneTimer_->isActive()) {
+        return;
+    }
 
     bool isBlack = (game_->toMove() == Player::Black);
     int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
@@ -575,7 +593,9 @@ void MainWindow::onSuggestGo() {
 }
 
 void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isGameOver() || search().isSearching()) return;
+    if (!game_ || game_->isGameOver() || search().isSearching()) {
+        return;
+    }
 
     bool isBlack = (game_->toMove() == Player::Black);
     int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
@@ -600,7 +620,9 @@ void MainWindow::onSuggestMctsGo() {
 }
 
 void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
-    if (!game_ || game_->isGameOver()) return;
+    if (!game_ || game_->isGameOver()) {
+        return;
+    }
     clearSuggestion();
     if (mv == AbsGame::kPass) {
         game_->pass();
@@ -667,10 +689,11 @@ void MainWindow::updateControls() {
     }
     bool bt        = (game_->toMove() == Player::Black);
     bool animating = stoneTimer_->isActive();
-    if (searching)
+    if (searching) {
         currentPlayerLabel_->setText("Thinking...");
-    else
+    } else {
         currentPlayerLabel_->setText(bt ? "Black to move" : "White to move");
+    }
     blackPassBtn_->setEnabled( bt && !animating && !searching);
     whitePassBtn_->setEnabled(!bt && !animating && !searching);
 }

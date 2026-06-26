@@ -8,8 +8,6 @@ add_library(irrgo_lib STATIC
     Game.cpp
     DVR.cpp
     EyeEval.cpp
-        ../absgame/utils.cpp
-        ../absgame/utils.h
 )
 target_include_directories(irrgo_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(irrgo_lib PUBLIC cxx_std_20)
