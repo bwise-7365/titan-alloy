@@ -152,6 +152,7 @@ void run_v01() {
  ia[7] = 3, ja[7] = 1, ar[7] = 2.0;  /* a[3,1] =  2 */
  ia[8] = 3, ja[8] = 2, ar[8] = 2.0;  /* a[3,2] =  2 */
  ia[9] = 3, ja[9] = 3, ar[9] = 6.0;  /* a[3,3] =  6 */
+
  glp_load_matrix(lp, 9, ia, ja, ar);
 
  // GLPK format

@@ -2,6 +2,16 @@
 
 #include "flowplanner.h"
 
+
+
+char* newChars(int n) {
+    char* s = new char[n];
+    for (int i = 0; i < n; i++) {
+        s[i] = 0;
+    }
+    return s;
+}
+
 string dateTimeString(time_point<system_clock> ft) {
     time_t fTime = system_clock::to_time_t(ft);
     //char* buff = newChars(30); // 25 should suffice
@@ -62,6 +72,37 @@ uint64_t msRandom() {
     microseconds ms = duration_cast<microseconds>(system_clock::now().time_since_epoch());
     uint64_t s2 = ms.count(); // microseconds since the Unix Epoch
      return s2;
+}
+
+tuple<vector<int>, vector<int>, int> balancedSD(const vector<double> &src, const vector<double> &dst) {
+    int sSum = 0;
+    vector<int> iSrc(src.size());
+    for (int i=0; i<src.size(); i++) {
+        iSrc[i] = static_cast<int>(src[i]);
+        sSum += iSrc[i];
+    }
+
+    int dSum = 0;
+    vector<int> iDst(dst.size());
+    for (int i=0; i<dst.size(); i++) {
+        iDst[i] = static_cast<int>(dst[i]);
+        dSum += iDst[i];
+    }
+
+    while (sSum < dSum) {
+        int iter = max_element(iDst.begin(), iDst.end())-iDst.begin();
+        iDst[iter] = iDst[iter]-1;
+        dSum = dSum -1;
+    }
+
+    while (dSum < sSum) {
+        int iter = min_element(iDst.begin(), iDst.end())-iDst.begin();
+        iDst[iter] = iDst[iter]+1;
+        dSum = dSum +1;
+    }
+
+    tuple<vector<int>, vector<int>, int>  x = {iSrc, iDst, sSum};
+    return x;
 }
 
 // Copyright Ben Paul Wise. All Rights Reserved.

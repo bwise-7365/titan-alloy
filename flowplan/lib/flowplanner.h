@@ -30,7 +30,9 @@ using std::cout;
 using std::endl;
 using std::flush;
 using std::vector;
+using std::pair;
 using std::string;
+using std::tuple;
 using std::chrono::duration;
 using std::chrono::time_point;
 using std::chrono::system_clock;
@@ -41,6 +43,11 @@ void displayProgramEnd(time_point<system_clock> st);
 uint64_t msRandom(); // microseconds since the Unix Epoch, NOT scrambled
 
 constexpr uint64_t dSeed = 0xFE69A87450C4301C; // still my favorite
+
+// make empty C-style strings
+char* newChars(int n);
+
+tuple<vector<int>, vector<int>, int> balancedSD(const vector<double> &src, const vector<double> &dst);
 
 class FlowPlanner {
     public:
@@ -69,6 +76,10 @@ class FlowPlanner {
     void showProblem();
     void showPlan();
     void checkPlan();
+
+    void setupLP();
+
+    void showMatrix(const vector<vector<double>> &m);
 
     protected:
 

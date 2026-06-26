@@ -4,7 +4,6 @@
 //
 
 #include "flowplanner.h"
-#include <ctime>
 #include <iostream>
 #include <random>
 
@@ -33,37 +32,54 @@ void FlowPlanner::initGM() {
     src = vector<double>(nSrc);
     src.resize(nSrc);
     for (int i = 0; i < nSrc; i++) {
-        double s = distribution(prng);
+        const double s = distribution(prng);
         src[i] = s;
         sTotal += s;
     }
     for (int i = 0; i < nSrc; i++) {
-        src[i] = (flowT / sTotal)* src[i] ;
+        src[i] = (flowT / sTotal)* src[i];
     }
 
     double dTotal = 0.0;
+    double dt2 = 0.0;
     dst = vector<double>(nDst);
     dst.resize(nDst);
     for (int j = 0; j < nDst; j++) {
-        double d = distribution(prng);
+        const double d = distribution(prng);
         dst[j] = d;
         dTotal += d;
     }
+
     for (int j = 0; j < nDst; j++) {
         dst[j] = (flowT / dTotal)*dst[j];
     }
 
-    flow = vector<vector<double>>(nSrc,vector<double>(nDst));
-    flow.resize(nDst);
-    cost = vector<vector<double>>(nSrc,vector<double>(nDst));
-    cost.resize(nDst);
+
+    // for convenience, we truncate to integer values.
+    // for LP feasibility, we will have to ensure that sum
+    // of D <= sum of S, despite round-off errors.
+    auto [iSrc, iDst, iSum] = balancedSD(src, dst);
+    for (int i=0; i<nSrc; i++) {
+        src[i] = iSrc[i];
+    }
+    for (int i=0; i<nDst; i++) {
+        dst[i] = iDst[i];
+    }
+    flowT = iSum;
+
+    flow = vector<vector<double>>(nSrc);
+    flow.resize(nSrc);
+    cost = vector<vector<double>>(nSrc);
+    cost.resize(nSrc);
     for (int i = 0; i < nSrc; i++) {
+        flow[i] = vector<double>(nDst);
         flow[i].resize(nDst);
+        cost[i] = vector<double>(nDst);
         cost[i].resize(nDst);
         for (int j = 0; j < nDst; j++) {
             flow[i][j] = (src[i]*dst[j])/flowT;
             double d = distribution(prng);
-            cost[i][j] = costMin + d*(costMax - costMin);
+            cost[i][j] = trunc( costMin + d*(costMax - costMin));
       }
     }
 
@@ -149,27 +165,32 @@ void FlowPlanner::showProblem() {
 
     printf("Sources\n");
     for (int i = 0; i < nSrc; i++) {
-        printf("Source %3d capacity %8.2f \n", i, src[i]);
+        printf("Source %3d capacity %8.2f \n", 1+i, src[i]);
     }
     cout << endl;
 
     printf("Destinations\n");
     for (int i = 0; i < nDst; i++) {
-        printf("Destination %3d capacity %8.2f \n", i, dst[i]);
+        printf("Destination %3d capacity %8.2f \n", 1+i, dst[i]);
     }
     cout << endl;
 
 
     printf("Per-unit costs, row = src, col = dst\n");
+    showMatrix(cost);
+    return;
+}
+
+void FlowPlanner::showMatrix(const vector<vector<double>> &m) {
     printf("   ");
     for (int j = 0; j < nDst; j++) {
-        printf("         %3d", j);
+        printf("         %3d", 1+j);
     }
     cout << endl;
     for (int i = 0; i < nSrc; i++) {
-        printf("%3d ", i);
+        printf("%3d ", 1+i);
         for (int j = 0; j < nDst; j++) {
-            printf("  %9.2f ", cost[i][j]);
+            printf("  %9.2f ", m[i][j]);
         }
         cout << endl << flush;
     }
@@ -179,23 +200,7 @@ void FlowPlanner::showProblem() {
 
 void FlowPlanner::showPlan() {
     printf("Src->Dst flows, row = src, col = dst\n");
-    printf("   ");
-    for (int j = 0; j < nDst; j++) {
-        printf("         %3d", j);
-    }
-    cout << endl;
-    for (int i = 0; i < nSrc; i++) {
-        printf("%3d ", i);
-        for (int j = 0; j < nDst; j++) {
-            printf("  %9.2f ", flow[i][j]);
-        }
-        cout << endl << flush;
-    }
-    cout << endl;
-    return;
-
-
-    return;
+    showMatrix(flow);
 }
 
 void FlowPlanner::checkPlan() {
@@ -231,4 +236,6 @@ void FlowPlanner::checkPlan() {
 
     return;
 }
+
+
 // Copyright Ben Paul Wise. All Rights Reserved.
