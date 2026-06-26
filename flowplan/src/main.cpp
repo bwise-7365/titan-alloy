@@ -24,7 +24,7 @@ int main() {
         fp0.checkPlan();
 
         cout << endl;
-        fp0.run();
+        fp0.runSwap();
         cout << endl;
 
         cout << "Optimally swapped plan:"<< endl;
@@ -33,7 +33,7 @@ int main() {
     }
 
 
-    fp0.setupLP();
+    fp0.runGLPK();
 
 
     displayProgramEnd(sTime);

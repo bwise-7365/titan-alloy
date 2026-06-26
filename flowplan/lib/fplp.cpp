@@ -4,8 +4,9 @@
 #include <glpk.h>
 
 
-
-void FlowPlanner::setupLP() {
+// With the data already loaded, generate the matrix for GLPK,
+// and run the solver.
+void FlowPlanner::runGLPK() {
     glp_prob *lp = glp_create_prob();
     glp_set_prob_name(lp,  "flow_cost_min");
     glp_set_obj_dir(lp, GLP_MIN);
@@ -124,6 +125,7 @@ void FlowPlanner::setupLP() {
     // CPLEX LP format
     glp_write_lp(lp, NULL, "flow_min_v00.lp.txt");
 
+    // NOTE: This is where it actually runs Simplex
     glp_simplex(lp, NULL);
 
     double z = glp_get_obj_val(lp);

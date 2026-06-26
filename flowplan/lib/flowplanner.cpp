@@ -14,9 +14,47 @@ FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
     initGM();
 }
 
+FlowPlanner::FlowPlanner(int ns, int nd) {
+    nSrc = ns;
+    nDst = nd;
+    seed = dSeed;
+    src.resize(nSrc);
+    dst.resize(nDst);
+    flow.assign(nSrc, vector<double>(nDst));
+    cost.assign(nSrc, vector<double>(nDst));
+}
+
 
 
 FlowPlanner::~FlowPlanner() {
+}
+
+void FlowPlanner::initFeasibleFlow() {
+    double flowT = 0.0;
+    for (int i = 0; i < nSrc; i++) {
+        flowT += src[i];
+    }
+
+    flow.assign(nSrc, vector<double>(nDst));
+    for (int i = 0; i < nSrc; i++) {
+        for (int j = 0; j < nDst; j++) {
+            flow[i][j] = (src[i] * dst[j]) / flowT;
+        }
+    }
+}
+
+void FlowPlanner::setProblem(const vector<double> &s,
+                             const vector<double> &d,
+                             const vector<vector<double>> &c) {
+    assert(static_cast<int>(s.size()) == nSrc);
+    assert(static_cast<int>(d.size()) == nDst);
+    assert(static_cast<int>(c.size()) == nSrc);
+
+    src = s;
+    dst = d;
+    cost = c;
+
+    initFeasibleFlow();
 }
 
 void FlowPlanner::initGM() {
@@ -67,23 +105,18 @@ void FlowPlanner::initGM() {
     }
     flowT = iSum;
 
-    flow = vector<vector<double>>(nSrc);
-    flow.resize(nSrc);
     cost = vector<vector<double>>(nSrc);
     cost.resize(nSrc);
     for (int i = 0; i < nSrc; i++) {
-        flow[i] = vector<double>(nDst);
-        flow[i].resize(nDst);
         cost[i] = vector<double>(nDst);
         cost[i].resize(nDst);
         for (int j = 0; j < nDst; j++) {
-            flow[i][j] = (src[i]*dst[j])/flowT;
             double d = distribution(prng);
             cost[i][j] = trunc( costMin + d*(costMax - costMin));
       }
     }
 
-
+    initFeasibleFlow();
 }
 
 double FlowPlanner::flowCost() {
@@ -136,9 +169,9 @@ double FlowPlanner::oneStep() {
 
 }
 
-void FlowPlanner::run() {
+void FlowPlanner::runSwap(bool verbose) {
     double fc0 = flowCost();
-    printf("Initial cost: %12.3f\n", fc0);
+    if (verbose) printf("Initial cost: %12.3f\n", fc0);
 
     int iter = 0;
     int maxIter = 500;
@@ -146,17 +179,21 @@ void FlowPlanner::run() {
     while ((decline < 0.0)  && (iter < maxIter)) {
         decline = oneStep();
         iter++;
-        printf("%3d/%3d decline: %12.3f\n",
-            iter, maxIter, decline);
-        cout << flush;
+        if (verbose) {
+            printf("%3d/%3d decline: %12.3f\n",
+                iter, maxIter, decline);
+            cout << flush;
+        }
     }
 
-    printf("Initial cost: %12.3f\n", fc0);
-    double fc1 = flowCost();
-    printf("Final cost:   %12.3f\n", fc1);
-    double pct = 100.0 * (fc0 - fc1)/fc0;
-    printf("Percent reduction: %5.2f\n", pct);
-    printf("Factor reduction:  %5.2f\n", fc0/fc1);
+    if (verbose) {
+        printf("Initial cost: %12.3f\n", fc0);
+        double fc1 = flowCost();
+        printf("Final cost:   %12.3f\n", fc1);
+        double pct = 100.0 * (fc0 - fc1)/fc0;
+        printf("Percent reduction: %5.2f\n", pct);
+        printf("Factor reduction:  %5.2f\n", fc0/fc1);
+    }
 }
 
 

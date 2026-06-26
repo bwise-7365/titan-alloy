@@ -49,15 +49,30 @@ char* newChars(int n);
 
 tuple<vector<int>, vector<int>, int> balancedSD(const vector<double> &src, const vector<double> &dst);
 
+
 class FlowPlanner {
     public:
     explicit FlowPlanner(int ns, int nd, uint64_t s);
+    // No-random constructor: sizes the member vectors for an nSrc x nDst
+    // problem but does NOT generate data. Use with setProblem() to inject a
+    // caller-supplied problem (e.g. across the FFI boundary).
+    FlowPlanner(int ns, int nd);
     ~FlowPlanner();
-    void run();
+    void runSwap(bool verbose = true);
     double flowCost();
 
 
     void initGM();
+
+    // Build the initial feasible flow from the current src/dst:
+    // flow[i][j] = src[i]*dst[j] / sum(src). Assumes sum(src) == sum(dst).
+    void initFeasibleFlow();
+
+    // Inject a caller-supplied problem (no truncation, no rebalancing) and
+    // build the initial feasible flow. Sizes must match nSrc/nDst.
+    void setProblem(const vector<double> &s,
+                    const vector<double> &d,
+                    const vector<vector<double>> &c);
 
     double oneStep();
 
@@ -77,7 +92,7 @@ class FlowPlanner {
     void showPlan();
     void checkPlan();
 
-    void setupLP();
+    void runGLPK();
 
     void showMatrix(const vector<vector<double>> &m);
 
