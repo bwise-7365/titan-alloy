@@ -18,9 +18,10 @@ public final class FPJNITest {
 
     public static void main(String[] args) {
 
+        int nDst = 30;
+        int nSrc = (int)(0.5 + 1.618034 * nDst);
         // generate random problems and solve them
-        runGeneratedCase("FlowPlan problem 8x5", 8, 5, 123456);
-        //runGeneratedCase("FlowPlan problem 20x10", 20, 10, 654321);
+        runGeneratedCase("FlowPlan problem "+nSrc+"x"+nDst, nSrc, nDst, 654321);
 
     }
 
@@ -88,6 +89,8 @@ public final class FPJNITest {
             System.out.println(row);
         }
 
+        // recalculate the total cost, mostly to check that
+        // we unpacked the flow plan correctly.
         double total = 0;
         for (int k = 0; k < flow.length; k++) {
             total += flow[k] * cost[k];
@@ -209,6 +212,7 @@ public final class FPJNITest {
         System.out.println("Attempting to solve " + name + " (" + nSrc + " x " + nDst+")");
 
         // This is where JNI to C++ is used
+        System.out.println("Calling C++ via JNI ... \n");
         double[] flow = FlowPlannerNative.solve(src, dst, cost);
 
         // check basic error conditions
