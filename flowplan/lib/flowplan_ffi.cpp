@@ -14,6 +14,8 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
                        const double *dst,  int32_t n_dst,
                        const double *cost,
                        double       *flow_out) {
+
+    const bool verbose = true;
     if (n_src <= 0 || n_dst <= 0) return -1;
     if (src == nullptr || dst == nullptr ||
         cost == nullptr || flow_out == nullptr) return -2;
@@ -28,9 +30,25 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
         }
     }
 
+    // this just allocates memory space
     FlowPlanner fp(n_src, n_dst);
+
+    //
     fp.setProblem(s, d, c);
-    fp.runSwap(false);
+
+
+    if (verbose) {
+        cout << endl << endl << "Starting swap solver\n";
+    }
+    // starting from gravity model plan, swaps edges to reduce cost.
+    fp.runSwap(verbose);
+    if (verbose) {
+        cout << endl << endl << "Starting GLPK solver\n";
+    }
+    fp.runGLPK(verbose);
+    if (verbose) {
+        cout << endl << endl << flush;
+    }
 
     for (int i = 0; i < n_src; i++) {
         for (int j = 0; j < n_dst; j++) {

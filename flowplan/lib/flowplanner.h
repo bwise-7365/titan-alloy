@@ -59,14 +59,18 @@ class FlowPlanner {
     FlowPlanner(int ns, int nd);
     ~FlowPlanner();
     void runSwap(bool verbose = true);
+
+    // given the current plan, compute total cost
     double flowCost();
 
 
+    // Creates random flow problem, then applies gravity model
+    // to get an initial feasible solution (but far from optimal).
     void initGM();
 
     // Build the initial feasible flow from the current src/dst:
     // flow[i][j] = src[i]*dst[j] / sum(src). Assumes sum(src) == sum(dst).
-    void initFeasibleFlow();
+    void applyGravityModel();
 
     // Inject a caller-supplied problem (no truncation, no rebalancing) and
     // build the initial feasible flow. Sizes must match nSrc/nDst.
@@ -74,6 +78,10 @@ class FlowPlanner {
                     const vector<double> &d,
                     const vector<vector<double>> &c);
 
+    // If possible, shift flow between edges to reduce total cost
+    // while maintaining feasibility.
+    // If possible, returns change (negative).
+    // If not, returns zero.
     double oneStep();
 
     int nSrc;
@@ -92,7 +100,9 @@ class FlowPlanner {
     void showPlan();
     void checkPlan();
 
-    void runGLPK();
+    // Given the src, dst and cost data, setup and run GLPK
+    // TODO: copy result back into the 'flow' matrix
+    void runGLPK(bool verbose = true);
 
     void showMatrix(const vector<vector<double>> &m);
 

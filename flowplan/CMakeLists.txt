@@ -42,20 +42,22 @@ target_include_directories(flowplan PRIVATE
 target_link_libraries(flowplan PRIVATE glpk::glpk)
 target_link_libraries(simple   PRIVATE glpk::glpk)
 
-# Shared library exposing the planner to Java via JNI. Uses the run()/oneStep()
-# heuristic only, so GLPK (fplp.cpp / glpk::glpk) is intentionally omitted.
+# Shared library exposing the planner to Java via JNI. The FFI path now calls
+# runGLPK(), so fplp.cpp and the glpk::glpk usage requirements (include dir +
+# static lib) are linked in below.
 find_package(JNI REQUIRED)
 add_library(flowplan_jni SHARED
         jni/flowplan_jni.cpp
         lib/flowplan_ffi.cpp
         lib/flowplanner.cpp
+        lib/fplp.cpp   # have to include GLPK
         lib/utils.cpp            # balancedSD symbol referenced by initGM
 )
 target_include_directories(flowplan_jni PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/lib
         ${JNI_INCLUDE_DIRS}
 )
-target_link_libraries(flowplan_jni PRIVATE ${JNI_LIBRARIES})
+target_link_libraries(flowplan_jni PRIVATE ${JNI_LIBRARIES} glpk::glpk)
 
 # --- Java JNI test driver -------------------------------------------------
 # CLion is a CMake/C++ IDE with no Java module, so FPJNITest.java shows a main()

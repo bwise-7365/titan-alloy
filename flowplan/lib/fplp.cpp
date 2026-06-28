@@ -6,7 +6,7 @@
 
 // With the data already loaded, generate the matrix for GLPK,
 // and run the solver.
-void FlowPlanner::runGLPK() {
+void FlowPlanner::runGLPK(bool verbose) {
     glp_prob *lp = glp_create_prob();
     glp_set_prob_name(lp,  "flow_cost_min");
     glp_set_obj_dir(lp, GLP_MIN);
@@ -128,8 +128,10 @@ void FlowPlanner::runGLPK() {
     // NOTE: This is where it actually runs Simplex
     glp_simplex(lp, NULL);
 
-    double z = glp_get_obj_val(lp);
-    printf("LP objective: %.2f\n", z);
+    if (verbose) {
+        double z = glp_get_obj_val(lp);
+        printf("LP objective: %.2f\n", z);
+    }
 
 
     double myCost = 0.0;
@@ -153,14 +155,16 @@ void FlowPlanner::runGLPK() {
                 }
             }
         }
-        cout <<endl << flush;
-        printf("Cost from GLPK: %.2f\n", myCost);
-        cout << endl;
-        if (nSrc*nDst <= 100*50) {
-            printf("Flows from GLPK:\n");
-            showMatrix(myFlow);
+        if (verbose) {
+            cout <<endl << flush;
+            printf("Cost from GLPK: %.2f\n", myCost);
+            cout << endl;
+            if (nSrc*nDst <= 100*50) {
+                printf("Flows from GLPK:\n");
+                showMatrix(myFlow);
+            }
+            cout << flush;
         }
-        cout << flush;
     }
 
     delete [] ia;
@@ -179,4 +183,3 @@ void FlowPlanner::runGLPK() {
 }
 
 // Copyright Ben Paul Wise. All Rights Reserved.
-

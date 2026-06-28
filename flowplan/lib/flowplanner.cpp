@@ -29,7 +29,9 @@ FlowPlanner::FlowPlanner(int ns, int nd) {
 FlowPlanner::~FlowPlanner() {
 }
 
-void FlowPlanner::initFeasibleFlow() {
+// Uses 'gravity model' to setup a feasible flow plan
+// which should be improved by swapping.
+void FlowPlanner::applyGravityModel() {
     double flowT = 0.0;
     for (int i = 0; i < nSrc; i++) {
         flowT += src[i];
@@ -43,6 +45,7 @@ void FlowPlanner::initFeasibleFlow() {
     }
 }
 
+
 void FlowPlanner::setProblem(const vector<double> &s,
                              const vector<double> &d,
                              const vector<vector<double>> &c) {
@@ -54,8 +57,9 @@ void FlowPlanner::setProblem(const vector<double> &s,
     dst = d;
     cost = c;
 
-    initFeasibleFlow();
+    applyGravityModel();
 }
+
 
 void FlowPlanner::initGM() {
 
@@ -111,12 +115,12 @@ void FlowPlanner::initGM() {
         cost[i] = vector<double>(nDst);
         cost[i].resize(nDst);
         for (int j = 0; j < nDst; j++) {
-            double d = distribution(prng);
+            const double d = distribution(prng);
             cost[i][j] = trunc( costMin + d*(costMax - costMin));
       }
     }
 
-    initFeasibleFlow();
+    applyGravityModel();
 }
 
 double FlowPlanner::flowCost() {
@@ -134,7 +138,7 @@ double FlowPlanner::oneStep() {
 
     checkPlan();
 
-    double fc0 = flowCost();
+    const double fc0 = flowCost();
     double bestDecline = - minDecline * fc0;
     bool realDecline = false;
 
@@ -142,9 +146,9 @@ double FlowPlanner::oneStep() {
         for (int j = 0; j < nDst; j++) {
             for (int m = 0; m < nSrc; m++) {
                 for (int n = 0; n < nDst; n++) {
-                    double disc = (cost[i][j] + cost[m][n]) - (cost[i][n]+cost[m][j]);
-                    double x = std::min(flow[i][n], flow[m][j]);
-                    double decline = disc*x;
+                    const double disc = (cost[i][j] + cost[m][n]) - (cost[i][n]+cost[m][j]);
+                    const double x = std::min(flow[i][n], flow[m][j]);
+                    const double decline = disc*x;
                     if (decline < bestDecline) {
                         bestDecline = decline;
                         realDecline = true;
@@ -170,11 +174,11 @@ double FlowPlanner::oneStep() {
 }
 
 void FlowPlanner::runSwap(bool verbose) {
-    double fc0 = flowCost();
+    const double fc0 = flowCost();
     if (verbose) printf("Initial cost: %12.3f\n", fc0);
 
     int iter = 0;
-    int maxIter = 500;
+    constexpr int maxIter = 500;
     double decline = -1.0;
     while ((decline < 0.0)  && (iter < maxIter)) {
         decline = oneStep();
@@ -188,9 +192,9 @@ void FlowPlanner::runSwap(bool verbose) {
 
     if (verbose) {
         printf("Initial cost: %12.3f\n", fc0);
-        double fc1 = flowCost();
+        const double fc1 = flowCost();
         printf("Final cost:   %12.3f\n", fc1);
-        double pct = 100.0 * (fc0 - fc1)/fc0;
+        const double pct = 100.0 * (fc0 - fc1)/fc0;
         printf("Percent reduction: %5.2f\n", pct);
         printf("Factor reduction:  %5.2f\n", fc0/fc1);
     }
