@@ -27,11 +27,11 @@ public final class FPJNITest {
 
     public static void main(String[] args) {
         long sTime = System.currentTimeMillis();
-        int nDst = 200; // 350;
-        int multiple = 5;
+        int nDst = 10; // 300;
+        int multiple = 2;
         int nSrc = multiple * ((int)(0.5 + (1.618034 * nDst)/multiple));
         // generate random problems and solve them
-        long seed = qTrans((int) sTime);
+        long seed = 123456; //qTrans((int) sTime);
         System.out.printf("Seed: %d\n", seed);
         runGeneratedCase("Flow problem "+nSrc+"->"+nDst, nSrc, nDst, seed);
 

@@ -7,8 +7,8 @@
 
 int main() {
     auto sTime = displayProgramStart("FlowPlanner", "0.0.1");
-    const int ns = 10; // 25; // 500;
-    const int nd =  6; //8; // 100;
+    const int nd = 10; //8; // 100;
+    const int ns = 16; // 25; // 500;
     const int s =  123456; // msRandom();
     printf("Making flow planner with %d sources and %d destinations \n",
         ns, nd);
@@ -16,11 +16,11 @@ int main() {
 
     if (ns * nd <= 100*50) {
         cout << endl;
-        fp0.showProblem();
+        fp0.showProblem(stdout);
         cout << endl;
 
         cout << "Gravity model plan:"<< endl;
-        fp0.showPlan();
+        fp0.showPlan(stdout);
         fp0.checkPlan();
 
         cout << endl;
@@ -28,7 +28,7 @@ int main() {
         cout << endl;
 
         cout << "Optimally swapped plan:"<< endl;
-        fp0.showPlan();
+        fp0.showPlan(stdout);
         fp0.checkPlan();
     }
 

@@ -17,7 +17,7 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
 
     //cout << "Starting flowplan_solve" << endl << flush;
 
-    const bool verbose = false;
+    const bool verbose = true;
     const bool swapP = false;
     if (n_src <= 0 || n_dst <= 0) return -1;
     if (src == nullptr || dst == nullptr ||
@@ -42,8 +42,9 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
         fp.runSwap(verbose);
     }
 
-
-    fp.runGLPK(verbose);
+    if (!swapP) {
+        fp.runGLPK(verbose);
+    }
 
     for (int i = 0; i < n_src; i++) {
         for (int j = 0; j < n_dst; j++) {

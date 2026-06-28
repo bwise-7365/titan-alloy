@@ -191,6 +191,7 @@ void FlowPlanner::runSwap(bool verbose) {
     const double fc0 = flowCost();
 
     if (verbose) {
+        showProblem(outputLog);
         fprintf(outputLog, "Initial cost from gravity model: %.4f\n", fc0);
     }
 
@@ -213,6 +214,7 @@ void FlowPlanner::runSwap(bool verbose) {
         const double pct = 100.0 * (fc0 - fc1)/fc0;
         fprintf(outputLog,"Percent reduction: %5.2f\n", pct);
         fprintf(outputLog,"Factor reduction:  %5.2f\n", fc0/fc1);
+        showPlan(outputLog);
     }
 
     fclose(outputLog);
@@ -254,13 +256,14 @@ void FlowPlanner::showMatrix(FILE* file, const vector<vector<double>> &m) {
         }
         fprintf(file, "\n");
     }
-    fprintf(file, "\n");
     return;
 }
 
 void FlowPlanner::showPlan(FILE* file) {
     fprintf(file, "Src->Dst flows, row = src, col = dst\n");
     showMatrix(file, flow);
+    double fc = flowCost();
+    fprintf(file, "Flow cost: %.4f\n", fc);
 }
 
 void FlowPlanner::checkPlan() {
