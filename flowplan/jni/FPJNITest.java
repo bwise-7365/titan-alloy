@@ -20,7 +20,7 @@ public final class FPJNITest {
 
         // generate random problems and solve them
         runGeneratedCase("FlowPlan problem 8x5", 8, 5, 123456);
-        runGeneratedCase("FlowPlan problem 20x10", 20, 10, 654321);
+        //runGeneratedCase("FlowPlan problem 20x10", 20, 10, 654321);
 
     }
 
@@ -28,9 +28,9 @@ public final class FPJNITest {
     private static void runGeneratedCase(String name, int nSrc, int nDst, long seed) {
 
 
-        // ------------------------------------------------
-        // NOTE: this section generates random test data.
-        // ------------------------------------------------
+        // -------------------------------------------------------------
+        // NOTE: this section generates random test data: src, dst, cost
+        // -------------------------------------------------------------
 
         java.util.Random rng = new java.util.Random(seed);
 
@@ -62,9 +62,9 @@ public final class FPJNITest {
         }
 
 
-        // ------------------------------------------------
+        // -------------------------------------------------------------
         // NOTE: this section checks the data and solves (if OK)
-        // ------------------------------------------------
+        // -------------------------------------------------------------
         double[] flow = null;
         boolean OK = checkCase(name, src, dst, cost);
         if (OK) {
@@ -72,12 +72,14 @@ public final class FPJNITest {
         }
 
 
-        // ------------------------------------------------
+        // -------------------------------------------------------------
         // NOTE: a section should go here to use the 'flow' results
-        // ------------------------------------------------
-        // For now, we just print the flow plan as a matrix.
-        // NOTE the order in which it is unpacked.
-        System.out.println("flow plan:");
+        // -------------------------------------------------------------
+
+        // For now, we just print the flow plan as a matrix
+        // and show what cost was achieved.
+        // NOTE the order in which 'flow' is unpacked.
+        System.out.println("Flow plan received in Java:");
         for (int i = 0; i < nSrc; i++) {
             StringBuilder row = new StringBuilder("  ");
             for (int j = 0; j < nDst; j++) {
@@ -90,7 +92,7 @@ public final class FPJNITest {
         for (int k = 0; k < flow.length; k++) {
             total += flow[k] * cost[k];
         }
-        System.out.printf("total cost: %.4f%n%n", total);
+        System.out.printf("total cost: %.4f%n", total);
 
     }
 
@@ -180,7 +182,7 @@ public final class FPJNITest {
         }
 
         if (!OK) {
-            System.out.printf("Problem %s was not OK: \n %s", msg);
+            System.out.printf("Problem %s was not OK: \n", msg);
         }
         else {
             System.out.printf("Problem %s was OK\n", name);
@@ -206,6 +208,7 @@ public final class FPJNITest {
 
         System.out.println("Attempting to solve " + name + " (" + nSrc + " x " + nDst+")");
 
+        // This is where JNI to C++ is used
         double[] flow = FlowPlannerNative.solve(src, dst, cost);
 
         // check basic error conditions

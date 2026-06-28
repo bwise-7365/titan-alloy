@@ -7,6 +7,8 @@
 #include <iostream>
 #include <random>
 
+
+// generates random flow problem of specified size with specified seed.
 FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
     nSrc = ns;
     nDst = nd;
@@ -14,6 +16,8 @@ FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
     initGM();
 }
 
+
+// Just allocates memory
 FlowPlanner::FlowPlanner(int ns, int nd) {
     nSrc = ns;
     nDst = nd;
@@ -27,10 +31,11 @@ FlowPlanner::FlowPlanner(int ns, int nd) {
 
 
 FlowPlanner::~FlowPlanner() {
+    // nothing yet
 }
 
-// Uses 'gravity model' to setup a feasible flow plan
-// which should be improved by swapping.
+// Uses 'gravity model' to set up a feasible flow plan
+// which swapping should improve.
 void FlowPlanner::applyGravityModel() {
     double flowT = 0.0;
     for (int i = 0; i < nSrc; i++) {
@@ -174,8 +179,20 @@ double FlowPlanner::oneStep() {
 }
 
 void FlowPlanner::runSwap(bool verbose) {
+
+    const string outputNameLog = outputBaseName + ".log.txt";
+
+    FILE* outputLog = fopen(outputNameLog.c_str(), "w");
+
+    if (verbose) {
+        fprintf(outputLog, "Starting swap solver\n");
+    }
+
     const double fc0 = flowCost();
-    if (verbose) printf("Initial cost: %12.3f\n", fc0);
+
+    if (verbose) {
+        fprintf(outputLog, "Initial cost from gravity model: %.4f\n", fc0);
+    }
 
     int iter = 0;
     constexpr int maxIter = 500;
@@ -184,64 +201,66 @@ void FlowPlanner::runSwap(bool verbose) {
         decline = oneStep();
         iter++;
         if (verbose) {
-            printf("%3d/%3d decline: %12.3f\n",
+            fprintf(outputLog,"%3d/%3d decline: %14.4f\n",
                 iter, maxIter, decline);
-            cout << flush;
         }
     }
 
     if (verbose) {
-        printf("Initial cost: %12.3f\n", fc0);
+        fprintf(outputLog,"Initial cost: %14.4f\n", fc0);
         const double fc1 = flowCost();
-        printf("Final cost:   %12.3f\n", fc1);
+        fprintf(outputLog,"Final cost:   %14.4f\n", fc1);
         const double pct = 100.0 * (fc0 - fc1)/fc0;
-        printf("Percent reduction: %5.2f\n", pct);
-        printf("Factor reduction:  %5.2f\n", fc0/fc1);
+        fprintf(outputLog,"Percent reduction: %5.2f\n", pct);
+        fprintf(outputLog,"Factor reduction:  %5.2f\n", fc0/fc1);
     }
+
+    fclose(outputLog);
 }
 
 
-void FlowPlanner::showProblem() {
-    printf("Flow planner problem: %d sources, %d destinations\n", nSrc, nDst);
+void FlowPlanner::showProblem(FILE* file) {
 
-    printf("Sources\n");
+    fprintf(file, "Flow planner problem: %d sources, %d destinations\n", nSrc, nDst);
+
+    fprintf(file, "Sources\n");
     for (int i = 0; i < nSrc; i++) {
-        printf("Source %3d capacity %8.2f \n", 1+i, src[i]);
+        fprintf(file, "Source %3d capacity %8.2f \n", 1+i, src[i]);
     }
-    cout << endl;
+    fprintf(file, "\n");
 
-    printf("Destinations\n");
+    fprintf(file, "Destinations\n");
     for (int i = 0; i < nDst; i++) {
-        printf("Destination %3d requirement %8.2f \n", 1+i, dst[i]);
+        fprintf(file, "Destination %3d requirement %8.2f \n", 1+i, dst[i]);
     }
-    cout << endl;
+    fprintf(file, "\n");
 
 
-    printf("Per-unit costs, row = src, col = dst\n");
-    showMatrix(cost);
+    fprintf(file, "Per-unit costs, row = src, col = dst\n");
+    showMatrix(file, cost);
     return;
 }
 
-void FlowPlanner::showMatrix(const vector<vector<double>> &m) {
-    printf("   ");
+void FlowPlanner::showMatrix(FILE* file, const vector<vector<double>> &m) {
+    fprintf(file, "   ");
     for (int j = 0; j < nDst; j++) {
-        printf("         %3d", 1+j);
+        fprintf(file,"         %3d", 1+j);
     }
-    cout << endl;
+    fprintf(file, "\n");
     for (int i = 0; i < nSrc; i++) {
-        printf("%3d ", 1+i);
+        fprintf(file, "%3d ", 1+i);
         for (int j = 0; j < nDst; j++) {
-            printf("  %9.2f ", m[i][j]);
+            fprintf(file, "  %9.2f ", m[i][j]);
         }
-        cout << endl << flush;
+        fprintf(file, "\n");
     }
-    cout << endl;
+    fprintf(file, "\n");
     return;
 }
 
-void FlowPlanner::showPlan() {
-    printf("Src->Dst flows, row = src, col = dst\n");
-    showMatrix(flow);
+void FlowPlanner::showPlan(FILE* file) {
+    fprintf(file, "Src->Dst flows, row = src, col = dst\n");
+    showMatrix(file, flow);
 }
 
 void FlowPlanner::checkPlan() {
@@ -272,8 +291,8 @@ void FlowPlanner::checkPlan() {
     assert(fabs(sSum - fTotal) < tol);
     assert(fabs(dSum - fTotal) < tol);
 
-    vector<double>  s2; // src[i] is the amount available from source i
-    vector<double>  d2;
+    //vector<double>  s2; // src[i] is the amount available from source i
+    //vector<double>  d2;
 
     return;
 }

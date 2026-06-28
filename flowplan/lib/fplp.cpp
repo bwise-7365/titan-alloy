@@ -7,13 +7,25 @@
 // With the data already loaded, generate the matrix for GLPK,
 // and run the solver.
 void FlowPlanner::runGLPK(bool verbose) {
+
+
+    const string outputNameLP = outputBaseName + ".lp.txt";
+    const string outputNameLog = outputBaseName + ".log.txt";
+
+    FILE* outputLog = fopen(outputNameLog.c_str(), "w");
+
+
+    if (verbose) {
+        fprintf(outputLog, "Starting GLPK solver\n");
+    }
+
     glp_prob *lp = glp_create_prob();
     glp_set_prob_name(lp,  "flow_cost_min");
     glp_set_obj_dir(lp, GLP_MIN);
 
     const int arraySize = 1+(nSrc*nDst);
 
-    vector<char*> flowNames = vector<char*>(arraySize);
+    auto flowNames = vector<char*>(arraySize);
 
     { // create variable names
         int vNdx = 1;
@@ -123,14 +135,14 @@ void FlowPlanner::runGLPK(bool verbose) {
     glp_load_matrix(lp, coeffSize-1, ia, ja, ar);
 
     // CPLEX LP format
-    glp_write_lp(lp, NULL, "flow_min_v00.lp.txt");
+    glp_write_lp(lp, NULL, outputNameLP.c_str());
 
     // NOTE: This is where it actually runs Simplex
     glp_simplex(lp, NULL);
 
     if (verbose) {
         double z = glp_get_obj_val(lp);
-        printf("LP objective: %.2f\n", z);
+        fprintf(outputLog, "LP objective: %.4f\n", z);
     }
 
 
@@ -148,6 +160,7 @@ void FlowPlanner::runGLPK(bool verbose) {
             for (int j = 1; j <= nDst; j++) {
                 double xij = glp_get_col_prim(lp, k);
                 myFlow[i-1][j-1] = xij;
+                flow[i-1][j-1] = xij; // copy GLPK's solution so it can be displayed
                 k++;
                 if (0.0 < xij) {
                     //printf("f(%2d, %2d) = %.2f\n", i, j, xij);
@@ -157,15 +170,19 @@ void FlowPlanner::runGLPK(bool verbose) {
         }
         if (verbose) {
             cout <<endl << flush;
-            printf("Cost from GLPK: %.2f\n", myCost);
+            fprintf(outputLog, "Cost from GLPK: %.4f\n", myCost);
             cout << endl;
             if (nSrc*nDst <= 100*50) {
-                printf("Flows from GLPK:\n");
-                showMatrix(myFlow);
+                fprintf(outputLog, "Flow from GLPK, row = src, col = dst\n");
+                showMatrix(outputLog, myFlow);
             }
             cout << flush;
         }
     }
+
+    fclose(outputLog);
+    outputLog = nullptr;
+
 
     delete [] ia;
     ia = nullptr;

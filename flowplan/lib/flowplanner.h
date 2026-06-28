@@ -53,18 +53,21 @@ tuple<vector<int>, vector<int>, int> balancedSD(const vector<double> &src, const
 class FlowPlanner {
     public:
     explicit FlowPlanner(int ns, int nd, uint64_t s);
-    // No-random constructor: sizes the member vectors for an nSrc x nDst
-    // problem but does NOT generate data. Use with setProblem() to inject a
-    // caller-supplied problem (e.g. across the FFI boundary).
+
+    // Sizes the member vectors for an nSrc x nDst
+    // problem but does NOT use or generate data.
     FlowPlanner(int ns, int nd);
+
     ~FlowPlanner();
+
+    // Iteratively improve a flow plan
+    // by swapping flows to reduce cost.
     void runSwap(bool verbose = true);
 
     // given the current plan, compute total cost
     double flowCost();
 
-
-    // Creates random flow problem, then applies gravity model
+    // Create a random flow problem, then applies gravity model
     // to get an initial feasible solution (but far from optimal).
     void initGM();
 
@@ -96,16 +99,17 @@ class FlowPlanner {
 
     const double minDecline = 1.0e-6; // min fractional drop (more than round-off error)
 
-    void showProblem();
-    void showPlan();
+    void showProblem(FILE* file);
+    void showPlan(FILE* file);
     void checkPlan();
 
     // Given the src, dst and cost data, setup and run GLPK
-    // TODO: copy result back into the 'flow' matrix
+    // and copy result back into the 'flow' matrix
     void runGLPK(bool verbose = true);
 
-    void showMatrix(const vector<vector<double>> &m);
+    void showMatrix(FILE* file, const vector<vector<double>> &m);
 
+    string outputBaseName = "flow_min_v00";
     protected:
 
 private:
