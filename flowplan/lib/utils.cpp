@@ -2,8 +2,6 @@
 
 #include "flowplanner.h"
 
-
-
 char* newChars(int n) {
     char* s = new char[n];
     for (int i = 0; i < n; i++) {

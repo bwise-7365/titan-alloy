@@ -3,8 +3,8 @@
 // Created by bwise on 6/24/2026.
 //
 
+#include <assert.h>
 #include "flowplanner.h"
-#include <iostream>
 #include <random>
 
 
