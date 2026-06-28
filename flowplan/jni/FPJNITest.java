@@ -27,7 +27,7 @@ public final class FPJNITest {
 
     public static void main(String[] args) {
         long sTime = System.currentTimeMillis();
-        int nDst = 400;
+        int nDst = 200; // 350;
         int multiple = 5;
         int nSrc = multiple * ((int)(0.5 + (1.618034 * nDst)/multiple));
         // generate random problems and solve them

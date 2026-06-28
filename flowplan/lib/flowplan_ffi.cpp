@@ -17,7 +17,7 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
 
     //cout << "Starting flowplan_solve" << endl << flush;
 
-    const bool verbose = true;
+    const bool verbose = false;
     const bool swapP = false;
     if (n_src <= 0 || n_dst <= 0) return -1;
     if (src == nullptr || dst == nullptr ||
