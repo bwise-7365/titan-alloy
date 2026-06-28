@@ -65,14 +65,14 @@ void displayProgramEnd(time_point<system_clock> st) {
 
 
 uint64_t msRandom() {
-
     using std::chrono::microseconds;
     using std::chrono::duration_cast;
 
     microseconds ms = duration_cast<microseconds>(system_clock::now().time_since_epoch());
     uint64_t s2 = ms.count(); // microseconds since the Unix Epoch
-     return s2;
+    return s2;
 }
+
 
 tuple<vector<int>, vector<int>, int> balancedSD(const vector<double> &src, const vector<double> &dst) {
     int sSum = 0;

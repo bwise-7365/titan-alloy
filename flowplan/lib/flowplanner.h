@@ -6,6 +6,8 @@
 // (GLPK) was setup and used correctly.
 // GLPK is not the best or fastest open-source.
 // HiGHS (github.com/ERGO-Code/HiGHS)  has the MIT license and is native C++.
+// HiGHS claims to have a GAMS interface at https://github.com/coin-or/GAMSlinks/
+// so perhaps GAMS Studio, free version, could be used with a local HiGHS solver.
 //
 #ifndef FLOWPLANNER_H
 #define FLOWPLANNER_H
