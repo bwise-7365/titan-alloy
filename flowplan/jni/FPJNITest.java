@@ -16,12 +16,28 @@ public final class FPJNITest {
     // Fractional tolerance for floating-point comparisons.
     private static final double EPS = 1.0e-6;
 
-    public static void main(String[] args) {
+    private static long qTrans(int x) {
+        int a = 3;
+        int n = 4;
+        int c = 17;
+        int y = (x+a)*(n*x + c); // anything from -2^31 to +2^31 - 1
+        long z = Integer.toUnsignedLong(y); // anything from 0 to 2^32 - 1
+        return z;
+    }
 
-        int nDst = 30;
-        int nSrc = (int)(0.5 + 1.618034 * nDst);
+    public static void main(String[] args) {
+        long sTime = System.currentTimeMillis();
+        int nDst = 400;
+        int multiple = 5;
+        int nSrc = multiple * ((int)(0.5 + (1.618034 * nDst)/multiple));
         // generate random problems and solve them
-        runGeneratedCase("FlowPlan problem "+nSrc+"x"+nDst, nSrc, nDst, 654321);
+        long seed = qTrans((int) sTime);
+        System.out.printf("Seed: %d\n", seed);
+        runGeneratedCase("Flow problem "+nSrc+"->"+nDst, nSrc, nDst, seed);
+
+        long eTime = System.currentTimeMillis();
+        double elapsed = (eTime - sTime)/1000.0;
+        System.out.printf("Elapsed time %.3f seconds\n", elapsed);
 
     }
 
@@ -86,7 +102,7 @@ public final class FPJNITest {
             for (int j = 0; j < nDst; j++) {
                 row.append(String.format("%8.2f", flow[i * nDst + j]));
             }
-            System.out.println(row);
+          //  System.out.println(row);
         }
 
         // recalculate the total cost, mostly to check that
@@ -125,7 +141,7 @@ public final class FPJNITest {
         final int nDst = dst.length;
         final int nCost = cost.length;
 
-        System.out.println("=== " + name + " (" + nSrc + " x " + nDst + ") ===");
+        //System.out.println("=== '" + name + "' (" + nSrc + " x " + nDst + ") ===");
         String msg = "";
 
         if (0 == nSrc) {
@@ -185,10 +201,10 @@ public final class FPJNITest {
         }
 
         if (!OK) {
-            System.out.printf("Problem %s was not OK: \n", msg);
+            System.out.printf("Problem '%s' was not OK: \n", msg);
         }
         else {
-            System.out.printf("Problem %s was OK\n", name);
+            System.out.printf("Problem '%s' was OK\n", name);
         }
 
         return OK;
@@ -209,7 +225,7 @@ public final class FPJNITest {
         final int nSrc = src.length;
         final int nDst = dst.length;
 
-        System.out.println("Attempting to solve " + name + " (" + nSrc + " x " + nDst+")");
+        System.out.println("Attempting to solve '" + name + "' which is (" + nSrc + " x " + nDst+")");
 
         // This is where JNI to C++ is used
         System.out.println("Calling C++ via JNI ... \n");

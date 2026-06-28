@@ -14,8 +14,11 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
                        const double *dst,  int32_t n_dst,
                        const double *cost,
                        double       *flow_out) {
+
+    //cout << "Starting flowplan_solve" << endl << flush;
+
     const bool verbose = true;
-    const bool swapP = true;
+    const bool swapP = false;
     if (n_src <= 0 || n_dst <= 0) return -1;
     if (src == nullptr || dst == nullptr ||
         cost == nullptr || flow_out == nullptr) return -2;
@@ -47,6 +50,8 @@ int32_t flowplan_solve(const double *src,  int32_t n_src,
             flow_out[static_cast<size_t>(i) * n_dst + j] = fp.flow[i][j];
         }
     }
+
+    //cout << "Finished flowplan_solve" << endl << flush;
 
     return 0;
 }

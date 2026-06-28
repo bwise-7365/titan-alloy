@@ -134,11 +134,21 @@ void FlowPlanner::runGLPK(bool verbose) {
 
     glp_load_matrix(lp, coeffSize-1, ia, ja, ar);
 
-    // CPLEX LP format
-    glp_write_lp(lp, NULL, outputNameLP.c_str());
+    if (verbose) {
+        // CPLEX LP format
+        glp_write_lp(lp, NULL, outputNameLP.c_str());
+    }
 
     // NOTE: This is where it actually runs Simplex
-    glp_simplex(lp, NULL);
+    glp_smcp parm;
+    glp_init_smcp(&parm);
+    //parm.msg_lev  = GLP_MSG_ALL;   // full iteration log  ← diagnostic
+    parm.msg_lev = GLP_MSG_OFF;   // silence GLPK entirely
+    parm.presolve = GLP_ON;        // default is GLP_OFF for glp_simplex
+    parm.meth = GLP_DUALP;
+    glp_simplex(lp, &parm);
+
+
 
     if (verbose) {
         double z = glp_get_obj_val(lp);

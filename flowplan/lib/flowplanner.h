@@ -1,6 +1,11 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 //
-// Created by bwise on 6/24/2026.
+// The initial version of FlowPlanner used
+// an iterative swapping scheme: slow but obviously correct.
+// That was used as the baseline to verify that the GNU Linear Programming Kit
+// (GLPK) was setup and used correctly.
+// GLPK is not the best or fastest open-source.
+// HiGHS (github.com/ERGO-Code/HiGHS)  has the MIT license and is native C++.
 //
 #ifndef FLOWPLANNER_H
 #define FLOWPLANNER_H
