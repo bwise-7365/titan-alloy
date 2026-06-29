@@ -23,6 +23,8 @@ add_executable(flowplan
         src/main.cpp
         lib/flowplanner.h
         lib/flowplanner.cpp
+        lib/fpSwap.cpp
+        lib/fpMatch.cpp
         lib/utils.cpp
         lib/fplp.cpp
 )
@@ -32,12 +34,13 @@ add_executable(bdfp
         src/bdmain.cpp
         lib/bdflowplanner.h
         lib/bdflowplanner.cpp
+        lib/bdMatch.cpp
+        lib/bdSwap.cpp
         lib/utils.cpp
 )
 
 add_executable( simple
         src/simple.cpp
-
 )
 
 target_include_directories(flowplan PRIVATE
@@ -61,6 +64,8 @@ add_library(flowplan_jni SHARED
         jni/flowplan_jni.cpp
         lib/flowplan_ffi.cpp
         lib/flowplanner.cpp
+        lib/fpSwap.cpp
+        lib/fpMatch.cpp
         lib/fplp.cpp   # have to include GLPK
         lib/utils.cpp            # balancedSD symbol referenced by initGM
 )

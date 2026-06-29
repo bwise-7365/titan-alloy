@@ -1,17 +1,18 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-//
-// Created by bwise on 6/24/2026.
-//
 
 #include <assert.h>
 #include "bdflowplanner.h"
+
+#include <numeric>
 #include <random>
 
 
-// Copyright Ben Paul Wise. All Rights Reserved.
+BDFP::BDFP(int ns, int nbd, int nd, int capT, int rqtT, uint64_t s) {
 
+    const string outputNameLog = outputBaseName + ".log.txt";
 
-BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
+    outputLog = fopen(outputNameLog.c_str(), "w");
+
     nNodes = ns + nbd + nd;
     seed = s;
 
@@ -32,8 +33,6 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
 
     // For now, we say there is more available than can
     // be shipped, so the requests add to less than capacity.
-    const double capT= 4000.0;
-    const double rqtT = 4000.0;
     const double dTol = 1.0E-6;
     const double minDist = 0.1; // even in the same node, movement between buildings has a cost
 
@@ -77,16 +76,17 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
     rqt[nNodes-1] = rqt[nNodes-1] + rqtT - rTotal; // same
 
 
-    // We calculate cost from distance.
+
+    // We calculate costs from distances.
     // vertical is always 200 to 400.
     //
     // Initially, I put
-    // pure sources on left, 100 to 200
-    // mixed in the middle, 400 to 500
-    // pure consumers on right, 700 to 800
+    // pure sources on the left, 100 to 200,
+    // mixed in the middle, 400 to 500, and
+    // pure consumers on the right, 700 to 800.
     //
     // If there are few nodes and/or they
-    // are largely in a left to right direction,
+    // are largely in a left-to-right direction,
     // then there is little optimization to be done.
     // Hence, I mixed them up a bit.
     double sLeft = 0.0; // 100.0;
@@ -145,8 +145,12 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
         }
     }
 
-    // create the classic gravity model plan
-    assert(fabs(capT-rqtT) < dTol);
+    // Because sum of capacities is at least sum
+    // of requirements (possibly =, possibly 10x or more)
+    // we cannot create the classic gravity model plan.
+    // But we can make my modification.
+
+    assert(rqtT <= capT);
     flow = vector<vector<double>>(nNodes);
     flow.resize(nNodes);
     for (int i = 0; i < nNodes; i++) {
@@ -155,7 +159,7 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
         double ci = cap[i];
         for (int j = 0; j < nNodes; j++) {
             double rj = rqt[j];
-            flow[i][j] = ci*rj/capT;
+            flow[i][j] = ci*rj/capT;  // divide by the larger of the two
         }
     }
 
@@ -164,7 +168,7 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
         for (int j = 0; j < nNodes; j++) {
             si += flow[i][j];
         }
-        double ci = cap[i];
+        double ci = (rqtT * cap[i])/capT;
         assert(fabs(si-ci) < dTol);
     }
     for (int i = 0; i < nNodes; i++) {
@@ -197,7 +201,8 @@ BDFP::BDFP(const int ns, const int nbd, const int nd, const uint64_t s) {
 }
 
 BDFP::~BDFP() {
-    // nothing yet
+
+    fclose(outputLog);
 }
 
 double BDFP::flowCost() {
@@ -223,7 +228,7 @@ void BDFP::checkPlan() {
             lhs = lhs + flow[i][j];
             rhs = rhs + flow[j][i];
         }
-        assert(fabs(lhs-rhs) < dTol);
+        assert(rhs <= lhs); // watch out for round-off
     }
 
     for (int i=0; i<nNodes; i++) {
@@ -236,7 +241,7 @@ void BDFP::checkPlan() {
         const double ri = rqt[i];
         const double ci = cap[i];
         assert(fabs(inFlow-ri) < dTol);
-        assert(fabs(outFlow-ci) < dTol);
+        assert(outFlow <= ci); // watch out for round-off
     }
 }
 
@@ -244,105 +249,24 @@ void BDFP::setProblem(const vector<double> &cp, const vector<double> &rq, const 
 
 }
 
-void BDFP::showProblem(FILE* file) {
+void BDFP::showProblem() {
     for (int i = 0; i < nNodes; i++) {
-        fprintf(file, "Node %3d  capacity %6.1f  request  %6.1f\n", i+1, cap[i], rqt[i]);
+        fprintf(outputLog, "Node %3d  capacity %6.1f  request  %6.1f\n", i+1, cap[i], rqt[i]);
     }
-    fprintf(file, "Unit cost of row->col flow\n");
-    showMatrix(file, cost);
+    fprintf(outputLog, "Unit cost of row->col flow\n");
+    showMatrix(cost);
 
 }
 
-void BDFP::showPlan(FILE* file) {
-    fprintf(file, "Flow row->col\n");
-    showMatrix(file, flow);
+void BDFP::showPlan() {
+    fprintf(outputLog, "Flow row->col\n");
+    showMatrix(flow);
     double fc = flowCost();
-    fprintf(file, "Flow cost: %.4f\n", fc);
+    fprintf(outputLog, "Flow cost: %.4f\n", fc);
 }
 
-
-void BDFP::showMatrix(FILE *file, const vector<vector<double> > &m) {
-    Utils::showMatrix(file, nNodes, nNodes, m);
+void BDFP::showMatrix(const vector<vector<double> > &m) {
+    Utils::showMatrix(outputLog, nNodes, nNodes, m);
 }
 
-void BDFP::runSwap(bool verbose) {
-    const string outputNameLog = outputBaseName + ".log.txt";
-
-    FILE* outputLog = fopen(outputNameLog.c_str(), "w");
-
-    if (verbose) {
-        fprintf(outputLog, "Starting swap solver\n");
-    }
-
-    const double fc0 = flowCost();
-
-    if (verbose) {
-        showProblem(outputLog);
-        fprintf(outputLog, "Initial cost from gravity model: %.4f\n", fc0);
-    }
-
-    int iter = 0;
-    constexpr int maxIter = 500;
-    double decline = -1.0;
-    while ((decline < 0.0)  && (iter < maxIter)) {
-        decline = oneStep();
-        iter++;
-        if (verbose) {
-            fprintf(outputLog,"%3d/%3d decline: %14.4f\n",
-                iter, maxIter, decline);
-            fflush(outputLog);
-        }
-    }
-
-    if (verbose) {
-        fprintf(outputLog,"Initial cost: %14.4f\n", fc0);
-        const double fc1 = flowCost();
-        fprintf(outputLog,"Final cost:   %14.4f\n", fc1);
-        const double pct = 100.0 * (fc0 - fc1)/fc0;
-        fprintf(outputLog,"Percent reduction: %5.2f\n", pct);
-        fprintf(outputLog,"Factor reduction:  %5.2f\n", fc0/fc1);
-        showPlan(outputLog);
-    }
-
-    fclose(outputLog);
-}
-
-double BDFP::oneStep() {
-
-    //checkPlan(); // this was for verification during development. Use it if you change things.
-
-    const double fc0 = flowCost();
-    double bestDecline = - minDecline * fc0;
-    bool realDecline = false;
-
-    for (int i = 0; i < nNodes; i++) {
-        for (int j = 0; j < nNodes; j++) {
-            for (int m = 0; m < nNodes; m++) {
-                for (int n = 0; n < nNodes; n++) {
-                    const double disc = (cost[i][j] + cost[m][n]) - (cost[i][n]+cost[m][j]);
-                    const double x = std::min(flow[i][n], flow[m][j]);
-                    const double decline = disc*x;
-                    if (decline < bestDecline) {
-                        bestDecline = decline;
-                        realDecline = true;
-                        flow[i][j] = flow[i][j] + x;
-                        flow[i][n] = flow[i][n] - x;
-                        flow[m][n] = flow[m][n] + x;
-                        flow[m][j] = flow[m][j] - x;
-                    }
-                }
-            }
-        }
-    }
-
-    checkPlan(); // this was for verification during development. Use it if you change things.
-
-
-    double actualDecline = 0.0;
-    if (realDecline) {
-        actualDecline = bestDecline;
-    }
-    return actualDecline;
-
-}
 // Copyright Ben Paul Wise. All Rights Reserved.

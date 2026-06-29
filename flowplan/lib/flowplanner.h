@@ -49,6 +49,13 @@ class FlowPlanner {
     // by swapping flows to reduce cost.
     void runSwap(bool verbose = true);
 
+    // Setup a case where demand <= supply
+    void initMatch(int ns, int nd, double sdRatio, uint64_t s);
+
+    // When total supply exceeds total demand (perhaps 10x or more)
+    // we match demand with closest supplier
+    void matchClosest(bool verbose = true);
+
     // If possible, shift flow between edges to reduce total cost
     // while maintaining feasibility.
     // If possible, returns change (negative).

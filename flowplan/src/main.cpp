@@ -17,6 +17,16 @@ int main() {
         ns, nd);
     auto fp0 = FlowPlanner(ns, nd, s);
 
+    fp0.initMatch(10, 20, 5.0, s);
+    fp0.showProblem(stdout);
+    fp0.showPlan(stdout);
+    cout << flush;
+    fp0.matchClosest(true);
+    cout << flush;
+    fp0.showPlan(stdout);
+    cout << flush;
+    cout << flush;
+
     if (ns * nd <= 100*50) {
         cout << endl;
         fp0.showProblem(stdout);
