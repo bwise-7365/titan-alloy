@@ -20,13 +20,19 @@ list(APPEND CMAKE_PREFIX_PATH "C:/glpk")
 find_package(glpk CONFIG REQUIRED)
 
 add_executable(flowplan
-
         src/main.cpp
-
         lib/flowplanner.h
         lib/flowplanner.cpp
         lib/utils.cpp
         lib/fplp.cpp
+)
+
+
+add_executable(bdfp
+        src/bdmain.cpp
+        lib/bdflowplanner.h
+        lib/bdflowplanner.cpp
+        lib/utils.cpp
 )
 
 add_executable( simple
@@ -38,8 +44,13 @@ target_include_directories(flowplan PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
 
+target_include_directories(bdfp PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib
+)
+
 # glpk::glpk carries the include dir (C:/glpk/include) and the static lib automatically
 target_link_libraries(flowplan PRIVATE glpk::glpk)
+target_link_libraries(bdfp     PRIVATE glpk::glpk)
 target_link_libraries(simple   PRIVATE glpk::glpk)
 
 # Shared library exposing the planner to Java via JNI. The FFI path now calls

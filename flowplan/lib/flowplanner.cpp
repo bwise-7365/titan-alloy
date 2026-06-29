@@ -4,11 +4,11 @@
 //
 
 #include <assert.h>
-#include "flowplanner.h"
 #include <random>
+#include "utils.h"
+#include "flowplanner.h"
 
 
-// generates random flow problem of specified size with specified seed.
 FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
     nSrc = ns;
     nDst = nd;
@@ -21,7 +21,7 @@ FlowPlanner::FlowPlanner(int ns, int nd, uint64_t s) {
 FlowPlanner::FlowPlanner(int ns, int nd) {
     nSrc = ns;
     nDst = nd;
-    seed = dSeed;
+    seed = Utils::dSeed;
     src.resize(nSrc);
     dst.resize(nDst);
     flow.assign(nSrc, vector<double>(nDst));
@@ -105,7 +105,7 @@ void FlowPlanner::initGM() {
     // for convenience, we truncate to integer values.
     // for LP feasibility, we will have to ensure that sum
     // of D <= sum of S, despite round-off errors.
-    auto [iSrc, iDst, iSum] = balancedSD(src, dst);
+    auto [iSrc, iDst, iSum] = Utils::balancedSD(src, dst);
     for (int i=0; i<nSrc; i++) {
         src[i] = iSrc[i];
     }
@@ -141,7 +141,7 @@ double FlowPlanner::flowCost() {
 
 double FlowPlanner::oneStep() {
 
-    checkPlan();
+    //checkPlan(); // this was for verification during development. Use it if you change things.
 
     const double fc0 = flowCost();
     double bestDecline = - minDecline * fc0;
@@ -167,7 +167,7 @@ double FlowPlanner::oneStep() {
         }
     }
 
-    checkPlan();
+    checkPlan(); // this was for verification during development. Use it if you change things.
 
 
     double actualDecline = 0.0;
@@ -244,18 +244,7 @@ void FlowPlanner::showProblem(FILE* file) {
 }
 
 void FlowPlanner::showMatrix(FILE* file, const vector<vector<double>> &m) {
-    fprintf(file, "   ");
-    for (int j = 0; j < nDst; j++) {
-        fprintf(file,"         %3d", 1+j);
-    }
-    fprintf(file, "\n");
-    for (int i = 0; i < nSrc; i++) {
-        fprintf(file, "%3d ", 1+i);
-        for (int j = 0; j < nDst; j++) {
-            fprintf(file, "  %9.2f ", m[i][j]);
-        }
-        fprintf(file, "\n");
-    }
+    Utils::showMatrix(file, nSrc, nDst, m);
     return;
 }
 

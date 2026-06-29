@@ -33,7 +33,10 @@ public final class FPJNITest {
         // generate random problems and solve them
         long seed = 123456; //qTrans((int) sTime);
         System.out.printf("Seed: %d\n", seed);
-        runGeneratedCase("Flow problem "+nSrc+"->"+nDst, nSrc, nDst, seed);
+        String pName = "Flow problem "+nSrc+"->"+nDst;
+
+        // the GLPK value for 16 srcs, 10 dst, seed 123456 should be 41115.2634
+        runGeneratedCase(pName, nSrc, nDst, seed);
 
         long eTime = System.currentTimeMillis();
         double elapsed = (eTime - sTime)/1000.0;
@@ -48,6 +51,8 @@ public final class FPJNITest {
         // -------------------------------------------------------------
         // NOTE: this section generates random test data: src, dst, cost
         // -------------------------------------------------------------
+
+        // NOTE: given the same seed, it will produce a different problem than C++ 'main'
 
         java.util.Random rng = new java.util.Random(seed);
 
@@ -82,8 +87,8 @@ public final class FPJNITest {
         // -------------------------------------------------------------
         // NOTE: this section checks the data and solves (if OK)
         // -------------------------------------------------------------
-        double[] flow = null;
         boolean OK = checkCase(name, src, dst, cost);
+        double[] flow = null;
         if (OK) {
             flow = runCase(name, src, dst, cost);
         }

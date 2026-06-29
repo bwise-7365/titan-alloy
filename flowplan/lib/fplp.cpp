@@ -1,5 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
+#include "utils.h"
 #include "flowplanner.h"
 #include <glpk.h>
 
@@ -8,6 +9,7 @@
 // and run the solver.
 void FlowPlanner::runGLPK(bool verbose) {
 
+    using Utils::newChars;
 
     const string outputNameLP = outputBaseName + ".lp.txt";
     const string outputNameLog = outputBaseName + ".log.txt";
