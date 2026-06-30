@@ -1,5 +1,5 @@
-#ifndef LVI_DHAN06_HPP
-#define LVI_DHAN06_HPP
+#ifndef VINCP_DHAN06_HPP
+#define VINCP_DHAN06_HPP
 
 // ============================================================================
 // C++20 / Eigen translation of the GNU Octave routine dHan06.
@@ -17,12 +17,9 @@
 
 #include <Eigen/Dense>
 #include <functional>
+#include "vincp.hpp"
 
-namespace lvi {
-
-// Projection onto the convex set K that defines the variational inequality.
-// Given a point v in R^n, returns the Euclidean projection of v onto K.
-using Projector = std::function<Eigen::VectorXd(const Eigen::VectorXd&)>;
+namespace VINCP {
 
 // Optional per-iteration logging hook, called at the requested frequency.
 // If empty, no logging is performed (the Octave printf is opt-in here).
@@ -37,14 +34,6 @@ struct DHan06Params {
     double tau0 = 0.5;                // initial tau
     int    tauN = 10;                 // 'n' in the tau schedule
     double divergenceFactor = 100.0;  // guard: mag must stay below factor * initialMag
-};
-
-// Result of a solve. 'mag' is the squared Euclidean norm of the residual e at
-// termination -- the same quantity the tolerance 'magTol' is compared against.
-struct DHan06Result {
-    Eigen::VectorXd x;
-    double mag = 0.0;
-    int    iter = 0;
 };
 
 // One element of the tau(k) schedule. Mirrors the Octave sub-function: returns
@@ -66,9 +55,9 @@ double tau(double t0, int n, int k);
 // Throws std::invalid_argument on inconsistent dimensions or invalid
 // parameters, and std::runtime_error on a NaN residual, detected divergence,
 // or a non-finite linear solve. It never silently substitutes a default result.
-DHan06Result dHan06(const Eigen::VectorXd& x0,
+VIResult dHan06(const VectorXd& x0,
                     const Eigen::MatrixXd& M,
-                    const Eigen::VectorXd& q,
+                    const VectorXd& q,
                     const Projector& Pr,
                     double magTol,
                     int iterMax,
@@ -76,18 +65,6 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
                     const DHan06Params& params = DHan06Params{},
                     const IterationLogger& logger = IterationLogger{});
 
-// --- Ready-made projectors --------------------------------------------------
-// Provided for convenience; supply your own Projector for any other K.
+} // namespace VINCP
 
-// Projection onto the non-negative orthant R_+^n: componentwise max(v, 0).
-Eigen::VectorXd projectNonnegative(const Eigen::VectorXd& v);
-
-// Projector onto K = R^numFree x R_+^(n - numFree): the first 'numFree'
-// components are left unchanged (free); the remaining components are clamped at
-// zero. This matches the set K for the (x, y) partition, with numFree equal to
-// the dimension of the free block x.
-Projector makeMixedProjector(Eigen::Index numFree);
-
-} // namespace lvi
-
-#endif // LVI_DHAN06_HPP
+#endif // VINCP_DHAN06_HPP

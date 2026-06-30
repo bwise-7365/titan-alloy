@@ -3,7 +3,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace lvi {
+namespace VINCP {
 
 double tau(double t0, int n, int k) {
     double tk = t0;
@@ -15,30 +15,11 @@ double tau(double t0, int n, int k) {
     return tk;
 }
 
-Eigen::VectorXd projectNonnegative(const Eigen::VectorXd& v) {
-    return v.cwiseMax(0.0);
-}
-
-Projector makeMixedProjector(Eigen::Index numFree) {
-    if (numFree < 0) {
-        throw std::invalid_argument("makeMixedProjector: numFree must be non-negative.");
-    }
-    return [numFree](const Eigen::VectorXd& v) -> Eigen::VectorXd {
-        if (numFree > v.size()) {
-            throw std::invalid_argument("mixed projector: numFree exceeds vector length.");
-        }
-        Eigen::VectorXd out = v;
-        const Eigen::Index tail = v.size() - numFree;
-        out.tail(tail) = v.tail(tail).cwiseMax(0.0);
-        return out;
-    };
-}
-
 namespace {
 
-void validateInputs(const Eigen::VectorXd& x0,
+void validateInputs(const VectorXd& x0,
                     const Eigen::MatrixXd& M,
-                    const Eigen::VectorXd& q,
+                    const VectorXd& q,
                     const Projector& Pr,
                     const DHan06Params& params) {
     const Eigen::Index nd = x0.size();
@@ -67,9 +48,9 @@ void validateInputs(const Eigen::VectorXd& x0,
 
 } // namespace
 
-DHan06Result dHan06(const Eigen::VectorXd& x0,
+VIResult dHan06(const VectorXd& x0,
                     const Eigen::MatrixXd& M,
-                    const Eigen::VectorXd& q,
+                    const VectorXd& q,
                     const Projector& Pr,
                     double magTol,
                     int iterMax,
@@ -82,7 +63,7 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
     const Eigen::MatrixXd identity = Eigen::MatrixXd::Identity(nd, nd);
 
     double bk = params.beta0;
-    Eigen::VectorXd x = x0;
+    VectorXd x = x0;
 
     double mag = magTol + 1.0;
     int iter = 0;
@@ -93,8 +74,8 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
         const double tk = tau(params.tau0, params.tauN, iter);
 
         // Definition of 'e' (just before equation (3) of Han 2006).
-        const Eigen::VectorXd p = Pr(x - bk * (M * x + q));
-        const Eigen::VectorXd e = x - p;
+        const VectorXd p = Pr(x - bk * (M * x + q));
+        const VectorXd e = x - p;
         mag = e.squaredNorm();
 
         if (initMag < 0.0) {
@@ -115,7 +96,7 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
         }
 
         // Equation (10): omega = |beta_k * M * e| / |e|.
-        const Eigen::VectorXd Me = M * e;
+        const VectorXd Me = M * e;
         const double omegaNum = (bk * Me).norm();
         const double omegaDnm = std::sqrt(mag);
         const double omega = omegaNum / omegaDnm;
@@ -129,7 +110,7 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
         }
 
         // Equation (4): (I + beta_k M) y = e, then x <- x - gamma y.
-        const Eigen::VectorXd y = (identity + bk * M).partialPivLu().solve(e);
+        const VectorXd y = (identity + bk * M).partialPivLu().solve(e);
         if (!y.allFinite()) {
             throw std::runtime_error("dHan06: linear solve produced non-finite values.");
         }
@@ -139,7 +120,7 @@ DHan06Result dHan06(const Eigen::VectorXd& x0,
         doneP = (mag < magTol) || (iterMax < iter);
     }
 
-    return DHan06Result{ x, mag, iter };
+    return VIResult{ x, mag, iter, mag < magTol };
 }
 
-} // namespace lvi
+} // namespace VINCP

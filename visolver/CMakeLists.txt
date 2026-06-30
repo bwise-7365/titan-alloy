@@ -5,28 +5,46 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Eigen (header-only).
-#   Windows: vcpkg install eigen3   (and configure with the vcpkg toolchain),
-#            or set Eigen3_DIR to an installed Eigen.
-#   Debian : sudo apt install libeigen3-dev
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+# Eigen is header-only: no build or install step is needed, only its headers on
+# the include path. EIGEN3_INCLUDE_DIR is the directory that CONTAINS the "Eigen"
+# folder, so that <Eigen/Dense> resolves -- i.e. the Eigen checkout root, NOT the
+# "Eigen" subfolder itself. It is a cache entry; override it on the command line
+# or in CLion's CMake options for a different location (e.g. /usr/include/eigen3
+# on Debian, from sudo apt install libeigen3-dev).
+set(EIGEN3_INCLUDE_DIR "C:/repos/ghub-ext/eigen" CACHE PATH
+    "Directory containing the Eigen/ header folder (the Eigen source root).")
+if (NOT EXISTS "${EIGEN3_INCLUDE_DIR}/Eigen/Dense")
+    message(FATAL_ERROR
+        "Eigen headers not found: '${EIGEN3_INCLUDE_DIR}/Eigen/Dense' is missing. "
+        "Set EIGEN3_INCLUDE_DIR to the directory that contains the 'Eigen' folder.")
+endif()
 
-add_library(lvi_dhan06 STATIC
-    src/dhan06.cpp
+add_library(vincp STATIC
+        lib/vincp.cpp
+        lib/dhan06.cpp
+        lib/fdjacobian.cpp
+        lib/josephynewton.cpp
 )
-target_include_directories(lvi_dhan06
+target_include_directories(vincp
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-target_link_libraries(lvi_dhan06 PUBLIC Eigen3::Eigen)
+# SYSTEM so Eigen's own headers are not subject to /W4 and -Wall -Wextra.
+target_include_directories(vincp SYSTEM
+    PUBLIC ${EIGEN3_INCLUDE_DIR}
+)
 
 if (MSVC)
-    target_compile_options(lvi_dhan06 PRIVATE /W4)
+    target_compile_options(vincp PRIVATE /W4)
 else()
-    target_compile_options(lvi_dhan06 PRIVATE -Wall -Wextra)
+    target_compile_options(vincp PRIVATE -Wall -Wextra)
 endif()
 
 add_executable(lvi_demo src/main.cpp)
-target_link_libraries(lvi_demo PRIVATE lvi_dhan06)
+target_link_libraries(lvi_demo PRIVATE vincp)
+
+add_executable(lvi_vi_demo src/driver_demo.cpp)
+target_link_libraries(lvi_vi_demo PRIVATE vincp)
 
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
+add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
