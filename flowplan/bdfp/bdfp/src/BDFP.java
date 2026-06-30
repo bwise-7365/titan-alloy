@@ -51,9 +51,11 @@ public class BDFP {
         rqt = new double[nNodes];
         cost = new double[nNodes][nNodes];
         flow = new double[nNodes][nNodes];
-        double capSum = 5000.001;
-        double rqtSum = 5000;
-        double minCost = 1.0; //
+        double capSum = 5000001;
+        double rqtSum = 5000000;
+        double nodeMoveCost = 1.0; // even movement on-base has a cost
+        double minCost = 1000.0;
+        double maxCost = 5000.0;
 
         double cs = 0.0;
         double rs = 0.0;
@@ -86,10 +88,10 @@ public class BDFP {
         System.out.println();
 
         for (int i = 0; i < nNodes; i++) {
-            cost[i][i] = minCost;
+            cost[i][i] = nodeMoveCost;
             flow[i][i] = 0;
             for (int j = i + 1; j < nNodes; j++) {
-                double c = 100 + rng.nextInt(500);
+                double c = minCost + rng.nextDouble()*(maxCost-minCost);
                 cost[i][j] = c + (c * rng.nextDouble() * 0.05);
                 cost[j][i] = c + (c * rng.nextDouble() * 0.05);
 
