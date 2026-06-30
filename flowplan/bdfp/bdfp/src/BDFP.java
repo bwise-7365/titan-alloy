@@ -14,8 +14,9 @@ public class BDFP {
     // Nodes can have positive capacity, positive requirement,
     // or both positive.
     //
-    // NOTE WELL: the sum of capacities must be greater
-    // or equal to the sum of the requirements.
+    // NOTE WELL: the sum of capacities must be at least a tiny
+    // amount greater than the sum of the requirements.
+    // That avoids round-off errors. Even one part in a million is enough.
     // The sum of the requirements must be positive.
     //
     // If initial requirements exceed the capacities,
@@ -32,6 +33,8 @@ public class BDFP {
     // or make 'minDecline' even smaller.
     public double minDecline = 1e-10; // minimum significant fractional decline
 
+
+
     /**
      * Initialize a RANDOM problem
      * NOTE WELL: the sum of capacities must be greater
@@ -42,9 +45,10 @@ public class BDFP {
      * @param nc   number of nodes with positive capacity and zero requirements
      * @param ncr  number of nodes with positive capacity and positive requirements
      * @param nr   number of nodes with positive requirements and zero capacity
+     * @param verbose print out the problem?
      * @param seed PRNG seed
      */
-    void initRANDOM(int nc, int ncr, int nr, long seed) {
+    void initRANDOM(int nc, int ncr, int nr, boolean verbose, long seed) {
         Random rng = new Random(seed);
         nNodes = nc + ncr + nr;
         cap = new double[nNodes];
@@ -82,10 +86,12 @@ public class BDFP {
         }
 
 
-        for (int i = 0; i < nNodes; i++) {
-            System.out.printf("%2d  %6.2f  %6.2f\n", i, cap[i], rqt[i]);
+        if(verbose) {
+            for (int i = 0; i < nNodes; i++) {
+                System.out.printf("%3d %10.2f %10.2f\n", i, cap[i], rqt[i]);
+            }
+            System.out.println();
         }
-        System.out.println();
 
         for (int i = 0; i < nNodes; i++) {
             cost[i][i] = nodeMoveCost;
@@ -112,11 +118,21 @@ public class BDFP {
     void makeGreedyFP() {
         double[] remCap = new double[nNodes];
         double[] remRqt = new double[nNodes];
+
+        double cSum = 0.0;
+        double rSum = 0.0;
         for (int i = 0; i < nNodes; i++) {
             remCap[i] = cap[i];
             remRqt[i] = rqt[i];
+
+            cSum = cSum + cap[i];
+            rSum = rSum + rqt[i];
         }
 
+        // NOTE: This avoids round-off error when checking if enough capacity is available during greedy planning.
+        if (!(cSum > rSum)) {
+            throw new RuntimeException("Sum of capacities must be at least slightly greater than sum of requirements");
+        }
 
         double rMax = +1.0;
         int iter = 0;
@@ -141,7 +157,7 @@ public class BDFP {
             }
             if (cNdx != -1) {
                 double q = min(remRqt[rNdx], remCap[cNdx]);
-                System.out.printf("supplying %6.2f from %2d to %2d\n", q, cNdx, rNdx);
+                //System.out.printf("supplying %10.2f from %3d to %3d\n", q, cNdx, rNdx);
                 remRqt[rNdx] = remRqt[rNdx] - q;
                 remCap[cNdx] = remCap[cNdx] - q;
                 flow[cNdx][rNdx] = flow[cNdx][rNdx] + q;
@@ -158,11 +174,11 @@ public class BDFP {
     }
 
 
-    void runSwap(boolean verbose) {
+    void runSwap(int maxIter, boolean verbose) {
         double pc1 = planCost();
 
         int iter = 0;
-        int maxIter = 500;
+
 
         double decline = -1.0;
         while ((decline < 0.0) && (iter < maxIter)) {
@@ -319,7 +335,7 @@ public class BDFP {
                 System.out.printf("%3d ==> ", i);
                 for (int j = 0; j < nNodes; j++) {
                     if (0 < flow[i][j]) {
-                        System.out.printf("(%3d, %6.1f) ", j, flow[i][j]);
+                        System.out.printf("(%3d, %10.2f) ", j, flow[i][j]);
                     }
                 }
                 System.out.println();
