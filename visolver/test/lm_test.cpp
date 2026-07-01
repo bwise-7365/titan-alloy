@@ -26,6 +26,7 @@ using std::printf;
 // LM is a local method, so the start is a random perturbation of x* (a genuine
 // random point, but in the basin) that still exercises the full damped iteration.
 int main() {
+    VINCP::ScopedUtcTimer timer("lm_test");
     const Index nIn  = 10;    // input dimension  (change here)
     const Index nOut = 15;    // output dimension (change here)
     const std::uint_fast32_t seed = 56639775; // VINCP::makeSeed(0, true); // fixed for a reproducible test
@@ -78,9 +79,7 @@ int main() {
         const double solErr = (r.z - xStar).norm();
         printf("\n");
         VINCP::printVector("x (solved)", r.z);
-        printf("iterations   = %d\n", r.iter);
-        printf("||F(x)||^2   = %.3e (squared residual)\n", r.residual);
-        printf("converged    = %s\n", r.converged ? "true" : "false");
+        VINCP::printSolveStats("LM", r);
         printf("solution err = %.3e (||x - x*||)\n", solErr);
 
         if (r.converged && solErr < solTol) {

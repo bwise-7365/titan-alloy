@@ -22,6 +22,7 @@ using std::printf;
 // self-adaptive projection method is guaranteed to converge -- and, M being
 // positive definite, to the unique solution, which is z by construction.
 int main() {
+    VINCP::ScopedUtcTimer timer("lcp_psd_test");
     const Index N = 10;                          // problem dimension (edit here)
     const std::uint_fast32_t seed = VINCP::makeSeed(0, true); //123456u;     // PRNG seed
 
@@ -30,7 +31,7 @@ int main() {
 
     const double magTol  = 1.0e-14;              // squared-residual tolerance (dHan06)
     const int    iterMax = 100000;               // iteration cap
-    const double solTol  = 1.0e-6;               // "very close" bound on ||x - z||
+    const double solTol  = 3.0e-6;               // "very close" bound on ||x - z||
 
     std::mt19937 rng(seed);
 

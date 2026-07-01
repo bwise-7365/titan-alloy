@@ -28,6 +28,7 @@ add_library(vincp STATIC
         lib/armijo.cpp
         lib/levenbergmarquardt.cpp
         lib/josephynewton.cpp
+        lib/saoe.cpp
         lib/utils.cpp
 )
 target_include_directories(vincp
@@ -54,9 +55,9 @@ target_link_libraries(lvi_vi_demo PRIVATE vincp)
 add_executable(han_vs_he_demo src/han_vs_he_demo.cpp)
 target_link_libraries(han_vs_he_demo PRIVATE vincp)
 
-# SAOE (Strategic Allocation Of Effort) problem-setup demo (run for printout).
-add_executable(saoe src/saoe.cpp)
-target_link_libraries(saoe PRIVATE vincp)
+# SAOE (Strategic Allocation Of Effort) demo (run for printout).
+add_executable(saoe_demo src/saoe_demo.cpp)
+target_link_libraries(saoe_demo PRIVATE vincp)
 
 add_executable(lcp_random_test test/lcp_random_test.cpp)
 target_link_libraries(lcp_random_test PRIVATE vincp)
@@ -70,6 +71,9 @@ target_link_libraries(lm_test PRIVATE vincp)
 add_executable(han_vs_he_test test/han_vs_he_test.cpp)
 target_link_libraries(han_vs_he_test PRIVATE vincp)
 
+add_executable(saoe_test test/saoe_test.cpp)
+target_link_libraries(saoe_test PRIVATE vincp)
+
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
@@ -77,6 +81,9 @@ add_test(NAME lcp_random_test COMMAND lcp_random_test)
 add_test(NAME lcp_psd_test COMMAND lcp_psd_test)
 add_test(NAME lm_test COMMAND lm_test)
 add_test(NAME han_vs_he_test COMMAND han_vs_he_test)
+# saoe_test passes on FEASIBILITY (not a specific equilibrium): it runs both
+# inner solvers and passes if at least one yields a feasible allocation.
+add_test(NAME saoe_test COMMAND saoe_test)
 
 # The random indefinite-M LCP is expected to diverge: Han's method has no
 # convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the

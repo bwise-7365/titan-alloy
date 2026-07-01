@@ -35,8 +35,10 @@ namespace VINCP {
 struct VIResult {
     VectorXd z;          // solution vector
     double residual  = 0.0;     // squared residual norm at termination
-    int    iter      = 0;       // iterations performed
+    int    iter      = 0;       // iterations performed (outer, for a composite solver)
     bool   converged = false;   // residual fell below tolerance within the cap
+    int    innerIters = 0;      // total inner-solver iterations consumed by a composite
+                                // solver (e.g. solveVI); 0 for a leaf solver
 };
 
 // ---------------------------------------------------------------------------

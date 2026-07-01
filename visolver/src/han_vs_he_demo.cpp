@@ -54,6 +54,7 @@ static void runLinearSize(Index N, std::mt19937& rng,
 }
 
 int main() {
+    VINCP::ScopedUtcTimer timer("han_vs_he_demo");
     const std::uint_fast32_t seed = 424242u;  // fixed for a reproducible demo
 
     const int    intLo = 1,    intHi = 10;    // complementary-pair magnitudes
@@ -112,10 +113,10 @@ int main() {
         VINCP::printVector("expected      ", zStar);
         VINCP::printVector("dHan06 solved ", han.z);
         VINCP::printVector("bsHe94b solved", he.z);
-        printf("dHan06 : outer iters=%d  converged=%s  solErr=%.2e\n",
-               han.iter, han.converged ? "true" : "false", (han.z - zStar).norm());
-        printf("bsHe94b: outer iters=%d  converged=%s  solErr=%.2e\n",
-               he.iter,  he.converged ? "true" : "false", (he.z - zStar).norm());
+        printf("dHan06 : outer iters=%d  total inner iters=%d  converged=%s  solErr=%.2e\n",
+               han.iter, han.innerIters, han.converged ? "true" : "false", (han.z - zStar).norm());
+        printf("bsHe94b: outer iters=%d  total inner iters=%d  converged=%s  solErr=%.2e\n",
+               he.iter,  he.innerIters, he.converged ? "true" : "false", (he.z - zStar).norm());
     } catch (const std::exception& ex) {
         printf("solveVI threw: %s\n", ex.what());
         return 1;

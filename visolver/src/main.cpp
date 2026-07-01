@@ -1,5 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "dhan06.hpp"
+#include "utils.hpp"
 
 #include <Eigen/Dense>
 #include <cstdio>
@@ -17,6 +18,7 @@ using std::printf;
 // This is the template for requirement (E): replace M, q, x0 and the expected
 // vector with one of your verified Octave cases and compare to a tolerance.
 int main() {
+    VINCP::ScopedUtcTimer timer("lvi_demo");
 
     using Eigen::VectorXd;
     Eigen::MatrixXd M(2, 2);
@@ -47,9 +49,7 @@ int main() {
     const double solErr = (r.z - xStar).norm();
     printf("\nsolution       = (%.12f, %.12f)\n", r.z(0), r.z(1));
     printf("expected       = (%.12f, %.12f)\n", xStar(0), xStar(1));
-    printf("iterations     = %d\n", r.iter);
-    printf("residual       = %.3e (squared residual norm)\n", r.residual);
-    printf("converged      = %s\n", r.converged ? "true" : "false");
+    VINCP::printSolveStats("dHan06", r);
     printf("solution error = %.3e\n", solErr);
 
     const double solTol = 1.0e-6;

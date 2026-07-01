@@ -25,6 +25,7 @@ using std::printf;
 // generally monotone, so this is also a stress test of the divergence guard: a
 // throw here is a legitimate "did not converge", reported as FAIL, not a crash.
 int main() {
+    VINCP::ScopedUtcTimer timer("lcp_random_test");
     const Index N = 10;                          // problem dimension (edit here)
     const std::uint_fast32_t seed = 123456u;     // PRNG seed
 

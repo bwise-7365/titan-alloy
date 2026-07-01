@@ -27,15 +27,17 @@ using std::printf;
 // relative performance is visible.
 
 // Report one run against a known solution; return 0 on success, 1 on failure.
+// 'inner' is the total inner-solver iterations (0 for a direct/linear solve).
 static int report(const char* tag, const VINCP::VIResult& r,
                   const VectorXd& known, double solTol) {
     const double solErr = (r.z - known).norm();
-    printf("  %-8s iters=%6d  residual=%.3e  converged=%-5s  solErr=%.3e\n",
-           tag, r.iter, r.residual, r.converged ? "true" : "false", solErr);
+    printf("  %-8s iters=%6d  inner=%8d  residual=%.3e  converged=%-5s  solErr=%.3e\n",
+           tag, r.iter, r.innerIters, r.residual, r.converged ? "true" : "false", solErr);
     return (r.converged && solErr < solTol) ? 0 : 1;
 }
 
 int main() {
+    VINCP::ScopedUtcTimer timer("han_vs_he_test");
     const std::uint_fast32_t seed = 424242u;  // fixed for a reproducible comparison
 
     // Shared draw ranges / tolerances.

@@ -69,6 +69,7 @@ VIResult solveVI(const VIModel& model,
     VectorXd z = z0;
     double residual = 0.0;
     int iter = 0;
+    int innerIters = 0;
     bool converged = false;
 
     while (true) {
@@ -96,6 +97,7 @@ VIResult solveVI(const VIModel& model,
 
         // Inner affine-VI solve over the same K gives the Josephy-Newton point.
         const VIResult inner = innerSolver(z, jac, q, Pr);
+        innerIters += inner.iter;
 
         // Damp the step with an Armijo line search on the natural-map merit
         // theta(w) = 1/2 ||w - Pi_K(w - F(w))||^2, so the undamped Newton step
@@ -114,7 +116,7 @@ VIResult solveVI(const VIModel& model,
         ++iter;
     }
 
-    return VIResult{ z, residual, iter, converged };
+    return VIResult{ z, residual, iter, converged, innerIters };
 }
 
 } // namespace VINCP

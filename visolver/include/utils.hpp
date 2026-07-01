@@ -12,8 +12,10 @@
 #include "vincp.hpp"
 
 #include <Eigen/Dense>
+#include <chrono>
 #include <cstdint>
 #include <random>
+#include <string>
 
 namespace VINCP {
     // Microseconds since the Unix epoch, as a uint64_t. Intended ONLY as a quick
@@ -24,6 +26,33 @@ namespace VINCP {
     // Generate the inner PRNG seed from a given one.
     // If the seed is zero, it will use microsecondSeed.
     uint64_t makeSeed(const uint64_t s1, const bool verbose);
+
+    // Print the current UTC time (millisecond precision), labeled "UTC", and
+    // return it -- pass the returned value to utcElapsed to time an interval.
+    std::chrono::system_clock::time_point utcNow();
+
+    // Print the current UTC date-time and the elapsed time since 'start'
+    // (millisecond precision).
+    void utcElapsed(std::chrono::system_clock::time_point start);
+
+    // RAII wall-clock timer: prints the start UTC on construction and, on
+    // destruction (scope/function exit), the finish UTC and elapsed time.
+    // Declare one at the top of main() to time an entire demo or test.
+    class ScopedUtcTimer {
+    public:
+        explicit ScopedUtcTimer(std::string label = "");
+        ~ScopedUtcTimer();
+        ScopedUtcTimer(const ScopedUtcTimer&) = delete;
+        ScopedUtcTimer& operator=(const ScopedUtcTimer&) = delete;
+    private:
+        std::string label_;
+        std::chrono::system_clock::time_point start_;
+    };
+
+    // Print a solver's iteration counts, squared residual, and converged flag on
+    // one line. A composite result (innerIters > 0, e.g. from solveVI) shows outer
+    // and total inner iterations; a leaf result shows a single iteration count.
+    void printSolveStats(const char* label, const VIResult& r);
 
     // Print a vector on one line as:  label = [ v0 v1 ... ].
     // Components are printed with a fixed field width for easy column alignment.
@@ -83,6 +112,26 @@ namespace VINCP {
                                   const Eigen::VectorXd& fStar,
                                   bool forcePSD,
                                   double aLo, double aHi);
+
+    // -----------------------------------------------------------------------
+    // SAOE table display (shared by the SAOE demo and test)
+    // -----------------------------------------------------------------------
+    //
+    // Each renders either a LaTeX tabular (latex = true, paste-ready) or plain
+    // column-aligned ASCII (latex = false). Formatting: strengths %.1f, rewards
+    // %7.1f, efforts %5.1f, utilities %.3f, probabilities %.3f.
+
+    // A format-aware comment line: LaTeX "% text", ASCII "# text".
+    void printComment(bool latex, const char* text);
+
+    // Inputs table: actor index, strength S_i, then the N rewards r_{ij}.
+    void saoePrintInputs(const Eigen::MatrixXd& R, const Eigen::VectorXd& S, bool latex);
+
+    // Solution table: actor index, utility u_i, then efforts for the options that
+    // carry non-zero effort (all-zero option columns omitted; "-" marks a zero),
+    // with a final row of those options' probabilities. eps is the model's eps.
+    void saoePrintSolution(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
+                           double eps, bool latex);
 } // namespace VINCP
 
 #endif // VINCP_UTILS_HPP

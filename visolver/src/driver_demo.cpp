@@ -79,6 +79,7 @@ static void printFieldComponent(const char* name, const MatrixXd& A,
 }
 
 int main() {
+    VINCP::ScopedUtcTimer timer("lvi_vi_demo");
     const Index n = 4;                       // free block dimension (edit here)
     const Index m = 4;                       // non-negative block dimension
     const Index d = n + m;
@@ -185,9 +186,7 @@ int main() {
     printf("\nw = G(x,y)\n");
     printVector("w expected", wStar);
     printVector("w implied ", wSolved);
-    printf("outer iters    = %d\n", r.iter);
-    printf("residual^2     = %.3e (squared natural residual)\n", r.residual);
-    printf("converged      = %s\n", r.converged ? "true" : "false");
+    VINCP::printSolveStats("solveVI", r);
     printf("solution error = %.3e\n", solErr);
 
     if (r.converged && solErr < solTol) {
