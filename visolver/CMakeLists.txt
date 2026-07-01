@@ -54,6 +54,10 @@ target_link_libraries(lvi_vi_demo PRIVATE vincp)
 add_executable(han_vs_he_demo src/han_vs_he_demo.cpp)
 target_link_libraries(han_vs_he_demo PRIVATE vincp)
 
+# SAOE (Strategic Allocation Of Effort) problem-setup demo (run for printout).
+add_executable(saoe src/saoe.cpp)
+target_link_libraries(saoe PRIVATE vincp)
+
 add_executable(lcp_random_test test/lcp_random_test.cpp)
 target_link_libraries(lcp_random_test PRIVATE vincp)
 
