@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #ifndef VINCP_JOSEPHYNEWTON_HPP
 #define VINCP_JOSEPHYNEWTON_HPP
 
@@ -73,3 +74,4 @@ VIResult solveVI(const VIModel& model,
 } // namespace VINCP
 
 #endif // VINCP_JOSEPHYNEWTON_HPP
+// Copyright Ben Paul Wise. All Rights Reserved.

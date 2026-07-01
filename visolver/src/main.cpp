@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "dhan06.hpp"
 
 #include <Eigen/Dense>
@@ -60,3 +61,4 @@ int main() {
         return 1;
     }
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

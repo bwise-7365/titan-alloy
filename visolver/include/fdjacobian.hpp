@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #ifndef VINCP_FDJACOBIAN_HPP
 #define VINCP_FDJACOBIAN_HPP
 
@@ -43,3 +44,4 @@ Eigen::MatrixXd centralDifferenceJacobian(const VectorField& F,
 } // namespace VINCP
 
 #endif // VINCP_FDJACOBIAN_HPP
+// Copyright Ben Paul Wise. All Rights Reserved.

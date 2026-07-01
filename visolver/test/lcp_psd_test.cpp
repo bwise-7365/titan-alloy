@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "dhan06.hpp"
 #include "utils.hpp"
 
@@ -22,7 +23,7 @@ using std::printf;
 // positive definite, to the unique solution, which is z by construction.
 int main() {
     const Index N = 10;                          // problem dimension (edit here)
-    const std::uint_fast32_t seed = 123456u;     // PRNG seed
+    const std::uint_fast32_t seed = VINCP::makeSeed(0, true); //123456u;     // PRNG seed
 
     const int    intLo  = 1,    intHi  = 10;     // integer range for w, z entries
     const double realLo = -5.0, realHi = 10.0;   // double range for A entries
@@ -62,3 +63,4 @@ int main() {
         return 1;
     }
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

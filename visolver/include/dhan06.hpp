@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #ifndef VINCP_DHAN06_HPP
 #define VINCP_DHAN06_HPP
 
@@ -68,3 +69,4 @@ VIResult dHan06(const VectorXd& x0,
 } // namespace VINCP
 
 #endif // VINCP_DHAN06_HPP
+// Copyright Ben Paul Wise. All Rights Reserved.

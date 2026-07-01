@@ -1,3 +1,4 @@
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
 # visolver — variational-inequality / complementarity solver (C++20 / Eigen)
 
 A C++20 solver for variational-inequality / nonlinear-complementarity problems
@@ -99,3 +100,4 @@ CLion: open the folder; it picks up `CMakeLists.txt` directly (build tree
 - Han's method is guaranteed to converge only for a **monotone** problem (`M`
   positive semidefinite). This is why `lcp_random_test` (indefinite `M`) may not
   converge while `lcp_psd_test` (`M = A^T A`) always does.
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

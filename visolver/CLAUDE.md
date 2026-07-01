@@ -111,6 +111,23 @@ Two solver layers over one shared core; the dependency arrows point one way
   boundary: a row-major buffer from Java must be mapped with an explicit
   `RowMajor` map, or it transposes silently.
 
+## Copyright headers (required)
+
+Every `.cpp`, `.hpp`, `.h`, `.md`, and `.txt` file must carry the exact line
+
+    Copyright Ben Paul Wise. All Rights Reserved.
+
+as both its **very first** and **very last** line, wrapped in that file type's
+comment syntax:
+- `.cpp` / `.hpp` / `.h`: `// Copyright Ben Paul Wise. All Rights Reserved.`
+- `.md`: `<!-- Copyright Ben Paul Wise. All Rights Reserved. -->`
+- `.txt`: the bare line `Copyright Ben Paul Wise. All Rights Reserved.`
+
+Exceptions: omit it only where it would interfere with the file's purpose (e.g.
+a file whose first line is significant, or data/input `.txt` files that are
+parsed). **`CLAUDE.md` itself is exempt.** When creating any new source, header,
+markdown, or text file, add both lines.
+
 ## Conventions
 
 - C++20; must build on **both** Windows 11 and Debian Linux — never use anything

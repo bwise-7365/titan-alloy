@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "dhan06.hpp"
 
 #include <cmath>
@@ -124,3 +125,4 @@ VIResult dHan06(const VectorXd& x0,
 }
 
 } // namespace VINCP
+// Copyright Ben Paul Wise. All Rights Reserved.

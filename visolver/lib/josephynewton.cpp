@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "josephynewton.hpp"
 
 #include "fdjacobian.hpp"
@@ -97,3 +98,4 @@ VIResult solveVI(const VIModel& model,
 }
 
 } // namespace VINCP
+// Copyright Ben Paul Wise. All Rights Reserved.

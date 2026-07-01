@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 cmake_minimum_required(VERSION 3.20)
 project(lvi_dhan06 LANGUAGES CXX)
 
@@ -64,3 +65,4 @@ add_test(NAME lcp_psd_test COMMAND lcp_psd_test)
 # convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the
 # correct outcome. WILL_FAIL inverts the pass condition, keeping the suite green.
 set_tests_properties(lcp_random_test PROPERTIES WILL_FAIL TRUE)
+# Copyright Ben Paul Wise. All Rights Reserved.

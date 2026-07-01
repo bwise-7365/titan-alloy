@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "vincp.hpp"
 
 #include <stdexcept>
@@ -55,3 +56,4 @@ VectorXd evaluateF(const VIModel& model, const VectorXd& z) {
 }
 
 } // namespace VINCP
+// Copyright Ben Paul Wise. All Rights Reserved.

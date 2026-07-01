@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "fdjacobian.hpp"
 
 #include <algorithm>
@@ -68,3 +69,4 @@ Eigen::MatrixXd centralDifferenceJacobian(const VectorField& F,
 }
 
 } // namespace VINCP
+// Copyright Ben Paul Wise. All Rights Reserved.

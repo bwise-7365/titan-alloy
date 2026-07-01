@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "josephynewton.hpp"
 #include "utils.hpp"
 
@@ -219,3 +220,4 @@ int main() {
     printf("FAIL (exceeds %.1e)\n", solTol);
     return 1;
 }
+// Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,3 +1,4 @@
+// Copyright Ben Paul Wise. All Rights Reserved.
 #ifndef VINCP_HPP
 #define VINCP_HPP
 
@@ -83,3 +84,4 @@ VectorXd evaluateF(const VIModel& model, const VectorXd& z);
 } // namespace VINCP
 
 #endif // VINCP_HPP
+// Copyright Ben Paul Wise. All Rights Reserved.
