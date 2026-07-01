@@ -45,6 +45,14 @@ target_link_libraries(lvi_demo PRIVATE vincp)
 add_executable(lvi_vi_demo src/driver_demo.cpp)
 target_link_libraries(lvi_vi_demo PRIVATE vincp)
 
+add_executable(lcp_random_test test/lcp_random_test.cpp)
+target_link_libraries(lcp_random_test PRIVATE vincp)
+
+add_executable(lcp_psd_test test/lcp_psd_test.cpp)
+target_link_libraries(lcp_psd_test PRIVATE vincp)
+
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
+add_test(NAME lcp_random_test COMMAND lcp_random_test)
+add_test(NAME lcp_psd_test COMMAND lcp_psd_test)
