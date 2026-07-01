@@ -113,8 +113,7 @@ int main() {
     const int    innerIterMax  = 100000;     // dHan06 inner iteration cap
 
     std::mt19937 rng(seed);
-    std::uniform_int_distribution<int>     xDist(xLo, xHi);
-    std::uniform_real_distribution<double> aDist(aLo, aHi);
+    std::uniform_int_distribution<int> xDist(xLo, xHi);
 
     // Free block x*, then the complementary (y*, w*) pair.
     VectorXd xStar(n);
@@ -127,26 +126,15 @@ int main() {
     VectorXd zStar(d);
     zStar << xStar, yStar;
 
-    // Random forms matrix A; the field couples variables through u = A z.
-    MatrixXd A(d, d);
-    for (Index r = 0; r < d; ++r) {
-        for (Index col = 0; col < d; ++col) {
-            A(r, col) = aDist(rng);
-        }
-    }
-
-    // Constant vector k so that H(x*, y*) = 0 and G(x*, y*) = w*.
+    // Build the cubic F(z) = A^T ( u.^3 + u ) + k (u = A z) via the shared
+    // generator, forcing the PSD / gradient form so F is monotone, with k set so
+    // that H(x*, y*) = 0 and G(x*, y*) = w* -- i.e. F(z*) = [0; w*].
     VectorXd target(d);
     target << VectorXd::Zero(n), wStar;
-    const VectorXd uStar = A * zStar;
-    const VectorXd fBase = A.transpose() * (uStar.array().cube() + uStar.array()).matrix();
-    const VectorXd k = target - fBase;
+    const VINCP::CubicProblem prob =
+        VINCP::makeCubicProblem(d, d, rng, zStar, target, /*forcePSD=*/true, aLo, aHi);
+    const auto Ffull = prob.F;
 
-    // Full field F(z) = A^T ( u.^3 + u ) + k, split into H (free) and G (nonneg).
-    const auto Ffull = [A, k](const VectorXd& z) -> VectorXd {
-        const VectorXd u = A * z;
-        return A.transpose() * (u.array().cube() + u.array()).matrix() + k;
-    };
     VINCP::VIModel model;
     model.n = n;
     model.m = m;
@@ -166,20 +154,20 @@ int main() {
     for (Index kk = 0; kk < d; ++kk) {
         char lbl[16];
         std::snprintf(lbl, sizeof lbl, "u%td", kk);
-        printLinearForm(lbl, A.row(kk).transpose(), n);
+        printLinearForm(lbl, prob.A.row(kk).transpose(), n);
     }
     printf("\nF(z) = A^T ( u.^3 + u ) + k:\n");
     printf(" H (free block, solved to H = 0):\n");
     for (Index i = 0; i < n; ++i) {
         char lbl[16];
         std::snprintf(lbl, sizeof lbl, "H%td", i);
-        printFieldComponent(lbl, A, k, i);
+        printFieldComponent(lbl, prob.A, prob.k, i);
     }
     printf(" G (non-negative block, 0 <= G _|_ y >= 0):\n");
     for (Index i = 0; i < m; ++i) {
         char lbl[16];
         std::snprintf(lbl, sizeof lbl, "G%td", i);
-        printFieldComponent(lbl, A, k, n + i);
+        printFieldComponent(lbl, prob.A, prob.k, n + i);
     }
 
     const VectorXd z0 = VectorXd::Zero(d);
@@ -188,15 +176,17 @@ int main() {
     params.outerTol      = outerTol;
     params.outerIterMax  = outerIterMax;
     params.outerIterFreq = outerIterFreq;
-    params.innerMagTol   = innerMagTol;
-    params.innerIterMax  = innerIterMax;
+
+    // Inner LVI solver: Han's self-adaptive method, with the inner controls bound in.
+    const VINCP::InnerSolver innerSolver =
+        VINCP::makeDHan06Solver(innerMagTol, innerIterMax, 0);
 
     const VINCP::OuterLogger logger =
         [](int iter, int itMax, double res, double tol) {
             printf("outer iter %3d/%3d, residual^2 %.3e/%.3e\n", iter, itMax, res, tol);
         };
 
-    const VINCP::VIResult r = VINCP::solveVI(model, z0, params, logger);
+    const VINCP::VIResult r = VINCP::solveVI(model, z0, innerSolver, params, logger);
 
     const double solErr = (r.z - zStar).norm();
     printf("\nn = %lld free, m = %lld non-negative (d = %lld)\n",

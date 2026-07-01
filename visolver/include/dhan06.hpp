@@ -22,10 +22,7 @@
 
 namespace VINCP {
 
-// Optional per-iteration logging hook, called at the requested frequency.
-// If empty, no logging is performed (the Octave printf is opt-in here).
-using IterationLogger =
-    std::function<void(int iter, int iterMax, double mag, double magTol)>;
+// IterationLogger is the shared inner-solver logging hook, declared in vincp.hpp.
 
 // Tunable constants of Han's method. Defaults match the Octave source.
 struct DHan06Params {

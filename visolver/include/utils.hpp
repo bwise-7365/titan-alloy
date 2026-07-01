@@ -50,6 +50,39 @@ namespace VINCP {
     int reportAndCheck(const VIResult& result,
                        const Eigen::MatrixXd& M, const Eigen::VectorXd& q,
                        const Eigen::VectorXd& zConstructed, double solTol);
+
+    // -----------------------------------------------------------------------
+    // Cubic problem generator (shared by the VI demo and the LM test)
+    // -----------------------------------------------------------------------
+    //
+    // A cubic map through linear forms u = A x with elementwise g(u) = u.^3 + u.
+    // The constant k is chosen so F(xStar) == fStar for the caller's known point.
+    //   - forcePSD = true : F(x) = A^T ( g(A x) ) + k, A is nIn x nIn (requires
+    //     nIn == nOut). The Jacobian A^T diag(3 u^2 + 1) A is PSD, so F is a
+    //     monotone gradient map -- the regime the VI/complementarity solver needs.
+    //   - forcePSD = false: F(x) = g(A x) + k, A is nOut x nIn (rectangular ok).
+    //     A general, NOT-necessarily-monotone cubic -- e.g. an overdetermined
+    //     system with a known zero-residual root for a Levenberg-Marquardt test.
+    struct CubicProblem {
+        Eigen::Index    nIn  = 0;   // input dimension
+        Eigen::Index    nOut = 0;   // output dimension
+        bool            psd  = false;
+        Eigen::MatrixXd A;          // forms matrix: nIn x nIn if psd, else nOut x nIn
+        Eigen::VectorXd k;          // constant offset
+        Eigen::VectorXd xStar;      // known point
+        Eigen::VectorXd fStar;      // F(xStar), by construction
+        std::function<Eigen::VectorXd(const Eigen::VectorXd&)> F;  // the cubic map
+    };
+
+    // Construct a cubic problem (see above). A is drawn from U[aLo, aHi] via rng;
+    // k is set so F(xStar) == fStar. Throws std::invalid_argument on a dimension
+    // mismatch (including forcePSD with nIn != nOut).
+    CubicProblem makeCubicProblem(Eigen::Index nIn, Eigen::Index nOut,
+                                  std::mt19937& rng,
+                                  const Eigen::VectorXd& xStar,
+                                  const Eigen::VectorXd& fStar,
+                                  bool forcePSD,
+                                  double aLo, double aHi);
 } // namespace VINCP
 
 #endif // VINCP_UTILS_HPP

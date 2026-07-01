@@ -21,6 +21,7 @@
 
 #include "vincp.hpp"
 #include "dhan06.hpp"
+#include "bshe94b.hpp"
 #include "fdjacobian.hpp"
 #include "armijo.hpp"
 
@@ -33,11 +34,30 @@ namespace VINCP {
 using OuterLogger =
     std::function<void(int iter, int iterMax, double residual, double tol)>;
 
-// Tunable controls for the outer loop and the inner LVI solves.  Defaults are
-// reasonable starting points, not verified against a particular model; expect
-// to tune the tolerances per problem.
+// Inner LVI solver seam. Each outer step hands the linearized affine VI to this
+// functor: given the start x0, matrix M, vector q, and projector Pr, it returns
+// the solution as a VIResult. Any inner solver (dHan06, bsHe94b, ...) is adapted
+// to it by binding its tolerances/caps/params/logger -- see the make*Solver
+// helpers below.
+using InnerSolver =
+    std::function<VIResult(const VectorXd& x0,
+                           const Eigen::MatrixXd& M,
+                           const VectorXd& q,
+                           const Projector& Pr)>;
+
+// Adapters that bind an inner solver's controls into an InnerSolver functor.
+InnerSolver makeDHan06Solver(double magTol, int iterMax, int iterFreq,
+                             const DHan06Params& params = DHan06Params{},
+                             const IterationLogger& logger = IterationLogger{});
+InnerSolver makeBsHe94bSolver(double magTol, int iterMax, int iterFreq,
+                              const BsHe94bParams& params = BsHe94bParams{},
+                              const IterationLogger& logger = IterationLogger{});
+
+// Tunable controls for the outer loop.  Defaults are reasonable starting points,
+// not verified against a particular model; expect to tune per problem. (The
+// inner LVI solver and its tolerances are supplied separately as the InnerSolver
+// argument to solveVI.)
 struct JosephyNewtonParams {
-    // Outer loop.
     double outerTol      = 1.0e-12;  // on the SQUARED natural residual ||r(z)||^2
     int    outerIterMax  = 200;      // outer iteration cap
     int    outerIterFreq = 0;        // logging frequency (<= 0 disables logging)
@@ -48,26 +68,22 @@ struct JosephyNewtonParams {
     // Armijo damping of the outer (Josephy-Newton) step on the natural-map
     // merit, to prevent overshoot near the non-smooth solution.
     ArmijoParams armijo = ArmijoParams{};
-
-    // Inner LVI solver (dHan06) controls.
-    double       innerMagTol  = 1.0e-14;
-    int          innerIterMax = 100000;
-    int          innerIterFreq = 0;
-    DHan06Params innerParams  = DHan06Params{};
 };
 
-// Solve the mixed nonlinear complementarity VI by Josephy-Newton with
-// a full (undamped) step.
+// Solve the mixed nonlinear complementarity VI by Josephy-Newton with an
+// Armijo-damped step, using 'innerSolver' for each linearized affine VI.
 // The merit is the natural residual r(z) = z - Pi_K(z - F(z)); the loop stops when
 // ||r(z)||^2 < outerTol.  Returns the shared VIResult: its 'residual' is that
 // squared natural residual and 'converged' is true iff it fell below outerTol
 // within outerIterMax steps (no error thrown).
 //
-// Throws std::invalid_argument on an inconsistent model or starting point, and
-// propagates the inner solver's std::runtime_error on a failed linear solve,
-// a NaN, or detected divergence.  It never silently substitutes a result.
+// Throws std::invalid_argument on an inconsistent model, starting point, or an
+// unset innerSolver, and propagates the inner solver's std::runtime_error on a
+// failed linear solve, a NaN, or detected divergence. It never silently
+// substitutes a result.
 VIResult solveVI(const VIModel& model,
                  const VectorXd& z0,
+                 const InnerSolver& innerSolver,
                  const JosephyNewtonParams& params = JosephyNewtonParams{},
                  const OuterLogger& logger = OuterLogger{});
 

@@ -47,6 +47,12 @@ struct VIResult {
 // Given a point v in R^n, returns the Euclidean projection of v onto K.
 using Projector = std::function<VectorXd(const VectorXd&)>;
 
+// Optional per-iteration logging hook for the inner LVI solvers (dHan06,
+// bsHe94b, ...), called at the requested frequency. If empty, no logging is
+// performed. Shared here so every inner solver takes the same logger type.
+using IterationLogger =
+    std::function<void(int iter, int iterMax, double mag, double magTol)>;
+
 // Projection onto the non-negative orthant R_+^n: componentwise max(v, 0).
 VectorXd projectNonnegative(const VectorXd& v);
 

@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <cstdio>
+#include <stdexcept>
 
 namespace VINCP {
     uint64_t microsecondSeed() {
@@ -87,6 +88,53 @@ namespace VINCP {
         }
         std::printf("FAIL (exceeds %.1e)\n", solTol);
         return 1;
+    }
+
+    CubicProblem makeCubicProblem(Eigen::Index nIn, Eigen::Index nOut,
+                                  std::mt19937& rng,
+                                  const Eigen::VectorXd& xStar,
+                                  const Eigen::VectorXd& fStar,
+                                  bool forcePSD,
+                                  double aLo, double aHi) {
+        if (nIn <= 0 || nOut <= 0) {
+            throw std::invalid_argument("makeCubicProblem: nIn and nOut must be positive.");
+        }
+        if (forcePSD && nIn != nOut) {
+            throw std::invalid_argument("makeCubicProblem: forcePSD requires nIn == nOut.");
+        }
+        if (xStar.size() != nIn) {
+            throw std::invalid_argument("makeCubicProblem: xStar length must equal nIn.");
+        }
+        if (fStar.size() != nOut) {
+            throw std::invalid_argument("makeCubicProblem: fStar length must equal nOut.");
+        }
+
+        std::uniform_real_distribution<double> aDist(aLo, aHi);
+        const Eigen::Index rows = forcePSD ? nIn : nOut;   // A is rows x nIn
+        Eigen::MatrixXd A(rows, nIn);
+        for (Eigen::Index r = 0; r < rows; ++r) {
+            for (Eigen::Index c = 0; c < nIn; ++c) {
+                A(r, c) = aDist(rng);
+            }
+        }
+
+        // base(x) = g(A x), or A^T g(A x) in the PSD form, with g(u) = u.^3 + u.
+        const bool psd = forcePSD;
+        const auto base = [A, psd](const Eigen::VectorXd& x) -> Eigen::VectorXd {
+            const Eigen::VectorXd u = A * x;
+            const Eigen::VectorXd gu = (u.array().cube() + u.array()).matrix();
+            if (psd) {
+                return A.transpose() * gu;
+            }
+            return gu;
+        };
+
+        const Eigen::VectorXd k = fStar - base(xStar);
+        const auto F = [base, k](const Eigen::VectorXd& x) -> Eigen::VectorXd {
+            return base(x) + k;
+        };
+
+        return CubicProblem{ nIn, nOut, psd, A, k, xStar, fStar, F };
     }
 } // namespace VINCP
 // Copyright Ben Paul Wise. All Rights Reserved.

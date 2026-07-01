@@ -23,6 +23,7 @@ endif()
 add_library(vincp STATIC
         lib/vincp.cpp
         lib/dhan06.cpp
+        lib/bshe94b.cpp
         lib/fdjacobian.cpp
         lib/armijo.cpp
         lib/levenbergmarquardt.cpp
@@ -49,17 +50,29 @@ target_link_libraries(lvi_demo PRIVATE vincp)
 add_executable(lvi_vi_demo src/driver_demo.cpp)
 target_link_libraries(lvi_vi_demo PRIVATE vincp)
 
+# Run-for-printout demo (not a ctest gate; the pass/fail check is han_vs_he_test).
+add_executable(han_vs_he_demo src/han_vs_he_demo.cpp)
+target_link_libraries(han_vs_he_demo PRIVATE vincp)
+
 add_executable(lcp_random_test test/lcp_random_test.cpp)
 target_link_libraries(lcp_random_test PRIVATE vincp)
 
 add_executable(lcp_psd_test test/lcp_psd_test.cpp)
 target_link_libraries(lcp_psd_test PRIVATE vincp)
 
+add_executable(lm_test test/lm_test.cpp)
+target_link_libraries(lm_test PRIVATE vincp)
+
+add_executable(han_vs_he_test test/han_vs_he_test.cpp)
+target_link_libraries(han_vs_he_test PRIVATE vincp)
+
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
 add_test(NAME lcp_random_test COMMAND lcp_random_test)
 add_test(NAME lcp_psd_test COMMAND lcp_psd_test)
+add_test(NAME lm_test COMMAND lm_test)
+add_test(NAME han_vs_he_test COMMAND han_vs_he_test)
 
 # The random indefinite-M LCP is expected to diverge: Han's method has no
 # convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the

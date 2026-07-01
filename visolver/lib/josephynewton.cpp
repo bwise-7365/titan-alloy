@@ -29,11 +29,35 @@ void validateModel(const VIModel& model, const VectorXd& z0) {
 
 } // namespace
 
+InnerSolver makeDHan06Solver(double magTol, int iterMax, int iterFreq,
+                             const DHan06Params& params,
+                             const IterationLogger& logger) {
+    return [magTol, iterMax, iterFreq, params, logger](
+               const VectorXd& x0, const Eigen::MatrixXd& M,
+               const VectorXd& q, const Projector& Pr) -> VIResult {
+        return dHan06(x0, M, q, Pr, magTol, iterMax, iterFreq, params, logger);
+    };
+}
+
+InnerSolver makeBsHe94bSolver(double magTol, int iterMax, int iterFreq,
+                              const BsHe94bParams& params,
+                              const IterationLogger& logger) {
+    return [magTol, iterMax, iterFreq, params, logger](
+               const VectorXd& x0, const Eigen::MatrixXd& M,
+               const VectorXd& q, const Projector& Pr) -> VIResult {
+        return bsHe94b(x0, M, q, Pr, magTol, iterMax, iterFreq, params, logger);
+    };
+}
+
 VIResult solveVI(const VIModel& model,
                  const VectorXd& z0,
+                 const InnerSolver& innerSolver,
                  const JosephyNewtonParams& params,
                  const OuterLogger& logger) {
     validateModel(model, z0);
+    if (!innerSolver) {
+        throw std::invalid_argument("solveVI: innerSolver must be set.");
+    }
 
     const Projector Pr = makeMixedProjector(model.n);
 
@@ -71,11 +95,7 @@ VIResult solveVI(const VIModel& model,
         const VectorXd q = Fz - jac * z;
 
         // Inner affine-VI solve over the same K gives the Josephy-Newton point.
-        const VIResult inner = dHan06(z, jac, q, Pr,
-                                      params.innerMagTol,
-                                      params.innerIterMax,
-                                      params.innerIterFreq,
-                                      params.innerParams);
+        const VIResult inner = innerSolver(z, jac, q, Pr);
 
         // Damp the step with an Armijo line search on the natural-map merit
         // theta(w) = 1/2 ||w - Pi_K(w - F(w))||^2, so the undamped Newton step

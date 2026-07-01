@@ -3,14 +3,20 @@
 #define VINCP_LEVENBERGMARQUARDT_HPP
 
 // ============================================================================
-// Levenberg-Marquardt regularization -- a reusable building block for future
-// solvers (e.g. a regularized/trust-region Newton for indefinite or singular
-// Jacobians). It is intentionally NOT used by the current Josephy-Newton driver,
-// which globalizes with an Armijo line search instead (armijo.hpp).
+// Levenberg-Marquardt for nonlinear least squares.
 //
-// It provides the damped operator  J + lambda I  and a policy for adapting
-// lambda between iterations.
+// Two layers:
+//   - Building blocks: the damped operator  J + lambda I  and a policy for
+//     adapting lambda between iterations. Reusable by any solver (the
+//     Josephy-Newton driver does NOT use them; it globalizes with an Armijo line
+//     search, armijo.hpp).
+//   - levenbergMarquardtSolve: a self-contained LM solver for
+//     min 1/2 ||F(x)||^2 over F: R^n -> R^m (m >= n), built on those blocks and
+//     a finite-difference Jacobian. Returns the shared VIResult.
 // ============================================================================
+
+#include "vincp.hpp"
+#include "fdjacobian.hpp"
 
 #include <Eigen/Dense>
 
@@ -32,6 +38,27 @@ Eigen::MatrixXd levenbergMarquardtDamp(const Eigen::MatrixXd& J, double lambda);
 // lambdaMax].
 double levenbergMarquardtUpdate(double lambda, bool stepAccepted,
                                 const LevenbergMarquardtParams& params = LevenbergMarquardtParams{});
+
+// Controls for levenbergMarquardtSolve.
+struct LevenbergMarquardtSolveParams {
+    double meritTol  = 1.0e-16;  // stop when ||F(x)||^2 < meritTol (SQUARED norm)
+    int    iterMax   = 200;      // outer iteration cap
+    int    innerMax  = 40;       // max lambda increases per outer step
+    double fdStepRel = -1.0;     // finite-difference Jacobian step (<= 0 => default)
+    LevenbergMarquardtParams lambda = LevenbergMarquardtParams{};  // damping schedule
+};
+
+// Solve min 1/2 ||F(x)||^2 by damped Gauss-Newton (Levenberg-Marquardt): at each
+// iterate form the FD Jacobian J, solve (J^T J + lambda I) dx = -J^T F, and
+// accept the step if it lowers ||F||^2 (else grow lambda and retry). Returns the
+// shared VIResult: 'z' is the solution, 'residual' is ||F(x)||^2 at termination,
+// 'converged' is true iff that fell below meritTol within iterMax steps.
+//
+// Throws std::invalid_argument on an unset F or empty x0, and std::runtime_error
+// if F(x0) is non-finite. It never silently substitutes a result.
+VIResult levenbergMarquardtSolve(const VectorField& F,
+                                 const Eigen::VectorXd& x0,
+                                 const LevenbergMarquardtSolveParams& params = LevenbergMarquardtSolveParams{});
 
 } // namespace VINCP
 

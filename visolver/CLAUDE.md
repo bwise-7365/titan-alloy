@@ -55,20 +55,29 @@ Two solver layers over one shared core; the dependency arrows point one way
     `projectNonnegative` (onto `R_+^n`) and `makeMixedProjector(numFree)` (onto
     `R^numFree x R_+^(n-numFree)`).
 
-- **Inner solver (`include/dhan06.hpp`, `lib/dhan06.cpp`)** — `dHan06`, a C++
-  port of Deren Han's 2006 self-adaptive projection method for a **linear** VI
-  `(M x + q)`. `K` is supplied as the `Projector` argument, so the same routine
-  handles any set you can project onto. Tunables in `DHan06Params` (defaults
-  reproduce the Octave constants exactly).
+- **Inner solvers (interchangeable via the `InnerSolver` seam)** — two ports,
+  same interface (identical argument order and the shared `VectorXd`/`MatrixXd`/
+  `Projector`/`IterationLogger`/`VIResult` types; only the params struct differs):
+  - `dHan06` (`include/dhan06.hpp`, `lib/dhan06.cpp`) — Deren Han's 2006
+    self-adaptive projection method; tunables in `DHan06Params`.
+  - `bsHe94b` (`include/bshe94b.hpp`, `lib/bshe94b.cpp`) — Bingsheng He's 1994
+    fixed-metric projection-contraction (eq. 16): factors `(M + I)` once and
+    reuses it; tunables in `BsHe94bParams`.
+  Each solves a **linear** VI `(M x + q)` over any `K` given as the `Projector`.
 
 - **Outer driver (`include/josephynewton.hpp`, `lib/josephynewton.cpp`)** —
-  `solveVI`, a Josephy-Newton loop for the nonlinear VI. Each step linearizes
-  `F` at the current iterate with a finite-difference Jacobian `J`, solves the
-  affine VI `M = J(z_k)`, `q = F(z_k) - J(z_k) z_k` over the **same** `K` via
-  `dHan06` with `makeMixedProjector(n)`, then **damps** that step with an Armijo
-  line search on the natural-map merit (see below). The projector carries the
-  mixed free/non-negative structure, so there is deliberately **no Schur
-  complement** and no elimination of the free block.
+  `solveVI`, a Josephy-Newton loop for the nonlinear VI. Each step linearizes `F`
+  with a finite-difference Jacobian `J`, then solves the affine VI `M = J(z_k)`,
+  `q = F(z_k) - J(z_k) z_k` over the **same** `K` (via `makeMixedProjector(n)`),
+  then **damps** the step with an Armijo line search on the natural-map merit.
+  The projector carries the mixed free/non-negative structure, so there is
+  deliberately **no Schur complement** and no elimination of the free block.
+  - The inner solver is a parameter, not hard-wired: `solveVI` takes an
+    **`InnerSolver`** functor `(x0, M, q, Pr) -> VIResult`. Adapt a concrete
+    solver with `makeDHan06Solver(...)` / `makeBsHe94bSolver(...)`, which bind its
+    tolerances/caps/params/logger. This lets the same outer loop drive different
+    inner solvers on identical problems (see `test/han_vs_he_test.cpp`). Inner
+    controls live in the functor, not in `JosephyNewtonParams` (outer-only).
 
 - **Jacobian (`include/fdjacobian.hpp`, `lib/fdjacobian.cpp`)** —
   `centralDifferenceJacobian`. **4th-order** central differences (step
@@ -81,9 +90,13 @@ Two solver layers over one shared core; the dependency arrows point one way
     agnostic backtracking search on any scalar merit. The driver uses it
     (`JosephyNewtonParams::armijo`) to damp the Newton step; without it the
     undamped step chatters (period-2) at the non-smooth complementarity solution.
-  - `include/levenbergmarquardt.hpp`, `lib/levenbergmarquardt.cpp` —
-    `levenbergMarquardtDamp`/`Update`, a `J + lambda I` regularizer + lambda
-    policy. **Not wired into any solver yet**; provided for future algorithms.
+  - `include/levenbergmarquardt.hpp`, `lib/levenbergmarquardt.cpp` — two layers:
+    the primitives `levenbergMarquardtDamp`/`Update` (a `J + lambda I` regularizer
+    + lambda policy, reusable by any algorithm), and `levenbergMarquardtSolve`, a
+    self-contained LM nonlinear-least-squares solver for `min 1/2 ||F(x)||^2`,
+    `F: R^n -> R^m` (m >= n), built on those primitives + the FD Jacobian and
+    returning the shared `VIResult`. Exercised by `test/lm_test.cpp`. It is
+    independent of the Josephy-Newton driver (which globalizes with Armijo).
 
 ## Invariants that will bite you if ignored
 
