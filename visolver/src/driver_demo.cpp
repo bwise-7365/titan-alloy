@@ -133,21 +133,8 @@ int main() {
     target << VectorXd::Zero(n), wStar;
     const VINCP::CubicProblem prob =
         VINCP::makeCubicProblem(d, d, rng, zStar, target, /*forcePSD=*/true, aLo, aHi);
-    const auto Ffull = prob.F;
 
-    VINCP::VIModel model;
-    model.n = n;
-    model.m = m;
-    model.H = [Ffull](const VectorXd& x, const VectorXd& y) -> VectorXd {
-        VectorXd z(x.size() + y.size());
-        z << x, y;
-        return Ffull(z).head(x.size());
-    };
-    model.G = [Ffull](const VectorXd& x, const VectorXd& y) -> VectorXd {
-        VectorXd z(x.size() + y.size());
-        z << x, y;
-        return Ffull(z).tail(y.size());
-    };
+    const VINCP::VIModel model = VINCP::makeVIModel(n, m, prob.F);
 
     // Show the actual H and G functions (free vars x0.., non-negative y0..).
     printf("\nlinear forms  u = A z:\n");

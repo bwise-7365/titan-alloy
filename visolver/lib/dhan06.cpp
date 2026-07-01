@@ -23,19 +23,7 @@ void validateInputs(const VectorXd& x0,
                     const VectorXd& q,
                     const Projector& Pr,
                     const DHan06Params& params) {
-    const Eigen::Index nd = x0.size();
-    if (nd <= 0) {
-        throw std::invalid_argument("dHan06: x0 must be non-empty.");
-    }
-    if (M.rows() != nd || M.cols() != nd) {
-        throw std::invalid_argument("dHan06: M must be square and conformant with x0.");
-    }
-    if (q.size() != nd) {
-        throw std::invalid_argument("dHan06: q must be conformant with x0.");
-    }
-    if (!Pr) {
-        throw std::invalid_argument("dHan06: projector Pr must be set.");
-    }
+    validateLviInputs("dHan06", x0, M, q, Pr);
     if (!(params.gamma > 0.0 && params.gamma < 2.0)) {
         throw std::invalid_argument("dHan06: gamma must satisfy 0 < gamma < 2.");
     }

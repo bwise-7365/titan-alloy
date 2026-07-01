@@ -2,6 +2,7 @@
 #include "vincp.hpp"
 
 #include <stdexcept>
+#include <string>
 
 namespace VINCP {
 
@@ -53,6 +54,42 @@ VectorXd evaluateF(const VIModel& model, const VectorXd& z) {
         throw std::runtime_error("evaluateF: F(z) is non-finite.");
     }
     return f;
+}
+
+VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
+                    std::function<VectorXd(const VectorXd&)> F) {
+    VIModel model;
+    model.n = n;
+    model.m = m;
+    model.H = [n, m, F](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        VectorXd z(n + m);
+        z << x, y;
+        return F(z).head(n);
+    };
+    model.G = [n, m, F](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        VectorXd z(n + m);
+        z << x, y;
+        return F(z).tail(m);
+    };
+    return model;
+}
+
+void validateLviInputs(const char* who,
+                       const VectorXd& x0, const Eigen::MatrixXd& M,
+                       const VectorXd& q, const Projector& Pr) {
+    const Eigen::Index nd = x0.size();
+    if (nd <= 0) {
+        throw std::invalid_argument(std::string(who) + ": x0 must be non-empty.");
+    }
+    if (M.rows() != nd || M.cols() != nd) {
+        throw std::invalid_argument(std::string(who) + ": M must be square and conformant with x0.");
+    }
+    if (q.size() != nd) {
+        throw std::invalid_argument(std::string(who) + ": q must be conformant with x0.");
+    }
+    if (!Pr) {
+        throw std::invalid_argument(std::string(who) + ": projector Pr must be set.");
+    }
 }
 
 } // namespace VINCP

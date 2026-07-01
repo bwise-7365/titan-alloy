@@ -87,6 +87,23 @@ struct VIModel {
 // mismatch or a non-finite value.
 VectorXd evaluateF(const VIModel& model, const VectorXd& z);
 
+// Build a VIModel from a single full field F: R^(n+m) -> R^(n+m), splitting the
+// output into H = F(z).head(n) and G = F(z).tail(m) with z = (x, y). Convenience
+// for the common case where the map is defined on the whole vector at once.
+VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
+                    std::function<VectorXd(const VectorXd&)> F);
+
+// ---------------------------------------------------------------------------
+// Inner (linear-VI) solver input validation
+// ---------------------------------------------------------------------------
+
+// Validate the inputs common to every inner LVI solver. 'who' prefixes the error
+// message (e.g. "dHan06"). Throws std::invalid_argument on an empty x0, an M that
+// is not square and conformant with x0, a non-conformant q, or an unset Pr.
+void validateLviInputs(const char* who,
+                       const VectorXd& x0, const Eigen::MatrixXd& M,
+                       const VectorXd& q, const Projector& Pr);
+
 } // namespace VINCP
 
 #endif // VINCP_HPP

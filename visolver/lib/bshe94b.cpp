@@ -13,19 +13,7 @@ void validateInputs(const VectorXd& x0,
                     const VectorXd& q,
                     const Projector& Pr,
                     const BsHe94bParams& params) {
-    const Eigen::Index nd = x0.size();
-    if (nd <= 0) {
-        throw std::invalid_argument("bsHe94b: x0 must be non-empty.");
-    }
-    if (M.rows() != nd || M.cols() != nd) {
-        throw std::invalid_argument("bsHe94b: M must be square and conformant with x0.");
-    }
-    if (q.size() != nd) {
-        throw std::invalid_argument("bsHe94b: q must be conformant with x0.");
-    }
-    if (!Pr) {
-        throw std::invalid_argument("bsHe94b: projector Pr must be set.");
-    }
+    validateLviInputs("bsHe94b", x0, M, q, Pr);
     if (!(params.gamma > 0.0 && params.gamma < 2.0)) {
         throw std::invalid_argument("bsHe94b: gamma must satisfy 0 < gamma < 2.");
     }
