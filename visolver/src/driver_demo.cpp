@@ -1,53 +1,194 @@
 #include "josephynewton.hpp"
+#include "utils.hpp"
 
 #include <Eigen/Dense>
+#include <cmath>
+#include <cstdint>
 #include <cstdio>
+#include <random>
+#include <string>
 
 using std::printf;
+using Eigen::Index;
+using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using VINCP::printVector;
 
-// Demonstration / regression test for the outer Josephy-Newton driver.
+// Demonstration / regression test for the outer Josephy-Newton driver, on a
+// larger nonlinear mixed VI with a known, randomly generated solution and
+// genuine nonlinear cross-terms.
 //
-// A genuinely nonlinear mixed VI with a known closed-form solution, chosen so
-// that every linearization is monotone (positive semidefinite Jacobian), which
-// keeps Han's inner method in its convergent regime.
+// The map is  F(z) = A^T ( u.^3 + u ) + k,  with the linear forms  u = A z
+// (z = (x, y), elementwise cube). It splits as
+//     H(x, y) = F(z).head(n),   G(x, y) = F(z).tail(m).
+// Because each u_k = (A z)_k mixes all variables, both the cubic term A^T u.^3
+// and the linear term A^T u = A^T A z couple x with y and the components with
+// one another -- i.e. real nonlinear cross-terms, not a separable diagonal cube.
 //
-// Free block x in R, non-negative block y in R.  F = (H, G) = grad(phi) with
-//     phi(x, y) = (1/4) x^4 + (1/2) x^2 + x y + (1/2) y^2 - 2 x,
-// so
-//     H(x, y) = x^3 + x + y - 2,        (free:  H = 0)
-//     G(x, y) = x + y.                  (0 <= G _|_ y >= 0)
-// Its Jacobian [[3 x^2 + 1, 1], [1, 1]] is symmetric PSD for all x, so F is
-// monotone.  The unique solution is (x*, y*) = (1, 0):
-//     H(1, 0) = 1 + 1 + 0 - 2 = 0,
-//     G(1, 0) = 1 >= 0 with y* = 0      (complementarity holds),
-// and no solution with y > 0 exists (G = 0 there forces x = -y, whence
-// H = -y^3 - 2 = 0 has no non-negative root).
+// This is grad(phi) of the convex
+//     phi(z) = sum_k ( u_k^4 / 4 + u_k^2 / 2 ) + k^T z,   u = A z,
+// so F is monotone and its Jacobian A^T diag(3 u_k^2 + 1) A is PSD at every
+// iterate (positive definite a.s.), keeping Han's inner method convergent and
+// making z* the unique solution.
 //
-// This is the template for requirement (E): replace the model and the expected
-// vector with one of your verified Octave cases and compare to a tolerance.
+// Construction (the "add constants to match" pattern):
+//   - draw a random free block x*, and a complementary (y*, w*) pair
+//     (0 <= w* _|_ y* >= 0) exactly as the LCP tests do;
+//   - draw the random forms matrix A;
+//   - choose the constant vector k so that at z* = (x*, y*),
+//       H(x*, y*) = 0  and  G(x*, y*) = w*,  i.e.
+//       k = [0; w*] - A^T ( (A z*).^3 + (A z*) ).
+
+// Name of the z-component j: x0..x(n-1) are free, then y0..y(m-1).
+static std::string varName(Index j, Index n) {
+    if (j < n) {
+        return "x" + std::to_string(static_cast<long long>(j));
+    }
+    return "y" + std::to_string(static_cast<long long>(j - n));
+}
+
+// Print a linear form  name = c0 x0 + c1 y0 + ... , skipping ~zero coefficients.
+static void printLinearForm(const char* name, const VectorXd& coeffs, Index n) {
+    printf("  %s =", name);
+    bool any = false;
+    for (Index j = 0; j < coeffs.size(); ++j) {
+        const double a = coeffs(j);
+        if (std::abs(a) > 1.0e-12) {
+            printf(" %+.3f %s", a, varName(j, n).c_str());
+            any = true;
+        }
+    }
+    if (!any) {
+        printf(" 0");
+    }
+    printf("\n");
+}
+
+// Print one field component  name = k_row + sum_k A(k,row) (u_k^3 + u_k).
+static void printFieldComponent(const char* name, const MatrixXd& A,
+                                const VectorXd& k, Index row) {
+    printf("  %s = %+.3f", name, k(row));
+    for (Index kk = 0; kk < A.rows(); ++kk) {
+        const double a = A(kk, row);
+        if (std::abs(a) > 1.0e-12) {
+            printf(" %+.3f (u%td^3 + u%td)", a, kk, kk);
+        }
+    }
+    printf("\n");
+}
+
 int main() {
+    const Index n = 4;                       // free block dimension (edit here)
+    const Index m = 4;                       // non-negative block dimension
+    const Index d = n + m;
+    const std::uint_fast32_t seed = 123456u; // PRNG seed
+
+    const int    xLo = -8,   xHi = 8;        // integer range for the free block x*
+    const int    yLo = 1,    yHi = 8;        // integer range for the (y*, w*) pair
+    const double aLo = -1.0, aHi = 1.0;      // range for the forms matrix A
+
+    printf("Build the expected solution with n=%td free variables and m=%td non-negative\n",
+        n, m); // an Index is really long
+    const double solTol = 1.0e-6;            // "very close" bound on ||z_solved - z*||
+
+    // --- Solver parameters for THIS problem (set per problem here, not in the
+    // headers). The Armijo-damped Newton step (params.armijo) converges
+    // monotonically instead of chattering at the non-smooth solution.
+    //
+    // WARNING: the lever for a tighter outerTol is innerMagTol. The outer
+    // natural-residual floor is set (linearly) by the INNER solver tolerance,
+    // NOT by the finite-difference Jacobian's step or order. To drive outerTol
+    // lower, lower innerMagTol -- do not touch the FD settings.
+    //
+    // REMEMBER "SQUARE": magTol / outerTol / residual are SQUARED residual norms,
+    // so a tolerance t is an actual error (residual norm) of sqrt(t). Read it by
+    // halving the exponent: innerMagTol = 1e-16 -> inner error ~1e-8;
+    // outerTol = 1e-10 -> outer error ~1e-5. A tolerance can only go as low as
+    // ~machine-eps (~2e-16) before it is below the squared rounding noise.
+    const double outerTol      = 1.0e-10;    // stop when squared natural residual < this
+    const int    outerIterMax  = 200;        // outer Josephy-Newton iteration cap
+    const int    outerIterFreq = 1;          // outer logging frequency (<= 0 disables)
+    const double innerMagTol   = 1.0e-16;    // dHan06 inner SQUARED-residual tol (error ~1e-8)
+    const int    innerIterMax  = 100000;     // dHan06 inner iteration cap
+
+    std::mt19937 rng(seed);
+    std::uniform_int_distribution<int>     xDist(xLo, xHi);
+    std::uniform_real_distribution<double> aDist(aLo, aHi);
+
+    // Free block x*, then the complementary (y*, w*) pair.
+    VectorXd xStar(n);
+    for (Index i = 0; i < n; ++i) {
+        xStar(i) = static_cast<double>(xDist(rng));
+    }
+    VectorXd wStar, yStar;
+    VINCP::makeComplementaryPair(m, rng, yLo, yHi, wStar, yStar);
+
+    VectorXd zStar(d);
+    zStar << xStar, yStar;
+
+    // Random forms matrix A; the field couples variables through u = A z.
+    MatrixXd A(d, d);
+    for (Index r = 0; r < d; ++r) {
+        for (Index col = 0; col < d; ++col) {
+            A(r, col) = aDist(rng);
+        }
+    }
+
+    // Constant vector k so that H(x*, y*) = 0 and G(x*, y*) = w*.
+    VectorXd target(d);
+    target << VectorXd::Zero(n), wStar;
+    const VectorXd uStar = A * zStar;
+    const VectorXd fBase = A.transpose() * (uStar.array().cube() + uStar.array()).matrix();
+    const VectorXd k = target - fBase;
+
+    // Full field F(z) = A^T ( u.^3 + u ) + k, split into H (free) and G (nonneg).
+    const auto Ffull = [A, k](const VectorXd& z) -> VectorXd {
+        const VectorXd u = A * z;
+        return A.transpose() * (u.array().cube() + u.array()).matrix() + k;
+    };
     VINCP::VIModel model;
-    model.n = 1;
-    model.m = 1;
-    model.H = [](const VectorXd& x, const VectorXd& y) -> VectorXd {
-        VectorXd h(1);
-        h(0) = x(0) * x(0) * x(0) + x(0) + y(0) - 2.0;
-        return h;
+    model.n = n;
+    model.m = m;
+    model.H = [Ffull](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        VectorXd z(x.size() + y.size());
+        z << x, y;
+        return Ffull(z).head(x.size());
     };
-    model.G = [](const VectorXd& x, const VectorXd& y) -> VectorXd {
-        VectorXd g(1);
-        g(0) = x(0) + y(0);
-        return g;
+    model.G = [Ffull](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        VectorXd z(x.size() + y.size());
+        z << x, y;
+        return Ffull(z).tail(y.size());
     };
 
-    const VectorXd z0 = VectorXd::Zero(2);
+    // Show the actual H and G functions (free vars x0.., non-negative y0..).
+    printf("\nlinear forms  u = A z:\n");
+    for (Index kk = 0; kk < d; ++kk) {
+        char lbl[16];
+        std::snprintf(lbl, sizeof lbl, "u%td", kk);
+        printLinearForm(lbl, A.row(kk).transpose(), n);
+    }
+    printf("\nF(z) = A^T ( u.^3 + u ) + k:\n");
+    printf(" H (free block, solved to H = 0):\n");
+    for (Index i = 0; i < n; ++i) {
+        char lbl[16];
+        std::snprintf(lbl, sizeof lbl, "H%td", i);
+        printFieldComponent(lbl, A, k, i);
+    }
+    printf(" G (non-negative block, 0 <= G _|_ y >= 0):\n");
+    for (Index i = 0; i < m; ++i) {
+        char lbl[16];
+        std::snprintf(lbl, sizeof lbl, "G%td", i);
+        printFieldComponent(lbl, A, k, n + i);
+    }
 
-    VectorXd zStar(2);
-    zStar << 1.0, 0.0;
+    const VectorXd z0 = VectorXd::Zero(d);
 
-    VINCP::JosephyNewtonParams params;   // defaults
-    params.outerIterFreq = 1;
+    VINCP::JosephyNewtonParams params;
+    params.outerTol      = outerTol;
+    params.outerIterMax  = outerIterMax;
+    params.outerIterFreq = outerIterFreq;
+    params.innerMagTol   = innerMagTol;
+    params.innerIterMax  = innerIterMax;
 
     const VINCP::OuterLogger logger =
         [](int iter, int itMax, double res, double tol) {
@@ -57,14 +198,20 @@ int main() {
     const VINCP::VIResult r = VINCP::solveVI(model, z0, params, logger);
 
     const double solErr = (r.z - zStar).norm();
-    printf("\nsolution       = (%.12f, %.12f)\n", r.z(0), r.z(1));
-    printf("expected       = (%.12f, %.12f)\n", zStar(0), zStar(1));
+    printf("\nn = %lld free, m = %lld non-negative (d = %lld)\n",
+           static_cast<long long>(n), static_cast<long long>(m),
+           static_cast<long long>(d));
+    const VectorXd wSolved = model.G(r.z.head(n), r.z.tail(m));  // implied w at the solution
+    printVector("z expected", zStar);
+    printVector("z solved  ", r.z);
+    printf("\nw = G(x,y)\n");
+    printVector("w expected", wStar);
+    printVector("w implied ", wSolved);
     printf("outer iters    = %d\n", r.iter);
     printf("residual^2     = %.3e (squared natural residual)\n", r.residual);
     printf("converged      = %s\n", r.converged ? "true" : "false");
     printf("solution error = %.3e\n", solErr);
 
-    const double solTol = 1.0e-6;
     if (r.converged && solErr < solTol) {
         printf("PASS (within %.1e)\n", solTol);
         return 0;

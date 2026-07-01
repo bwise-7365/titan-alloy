@@ -21,6 +21,7 @@
 #include "vincp.hpp"
 #include "dhan06.hpp"
 #include "fdjacobian.hpp"
+#include "armijo.hpp"
 
 #include <Eigen/Dense>
 #include <functional>
@@ -40,8 +41,12 @@ struct JosephyNewtonParams {
     int    outerIterMax  = 200;      // outer iteration cap
     int    outerIterFreq = 0;        // logging frequency (<= 0 disables logging)
 
-    // Central-difference Jacobian relative step (<= 0 => default eps^(1/3)).
+    // Central-difference Jacobian relative step (<= 0 => default eps^(1/5)).
     double fdStepRel = -1.0;
+
+    // Armijo damping of the outer (Josephy-Newton) step on the natural-map
+    // merit, to prevent overshoot near the non-smooth solution.
+    ArmijoParams armijo = ArmijoParams{};
 
     // Inner LVI solver (dHan06) controls.
     double       innerMagTol  = 1.0e-14;

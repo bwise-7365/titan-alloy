@@ -69,13 +69,27 @@ VIResult solveVI(const VIModel& model,
         const Eigen::MatrixXd jac = centralDifferenceJacobian(F, z, params.fdStepRel);
         const VectorXd q = Fz - jac * z;
 
-        // Inner affine-VI solve over the same K; full Newton step.
+        // Inner affine-VI solve over the same K gives the Josephy-Newton point.
         const VIResult inner = dHan06(z, jac, q, Pr,
                                       params.innerMagTol,
                                       params.innerIterMax,
                                       params.innerIterFreq,
                                       params.innerParams);
-        z = inner.z;
+
+        // Damp the step with an Armijo line search on the natural-map merit
+        // theta(w) = 1/2 ||w - Pi_K(w - F(w))||^2, so the undamped Newton step
+        // cannot overshoot the non-smooth solution. 'residual' is ||r(z)||^2, so
+        // theta at the base point is half of it.
+        const Eigen::VectorXd stepDir = inner.z - z;
+        const double theta0 = 0.5 * residual;
+        const auto meritAt = [&](double alpha) -> double {
+            const Eigen::VectorXd w = z + alpha * stepDir;
+            const Eigen::VectorXd Fw = evaluateF(model, w);
+            const Eigen::VectorXd rw = w - Pr(w - Fw);
+            return 0.5 * rw.squaredNorm();
+        };
+        const ArmijoResult ls = armijoLineSearch(meritAt, theta0, params.armijo);
+        z = z + ls.alpha * stepDir;
         ++iter;
     }
 
