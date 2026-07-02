@@ -179,3 +179,31 @@ This is deferred work: when asked, we will plan how to fit this hybrid engine
 into the existing `VINCP` framework (reusing `VIResult`, `VIModel`, the
 `Projector` abstraction, and the natural-residual merit already computed in
 `solveVI`). Do not begin implementing it without an explicit request.
+
+## Next planned work: logistics network QP (start here next session)
+
+The user is bringing a NEW problem to this codebase: a **system-optimal convex QP**
+for distribution planning over a sparse ~100-node / ~500-arc network (minimize
+weighted squared demand-shortfall subject to flow balance, supply caps, and a
+ton-mile budget), generalizing soon to multiple goods, vehicle types, and resource
+budgets. It is a single-planner optimization, NOT a game/equilibrium (do not
+conflate with SAOE). The full spec, agreed recommendations (Lagrangian-on-budget +
+convex min-cost flow; OSQP; or reuse VINCP via a monotone KKT-LCP), data-structure
+notes, the coming multi-good/multi-vehicle generalization, a staged plan skeleton,
+and open questions are in **`2026-07-01-logistics-qp-handoff.md`** — read it first.
+
+## Outstanding tasks (revisit later; do not start unprompted)
+
+- **SAOE equilibrium selection.** On the fixed `test/saoe_test.cpp` instance the
+  solver reliably converges to a negative-utility KKT point, not the reference
+  equilibrium a now-lost earlier C++ solver found (`saoe_test` therefore gates on
+  *feasibility*, not a specific equilibrium). This game is non-monotone / non-
+  concave with multiple KKT/stationary points; random starts (the `repeatable`
+  switch in `saoe_test`) all fall into the same basin. Likely levers to reach the
+  intended equilibrium: a stronger globalization (the Solodov–Svaiter safeguard
+  above) or a homotopy/continuation start.
+- **dHan06 inner-solver cost.** In the SAOE runs dHan06 is ~12x slower in wall
+  time than bsHe94b at nearly equal iteration counts, because it re-factorizes
+  `(I + beta_k M)` every inner iteration (beta_k is self-adaptive) while bsHe94b
+  factors `(M + I)` once and reuses it. If dHan06 speed ever matters, cache/reuse
+  its factorization across beta updates (or a rank-update), or cap inner iters.
