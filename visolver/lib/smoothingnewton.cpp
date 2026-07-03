@@ -1,4 +1,37 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
+// "A non-interior-point smoothing method for variational inequality problem"
+// by Zhang, Liu, Liu in Journal of Computational and Applied Mathematics 234 (2010)
+//
+// Their goal was to minimize scalar f(x) s.g. G(x) => 0 which can be solved as
+//
+//     ∇f(x)  =  λ ∇g(x)
+//     0 ≤ λ  ⊥  g(x) ≥ 0
+//
+// As ∇f(x) is a row vector, they transposes the top line to use column vectors.
+// The auxilliary vector 's' is used to decouple the two uses of 'G'.
+// ------------------------
+// I realized that this could probably be generalized using
+// the same 's',
+//
+// H(x,y) = ∇f(x) - y ∇g(x) and
+// G(x,y) = g(x)
+//
+// like this:
+//
+//         0 = H(x,y)
+//     0 ≤ y ⊥ G(x,y) ≥ 0
+//
+// Note that y is constrained explicitly and x is constrained implicitly by H and G.
+// I would suggest z = [u, x, y, s] and psi(z) is the following:
+//
+//       H(x,y)
+//     s - G(x,y)
+//     FB(u, y, s)
+//
+// Notice that if x has N dim, H has K, and y and G have M,
+// then the input vector is N+2M (x, y, s), while the output is K+2M.
+// It is important that my damped Newton method allows the input
+// and output vectors to have different dimensionality.
 #include "smoothingnewton.hpp"
 
 #include <stdexcept>
@@ -15,6 +48,14 @@ VectorXd smoothedFischerBurmeister(double u, const VectorXd& a, const VectorXd& 
         .matrix();
 }
 
+    // Uses Damped Newton (Levenberg Marquart) to solve
+    //
+    //         0 = H(x,y)
+    //     0 ≤ y ⊥ G(x,y) ≥ 0
+    // as
+    //       H(x,y)
+    //     s - G(x,y)
+    //     FB(u, y, s)
 SmoothingResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
                                      const VectorXd& x0, const VectorXd& y0,
                                      const SmoothingNewtonParams& params) {
