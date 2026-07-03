@@ -60,8 +60,6 @@ VIResult dHan06(const VectorXd& x0,
     double initMag = -1.0;
 
     while (!doneP) {
-        const double tk = tau(params.tau0, params.tauN, iter);
-
         // Definition of 'e' (just before equation (3) of Han 2006).
         const VectorXd p = Pr(x - bk * (M * x + q));
         const VectorXd e = x - p;
@@ -84,18 +82,24 @@ VIResult dHan06(const VectorXd& x0,
             logger(iter, iterMax, mag, magTol);
         }
 
-        // Equation (10): omega = |beta_k * M * e| / |e|.
-        const VectorXd Me = M * e;
-        const double omegaNum = (bk * Me).norm();
-        const double omegaDnm = std::sqrt(mag);
-        const double omega = omegaNum / omegaDnm;
-
-        // Equation (11): self-adaptive update of beta_k.
-        if (omega < 1.0 / (1.0 + params.mu)) {
-            bk = bk * (1.0 + tk);
-        }
-        if (omega > 1.0 + params.mu) {
-            bk = bk / (1.0 + tk);
+        // Equations (10)-(11): the self-adaptive beta_k update -- the ONLY thing
+        // dHan06 does that bsHe94b does not. Gated by adaptBeta so it can be turned
+        // off (beta_k stays at beta0) to isolate its effect; the projection and the
+        // (I + beta_k M) solve below are untouched and faithful to Han 2006.
+        if (params.adaptBeta) {
+            const double tk = tau(params.tau0, params.tauN, iter);
+            // Equation (10): omega = |beta_k * M * e| / |e|.
+            const VectorXd Me = M * e;
+            const double omegaNum = (bk * Me).norm();
+            const double omegaDnm = std::sqrt(mag);
+            const double omega = omegaNum / omegaDnm;
+            // Equation (11): raise beta_k when omega is small, lower it when large.
+            if (omega < 1.0 / (1.0 + params.mu)) {
+                bk = bk * (1.0 + tk);
+            }
+            if (omega > 1.0 + params.mu) {
+                bk = bk / (1.0 + tk);
+            }
         }
 
         // Equation (4): (I + beta_k M) y = e, then x <- x - gamma y.

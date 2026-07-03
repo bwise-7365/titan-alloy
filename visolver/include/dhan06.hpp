@@ -28,10 +28,22 @@ namespace VINCP {
 struct DHan06Params {
     double gamma = 1.6;               // relaxation factor, must satisfy 0 < gamma < 2
     double mu = 1.05;                 // Han's constant (mu > 0)
-    double beta0 = 0.5;               // initial beta, must be > 0
+    double beta0 = 1.0;               // initial beta, must be > 0. 1.0 makes the first
+                                      // step's metric (I + beta0 M) = (M + I), i.e. bsHe94b's
+                                      // proven-contractive metric, so Han starts stably even on
+                                      // an indefinite M and the self-adaptive rule tunes upward
+                                      // from there. Han 2006 permits any beta0 > 0 (the Octave
+                                      // used 0.5, which only converges on a monotone M).
     double tau0 = 0.5;                // initial tau
     int    tauN = 10;                 // 'n' in the tau schedule
     double divergenceFactor = 100.0;  // guard: mag must stay below factor * initialMag
+
+    // DIAGNOSTIC: when false, freeze beta_k at beta0 and skip the eq.(11) update.
+    // With beta0 = 1 this makes dHan06 numerically identical to bsHe94b (which IS
+    // this method with beta frozen at 1), so the self-adaptive beta -- the only
+    // thing dHan06 does that bsHe94b does not -- can be A/B-compared in isolation.
+    // Leave true for the faithful Han 2006 method.
+    bool   adaptBeta = true;
 };
 
 // One element of the tau(k) schedule. Mirrors the Octave sub-function: returns
