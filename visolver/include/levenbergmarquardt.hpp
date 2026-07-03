@@ -34,7 +34,7 @@ struct LevenbergMarquardtParams {
 // The damped Gauss-Newton normal-equations operator J^T J + lambda I (n x n) for a
 // possibly-rectangular m x n Jacobian J -- a square J is just the special case
 // m = n. Throws std::invalid_argument if lambda < 0.
-Eigen::MatrixXd levenbergMarquardtDamp(const Eigen::MatrixXd& J, double lambda);
+MatrixXd levenbergMarquardtDamp(const MatrixXd& J, double lambda);
 
 // Adapt the damping: shrink toward Newton on an accepted step, grow toward a
 // short, more conservative step on a rejected one, clamped to [lambdaMin,
@@ -60,7 +60,7 @@ struct LevenbergMarquardtSolveParams {
 // Throws std::invalid_argument on an unset F or empty x0, and std::runtime_error
 // if F(x0) is non-finite. It never silently substitutes a result.
 VIResult levenbergMarquardtSolve(const VectorField& F,
-                                 const Eigen::VectorXd& x0,
+                                 const VectorXd& x0,
                                  const LevenbergMarquardtSolveParams& params = LevenbergMarquardtSolveParams{});
 
 } // namespace VINCP

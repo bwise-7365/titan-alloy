@@ -10,7 +10,7 @@ VectorXd projectNonnegative(const VectorXd& v) {
     return v.cwiseMax(0.0);
 }
 
-Projector makeMixedProjector(Eigen::Index numFree) {
+Projector makeMixedProjector(Index numFree) {
     if (numFree < 0) {
         throw std::invalid_argument("makeMixedProjector: numFree must be non-negative.");
     }
@@ -19,7 +19,7 @@ Projector makeMixedProjector(Eigen::Index numFree) {
             throw std::invalid_argument("mixed projector: numFree exceeds vector length.");
         }
         VectorXd out = v;
-        const Eigen::Index tail = v.size() - numFree;
+        const Index tail = v.size() - numFree;
         out.tail(tail) = v.tail(tail).cwiseMax(0.0);
         return out;
     };
@@ -56,7 +56,7 @@ VectorXd evaluateF(const VIModel& model, const VectorXd& z) {
     return f;
 }
 
-VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
+VIModel makeVIModel(Index n, Index m,
                     std::function<VectorXd(const VectorXd&)> F) {
     VIModel model;
     model.n = n;
@@ -75,9 +75,9 @@ VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
 }
 
 void validateLviInputs(const char* who,
-                       const VectorXd& x0, const Eigen::MatrixXd& M,
+                       const VectorXd& x0, const MatrixXd& M,
                        const VectorXd& q, const Projector& Pr) {
-    const Eigen::Index nd = x0.size();
+    const Index nd = x0.size();
     if (nd <= 0) {
         throw std::invalid_argument(std::string(who) + ": x0 must be non-empty.");
     }

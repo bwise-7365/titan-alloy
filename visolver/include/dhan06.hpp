@@ -66,7 +66,7 @@ double tau(double t0, int n, int k);
 // parameters, and std::runtime_error on a NaN residual, detected divergence,
 // or a non-finite linear solve. It never silently substitutes a default result.
 VIResult dHan06(const VectorXd& x0,
-                    const Eigen::MatrixXd& M,
+                    const MatrixXd& M,
                     const VectorXd& q,
                     const Projector& Pr,
                     double magTol,

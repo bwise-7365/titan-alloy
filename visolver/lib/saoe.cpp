@@ -12,49 +12,49 @@ namespace VINCP {
 namespace {
 
 // Column efforts E_j = sum_i e_{ij} + eps (length N).
-Eigen::VectorXd columnEfforts(const Eigen::MatrixXd& e, double eps) {
-    Eigen::VectorXd colEff = e.colwise().sum().transpose();
+VectorXd columnEfforts(const MatrixXd& e, double eps) {
+    VectorXd colEff = e.colwise().sum().transpose();
     colEff.array() += eps;
     return colEff;
 }
 
 } // namespace
 
-double saoeEps(const Eigen::MatrixXd& R) {
+double saoeEps(const MatrixXd& R) {
     const double count = static_cast<double>(R.rows() * R.cols());
     return (R.norm() / std::sqrt(count)) / 10000.0;   // RMS(R) / 10000
 }
 
-Eigen::VectorXd saoeProbabilities(const Eigen::MatrixXd& e, double eps) {
-    const Eigen::VectorXd colEff = columnEfforts(e, eps);
+VectorXd saoeProbabilities(const MatrixXd& e, double eps) {
+    const VectorXd colEff = columnEfforts(e, eps);
     return colEff / colEff.sum();
 }
 
-Eigen::VectorXd saoeUtilities(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
+VectorXd saoeUtilities(const MatrixXd& R, const MatrixXd& e,
                               double eps) {
     return R * saoeProbabilities(e, eps);
 }
 
-Eigen::VectorXd saoeRandomStart(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
+VectorXd saoeRandomStart(const MatrixXd& R, const VectorXd& S,
                                 std::mt19937_64& rng) {
-    const Eigen::Index M = R.rows();
-    const Eigen::Index N = R.cols();
-    Eigen::VectorXd z0(N * M + M);
-    for (Eigen::Index i = 0; i < M; ++i) {
+    const Index M = R.rows();
+    const Index N = R.cols();
+    VectorXd z0(N * M + M);
+    for (Index i = 0; i < M; ++i) {
         std::uniform_real_distribution<double> eDist(0.0, S(i) / static_cast<double>(N));
-        for (Eigen::Index j = 0; j < N; ++j) {
+        for (Index j = 0; j < N; ++j) {
             z0(i * N + j) = eDist(rng);
         }
     }
     std::uniform_real_distribution<double> lamDist(0.0, 1.0);
-    for (Eigen::Index i = 0; i < M; ++i) {
+    for (Index i = 0; i < M; ++i) {
         z0(N * M + i) = lamDist(rng);
     }
     return z0;
 }
 
-SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
-                const SaoeParams& params, const Eigen::VectorXd& startGuess) {
+VIResult saoe(const MatrixXd& R, const VectorXd& S,
+              const SaoeParams& params, const VectorXd& startGuess) {
     if (R.rows() <= 0 || R.cols() <= 0) {
         throw std::invalid_argument("saoe: R must be non-empty.");
     }
@@ -62,36 +62,36 @@ SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
         throw std::invalid_argument("saoe: S length must equal R.rows() (one strength per actor).");
     }
 
-    const Eigen::Index M = R.rows();       // actors
-    const Eigen::Index N = R.cols();       // options
-    const Eigen::Index nEffort = N * M;    // effort variables
-    const Eigen::Index dim = nEffort + M;  // + one multiplier per actor
+    const Index M = R.rows();       // actors
+    const Index N = R.cols();       // options
+    const Index nEffort = N * M;    // effort variables
+    const Index dim = nEffort + M;  // + one multiplier per actor
     const double eps = saoeEps(R);
 
     // Complementarity map G(y), y = [ e (row-major), lambda ], all non-negative.
     const auto G = [R, S, eps, M, N, nEffort](const VectorXd& y) -> VectorXd {
-        Eigen::MatrixXd e(M, N);
-        for (Eigen::Index i = 0; i < M; ++i) {
-            for (Eigen::Index j = 0; j < N; ++j) {
+        MatrixXd e(M, N);
+        for (Index i = 0; i < M; ++i) {
+            for (Index j = 0; j < N; ++j) {
                 e(i, j) = y(i * N + j);
             }
         }
 
-        Eigen::VectorXd colEff = e.colwise().sum().transpose();
+        VectorXd colEff = e.colwise().sum().transpose();
         colEff.array() += eps;
         const double D = colEff.sum();
         const VectorXd u = R * (colEff / D);   // u_i = sum_j R_ij P_j
 
         VectorXd g(nEffort + M);
         // Effort block: G_{ij} = lambda_i - dU_{ij}, dU_{ij} = (R_{ij} - u_i)/D.
-        for (Eigen::Index i = 0; i < M; ++i) {
+        for (Index i = 0; i < M; ++i) {
             const double lam = y(nEffort + i);
-            for (Eigen::Index j = 0; j < N; ++j) {
+            for (Index j = 0; j < N; ++j) {
                 g(i * N + j) = lam - (R(i, j) - u(i)) / D;
             }
         }
         // Budget block: G_i = S_i - sum_j e_{ij}.
-        for (Eigen::Index i = 0; i < M; ++i) {
+        for (Index i = 0; i < M; ++i) {
             g(nEffort + i) = S(i) - e.row(i).sum();
         }
         return g;
@@ -106,9 +106,9 @@ SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
         z0 = startGuess;
     } else if (startGuess.size() == 0) {
         z0 = VectorXd::Zero(dim);
-        for (Eigen::Index i = 0; i < M; ++i) {
+        for (Index i = 0; i < M; ++i) {
             const double e0 = S(i) / static_cast<double>(N + 1);
-            for (Eigen::Index j = 0; j < N; ++j) {
+            for (Index j = 0; j < N; ++j) {
                 z0(i * N + j) = e0;
             }
         }
@@ -125,19 +125,20 @@ SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
     jn.outerIterMax          = params.outerIterMax;
     jn.logInnerDefiniteness  = params.logInnerDefiniteness;
 
-    const VIResult res = solveVI(model, z0, inner, jn);
+    return solveVI(model, z0, inner, jn);
+}
 
-    // Unpack the solution vector back into e (M x N, row-major) and lambda (M).
-    SaoeResult out;
-    out.e = Eigen::MatrixXd(M, N);
-    for (Eigen::Index i = 0; i < M; ++i) {
-        for (Eigen::Index j = 0; j < N; ++j) {
-            out.e(i, j) = res.z(i * N + j);
+SaoeSolution saoeDecode(const VIResult& r, Index M, Index N) {
+    // Mirror the packing used by the G map above: z = [e row-major (M x N), lambda (M)].
+    SaoeSolution sol;
+    sol.e = MatrixXd(M, N);
+    for (Index i = 0; i < M; ++i) {
+        for (Index j = 0; j < N; ++j) {
+            sol.e(i, j) = r.z(i * N + j);
         }
     }
-    out.lambda = res.z.tail(M);
-    out.solve = res;
-    return out;
+    sol.lambda = r.z.tail(M);
+    return sol;
 }
 
 } // namespace VINCP

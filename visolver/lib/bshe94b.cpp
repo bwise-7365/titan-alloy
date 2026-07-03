@@ -9,7 +9,7 @@ namespace VINCP {
 namespace {
 
 void validateInputs(const VectorXd& x0,
-                    const Eigen::MatrixXd& M,
+                    const MatrixXd& M,
                     const VectorXd& q,
                     const Projector& Pr,
                     const BsHe94bParams& params) {
@@ -22,7 +22,7 @@ void validateInputs(const VectorXd& x0,
 } // namespace
 
 VIResult bsHe94b(const VectorXd& x0,
-                 const Eigen::MatrixXd& M,
+                 const MatrixXd& M,
                  const VectorXd& q,
                  const Projector& Pr,
                  double magTol,
@@ -32,13 +32,13 @@ VIResult bsHe94b(const VectorXd& x0,
                  const IterationLogger& logger) {
     validateInputs(x0, M, q, Pr, params);
 
-    const Eigen::Index nd = x0.size();
+    const Index nd = x0.size();
 
     // Fixed metric: factor (M + I) once and reuse it every iteration. The Octave
     // formed the explicit inverse; storing the LU factorization is the numerically
     // sounder equivalent with the same precompute-once advantage.
-    const Eigen::MatrixXd identity = Eigen::MatrixXd::Identity(nd, nd);
-    const Eigen::PartialPivLU<Eigen::MatrixXd> luMI = (M + identity).partialPivLu();
+    const MatrixXd identity = MatrixXd::Identity(nd, nd);
+    const PartialPivLU<MatrixXd> luMI = (M + identity).partialPivLu();
 
     VectorXd x = x0;
 

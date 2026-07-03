@@ -19,7 +19,7 @@ double tau(double t0, int n, int k) {
 namespace {
 
 void validateInputs(const VectorXd& x0,
-                    const Eigen::MatrixXd& M,
+                    const MatrixXd& M,
                     const VectorXd& q,
                     const Projector& Pr,
                     const DHan06Params& params) {
@@ -38,7 +38,7 @@ void validateInputs(const VectorXd& x0,
 } // namespace
 
 VIResult dHan06(const VectorXd& x0,
-                    const Eigen::MatrixXd& M,
+                    const MatrixXd& M,
                     const VectorXd& q,
                     const Projector& Pr,
                     double magTol,
@@ -48,8 +48,8 @@ VIResult dHan06(const VectorXd& x0,
                     const IterationLogger& logger) {
     validateInputs(x0, M, q, Pr, params);
 
-    const Eigen::Index nd = x0.size();
-    const Eigen::MatrixXd identity = Eigen::MatrixXd::Identity(nd, nd);
+    const Index nd = x0.size();
+    const MatrixXd identity = MatrixXd::Identity(nd, nd);
 
     double bk = params.beta0;
     VectorXd x = x0;

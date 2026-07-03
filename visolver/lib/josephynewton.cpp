@@ -34,7 +34,7 @@ InnerSolver makeDHan06Solver(double magTol, int iterMax, int iterFreq,
                              const DHan06Params& params,
                              const IterationLogger& logger) {
     return [magTol, iterMax, iterFreq, params, logger](
-               const VectorXd& x0, const Eigen::MatrixXd& M,
+               const VectorXd& x0, const MatrixXd& M,
                const VectorXd& q, const Projector& Pr) -> VIResult {
         return dHan06(x0, M, q, Pr, magTol, iterMax, iterFreq, params, logger);
     };
@@ -44,7 +44,7 @@ InnerSolver makeBsHe94bSolver(double magTol, int iterMax, int iterFreq,
                               const BsHe94bParams& params,
                               const IterationLogger& logger) {
     return [magTol, iterMax, iterFreq, params, logger](
-               const VectorXd& x0, const Eigen::MatrixXd& M,
+               const VectorXd& x0, const MatrixXd& M,
                const VectorXd& q, const Projector& Pr) -> VIResult {
         return bsHe94b(x0, M, q, Pr, magTol, iterMax, iterFreq, params, logger);
     };
@@ -96,7 +96,7 @@ VIResult solveVI(const VIModel& model,
         }
 
         // Linearize: M = J(z), q = F(z) - J(z) z.
-        const Eigen::MatrixXd jac = centralDifferenceJacobian(F, z, params.fdStepRel);
+        const MatrixXd jac = centralDifferenceJacobian(F, z, params.fdStepRel);
         const VectorXd q = Fz - jac * z;
 
         // Diagnostic probe: monotonicity of the inner matrix M = jac. dHan06
@@ -105,10 +105,10 @@ VIResult solveVI(const VIModel& model,
         // here is the expected signature of the SAOE inner problem on which dHan06
         // diverges while bsHe94b still contracts.
         if (params.logInnerDefiniteness) {
-            const Eigen::MatrixXd symJac = 0.5 * (jac + jac.transpose());
-            const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(symJac,
-                                                                    Eigen::EigenvaluesOnly);
-            if (es.info() == Eigen::Success) {
+            const MatrixXd symJac = 0.5 * (jac + jac.transpose());
+            const SelfAdjointEigenSolver<MatrixXd> es(symJac,
+                                                                    EigenvaluesOnly);
+            if (es.info() == Success) {
                 const double lmin = es.eigenvalues().minCoeff();
                 std::printf("[probe] outer iter %3d: min eig(sym M) = %+.6e  ->  %s\n",
                             iter, lmin,
@@ -126,12 +126,12 @@ VIResult solveVI(const VIModel& model,
         // theta(w) = 1/2 ||w - Pi_K(w - F(w))||^2, so the undamped Newton step
         // cannot overshoot the non-smooth solution. 'residual' is ||r(z)||^2, so
         // theta at the base point is half of it.
-        const Eigen::VectorXd stepDir = inner.z - z;
+        const VectorXd stepDir = inner.z - z;
         const double theta0 = 0.5 * residual;
         const auto meritAt = [&](double alpha) -> double {
-            const Eigen::VectorXd w = z + alpha * stepDir;
-            const Eigen::VectorXd Fw = evaluateF(model, w);
-            const Eigen::VectorXd rw = w - Pr(w - Fw);
+            const VectorXd w = z + alpha * stepDir;
+            const VectorXd Fw = evaluateF(model, w);
+            const VectorXd rw = w - Pr(w - Fw);
             return 0.5 * rw.squaredNorm();
         };
         const ArmijoResult ls = armijoLineSearch(meritAt, theta0, params.armijo);

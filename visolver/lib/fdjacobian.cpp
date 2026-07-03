@@ -8,7 +8,7 @@
 
 namespace VINCP {
 
-Eigen::MatrixXd centralDifferenceJacobian(const VectorField& F,
+MatrixXd centralDifferenceJacobian(const VectorField& F,
                                           const VectorXd& z,
                                           double stepRel) {
     if (!F) {
@@ -22,19 +22,19 @@ Eigen::MatrixXd centralDifferenceJacobian(const VectorField& F,
         stepRel = std::pow(std::numeric_limits<double>::epsilon(), 0.2);
     }
 
-    const Eigen::Index d = z.size();
+    const Index d = z.size();
 
     // Establishes the output dimension p and validates the base point.
     const VectorXd f0 = F(z);
     if (!f0.allFinite()) {
         throw std::runtime_error("centralDifferenceJacobian: F(z) is non-finite.");
     }
-    const Eigen::Index p = f0.size();
+    const Index p = f0.size();
 
-    Eigen::MatrixXd jac(p, d);
+    MatrixXd jac(p, d);
     VectorXd zw = z;   // work point; only component j is perturbed at a time
 
-    for (Eigen::Index j = 0; j < d; ++j) {
+    for (Index j = 0; j < d; ++j) {
         const double zj = z(j);
         double h = stepRel * std::max(std::abs(zj), 1.0);
 

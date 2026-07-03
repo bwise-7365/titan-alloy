@@ -25,7 +25,7 @@
 #include <exception>
 #include <random>
 
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 int main() {
@@ -76,54 +76,34 @@ int main() {
         { "bsHe94b", VINCP::makeBsHe94bSolver(innerMagTol, innerIterMax, 0) },
     };
 
-    bool allPass = true;
-    char linebuf[192];
+    // Checks: feasibility (on/inside E(a)) and accuracy vs the closed-form optimum x*.
+    const CheckFn feasCheck = [&](const VIResult& r) -> CheckResult {
+        const double en = ellipsoidNorm(r.z, a);
+        char buf[96];
+        std::snprintf(buf, sizeof buf, "ellipsoidNorm(x) = %.12f (feasible if <= 1)", en);
+        return CheckResult{ en <= 1.0 + feasTol, std::string(buf) };
+    };
+    const CheckFn accCheck = [&](const VIResult& r) -> CheckResult {
+        const double err    = (r.z - xStar).norm();
+        const double relErr = err / xStar.norm();
+        char buf[128];
+        std::snprintf(buf, sizeof buf, "||x - x*|| = %.3e, relative = %.3e (tol %.1e)", err, relErr, relTol);
+        return CheckResult{ relErr <= relTol, std::string(buf) };
+    };
+    const JosephyNewtonParams jn;   // defaults
+
+    // All-of: both inner solvers must reach the optimum.
+    int fails = 0;
     for (const Method& m : methods) {
-        printf("\n");
-        std::snprintf(linebuf, sizeof linebuf, "inner solver: %s", m.name);
-        VINCP::printComment(latex, linebuf);
-
-        const VINCP::JosephyNewtonParams jn;   // defaults
-        const auto tStart = VINCP::utcNow();
-        try {
-            const VINCP::VIResult r = VINCP::solveVI(model, z0, m.inner, jn, {}, K);
-            VINCP::utcElapsed(tStart);
-
-            VINCP::printSolveStats(m.name, r);
-            VINCP::printVector("x", r.z);
-
-            // Feasibility: on/inside the ellipsoid.
-            const double en = VINCP::ellipsoidNorm(r.z, a);
-            const bool feasible = (en <= 1.0 + feasTol);
-            std::snprintf(linebuf, sizeof linebuf,
-                          "ellipsoidNorm(x) = %.12f, feasible = %s", en,
-                          feasible ? "true" : "false");
-            VINCP::printComment(latex, linebuf);
-
-            // Accuracy: agreement with the closed-form optimum x*.
-            const double err    = (r.z - xStar).norm();
-            const double relErr = err / xStar.norm();
-            const bool   accurate = (relErr <= relTol);
-            std::snprintf(linebuf, sizeof linebuf,
-                          "||x - x*|| = %.3e, relative = %.3e, accurate = %s", err, relErr,
-                          accurate ? "true" : "false");
-            VINCP::printComment(latex, linebuf);
-
-            allPass = allPass && feasible && accurate;
-        } catch (const std::exception& ex) {
-            VINCP::utcElapsed(tStart);
-            std::snprintf(linebuf, sizeof linebuf, "solve threw (no result to show): %s", ex.what());
-            VINCP::printComment(latex, linebuf);
-            allPass = false;
-        }
+        const SolveFn solve = [&](const VectorXd& start) {
+            return solveVI(model, start, m.inner, jn, {}, K);
+        };
+        fails += runCase(m.name, solve, z0, { feasCheck, accCheck });
     }
 
-    printf("\n");
-    if (allPass) {
-        printf("PASS (both inner solvers reached the analytic optimum on the ellipsoid)\n");
-        return 0;
-    }
-    printf("FAIL (an inner solver was infeasible, off the optimum, or threw)\n");
-    return 1;
+    printf("\n%s\n", (fails == 0)
+                     ? "PASS (both inner solvers reached the analytic optimum on the ellipsoid)"
+                     : "FAIL (an inner solver was infeasible, off the optimum, or threw)");
+    return (fails == 0) ? 0 : 1;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

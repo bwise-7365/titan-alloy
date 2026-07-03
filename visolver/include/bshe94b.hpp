@@ -49,7 +49,7 @@ struct BsHe94bParams {
 // and std::runtime_error on a NaN residual, detected divergence, or a non-finite
 // solve against (M + I). It never silently substitutes a default result.
 VIResult bsHe94b(const VectorXd& x0,
-                 const Eigen::MatrixXd& M,
+                 const MatrixXd& M,
                  const VectorXd& q,
                  const Projector& Pr,
                  double magTol,

@@ -13,12 +13,12 @@
 // enough to reach tight outer tolerances on stiff (e.g. cubic) maps.
 // ============================================================================
 
+#include "vincp.hpp"   // Eigen type aliases (VectorXd, MatrixXd, ...) live here
+
 #include <Eigen/Dense>
 #include <functional>
 
 namespace VINCP {
-
-    using Eigen::VectorXd;
 
 // A vector field R^d -> R^p whose Jacobian is to be approximated.
 using VectorField = std::function<VectorXd(const VectorXd&)>;
@@ -37,7 +37,7 @@ using VectorField = std::function<VectorXd(const VectorXd&)>;
 // Throws std::invalid_argument if F is unset or z is empty, and
 // std::runtime_error if any evaluation of F is non-finite or returns a
 // different length than F(z).  It never silently substitutes a value.
-Eigen::MatrixXd centralDifferenceJacobian(const VectorField& F,
+MatrixXd centralDifferenceJacobian(const VectorField& F,
                                           const VectorXd& z,
                                           double stepRel = -1.0);
 

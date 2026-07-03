@@ -6,7 +6,7 @@
 namespace VINCP {
 
 VIResult dampedNewtonSolve(const VectorField& F,
-                           const Eigen::VectorXd& x0,
+                           const VectorXd& x0,
                            const DampedNewtonParams& params) {
     if (!F) {
         throw std::invalid_argument("dampedNewtonSolve: F must be set.");
@@ -18,8 +18,8 @@ VIResult dampedNewtonSolve(const VectorField& F,
         throw std::invalid_argument("dampedNewtonSolve: theta must lie in (0, 1).");
     }
 
-    Eigen::VectorXd x = x0;
-    Eigen::VectorXd Fx = F(x);
+    VectorXd x = x0;
+    VectorXd Fx = F(x);
     if (!Fx.allFinite()) {
         throw std::runtime_error("dampedNewtonSolve: F(x0) is non-finite.");
     }
@@ -35,8 +35,8 @@ VIResult dampedNewtonSolve(const VectorField& F,
 
         // Normal-equation pieces from the FD Jacobian (J is m x n; only J^T J and
         // J^T F appear, so any m, n is fine).
-        const Eigen::MatrixXd J = centralDifferenceJacobian(F, x, params.fdStepRel);
-        const Eigen::VectorXd grad = J.transpose() * Fx;   // gradient of 1/2 ||F||^2
+        const MatrixXd J = centralDifferenceJacobian(F, x, params.fdStepRel);
+        const VectorXd grad = J.transpose() * Fx;   // gradient of 1/2 ||F||^2
         const double gg = grad.squaredNorm();
         if (gg == 0.0) {
             break;   // gradient vanished at a non-root: cannot descend
@@ -48,8 +48,8 @@ VIResult dampedNewtonSolve(const VectorField& F,
         // (a positive multiple of J^T J + positive*I), so ldlt is valid.
         const double alpha    = (0.5 * merit) / gg;
         const double lmLambda = ((1.0 - params.theta) / params.theta) * alpha;
-        const Eigen::MatrixXd op = params.theta * levenbergMarquardtDamp(J, lmLambda);
-        const Eigen::VectorXd d  = op.ldlt().solve(-grad);
+        const MatrixXd op = params.theta * levenbergMarquardtDamp(J, lmLambda);
+        const VectorXd d  = op.ldlt().solve(-grad);
 
         // Armijo backtracking on the step length, over the merit ||F(x + step d)||^2.
         const auto meritAt = [&](double step) -> double {

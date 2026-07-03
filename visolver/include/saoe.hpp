@@ -43,28 +43,32 @@ struct SaoeParams {
     bool        logInnerDefiniteness = false;
 };
 
-// Result of a SAOE solve.
-struct SaoeResult {
-    Eigen::MatrixXd e;        // M x N equilibrium efforts
-    Eigen::VectorXd lambda;   // M multipliers (marginal value of strength)
-    VIResult        solve;    // raw solver result (z, residual, iter, converged)
+// The SAOE solution decoded from a solver VIResult, whose packed z is
+// [ e (row-major, M x N), lambda (M) ]. saoe() returns the raw VIResult (uniform
+// with every other solver); call saoeDecode to recover efforts and multipliers.
+struct SaoeSolution {
+    MatrixXd e;        // M x N equilibrium efforts
+    VectorXd lambda;   // M multipliers (marginal value of strength)
 };
 
+// Decode a SAOE VIResult (z = [e row-major, lambda]) into efforts and multipliers.
+SaoeSolution saoeDecode(const VIResult& r, Index M, Index N);
+
 // The model's small effort constant, eps = RMS(R)/10000 = ||R||_F / sqrt(M N) / 1e4.
-double saoeEps(const Eigen::MatrixXd& R);
+double saoeEps(const MatrixXd& R);
 
 // Option probabilities P_j from an effort matrix e (M x N): E_j = sum_i e_{ij} + eps,
 // P_j = E_j / sum_k E_k. Returns a length-N vector.
-Eigen::VectorXd saoeProbabilities(const Eigen::MatrixXd& e, double eps);
+VectorXd saoeProbabilities(const MatrixXd& e, double eps);
 
 // Per-actor expected rewards u_i = sum_j R_{ij} P_j. Returns a length-M vector.
-Eigen::VectorXd saoeUtilities(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
+VectorXd saoeUtilities(const MatrixXd& R, const MatrixXd& e,
                               double eps);
 
 // A random starting point y0 = [e (row-major), lambda], all non-negative: efforts
 // e_{ij} ~ U[0, S_i/N] and lambda_i ~ U[0, 1]. Use it to explore which of the
 // (possibly many) equilibria the solver reaches from different basins.
-Eigen::VectorXd saoeRandomStart(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
+VectorXd saoeRandomStart(const MatrixXd& R, const VectorXd& S,
                                 std::mt19937_64& rng);
 
 // Solve the SAOE Nash equilibrium for reward matrix R (M x N) and strengths S (M).
@@ -72,10 +76,10 @@ Eigen::VectorXd saoeRandomStart(const Eigen::MatrixXd& R, const Eigen::VectorXd&
 // The optional z0 is the starting point (layout as saoeRandomStart); if empty, the
 // default start e_{ij} = S_i/(N+1), lambda = 0 is used.
 // Throws std::invalid_argument on an empty R, S.size() != R.rows(), or a z0 whose
-// length is neither 0 nor N*M + M.
-SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
-                const SaoeParams& params = SaoeParams{},
-                const Eigen::VectorXd& z0 = Eigen::VectorXd());
+// length is neither 0 nor N*M + M. Returns the raw VIResult; decode it with saoeDecode.
+VIResult saoe(const MatrixXd& R, const VectorXd& S,
+              const SaoeParams& params = SaoeParams{},
+              const VectorXd& startGuess = VectorXd());
 
 } // namespace VINCP
 

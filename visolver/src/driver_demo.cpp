@@ -10,9 +10,7 @@
 #include <string>
 
 using std::printf;
-using Eigen::Index;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using VINCP::printVector;
 
 // Demonstration / regression test for the outer Josephy-Newton driver, on a

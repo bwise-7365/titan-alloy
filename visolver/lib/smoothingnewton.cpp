@@ -8,7 +8,7 @@
 //     0 ≤ λ  ⊥  g(x) ≥ 0
 //
 // As ∇f(x) is a row vector, they transposes the top line to use column vectors.
-// The auxilliary vector 's' is used to decouple the two uses of 'G'.
+// The auxiliary vector 's' is used to decouple the two uses of 'G'.
 // ------------------------
 // I realized that this could probably be generalized using
 // the same 's',
@@ -24,14 +24,15 @@
 // Note that y is constrained explicitly and x is constrained implicitly by H and G.
 // I would suggest z = [u, x, y, s] and psi(z) is the following:
 //
+//          u
 //       H(x,y)
 //     s - G(x,y)
 //     FB(u, y, s)
 //
 // Notice that if x has N dim, H has K, and y and G have M,
-// then the input vector is N+2M (x, y, s), while the output is K+2M.
-// It is important that my damped Newton method allows the input
-// and output vectors to have different dimensionality.
+// then the input vector is 1+N+2M (u, x, y, s), while the output is 1+K+2M.
+// That is why it is important that my damped Newton method allows
+// the input and output vectors to have different dimensionality.
 #include "smoothingnewton.hpp"
 
 #include <stdexcept>
@@ -56,9 +57,9 @@ VectorXd smoothedFischerBurmeister(double u, const VectorXd& a, const VectorXd& 
     //       H(x,y)
     //     s - G(x,y)
     //     FB(u, y, s)
-SmoothingResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
-                                     const VectorXd& x0, const VectorXd& y0,
-                                     const SmoothingNewtonParams& params) {
+VIResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
+                              const VectorXd& x0, const VectorXd& y0,
+                              const SmoothingNewtonParams& params) {
     if (!H || !G) {
         throw std::invalid_argument("smoothingNewtonSolve: H and G must be set.");
     }
@@ -75,8 +76,8 @@ SmoothingResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
         throw std::invalid_argument("smoothingNewtonSolve: smoothing function must be set.");
     }
 
-    const Eigen::Index N = x0.size();
-    const Eigen::Index M = y0.size();
+    const Index N = x0.size();
+    const Index M = y0.size();
 
     // Slack starts at s0 = G(x0, y0) (so the s - G(x,y) block starts at 0). G must
     // return one component per multiplier for the complementarity to be well posed.
@@ -105,7 +106,7 @@ SmoothingResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
         const VectorXd Hxy = H(x, y);          // K
         const VectorXd Gxy = G(x, y);          // M
         const VectorXd phi = phiFn(u, y, s);   // M
-        const Eigen::Index K = Hxy.size();
+        const Index K = Hxy.size();
 
         VectorXd out(1 + K + 2 * M);
         out(0) = u;
@@ -115,16 +116,17 @@ SmoothingResult smoothingNewtonSolve(const MixedField& H, const MixedField& G,
         return out;
     };
 
-    const VIResult r = dampedNewtonSolve(F, z0, params.damped);
+    return dampedNewtonSolve(F, z0, params.damped);
+}
 
-    // Unpack z = [u, x, y, s] back into the domain result.
-    SmoothingResult out;
-    out.u     = r.z(0);
-    out.x     = r.z.segment(1, N);
-    out.y     = r.z.segment(1 + N, M);
-    out.s     = r.z.segment(1 + N + M, M);
-    out.solve = r;
-    return out;
+SmoothingSolution smoothingDecode(const VIResult& r, Index N, Index M) {
+    // Mirror the z = [u, x, y, s] packing assembled above.
+    SmoothingSolution sol;
+    sol.u = r.z(0);
+    sol.x = r.z.segment(1, N);
+    sol.y = r.z.segment(1 + N, M);
+    sol.s = r.z.segment(1 + N + M, M);
+    return sol;
 }
 
 } // namespace VINCP

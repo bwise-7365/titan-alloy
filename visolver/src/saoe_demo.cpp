@@ -8,8 +8,7 @@
 #include <cstdio>
 #include <random>
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // SAOE demo: generate a random reward matrix R and strength vector S, solve the
@@ -39,7 +38,8 @@ int main() {
         S(i) = std::round(strengthDist(rng) * 10.0) / 10.0;
     }
 
-    const VINCP::SaoeResult r = VINCP::saoe(R, S);
+    const VINCP::VIResult r = VINCP::saoe(R, S);
+    const VINCP::SaoeSolution sol = VINCP::saoeDecode(r, numActors, numOptions);
 
     char line[256];
     std::snprintf(line, sizeof line, "SAOE: %d actors, %d options, seed %llu, eps = %.3e",
@@ -51,10 +51,10 @@ int main() {
     printf("\n");
     std::snprintf(line, sizeof line,
                   "solver: converged = %s, outer iters = %d, total inner iters = %d, residual^2 = %.3e",
-                  r.solve.converged ? "true" : "false", r.solve.iter,
-                  r.solve.innerIters, r.solve.residual);
+                  r.converged ? "true" : "false", r.iter,
+                  r.innerIters, r.residual);
     VINCP::printComment(latexOutput, line);
-    VINCP::saoePrintSolution(R, r.e, VINCP::saoeEps(R), latexOutput);
+    VINCP::saoePrintSolution(R, sol.e, VINCP::saoeEps(R), latexOutput);
 
     return 0;
 }

@@ -8,8 +8,7 @@
 #include <exception>
 #include <random>
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // SAOE test on a fixed 6-actor x 10-option instance. The reference equilibrium E
@@ -87,7 +86,7 @@ int main() {
     // Starting point: empty => saoe() uses its deterministic default (repeatable);
     // otherwise a random start from a fresh makeSeed(0) so runs explore different
     // equilibria. Both inner solvers below start from the same point.
-    Eigen::VectorXd z0;
+    VectorXd z0;
     if (!repeatable) {
         std::mt19937_64 rng(VINCP::makeSeed(0, true));
         z0 = VINCP::saoeRandomStart(R, S, rng);
@@ -102,63 +101,39 @@ int main() {
     };
 
     bool anyMatched = false;   // some solver was both feasible and close to E
-    char line[192];
-    for (const Method& m : methods) {
-        printf("\n");
-        std::snprintf(line, sizeof line, "inner solver: %s", m.name);
-        VINCP::printComment(latex, line);
-
-        VINCP::SaoeParams params;
-        params.innerMethod  = m.inner;
-        // Probe: log whether each outer linearized matrix is monotone (PSD). Han's
-        // method converges only on a monotone inner problem; a negative smallest
-        // eigenvalue explains why dHan06 diverges here while bsHe94b does not.
-        params.logInnerDefiniteness = true;
-        const auto tStart = VINCP::utcNow();
-        try {
-            const VINCP::SaoeResult r = VINCP::saoe(R, S, params, z0);
-            VINCP::utcElapsed(tStart);
-
-            std::snprintf(line, sizeof line,
-                          "converged = %s, outer iters = %d, total inner iters = %d, residual^2 = %.3e",
-                          r.solve.converged ? "true" : "false", r.solve.iter,
-                          r.solve.innerIters, r.solve.residual);
-            VINCP::printComment(latex, line);
-            VINCP::saoePrintSolution(R, r.e, VINCP::saoeEps(R), latex);
-
-            // Feasibility: e >= 0 and, per actor, sum_j e_ij <= S_i (within tol).
-            const double maxNeg  = -r.e.minCoeff();                       // largest negative effort
-            const double maxOver = (r.e.rowwise().sum() - S).maxCoeff();  // largest budget overflow
-            const bool feasible  = (maxNeg <= feasTol) && (maxOver <= feasTol);
-            std::snprintf(line, sizeof line,
-                          "feasible = %s (max negativity %.2e, max budget overflow %.2e)",
-                          feasible ? "true" : "false", maxNeg, maxOver);
-            VINCP::printComment(latex, line);
-
-            // Correctness: RMSE of the returned allocation against the reference
-            // equilibrium E, over all M*N efforts.
-            const double rmse = std::sqrt((r.e - E).array().square().sum()
+    // Check: decode the allocation, print the effort table, and require feasibility
+    // (e >= 0, per-actor budget) AND a small RMSE against the reference equilibrium E.
+    const CheckFn saoeCheck = [&](const VIResult& r) -> CheckResult {
+        const SaoeSolution sol = saoeDecode(r, M, N);
+        saoePrintSolution(R, sol.e, saoeEps(R), latex);
+        const double maxNeg   = -sol.e.minCoeff();
+        const double maxOver  = (sol.e.rowwise().sum() - S).maxCoeff();
+        const bool   feasible = (maxNeg <= feasTol) && (maxOver <= feasTol);
+        const double rmse     = std::sqrt((sol.e - E).array().square().sum()
                                           / static_cast<double>(M * N));
-            const bool   onTarget = (rmse <= rmseTol);
-            std::snprintf(line, sizeof line,
-                          "RMSE vs reference E = %.4e (tol %.2e) -> %s",
-                          rmse, rmseTol, onTarget ? "on target" : "off target");
-            VINCP::printComment(latex, line);
+        const bool   onTarget = (rmse <= rmseTol);
+        char buf[192];
+        std::snprintf(buf, sizeof buf,
+                      "feasible=%s (maxNeg %.2e, over %.2e), RMSE vs E = %.4e (tol %.2e) -> %s",
+                      feasible ? "true" : "false", maxNeg, maxOver, rmse, rmseTol,
+                      onTarget ? "on target" : "off target");
+        return CheckResult{ feasible && onTarget, std::string(buf) };
+    };
 
-            anyMatched = anyMatched || (feasible && onTarget);
-        } catch (const std::exception& ex) {
-            VINCP::utcElapsed(tStart);
-            std::snprintf(line, sizeof line, "solve threw (no result to show): %s", ex.what());
-            VINCP::printComment(latex, line);
+    // Any-of: pass if at least one inner solver reproduces E.
+    for (const Method& m : methods) {
+        SaoeParams params;
+        params.innerMethod          = m.inner;
+        params.logInnerDefiniteness = true;   // probe each outer Jacobian's monotonicity
+        const SolveFn solve = [&](const VectorXd& start){ return saoe(R, S, params, start); };
+        if (runCase(m.name, solve, z0, { saoeCheck }) == 0) {
+            anyMatched = true;
         }
     }
 
-    printf("\n");
-    if (anyMatched) {
-        printf("PASS (at least one inner solver reproduced the reference equilibrium E)\n");
-        return 0;
-    }
-    printf("FAIL (no inner solver produced a feasible allocation matching E within RMSE tol)\n");
-    return 1;
+    printf("\n%s\n", anyMatched
+                     ? "PASS (at least one inner solver reproduced the reference equilibrium E)"
+                     : "FAIL (no inner solver produced a feasible allocation matching E within RMSE tol)");
+    return anyMatched ? 0 : 1;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

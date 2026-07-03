@@ -8,8 +8,7 @@
 #include <cstdio>
 #include <exception>
 
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // Validation of smoothingNewtonSolve on a hand-built convex QP with a known KKT
@@ -53,43 +52,33 @@ int main() {
     VectorXd x0(2); x0 << 0.0, 0.0;   // infeasible start is fine (not interior-point)
     VectorXd y0(2); y0 << 1.0, 1.0;
 
-    char line[192];
-    const auto tStart = VINCP::utcNow();
-    try {
-        const VINCP::SmoothingNewtonParams params;   // u0 = 1.0, FB, dampedNewton defaults
-        const VINCP::SmoothingResult r = VINCP::smoothingNewtonSolve(H, G, x0, y0, params);
-        VINCP::utcElapsed(tStart);
+    const SmoothingNewtonParams params;   // u0 = 1.0, FB, dampedNewton defaults
 
-        VINCP::printSolveStats("smoothingNewton", r.solve);
-        VINCP::printVector("x", r.x);
-        VINCP::printVector("y", r.y);
-        VINCP::printVector("s", r.s);
-
-        const double   xErr    = (r.x - xStar).norm();
-        const double   yErr    = (r.y - yStar).norm();
-        const VectorXd resid   = A * r.x - b;              // = s at the solution
-        const double   minFeas = resid.minCoeff();
+    // KKT check: recovered (x, y) match the known optimum, u -> 0, and the point is
+    // primal-feasible and complementary. Prints the decoded x, y, s.
+    const CheckFn kktCheck = [&](const VIResult& r) -> CheckResult {
+        const SmoothingSolution sol = smoothingDecode(r, 2, 2);   // N = M = 2
+        printVector("x", sol.x);
+        printVector("y", sol.y);
+        printVector("s", sol.s);
+        const double xErr    = (sol.x - xStar).norm();
+        const double yErr    = (sol.y - yStar).norm();
+        const double minFeas = (A * sol.x - b).minCoeff();
         double maxComp = 0.0;
-        for (Eigen::Index i = 0; i < r.y.size(); ++i) {
-            maxComp = std::max(maxComp, std::abs(r.y(i) * r.s(i)));
+        for (Index i = 0; i < sol.y.size(); ++i) {
+            maxComp = std::max(maxComp, std::abs(sol.y(i) * sol.s(i)));
         }
-
-        std::snprintf(line, sizeof line,
-                      "u = %.3e, ||x-x*|| = %.3e, ||y-y*|| = %.3e, min(Ax-b) = %.3e, max|y_i s_i| = %.3e",
-                      r.u, xErr, yErr, minFeas, maxComp);
-        VINCP::printComment(latex, line);
-
-        const bool pass = (std::abs(r.u) < uTol) && (xErr < solTol) && (yErr < solTol)
+        const bool pass = (std::abs(sol.u) < uTol) && (xErr < solTol) && (yErr < solTol)
                           && (minFeas >= -feasTol) && (maxComp < compTol);
-        printf("\n%s\n", pass ? "PASS (recovered the known KKT point)"
-                              : "FAIL (off the known KKT point)");
-        return pass ? 0 : 1;
-    } catch (const std::exception& ex) {
-        VINCP::utcElapsed(tStart);
-        std::snprintf(line, sizeof line, "smoothingNewtonSolve threw: %s", ex.what());
-        VINCP::printComment(latex, line);
-        printf("\nFAIL (threw)\n");
-        return 1;
-    }
+        char buf[192];
+        std::snprintf(buf, sizeof buf,
+                      "u = %.3e, ||x-x*|| = %.3e, ||y-y*|| = %.3e, min(Ax-b) = %.3e, max|y_i s_i| = %.3e",
+                      sol.u, xErr, yErr, minFeas, maxComp);
+        return CheckResult{ pass, std::string(buf) };
+    };
+
+    // (x0, y0) are bound into the solver; runCase's z0 argument is unused here.
+    const SolveFn solve = [&](const VectorXd&) { return smoothingNewtonSolve(H, G, x0, y0, params); };
+    return runCase("smoothingNewton", solve, x0, { kktCheck });
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

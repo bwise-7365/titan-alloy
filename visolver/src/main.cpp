@@ -20,8 +20,8 @@ using std::printf;
 int main() {
     VINCP::ScopedUtcTimer timer("lvi_demo");
 
-    using Eigen::VectorXd;
-    Eigen::MatrixXd M(2, 2);
+using namespace VINCP;
+    MatrixXd M(2, 2);
     M << 4.0, 1.0,
          1.0, 3.0;
 

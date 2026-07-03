@@ -18,6 +18,7 @@
 #include <functional>
 #include <random>
 #include <string>
+#include <vector>
 
 namespace VINCP {
     // Microseconds since the Unix epoch, as a uint64_t. Intended ONLY as a quick
@@ -58,7 +59,7 @@ namespace VINCP {
 
     // Print a vector on one line as:  label = [ v0 v1 ... ].
     // Components are printed with a fixed field width for easy column alignment.
-    void printVector(const char* label, const Eigen::VectorXd& v);
+    void printVector(const char* label, const VectorXd& v);
 
     // Build a complementary (w, z) pair for an LCP test: for each component i,
     // exactly one of w(i), z(i) is a random integer in [intLo, intHi] and the other
@@ -67,20 +68,36 @@ namespace VINCP {
     // The values are of type 'double' but their values are integers to make
     // output neater. Draws n integers from 'rng', so the caller's later draws
     // stay deterministic for a fixed seed. w and z are resized to length n.
-    void makeComplementaryPair(Eigen::Index n, std::mt19937& rng,
+    void makeComplementaryPair(Index n, std::mt19937& rng,
                                int intLo, int intHi,
-                               Eigen::VectorXd& w, Eigen::VectorXd& z);
+                               VectorXd& w, VectorXd& z);
 
     // Print the constructed (z, w) solution under a standard header.
-    void printConstructed(const Eigen::VectorXd& z, const Eigen::VectorXd& w);
+    void printConstructed(const VectorXd& z, const VectorXd& w);
 
-    // Print the solver's result (z and the implied w = M z + q), the iteration
-    // count, squared residual, converged flag, and the error against the
-    // constructed solution. Returns 0 if the solver converged and
-    // ||z_solved - zConstructed|| < solTol, else 1 -- suitable as a test exit code.
-    int reportAndCheck(const VIResult& result,
-                       const Eigen::MatrixXd& M, const Eigen::VectorXd& q,
-                       const Eigen::VectorXd& zConstructed, double solTol);
+    // -----------------------------------------------------------------------
+    // Shared solver-case test harness (one procedure for every solver test)
+    // -----------------------------------------------------------------------
+
+    // A bound solver: model/F, projector, params, and inner solver are all captured,
+    // leaving only the start vector. Generalizes the InnerSolver seam and
+    // runCubicLsqCase's solve functor up to the top level.
+    using SolveFn = std::function<VIResult(const VectorXd& z0)>;
+
+    // A pass/fail check on a solve's VIResult, with a one-line human-readable report.
+    struct CheckResult { bool pass; std::string report; };
+    using CheckFn = std::function<CheckResult(const VIResult&)>;
+
+    // The single test procedure: time the solve, report a throw as FAIL, print the
+    // standard solve stats, then evaluate every check (all must pass) printing each
+    // report line, then "<name>: PASS/FAIL". Returns 0 on pass, 1 on fail, so callers
+    // sum returns across methods/problems and combine (any-of / all-of) in main().
+    int runCase(const char* name, const SolveFn& solve, const VectorXd& z0,
+                const std::vector<CheckFn>& checks);
+
+    // Ready-made check: the solution is within 'tol' of a known vector in 2-norm
+    // (quality-only -- it does NOT require the solver's self-reported converged flag).
+    CheckFn checkCloseToKnown(const VectorXd& zStar, double tol);
 
     // -----------------------------------------------------------------------
     // Cubic problem generator (shared by the VI demo and the LM test)
@@ -95,23 +112,23 @@ namespace VINCP {
     //     A general, NOT-necessarily-monotone cubic -- e.g. an overdetermined
     //     system with a known zero-residual root for a Levenberg-Marquardt test.
     struct CubicProblem {
-        Eigen::Index    nIn  = 0;   // input dimension
-        Eigen::Index    nOut = 0;   // output dimension
+        Index    nIn  = 0;   // input dimension
+        Index    nOut = 0;   // output dimension
         bool            psd  = false;
-        Eigen::MatrixXd A;          // forms matrix: nIn x nIn if psd, else nOut x nIn
-        Eigen::VectorXd k;          // constant offset
-        Eigen::VectorXd xStar;      // known point
-        Eigen::VectorXd fStar;      // F(xStar), by construction
-        std::function<Eigen::VectorXd(const Eigen::VectorXd&)> F;  // the cubic map
+        MatrixXd A;          // forms matrix: nIn x nIn if psd, else nOut x nIn
+        VectorXd k;          // constant offset
+        VectorXd xStar;      // known point
+        VectorXd fStar;      // F(xStar), by construction
+        std::function<VectorXd(const VectorXd&)> F;  // the cubic map
     };
 
     // Construct a cubic problem (see above). A is drawn from U[aLo, aHi] via rng;
     // k is set so F(xStar) == fStar. Throws std::invalid_argument on a dimension
     // mismatch (including forcePSD with nIn != nOut).
-    CubicProblem makeCubicProblem(Eigen::Index nIn, Eigen::Index nOut,
+    CubicProblem makeCubicProblem(Index nIn, Index nOut,
                                   std::mt19937& rng,
-                                  const Eigen::VectorXd& xStar,
-                                  const Eigen::VectorXd& fStar,
+                                  const VectorXd& xStar,
+                                  const VectorXd& fStar,
                                   bool forcePSD,
                                   double aLo, double aHi);
 
@@ -124,10 +141,10 @@ namespace VINCP {
     // least-squares solver (levenbergMarquardtSolve, dampedNewtonSolve, ...) with its
     // own tolerances. 'solverName' labels the output. Returns 0 on pass, 1 on fail.
     int runCubicLsqCase(const char* solverName,
-                        Eigen::Index nIn, Eigen::Index nOut,
+                        Index nIn, Index nOut,
                         std::uint_fast32_t seed,
                         const std::function<VIResult(const VectorField&,
-                                                     const Eigen::VectorXd&)>& solve);
+                                                     const VectorXd&)>& solve);
 
     // -----------------------------------------------------------------------
     // SAOE table display (shared by the SAOE demo and test)
@@ -141,12 +158,12 @@ namespace VINCP {
     void printComment(bool latex, const char* text);
 
     // Inputs table: actor index, strength S_i, then the N rewards r_{ij}.
-    void saoePrintInputs(const Eigen::MatrixXd& R, const Eigen::VectorXd& S, bool latex);
+    void saoePrintInputs(const MatrixXd& R, const VectorXd& S, bool latex);
 
     // Solution table: actor index, utility u_i, then efforts for the options that
     // carry non-zero effort (all-zero option columns omitted; "-" marks a zero),
     // with a final row of those options' probabilities. eps is the model's eps.
-    void saoePrintSolution(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
+    void saoePrintSolution(const MatrixXd& R, const MatrixXd& e,
                            double eps, bool latex);
 } // namespace VINCP
 

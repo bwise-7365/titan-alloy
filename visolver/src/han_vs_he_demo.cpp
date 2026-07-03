@@ -10,9 +10,7 @@
 #include <exception>
 #include <random>
 
-using Eigen::Index;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // Side-by-side DEMO of the two inner LVI solvers -- Han (dHan06) and He

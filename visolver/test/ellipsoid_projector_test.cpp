@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <exception>
 
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 namespace {

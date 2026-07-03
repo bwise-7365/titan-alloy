@@ -42,7 +42,7 @@ using OuterLogger =
 // helpers below.
 using InnerSolver =
     std::function<VIResult(const VectorXd& x0,
-                           const Eigen::MatrixXd& M,
+                           const MatrixXd& M,
                            const VectorXd& q,
                            const Projector& Pr)>;
 

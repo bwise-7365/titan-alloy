@@ -8,9 +8,7 @@
 #include <exception>
 #include <random>
 
-using Eigen::Index;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // Unit test: random MONOTONE LCP with a known complementary solution.
@@ -55,13 +53,9 @@ int main() {
     printf("N = %lld\n", static_cast<long long>(N));
     VINCP::printConstructed(z, w);
 
-    try {
-        const VINCP::VIResult result =
-            VINCP::dHan06(x0, M, q, VINCP::projectNonnegative, magTol, iterMax, 0);
-        return VINCP::reportAndCheck(result, M, q, z, solTol);
-    } catch (const std::exception& ex) {
-        printf("FAIL: dHan06 threw: %s\n", ex.what());
-        return 1;
-    }
+    const SolveFn solve = [&](const VectorXd& z0) {
+        return dHan06(z0, M, q, projectNonnegative, magTol, iterMax, 0);
+    };
+    return runCase("dHan06", solve, x0, { checkCloseToKnown(z, solTol) });
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -21,7 +21,16 @@
 
 namespace VINCP {
 
+    // The only header that names the Eigen namespace: these using-declarations pull
+    // the Eigen types the library uses into namespace VINCP, so every other header
+    // and source (and any file that does `using namespace VINCP;`) writes short names.
     using Eigen::VectorXd;
+    using Eigen::MatrixXd;
+    using Eigen::Index;
+    using Eigen::SelfAdjointEigenSolver;
+    using Eigen::PartialPivLU;
+    using Eigen::Success;
+    using Eigen::EigenvaluesOnly;
 
 // ---------------------------------------------------------------------------
 // Result
@@ -64,7 +73,7 @@ VectorXd projectNonnegative(const VectorXd& v);
 // and the 'y' terms must be non-negative (often choices of physical quantities).
 // This matches the set K for the (x, y) partition, with numFree equal to
 // the dimension of the free block x.
-Projector makeMixedProjector(Eigen::Index numFree);
+Projector makeMixedProjector(Index numFree);
 
 // ---------------------------------------------------------------------------
 // Model
@@ -75,8 +84,8 @@ Projector makeMixedProjector(Eigen::Index numFree);
 // split z = (x, y) and return the free-block and non-negative-block components of
 // F(z) = (H(x,y), G(x,y)), respectively.
 struct VIModel {
-    Eigen::Index n = 0;   // dimension of the free block x
-    Eigen::Index m = 0;   // dimension of the non-negative block y
+    Index n = 0;   // dimension of the free block x
+    Index m = 0;   // dimension of the non-negative block y
 
     std::function<VectorXd(const VectorXd& x,
                                   const VectorXd& y)> H;   // -> R^n
@@ -92,7 +101,7 @@ VectorXd evaluateF(const VIModel& model, const VectorXd& z);
 // Build a VIModel from a single full field F: R^(n+m) -> R^(n+m), splitting the
 // output into H = F(z).head(n) and G = F(z).tail(m) with z = (x, y). Convenience
 // for the common case where the map is defined on the whole vector at once.
-VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
+VIModel makeVIModel(Index n, Index m,
                     std::function<VectorXd(const VectorXd&)> F);
 
 // ---------------------------------------------------------------------------
@@ -103,7 +112,7 @@ VIModel makeVIModel(Eigen::Index n, Eigen::Index m,
 // message (e.g. "dHan06"). Throws std::invalid_argument on an empty x0, an M that
 // is not square and conformant with x0, a non-conformant q, or an unset Pr.
 void validateLviInputs(const char* who,
-                       const VectorXd& x0, const Eigen::MatrixXd& M,
+                       const VectorXd& x0, const MatrixXd& M,
                        const VectorXd& q, const Projector& Pr);
 
 } // namespace VINCP

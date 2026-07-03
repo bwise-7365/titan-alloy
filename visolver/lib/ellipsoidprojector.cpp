@@ -16,7 +16,7 @@ void validateRadii(const VectorXd& x, const VectorXd& radii, const char* who) {
     if (x.size() != radii.size()) {
         throw std::invalid_argument(std::string(who) + ": point and radii must have equal length.");
     }
-    for (Eigen::Index i = 0; i < radii.size(); ++i) {
+    for (Index i = 0; i < radii.size(); ++i) {
         if (!(radii(i) > 0.0)) {
             throw std::invalid_argument(std::string(who) + ": every radius must be positive.");
         }
@@ -28,7 +28,7 @@ void validateRadii(const VectorXd& x, const VectorXd& radii, const char* who) {
 // At lambda = 0 this is y; as lambda grows every coordinate shrinks toward 0.
 VectorXd trialPoint(const VectorXd& y, const VectorXd& radii, double lambda) {
     VectorXd x(y.size());
-    for (Eigen::Index i = 0; i < y.size(); ++i) {
+    for (Index i = 0; i < y.size(); ++i) {
         const double r2 = radii(i) * radii(i);
         x(i) = (r2 * y(i)) / (r2 + lambda);
     }
@@ -40,7 +40,7 @@ VectorXd trialPoint(const VectorXd& y, const VectorXd& radii, double lambda) {
 double ellipsoidNorm(const VectorXd& x, const VectorXd& radii) {
     validateRadii(x, radii, "ellipsoidNorm");
     double sum = 0.0;
-    for (Eigen::Index i = 0; i < x.size(); ++i) {
+    for (Index i = 0; i < x.size(); ++i) {
         const double ratio = x(i) / radii(i);
         sum += ratio * ratio;
     }
@@ -61,7 +61,7 @@ VectorXd projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, 
         return y;
     }
 
-    const Eigen::Index n = y.size();
+    const Index n = y.size();
     const double sqrtN = std::sqrt(static_cast<double>(n));
 
     // Bracket the multiplier. lambda = 0 gives trialPoint = y with norm > 1. lambdaHi
@@ -69,7 +69,7 @@ VectorXd projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, 
     //     |r_i y_i| / (r_i^2 + lambda) <= 1/sqrt(n)  <=>  lambda >= sqrt(n)|r_i y_i| - r_i^2.
     // Since y is strictly outside, some |y_i / r_i| > 1/sqrt(n), hence lambdaHi > 0.
     double lambdaHi = 0.0;
-    for (Eigen::Index i = 0; i < n; ++i) {
+    for (Index i = 0; i < n; ++i) {
         const double r2 = radii(i) * radii(i);
         const double candidate = sqrtN * std::abs(radii(i) * y(i)) - r2;
         if (candidate > lambdaHi) {
@@ -121,7 +121,7 @@ Projector makeEllipsoidProjector(const VectorXd& radii, double tol, int iterMax)
     if (radii.size() == 0) {
         throw std::invalid_argument("makeEllipsoidProjector: radii must be non-empty.");
     }
-    for (Eigen::Index i = 0; i < radii.size(); ++i) {
+    for (Index i = 0; i < radii.size(); ++i) {
         if (!(radii(i) > 0.0)) {
             throw std::invalid_argument("makeEllipsoidProjector: every radius must be positive.");
         }

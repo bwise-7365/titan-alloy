@@ -47,21 +47,21 @@ namespace VINCP {
         return qTrans(s2);
     }
 
-    void printVector(const char* label, const Eigen::VectorXd& v) {
+    void printVector(const char* label, const VectorXd& v) {
         std::printf("%s = [", label);
-        for (Eigen::Index i = 0; i < v.size(); ++i) {
+        for (Index i = 0; i < v.size(); ++i) {
             std::printf(" %9.4f", v(i));
         }
         std::printf(" ]\n");
     }
 
-    void makeComplementaryPair(Eigen::Index n, std::mt19937& rng,
+    void makeComplementaryPair(Index n, std::mt19937& rng,
                                int intLo, int intHi,
-                               Eigen::VectorXd& w, Eigen::VectorXd& z) {
+                               VectorXd& w, VectorXd& z) {
         std::uniform_int_distribution<int> intDist(intLo, intHi);
-        w = Eigen::VectorXd::Zero(n);
-        z = Eigen::VectorXd::Zero(n);
-        for (Eigen::Index i = 0; i < n; ++i) {
+        w = VectorXd::Zero(n);
+        z = VectorXd::Zero(n);
+        for (Index i = 0; i < n; ++i) {
             if (i % 2 == 0) {
                 w(i) = static_cast<double>(intDist(rng));   // even index: w active, z = 0
             } else {
@@ -70,38 +70,50 @@ namespace VINCP {
         }
     }
 
-    void printConstructed(const Eigen::VectorXd& z, const Eigen::VectorXd& w) {
+    void printConstructed(const VectorXd& z, const VectorXd& w) {
         std::printf("\nconstructed solution (0 <= z _|_ w >= 0, w = M z + q):\n");
         printVector("  z", z);
         printVector("  w", w);
     }
 
-    int reportAndCheck(const VIResult& result,
-                       const Eigen::MatrixXd& M, const Eigen::VectorXd& q,
-                       const Eigen::VectorXd& zConstructed, double solTol) {
-        const Eigen::VectorXd wSolved = M * result.z + q;   // implied w at the solver's z
-        const double solErr = (result.z - zConstructed).norm();
-
-        std::printf("\nsolver result:\n");
-        printVector("            z", result.z);
-        printVector("  w = M z + q", wSolved);
-        std::printf("\niterations     = %d\n", result.iter);
-        std::printf("residual       = %.3e (squared)\n", result.residual);
-        std::printf("converged      = %s\n", result.converged ? "true" : "false");
-        std::printf("solution error = %.3e (||z_solved - z_constructed||)\n", solErr);
-
-        if (result.converged && solErr < solTol) {
-            std::printf("PASS (within %.1e)\n", solTol);
-            return 0;
+    int runCase(const char* name, const SolveFn& solve, const VectorXd& z0,
+                const std::vector<CheckFn>& checks) {
+        std::printf("\n--- %s ---\n", name);
+        const auto tStart = utcNow();
+        VIResult r;
+        try {
+            r = solve(z0);
+        } catch (const std::exception& ex) {
+            utcElapsed(tStart);
+            std::printf("  %s: FAIL (threw: %s)\n", name, ex.what());
+            return 1;
         }
-        std::printf("FAIL (exceeds %.1e)\n", solTol);
-        return 1;
+        utcElapsed(tStart);
+        printSolveStats(name, r);
+
+        bool pass = true;
+        for (const CheckFn& check : checks) {
+            const CheckResult cr = check(r);
+            std::printf("  %s\n", cr.report.c_str());
+            pass = pass && cr.pass;
+        }
+        std::printf("  %s: %s\n", name, pass ? "PASS" : "FAIL");
+        return pass ? 0 : 1;
     }
 
-    CubicProblem makeCubicProblem(Eigen::Index nIn, Eigen::Index nOut,
+    CheckFn checkCloseToKnown(const VectorXd& zStar, double tol) {
+        return [zStar, tol](const VIResult& r) -> CheckResult {
+            const double err = (r.z - zStar).norm();
+            char buf[128];
+            std::snprintf(buf, sizeof buf, "||z - z*|| = %.3e (tol %.1e)", err, tol);
+            return CheckResult{ err < tol, std::string(buf) };
+        };
+    }
+
+    CubicProblem makeCubicProblem(Index nIn, Index nOut,
                                   std::mt19937& rng,
-                                  const Eigen::VectorXd& xStar,
-                                  const Eigen::VectorXd& fStar,
+                                  const VectorXd& xStar,
+                                  const VectorXd& fStar,
                                   bool forcePSD,
                                   double aLo, double aHi) {
         if (nIn <= 0 || nOut <= 0) {
@@ -118,27 +130,27 @@ namespace VINCP {
         }
 
         std::uniform_real_distribution<double> aDist(aLo, aHi);
-        const Eigen::Index rows = forcePSD ? nIn : nOut;   // A is rows x nIn
-        Eigen::MatrixXd A(rows, nIn);
-        for (Eigen::Index r = 0; r < rows; ++r) {
-            for (Eigen::Index c = 0; c < nIn; ++c) {
+        const Index rows = forcePSD ? nIn : nOut;   // A is rows x nIn
+        MatrixXd A(rows, nIn);
+        for (Index r = 0; r < rows; ++r) {
+            for (Index c = 0; c < nIn; ++c) {
                 A(r, c) = aDist(rng);
             }
         }
 
         // base(x) = g(A x), or A^T g(A x) in the PSD form, with g(u) = u.^3 + u.
         const bool psd = forcePSD;
-        const auto base = [A, psd](const Eigen::VectorXd& x) -> Eigen::VectorXd {
-            const Eigen::VectorXd u = A * x;
-            const Eigen::VectorXd gu = (u.array().cube() + u.array()).matrix();
+        const auto base = [A, psd](const VectorXd& x) -> VectorXd {
+            const VectorXd u = A * x;
+            const VectorXd gu = (u.array().cube() + u.array()).matrix();
             if (psd) {
                 return A.transpose() * gu;
             }
             return gu;
         };
 
-        const Eigen::VectorXd k = fStar - base(xStar);
-        const auto F = [base, k](const Eigen::VectorXd& x) -> Eigen::VectorXd {
+        const VectorXd k = fStar - base(xStar);
+        const auto F = [base, k](const VectorXd& x) -> VectorXd {
             return base(x) + k;
         };
 
@@ -146,10 +158,10 @@ namespace VINCP {
     }
 
     int runCubicLsqCase(const char* solverName,
-                        Eigen::Index nIn, Eigen::Index nOut,
+                        Index nIn, Index nOut,
                         std::uint_fast32_t seed,
                         const std::function<VIResult(const VectorField&,
-                                                     const Eigen::VectorXd&)>& solve) {
+                                                     const VectorXd&)>& solve) {
         const int    magLo   = 1,     magHi   = 3;      // magnitude range for x* components
         const double aLo     = -0.5,  aHi     = 0.5;    // forms-matrix range
         const double startLo = -15.0, startHi = 15.0;   // random offset of the start from x*
@@ -168,21 +180,21 @@ namespace VINCP {
 
         // Known root x* with mixed signs: magnitude in [magLo, magHi], sign alternating.
         std::uniform_int_distribution<int> magDist(magLo, magHi);
-        Eigen::VectorXd xStar(nIn);
-        for (Eigen::Index i = 0; i < nIn; ++i) {
+        VectorXd xStar(nIn);
+        for (Index i = 0; i < nIn; ++i) {
             const double sign = (i % 2 == 0) ? 1.0 : -1.0;
             xStar(i) = sign * static_cast<double>(magDist(rng));
         }
 
         // Cubic F: R^nIn -> R^nOut with F(x*) = 0 (non-PSD / general cubic).
-        const Eigen::VectorXd fStar = Eigen::VectorXd::Zero(nOut);
+        const VectorXd fStar = VectorXd::Zero(nOut);
         const CubicProblem prob =
             makeCubicProblem(nIn, nOut, rng, xStar, fStar, /*forcePSD=*/false, aLo, aHi);
 
         // Random starting point (a random offset from x*).
         std::uniform_real_distribution<double> startDist(startLo, startHi);
-        Eigen::VectorXd x0(nIn);
-        for (Eigen::Index i = 0; i < nIn; ++i) {
+        VectorXd x0(nIn);
+        for (Index i = 0; i < nIn; ++i) {
             x0(i) = xStar(i) + startDist(rng);
         }
 
@@ -321,7 +333,7 @@ void printComment(bool latex, const char* text) {
     std::printf("%s%s\n", latex ? "% " : "# ", text);
 }
 
-void saoePrintInputs(const Eigen::MatrixXd& R, const Eigen::VectorXd& S, bool latex) {
+void saoePrintInputs(const MatrixXd& R, const VectorXd& S, bool latex) {
     const int M = static_cast<int>(R.rows());
     const int N = static_cast<int>(R.cols());
     printComment(latex, "SAOE inputs: col 1 = actor i, col 2 = strength S_i, cols 3.. = rewards r_{ij}");
@@ -341,7 +353,7 @@ void saoePrintInputs(const Eigen::MatrixXd& R, const Eigen::VectorXd& S, bool la
     renderTable(header, body, {}, latex);
 }
 
-void saoePrintSolution(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
+void saoePrintSolution(const MatrixXd& R, const MatrixXd& e,
                        double eps, bool latex) {
     const int M = static_cast<int>(R.rows());
     const int N = static_cast<int>(R.cols());
@@ -357,8 +369,8 @@ void saoePrintSolution(const Eigen::MatrixXd& R, const Eigen::MatrixXd& e,
         }
     }
 
-    const Eigen::VectorXd P = saoeProbabilities(e, eps);
-    const Eigen::VectorXd u = saoeUtilities(R, e, eps);
+    const VectorXd P = saoeProbabilities(e, eps);
+    const VectorXd u = saoeUtilities(R, e, eps);
 
     printComment(latex, "SAOE solution: col 1 = actor i, col 2 = utility u_i, cols 3.. = efforts e_{ij}");
     printComment(latex, "(options with no effort omitted; last row is the option probabilities P_j)");

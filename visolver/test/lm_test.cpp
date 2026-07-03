@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <cstdio>
 
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // Unit test for levenbergMarquardtSolve (and, through it, the LM building blocks

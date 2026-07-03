@@ -10,9 +10,7 @@
 #include <exception>
 #include <random>
 
-using Eigen::Index;
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+using namespace VINCP;
 using std::printf;
 
 // Side-by-side comparison of the two inner LVI solvers -- Han (dHan06, self-
@@ -25,16 +23,6 @@ using std::printf;
 // Both problems are constructed with a known solution; the test passes iff both
 // solvers recover it on both problems. Iteration counts are reported so the
 // relative performance is visible.
-
-// Report one run against a known solution; return 0 on success, 1 on failure.
-// 'inner' is the total inner-solver iterations (0 for a direct/linear solve).
-static int report(const char* tag, const VINCP::VIResult& r,
-                  const VectorXd& known, double solTol) {
-    const double solErr = (r.z - known).norm();
-    printf("  %-8s iters=%6d  inner=%8d  residual=%.3e  converged=%-5s  solErr=%.3e\n",
-           tag, r.iter, r.innerIters, r.residual, r.converged ? "true" : "false", solErr);
-    return (r.converged && solErr < solTol) ? 0 : 1;
-}
 
 int main() {
     VINCP::ScopedUtcTimer timer("han_vs_he_test");
@@ -67,14 +55,12 @@ int main() {
         const VectorXd q  = w - M * zSol;
         const VectorXd x0 = VectorXd::Zero(N);
 
-        printf("=== (1) Linear VI: monotone LCP, M = A^T A, N = %td ===\n",
+        printf("=== (1) Linear VI: monotone LCP, M = A^T A, N = %lld ===\n",
                static_cast<long long>(N));
-        const VINCP::VIResult rHan =
-            VINCP::dHan06(x0, M, q, VINCP::projectNonnegative, magTol, iterMax, 0);
-        const VINCP::VIResult rHe =
-            VINCP::bsHe94b(x0, M, q, VINCP::projectNonnegative, magTol, iterMax, 0);
-        fail += report("dHan06",  rHan, zSol, solTol);
-        fail += report("bsHe94b", rHe,  zSol, solTol);
+        const SolveFn han = [&](const VectorXd& z){ return dHan06(z, M, q, projectNonnegative, magTol, iterMax, 0); };
+        const SolveFn he  = [&](const VectorXd& z){ return bsHe94b(z, M, q, projectNonnegative, magTol, iterMax, 0); };
+        fail += runCase("dHan06 (LCP)",  han, x0, { checkCloseToKnown(zSol, solTol) });
+        fail += runCase("bsHe94b (LCP)", he,  x0, { checkCloseToKnown(zSol, solTol) });
     }
 
     // ---- (2) PSD nonlinear VI: cubic gradient map through the JN outer loop ----
@@ -114,18 +100,13 @@ int main() {
         const VINCP::InnerSolver innerHan = VINCP::makeDHan06Solver(magTol, iterMax, 0);
         const VINCP::InnerSolver innerHe  = VINCP::makeBsHe94bSolver(magTol, iterMax, 0);
 
-        printf("\n=== (2) PSD nonlinear VI: cubic via JN outer loop, n = %td free, m = %td nonneg ===\n",
+        printf("\n=== (2) PSD nonlinear VI: cubic via JN outer loop, n = %lld free, m = %lld nonneg ===\n",
                static_cast<long long>(n), static_cast<long long>(m));
         printf("    (iters = OUTER Josephy-Newton iterations)\n");
-        try {
-            const VINCP::VIResult rHan = VINCP::solveVI(model, z0, innerHan, params);
-            const VINCP::VIResult rHe  = VINCP::solveVI(model, z0, innerHe,  params);
-            fail += report("dHan06",  rHan, zStar, solTol);
-            fail += report("bsHe94b", rHe,  zStar, solTol);
-        } catch (const std::exception& ex) {
-            printf("  FAIL: solveVI threw: %s\n", ex.what());
-            ++fail;
-        }
+        const SolveFn han = [&](const VectorXd& start){ return solveVI(model, start, innerHan, params); };
+        const SolveFn he  = [&](const VectorXd& start){ return solveVI(model, start, innerHe,  params); };
+        fail += runCase("dHan06 (cubic VI)",  han, z0, { checkCloseToKnown(zStar, solTol) });
+        fail += runCase("bsHe94b (cubic VI)", he,  z0, { checkCloseToKnown(zStar, solTol) });
     }
 
     printf("\n%s\n", (fail == 0) ? "PASS (both solvers solved both problems)"
