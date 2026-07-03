@@ -170,12 +170,6 @@ namespace VINCP {
 
         const bool overdetermined = (nOut >= nIn);
 
-        std::printf("\n=== %s: cubic F: R^%lld -> R^%lld  (%s) ===\n",
-                    solverName,
-                    static_cast<long long>(nIn), static_cast<long long>(nOut),
-                    overdetermined ? "overdetermined, unique root"
-                                   : "underdetermined, root manifold");
-
         std::mt19937 rng(seed);
 
         // Known root x* with mixed signs: magnitude in [magLo, magHi], sign alternating.
@@ -198,38 +192,32 @@ namespace VINCP {
             x0(i) = xStar(i) + startDist(rng);
         }
 
+        char header[128];
+        std::snprintf(header, sizeof header, "%s: cubic R^%lld -> R^%lld (%s)",
+                      solverName, static_cast<long long>(nIn), static_cast<long long>(nOut),
+                      overdetermined ? "overdetermined, unique root"
+                                     : "underdetermined, root manifold");
         printVector("x* (root)", xStar);
         printVector("start    ", x0);
 
-        try {
-            const VIResult r = solve(prob.F, x0);
-
-            std::printf("\n");
-            printVector("x (solved)", r.z);
-            printSolveStats(solverName, r);
-
-            // Gate on solution quality (the real correctness), not the solver's
-            // self-reported 'converged' flag, since different globalizations reach
-            // a given accuracy with different merit trajectories. solErr < solTol
-            // already implies a small residual; manifoldErr < rootTol implies F ~ 0.
-            bool pass = false;
-            if (overdetermined) {
-                const double solErr = (r.z - xStar).norm();
-                std::printf("solution err = %.3e (||x - x*||, unique root)\n", solErr);
-                pass = (solErr < solTol);
-            } else {
+        // Bind the caller's (F, x0) solver into a SolveFn and pick the quality gate:
+        // ||x - x*|| for the unique (overdetermined) root, else manifold membership
+        // ||A (x - x*)|| for the underdetermined root set. Both are quality-only
+        // (they do not require the solver's self-reported converged flag).
+        const SolveFn bound = [&](const VectorXd& z0) { return solve(prob.F, z0); };
+        CheckFn check;
+        if (overdetermined) {
+            check = checkCloseToKnown(xStar, solTol);
+        } else {
+            check = [&prob, xStar, rootTol](const VIResult& r) -> CheckResult {
                 const double manifoldErr = (prob.A * (r.z - xStar)).norm();
-                std::printf("residual^2 = %.3e, manifold err = %.3e (||A (x - x*)||, root not unique)\n",
-                            r.residual, manifoldErr);
-                pass = (manifoldErr < rootTol);
-            }
-
-            std::printf("%s\n", pass ? "  case PASS" : "  case FAIL");
-            return pass ? 0 : 1;
-        } catch (const std::exception& ex) {
-            std::printf("  case FAIL: %s threw: %s\n", solverName, ex.what());
-            return 1;
+                char buf[96];
+                std::snprintf(buf, sizeof buf,
+                              "||A (x - x*)|| = %.3e (tol %.1e, root not unique)", manifoldErr, rootTol);
+                return CheckResult{ manifoldErr < rootTol, std::string(buf) };
+            };
         }
+        return runCase(header, bound, x0, { check });
     }
 // ---------------------------------------------------------------------------
 // SAOE table display (LaTeX tabular or column-aligned ASCII)

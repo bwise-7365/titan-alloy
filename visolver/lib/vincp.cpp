@@ -1,8 +1,10 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "vincp.hpp"
 
+#include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace VINCP {
 
@@ -61,15 +63,25 @@ VIModel makeVIModel(Index n, Index m,
     VIModel model;
     model.n = n;
     model.m = m;
-    model.H = [n, m, F](const VectorXd& x, const VectorXd& y) -> VectorXd {
+    // H and G share a one-deep memo of (z, F(z)). evaluateF calls H(x, y) then
+    // G(x, y) with the SAME (x, y), so the caller's field F is evaluated ONCE per z
+    // rather than twice (once for each block). Single-threaded use only (the solvers
+    // run serially), which the whole library already assumes.
+    auto cache = std::make_shared<std::pair<VectorXd, VectorXd>>();
+    const auto evalF = [n, m, F, cache](const VectorXd& x, const VectorXd& y) -> const VectorXd& {
         VectorXd z(n + m);
         z << x, y;
-        return F(z).head(n);
+        if (cache->first.size() != z.size() || !(cache->first.array() == z.array()).all()) {
+            cache->first = z;
+            cache->second = F(z);
+        }
+        return cache->second;
     };
-    model.G = [n, m, F](const VectorXd& x, const VectorXd& y) -> VectorXd {
-        VectorXd z(n + m);
-        z << x, y;
-        return F(z).tail(m);
+    model.H = [n, evalF](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        return evalF(x, y).head(n);
+    };
+    model.G = [m, evalF](const VectorXd& x, const VectorXd& y) -> VectorXd {
+        return evalF(x, y).tail(m);
     };
     return model;
 }
