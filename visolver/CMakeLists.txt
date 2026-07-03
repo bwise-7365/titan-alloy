@@ -29,6 +29,7 @@ add_library(vincp STATIC
         lib/levenbergmarquardt.cpp
         lib/josephynewton.cpp
         lib/saoe.cpp
+        lib/ellipsoidprojector.cpp
         lib/utils.cpp
 )
 target_include_directories(vincp
@@ -74,6 +75,12 @@ target_link_libraries(han_vs_he_test PRIVATE vincp)
 add_executable(saoe_test test/saoe_test.cpp)
 target_link_libraries(saoe_test PRIVATE vincp)
 
+add_executable(ellipsoid_projector_test test/ellipsoid_projector_test.cpp)
+target_link_libraries(ellipsoid_projector_test PRIVATE vincp)
+
+add_executable(lvi_ellipsoid_test test/lvi_ellipsoid_test.cpp)
+target_link_libraries(lvi_ellipsoid_test PRIVATE vincp)
+
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
@@ -84,6 +91,8 @@ add_test(NAME han_vs_he_test COMMAND han_vs_he_test)
 # saoe_test passes on FEASIBILITY (not a specific equilibrium): it runs both
 # inner solvers and passes if at least one yields a feasible allocation.
 add_test(NAME saoe_test COMMAND saoe_test)
+add_test(NAME ellipsoid_projector_test COMMAND ellipsoid_projector_test)
+add_test(NAME lvi_ellipsoid_test COMMAND lvi_ellipsoid_test)
 
 # The random indefinite-M LCP is expected to diverge: Han's method has no
 # convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the

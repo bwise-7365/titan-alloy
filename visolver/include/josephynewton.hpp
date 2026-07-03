@@ -3,20 +3,21 @@
 #define VINCP_JOSEPHYNEWTON_HPP
 
 // ============================================================================
-// Outer Josephy-Newton driver for the mixed variational inequality
+// Outer Josephy-Newton driver for the variational inequality
 //
-//     find z in K such that F(z) . (w - z) >= 0 for all w in K,
+//     find z in K such that F(z) . (w - z) >= 0 for all w in K.
 //
-// over K = R^n x R_+^m, with z = (x, y), x in R^n free and y in R^m
-// non-negative.  Equivalently  H(x, y) = 0  and  0 <= G(x, y) _|_ y >= 0,
-// where F = (H, G).
+// K enters only through its projector Pi_K, supplied to solveVI (default: the
+// mixed set K = R^n x R_+^m with z = (x, y), x free and y non-negative, matching
+// the model's H(x,y) = 0, 0 <= G(x,y) _|_ y >= 0 split; F = (H, G)). Any other
+// projector -- e.g. an ellipsoid -- solves the same VI over a different K.
 //
 // Each outer step linearizes F at the current iterate with a finite-difference
 // Jacobian J(z_k) and solves the resulting affine VI over the same K:
-//     M = J(z_k),  q = F(z_k) - J(z_k) z_k,  Pr = makeMixedProjector(n),
-//     z_{k+1} = dHan06(z_k, M, q, Pr, ...).z
-// The mixed free/non-negative structure of K is carried entirely by Pr; no
-// Schur complement or elimination of the free block is needed.
+//     M = J(z_k),  q = F(z_k) - J(z_k) z_k,  Pr = the supplied projector,
+//     z_{k+1} = innerSolver(z_k, M, q, Pr, ...).z
+// The structure of K is carried entirely by Pr; no Schur complement or
+// elimination of any block is needed.
 // ============================================================================
 
 #include "vincp.hpp"
@@ -78,12 +79,18 @@ struct JosephyNewtonParams {
     bool logInnerDefiniteness = false;
 };
 
-// Solve the mixed nonlinear complementarity VI by Josephy-Newton with an
+// Solve the nonlinear VI over a feasible set K by Josephy-Newton with an
 // Armijo-damped step, using 'innerSolver' for each linearized affine VI.
 // The merit is the natural residual r(z) = z - Pi_K(z - F(z)); the loop stops when
 // ||r(z)||^2 < outerTol.  Returns the shared VIResult: its 'residual' is that
 // squared natural residual and 'converged' is true iff it fell below outerTol
 // within outerIterMax steps (no error thrown).
+//
+// K enters only through 'projector' (Pi_K), used both for the merit and by the
+// inner solver. If left empty it defaults to makeMixedProjector(model.n) -- the
+// mixed free/non-negative set matching the model's (x, y) split -- so existing
+// callers are unaffected. Pass any Projector (e.g. makeEllipsoidProjector) to solve
+// the same VI over a different K.
 //
 // Throws std::invalid_argument on an inconsistent model, starting point, or an
 // unset innerSolver, and propagates the inner solver's std::runtime_error on a
@@ -93,7 +100,8 @@ VIResult solveVI(const VIModel& model,
                  const VectorXd& z0,
                  const InnerSolver& innerSolver,
                  const JosephyNewtonParams& params = JosephyNewtonParams{},
-                 const OuterLogger& logger = OuterLogger{});
+                 const OuterLogger& logger = OuterLogger{},
+                 const Projector& projector = Projector{});
 
 } // namespace VINCP
 

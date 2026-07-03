@@ -54,13 +54,16 @@ VIResult solveVI(const VIModel& model,
                  const VectorXd& z0,
                  const InnerSolver& innerSolver,
                  const JosephyNewtonParams& params,
-                 const OuterLogger& logger) {
+                 const OuterLogger& logger,
+                 const Projector& projector) {
     validateModel(model, z0);
     if (!innerSolver) {
         throw std::invalid_argument("solveVI: innerSolver must be set.");
     }
 
-    const Projector Pr = makeMixedProjector(model.n);
+    // K enters only through its projector; default to the mixed free/non-negative
+    // set matching the model's (x, y) split when the caller supplies none.
+    const Projector Pr = projector ? projector : makeMixedProjector(model.n);
 
     // F as a single vector field for the finite-difference Jacobian.
     const VectorField F = [&model](const VectorXd& z) -> VectorXd {
