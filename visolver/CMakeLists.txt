@@ -30,6 +30,8 @@ add_library(vincp STATIC
         lib/josephynewton.cpp
         lib/saoe.cpp
         lib/ellipsoidprojector.cpp
+        lib/dampednewton.cpp
+        lib/smoothingnewton.cpp
         lib/utils.cpp
 )
 target_include_directories(vincp
@@ -81,6 +83,12 @@ target_link_libraries(ellipsoid_projector_test PRIVATE vincp)
 add_executable(lvi_ellipsoid_test test/lvi_ellipsoid_test.cpp)
 target_link_libraries(lvi_ellipsoid_test PRIVATE vincp)
 
+add_executable(damped_newton_test test/damped_newton_test.cpp)
+target_link_libraries(damped_newton_test PRIVATE vincp)
+
+add_executable(smoothing_newton_test test/smoothing_newton_test.cpp)
+target_link_libraries(smoothing_newton_test PRIVATE vincp)
+
 enable_testing()
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
@@ -93,6 +101,8 @@ add_test(NAME han_vs_he_test COMMAND han_vs_he_test)
 add_test(NAME saoe_test COMMAND saoe_test)
 add_test(NAME ellipsoid_projector_test COMMAND ellipsoid_projector_test)
 add_test(NAME lvi_ellipsoid_test COMMAND lvi_ellipsoid_test)
+add_test(NAME damped_newton_test COMMAND damped_newton_test)
+add_test(NAME smoothing_newton_test COMMAND smoothing_newton_test)
 
 # The random indefinite-M LCP is expected to diverge: Han's method has no
 # convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the

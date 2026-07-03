@@ -10,10 +10,12 @@
 // ============================================================================
 
 #include "vincp.hpp"
+#include "fdjacobian.hpp"   // VectorField
 
 #include <Eigen/Dense>
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <random>
 #include <string>
 
@@ -112,6 +114,20 @@ namespace VINCP {
                                   const Eigen::VectorXd& fStar,
                                   bool forcePSD,
                                   double aLo, double aHi);
+
+    // Run one rectangular cubic least-squares case through 'solve' and check it:
+    // builds a non-PSD cubic F: R^nIn -> R^nOut with a known root x* and a random
+    // start (all from 'seed'), then reports and validates the result. For nOut >= nIn
+    // the root is unique -- checks ||x - x*|| < 1e-6; for nOut < nIn the roots form the
+    // manifold x* + null(A) -- checks convergence and ||A (x - x*)|| < 1e-6 (LM lands on
+    // a possibly different root). 'solve' maps (F, x0) -> VIResult; bind a concrete
+    // least-squares solver (levenbergMarquardtSolve, dampedNewtonSolve, ...) with its
+    // own tolerances. 'solverName' labels the output. Returns 0 on pass, 1 on fail.
+    int runCubicLsqCase(const char* solverName,
+                        Eigen::Index nIn, Eigen::Index nOut,
+                        std::uint_fast32_t seed,
+                        const std::function<VIResult(const VectorField&,
+                                                     const Eigen::VectorXd&)>& solve);
 
     // -----------------------------------------------------------------------
     // SAOE table display (shared by the SAOE demo and test)

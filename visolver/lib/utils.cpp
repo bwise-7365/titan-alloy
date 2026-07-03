@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdio>
 #include <ctime>
+#include <exception>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -142,6 +143,81 @@ namespace VINCP {
         };
 
         return CubicProblem{ nIn, nOut, psd, A, k, xStar, fStar, F };
+    }
+
+    int runCubicLsqCase(const char* solverName,
+                        Eigen::Index nIn, Eigen::Index nOut,
+                        std::uint_fast32_t seed,
+                        const std::function<VIResult(const VectorField&,
+                                                     const Eigen::VectorXd&)>& solve) {
+        const int    magLo   = 1,     magHi   = 3;      // magnitude range for x* components
+        const double aLo     = -0.5,  aHi     = 0.5;    // forms-matrix range
+        const double startLo = -15.0, startHi = 15.0;   // random offset of the start from x*
+        const double solTol  = 1.0e-6;   // ||x - x*|| bound (unique / overdetermined root)
+        const double rootTol = 1.0e-6;   // ||A (x - x*)|| bound (manifold / underdetermined)
+
+        const bool overdetermined = (nOut >= nIn);
+
+        std::printf("\n=== %s: cubic F: R^%lld -> R^%lld  (%s) ===\n",
+                    solverName,
+                    static_cast<long long>(nIn), static_cast<long long>(nOut),
+                    overdetermined ? "overdetermined, unique root"
+                                   : "underdetermined, root manifold");
+
+        std::mt19937 rng(seed);
+
+        // Known root x* with mixed signs: magnitude in [magLo, magHi], sign alternating.
+        std::uniform_int_distribution<int> magDist(magLo, magHi);
+        Eigen::VectorXd xStar(nIn);
+        for (Eigen::Index i = 0; i < nIn; ++i) {
+            const double sign = (i % 2 == 0) ? 1.0 : -1.0;
+            xStar(i) = sign * static_cast<double>(magDist(rng));
+        }
+
+        // Cubic F: R^nIn -> R^nOut with F(x*) = 0 (non-PSD / general cubic).
+        const Eigen::VectorXd fStar = Eigen::VectorXd::Zero(nOut);
+        const CubicProblem prob =
+            makeCubicProblem(nIn, nOut, rng, xStar, fStar, /*forcePSD=*/false, aLo, aHi);
+
+        // Random starting point (a random offset from x*).
+        std::uniform_real_distribution<double> startDist(startLo, startHi);
+        Eigen::VectorXd x0(nIn);
+        for (Eigen::Index i = 0; i < nIn; ++i) {
+            x0(i) = xStar(i) + startDist(rng);
+        }
+
+        printVector("x* (root)", xStar);
+        printVector("start    ", x0);
+
+        try {
+            const VIResult r = solve(prob.F, x0);
+
+            std::printf("\n");
+            printVector("x (solved)", r.z);
+            printSolveStats(solverName, r);
+
+            // Gate on solution quality (the real correctness), not the solver's
+            // self-reported 'converged' flag, since different globalizations reach
+            // a given accuracy with different merit trajectories. solErr < solTol
+            // already implies a small residual; manifoldErr < rootTol implies F ~ 0.
+            bool pass = false;
+            if (overdetermined) {
+                const double solErr = (r.z - xStar).norm();
+                std::printf("solution err = %.3e (||x - x*||, unique root)\n", solErr);
+                pass = (solErr < solTol);
+            } else {
+                const double manifoldErr = (prob.A * (r.z - xStar)).norm();
+                std::printf("residual^2 = %.3e, manifold err = %.3e (||A (x - x*)||, root not unique)\n",
+                            r.residual, manifoldErr);
+                pass = (manifoldErr < rootTol);
+            }
+
+            std::printf("%s\n", pass ? "  case PASS" : "  case FAIL");
+            return pass ? 0 : 1;
+        } catch (const std::exception& ex) {
+            std::printf("  case FAIL: %s threw: %s\n", solverName, ex.what());
+            return 1;
+        }
     }
 // ---------------------------------------------------------------------------
 // SAOE table display (LaTeX tabular or column-aligned ASCII)

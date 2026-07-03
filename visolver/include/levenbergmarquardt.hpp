@@ -6,13 +6,14 @@
 // Levenberg-Marquardt for nonlinear least squares.
 //
 // Two layers:
-//   - Building blocks: the damped operator  J + lambda I  and a policy for
-//     adapting lambda between iterations. Reusable by any solver (the
+//   - Building blocks: the damped normal-equations operator  J^T J + lambda I  and
+//     a policy for adapting lambda between iterations. Reusable by any solver (the
 //     Josephy-Newton driver does NOT use them; it globalizes with an Armijo line
 //     search, armijo.hpp).
 //   - levenbergMarquardtSolve: a self-contained LM solver for
-//     min 1/2 ||F(x)||^2 over F: R^n -> R^m (m >= n), built on those blocks and
-//     a finite-difference Jacobian. Returns the shared VIResult.
+//     min 1/2 ||F(x)||^2 over F: R^n -> R^m (any m, n; the normal equations use
+//     only J^T J and J^T F, so the Jacobian need not be square), built on those
+//     blocks and a finite-difference Jacobian. Returns the shared VIResult.
 // ============================================================================
 
 #include "vincp.hpp"
@@ -30,7 +31,9 @@ struct LevenbergMarquardtParams {
     double lambdaMax = 1.0e+12;   // clamp (toward a short gradient-like step)
 };
 
-// Return J + lambda I (J must be square, lambda >= 0). Throws otherwise.
+// The damped Gauss-Newton normal-equations operator J^T J + lambda I (n x n) for a
+// possibly-rectangular m x n Jacobian J -- a square J is just the special case
+// m = n. Throws std::invalid_argument if lambda < 0.
 Eigen::MatrixXd levenbergMarquardtDamp(const Eigen::MatrixXd& J, double lambda);
 
 // Adapt the damping: shrink toward Newton on an accepted step, grow toward a

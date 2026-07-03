@@ -7,13 +7,14 @@
 namespace VINCP {
 
 Eigen::MatrixXd levenbergMarquardtDamp(const Eigen::MatrixXd& J, double lambda) {
-    if (J.rows() != J.cols()) {
-        throw std::invalid_argument("levenbergMarquardtDamp: J must be square.");
-    }
     if (lambda < 0.0) {
         throw std::invalid_argument("levenbergMarquardtDamp: lambda must be non-negative.");
     }
-    return J + lambda * Eigen::MatrixXd::Identity(J.rows(), J.cols());
+    // The damped Gauss-Newton normal-equations operator J^T J + lambda I (n x n) for
+    // any m x n Jacobian J. Only J^T J -- always n x n and PSD -- appears, so there
+    // is no squareness requirement; a square J is the special case m = n.
+    const Eigen::Index n = J.cols();
+    return J.transpose() * J + lambda * Eigen::MatrixXd::Identity(n, n);
 }
 
 double levenbergMarquardtUpdate(double lambda, bool stepAccepted,
@@ -49,15 +50,15 @@ VIResult levenbergMarquardtSolve(const VectorField& F,
             break;
         }
 
-        // Gauss-Newton normal-equation pieces from the FD Jacobian.
+        // Gauss-Newton normal-equation pieces from the FD Jacobian. J is m x n for
+        // F: R^n -> R^m; only J^T J (via Damp) and J^T F appear, so any m, n is fine.
         const Eigen::MatrixXd J = centralDifferenceJacobian(F, x, params.fdStepRel);
-        const Eigen::MatrixXd JtJ = J.transpose() * J;   // n x n, PSD
         const Eigen::VectorXd grad = J.transpose() * Fx; // grad of 1/2 ||F||^2
 
         // Grow lambda until a damped step reduces the merit (or give up).
         bool stepAccepted = false;
         for (int inner = 0; inner < params.innerMax; ++inner) {
-            const Eigen::MatrixXd damped = levenbergMarquardtDamp(JtJ, lambda);
+            const Eigen::MatrixXd damped = levenbergMarquardtDamp(J, lambda);  // J^T J + lambda I
             const Eigen::VectorXd dx = damped.ldlt().solve(-grad);
             const Eigen::VectorXd xTrial = x + dx;
             const Eigen::VectorXd FTrial = F(xTrial);
