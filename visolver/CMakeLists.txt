@@ -48,6 +48,39 @@ else()
     target_compile_options(vincp PRIVATE -Wall -Wextra)
 endif()
 
+# --- GoogleTest, fetched at configure time (source, built from source here) ---
+# FetchContent git-clones the pinned tag into build/_deps and add_subdirectory's
+# it, so GoogleTest is compiled by THIS toolchain with THESE flags -- no vendored
+# or prebuilt binaries. The pin (a release tag, not a branch) keeps the dependency
+# reproducible; bump it deliberately to update. gtest_force_shared_crt makes
+# GoogleTest link the dynamic CRT (/MD) MSVC uses by default; without it the link
+# fails with CRT-mismatch errors on Windows.
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        v1.16.0
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+include(GoogleTest)         # provides gtest_discover_tests()
+
+enable_testing()           # must precede the gtest_discover_tests() calls below
+
+# test/ holds test-only headers (e.g. testsupport.hpp) that pull in <gtest/gtest.h>;
+# kept off the vincp target so GoogleTest never leaks into the library.
+set(VINCP_TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+
+# Declare a GoogleTest executable: test/<name>.cpp -> target <name>, linked against
+# vincp + gtest_main, with test/ on its include path and its TEST() cases auto-
+# registered with ctest (each shows up individually as Suite.Case).
+function(vincp_add_gtest name)
+    add_executable(${name} test/${name}.cpp)
+    target_link_libraries(${name} PRIVATE vincp GTest::gtest_main)
+    target_include_directories(${name} PRIVATE ${VINCP_TEST_INCLUDE_DIR})
+    gtest_discover_tests(${name})
+endfunction()
+
 add_executable(lvi_demo src/main.cpp)
 target_link_libraries(lvi_demo PRIVATE vincp)
 
@@ -62,50 +95,22 @@ target_link_libraries(han_vs_he_demo PRIVATE vincp)
 add_executable(saoe_demo src/saoe_demo.cpp)
 target_link_libraries(saoe_demo PRIVATE vincp)
 
-add_executable(lcp_random_test test/lcp_random_test.cpp)
-target_link_libraries(lcp_random_test PRIVATE vincp)
+# GoogleTest suites. Each is a TEST()-based executable; gtest_discover_tests()
+# registers its cases with ctest individually. The lcp_random_test suite asserts
+# the divergence itself (EXPECT_THROW on the indefinite-M instance), so it no
+# longer needs the WILL_FAIL exit-code inversion that the plain-exe version did.
+vincp_add_gtest(lcp_random_test)
+vincp_add_gtest(lcp_psd_test)
+vincp_add_gtest(lm_test)
+vincp_add_gtest(han_vs_he_test)
+vincp_add_gtest(saoe_test)
+vincp_add_gtest(ellipsoid_projector_test)
+vincp_add_gtest(lvi_ellipsoid_test)
+vincp_add_gtest(damped_newton_test)
+vincp_add_gtest(smoothing_newton_test)
 
-add_executable(lcp_psd_test test/lcp_psd_test.cpp)
-target_link_libraries(lcp_psd_test PRIVATE vincp)
-
-add_executable(lm_test test/lm_test.cpp)
-target_link_libraries(lm_test PRIVATE vincp)
-
-add_executable(han_vs_he_test test/han_vs_he_test.cpp)
-target_link_libraries(han_vs_he_test PRIVATE vincp)
-
-add_executable(saoe_test test/saoe_test.cpp)
-target_link_libraries(saoe_test PRIVATE vincp)
-
-add_executable(ellipsoid_projector_test test/ellipsoid_projector_test.cpp)
-target_link_libraries(ellipsoid_projector_test PRIVATE vincp)
-
-add_executable(lvi_ellipsoid_test test/lvi_ellipsoid_test.cpp)
-target_link_libraries(lvi_ellipsoid_test PRIVATE vincp)
-
-add_executable(damped_newton_test test/damped_newton_test.cpp)
-target_link_libraries(damped_newton_test PRIVATE vincp)
-
-add_executable(smoothing_newton_test test/smoothing_newton_test.cpp)
-target_link_libraries(smoothing_newton_test PRIVATE vincp)
-
-enable_testing()
+# The two demo binaries are still run as plain smoke tests (exit 0 == pass); they
+# are not GoogleTest suites.
 add_test(NAME lvi_demo COMMAND lvi_demo)
 add_test(NAME lvi_vi_demo COMMAND lvi_vi_demo)
-add_test(NAME lcp_random_test COMMAND lcp_random_test)
-add_test(NAME lcp_psd_test COMMAND lcp_psd_test)
-add_test(NAME lm_test COMMAND lm_test)
-add_test(NAME han_vs_he_test COMMAND han_vs_he_test)
-# saoe_test passes on FEASIBILITY (not a specific equilibrium): it runs both
-# inner solvers and passes if at least one yields a feasible allocation.
-add_test(NAME saoe_test COMMAND saoe_test)
-add_test(NAME ellipsoid_projector_test COMMAND ellipsoid_projector_test)
-add_test(NAME lvi_ellipsoid_test COMMAND lvi_ellipsoid_test)
-add_test(NAME damped_newton_test COMMAND damped_newton_test)
-add_test(NAME smoothing_newton_test COMMAND smoothing_newton_test)
-
-# The random indefinite-M LCP is expected to diverge: Han's method has no
-# convergence guarantee off the monotone (M PSD) case, so a non-zero exit is the
-# correct outcome. WILL_FAIL inverts the pass condition, keeping the suite green.
-set_tests_properties(lcp_random_test PROPERTIES WILL_FAIL TRUE)
 # Copyright Ben Paul Wise. All Rights Reserved.

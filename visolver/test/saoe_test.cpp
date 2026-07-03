@@ -3,26 +3,27 @@
 #include "utils.hpp"
 
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
+
 #include <cmath>
 #include <cstdio>
 #include <exception>
 #include <random>
 
 using namespace VINCP;
-using std::printf;
 
 // SAOE test on a fixed 6-actor x 10-option instance. The reference equilibrium E
 // (below) is the allocation the earlier C++ implementation and the well-regarded
 // NPLEC and PATH solvers produced, and which bsHe94b reproduces here. The pass criterion
-// is therefore CORRECTNESS: the returned allocation must be feasible (e >= 0 and, per
-// actor, sum_j e_ij <= S_i) AND close to E in the root-mean-square-error sense
-// (RMSE over all M*N efforts <= rmseTol). This game is non-monotone with multiple
-// KKT points, so not every inner solver reaches E (dHan06 may settle in a different
-// basin); we therefore pass iff at least ONE inner solver (dHan06 or bsHe94b) lands
-// on E. Both inner solvers are run and the input and result tables are always
-// printed so an off-target, infeasible, or divergent run can be examined.
-int main() {
-    VINCP::ScopedUtcTimer timer("saoe_test");
+// is CORRECTNESS: the returned allocation must be feasible (e >= 0 and, per actor,
+// sum_j e_ij <= S_i) AND close to E in the root-mean-square-error sense (RMSE over all
+// M*N efforts <= rmseTol). This game is non-monotone with multiple KKT points, so not
+// every inner solver reaches E (dHan06 may settle in a different basin); the test
+// therefore passes iff at least ONE inner solver (dHan06 or bsHe94b) lands on E. Both
+// inner solvers are run and the input and result tables are always printed so an
+// off-target, infeasible, or divergent run can be examined. A solver that throws simply
+// does not contribute a match (expected: the divergence guard may fire off-monotone).
+TEST(Saoe, AtLeastOneSolverReproducesEquilibrium) {
     const bool   latex      = false;   // ASCII output for the test log
     const bool   repeatable = true;    // true = fixed deterministic start, so the RMSE
                                        // grade against E below is reproducible;
@@ -80,30 +81,29 @@ int main() {
         S << 195.0,  69.0,   56.0,  120.0,   77.0,  106.0;
     }
 
-    VINCP::printComment(latex, "SAOE test: 6 actors x 10 options (pass = a feasible allocation)");
-    VINCP::saoePrintInputs(R, S, latex);
+    printComment(latex, "SAOE test: 6 actors x 10 options (pass = a feasible allocation)");
+    saoePrintInputs(R, S, latex);
 
     // Starting point: empty => saoe() uses its deterministic default (repeatable);
     // otherwise a random start from a fresh makeSeed(0) so runs explore different
     // equilibria. Both inner solvers below start from the same point.
     VectorXd z0;
     if (!repeatable) {
-        std::mt19937_64 rng(VINCP::makeSeed(0, true));
-        z0 = VINCP::saoeRandomStart(R, S, rng);
+        std::mt19937_64 rng(makeSeed(0, true));
+        z0 = saoeRandomStart(R, S, rng);
     }
-    VINCP::printComment(latex, repeatable ? "start: deterministic (repeatable)"
-                                          : "start: random (makeSeed(0))");
+    printComment(latex, repeatable ? "start: deterministic (repeatable)"
+                                    : "start: random (makeSeed(0))");
 
-    struct Method { const char* name; VINCP::InnerMethod inner; };
+    struct Method { const char* name; InnerMethod inner; };
     const Method methods[] = {
-        { "dHan06",  VINCP::InnerMethod::Han },
-        { "bsHe94b", VINCP::InnerMethod::He  },
+        { "dHan06",  InnerMethod::Han },
+        { "bsHe94b", InnerMethod::He  },
     };
 
-    bool anyMatched = false;   // some solver was both feasible and close to E
     // Check: decode the allocation, print the effort table, and require feasibility
     // (e >= 0, per-actor budget) AND a small RMSE against the reference equilibrium E.
-    const CheckFn saoeCheck = [&](const VIResult& r) -> CheckResult {
+    const auto saoeMatchesE = [&](const VIResult& r) -> bool {
         const SaoeSolution sol = saoeDecode(r, M, N);
         saoePrintSolution(R, sol.e, saoeEps(R), latex);
         const double maxNeg   = -sol.e.minCoeff();
@@ -112,28 +112,32 @@ int main() {
         const double rmse     = std::sqrt((sol.e - E).array().square().sum()
                                           / static_cast<double>(M * N));
         const bool   onTarget = (rmse <= rmseTol);
-        char buf[192];
-        std::snprintf(buf, sizeof buf,
-                      "feasible=%s (maxNeg %.2e, over %.2e), RMSE vs E = %.4e (tol %.2e) -> %s",
-                      feasible ? "true" : "false", maxNeg, maxOver, rmse, rmseTol,
-                      onTarget ? "on target" : "off target");
-        return CheckResult{ feasible && onTarget, std::string(buf) };
+        std::printf("  feasible=%s (maxNeg %.2e, over %.2e), RMSE vs E = %.4e (tol %.2e) -> %s\n",
+                    feasible ? "true" : "false", maxNeg, maxOver, rmse, rmseTol,
+                    onTarget ? "on target" : "off target");
+        return feasible && onTarget;
     };
 
-    // Any-of: pass if at least one inner solver reproduces E.
+    // Any-of: pass iff at least one inner solver reproduces E. A throw from one
+    // solver is expected off-monotone and simply does not count as a match.
+    bool anyMatched = false;
     for (const Method& m : methods) {
+        SCOPED_TRACE(m.name);
         SaoeParams params;
         params.innerMethod          = m.inner;
         params.logInnerDefiniteness = true;   // probe each outer Jacobian's monotonicity
-        const SolveFn solve = [&](const VectorXd& start){ return saoe(R, S, params, start); };
-        if (runCase(m.name, solve, z0, { saoeCheck }) == 0) {
-            anyMatched = true;
+        try {
+            const VIResult r = saoe(R, S, params, z0);
+            if (saoeMatchesE(r)) {
+                anyMatched = true;
+            }
+        } catch (const std::exception& e) {
+            std::printf("  %s threw: %s\n", m.name, e.what());
         }
     }
 
-    printf("\n%s\n", anyMatched
-                     ? "PASS (at least one inner solver reproduced the reference equilibrium E)"
-                     : "FAIL (no inner solver produced a feasible allocation matching E within RMSE tol)");
-    return anyMatched ? 0 : 1;
+    EXPECT_TRUE(anyMatched)
+        << "no inner solver produced a feasible allocation matching the reference "
+           "equilibrium E within RMSE tol";
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

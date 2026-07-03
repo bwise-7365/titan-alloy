@@ -13,23 +13,23 @@
 //     x*_i = -c_i a_i^2 / ||c .* a||_2,
 // which lies on the boundary (ellipsoidNorm(x*) = 1). The pass criterion is both
 // FEASIBILITY (ellipsoidNorm(x) <= 1 within tolerance) AND ACCURACY (x matches x*
-// in relative 2-norm) for both inner solvers. The output mirrors the SAOE test
-// (run time, iterations, squared residual).
+// in relative 2-norm) for both inner solvers.
 #include "ellipsoidprojector.hpp"
 #include "josephynewton.hpp"
 #include "utils.hpp"
+#include "testsupport.hpp"
 
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
+
 #include <cstdint>
 #include <cstdio>
-#include <exception>
 #include <random>
+#include <string>
 
 using namespace VINCP;
-using std::printf;
 
-int main() {
-    VINCP::ScopedUtcTimer timer("lvi_ellipsoid_test");
+TEST(LviEllipsoid, LinearObjectiveOverEllipsoid) {
     const bool   latex        = false;    // ASCII output for the test log
     const int    dim          = 5;        // problem dimension
     const double feasTol      = 1.0e-6;   // ellipsoidNorm(x) <= 1 + feasTol is feasible
@@ -38,7 +38,7 @@ int main() {
     const int    innerIterMax = 100000;   // inner iteration cap (cheap 5x5 projections)
 
     // Reproducible random instance: fixed non-zero seed => same c, a every run.
-    const std::uint64_t seed = VINCP::makeSeed(20260703, true);
+    const std::uint64_t seed = makeSeed(20260703, true);
     std::mt19937_64 rng(seed);
     std::uniform_real_distribution<double> cDist(1.0, 10.0);
     std::uniform_real_distribution<double> aDist(10.0, 100.0);
@@ -49,31 +49,31 @@ int main() {
         a(i) = aDist(rng);
     }
 
-    VINCP::printComment(latex, "LVI test: min c^T x  s.t.  sum_i (x_i/a_i)^2 <= 1  (ellipsoid K)");
-    VINCP::printVector("c        ", c);
-    VINCP::printVector("a (radii)", a);
+    printComment(latex, "LVI test: min c^T x  s.t.  sum_i (x_i/a_i)^2 <= 1  (ellipsoid K)");
+    printVector("c        ", c);
+    printVector("a (radii)", a);
 
     // Closed-form optimum x*_i = -c_i a_i^2 / ||c .* a||_2 (on the boundary), used to
     // cross-check each solver's result below.
     const double caNorm = c.cwiseProduct(a).norm();
     const VectorXd xStar = -(c.array() * a.array().square() / caNorm).matrix();
-    VINCP::printVector("x* exact ", xStar);
+    printVector("x* exact ", xStar);
 
     // VI model: F(z) = c (constant). All components free; the ellipsoid, not
     // non-negativity, is the feasible set, so it is supplied as the projector below.
-    VINCP::VIModel model;
+    VIModel model;
     model.n = dim;
     model.m = 0;
     model.H = [c](const VectorXd&, const VectorXd&) -> VectorXd { return c; };
     model.G = [](const VectorXd&, const VectorXd&) -> VectorXd { return VectorXd(); };
 
-    const VINCP::Projector K = VINCP::makeEllipsoidProjector(a);
+    const Projector K = makeEllipsoidProjector(a);
     const VectorXd z0 = VectorXd::Zero(dim);   // origin: strictly inside E(a)
 
-    struct Method { const char* name; VINCP::InnerSolver inner; };
+    struct Method { const char* name; InnerSolver inner; };
     const Method methods[] = {
-        { "dHan06",  VINCP::makeDHan06Solver(innerMagTol, innerIterMax, 0) },
-        { "bsHe94b", VINCP::makeBsHe94bSolver(innerMagTol, innerIterMax, 0) },
+        { "dHan06",  makeDHan06Solver(innerMagTol, innerIterMax, 0) },
+        { "bsHe94b", makeBsHe94bSolver(innerMagTol, innerIterMax, 0) },
     };
 
     // Checks: feasibility (on/inside E(a)) and accuracy vs the closed-form optimum x*.
@@ -93,17 +93,12 @@ int main() {
     const JosephyNewtonParams jn;   // defaults
 
     // All-of: both inner solvers must reach the optimum.
-    int fails = 0;
     for (const Method& m : methods) {
+        SCOPED_TRACE(m.name);
         const SolveFn solve = [&](const VectorXd& start) {
             return solveVI(model, start, m.inner, jn, {}, K);
         };
-        fails += runCase(m.name, solve, z0, { feasCheck, accCheck });
+        expectSolvePasses(solve, z0, { feasCheck, accCheck });
     }
-
-    printf("\n%s\n", (fails == 0)
-                     ? "PASS (both inner solvers reached the analytic optimum on the ellipsoid)"
-                     : "FAIL (an inner solver was infeasible, off the optimum, or threw)");
-    return (fails == 0) ? 0 : 1;
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

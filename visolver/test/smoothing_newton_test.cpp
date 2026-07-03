@@ -1,15 +1,16 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "smoothingnewton.hpp"
 #include "utils.hpp"
+#include "testsupport.hpp"
 
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
-#include <exception>
 
 using namespace VINCP;
-using std::printf;
 
 // Validation of smoothingNewtonSolve on a hand-built convex QP with a known KKT
 // point:  min 1/2 ||x||^2  s.t.  A x >= b.  Its KKT system is
@@ -19,8 +20,7 @@ using std::printf;
 // the unique KKT point is x* = (1,1), y* = (1,0), s* = A x* - b = (0,6):
 // constraint 1 active (y1>0, s1=0), constraint 2 slack (y2=0, s2>0). The solver must
 // recover (x*, y*), drive u -> 0, and satisfy feasibility and complementarity.
-int main() {
-    VINCP::ScopedUtcTimer timer("smoothing_newton_test");
+TEST(SmoothingNewton, ConvexQpKktPoint) {
     const bool   latex   = false;
     const double solTol  = 1.0e-6;   // ||x - x*||, ||y - y*||
     const double uTol    = 1.0e-6;   // final smoothing parameter |u|
@@ -37,17 +37,17 @@ int main() {
     VectorXd yStar(2); yStar << 1.0, 0.0;
 
     // KKT maps: H(x,y) = x - A^T y (stationarity of 1/2||x||^2); G(x,y) = A x - b.
-    const VINCP::MixedField H = [A](const VectorXd& x, const VectorXd& y) -> VectorXd {
+    const MixedField H = [A](const VectorXd& x, const VectorXd& y) -> VectorXd {
         return x - A.transpose() * y;
     };
-    const VINCP::MixedField G = [A, b](const VectorXd& x, const VectorXd& y) -> VectorXd {
+    const MixedField G = [A, b](const VectorXd& x, const VectorXd& y) -> VectorXd {
         (void)y;
         return A * x - b;
     };
 
-    VINCP::printComment(latex, "smoothing-Newton test: QP  min 1/2||x||^2  s.t. A x >= b");
-    VINCP::printVector("x* (known)", xStar);
-    VINCP::printVector("y* (known)", yStar);
+    printComment(latex, "smoothing-Newton test: QP  min 1/2||x||^2  s.t. A x >= b");
+    printVector("x* (known)", xStar);
+    printVector("y* (known)", yStar);
 
     VectorXd x0(2); x0 << 0.0, 0.0;   // infeasible start is fine (not interior-point)
     VectorXd y0(2); y0 << 1.0, 1.0;
@@ -77,8 +77,8 @@ int main() {
         return CheckResult{ pass, std::string(buf) };
     };
 
-    // (x0, y0) are bound into the solver; runCase's z0 argument is unused here.
+    // (x0, y0) are bound into the solver; the SolveFn's z0 argument is unused here.
     const SolveFn solve = [&](const VectorXd&) { return smoothingNewtonSolve(H, G, x0, y0, params); };
-    return runCase("smoothingNewton", solve, x0, { kktCheck });
+    expectSolvePasses(solve, x0, { kktCheck });
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

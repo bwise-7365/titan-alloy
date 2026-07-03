@@ -149,11 +149,16 @@ markdown, or text file, add both lines.
 - Headers `.hpp`, sources `.cpp`; include guards are `VINCP_<FILE>_HPP`.
 - Braces around every `if`/`else` body, including single statements. American
   spelling. Split files/functions well before a few hundred lines.
-- Tests are plain executables returning 0 (pass) / non-zero (fail), registered
-  with `add_test` — there is no test framework. To add one: drop a `.cpp` in
-  `test/`, then add an `add_executable` + `target_link_libraries(... vincp)` +
-  `add_test` triplet in `CMakeLists.txt`. Name all dimensions/tolerances as
-  named constants (no magic numbers).
+- Tests use **GoogleTest** (fetched via CMake `FetchContent`, pinned tag; MSVC needs
+  `set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)`). To add one: drop a `.cpp`
+  in `test/` using `#include <gtest/gtest.h>` and `TEST(...)`/`EXPECT_NEAR` etc., then
+  add an `add_executable` + `target_link_libraries(... vincp GTest::gtest_main)` +
+  `gtest_discover_tests(...)` triplet in `CMakeLists.txt`. Name all
+  dimensions/tolerances as named constants (no magic numbers). Legacy plain-exe
+  tests (return 0/1, registered with `add_test`) may still exist during the
+  migration; new tests should be GoogleTest. The shared harness for solver cases is
+  `utils`'s `runCase`/`CheckFn` — a `CheckFn`'s pass/report maps naturally onto
+  `EXPECT_*` inside a `TEST()`.
 
 ## Planned future direction (do not start unprompted)
 
