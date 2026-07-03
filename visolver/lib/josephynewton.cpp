@@ -3,6 +3,7 @@
 
 #include "fdjacobian.hpp"
 
+#include <cstdio>
 #include <stdexcept>
 
 namespace VINCP {
@@ -94,6 +95,25 @@ VIResult solveVI(const VIModel& model,
         // Linearize: M = J(z), q = F(z) - J(z) z.
         const Eigen::MatrixXd jac = centralDifferenceJacobian(F, z, params.fdStepRel);
         const VectorXd q = Fz - jac * z;
+
+        // Diagnostic probe: monotonicity of the inner matrix M = jac. dHan06
+        // (Han 2006 Thm 2.4) converges only when M is positive semidefinite, i.e.
+        // the smallest eigenvalue of its symmetric part is >= 0. A negative value
+        // here is the expected signature of the SAOE inner problem on which dHan06
+        // diverges while bsHe94b still contracts.
+        if (params.logInnerDefiniteness) {
+            const Eigen::MatrixXd symJac = 0.5 * (jac + jac.transpose());
+            const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(symJac,
+                                                                    Eigen::EigenvaluesOnly);
+            if (es.info() == Eigen::Success) {
+                const double lmin = es.eigenvalues().minCoeff();
+                std::printf("[probe] outer iter %3d: min eig(sym M) = %+.6e  ->  %s\n",
+                            iter, lmin,
+                            (lmin >= 0.0) ? "monotone (PSD)" : "NON-monotone (indefinite)");
+            } else {
+                std::printf("[probe] outer iter %3d: symmetric eigensolve failed\n", iter);
+            }
+        }
 
         // Inner affine-VI solve over the same K gives the Josephy-Newton point.
         const VIResult inner = innerSolver(z, jac, q, Pr);

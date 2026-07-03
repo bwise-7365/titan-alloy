@@ -68,6 +68,14 @@ struct JosephyNewtonParams {
     // Armijo damping of the outer (Josephy-Newton) step on the natural-map
     // merit, to prevent overshoot near the non-smooth solution.
     ArmijoParams armijo = ArmijoParams{};
+
+    // Diagnostic probe: when true, print (to stdout) the smallest eigenvalue of
+    // the symmetric part of the linearized inner matrix M = J(z_k) at each outer
+    // step. M is monotone (Han 2006 Thm 2.4's hypothesis for dHan06 convergence)
+    // iff that eigenvalue is >= 0; a negative value flags a non-monotone inner
+    // problem on which dHan06 may diverge while bsHe94b still contracts. Off by
+    // default; it costs one dense symmetric eigensolve per outer iteration.
+    bool logInnerDefiniteness = false;
 };
 
 // Solve the mixed nonlinear complementarity VI by Josephy-Newton with an

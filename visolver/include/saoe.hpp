@@ -32,10 +32,15 @@ enum class InnerMethod { Han, He };
 // the inner LVI solver).
 struct SaoeParams {
     double      outerTol     = 1.0e-10;         // squared natural-residual stop (solveVI)
-    int         outerIterMax = 500;             // outer cap (a contest may need > the default)
+    int         outerIterMax = 250;             // outer cap (a contest may need > the default)
     double      innerMagTol  = 1.0e-14;         // inner LVI squared-residual tolerance
-    int         innerIterMax = 100000;          // inner iteration cap
+    int         innerIterMax = 1000;          // inner iteration cap
     InnerMethod innerMethod  = InnerMethod::Han; // dHan06 (default) or bsHe94b
+
+    // Diagnostic probe forwarded to solveVI: print the smallest eigenvalue of the
+    // symmetric part of each outer Jacobian, to check whether the inner problem is
+    // monotone (a prerequisite for dHan06's convergence). Off by default.
+    bool        logInnerDefiniteness = false;
 };
 
 // Result of a SAOE solve.

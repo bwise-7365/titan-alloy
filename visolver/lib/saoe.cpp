@@ -121,8 +121,9 @@ SaoeResult saoe(const Eigen::MatrixXd& R, const Eigen::VectorXd& S,
             ? makeBsHe94bSolver(params.innerMagTol, params.innerIterMax, 0)
             : makeDHan06Solver(params.innerMagTol, params.innerIterMax, 0);
     JosephyNewtonParams jn;
-    jn.outerTol     = params.outerTol;
-    jn.outerIterMax = params.outerIterMax;
+    jn.outerTol              = params.outerTol;
+    jn.outerIterMax          = params.outerIterMax;
+    jn.logInnerDefiniteness  = params.logInnerDefiniteness;
 
     const VIResult res = solveVI(model, z0, inner, jn);
 
