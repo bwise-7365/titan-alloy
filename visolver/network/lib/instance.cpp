@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <random>
 #include <stdexcept>
 #include <string>
@@ -24,6 +25,16 @@ namespace VINCP::Network {
         throw std::invalid_argument("Network::Instance: " + message);
       }
       return;
+    }
+
+    // A node label: class letter + zero-padded 3-digit per-class index, e.g.
+    // 'S' and 7 -> "S007". Widths above 999 simply use more digits.
+    string
+    formatNodeLabel(char prefix, int index)
+    {
+      char buf[16];
+      std::snprintf(buf, sizeof(buf), "%c%03d", prefix, index);
+      return string(buf);
     }
 
   } // namespace
@@ -48,6 +59,12 @@ namespace VINCP::Network {
               "xCoord/yCoord, when present, must both have size numNodes.");
       require(inst.xCoord.allFinite() && inst.yCoord.allFinite(),
               "coordinate entries must be finite.");
+    }
+
+    // Labels are likewise optional, but sized numNodes when present.
+    if (!inst.labels.empty()) {
+      require(static_cast<Index>(inst.labels.size()) == m,
+              "labels, when present, must have size numNodes.");
     }
 
     for (Index i = 0; i < m; ++i) {
@@ -103,6 +120,16 @@ namespace VINCP::Network {
   totalDemand(const Instance& inst)
   {
     return inst.demand.sum();
+  }
+
+  string
+  nodeLabel(const Instance& inst, Index node)
+  {
+    if (static_cast<Index>(inst.labels.size()) == inst.numNodes
+        && 0 <= node && node < inst.numNodes) {
+      return inst.labels[static_cast<size_t>(node)];
+    }
+    return "#" + std::to_string(node);
   }
 
   void
@@ -214,6 +241,9 @@ namespace VINCP::Network {
 
     // Node classes are contiguous blocks:
     // [supply-only | both | demand-only | transit].
+    // Each class gets its own zero-based, zero-padded label counter.
+    inst.labels.resize(static_cast<size_t>(m));
+    int nextS = 0, nextM = 0, nextD = 0, nextT = 0;
     for (Index i = 0; i < m; ++i) {
       const bool suppliesP = i < profile.numSupplyOnly + profile.numBoth;
       const bool demandsP = profile.numSupplyOnly <= i && i < numClassed;
@@ -224,6 +254,26 @@ namespace VINCP::Network {
         inst.demand(i) = demandDist(rng);
       }
       inst.priority(i) = priorityDist(rng);
+
+      char prefix;
+      int index;
+      if (suppliesP && demandsP) {
+        prefix = 'M';
+        index = nextM++;
+      }
+      else if (suppliesP) {
+        prefix = 'S';
+        index = nextS++;
+      }
+      else if (demandsP) {
+        prefix = 'D';
+        index = nextD++;
+      }
+      else {
+        prefix = 'T';
+        index = nextT++;
+      }
+      inst.labels[static_cast<size_t>(i)] = formatNodeLabel(prefix, index);
     }
 
     std::uniform_real_distribution<double> bandFloorDist(profile.bandMinCostLo,

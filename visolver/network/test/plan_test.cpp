@@ -78,6 +78,26 @@ TEST(NetworkPlan, HandBuiltPlanEvaluates) {
     EXPECT_DOUBLE_EQ(shortfallObjective(inst, plan), 0.0);
 }
 
+// shortfallVsTarget separates "did we hit the (rationed) target" from "how far
+// short of the original demand we are" -- the two numbers the viewer reports.
+TEST(NetworkPlan, ShortfallVsTargetSeparatesRationedFromOriginal) {
+    const Instance inst = makeTwoNodeInstance();   // node 1: D = 8, P = 2
+    VectorXd resupply(2);
+    resupply << 0.0, 6.0;                          // delivered 6 to node 1
+    VectorXd rationed(2);
+    rationed << 0.0, 6.0;                          // rationed target was also 6
+
+    // Meeting the rationed target exactly -> zero shortfall against it...
+    EXPECT_DOUBLE_EQ(shortfallVsTarget(inst, rationed, resupply), 0.0);
+    // ...but a real gap against the original demand of 8.
+    const double fraction = (kDemand1 - 6.0) / kDemand1;
+    EXPECT_DOUBLE_EQ(shortfallOfResupply(inst, resupply),
+                     kPriority1 * fraction * fraction);
+    // shortfallOfResupply is exactly shortfallVsTarget with target = demand.
+    EXPECT_DOUBLE_EQ(shortfallOfResupply(inst, resupply),
+                     shortfallVsTarget(inst, inst.demand, resupply));
+}
+
 // The F1 fix: supplying one's own demand WITHOUT routing it through the
 // self-arc satisfies (balance) but must be caught by (delivery).
 TEST(NetworkPlan, SelfSupplyShortcutIsCaught) {

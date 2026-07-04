@@ -10,8 +10,10 @@
 #include "vincp.hpp"
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
+using std::string;
 using std::vector;
 
 namespace VINCP::Network {
@@ -41,6 +43,12 @@ namespace VINCP::Network {
     // when present (size numNodes). Populated by makeRandomInstance.
     VectorXd xCoord;         // x_i (size numNodes, or 0 if not placed)
     VectorXd yCoord;         // y_i (size numNodes, or 0 if not placed)
+    // Human-readable node labels, one per node: a class letter followed by a
+    // zero-padded 3-digit per-class counter -- supply-only "S###", both "M###",
+    // demand-only "D###", transit "T###" (e.g. "S000", "M017"). Populated by
+    // makeRandomInstance; empty on abstract hand-built instances (checked only
+    // when present, like the coordinates).
+    vector<string> labels;   // size numNodes, or empty if not labelled
   };
 
   // Throws std::invalid_argument on any structural defect: mismatched sizes,
@@ -56,6 +64,11 @@ namespace VINCP::Network {
   // Sum of all C_i / of all D_i.
   double totalSupplyCap(const Instance& inst);
   double totalDemand(const Instance& inst);
+
+  // The display label of node i: inst.labels[i] when present, else a synthetic
+  // "#i" fallback for instances built without labels. Shared by any UI that
+  // names nodes.
+  string nodeLabel(const Instance& inst, Index node);
 
   // ---------------------------------------------------------------------------
   // Random instance generator

@@ -30,6 +30,7 @@ add_library(vincp STATIC
         lib/josephynewton.cpp
         lib/saoe.cpp
         lib/solodovsvaiter.cpp
+        lib/chainedsolver.cpp
         lib/ellipsoidprojector.cpp
         lib/dampednewton.cpp
         lib/smoothingnewton.cpp

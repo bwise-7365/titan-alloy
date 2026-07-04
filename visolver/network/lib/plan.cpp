@@ -47,21 +47,28 @@ namespace VINCP::Network {
   }
 
   double
-  shortfallOfResupply(const Instance& inst, const VectorXd& resupply)
+  shortfallVsTarget(const Instance& inst, const VectorXd& target,
+                    const VectorXd& resupply)
   {
-    if (resupply.size() != inst.numNodes) {
+    if (target.size() != inst.numNodes || resupply.size() != inst.numNodes) {
       throw std::invalid_argument(
-          "Network::shortfallOfResupply: resupply size must equal numNodes.");
+          "Network::shortfallVsTarget: target/resupply size must equal "
+          "numNodes.");
     }
     double objective = 0.0;
     for (Index i = 0; i < inst.numNodes; ++i) {
       if (0.0 < inst.demand(i)) {
-        const double fraction =
-            (inst.demand(i) - resupply(i)) / inst.demand(i);
+        const double fraction = (target(i) - resupply(i)) / inst.demand(i);
         objective += inst.priority(i) * fraction * fraction;
       }
     }
     return objective;
+  }
+
+  double
+  shortfallOfResupply(const Instance& inst, const VectorXd& resupply)
+  {
+    return shortfallVsTarget(inst, inst.demand, resupply);
   }
 
   double

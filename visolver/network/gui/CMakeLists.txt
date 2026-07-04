@@ -28,6 +28,10 @@ qt_add_executable(network_viewer
     mainwindow.cpp
     flowplanview.hpp
     flowplanview.cpp
+    costhistogram.hpp
+    costhistogram.cpp
+    nodelistwidget.hpp
+    nodelistwidget.cpp
 )
 target_include_directories(network_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(network_viewer PRIVATE Qt6::Widgets vincpnet)

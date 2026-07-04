@@ -30,10 +30,19 @@ namespace VINCP::Network {
   // Total ton-miles moved: sum_ij c_ij * f_ij.
   double tonMiles(const Instance& inst, const Plan& plan);
 
+  // Weighted quadratic shortfall of `resupply` against a `target` resupply,
+  // normalized by demand: sum_{i: D_i > 0} P_i ((target_i - resupply_i)/D_i)^2.
+  // Nodes with D_i = 0 are excluded by convention (formulation.md section 4).
+  // With target = inst.demand this is the objective vs ORIGINAL demand; with
+  // target = the phase-1 rationed targets it measures how far a plan falls short
+  // of what capacity actually allows.
+  double shortfallVsTarget(const Instance& inst, const VectorXd& target,
+                           const VectorXd& resupply);
+
   // The weighted quadratic shortfall sum_{i: D_i > 0} P_i ((D_i - R_i)/D_i)^2
-  // for a bare resupply vector (size numNodes). Nodes with D_i = 0 are excluded
-  // by convention (formulation.md section 4). Used both for full plans and for
-  // resupply TARGETS that have no flows yet (e.g. the phase-1 rationing bound).
+  // for a bare resupply vector (size numNodes) -- i.e. shortfallVsTarget with
+  // target = inst.demand. Used both for full plans and for resupply TARGETS
+  // that have no flows yet (e.g. the phase-1 rationing bound).
   double shortfallOfResupply(const Instance& inst, const VectorXd& resupply);
 
   // The same shortfall evaluated at plan.resupply.

@@ -192,6 +192,29 @@ TEST(NetworkInstance, TransitNodesHandled) {
     }
 }
 
+// Each node gets a class-lettered, zero-padded, per-class label counter, in
+// the contiguous block order [supply-only | both | demand-only | transit].
+TEST(NetworkInstance, NodeLabelsByClass) {
+    InstanceProfile profile;      // 20 supply-only, 20 both, 30 demand-only
+    profile.numNeither = 3;       // plus 3 transit nodes
+    const Instance inst = makeRandomInstance(profile, kSeed);
+
+    ASSERT_EQ(static_cast<Index>(inst.labels.size()), inst.numNodes);
+    EXPECT_EQ(inst.labels[0], "S000");    // supply-only block [0, 20)
+    EXPECT_EQ(inst.labels[19], "S019");
+    EXPECT_EQ(inst.labels[20], "M000");   // both block [20, 40)
+    EXPECT_EQ(inst.labels[39], "M019");
+    EXPECT_EQ(inst.labels[40], "D000");   // demand-only block [40, 70)
+    EXPECT_EQ(inst.labels[69], "D029");
+    EXPECT_EQ(inst.labels[70], "T000");   // transit block [70, 73)
+    EXPECT_EQ(inst.labels[72], "T002");
+    // nodeLabel mirrors the stored label, with a synthetic fallback when absent.
+    EXPECT_EQ(nodeLabel(inst, 20), "M000");
+    Instance bare;
+    bare.numNodes = 2;
+    EXPECT_EQ(nodeLabel(bare, 1), "#1");
+}
+
 // Laydown types beyond the defined ones are rejected up front.
 TEST(NetworkInstance, UndefinedLaydownTypesRejected) {
     InstanceProfile future;

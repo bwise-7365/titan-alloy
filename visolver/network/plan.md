@@ -62,7 +62,7 @@ Size: S (small), M (medium), L (large) — relative effort/usage.
 |----|------|------|-----------|--------|
 | B1 | **Scaffolding + instance generator.** `network/` CMake target in the visolver build; `Instance` / `Plan` data structures; random generator matching the spec profile (70 nodes: 20 supply-only, 20 both, 30 demand-only; cost ranges, asymmetry 1-10%). GoogleTest wiring. | M | A1 | done (2026-07-03) |
 | B2 | **Greedy planner.** Phase 1 rationing (closed-form lambda with `R_i >= 0` clamping) + Phase 2 greedy loop (incl. the 0.01% scale-down guard); `L` calibration at 80%; unit tests on hand-checkable instances. | M | B1 | done (2026-07-03) |
-| B3 | **Swap post-processing (optional).** Busiest-node O(N^3) flow-swap improvement. Candidate for descoping — cosmetic for the baseline, not needed for `L` calibration. | S | B2 | descoped (gate 5; may revisit) |
+| B3 | **Swap (2-exchange) engine + interactive GUI.** `swap.{hpp,cpp}`: `bestSwapAtNode` (v1, one swap), `swapNodeToLocalOptimum` (intermediate: one node iterated), `bestSwap` (v2, global one), `swapToLocalOptimum` (v3, global iterate), `applySwap`; `swap_test`. Viewer: right-click a node = its best swap, shift+right-click = that node to its optimum; "Best swap" / "Swap to optimum" / "Reset plan" buttons; result popup (edges, tons, saving) + magenta arc highlight; working plan persists until Regenerate. | M | B2, F1 | in progress (2026-07-05) |
 
 ### Phase C — Optimizer
 
@@ -100,7 +100,7 @@ interactive screen/tolerance explorer follow.
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
 | F1 | **Instance viewer + node coordinates.** Retain node `(x, y)` on `Instance` (obligatory field, populated by `makeRandomInstance` for both laydowns; `validateInstance` checks it only when present, so abstract hand-built instances still pass). Qt6 `network_viewer` (`network/gui/`): draws a generated instance as a map — nodes coloured by class (supply-only / both / demand-only / **transit**), sized by tonnage, with a legend. Mouse **pan (drag) + wheel zoom**, a **Recenter** button restoring the fitted view, and a 0..N-1 **"closest links"** spinner drawing orange links from each node to its k cheapest neighbours by `(c_ij + c_ji)/2`. Seed 0 = reroll (fresh time-based seed written back to the field). Instances only (no greedy/solver overlay yet). Optional target behind `VINCPNET_BUILD_GUI`, self-disabling if Qt6 is absent so the solver/test build never depends on Qt. | M | B1 | done (2026-07-05) |
-| F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. | M | F1, B2, C4 | todo |
+| F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. Greedy overlay + mode radio done (2026-07-05); optimal (`solveFlowPlan`) overlay pending. | M | F1, B2, C4 | in progress |
 | F3 | **Interactive screen / tolerance explorer (optional).** Vary the k-cheapest / gap screen, tie-break epsilon, and tolerances at runtime and watch kept pairs, certificate rounds, and iterations — a visual companion to the E1 config controls and the C5/E4 performance study. | S | F1, E1 | todo |
 
 ### Phase D — Technical report (LaTeX, 20-50 pp)
@@ -406,5 +406,71 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   QSpinBox int; precision irrelevant) and writes it back so the user can copy
   the actual seed used. RNG draw order still UNCHANGED, so same-seed instances
   remain byte-identical.
+- 2026-07-05: F2 started (greedy overlay). A mutually exclusive "Show" radio
+  ("Random Placement" default / "Greedy Plan") drives the map: greedy mode runs
+  `greedyPlan(current_)` and overlays its directed flows f_ij as teal arrows
+  (width ~ flow, arrowheads back off node radii; diagonal self-supply not
+  drawn); placement mode hides them. The radio persists so it is visible which
+  mode produced the current view; the status line shows greedy ton-miles +
+  shortfall. `FlowPlanView` gained `setPlan`/`clearPlan` + a `Plan` overlay;
+  MainWindow keeps the current instance so a mode switch recomputes without
+  regenerating. Only the greedy radio's toggle is connected (fires
+  applyPlanMode once per switch). No CMake change -- `network_viewer` already
+  links `vincpnet` (greedyPlan/tonMiles/shortfallObjective). Optimal-plan
+  (`solveFlowPlan`) overlay still pending to close F2.
+- 2026-07-05: F2 "Show" radio simplified (user request). Options are now
+  **"Closest" / "Greedy Plan"** (the "Random Placement" option was dropped -- the
+  Laydown menu already selects placement, and "Closest" with count 0 is a plain
+  node map). The closest-links count spinner moved out of the Display group to
+  sit indented directly under the "Closest" radio; it is enabled only in Closest
+  mode. The two overlays are mutually exclusive (greedy mode forces links off).
+- 2026-07-05: Viewer additions (user batch). "Show" box renamed **"Show Links"**
+  and gains a **"None"** radio (now the default) that draws no overlay; the three
+  options (None / Closest / Greedy Plan) sit in a QButtonGroup (single signal per
+  selection). New **cost histogram** widget (`gui/costhistogram.{hpp,cpp}`): bins
+  ALL N^2 costs c_ij into K equal-width buckets [0, w), [w, 2w), ... over
+  [0, maxCost] (the max value clamped into the closed last bin), with its own
+  "bins" spinner K in [1, 25] recomputing live. Added to the viewer CMake source
+  list; the histogram refreshes on each regenerate.
+- 2026-07-05: Viewer node identity + inspection (user batch). (a) `Instance`
+  gains `labels` (one per node: class letter + zero-padded 3-digit per-class
+  counter -- "S###" supply-only, "M###" both, "D###" demand-only, "T###"
+  transit), generated in `makeRandomInstance`, validated when present, with a
+  shared `nodeLabel(inst, i)` accessor (synthetic "#i" fallback). Test
+  `NodeLabelsByClass`. (b) A "Labels" checkbox (default OFF) draws each label
+  centred on its dot. (c) Two side-by-side node rankings (right panel), greyed
+  out unless a plan is shown: "By tonnage" (throughput = sum of flows to/from a
+  node, diagonal self-supply excluded) and "By count" (number of nonzero flows
+  to/from), from one shared `computeNodeFlowStats` + `fillNodeList`. (d) Nodes
+  are clickable: press-and-hold shows a popup (name, C, D) that hides on release;
+  a `NodeListWidget` (both lists) mirrors this so a list press drives the SAME
+  map popup via `FlowPlanView::showNodeInfo`/`hideNodeInfo`. Shared helpers:
+  `nodeRadius`/`nodeAt` (paint + hit-test), one `drawPopup`. New files
+  `gui/nodelistwidget.{hpp,cpp}` (in the viewer CMake list). Window widened to
+  1280x720 for the third panel.
+- 2026-07-05: `shortfallVsTarget(inst, target, resupply)` added to plan.{hpp,cpp}
+  (shortfallOfResupply refactored onto it); the greedy status split into
+  supply/demand, delivered/unmet (TONS), and objective-vs-rationed /
+  objective-vs-original (the objective theta is dimensionless, ~single digits --
+  NOT the ~D-C ton gap). Test `ShortfallVsTargetSeparatesRationedFromOriginal`.
+- 2026-07-05: B3 un-descoped and built (user request) as the transportation
+  2-exchange in THREE depths. Library `network/swap.{hpp,cpp}` (in vincpnet):
+  `SwapMove`/`SwapSummary`; `bestSwapAtNode` (v1), `bestSwap` (v2),
+  `swapToLocalOptimum` (v3), `applySwap`; over positive OFF-diagonal arc pairs,
+  ranked by TOTAL ton-mile saving `x*((c_ij+c_mn)-(c_in+c_mj))`, `x =
+  min(f_ij,f_mn)`; supplied/resupply invariant (only routing/cost change). Test
+  `swap_test` (crossed 2x2: one swap saves 90 t-mi, resupply invariant,
+  incidence filter, loop-to-optimum). GUI: RIGHT-click a node = its best local
+  swap (left-click still = info popup; context menu suppressed); buttons "Best
+  swap" / "Swap to optimum" / "Reset plan" (enabled only in Greedy mode); result
+  popup (saved t-mi, tons, -/+ edges by label) + magenta arc highlight. Working
+  plan is a mutable copy persisting across mode switches until Regenerate/Reset;
+  status gains "(+N swaps, saved ... t-mi)" and the lists re-rank per swap.
+- 2026-07-05: Added the INTERMEDIATE swap depth `swapNodeToLocalOptimum(inst,
+  plan, node)` (iterate bestSwapAtNode at one node until it has no improving
+  move) between v1 (single) and v3 (global iterate). GUI: shift+right-click a
+  node drives it to its swap optimum (plain right-click still = one swap). Test
+  `NodeToLocalOptimumIterates` (a node with two independent crossed pairs takes
+  exactly 2 swaps, saving 180, resupply invariant).
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

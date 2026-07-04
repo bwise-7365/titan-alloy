@@ -12,6 +12,7 @@ add_library(vincpnet STATIC
         lib/oracle.cpp
         lib/flowplan.cpp
         lib/config.cpp
+        lib/swap.cpp
 )
 target_include_directories(vincpnet
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -46,6 +47,7 @@ vincpnet_add_gtest(oracle_test)
 vincpnet_add_gtest(flowplan_test)
 vincpnet_add_gtest(scale_test)
 vincpnet_add_gtest(config_test)
+vincpnet_add_gtest(swap_test)
 
 # Scale/performance sweep (task C5): a plain executable, NOT a ctest -- run
 # it manually in a Release configuration for meaningful timings.
