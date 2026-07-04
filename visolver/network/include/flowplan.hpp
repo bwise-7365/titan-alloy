@@ -10,11 +10,26 @@
 
 #include "flowlcp.hpp"
 
+#include <string>
+
+using std::string;
+
 namespace VINCP::Network {
 
   struct FlowPlanParams {
-    double magTol = 1.0e-12;   // squared-residual tolerance for bsHe94b, in
-                               // the NONDIMENSIONALIZED system's units
+    // Which inner engine solves the affine complementarity system (both in
+    // the NONDIMENSIONALIZED units):
+    //   "bshe94b"  He's factor-once projection-contraction (the default)
+    //   "chain"    chainedSolodovHe: Solodov-Svaiter to (roughMagTol,
+    //              roughIterMax), then bsHe94b warm-started from its iterate
+    //              (task E3a; built for cold-start-hostile cases like the
+    //              200-node banded instances)
+    string engine = "bshe94b";
+    double roughMagTol = 1.0e-4;   // chain phase-1 squared-residual target
+    int roughIterMax = 20000;      // chain phase-1 iteration cap
+
+    double magTol = 1.0e-12;   // squared-residual tolerance for the tight
+                               // solve, in the NONDIMENSIONALIZED units
     int iterMax = 500000;
     int iterFreq = 0;          // <= 0: no iteration logging
 

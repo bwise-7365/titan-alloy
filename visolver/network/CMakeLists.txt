@@ -52,6 +52,14 @@ vincpnet_add_gtest(config_test)
 add_executable(network_benchmark src/benchmark.cpp)
 target_link_libraries(network_benchmark PRIVATE vincpnet)
 
+# Optional Qt6 instance viewer. ON by default but self-disabling when Qt6 is
+# absent (gui/CMakeLists.txt returns early), so the core solver/test build never
+# requires Qt. Turn it off explicitly with -DVINCPNET_BUILD_GUI=OFF.
+option(VINCPNET_BUILD_GUI "Build the Qt6 flow-plan instance viewer" ON)
+if (VINCPNET_BUILD_GUI)
+    add_subdirectory(gui)
+endif()
+
 # CLion-friendly aggregates. "network_tests" just BUILDS every network test
 # executable. "run_network_tests" builds them and then RUNS ctest restricted
 # to the network suites -- every network TEST() suite name starts with

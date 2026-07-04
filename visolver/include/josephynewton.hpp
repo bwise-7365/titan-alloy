@@ -23,6 +23,8 @@
 #include "vincp.hpp"
 #include "dhan06.hpp"
 #include "bshe94b.hpp"
+#include "solodovsvaiter.hpp"
+#include "chainedsolver.hpp"
 #include "fdjacobian.hpp"
 #include "armijo.hpp"
 
@@ -53,6 +55,16 @@ namespace VINCP {
   InnerSolver makeBsHe94bSolver(double magTol, int iterMax, int iterFreq,
                                 const BsHe94bParams& params = BsHe94bParams{},
                                 const IterationLogger& logger = IterationLogger{});
+  InnerSolver makeSolodovSvaiterSolver(double magTol, int iterMax, int iterFreq,
+                                       const SolodovSvaiterParams& params =
+                                           SolodovSvaiterParams{},
+                                       const IterationLogger& logger =
+                                           IterationLogger{});
+  InnerSolver makeChainedSolver(double magTol, int iterMax, int iterFreq,
+                                const ChainedSolverParams& params =
+                                    ChainedSolverParams{},
+                                const IterationLogger& logger =
+                                    IterationLogger{});
 
   // Tunable controls for the outer loop.  Defaults are reasonable starting points,
   // not verified against a particular model; expect to tune per problem. (The

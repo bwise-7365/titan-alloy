@@ -126,7 +126,7 @@ TEST(NetworkReduction, MatchesBruteForceOnSmallRandom) {
     small.numSupplyOnly = 1;
     small.numBoth = 2;
     small.numDemandOnly = 3;
-    small.numNeither = 1;      // corner case: an inert transshipment node
+    small.numNeither = 1;      // corner case: a transit transshipment node
     const Instance inst = makeRandomInstance(small, kSeed);
     const ShortestRoutes routes = computeShortestRoutes(inst);
 

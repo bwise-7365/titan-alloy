@@ -1,0 +1,336 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
+=====================================================================
+FLOW-PLANNING PROBLEM SPECIFICATION -- v02 (corrected)
+=====================================================================
+
+This is the corrected, literally-usable specification of the flow-
+planning problem. It supersedes flow-planning-problem.txt (v01), which
+carried a warning that several statements in it were wrong. All the
+errors detected during formalization (task A1) have been folded in
+here, so this document CAN be taken literally.
+
+The authoritative math (proofs, edge cases, greedy-planner audit) is in
+doc/formulation.md and doc/reduction.md; this file is the plain-language
+spec those documents formalize.
+
+---------------------------------------------------------------------
+CHANGES FROM v01 (why v02 exists)
+---------------------------------------------------------------------
+
+C1. DELIVERY CONSTRAINT ADDED (finding F1). The flow-balance equation
+    as written in v01 lets a node with both supply and demand meet its
+    own demand for free (set S_j = R_j with no flow at all -- balance
+    holds, no ton-miles spent, c_jj never binds). That contradicts the
+    stated intent that self-supply is cheap but NOT free. The official
+    model adds one inequality per node,
+
+        R_j <= sum_i f_ij            (delivery)
+
+    forcing resupply to ARRIVE on arcs. Self-supply is then routed
+    through the self-arc f_jj at cost c_jj, exactly as the greedy
+    planner already does. (Equivalently S_j <= sum_k f_jk; given
+    balance, either implies the other.)
+
+C2. OBJECTIVE DOMAIN FIXED (finding, no-demand nodes). The summand
+    ((D_i - R_i)/D_i)^2 is undefined at D_i = 0 (0/0). The objective
+    sums over demand nodes only, and R_i = 0 is fixed wherever D_i = 0
+    (delivering to a no-demand node never helps).
+
+C3. GREEDY IS AN UPPER BOUND ONLY AT L = L_greedy (finding G6). v01
+    said "an optimal plan should never be worse than the greedy plan...
+    an easy way to check the result." That is true only when the budget
+    equals the greedy plan's own ton-mile usage. At the working budget
+    L = 0.8 * L_greedy the greedy plan is INFEASIBLE (it spends 100% of
+    its ton-miles), so its objective is a LOWER bound there, not an
+    upper bound. Use the validation sandwich in "Checking the result"
+    below.
+
+C4. NO OVERSHOOT stated (finding L3). Although the quadratic penalizes
+    R_i > D_i symmetrically, every optimum has R_i <= D_i: shipping past
+    demand only wastes budget. Useful as a sanity check on solver
+    output.
+
+C5. GREEDY PLANNER clarifications (findings G1, G2). The rationing
+    condition is cleaner as "sum D_i <= sum C_i"; and the rationing
+    solve must EXCLUDE any node whose formula gives R_i < 0 and re-solve
+    lambda over the rest (water-filling), possibly several rounds. Both
+    are spelled out in the Greedy Planner section.
+
+C6. TIE-BREAK for a determinate f. The optimal resupply R* is unique
+    but the flows f that deliver it need not be. A tiny linear ton-mile
+    term eps * sum c_ij f_ij (eps = 1e-8 * sum_i P_i / L) is added to
+    select the minimum-ton-mile plan among optima; its cost to the true
+    objective is bounded by eps * L (Proposition R4).
+
+Everything else below is the v01 content, cleaned of the duplicate
+introduction and the "do not take literally" disclaimer.
+
+=====================================================================
+THE PROBLEM
+=====================================================================
+
+The basic goal is to plan the continuous flow of "stuff" through a
+network so as to minimize a quadratic objective.
+
+To the extent practical, use the interfaces defined in the visolver
+library on this machine at C:\repos\ghub-per\titan-alloy\visolver. If
+the current interfaces are severely deficient for this problem,
+(succinctly) explain the problem, along with one or two proposed fixes.
+
+Deliverables (unchanged from v01): a technical report in LaTeX, in three
+parts -- a management overview, a developers' manual, and a mathematical
+appendix for operations-research professionals that fully formalizes the
+problem, specifies the algorithm, and proves it correct (aim 20-50
+pages). A PERT chart of ~12-25 tasks in PlantUML gives pre-defined review
+pauses so billing stays predictable.
+
+---------------------------------------------------------------------
+NODE DATA
+---------------------------------------------------------------------
+
+We have M nodes, typically in the 20-200 range. For each node i:
+
+  C_i  capacity to supply stuff. All C_i >= 0. When positive, typically
+       1000-5000 tons.
+  D_i  demand for stuff. All D_i >= 0. When positive, typically
+       1000-5000 tons.
+  P_i  priority of meeting demand at i. All P_i > 0, defined where
+       D_i > 0. Typically 1-10.
+
+  c_ij per-unit cost of moving stuff from node i to node j, basically
+       distance in miles. All c_ij > 0, for every ordered pair including
+       i = j.
+       - Self-supply (i = j) is possible: cheap but NOT free. c_ii is
+         small, say 1-5, but never zero.
+       - Off-diagonal typical values are 100-2000 miles.
+       - Costs are asymmetric: c_ij and c_ji differ by roughly 1%-10%,
+         because cost depends somewhat on direction of travel. They are
+         correlated but not identical.
+
+Derived sets: sources V_C = { i : C_i > 0 }, sinks V_D = { i : D_i > 0 }.
+
+---------------------------------------------------------------------
+DECISION VARIABLES
+---------------------------------------------------------------------
+
+  S_i    amount node i supplies into the network.  0 <= S_i <= C_i.
+  R_i    resupply node i receives from the network.  R_i >= 0, and
+         R_i = 0 wherever D_i = 0.
+  f_ij   amount shipped directly from node i to node j.  f_ij >= 0
+         (diagonal f_ii allowed: self-supply).
+
+There are 2M + M^2 decision variables (5040 at M = 70). The reduction
+(see "Cutting the problem down") collapses this to |V_C| * |V_D|.
+
+---------------------------------------------------------------------
+CONSTRAINTS
+---------------------------------------------------------------------
+
+At every node j, flow balance:
+
+  sum_i f_ij + S_j = R_j + sum_k f_jk                        (balance)
+
+Delivery (the C1 correction -- resupply must arrive on arcs):
+
+  R_j <= sum_i f_ij                     for all j            (delivery)
+
+Global ton-mile budget:
+
+  sum_ij c_ij f_ij <= L                                      (budget)
+
+Bounds:
+
+  0 <= S_i <= C_i,   R_i >= 0 (= 0 if D_i = 0),   f_ij >= 0.
+
+---------------------------------------------------------------------
+OBJECTIVE
+---------------------------------------------------------------------
+
+Minimize the weighted quadratic fractional shortfall, summed over
+demand nodes only:
+
+  minimize   sum_{i in V_D}  P_i * ((D_i - R_i)/D_i)^2
+
+Optionally add the tie-break term (C6) to pick a determinate f:
+
+  + eps * sum_ij c_ij f_ij ,     eps = 1e-8 * (sum_i P_i) / L.
+
+Properties: strictly convex in R (diagonal Hessian 2 P_i / D_i^2 > 0),
+linearly constrained -> a convex QP. The optimal R* is unique; the
+optimal (S*, f*) need not be. Every optimum satisfies R_i <= D_i (C4).
+
+---------------------------------------------------------------------
+THE BUDGET L AND GREEDY CALIBRATION
+---------------------------------------------------------------------
+
+When we build example problems we set L to approximately 80% of the
+ton-miles used by a notional plan produced by the greedy heuristic
+below. The main purpose of the notional plan is to give a reasonable
+value of L.
+
+Save the greedy plan: it is a useful check on the optimizer, BUT read
+the direction correctly (C3 / finding G6). The greedy plan delivers the
+full rationed targets while spending 100% of its ton-miles. Therefore:
+
+  - At L = L_greedy, the greedy plan is feasible and the optimizer must
+    do no worse:  theta*(L_greedy) <= theta_greedy.
+  - At the working L = 0.8 * L_greedy, the greedy plan is INFEASIBLE, so
+    theta_greedy is a LOWER bound, not a target the optimizer beats.
+
+CHECKING THE RESULT (the validation sandwich; see formulation.md sec 7):
+Let theta_ration be the optimum of the Phase-1 rationing subproblem
+(budget-unconstrained lower bound) and theta*(L) the true optimum at
+budget L. Then for every solver run:
+
+  (1) theta*(L) >= theta_ration                 for every L
+  (2) theta*(L) is nonincreasing in L
+  (3) theta*(L_greedy) <= theta_greedy          (greedy feasible there)
+  (4) theta*(0.8 L_greedy) >= theta_greedy       up to the 0.9999 greedy
+                                                 scaling slack
+  (5) KKT residual of the returned solution below tolerance
+      (squared-norm convention, per visolver).
+
+---------------------------------------------------------------------
+A TYPICAL EXAMPLE (70 nodes)
+---------------------------------------------------------------------
+
+  20 nodes with C_i > 0 and D_i = 0    (supply only)
+  20 nodes with C_i > 0 and D_i > 0    (both)
+  30 nodes with C_i = 0 and D_i > 0    (demand only)
+
+So V_C = 40 sources, V_D = 50 sinks.
+
+A second, geometric way of generating costs (rectangular "laydown")
+lives in alternate-laydown.txt: nodes placed in overlapping bands A/B/C
+in a plane, c_ij ~ euclidean distance +/- 5% (independent per
+direction), c_ii ~ U[1,5], and a per-ordered-pair off-diagonal floor
+c_ij >= U[5,10] so band-overlap neighbors cannot undercut real handling
+cost. NOTE: in alternate-laydown.txt group C means DEMAND-ONLY
+(C_i = 0, D_i > 0); an earlier "C_i = 0 and D_i = 0" reading was a typo.
+A separate transit class (C_i = D_i = 0, pure pass-through nodes) exists
+only for corner-case testing.
+
+---------------------------------------------------------------------
+CUTTING THE PROBLEM DOWN
+---------------------------------------------------------------------
+
+A full 70-node instance has 5040 decision variables; the associated
+Jacobians would have over 25.4 million entries. That is infeasible on
+the target infrastructure, and the greedy planner -- though extremely
+fast -- gives plans whose quality users dislike.
+
+We therefore preprocess. Because supply must leave and resupply must
+arrive via arcs (delivery), an optimal plan may be assumed to route
+along shortest paths (Orden 1956; Lemma R1 in doc/reduction.md). This
+collapses the M^2 + 2M variables to |V_C| * |V_D| source-to-sink
+shipments t_mn at all-pairs shortest distances d-hat_mn (Floyd-Warshall,
+with a diagonal correction for self-supply). Arcs with c_ij > d0_ij are
+provably unused (Proposition R2); a certified per-sink k-cheapest screen
+prunes source-sink pairs further with an a-posteriori KKT certificate
+(Proposition R3). 70-node example: ~2000 variables instead of 5040.
+
+Then we solve the KKT system of the reduced convex QP as a monotone
+affine mixed complementarity problem and hand it to the visolver
+projection-contraction solver (bsHe94b), packed into the standard form
+
+        H(x,y) = 0
+   0 <= G(x,y)  _|_  y >= 0
+
+with a matrix generator that assembles (M, q) plus the mixed projector,
+and an unpacker that expands the optimal z back into (S, R, f) by walking
+the shortest-path predecessor matrix.
+
+All work products go in
+C:\repos\ghub-per\titan-alloy\visolver\network.
+
+=====================================================================
+THE GREEDY PLANNER
+=====================================================================
+
+(Originally implemented in Java, so the algorithm is known to work. It
+was audited during formalization; the notes below fold in findings G1
+and G2. Full audit in doc/formulation.md sec 6.)
+
+Two phases: Phase 1 estimates meetable resupply levels; Phase 2 builds
+flows greedily.
+
+---------------------------------------------------------------------
+Phase 1: Target resupply levels
+---------------------------------------------------------------------
+
+Total meetable demand:  MR = min( sum_i D_i , sum_i C_i ).
+
+If sum D_i <= sum C_i (equivalently MR = sum D_i), all demand is
+meetable and the only question is efficiency; set target R_i = D_i.
+(Boundary sum D_i = sum C_i also lands here -- cleaner than v01's strict
+"MR < sum C_i".)
+
+Otherwise we must ration. Solve the auxiliary problem
+
+  choose R_i >= 0 to minimize sum_i P_i * ((D_i - R_i)/D_i)^2
+  subject to  sum_i R_i <= MR.
+
+The interior KKT solution is
+
+  R_i = D_i - lambda * (D_i^2 / P_i)      for the positive R_i,
+
+where lambda is chosen so the R_i sum to MR. Equivalently the total
+shortfall sum_i D_i - MR is apportioned by weights w_i = D_i^2 / P_i:
+node i takes share w_i / sum_k w_k.
+
+CLAMP (finding G2, load-bearing): the interior formula can drive some
+R_i negative. Those nodes are clamped to R_i = 0, EXCLUDED, and lambda
+is re-solved over the remaining nodes -- iterate until all R_i >= 0
+(standard water-filling; rarely more than one round in practice, but it
+must be a loop). Set each node's remaining meetable demand to its
+rationed R_i.
+
+---------------------------------------------------------------------
+Phase 2: Decide flows
+---------------------------------------------------------------------
+
+Remaining capacity RC_i = C_i. Remaining demand RD_i = the Phase-1
+targets.
+
+Scale down all RD by 0.01% (RD <- 0.9999 * RD) to avoid round-off
+trouble: this guarantees sum RD < sum RC, so step (2) below always finds
+a source with spare capacity.
+
+Iterate until all RD are zero:
+
+  (1) Find n maximizing RD_n. If RD_n = 0, the plan is finished.
+  (2) Find m minimizing c_mn among nodes with RC_m > 0.
+  (3) q = min( RD_n , RC_m ).
+  (4) Record the flow:
+        RD_n  <- RD_n - q
+        RC_m  <- RC_m - q
+        f_mn  <- f_mn + q
+      Return to step (1).
+
+Each iteration zeroes an RD_n or an RC_m exactly, so the loop runs at
+most |V_D| + |V_C| times. Note Phase 2 ignores P_i (harmless: all
+rationed demand is fully served), so greedy ton-miles -- and hence L --
+do not themselves reflect priorities.
+
+---------------------------------------------------------------------
+Swap post-processing (OPTIONAL; descoped for the baseline)
+---------------------------------------------------------------------
+
+The greedy planner tends to concentrate flows on a few "busy" nodes,
+which is unrealistic. Load can be reduced by swapping flows: find nodes
+i, j, m, n where moving x amount from f_ij to f_in and the same x from
+f_mn to f_mj reduces overall cost. To keep flows nonnegative,
+x = min(f_ij, f_mn). Per-unit saving of the swap is
+(c_ij + c_mn) - (c_in + c_mj); it preserves every node's balance (the
+classic transportation 2-exchange).
+
+A brute-force scan is O(N^4); scanning only at the busiest node is
+O(N^3) per iteration (~70x speedup at N = 70). In practice swapping saves
+only a few percent (at high time cost), but users like the reduced
+busy-ness. This step is COSMETIC for the baseline and is not needed for L
+calibration; it is descoped for now (may revisit).
+
+=====================================================================
+
+Copyright Ben Paul Wise. All Rights Reserved.

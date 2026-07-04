@@ -22,7 +22,7 @@ namespace {
 // its 2k x 2k dense factorization belongs; task C5.)
 TEST(NetworkScale, SeventyNodeScreenedCertified) {
     InstanceProfile profile;               // the spec's 70-node example
-    profile.numNeither = 2;                // plus a couple of inert nodes
+    profile.numNeither = 2;                // plus a couple of transit nodes
     Instance inst = makeRandomInstance(profile, kSeed);
     const GreedyResult greedy = greedyPlan(inst);
     inst.tonMileLimit = greedy.suggestedLimit;

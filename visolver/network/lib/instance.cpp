@@ -40,6 +40,16 @@ namespace VINCP::Network {
             "cost must be numNodes x numNodes.");
     require(0.0 <= inst.tonMileLimit, "tonMileLimit must be non-negative.");
 
+    // Coordinates are optional (abstract instances omit them), but if either is
+    // supplied both must be present and sized numNodes with finite entries.
+    const bool hasCoordsP = 0 != inst.xCoord.size() || 0 != inst.yCoord.size();
+    if (hasCoordsP) {
+      require(inst.xCoord.size() == m && inst.yCoord.size() == m,
+              "xCoord/yCoord, when present, must both have size numNodes.");
+      require(inst.xCoord.allFinite() && inst.yCoord.allFinite(),
+              "coordinate entries must be finite.");
+    }
+
     for (Index i = 0; i < m; ++i) {
       require(std::isfinite(inst.supplyCap(i)) && 0.0 <= inst.supplyCap(i),
               "supplyCap entries must be finite and non-negative.");
@@ -178,7 +188,7 @@ namespace VINCP::Network {
       std::uniform_real_distribution<double> spanDist(0.0, fullSpan);
       for (Index i = 0; i < m; ++i) {
         if (numClassed <= i) {
-          xs(i) = spanDist(rng);                  // inert: anywhere in the span
+          xs(i) = spanDist(rng);                  // transit: anywhere in the span
         }
         else {
           Index group = 0;                        // A: supply-only
@@ -203,7 +213,7 @@ namespace VINCP::Network {
     inst.cost = MatrixXd::Zero(m, m);
 
     // Node classes are contiguous blocks:
-    // [supply-only | both | demand-only | neither].
+    // [supply-only | both | demand-only | transit].
     for (Index i = 0; i < m; ++i) {
       const bool suppliesP = i < profile.numSupplyOnly + profile.numBoth;
       const bool demandsP = profile.numSupplyOnly <= i && i < numClassed;
@@ -238,6 +248,11 @@ namespace VINCP::Network {
         }
       }
     }
+
+    // Retain the placement so the viewer can draw the true geometry (both
+    // laydowns are geometric; type 0 keeps its uniform-square coordinates).
+    inst.xCoord = xs;
+    inst.yCoord = ys;
 
     validateInstance(inst);
     return inst;

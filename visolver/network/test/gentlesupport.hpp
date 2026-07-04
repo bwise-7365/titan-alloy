@@ -13,7 +13,7 @@
 
 namespace VINCP::Network::TestSupport {
 
-  // 5 nodes (2 supply-only, 1 both, 1 demand-only, 1 inert), single-digit
+  // 5 nodes (2 supply-only, 1 both, 1 demand-only, 1 transit), single-digit
   // tonnages, two-digit costs; budget calibrated by the greedy planner.
   inline Instance
   makeGentleInstance(std::uint64_t seed)

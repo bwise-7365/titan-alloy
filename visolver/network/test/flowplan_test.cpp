@@ -151,6 +151,29 @@ TEST(NetworkFlowPlan, RespectsGreedyBaselineBounds) {
     EXPECT_GE(scarce.shortfall, working.shortfall - kBoundSlack);
 }
 
+// The runtime engine switch (E4): the chained SS -> He engine must reach the
+// same certified optimum as the default engine; unknown engines are refused.
+TEST(NetworkFlowPlan, EngineSelectable) {
+    Instance inst = makeMidInstance();
+    inst.tonMileLimit = greedyPlan(inst).suggestedLimit;
+
+    const FlowPlanResult he = solveFlowPlan(inst);
+    ASSERT_TRUE(he.certifiedP);
+
+    FlowPlanParams chainParams;
+    chainParams.engine = "chain";
+    const FlowPlanResult chained = solveFlowPlan(inst, chainParams);
+    ASSERT_TRUE(chained.vi.converged);
+    ASSERT_TRUE(chained.certifiedP);
+    EXPECT_NEAR(chained.shortfall, he.shortfall,
+                kShortfallTol * (1.0 + he.shortfall));
+    EXPECT_LE(maxViolation(checkPlan(inst, chained.plan)), feasTol(inst));
+
+    FlowPlanParams unknown;
+    unknown.engine = "simplex";
+    EXPECT_THROW(solveFlowPlan(inst, unknown), std::invalid_argument);
+}
+
 // Bad inputs are refused up front.
 TEST(NetworkFlowPlan, RejectsBadInputs) {
     const Instance uncalibrated = makeMidInstance();   // tonMileLimit == 0

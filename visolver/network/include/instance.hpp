@@ -33,6 +33,14 @@ namespace VINCP::Network {
     MatrixXd cost;           // c_ij > 0                (numNodes x numNodes)
     double tonMileLimit = 0.0;   // L; 0.0 means "not yet calibrated" (task B2
                                  // sets it to ~80% of the greedy plan's usage)
+    // Node positions in the generating plane (miles). Every GENERATED instance
+    // carries them (both laydowns place nodes geometrically): the viewer draws
+    // the true layout instead of reconstructing it from the cost matrix. They
+    // are display/geometry metadata, not solver input -- abstract hand-built
+    // instances may leave them empty, and validateInstance only checks them
+    // when present (size numNodes). Populated by makeRandomInstance.
+    VectorXd xCoord;         // x_i (size numNodes, or 0 if not placed)
+    VectorXd yCoord;         // y_i (size numNodes, or 0 if not placed)
   };
 
   // Throws std::invalid_argument on any structural defect: mismatched sizes,
@@ -70,9 +78,9 @@ namespace VINCP::Network {
     Index numSupplyOnly = 20;    // C_i > 0, D_i = 0
     Index numBoth       = 20;    // C_i > 0, D_i > 0
     Index numDemandOnly = 30;    // C_i = 0, D_i > 0
-    Index numNeither    = 0;     // C_i = 0, D_i = 0: inert transshipment nodes,
-                                 // for corner-case testing (real data will be
-                                 // checked upstream and rarely contains them)
+    Index numNeither    = 0;     // C_i = 0, D_i = 0: transit (pass-through)
+                                 // nodes, for corner-case testing (real data
+                                 // is checked upstream and rarely contains them)
 
     double supplyLo = 1000.0, supplyHi = 5000.0;   // C_i range (tons)
     double demandLo = 1000.0, demandHi = 5000.0;   // D_i range (tons)
@@ -98,16 +106,17 @@ namespace VINCP::Network {
     // Both laydowns share the node-class counts and the c_ii self-cost band.
     int laydownType = 0;
 
-    // Type-1 geometry, defaults per alternate-laydown.txt: bands 240 wide
-    // stepped 160 apart (A [0,240], B [160,400], C [320,560]), y in
-    // [100, 200], +/-5% directional jitter. Inert (numNeither) nodes draw x
-    // over the full span. Because bare distances in the overlap regions can
-    // undercut even the self-cost band, each ordered pair also draws a cost
+    // Type-1 geometry: bands 240 wide stepped 160 apart (A [0,240], B [160,400],
+    // C [320,560]), +/-5% directional jitter, per alternate-laydown.txt. The
+    // y-band is [100, 250] -- widened 50% above the alternate-laydown.txt
+    // [100, 200] baseline for a taller banded region. Transit (numNeither) nodes
+    // draw x over the full span. Because bare distances in the overlap regions
+    // can undercut even the self-cost band, each ordered pair also draws a cost
     // FLOOR ~ U[bandMinCostLo, bandMinCostHi] and the arc costs
     // max(distance * jitter, floor).
     double bandXWidth = 240.0;
     double bandXStep = 160.0;
-    double bandYLo = 100.0, bandYHi = 200.0;
+    double bandYLo = 100.0, bandYHi = 250.0;
     double jitterHalfWidth = 0.05;
     double bandMinCostLo = 5.0, bandMinCostHi = 10.0;
   };

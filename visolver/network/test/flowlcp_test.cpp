@@ -167,7 +167,7 @@ TEST(NetworkFlowLcp, UnpackerFollowsMultiHopRoute) {
     EXPECT_DOUBLE_EQ(tonMiles(inst, plan), kTons * lcp.pairCost(0));
 }
 
-// On a random type-1 instance with inert nodes: one ton to every sink from
+// On a random type-1 instance with transit nodes: one ton to every sink from
 // its cheapest source unpacks to a feasible plan whose resupply and ton-miles
 // match the reduced solution exactly.
 TEST(NetworkFlowLcp, UnpackerFeasibleOnRandomInstance) {

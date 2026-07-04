@@ -61,6 +61,32 @@ namespace VINCP {
     };
   }
 
+  InnerSolver
+  makeSolodovSvaiterSolver(double magTol, int iterMax, int iterFreq,
+                           const SolodovSvaiterParams& params,
+                           const IterationLogger& logger)
+  {
+    return [magTol, iterMax, iterFreq, params, logger](
+               const VectorXd& x0, const MatrixXd& M,
+               const VectorXd& q, const Projector& Pr) -> VIResult {
+      return solodovSvaiter(x0, M, q, Pr, magTol, iterMax, iterFreq, params,
+                            logger);
+    };
+  }
+
+  InnerSolver
+  makeChainedSolver(double magTol, int iterMax, int iterFreq,
+                    const ChainedSolverParams& params,
+                    const IterationLogger& logger)
+  {
+    return [magTol, iterMax, iterFreq, params, logger](
+               const VectorXd& x0, const MatrixXd& M,
+               const VectorXd& q, const Projector& Pr) -> VIResult {
+      return chainedSolodovHe(x0, M, q, Pr, magTol, iterMax, iterFreq, params,
+                              logger);
+    };
+  }
+
   VIResult
   solveVI(const VIModel& model,
           const VectorXd& z0,

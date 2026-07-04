@@ -7,6 +7,7 @@
 #include "flowplan.hpp"
 
 #include "bshe94b.hpp"
+#include "chainedsolver.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -21,6 +22,15 @@ namespace VINCP::Network {
       if (!(0.0 < params.magTol) || 0 >= params.iterMax) {
         throw std::invalid_argument(
             "solveFlowPlan: magTol must be positive and iterMax > 0.");
+      }
+      if ("bshe94b" != params.engine && "chain" != params.engine) {
+        throw std::invalid_argument(
+            "solveFlowPlan: engine must be 'bshe94b' or 'chain', not '"
+            + params.engine + "'.");
+      }
+      if (!(0.0 < params.roughMagTol) || 0 >= params.roughIterMax) {
+        throw std::invalid_argument(
+            "solveFlowPlan: chain rough params must be positive.");
       }
       if (0 > params.maxSourcesPerSink || 0.0 > params.gapFraction
           || 0 > params.maxCertificateRounds
@@ -129,8 +139,18 @@ namespace VINCP::Network {
       lcp = buildFlowLcp(scaled, reduced, epsilon);
       const VectorXd z0 =
           VectorXd::Zero(lcp.numPairs + lcp.numSources + 1);
-      result.vi = bsHe94b(z0, lcp.M, lcp.q, projectNonnegative,
-                          params.magTol, params.iterMax, params.iterFreq);
+      if ("chain" == params.engine) {
+        ChainedSolverParams chainParams;
+        chainParams.roughMagTol = params.roughMagTol;
+        chainParams.roughIterMax = params.roughIterMax;
+        result.vi = chainedSolodovHe(z0, lcp.M, lcp.q, projectNonnegative,
+                                     params.magTol, params.iterMax,
+                                     params.iterFreq, chainParams);
+      }
+      else {
+        result.vi = bsHe94b(z0, lcp.M, lcp.q, projectNonnegative,
+                            params.magTol, params.iterMax, params.iterFreq);
+      }
       result.certificateRounds = round;
       if (!result.vi.converged) {
         break;                       // honest return; certifiedP stays false

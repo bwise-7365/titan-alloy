@@ -168,19 +168,19 @@ TEST(NetworkInstance, Type1LaydownBandsAndJitter) {
     }
 }
 
-// Inert nodes (C_i = D_i = 0) join the node set without joining the source or
+// Transit nodes (C_i = D_i = 0) join the node set without joining the source or
 // sink lists, in both laydowns; they only transship.
-TEST(NetworkInstance, InertNodesHandled) {
-    const Index kInert = 3;
+TEST(NetworkInstance, TransitNodesHandled) {
+    const Index kTransit = 3;
     for (int laydown = 0; laydown <= 1; ++laydown) {
         InstanceProfile profile;
         profile.laydownType = laydown;
-        profile.numNeither = kInert;
+        profile.numNeither = kTransit;
         const Instance inst = makeRandomInstance(profile, kSeed);
 
         const Index numClassed = profile.numSupplyOnly + profile.numBoth
                                  + profile.numDemandOnly;
-        EXPECT_EQ(inst.numNodes, numClassed + kInert);
+        EXPECT_EQ(inst.numNodes, numClassed + kTransit);
         EXPECT_EQ(static_cast<Index>(sourceNodes(inst).size()),
                   profile.numSupplyOnly + profile.numBoth);
         EXPECT_EQ(static_cast<Index>(sinkNodes(inst).size()),
