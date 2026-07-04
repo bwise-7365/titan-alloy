@@ -126,29 +126,76 @@ Two solver layers over one shared core; the dependency arrows point one way
 
 ## Copyright headers (required)
 
-Every `.cpp`, `.hpp`, `.h`, `.md`, and `.txt` file must carry the exact line
+Every `.cpp`, `.hpp`, `.h`, `.md`, and `.txt` file carries
+`Copyright Ben Paul Wise. All Rights Reserved.` at both its top and bottom.
 
-    Copyright Ben Paul Wise. All Rights Reserved.
+- `.cpp` / `.hpp` / `.h`: a **ruler-banner block** opens and closes the file. The
+  top banner frames the copyright in ruler lines, then a one-line description of
+  the file's purpose, then a final ruler:
 
-as both its **very first** and **very last** line, wrapped in that file type's
-comment syntax:
-- `.cpp` / `.hpp` / `.h`: `// Copyright Ben Paul Wise. All Rights Reserved.`
-- `.md`: `<!-- Copyright Ben Paul Wise. All Rights Reserved. -->`
-- `.txt`: the bare line `Copyright Ben Paul Wise. All Rights Reserved.`
+      // ----------------------------------------------
+      // Copyright Ben Paul Wise. All Rights Reserved.
+      // ----------------------------------------------
+      // <one-line description of what this file is>
+      // ----------------------------------------------
+
+  The file ends with the bare copyright banner (no description):
+
+      // ----------------------------------------------
+      // Copyright Ben Paul Wise. All Rights Reserved.
+      // ----------------------------------------------
+
+  The ruler is dashes; a few older files use `// =-=-=...` — dashes are the norm.
+- `.md`: `<!-- Copyright Ben Paul Wise. All Rights Reserved. -->` as the very
+  first and very last line.
+- `.txt`: the bare line `Copyright Ben Paul Wise. All Rights Reserved.` first and last.
 
 Exceptions: omit it only where it would interfere with the file's purpose (e.g.
 a file whose first line is significant, or data/input `.txt` files that are
 parsed). **`CLAUDE.md` itself is exempt.** When creating any new source, header,
-markdown, or text file, add both lines.
+markdown, or text file, add the banner.
 
 ## Conventions
 
 - C++20; must build on **both** Windows 11 and Debian Linux — never use anything
   platform-restricted. Keep linear-algebra calls localized so the Eigen choice
   stays reversible.
-- Headers `.hpp`, sources `.cpp`; include guards are `VINCP_<FILE>_HPP`.
-- Braces around every `if`/`else` body, including single statements. American
-  spelling. Split files/functions well before a few hundred lines.
+- Headers `.hpp`, sources `.cpp`; include guards are `VINCP_<FILE>_HPP` (never
+  `#pragma once`). American spelling. Split files/functions well before a few
+  hundred lines.
+
+### Personal C++ style (all of `include/` and `lib/` follow it)
+
+A `.clang-format` at the repo root captures the deterministic slice (indent 2,
+Allman braces for function bodies, return-type break for definitions, namespace
+indent, `else` on its own line); the rest is applied by hand. Run CLion's bundled
+clang-format. The hallmarks:
+
+- **Indent 2 spaces, no tabs; namespace contents are indented** one level.
+- **`using std::…` at file scope** for the common types (`string`, `vector`,
+  `function`, `ostream`, …) so they read bare; keep `std::` on calls / utilities /
+  exceptions (`std::sqrt`, `std::invalid_argument`, …). `Eigen::` is named ONLY in
+  `vincp.hpp`, which pulls the Eigen types into `namespace VINCP`.
+- **Out-of-line function DEFINITIONS**: the return type is on its own line and the
+  opening brace on its own line (Allman). Control flow (`if`/`for`/`while`) and
+  `class`/`struct`/`namespace` keep the brace on the same line (K&R); `else` goes on
+  its own line. Declarations keep the return type inline.
+- **Yoda conditions**: when one operand is a numeric literal (or `nullptr`), put it
+  on the LEFT — `0.0 < x`, `0 == n % 2`, `nullptr == p` — to catch `=`-for-`==`
+  typos on near-obsolete toolchains that do not warn. Two-sided ranges read
+  ascending (`0.0 < x && x < 1.0`); variable-vs-variable comparisons stay natural.
+- **Braces around every `if`/`else` body**, including single statements.
+- **Explicit `return;`** ends every `void` function.
+- **Predicate booleans take a trailing `P`** (`doneP`, `lessP`).
+- **Classes list all three access labels** — `public:`, `protected:`, `private:`,
+  in that order, even when a section is empty; single-argument constructors are
+  `explicit`; deleted copy operations carry a `// no copy` comment.
+- Types PascalCase; functions / methods and variables / members camelCase, with **no
+  `m_` prefix and no trailing underscore** (a couple of legacy `label_` / `start_`
+  members in `utils` are the lone survivors).
+- The correctness stance is UNCHANGED by the restyle, and overrides surface style
+  in any conflict: still `throw` (never `assert`) for preconditions, value-semantic
+  Eigen/RAII (no raw `new`/`delete`), and `static_cast` / modern `<c…>` headers.
 - Tests use **GoogleTest** (fetched via CMake `FetchContent`, pinned tag; MSVC needs
   `set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)`). To add one: drop a `.cpp`
   in `test/` using `#include <gtest/gtest.h>` and `TEST(...)`/`EXPECT_NEAR` etc., then

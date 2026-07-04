@@ -1,64 +1,79 @@
+// ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------
+// Euclidean projection onto a solid ellipsoid: implementation (eNorm.m / eProj.m).
+// ----------------------------------------------
 #include "ellipsoidprojector.hpp"
 
 #include <cmath>
 #include <stdexcept>
 #include <string>
 
+using std::string;
+
 namespace VINCP {
 
-namespace {
+  namespace {
 
-void validateRadii(const VectorXd& x, const VectorXd& radii, const char* who) {
-    if (radii.size() == 0) {
-        throw std::invalid_argument(std::string(who) + ": radii must be non-empty.");
-    }
-    if (x.size() != radii.size()) {
-        throw std::invalid_argument(std::string(who) + ": point and radii must have equal length.");
-    }
-    for (Index i = 0; i < radii.size(); ++i) {
-        if (!(radii(i) > 0.0)) {
-            throw std::invalid_argument(std::string(who) + ": every radius must be positive.");
+    void
+    validateRadii(const VectorXd& x, const VectorXd& radii, const char* who)
+    {
+      if (0 == radii.size()) {
+        throw std::invalid_argument(string(who) + ": radii must be non-empty.");
+      }
+      if (x.size() != radii.size()) {
+        throw std::invalid_argument(string(who) + ": point and radii must have equal length.");
+      }
+      for (Index i = 0; i < radii.size(); ++i) {
+        if (!(0.0 < radii(i))) {
+          throw std::invalid_argument(string(who) + ": every radius must be positive.");
         }
+      }
+      return;
     }
-}
 
-// The KKT stationarity point for a given multiplier lambda >= 0:
-//     x_i = r_i^2 y_i / (r_i^2 + lambda).
-// At lambda = 0 this is y; as lambda grows every coordinate shrinks toward 0.
-VectorXd trialPoint(const VectorXd& y, const VectorXd& radii, double lambda) {
-    VectorXd x(y.size());
-    for (Index i = 0; i < y.size(); ++i) {
+    // The KKT stationarity point for a given multiplier lambda >= 0:
+    //     x_i = r_i^2 y_i / (r_i^2 + lambda).
+    // At lambda = 0 this is y; as lambda grows every coordinate shrinks toward 0.
+    VectorXd
+    trialPoint(const VectorXd& y, const VectorXd& radii, double lambda)
+    {
+      VectorXd x(y.size());
+      for (Index i = 0; i < y.size(); ++i) {
         const double r2 = radii(i) * radii(i);
         x(i) = (r2 * y(i)) / (r2 + lambda);
+      }
+      return x;
     }
-    return x;
-}
 
-} // namespace
+  } // namespace
 
-double ellipsoidNorm(const VectorXd& x, const VectorXd& radii) {
+  double
+  ellipsoidNorm(const VectorXd& x, const VectorXd& radii)
+  {
     validateRadii(x, radii, "ellipsoidNorm");
     double sum = 0.0;
     for (Index i = 0; i < x.size(); ++i) {
-        const double ratio = x(i) / radii(i);
-        sum += ratio * ratio;
+      const double ratio = x(i) / radii(i);
+      sum += ratio * ratio;
     }
     return std::sqrt(sum);
-}
+  }
 
-VectorXd projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, int iterMax) {
+  VectorXd
+  projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, int iterMax)
+  {
     validateRadii(y, radii, "projectEllipsoid");
-    if (!(tol > 0.0)) {
-        throw std::invalid_argument("projectEllipsoid: tol must be positive.");
+    if (!(0.0 < tol)) {
+      throw std::invalid_argument("projectEllipsoid: tol must be positive.");
     }
-    if (iterMax <= 0) {
-        throw std::invalid_argument("projectEllipsoid: iterMax must be positive.");
+    if (0 >= iterMax) {
+      throw std::invalid_argument("projectEllipsoid: iterMax must be positive.");
     }
 
     // Already inside (or on) the ellipsoid: the point is its own projection.
-    if (ellipsoidNorm(y, radii) <= 1.0) {
-        return y;
+    if (1.0 >= ellipsoidNorm(y, radii)) {
+      return y;
     }
 
     const Index n = y.size();
@@ -70,11 +85,11 @@ VectorXd projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, 
     // Since y is strictly outside, some |y_i / r_i| > 1/sqrt(n), hence lambdaHi > 0.
     double lambdaHi = 0.0;
     for (Index i = 0; i < n; ++i) {
-        const double r2 = radii(i) * radii(i);
-        const double candidate = sqrtN * std::abs(radii(i) * y(i)) - r2;
-        if (candidate > lambdaHi) {
-            lambdaHi = candidate;
-        }
+      const double r2 = radii(i) * radii(i);
+      const double candidate = sqrtN * std::abs(radii(i) * y(i)) - r2;
+      if (candidate > lambdaHi) {
+        lambdaHi = candidate;
+      }
     }
 
     // Root-find g(lambda) = ellipsoidNorm(trialPoint(lambda)) = 1 on the bracket
@@ -87,56 +102,62 @@ VectorXd projectEllipsoid(const VectorXd& y, const VectorXd& radii, double tol, 
     double vHi = ellipsoidNorm(trialPoint(y, radii, hi), radii) - 1.0;   // <= 0
 
     for (int iter = 0; iter < iterMax; ++iter) {
-        // Regula falsi: the zero crossing of the secant through (lo, vLo), (hi, vHi).
-        // vLo > 0 and vHi < 0, so this lies strictly inside (lo, hi).
-        const double lRF = (hi * vLo - lo * vHi) / (vLo - vHi);
-        const double vRF = ellipsoidNorm(trialPoint(y, radii, lRF), radii) - 1.0;
-        if (std::abs(vRF) <= tol) {
-            return trialPoint(y, radii, lRF);
-        }
-        if (vRF > 0.0) {
-            lo = lRF; vLo = vRF;
-        } else {
-            hi = lRF; vHi = vRF;
-        }
+      // Regula falsi: the zero crossing of the secant through (lo, vLo), (hi, vHi).
+      // vLo > 0 and vHi < 0, so this lies strictly inside (lo, hi).
+      const double lRF = (hi * vLo - lo * vHi) / (vLo - vHi);
+      const double vRF = ellipsoidNorm(trialPoint(y, radii, lRF), radii) - 1.0;
+      if (std::abs(vRF) <= tol) {
+        return trialPoint(y, radii, lRF);
+      }
+      if (0.0 < vRF) {
+        lo = lRF; vLo = vRF;
+      }
+      else {
+        hi = lRF; vHi = vRF;
+      }
 
-        // Bisection on the (possibly already tightened) bracket.
-        const double lBis = 0.5 * (lo + hi);
-        const double vBis = ellipsoidNorm(trialPoint(y, radii, lBis), radii) - 1.0;
-        if (std::abs(vBis) <= tol) {
-            return trialPoint(y, radii, lBis);
-        }
-        if (vBis > 0.0) {
-            lo = lBis; vLo = vBis;
-        } else {
-            hi = lBis; vHi = vBis;
-        }
+      // Bisection on the (possibly already tightened) bracket.
+      const double lBis = 0.5 * (lo + hi);
+      const double vBis = ellipsoidNorm(trialPoint(y, radii, lBis), radii) - 1.0;
+      if (std::abs(vBis) <= tol) {
+        return trialPoint(y, radii, lBis);
+      }
+      if (0.0 < vBis) {
+        lo = lBis; vLo = vBis;
+      }
+      else {
+        hi = lBis; vHi = vBis;
+      }
     }
 
     return trialPoint(y, radii, 0.5 * (lo + hi));
-}
+  }
 
-Projector makeEllipsoidProjector(const VectorXd& radii, double tol, int iterMax) {
+  Projector
+  makeEllipsoidProjector(const VectorXd& radii, double tol, int iterMax)
+  {
     // Validate up front so a bad ellipsoid fails at construction, not per-call.
-    if (radii.size() == 0) {
-        throw std::invalid_argument("makeEllipsoidProjector: radii must be non-empty.");
+    if (0 == radii.size()) {
+      throw std::invalid_argument("makeEllipsoidProjector: radii must be non-empty.");
     }
     for (Index i = 0; i < radii.size(); ++i) {
-        if (!(radii(i) > 0.0)) {
-            throw std::invalid_argument("makeEllipsoidProjector: every radius must be positive.");
-        }
+      if (!(0.0 < radii(i))) {
+        throw std::invalid_argument("makeEllipsoidProjector: every radius must be positive.");
+      }
     }
-    if (!(tol > 0.0)) {
-        throw std::invalid_argument("makeEllipsoidProjector: tol must be positive.");
+    if (!(0.0 < tol)) {
+      throw std::invalid_argument("makeEllipsoidProjector: tol must be positive.");
     }
-    if (iterMax <= 0) {
-        throw std::invalid_argument("makeEllipsoidProjector: iterMax must be positive.");
+    if (0 >= iterMax) {
+      throw std::invalid_argument("makeEllipsoidProjector: iterMax must be positive.");
     }
     const VectorXd r = radii;
     return [r, tol, iterMax](const VectorXd& y) -> VectorXd {
-        return projectEllipsoid(y, r, tol, iterMax);
+      return projectEllipsoid(y, r, tol, iterMax);
     };
-}
+  }
 
 } // namespace VINCP
+// ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------
