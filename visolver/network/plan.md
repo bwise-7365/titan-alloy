@@ -69,10 +69,24 @@ Size: S (small), M (medium), L (large) — relative effort/usage.
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
 | C1 | **Preprocessing implementation.** Floyd-Warshall all-pairs distances + predecessor matrix; dominated-link pruning; reduced source-sink problem construction. Tests: distances vs. brute-force path enumeration on tiny graphs. | M | A3, B1 | done (2026-07-03) |
-| C2 | **Matrix generator + unpacker.** KKT of the reduced QP -> affine mixed LCP `(M, q)`, packed as `z = (x, y)` per the VINCP convention; documented block layout. Unpacker: `z -> t_mn -> (S, R, f)` via shortest-path expansion. Tests: pack/unpack round-trip, `M` monotonicity check. | M | C1 | todo |
-| C3 | **Reference oracle.** Tiny (3-6 node) instances solved independently (active-set enumeration / dense KKT solve) to give exact answers. Every later box validates against it mechanically. | S | B1 | todo |
-| C4 | **Solve via VINCP.** Wire `(M, q)` + mixed projector into `bsHe94b` (single affine solve, factor-once). Validate against C3 oracle; verify KKT residuals; confirm never-worse-than-greedy on B2 instances. | M | C2, C3 | todo |
-| C5 | **Scale and performance.** 70- and 200-node runs; timings; tolerance tuning (`magTol` is a SQUARED norm); objective vs. greedy across a batch of random instances; document speed/quality. | M | C4, B2 | todo |
+| C2 | **Matrix generator + unpacker.** KKT of the reduced QP -> affine mixed LCP `(M, q)`, packed as `z = (x, y)` per the VINCP convention; documented block layout. Unpacker: `z -> t_mn -> (S, R, f)` via shortest-path expansion. Tests: pack/unpack round-trip, `M` monotonicity check. | M | C1 | done (2026-07-04) |
+| C3 | **Reference oracle.** Tiny (3-6 node) instances solved independently (active-set enumeration / dense KKT solve) to give exact answers. Every later box validates against it mechanically. | S | B1 | done (2026-07-04) |
+| C4 | **Solve via VINCP.** Wire `(M, q)` + mixed projector into `bsHe94b` (single affine solve, factor-once). Validate against C3 oracle; verify KKT residuals; confirm never-worse-than-greedy on B2 instances. | M | C2, C3 | done (2026-07-04) |
+| C5 | **Scale and performance.** 70- and 200-node runs; timings; tolerance tuning (`magTol` is a SQUARED norm); objective vs. greedy across a batch of random instances; document speed/quality. | M | C4, B2 | done (2026-07-04) |
+
+### Phase E — Hybrid engine + runtime controls (added at gate 11, user request)
+
+Motivated by the 200-node laydown-1 stall: round-0 bsHe94b hit the 150k
+iteration cap (~6 min) before printing a row. Projection-contraction's
+iteration count on near-degenerate (banded) problems is the binding
+constraint; screens are second-order there.
+
+| ID | Task | Size | Depends on | Status |
+|----|------|------|-----------|--------|
+| E1 | **Runtime controls + gap-rule screen.** All solver/screen knobs adjustable WITHOUT recompilation: simple key=value config file loaded into `FlowPlanParams` + generator profile; `network_benchmark` takes a config path argument. Screen gains a gap rule (keep sources within a cost margin of the sink's cheapest; count rule kept as an option). Also expose the tie-break epsilon experiment (R4 bounds its cost; anti-degeneracy lever for banded cases). | M | C5 | done (2026-07-04) |
+| E2 | **Solodov-Svaiter global solver.** The 1999 double-projection (hyperplane) method as a third inner solver behind the same `InnerSolver`-style seam (x0, M, q, Pr, tolerances) — globally convergent under pseudomonotonicity, matrix-free (no factorization), the safe fallback of the hybrid. Unit tests on the lane + LCP suites. | M | — | todo |
+| E3 | **Smoothing-Newton local engine + switching.** Rui-Xu-style inexact smoothing Newton on the natural map (mu > 0 keeps the Jacobian nonsingular; drive mu -> 0 with the residual); accept on Armijo decrease of the natural-map merit, else fall back to an E2 projection step. This is the superlinear tail that replaces thousands of contraction steps on flat optimal faces. | L | E2 | todo |
+| E4 | **Hybrid integration + banded benchmark.** Wire the hybrid as an alternative engine in `solveFlowPlan` (runtime-selected per E1); rerun the benchmark including 200-node laydown-1; performance.md addendum (P6+). Success criterion: 200-banded solves in minutes with certified (or bounded-suboptimal) results. | M | E1, E2, E3 | todo |
 
 ### Phase D — Technical report (LaTeX, 20-50 pp)
 
@@ -80,15 +94,16 @@ Size: S (small), M (medium), L (large) — relative effort/usage.
 |----|------|------|-----------|--------|
 | D1 | **Skeleton + Part I (management overview).** Three-part LaTeX scaffold; Part I: problem, solution approach, challenges (scale -> reduction; degeneracy; budget calibration). | M | A1 | todo |
 | D2 | **Part II (developers' manual).** Data structures, APIs, block layouts, expected usage walkthrough (generate -> greedy -> reduce -> solve -> unpack), build instructions. | M | C4 | todo |
-| D3 | **Part III (mathematical appendix).** Full formalization; algorithm specification; proofs: convexity + existence/uniqueness of `R*`, reduction lemma, KKT <-> mixed LCP equivalence, monotonicity, convergence of the projection-contraction method (cited + conditions verified). | L | A3, C4 | todo |
+| D3 | **Part III (mathematical appendix).** Full formalization; algorithm specification; proofs: convexity + existence/uniqueness of `R*`, reduction lemma, KKT <-> mixed LCP equivalence, monotonicity, convergence of the projection-contraction method (cited + conditions verified). Now also: hybrid engine theory (Solodov-Svaiter convergence, smoothing-Newton local rate, switching soundness — mostly cited). | L | A3, C4, E4 | todo |
 | D4 | **Assembly and final pass.** Merge, cross-reference, numbers from C5, page-count check (20-50), consistency read. | M | D1, D2, D3, C5 | todo |
 
 ## Review gates
 
-15 gates: one after each box above. At each gate: what was produced, what
-changed in the plan (if anything), and a usage check-in so billing stays
-predictable. Descoping candidates if budget tightens: B3 first, then C5
-shrinks to 70-node only.
+19 gates (15 original + 4 phase-E): one after each box. At each gate: what
+was produced, what changed in the plan (if anything), and a usage check-in so
+billing stays predictable. Descoping candidates if budget tightens: B3
+(already descoped), then E-phase shrinks (E1 alone still delivers the
+runtime-controls requirement + gap screen).
 
 ## Decisions log
 
@@ -150,5 +165,128 @@ shrinks to 70-node only.
   describes group C as "C_i = 0 and D_i = 0"; read as demand-only
   (C_i = 0, D_i > 0) to mirror the existing classes — confirm with user.
   New tests: Type1LaydownBandsAndJitter, UndefinedLaydownTypesRejected.
+- 2026-07-04: User confirmed group-C reading (demand-only; doc typo). Two
+  generator amendments: `numNeither` inert-node class (C=0=D, corner-case
+  testing; inert x spans the whole band range in type 1) and a type-1
+  per-ordered-pair off-diagonal cost floor U[bandMinCostLo=5.0,
+  bandMinCostHi=10.0]. Ratio test guarded where clamping may bite. Spec
+  corrections also recorded in the cross-session memory file
+  `project_flowplan_network.md` per user request.
+- 2026-07-04: C2 done. `flowlcp.hpp`/`flowlcp.cpp`: `buildFlowLcp` assembles
+  the KKT complementarity system, layout `z = [t | mu | lambda]` (pure
+  non-negative block; empty free block), sink-major t enumeration following
+  `reduced.kept`; q carries `-2P/D + eps*d`, caps, L; M = Q-blocks + skew
+  incidence/budget pairs (monotone by construction, PSD-checked in tests).
+  `defaultTieBreakEpsilon` = 1e-8 * sumP / L (R4). `unpackFlowLcp` expands t
+  along `routeNodes` to a full `(S, R, f)` Plan. Tests: `flowlcp_test`
+  (layout + eigenvalue monotonicity; hand-derived KKT points, unconstrained
+  and budget-bound, verified through `M z + q`; multi-hop unpack over the
+  dominated-arc triangle; random type-1 + inert-node unpack feasibility;
+  input guards).
+- 2026-07-04: Round-off fix: random-instance greedy feasibility check uses
+  kFeasTol=1e-9 (builder/checker Eigen sums differ in association order).
+  Aggregate CMake targets `network_tests` / `run_network_tests` added for
+  CLion (ctest -R ^Network; excludes base-library suites).
+- 2026-07-04: C3 done (design confirmed by user: full-formulation oracle).
+  `oracle.hpp`/`oracle.cpp`: `buildOracleKkt` assembles the ORIGINAL
+  (S, R, f) formulation's KKT as a mixed LCP — free block = balance
+  multipliers nu, y = [f | S | R | delta | mu | lambda]; no reduction, no
+  tie-break. `solveOracle` = dHan06 over `makeMixedProjector` (different
+  solver AND formulation from production), capped at maxNodes=8.
+  `lanesupport.hpp` shared test fixture (flowlcp_test refactored to use it).
+  Tests: `oracle_test` — lane closed forms (unconstrained + budget-bound),
+  KKT monotonicity, size/calibration guards, and the KEY cross-check:
+  production path (reduce -> bsHe94b) vs oracle agree on theta and R* on a
+  gentle 5-node random instance (validates Lemma R1 end to end). f is NOT
+  compared (degenerate face; oracle has no tie-break).
+- 2026-07-04: SolvesLaneBudgetBound failed to converge (25s, 300k iters):
+  the RAW KKT mixes ~1e3 budget/cost rows with ~1e-4 multipliers; projection
+  methods stall on it. Fix: solveOracle NONDIMENSIONALIZES (tons / largest
+  demand, miles / largest cost — exact unit change, optimum invariant),
+  solves the O(1) system, scales the plan back; default oracle magTol
+  1e-14 -> 1e-12 (scaled units). IMPORTANT FOR C4: the production solveFlowPlan
+  wrapper must apply the same nondimensionalization around bsHe94b — at full
+  70-node scale (tons ~5e3, miles ~2e3, L ~1e8) the raw system is far worse.
+- 2026-07-04: Scaling fix confirmed (lane oracle 25s -> 0.04s; solvers agree).
+  Remaining failure was the SANDWICH slack: the rationing lower bound is
+  exact only for exactly-feasible plans; solver iterates are feasible to
+  ~residual scale and can undercut it by (dtheta/dR ~ 2P/D) * slack. Lesson
+  for ALL C4/C5 bound checks: slack = feasibility tolerance x gradient scale,
+  never 1e-9. Test now uses kSandwichSlack = 1e-4.
+- 2026-07-04: C4 done. `flowplan.hpp`/`flowplan.cpp`: `solveFlowPlan` =
+  nondimensionalize -> computeShortestRoutes -> makeReducedProblem (optional
+  k-cheapest screen) -> buildFlowLcp -> bsHe94b -> R3 certificate loop
+  (violated excluded pairs appended to kept, re-solve; certifiedP honest) ->
+  unpack -> rescale. Returns shortfall, real ton-miles, REAL-unit budget
+  shadow price (lambda/(tonScale*mileScale)), kept/total pairs, rounds.
+  `gentlesupport.hpp` shared fixture (oracle_test refactored). Tests:
+  `flowplan_test` — oracle agreement (certified, keep-all), screen k=3 vs
+  exact keep-all on a 26-node real-scale instance (R3 recovers the same
+  optimum with fewer pairs), G6 baseline bounds (never worse than greedy at
+  L_greedy; greedy is a lower bound at 80%; monotone in L; positive shadow
+  price when scarce), input guards.
+- 2026-07-04: FINDING from the failed shadow-price assertion: at 80% of
+  greedy ton-miles the budget was NOT scarce on the 26-node instance — the
+  optimizer's shortest-path routing + assignment saves >20% over greedy
+  (lambda = 0, full rationed targets delivered). Report-worthy (quantifies
+  greedy inefficiency); C5 should measure the savings ratio across a batch.
+  Test now asserts complementarity always, and positivity only on a FORCED
+  scarce budget (0.5 x working optimum's own usage).
+- 2026-07-04: C5 code delivered (box closes when benchmark output is recorded
+  in doc/performance.md). `scale_test` — 70-node screened solve in the ctest
+  suite. `network_benchmark` exe (network/src/benchmark.cpp) — 4 configs x 5
+  seeds: 70-node keep-all (exact reference), 70-node screen k=10, 70-node
+  laydown-1 screen, 200-node (50/50/95+5) screen k=10; reports kept pairs,
+  certificate rounds, iterations, wall ms, theta_ration/theta*, delivered
+  fraction, ton-mile fraction vs greedy, shadow price. Run in RELEASE.
+- 2026-07-04: FINDING (user run): 70-node KEEP-ALL made no visible progress
+  (single core pegged; 2041 unknowns x ~4ms/iter x 500k cap = potentially
+  30+ min before honest failure). The R3 screen is an ITERATION-COUNT
+  necessity, not just memory relief: certified screening IS the production
+  configuration; keep-all is a small-instance reference only. Benchmark
+  restructured: 26-node keep-all + screened cross-check, 70-node (both
+  laydowns) and 200-node screened; iterMax capped at 150k so failures print
+  honest cert=NO rows. Goes into performance.md and Part I challenges.
+- 2026-07-04: The keep-all 70-node solve DID converge — reference datum
+  (seed 20260704, laydown 0, keep-all): 43,247 iters, 144.2 s, certified;
+  th_ration 2.25076, th_star 2.70043, dlv 0.997, tm/tmG 0.800 (budget BINDS
+  at 70 nodes on this seed, lambda 6.23e-07), vs the 26-node case where the
+  optimizer absorbed the whole 20% cut. Both budget regimes are real.
+  Screened-vs-keep-all speedup to be quantified by the restructured
+  benchmark (expected ~two orders of magnitude).
+- 2026-07-04: C5 CLOSED — full benchmark results in `doc/performance.md`.
+  Headlines: certificate exact in practice (5/5 configs certified, theta*
+  matches keep-all to 5-6 digits); screen = ~160x at 70 nodes (0.9s vs 144s);
+  three budget regimes observed (bound / comfortable / rationing-dominated,
+  readable from lambda, dlv, tm/tmG); banded laydown is the hard case (kept
+  set balloons to ~1650/2000 over 2-3 rounds, ~74 s, and economically ~2x
+  worse theta* on identical tonnages); 200 nodes ~45 s/solve. Future levers
+  recorded: gap-based screen; the deferred Solodov-Svaiter/smoothing hybrid.
+  Phase C complete.
+- 2026-07-04: 200-node laydown-1 run ABANDONED by user after 10 min, zero
+  rows: round-0 bsHe94b (k=10, ~1550 unknowns) hit the 150k cap (~6 min)
+  without converging — PC iteration count on near-degenerate banded problems
+  is the binding constraint; screen choice is second-order at this size.
+- 2026-07-04: Gate 11. SCOPE ADDED at user request: Phase E (E1 runtime
+  controls + gap-rule screen; E2 Solodov-Svaiter global solver; E3
+  smoothing-Newton + switching; E4 hybrid integration + banded benchmark).
+  The deferred hybrid-engine design (CLAUDE.md / 2026-06-29 handoff) is now
+  explicitly requested. D3 gains dependency on E4. USER REQUIREMENT recorded:
+  all tuning knobs (screen rule/size, slacks, epsilon, solver selection,
+  tolerances) must become runtime controls — no recompilation (E1). Screen
+  ranking for the record: gap rule > slack-loosening > count-k; but the
+  hybrid is the real lever for 200-banded. Tie-break epsilon flagged as a
+  cheap anti-degeneracy experiment (R4 bounds its cost).
+- 2026-07-04: E1 done. `config.hpp`/`config.cpp`: strict key=value loader
+  (comments/trim; malformed, duplicate, junk-valued, and UNKNOWN keys all
+  throw — a typo can never silently keep a default), typed consume* helpers,
+  `applyFlowPlanConfig` (solver.*/screen.* keys incl. solver.epsilon) and
+  `applyProfileConfig` (all InstanceProfile fields). `ScreenParams` gap rule
+  in makeReducedProblem (union-of-prefixes semantics; count overload kept);
+  `FlowPlanParams.gapFraction`. `network_benchmark <cfg>` runs ONE
+  file-described config (benchmark.name/instances/seedBase); no-arg = C5
+  sweep. `benchmark-example.cfg` = the 200-banded experiment ready to run.
+  Tests: `config_test` (parse/apply/typo-guard/file), GapRuleScreens in
+  reduction_test, gap-screen certification in flowplan_test.
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

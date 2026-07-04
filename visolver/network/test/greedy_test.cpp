@@ -13,6 +13,12 @@ namespace {
     const std::uint64_t kSeed = 20260703;
     const double kTol = 1.0e-9;
 
+    // Feasibility slack for plans BUILT in floating point: summing ~70 flows
+    // of magnitude ~5e3 leaves balance/capacity residuals of order 1e-12
+    // (association-order differences between the builder's and the checker's
+    // Eigen sums). Hand-built plans still assert exact zero.
+    const double kFeasTol = 1.0e-9;
+
     // One source node (index 0) plus two demand nodes, with every cost
     // positive; capacities/demands/priorities are the test's knobs.
     Instance makeThreeNodeInstance(double cap0,
@@ -108,7 +114,7 @@ TEST(NetworkGreedy, GreedyPlanServesTargetsOnRandomInstance) {
     const GreedyParams params;
     const GreedyResult result = greedyPlan(inst, params);
 
-    EXPECT_EQ(maxViolation(checkPlan(inst, result.plan)), 0.0);
+    EXPECT_LE(maxViolation(checkPlan(inst, result.plan)), kFeasTol);
     EXPECT_GT(result.tonMilesUsed, 0.0);
     EXPECT_DOUBLE_EQ(result.suggestedLimit,
                      params.budgetFraction * result.tonMilesUsed);

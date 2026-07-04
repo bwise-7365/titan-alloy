@@ -64,9 +64,26 @@ namespace VINCP::Network {
     vector<vector<Index>> kept; // kept[t] = admitted source positions, cheap first
   };
 
-  // Build the reduced problem. maxSourcesPerSink = 0 keeps every pair (the
-  // exact default at moderate sizes); k > 0 keeps each sink's k cheapest
-  // sources (the R3 screen; exactness is restored by the certificate loop).
+  // The R3 screen rules (exactness is restored by the certificate loop
+  // either way). Two rules, combinable:
+  //   count rule  maxSourcesPerSink > 0: keep each sink's k cheapest sources.
+  //   gap rule    gapFraction > 0: keep every source whose cost is within
+  //               (1 + gapFraction) of the sink's cheapest — adapts to the
+  //               geometry (keeps few where costs spread, many where they
+  //               cluster in near-ties, e.g. the banded laydown).
+  // Both zero: keep ALL pairs. Both positive: keep the UNION ("at least the
+  // k cheapest, plus every near-tie").
+  struct ScreenParams {
+    Index maxSourcesPerSink = 0;
+    double gapFraction = 0.0;
+  };
+
+  // Build the reduced problem under the given screen.
+  ReducedProblem makeReducedProblem(const Instance& inst,
+                                    const ShortestRoutes& routes,
+                                    const ScreenParams& screen);
+
+  // Count-rule convenience (the pre-E1 interface): k = 0 keeps every pair.
   ReducedProblem makeReducedProblem(const Instance& inst,
                                     const ShortestRoutes& routes,
                                     Index maxSourcesPerSink = 0);

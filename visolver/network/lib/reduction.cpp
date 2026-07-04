@@ -7,6 +7,7 @@
 #include "reduction.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <stdexcept>
 
 namespace VINCP::Network {
@@ -119,12 +120,17 @@ namespace VINCP::Network {
 
   ReducedProblem
   makeReducedProblem(const Instance& inst, const ShortestRoutes& routes,
-                     Index maxSourcesPerSink)
+                     const ScreenParams& screen)
   {
     validateInstance(inst);
-    if (0 > maxSourcesPerSink) {
+    if (0 > screen.maxSourcesPerSink) {
       throw std::invalid_argument(
           "makeReducedProblem: maxSourcesPerSink must be >= 0 (0 = keep all).");
+    }
+    if (!(0.0 <= screen.gapFraction)
+        || !std::isfinite(screen.gapFraction)) {
+      throw std::invalid_argument(
+          "makeReducedProblem: gapFraction must be finite and >= 0.");
     }
 
     ReducedProblem reduced;
@@ -144,7 +150,12 @@ namespace VINCP::Network {
       }
     }
 
-    // The k-cheapest screen, ascending cost (ties by position, deterministic).
+    // Screen per sink, ascending cost (ties by position, deterministic).
+    // With both rules off everything is kept; otherwise kept = union of the
+    // count and gap rules (both keep prefixes of the ascending order, so the
+    // union is the longer prefix).
+    const bool keepAllP =
+        0 == screen.maxSourcesPerSink && 0.0 >= screen.gapFraction;
     reduced.kept.assign(static_cast<size_t>(numSinks), vector<Index>());
     for (Index t = 0; t < numSinks; ++t) {
       vector<Index> order(static_cast<size_t>(numSources));
@@ -158,13 +169,31 @@ namespace VINCP::Network {
                   }
                   return a < b;
                 });
-      const Index keepCount = (0 == maxSourcesPerSink)
-                                  ? numSources
-                                  : std::min(maxSourcesPerSink, numSources);
-      order.resize(static_cast<size_t>(keepCount));
-      reduced.kept[static_cast<size_t>(t)] = order;
+      const double gapLimit =
+          reduced.shipCost(order[0], t) * (1.0 + screen.gapFraction);
+      vector<Index> kept;
+      for (size_t pos = 0; pos < order.size(); ++pos) {
+        const bool byCountP =
+            0 < screen.maxSourcesPerSink
+            && static_cast<Index>(pos) < screen.maxSourcesPerSink;
+        const bool byGapP = 0.0 < screen.gapFraction
+                            && reduced.shipCost(order[pos], t) <= gapLimit;
+        if (keepAllP || byCountP || byGapP) {
+          kept.push_back(order[pos]);
+        }
+      }
+      reduced.kept[static_cast<size_t>(t)] = kept;
     }
     return reduced;
+  }
+
+  ReducedProblem
+  makeReducedProblem(const Instance& inst, const ShortestRoutes& routes,
+                     Index maxSourcesPerSink)
+  {
+    ScreenParams screen;
+    screen.maxSourcesPerSink = maxSourcesPerSink;
+    return makeReducedProblem(inst, routes, screen);
   }
 
 } // namespace VINCP::Network

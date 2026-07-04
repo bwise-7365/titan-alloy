@@ -144,7 +144,9 @@ TEST(NetworkInstance, Type1LaydownBandsAndJitter) {
         }
     }
 
-    // Global bounds and directional jitter for every ordered pair.
+    // Global bounds, the per-pair cost floor, and directional jitter for
+    // every ordered pair. The ratio band applies only where NEITHER direction
+    // was clamped to the floor (a clamped cost never exceeds bandMinCostHi).
     const double maxXSpan = 2.0 * profile.bandXStep + profile.bandXWidth;
     const double maxYSpan = profile.bandYHi - profile.bandYLo;
     const double costCeiling = std::hypot(maxXSpan, maxYSpan) * jitterHi;
@@ -153,12 +155,39 @@ TEST(NetworkInstance, Type1LaydownBandsAndJitter) {
         EXPECT_LE(inst.cost(i, i), profile.selfCostHi);
         for (Index j = 0; j < inst.numNodes; ++j) {
             if (i != j) {
-                EXPECT_GT(inst.cost(i, j), 0.0);
+                EXPECT_GE(inst.cost(i, j), profile.bandMinCostLo);
                 EXPECT_LE(inst.cost(i, j), costCeiling);
-                const double ratio = inst.cost(i, j) / inst.cost(j, i);
-                EXPECT_GE(ratio, jitterLo / jitterHi);
-                EXPECT_LE(ratio, jitterHi / jitterLo);
+                if (inst.cost(i, j) > profile.bandMinCostHi
+                        && inst.cost(j, i) > profile.bandMinCostHi) {
+                    const double ratio = inst.cost(i, j) / inst.cost(j, i);
+                    EXPECT_GE(ratio, jitterLo / jitterHi);
+                    EXPECT_LE(ratio, jitterHi / jitterLo);
+                }
             }
+        }
+    }
+}
+
+// Inert nodes (C_i = D_i = 0) join the node set without joining the source or
+// sink lists, in both laydowns; they only transship.
+TEST(NetworkInstance, InertNodesHandled) {
+    const Index kInert = 3;
+    for (int laydown = 0; laydown <= 1; ++laydown) {
+        InstanceProfile profile;
+        profile.laydownType = laydown;
+        profile.numNeither = kInert;
+        const Instance inst = makeRandomInstance(profile, kSeed);
+
+        const Index numClassed = profile.numSupplyOnly + profile.numBoth
+                                 + profile.numDemandOnly;
+        EXPECT_EQ(inst.numNodes, numClassed + kInert);
+        EXPECT_EQ(static_cast<Index>(sourceNodes(inst).size()),
+                  profile.numSupplyOnly + profile.numBoth);
+        EXPECT_EQ(static_cast<Index>(sinkNodes(inst).size()),
+                  profile.numBoth + profile.numDemandOnly);
+        for (Index i = numClassed; i < inst.numNodes; ++i) {
+            EXPECT_EQ(inst.supplyCap(i), 0.0);
+            EXPECT_EQ(inst.demand(i), 0.0);
         }
     }
 }

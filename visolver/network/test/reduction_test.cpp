@@ -126,6 +126,7 @@ TEST(NetworkReduction, MatchesBruteForceOnSmallRandom) {
     small.numSupplyOnly = 1;
     small.numBoth = 2;
     small.numDemandOnly = 3;
+    small.numNeither = 1;      // corner case: an inert transshipment node
     const Instance inst = makeRandomInstance(small, kSeed);
     const ShortestRoutes routes = computeShortestRoutes(inst);
 
@@ -164,6 +165,52 @@ TEST(NetworkReduction, RouteCostsMatchDistances) {
             EXPECT_NEAR(routeCost(inst, nodes), expected, kTol * expected);
         }
     }
+}
+
+// The gap rule (task E1): keep every source within (1 + gapFraction) of the
+// sink's cheapest; combined with the count rule it keeps the union. Costs
+// are crafted so the shortest routes are the direct arcs.
+TEST(NetworkReduction, GapRuleScreens) {
+    const Index kNumNodes = 6;               // sources 0-4, sink 5
+    Instance inst;
+    inst.numNodes = kNumNodes;
+    inst.supplyCap = VectorXd::Zero(kNumNodes);
+    inst.demand = VectorXd::Zero(kNumNodes);
+    inst.priority = VectorXd::Ones(kNumNodes);
+    inst.cost = MatrixXd::Constant(kNumNodes, kNumNodes, 1000.0);
+    for (Index i = 0; i < kNumNodes; ++i) {
+        inst.cost(i, i) = 2.0;
+        if (i < kNumNodes - 1) {
+            inst.supplyCap(i) = 10.0;
+        }
+    }
+    inst.demand(5) = 10.0;
+    inst.cost(0, 5) = 100.0;                 // cheapest
+    inst.cost(1, 5) = 101.0;                 // within 5%
+    inst.cost(2, 5) = 104.0;                 // within 5%
+    inst.cost(3, 5) = 200.0;                 // outside any small gap
+    inst.cost(4, 5) = 500.0;
+    validateInstance(inst);
+    const ShortestRoutes routes = computeShortestRoutes(inst);
+
+    ScreenParams gapOnly;
+    gapOnly.gapFraction = 0.05;              // limit = 105
+    const ReducedProblem gap = makeReducedProblem(inst, routes, gapOnly);
+    ASSERT_EQ(gap.kept[0].size(), 3u);
+    EXPECT_EQ(gap.kept[0][0], 0);
+    EXPECT_EQ(gap.kept[0][1], 1);
+    EXPECT_EQ(gap.kept[0][2], 2);
+
+    ScreenParams unionRule = gapOnly;        // count 4 dominates gap 3 here
+    unionRule.maxSourcesPerSink = 4;
+    const ReducedProblem both = makeReducedProblem(inst, routes, unionRule);
+    ASSERT_EQ(both.kept[0].size(), 4u);
+    EXPECT_EQ(both.kept[0][3], 3);           // the 200-cost source
+
+    ScreenParams countOnly;
+    countOnly.maxSourcesPerSink = 2;
+    const ReducedProblem two = makeReducedProblem(inst, routes, countOnly);
+    ASSERT_EQ(two.kept[0].size(), 2u);
 }
 
 // Reduced-problem construction: shapes, positivity, dominance by the direct

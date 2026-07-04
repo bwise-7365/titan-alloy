@@ -1,0 +1,66 @@
+// ----------------------------------------------
+// Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------
+// The production flow-planning solver: nondimensionalize -> reduce ->
+// bsHe94b -> R3 certificate loop -> unpack. One call from a calibrated
+// Instance to an optimal Plan (doc/reduction.md).
+// ----------------------------------------------
+#ifndef VINCP_NETWORK_FLOWPLAN_HPP
+#define VINCP_NETWORK_FLOWPLAN_HPP
+
+#include "flowlcp.hpp"
+
+namespace VINCP::Network {
+
+  struct FlowPlanParams {
+    double magTol = 1.0e-12;   // squared-residual tolerance for bsHe94b, in
+                               // the NONDIMENSIONALIZED system's units
+    int iterMax = 500000;
+    int iterFreq = 0;          // <= 0: no iteration logging
+
+    // Pair screen (Proposition R3; see ScreenParams in reduction.hpp for the
+    // rule semantics). Both zero solves over every source-sink pair; either
+    // rule active starts smaller and lets the certificate loop pull in any
+    // pair wrongly excluded, so the final answer is exact either way.
+    Index maxSourcesPerSink = 0;   // count rule
+    double gapFraction = 0.0;      // gap rule (near-tie geometries)
+    int maxCertificateRounds = 10;
+    double certificateSlack = 1.0e-6;   // dual-feasibility slack (scaled units)
+
+    double epsilon = -1.0;     // R4 tie-break for the SCALED system; negative
+                               // means defaultTieBreakEpsilon(scaled instance)
+  };
+
+  struct FlowPlanResult {
+    Plan plan;                       // real tons
+    double shortfall = 0.0;          // theta at the plan
+    double tonMilesUsed = 0.0;       // real ton-miles moved
+    double budgetShadowPrice = 0.0;  // lambda in REAL units: shortfall
+                                     // reduction per extra ton-mile of budget
+    VIResult vi;                     // final bsHe94b result (SCALED units;
+                                     // residual is SQUARED)
+    Index keptPairs = 0;             // t variables in the final solve
+    Index totalPairs = 0;            // sources x sinks
+    int certificateRounds = 0;       // R3 re-solves triggered
+    bool certifiedP = false;         // true when the solve converged AND every
+                                     // excluded pair passed the R3 check (or
+                                     // nothing was excluded); trust the plan
+                                     // as optimal only when true
+  };
+
+  // Solve the flow-planning problem for a calibrated instance
+  // (tonMileLimit > 0; run greedyPlan first to calibrate). Internally works
+  // on the nondimensionalized system (tons / largest demand, miles / largest
+  // cost -- exact unit change, mandatory for projection-method convergence)
+  // and returns everything in real units. Honest-return on solver
+  // non-convergence (check certifiedP / vi.converged); throws
+  // std::invalid_argument on bad inputs.
+  FlowPlanResult solveFlowPlan(const Instance& inst,
+                               const FlowPlanParams& params = FlowPlanParams{});
+
+} // namespace VINCP::Network
+
+#endif // VINCP_NETWORK_FLOWPLAN_HPP
+// ----------------------------------------------
+// Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------

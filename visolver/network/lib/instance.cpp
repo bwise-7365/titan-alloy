@@ -5,6 +5,7 @@
 // ----------------------------------------------
 #include "instance.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <random>
 #include <stdexcept>
@@ -98,7 +99,7 @@ namespace VINCP::Network {
   validateProfile(const InstanceProfile& profile)
   {
     require(0 <= profile.numSupplyOnly && 0 <= profile.numBoth
-                && 0 <= profile.numDemandOnly,
+                && 0 <= profile.numDemandOnly && 0 <= profile.numNeither,
             "profile node counts must be non-negative.");
     require(0 < profile.numSupplyOnly + profile.numBoth,
             "profile must include at least one source node.");
@@ -125,6 +126,9 @@ namespace VINCP::Network {
               "band y-range must be ordered.");
       require(0.0 <= profile.jitterHalfWidth && profile.jitterHalfWidth < 1.0,
               "jitterHalfWidth must lie in [0, 1).");
+      require(0.0 < profile.bandMinCostLo
+                  && profile.bandMinCostLo <= profile.bandMinCostHi,
+              "band min-cost range must be positive and ordered.");
     }
     return;
   }
@@ -133,8 +137,9 @@ namespace VINCP::Network {
   makeRandomInstance(const InstanceProfile& profile, std::uint64_t seed)
   {
     validateProfile(profile);
-    const Index m =
+    const Index numClassed =
         profile.numSupplyOnly + profile.numBoth + profile.numDemandOnly;
+    const Index m = numClassed + profile.numNeither;
 
     std::mt19937_64 rng(seed);
     std::uniform_real_distribution<double> supplyDist(profile.supplyLo,
@@ -169,15 +174,23 @@ namespace VINCP::Network {
       std::uniform_real_distribution<double> widthDist(0.0, profile.bandXWidth);
       std::uniform_real_distribution<double> yDist(profile.bandYLo,
                                                    profile.bandYHi);
+      const double fullSpan = 2.0 * profile.bandXStep + profile.bandXWidth;
+      std::uniform_real_distribution<double> spanDist(0.0, fullSpan);
       for (Index i = 0; i < m; ++i) {
-        Index group = 0;                          // A: supply-only
-        if (profile.numSupplyOnly + profile.numBoth <= i) {
-          group = 2;                              // C: demand-only
+        if (numClassed <= i) {
+          xs(i) = spanDist(rng);                  // inert: anywhere in the span
         }
-        else if (profile.numSupplyOnly <= i) {
-          group = 1;                              // B: both
+        else {
+          Index group = 0;                        // A: supply-only
+          if (profile.numSupplyOnly + profile.numBoth <= i) {
+            group = 2;                            // C: demand-only
+          }
+          else if (profile.numSupplyOnly <= i) {
+            group = 1;                            // B: both
+          }
+          xs(i) = static_cast<double>(group) * profile.bandXStep
+                  + widthDist(rng);
         }
-        xs(i) = static_cast<double>(group) * profile.bandXStep + widthDist(rng);
         ys(i) = yDist(rng);
       }
     }
@@ -189,10 +202,11 @@ namespace VINCP::Network {
     inst.priority = VectorXd::Zero(m);
     inst.cost = MatrixXd::Zero(m, m);
 
-    // Node classes are contiguous blocks: [supply-only | both | demand-only].
+    // Node classes are contiguous blocks:
+    // [supply-only | both | demand-only | neither].
     for (Index i = 0; i < m; ++i) {
       const bool suppliesP = i < profile.numSupplyOnly + profile.numBoth;
-      const bool demandsP = profile.numSupplyOnly <= i;
+      const bool demandsP = profile.numSupplyOnly <= i && i < numClassed;
       if (suppliesP) {
         inst.supplyCap(i) = supplyDist(rng);
       }
@@ -202,18 +216,25 @@ namespace VINCP::Network {
       inst.priority(i) = priorityDist(rng);
     }
 
+    std::uniform_real_distribution<double> bandFloorDist(profile.bandMinCostLo,
+                                                         profile.bandMinCostHi);
     for (Index i = 0; i < m; ++i) {
       for (Index j = 0; j < m; ++j) {
         if (i == j) {
           inst.cost(i, i) = selfCostDist(rng);
         }
-        else {
+        else if (0 == profile.laydownType) {
           const double separation = std::hypot(xs(i) - xs(j), ys(i) - ys(j));
           const double base =
-              (0 == profile.laydownType)
-                  ? profile.costFloor + profile.milesPerUnit * separation
-                  : separation;         // type 1: bare Euclidean distance
+              profile.costFloor + profile.milesPerUnit * separation;
           inst.cost(i, j) = base * jitterDist(rng);
+        }
+        else {
+          // Type 1: bare Euclidean distance, floored per ordered pair so
+          // overlap-region neighbors cannot undercut sensible arc costs.
+          const double separation = std::hypot(xs(i) - xs(j), ys(i) - ys(j));
+          inst.cost(i, j) = std::max(separation * jitterDist(rng),
+                                     bandFloorDist(rng));
         }
       }
     }

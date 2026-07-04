@@ -70,6 +70,9 @@ namespace VINCP::Network {
     Index numSupplyOnly = 20;    // C_i > 0, D_i = 0
     Index numBoth       = 20;    // C_i > 0, D_i > 0
     Index numDemandOnly = 30;    // C_i = 0, D_i > 0
+    Index numNeither    = 0;     // C_i = 0, D_i = 0: inert transshipment nodes,
+                                 // for corner-case testing (real data will be
+                                 // checked upstream and rarely contains them)
 
     double supplyLo = 1000.0, supplyHi = 5000.0;   // C_i range (tons)
     double demandLo = 1000.0, demandHi = 5000.0;   // D_i range (tons)
@@ -97,11 +100,16 @@ namespace VINCP::Network {
 
     // Type-1 geometry, defaults per alternate-laydown.txt: bands 240 wide
     // stepped 160 apart (A [0,240], B [160,400], C [320,560]), y in
-    // [100, 200], +/-5% directional jitter.
+    // [100, 200], +/-5% directional jitter. Inert (numNeither) nodes draw x
+    // over the full span. Because bare distances in the overlap regions can
+    // undercut even the self-cost band, each ordered pair also draws a cost
+    // FLOOR ~ U[bandMinCostLo, bandMinCostHi] and the arc costs
+    // max(distance * jitter, floor).
     double bandXWidth = 240.0;
     double bandXStep = 160.0;
     double bandYLo = 100.0, bandYHi = 200.0;
     double jitterHalfWidth = 0.05;
+    double bandMinCostLo = 5.0, bandMinCostHi = 10.0;
   };
 
   // Throws std::invalid_argument on a non-realizable profile (no nodes, no

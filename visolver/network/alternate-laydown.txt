@@ -9,7 +9,7 @@ should be named variables, not magic numbers)
 Divide them up into three groups: 
 A, which have C_i > 0 and D_i = 0
 B, which have C_i > 0 and D_i > 0
-C, which have C_i = 0 and D_i = 0
+C, which have C_i = 0 and D_i > 0
 
 
 They are in a plane, and the cost of a flow is their euclidean distance.
@@ -22,4 +22,5 @@ B are assigned x-coord ~ U[160, 400], y ~ U[100, 200]
 C are assigned x-coord ~ U[320, 560], y ~ U[100, 200]
 
 As before, c_ii ~ U[1,5]
+There is a minimum cost for off-diagonal c_ij, say ~[5,10]
 

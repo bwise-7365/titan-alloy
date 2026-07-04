@@ -1,8 +1,6 @@
 Parts of Claude.md are no longer needed or accurate
 because that work has been done.
 
+u , ||x-x*|| , ||y-y*|| , min(Ax-b) and max|y_i s_i| 
 
-On restart, the first move will be to wire the FetchContent
-block + one vincp_gtest target into CMakeLists.txt
-(e.g. porting ellipsoid_projector_test), so
-you can CLion-reload and see green in the GoogleTest runner. Good place to pause.
+ ||x-x*|| = 1.457e-02 (< 1.0e-06), ||y-y*|| = 7.768e-03 (< 1.0e-06),  max|y_i s_i| = 2.361e-02 (< 1.0e-06)

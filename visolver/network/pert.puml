@@ -32,6 +32,13 @@ rectangle "Phase C: Optimizer" as PC {
   rectangle "C5: Scale + performance\n(70/200 nodes) [M]" as C5
 }
 
+rectangle "Phase E: Hybrid engine + controls" as PE {
+  rectangle "E1: Runtime controls +\ngap-rule screen [M]" as E1
+  rectangle "E2: Solodov-Svaiter\nglobal solver [M]" as E2
+  rectangle "E3: Smoothing-Newton +\nswitching [L]" as E3
+  rectangle "E4: Hybrid integration +\nbanded benchmark [M]" as E4
+}
+
 rectangle "Phase D: Technical report" as PD {
   rectangle "D1: LaTeX skeleton +\nPart I (management) [M]" as D1
   rectangle "D2: Part II\n(developers' manual) [M]" as D2
@@ -52,10 +59,15 @@ C2 --> C4
 C3 --> C4
 C4 --> C5
 B2 --> C5
+C5 --> E1
+E2 --> E3
+E1 --> E4
+E3 --> E4
 A1 --> D1
 C4 --> D2
 A3 --> D3
 C4 --> D3
+E4 --> D3
 D1 --> D4
 D2 --> D4
 D3 --> D4
