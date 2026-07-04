@@ -1,0 +1,63 @@
+@startuml pert
+' ----------------------------------------------
+' Copyright Ben Paul Wise. All Rights Reserved.
+' ----------------------------------------------
+' PERT chart for the network flow-planning solver.
+' Boxes = tasks (see plan.md ledger for full text and status);
+' every box completion is a review gate (progress + usage budget).
+' ----------------------------------------------
+left to right direction
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+}
+
+rectangle "Phase A: Formalization" as PA {
+  rectangle "A1: Formalize problem\n+ greedy-spec audit [M]" as A1
+  rectangle "A2: Targeted literature\npass [S]" as A2
+  rectangle "A3: Reduction + pruning\nwith proofs [M]" as A3
+}
+
+rectangle "Phase B: Instances & baseline" as PB {
+  rectangle "B1: Scaffolding +\ninstance generator [M]" as B1
+  rectangle "B2: Greedy planner +\nL calibration [M]" as B2
+  rectangle "B3: Swap post-processing\n(optional) [S]" as B3
+}
+
+rectangle "Phase C: Optimizer" as PC {
+  rectangle "C1: Shortest paths +\nlink pruning [M]" as C1
+  rectangle "C2: Matrix generator\n+ unpacker [M]" as C2
+  rectangle "C3: Reference oracle [S]" as C3
+  rectangle "C4: Solve via VINCP\n(bsHe94b) [M]" as C4
+  rectangle "C5: Scale + performance\n(70/200 nodes) [M]" as C5
+}
+
+rectangle "Phase D: Technical report" as PD {
+  rectangle "D1: LaTeX skeleton +\nPart I (management) [M]" as D1
+  rectangle "D2: Part II\n(developers' manual) [M]" as D2
+  rectangle "D3: Part III\n(mathematical appendix) [L]" as D3
+  rectangle "D4: Assembly +\nfinal pass [M]" as D4
+}
+
+A1 --> A3
+A2 --> A3
+A1 --> B1
+B1 --> B2
+B2 --> B3
+A3 --> C1
+B1 --> C1
+C1 --> C2
+B1 --> C3
+C2 --> C4
+C3 --> C4
+C4 --> C5
+B2 --> C5
+A1 --> D1
+C4 --> D2
+A3 --> D3
+C4 --> D3
+D1 --> D4
+D2 --> D4
+D3 --> D4
+C5 --> D4
+@enduml

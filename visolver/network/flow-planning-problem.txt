@@ -1,0 +1,205 @@
+I have a stylized planning problem which I want to use as a surrogate for my real problem.
+To solve it will take search of the open source literature to find
+useful approaches, then algorithm design to implement an efficient approach.
+
+The basic goal is to plan the continuous flow of "stuff" through a network
+so as to minimize a quadratic objective.
+
+To the extent practical, use the interfaces defined in the visolver library
+on this machine at C:\repos\ghub-per\titan-alloy\visolver.
+If the current interfaces are severely deficient for this problem,
+(succinctly) explain the problem to me, along with one or two proposed fixes.
+
+Generating lots of test cases is fairly easy. I have a precise problem specification
+which I can share with you as soon as we have an approach.
+
+Finally, I'll need a technical report (LaTeX format) in three parts.
+The first is a management
+overview of the problem, how it was solved, and what challenges were overcome.
+The second is a developers' manual describing data structures and APIs.
+Expected usage should be outlined.
+The third is a mathematical appendix for operations research professionals.
+It should be a description that fully formalizes the problem,
+specifies the algorithm, and provides proof that it works correctly.
+Aim for 20-50 pages.
+
+A PERT chart of approximately 12-25 tasks, in PlantUML format, will be used to
+maintain focus and provide pre-defined pauses for review.
+I will review progress, plans, and usage budget. I absolutely do not
+want any unpleasant billing surprises, so a good number (12-25) pre-defined
+review points is essential.
+
+-------------------
+NOTE: several errors in the spec below were detected by Claude.
+DO NOT take it literally, because it is literally wrong.
+-------------------
+
+The basic goal is to plan the continuous flow of "stuff" through a network
+so as to minimize a quadratic objective.
+
+To the extent practical, use the interfaces defined in the visolver library
+on this machine at C:\repos\ghub-per\titan-alloy\visolver.
+However, this will require designing and testing very different, higher performance
+algorithms. That is why I the help of you, Fable 5.
+
+If the current interfaces are severely deficient for this problem,
+(succinctly) explain the problem to me, along with one or two proposed fixes.
+
+The flows are planned on a set of nodes.
+We have M nodes, typically in the 20-200 range.
+For each node we are given the following data:
+
+C_i, the capacity of that node to supply stuff. All C_i => 0. When positive, typically 1000-5000 tons.
+D_i, the demand at node i for stuff. All D_i => 0. When positive, typically 1000-5000 tons.
+P_i, the priority of meeting demand at i, if any. All P_i > 0. Typically 1-10.
+
+Crucially,
+
+c_ij is the per-unit cost of moving stuff from node i to node j. 
+It is basically distance, measured in miles. All c_ij > 0.
+
+Using capacity at a node to meet demand at the same node is possible.
+It is very cheap, but not free. So c_ii can be small, say 1-5, but not zero.
+
+For off-diagonal terms, typical values are in the range of 100 to 2000 miles.
+They are not symmetric because they are really a measure of cost, which 
+depends somewhat on the direction of traversing a link.
+That is, c_ij and c_ji would typically differ by anywhere from 1% to 10%,
+approximately. They are correlated but not identical.
+
+Finally, we have a logistical limit on the total ton-miles that can be moved, L.
+When we construct example problems, we will set L to approximately 80%
+of the ton-miles used by a notional plan. That plan will be constructed
+with a simple greedy heuristic planner. The main function of the notional plan
+is to help us calculate a reasonable value of L.
+You might want to save it, because an optimal plan should never be worse than
+the greedy plan. It makes an easy way to check the result.
+
+We will choose the following:
+
+S_i, the amount which node i will supply to the network. C_i => S_i => 0
+R_i, the amount of resupply which node i will get from the network. R_i => 0.
+f_ij, the amount of stuff which will node directly from node i to node j. f_ij => 0
+
+There are thus 2M + M^2 decision variables.
+
+At every node j, there is a strict flow balance:
+
+sum_i  f_ij + S_j = R_j + sum_k f_jk.
+
+There is a logistical limit on the total ton-miles moved:
+
+L => sum_ij c_ij * f_ij
+
+Our objective is to minimize the weighted quadratic shortfall:
+
+sum_i P_i * ((D_i - R_i)/D_i)^2
+
+
+A typical example problem might have 70 nodes:
+
+20 nodes where C_i > 0 and D_i = 0.
+20 nodes where C_i > 0 and D_i > 0.
+30 nodes where C_i = 0 and D_i > 0.
+
+
+A simple version of this problem would have 5040 decision variables.
+The associated Jacobians would have over 25.4 million entries. 
+
+With my computing infrastructure, this is infeasible, but they
+want something to address their problem. The greedy
+planner is extremely fast, but they are unhappy with the quality
+of the plans.
+
+I need some way to cut down the problem, say by some pre-processing step
+that could identify which links are provably not part of any
+plan even remotely near optimal.
+
+If we can focus on some plausible subset of the links,
+I would still need at matrix generator that turns the problem
+into a long vector z = (x,y) so we can solve this as
+       H(x,y) = 0
+0 <= G(x,y) \perp y => 0
+
+There would, of course, have to be a corresponding routine
+that takes the optimal z and "unpacks" it back into S, R and f.
+
+All work products should go in the (currently empty)
+C:\repos\ghub-per\titan-alloy\visolver\network
+directory.
+
+-------------------
+
+The Greedy Planner.
+(I implemented this in Java first, so I know the algorithm works.
+Nevertheless, analyze this as I might have mis-typed.)
+
+There are two phases. The first phase is to estimate meetable resupply levels.
+The second phase is to use a greedy algorithm to construct flows.
+
+Phase 1: Target Resupply Levels.
+
+Define the total "meetable demand", MR: MR = min (sum_i D_i,  sum_i  C_i)
+
+If MR < sum_i C_i, then we really can meet all the demand and the
+only issue is how to do so efficiently.
+
+Define the array of remaining demand as RD_i = D_i
+
+But if MR < sum_i D_i, we have to ration the supplies.
+
+To decide on rationing, we solve a small auxilliary problem:
+
+Choose R_i => 0 to min sum_i P_i*((D_i - R_i)/D_i)^2  s.t. MR => sum_i R_i
+
+A quick analysis shows that R_i = D_i - lambda*(D_i^2/P_i) for the positive R_i,
+where lambda is chosen to make the R_i add to MR.
+Basically, the total shortfall is sum_i D_i - MR, and D_i^2 / P_i is a
+weight, w_i, for each node i, and that node's share of the shortfall is w_i / sum w
+
+Set the remaining (meetable) demand at i to the rationed value, 
+D_i - lambda*(D_i^2/P_i) for the positive R_i
+
+
+Phase 2: Decide Flows
+
+Define the array of remaining capacity as RC_i = C_i
+
+Scale down all RD by 0.01% in order to avoid round-off problems with
+the algorithm below. This ensures that there will always be a tiny
+amount of capacity unused in the notional plan and hence
+we can never fail to find a candidate source of supply in line (2)
+of the algorithm.
+
+
+Iterate this loop until all RD are zero:
+
+(1) Find n to maximize RD_n. If RD_n is zero, the plan is finished.
+(2) Find m to minimize c_mn, but consider only those m where RC_m > 0.
+(3) Set q = min (RD_n, RC_m)
+(4) Record the flow:
+(4.1)  RD_n = RD_n - q
+(4.2)  RC_m = RC_m - q 
+(4.3)  f_mn = f_mn + q
+return to the start of the loop, at step 1.
+
+In my experience, the greedy planner tends to put many
+flows on a few key nodes. They get very "busy",
+which is unrealistic in its own way.
+Therefore, it makes sense to
+reduce their load by swapping flows. 
+
+To swap two flows,
+find nodes i, j, m and n where moving 'x' amount
+of flow from f_ij to f_in and the same 'x' amount
+from f_mn to f_mj reduces overall cost. 
+to avoid negative edges, x = min(f_ij , f_mn).
+
+A brute-force scan is O(N^4), but scanning only at the
+busiest node is O(N^3) per iteration. At N=70,
+that's obviously about 70x speedup.
+
+After the greedy planner, swapping flows typically saves only
+a few percent (at great time cost), but users like the
+reduced "busy-ness"
+-------------------

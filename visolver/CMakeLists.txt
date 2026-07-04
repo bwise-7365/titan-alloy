@@ -109,6 +109,10 @@ vincp_add_gtest(lvi_ellipsoid_test)
 vincp_add_gtest(damped_newton_test)
 vincp_add_gtest(smoothing_newton_test)
 
+# Flow-planning network layer (network/plan.md): vincpnet library + its tests.
+# Must come after the GoogleTest setup above (it uses gtest_discover_tests).
+add_subdirectory(network)
+
 # The two demo binaries are still run as plain smoke tests (exit 0 == pass); they
 # are not GoogleTest suites.
 add_test(NAME lvi_demo COMMAND lvi_demo)

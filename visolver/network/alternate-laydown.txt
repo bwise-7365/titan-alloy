@@ -1,0 +1,25 @@
+I want to add a second way to get costs, c_ij.
+They will be placed in rectangles, with cost
+roughly proportional to their separation.
+
+(As per my usual coding style, all these constants
+should be named variables, not magic numbers)
+
+
+Divide them up into three groups: 
+A, which have C_i > 0 and D_i = 0
+B, which have C_i > 0 and D_i > 0
+C, which have C_i = 0 and D_i = 0
+
+
+They are in a plane, and the cost of a flow is their euclidean distance.
+f_ij is euc. dist +/- 5%
+f_ji is euc. dist +/- 5%
+the variations of each are independent.
+
+A are assigned x-coord ~ U[  0, 240], y ~ U[100, 200]
+B are assigned x-coord ~ U[160, 400], y ~ U[100, 200]
+C are assigned x-coord ~ U[320, 560], y ~ U[100, 200]
+
+As before, c_ii ~ U[1,5]
+

@@ -1,0 +1,8 @@
+Parts of Claude.md are no longer needed or accurate
+because that work has been done.
+
+
+On restart, the first move will be to wire the FetchContent
+block + one vincp_gtest target into CMakeLists.txt
+(e.g. porting ellipsoid_projector_test), so
+you can CLion-reload and see green in the GoogleTest runner. Good place to pause.
