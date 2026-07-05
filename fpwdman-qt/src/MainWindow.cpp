@@ -25,6 +25,7 @@
 #include "EnterMasterPassphraseDialog.h"
 #include "PasswordStore.h"
 #include "PreferencesDialog.h"
+#include "UiMetrics.h"
 #include "ViewSiteEntry.h"
 
 namespace {
@@ -105,6 +106,8 @@ void MainWindow::setupMenus() {
 void MainWindow::setupCentralWidget() {
     auto* container = new QWidget(this);
     auto* mainLayout = new QVBoxLayout(container);
+    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
+    mainLayout->setSpacing(ui::kSpacing);
 
     m_list = new QListWidget(this);
     m_list->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -114,7 +117,8 @@ void MainWindow::setupCentralWidget() {
     mainLayout->addWidget(m_list, 1);
 
     auto* grid = new QGridLayout();
-    grid->setHorizontalSpacing(5);
+    grid->setHorizontalSpacing(ui::kFormHSpacing);
+    grid->setVerticalSpacing(ui::kSpacing);
     grid->setContentsMargins(0, 0, 0, 0);
 
     m_findLineEdit = new QLineEdit(this);

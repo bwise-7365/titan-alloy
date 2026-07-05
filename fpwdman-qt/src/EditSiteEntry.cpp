@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include "UiMetrics.h"
+
 EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, int suggestedLength,
                              QWidget* parent)
     : QDialog(parent), m_entry(entry), m_pwMode(pwMode), m_suggestedLength(suggestedLength) {
@@ -16,10 +18,10 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
     auto* mainLayout = new QVBoxLayout(this);
     auto* formLayout = new QFormLayout();
 
-    const int commonSpacing = 6;
-    formLayout->setVerticalSpacing(commonSpacing);
-    mainLayout->setSpacing(commonSpacing);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    formLayout->setVerticalSpacing(ui::kSpacing);
+    formLayout->setHorizontalSpacing(ui::kFormHSpacing);
+    mainLayout->setSpacing(ui::kSpacing);
+    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
 
     m_titleEdit = new QLineEdit(this);
     m_siteEdit = new QLineEdit(this);
@@ -34,6 +36,7 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
     // Password row: field + Suggest button.
     auto* passwordRow = new QHBoxLayout();
     passwordRow->setContentsMargins(0, 0, 0, 0);
+    passwordRow->setSpacing(ui::kSpacing);
     passwordRow->addWidget(m_passwordEdit, 1);
     auto* suggestButton = new QPushButton(tr("Suggest"), this);
     passwordRow->addWidget(suggestButton);
@@ -55,6 +58,7 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
 
     auto* buttonLayout = new QHBoxLayout();
     buttonLayout->setContentsMargins(0, 0, 0, 0);
+    buttonLayout->setSpacing(ui::kSpacing);
 
     auto* okButton = new QPushButton(tr("OK"), this);
     auto* resetButton = new QPushButton(tr("Reset"), this);

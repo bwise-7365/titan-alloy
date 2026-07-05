@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 
 #include "ClipboardUtil.h"
+#include "UiMetrics.h"
 
 ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidget* parent)
     : QDialog(parent) {
@@ -18,10 +19,10 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
     auto* mainLayout = new QVBoxLayout(this);
     auto* formLayout = new QFormLayout();
 
-    const int commonSpacing = 6;
-    formLayout->setVerticalSpacing(commonSpacing);
-    mainLayout->setSpacing(commonSpacing);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    formLayout->setVerticalSpacing(ui::kSpacing);
+    formLayout->setHorizontalSpacing(ui::kFormHSpacing);
+    mainLayout->setSpacing(ui::kSpacing);
+    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
 
     auto createReadOnlyField = [&](const QString& label, const QString& value) {
         auto* lineEdit = new QLineEdit(value, this);
@@ -54,6 +55,7 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
 
     auto* buttonLayout = new QHBoxLayout();
     buttonLayout->setContentsMargins(0, 0, 0, 0);
+    buttonLayout->setSpacing(ui::kSpacing);
 
     auto* copyButton = new QPushButton(tr("Copy Password"), this);
     connect(copyButton, &QPushButton::clicked, this,
