@@ -1,12 +1,13 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include <QApplication>
+
 #include "MainWindow.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     app.setStyleSheet(
-        "QPlainTextEdit, QLineEdit {"
+        "QPlainTextEdit, QLineEdit, QListWidget {"
         "background-color: #FFFFDD;"
         "color: black;"
         "font-family: 'Helvetica', 'Arial', 'Monaco', 'Courier New', monospace, sans-serif;"
@@ -16,10 +17,14 @@ int main(int argc, char *argv[]) {
         "}"
         "QToolTip {"
         "color: white;"
-        "}"
-    );
+        "}");
 
-    MainWindow window;
+    // Optional command-line argument: a .sbc file to open on startup.
+    QString initialPath;
+    if (argc > 1)
+        initialPath = QString::fromLocal8Bit(argv[1]);
+
+    MainWindow window(initialPath);
     window.show();
 
     return QApplication::exec();

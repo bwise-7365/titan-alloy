@@ -1,403 +1,521 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "MainWindow.h"
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QPlainTextEdit>
-#include <QApplication>
+
 #include <algorithm>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <utility>
+
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
+#include <QCloseEvent>
+#include <QFileDialog>
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QLabel>
 #include <QLineEdit>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QTextCursor>
-#include <QFileDialog>
-#include <QFile>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
-#include <QPushButton>
+#include <QListWidget>
+#include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
-#include <QDialog>
-#include <QPalette>
-#include <QColor>
+#include <QTimer>
+#include <QVBoxLayout>
+
+#include "ChangeMasterPassphraseDialog.h"
 #include "EditSiteEntry.h"
+#include "EnterMasterPassphraseDialog.h"
+#include "PasswordStore.h"
+#include "PreferencesDialog.h"
 #include "ViewSiteEntry.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), m_lastFoundIndex(-1) {
-    setWindowTitle("fpwdman-qt");
-    resize(250, 360);
+namespace {
+constexpr int kIdleMaxSeconds = 3600; // one hour, matches ClearFileCheckMaximum
+constexpr int kMinMasterFloor = 6;    // matches the old MinKeyLength
+} // namespace
 
-    // Set tooltip style using QPalette
-    /*
-    QPalette pal = QApplication::palette();
-    pal.setColor(QPalette::ToolTipBase, QColor("#FFFFDD"));
-    pal.setColor(QPalette::ToolTipText, Qt::black);
-    QApplication::setPalette(pal);
-    */
+MainWindow::MainWindow(const QString& initialPath, QWidget* parent) : QMainWindow(parent) {
+    setWindowTitle("fpwdman-qt");
+    resize(280, 380);
 
     setupMenus();
     setupCentralWidget();
+    updateStatusTiles();
+
+    // Idle auto-close: reset on any user activity, fire once after the timeout.
+    m_idleTimer = new QTimer(this);
+    m_idleTimer->setSingleShot(true);
+    connect(m_idleTimer, &QTimer::timeout, this, &MainWindow::onIdleTimeout);
+    qApp->installEventFilter(this);
+    resetIdle();
+
+    if (!initialPath.isEmpty())
+        QTimer::singleShot(0, this, [this, initialPath]() { openDatabase(initialPath); });
 }
 
-MainWindow::~MainWindow() {
-}
+MainWindow::~MainWindow() = default;
+
+// ---------------------------------------------------------------------------
+// UI construction
+// ---------------------------------------------------------------------------
 
 void MainWindow::setupMenus() {
-    QMenuBar *menuBar = this->menuBar();
+    QMenuBar* bar = menuBar();
 
-    // File menu
-    QMenu *fileMenu = menuBar->addMenu(tr("&File"));
-    QAction *saveAction = fileMenu->addAction(tr("&Save"));
-    QAction *saveAsAction = fileMenu->addAction(tr("Save &As ..."));
-    QAction *loadAction = fileMenu->addAction(tr("&Load"));
+    QMenu* fileMenu = bar->addMenu(tr("&File"));
+    QAction* newFileAction = fileMenu->addAction(tr("&New Database"));
+    QAction* openAction = fileMenu->addAction(tr("&Open ..."));
+    QAction* saveAction = fileMenu->addAction(tr("&Save"));
+    QAction* saveAsAction = fileMenu->addAction(tr("Save &As ..."));
     fileMenu->addSeparator();
-    QAction *quitAction = fileMenu->addAction(tr("&Quit"));
+    QAction* quitAction = fileMenu->addAction(tr("&Quit"));
 
+    newFileAction->setShortcut(QKeySequence::New);
+    openAction->setShortcut(QKeySequence::Open);
     saveAction->setShortcut(QKeySequence::Save);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
-    loadAction->setShortcut(QKeySequence::Open);
     quitAction->setShortcut(QKeySequence::Quit);
 
-    connect(saveAction, &QAction::triggered, this, &MainWindow::onSaveActionTriggered);
-    connect(saveAsAction, &QAction::triggered, this, &MainWindow::onSaveAsActionTriggered);
-    connect(loadAction, &QAction::triggered, this, &MainWindow::onLoadActionTriggered);
-    connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
+    connect(newFileAction, &QAction::triggered, this, &MainWindow::onNewFile);
+    connect(openAction, &QAction::triggered, this, &MainWindow::onOpen);
+    connect(saveAction, &QAction::triggered, this, &MainWindow::onSave);
+    connect(saveAsAction, &QAction::triggered, this, &MainWindow::onSaveAs);
+    connect(quitAction, &QAction::triggered, this, &MainWindow::close);
 
-    // Edit menu
-    QMenu *editMenu = menuBar->addMenu(tr("&Edit"));
-    editMenu->addAction(tr("&New"));
-    QAction *editAction = editMenu->addAction(tr("&Edit"));
-    editMenu->addAction(tr("&Delete"));
-    connect(editAction, &QAction::triggered, this, &MainWindow::onEditActionTriggered);
+    QMenu* editMenu = bar->addMenu(tr("&Edit"));
+    QAction* newEntryAction = editMenu->addAction(tr("&New Entry"));
+    QAction* editEntryAction = editMenu->addAction(tr("&Edit Entry"));
+    QAction* deleteEntryAction = editMenu->addAction(tr("&Delete Entry"));
+    connect(newEntryAction, &QAction::triggered, this, &MainWindow::onNewEntry);
+    connect(editEntryAction, &QAction::triggered, this, &MainWindow::onEditEntry);
+    connect(deleteEntryAction, &QAction::triggered, this, &MainWindow::onDeleteEntry);
 
-    QMenu *toolsMenu = menuBar->addMenu(tr("&Tools"));
-    QAction *sortAction = toolsMenu->addAction(tr("&Sort Sites"));
-    connect(sortAction, &QAction::triggered, this, &MainWindow::onSortSitesTriggered);
+    QMenu* toolsMenu = bar->addMenu(tr("&Tools"));
+    QAction* sortAction = toolsMenu->addAction(tr("&Sort Sites"));
+    QAction* prefsAction = toolsMenu->addAction(tr("&Preferences ..."));
+    QAction* changeMpAction = toolsMenu->addAction(tr("&Change Master Passphrase ..."));
+    connect(sortAction, &QAction::triggered, this, &MainWindow::onSortSites);
+    connect(prefsAction, &QAction::triggered, this, &MainWindow::onPreferences);
+    connect(changeMpAction, &QAction::triggered, this, &MainWindow::onChangeMasterPassphrase);
 
-    menuBar->addMenu(tr("&Help"));
+    QMenu* helpMenu = bar->addMenu(tr("&Help"));
+    connect(helpMenu->addAction(tr("&About")), &QAction::triggered, this, &MainWindow::onAbout);
+    connect(helpMenu->addAction(tr("&Usage")), &QAction::triggered, this, &MainWindow::onUsage);
 }
 
 void MainWindow::setupCentralWidget() {
-    QWidget *container = new QWidget(this);
-    QVBoxLayout *mainLayout = new QVBoxLayout(container);
+    auto* container = new QWidget(this);
+    auto* mainLayout = new QVBoxLayout(container);
 
-    m_textOutput = new QPlainTextEdit(this);
-    m_textOutput->setReadOnly(true);
+    m_list = new QListWidget(this);
+    m_list->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_list, &QListWidget::itemDoubleClicked, this, &MainWindow::onItemDoubleClicked);
+    connect(m_list, &QListWidget::customContextMenuRequested, this,
+            &MainWindow::onListContextMenu);
+    mainLayout->addWidget(m_list, 1);
 
-    // Generate 250 site entries
-    for (int i = 1; i <= 250; ++i) {
-        SiteEntry entry;
-        entry.Title = QString("Title %1").arg(i, 3, 10, QChar('0'));
-        entry.Site = "abcd";
-        entry.UserID = "abcd";
-        entry.Password = "abcd";
-        entry.Comment = "abcd";
-        m_entries.push_back(entry);
-    }
-    updateTextOutput();
+    auto* grid = new QGridLayout();
+    grid->setHorizontalSpacing(5);
+    grid->setContentsMargins(0, 0, 0, 0);
 
-    mainLayout->addWidget(m_textOutput, 1);
-
-    // Bottom container for both text rows and the status tiles
-    // We use a QGridLayout to ensure perfect alignment between 2 rows on the left and 3 tiles on the right.
-    // Total 6 units of height: each row on left spans 3 units, each tile on right spans 2 units.
-    QGridLayout *bottomGrid = new QGridLayout();
-    bottomGrid->setVerticalSpacing(0);
-    bottomGrid->setHorizontalSpacing(5);
-    bottomGrid->setContentsMargins(0, 0, 0, 0);
-
-    // Find row (spans rows 0-2)
-    QLabel *findLabel = new QLabel(tr("Find"), this);
     m_findLineEdit = new QLineEdit(this);
-    bottomGrid->addWidget(findLabel, 0, 0, 3, 1);
-    bottomGrid->addWidget(m_findLineEdit, 0, 1, 3, 1);
+    grid->addWidget(new QLabel(tr("Find"), this), 0, 0);
+    grid->addWidget(m_findLineEdit, 0, 1);
 
-    // File row (spans rows 3-5)
-    QLabel *fileLabel = new QLabel(tr("File"), this);
     m_fileLineEdit = new QLineEdit(this);
     m_fileLineEdit->setReadOnly(true);
-    bottomGrid->addWidget(fileLabel, 3, 0, 3, 1);
-    bottomGrid->addWidget(m_fileLineEdit, 3, 1, 3, 1);
+    grid->addWidget(new QLabel(tr("File"), this), 1, 0);
+    grid->addWidget(m_fileLineEdit, 1, 1);
 
-    // Three status tiles: 3 tiles * 18px = 54px total height. 
-    // This matches the height of 6 units of 9px each.
     const int tileSize = 18;
-
-    m_entropyTile = new QLabel(this);
-    m_entropyTile->setFixedSize(tileSize, tileSize);
-    m_entropyTile->setToolTip(tr("Sufficient Entropy?"));
-    m_entropyTile->setStyleSheet("background-color: red; border: 1px solid gray;");
-
     m_passphraseTile = new QLabel(this);
     m_passphraseTile->setFixedSize(tileSize, tileSize);
-    m_passphraseTile->setToolTip(tr("Passphrase set?"));
-    m_passphraseTile->setStyleSheet("background-color: blue; border: 1px solid gray;");
-
+    m_passphraseTile->setToolTip(tr("Master passphrase set?"));
     m_changesTile = new QLabel(this);
     m_changesTile->setFixedSize(tileSize, tileSize);
     m_changesTile->setToolTip(tr("Changes saved?"));
-    m_changesTile->setStyleSheet("background-color: blue; border: 1px solid gray;");
+    grid->addWidget(m_passphraseTile, 0, 2, Qt::AlignCenter);
+    grid->addWidget(m_changesTile, 1, 2, Qt::AlignCenter);
 
-    // Right part: Three status tiles (spans 2 units each)
-    bottomGrid->addWidget(m_entropyTile, 0, 2, 2, 1, Qt::AlignCenter);
-    bottomGrid->addWidget(m_passphraseTile, 2, 2, 2, 1, Qt::AlignCenter);
-    bottomGrid->addWidget(m_changesTile, 4, 2, 2, 1, Qt::AlignCenter);
-
-    // Ensure rows are equal height units
-    for (int i = 0; i < 6; ++i) {
-        bottomGrid->setRowStretch(i, 1);
-        bottomGrid->setRowMinimumHeight(i, 9);
-    }
-    bottomGrid->setColumnStretch(1, 1); // Let line edits expand
-
-    mainLayout->addLayout(bottomGrid, 0);
+    grid->setColumnStretch(1, 1);
+    mainLayout->addLayout(grid, 0);
 
     connect(m_findLineEdit, &QLineEdit::returnPressed, this, &MainWindow::onFindReturnPressed);
-
-    m_textOutput->viewport()->installEventFilter(this);
 
     setCentralWidget(container);
 }
 
-void MainWindow::onEditActionTriggered() {
-    int lineIndex = m_textOutput->textCursor().blockNumber();
-    if (lineIndex >= 0 && lineIndex < static_cast<int>(m_entries.size())) {
-        EditSiteEntry dialog(&m_entries[lineIndex], this);
-        if (dialog.exec() == QDialog::Accepted) {
-            updateTextOutput();
-            // Restore cursor to the edited line
-            QTextCursor cursor(m_textOutput->document());
-            for (int i = 0; i < lineIndex; ++i) {
-                cursor.movePosition(QTextCursor::NextBlock);
-            }
-            cursor.select(QTextCursor::LineUnderCursor);
-            m_textOutput->setTextCursor(cursor);
-            m_textOutput->ensureCursorVisible();
-        }
-    }
+// ---------------------------------------------------------------------------
+// View helpers
+// ---------------------------------------------------------------------------
+
+void MainWindow::refreshList(int selectRow) {
+    m_list->clear();
+    for (const auto& e : m_db.entries)
+        m_list->addItem(e.Title);
+    if (selectRow >= 0 && selectRow < m_list->count())
+        m_list->setCurrentRow(selectRow);
 }
 
-void MainWindow::onSortSitesTriggered() {
-    std::sort(m_entries.begin(), m_entries.end(), [](const SiteEntry &a, const SiteEntry &b) {
-        return a.Title.compare(b.Title, Qt::CaseInsensitive) < 0;
-    });
-    updateTextOutput();
+void MainWindow::updateStatusTiles() {
+    auto setTile = [](QLabel* tile, const char* color) {
+        tile->setStyleSheet(QString("background-color: %1; border: 1px solid gray;").arg(color));
+    };
+
+    if (!m_db.passphraseSet())
+        setTile(m_passphraseTile, "red");
+    else if (m_db.unsavedMpChange)
+        setTile(m_passphraseTile, "orange");
+    else
+        setTile(m_passphraseTile, "blue");
+
+    setTile(m_changesTile, (m_db.unsavedChanges || m_db.unsavedMpChange) ? "red" : "blue");
+
+    m_fileLineEdit->setText(m_db.filePath.isEmpty() ? tr("(unsaved)") : m_db.filePath);
 }
 
-void MainWindow::onSaveActionTriggered() {
-    QString fileName = m_fileLineEdit->text();
-    if (fileName.isEmpty() || !QFile::exists(fileName)) {
-        onSaveAsActionTriggered();
-    } else {
-        saveToFile(fileName);
-    }
+void MainWindow::markDirty() {
+    m_db.unsavedChanges = true;
+    updateStatusTiles();
 }
 
-void MainWindow::onLoadActionTriggered() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("XML Files (*.xml);;All Files (*)"));
-    if (fileName.isEmpty()) {
+void MainWindow::resetIdle() {
+    if (m_idleTimer)
+        m_idleTimer->start(kIdleMaxSeconds * 1000);
+}
+
+int MainWindow::currentRow() const {
+    return m_list->currentRow();
+}
+
+// ---------------------------------------------------------------------------
+// File actions
+// ---------------------------------------------------------------------------
+
+void MainWindow::onNewFile() {
+    if (!maybeSaveGuard())
         return;
-    }
+    m_db.reset();
+    m_lastFoundRow = -1;
+    m_lastSearch.clear();
+    refreshList();
+    updateStatusTiles();
+}
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QDialog errorDialog(this);
-        errorDialog.setWindowTitle(tr("Error"));
-        QVBoxLayout *layout = new QVBoxLayout(&errorDialog);
-        layout->addWidget(new QLabel(tr("The file is unreadable."), &errorDialog));
-        QHBoxLayout *btnLayout = new QHBoxLayout();
-        btnLayout->addStretch();
-        QPushButton *closeBtn = new QPushButton(tr("Close"), &errorDialog);
-        connect(closeBtn, &QPushButton::clicked, &errorDialog, &QDialog::accept);
-        btnLayout->addWidget(closeBtn);
-        layout->addLayout(btnLayout);
-        errorDialog.setFixedWidth(300);
-        errorDialog.exec();
+void MainWindow::onOpen() {
+    if (!maybeSaveGuard())
         return;
-    }
-
-    QXmlStreamReader reader(&file);
-    std::vector<SiteEntry> newEntries;
-
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QStringLiteral("FpwdMan")) {
-            while (reader.readNextStartElement()) {
-                if (reader.name() == QStringLiteral("SiteTable")) {
-                    while (reader.readNextStartElement()) {
-                        if (reader.name() == QStringLiteral("SiteEntry")) {
-                            SiteEntry entry;
-                            while (reader.readNextStartElement()) {
-                                QString name = reader.name().toString();
-                                QString text = reader.readElementText();
-                                if (name == "title") entry.Title = text;
-                                else if (name == "site") entry.Site = text;
-                                else if (name == "userid") entry.UserID = text;
-                                else if (name == "password") entry.Password = text;
-                                else if (name == "comments") entry.Comment = text;
-                            }
-                            newEntries.push_back(entry);
-                        } else {
-                            reader.skipCurrentElement();
-                        }
-                    }
-                } else {
-                    reader.skipCurrentElement();
-                }
-            }
-        } else {
-            reader.skipCurrentElement();
-        }
-    }
-
-    if (reader.hasError()) {
-        QDialog errorDialog(this);
-        errorDialog.setWindowTitle(tr("Error"));
-        QVBoxLayout *layout = new QVBoxLayout(&errorDialog);
-        layout->addWidget(new QLabel(tr("The file is unreadable."), &errorDialog));
-        QHBoxLayout *btnLayout = new QHBoxLayout();
-        btnLayout->addStretch();
-        QPushButton *closeBtn = new QPushButton(tr("Close"), &errorDialog);
-        connect(closeBtn, &QPushButton::clicked, &errorDialog, &QDialog::accept);
-        btnLayout->addWidget(closeBtn);
-        layout->addLayout(btnLayout);
-        errorDialog.setFixedWidth(300);
-        errorDialog.exec();
-    } else {
-        m_entries = std::move(newEntries);
-        m_lastFoundIndex = -1;
-        m_lastSearchString.clear();
-        updateTextOutput();
-        m_fileLineEdit->setText(fileName);
-    }
-
-    file.close();
-}
-
-void MainWindow::onSaveAsActionTriggered() {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), "", tr("XML Files (*.xml);;All Files (*)"));
-    if (fileName.isEmpty()) {
+    const QString fn = QFileDialog::getOpenFileName(
+        this, tr("Open Password File"), QString(),
+        tr("Encrypted files (*.sbc);;All Files (*)"));
+    if (fn.isEmpty())
         return;
-    }
-
-    if (saveToFile(fileName)) {
-        m_fileLineEdit->setText(fileName);
-    }
+    openDatabase(fn);
 }
 
-bool MainWindow::saveToFile(const QString &fileName) {
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::critical(this, tr("Error"), tr("Could not open file for writing: %1").arg(file.errorString()));
-        return false;
-    }
-
-    QXmlStreamWriter xml(&file);
-    xml.setAutoFormatting(true);
-    xml.writeStartDocument();
-
-    xml.writeStartElement("FpwdMan");
-    xml.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    xml.writeAttribute("xsi:noNamespaceSchemaLocation", "fpwdman.xsd");
-
-    xml.writeStartElement("SiteTable");
-
-    for (const auto& entry : m_entries) {
-        xml.writeStartElement("SiteEntry");
-        xml.writeTextElement("title", entry.Title);
-        xml.writeTextElement("site", entry.Site);
-        xml.writeTextElement("userid", entry.UserID);
-        xml.writeTextElement("password", entry.Password);
-        xml.writeTextElement("comments", entry.Comment);
-        xml.writeEndElement(); // SiteEntry
-    }
-
-    xml.writeEndElement(); // SiteTable
-    xml.writeEndElement(); // FpwdMan
-    xml.writeEndDocument();
-
-    file.close();
-    return true;
-}
-
-void MainWindow::updateTextOutput() {
-    QString content;
-    for (const auto& entry : m_entries) {
-        content += entry.Title + "\n";
-    }
-    m_textOutput->setPlainText(content);
-}
-
-void MainWindow::onFindReturnPressed() {
-    QString searchString = m_findLineEdit->text();
-    if (searchString.isEmpty()) return;
-
-    if (searchString != m_lastSearchString) {
-        m_lastFoundIndex = -1;
-        m_lastSearchString = searchString;
-    }
-
-    bool found = false;
-    int totalEntries = static_cast<int>(m_entries.size());
-    if (totalEntries == 0) return;
-
-    int startIndex = (m_lastFoundIndex + 1) % totalEntries;
-
-    for (int i = 0; i < totalEntries; ++i) {
-        int currentIndex = (startIndex + i) % totalEntries;
-        const SiteEntry& entry = m_entries[currentIndex];
-
-        if (entry.Title.contains(searchString, Qt::CaseInsensitive) ||
-            entry.Site.contains(searchString, Qt::CaseInsensitive) ||
-            entry.UserID.contains(searchString, Qt::CaseInsensitive) ||
-            entry.Password.contains(searchString, Qt::CaseInsensitive) ||
-            entry.Comment.contains(searchString, Qt::CaseInsensitive)) {
-            
-            m_lastFoundIndex = currentIndex;
-            found = true;
-            break;
-        }
-    }
-
-    if (found) {
-        QTextCursor cursor(m_textOutput->document());
-        for (int i = 0; i < m_lastFoundIndex; ++i) {
-            cursor.movePosition(QTextCursor::NextBlock);
-        }
-        cursor.select(QTextCursor::LineUnderCursor);
-        m_textOutput->setTextCursor(cursor);
-        m_textOutput->setFocus();
-        m_textOutput->ensureCursorVisible();
-    }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        // If focus is not on the find line edit, trigger find again
-        if (!m_findLineEdit->hasFocus()) {
-            onFindReturnPressed();
+void MainWindow::openDatabase(const QString& path) {
+    for (;;) {
+        EnterMasterPassphraseDialog dlg(
+            tr("Enter the master passphrase for:\n%1").arg(path), this);
+        if (dlg.exec() != QDialog::Accepted)
+            return;
+        const QString pass = dlg.passphrase();
+        try {
+            std::vector<SiteEntry> entries = pwstore::openFile(path, pass);
+            m_db.entries = std::move(entries);
+            m_db.filePath = path;
+            m_db.passphrase = pass;
+            m_db.unsavedChanges = false;
+            m_db.unsavedMpChange = false;
+            m_lastFoundRow = -1;
+            m_lastSearch.clear();
+            refreshList();
+            updateStatusTiles();
+            return;
+        } catch (const pwstore::WrongPassphrase&) {
+            QMessageBox::warning(this, tr("Wrong passphrase"),
+                                 tr("That passphrase did not decrypt the file. Try again."));
+            // loop and re-prompt
+        } catch (const pwstore::CorruptFile&) {
+            QMessageBox::critical(this, tr("Unreadable file"),
+                                  tr("The file could not be decrypted (corrupt or not a "
+                                     "password file)."));
+            return;
+        } catch (const pwstore::IoError& e) {
+            QMessageBox::critical(this, tr("Error"), e.message);
             return;
         }
     }
-    QMainWindow::keyPressEvent(event);
 }
 
-bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
-    if (watched == m_textOutput->viewport() && event->type() == QEvent::MouseButtonDblClick) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        QTextCursor cursor = m_textOutput->cursorForPosition(mouseEvent->pos());
-        cursor.select(QTextCursor::LineUnderCursor);
-        m_textOutput->setTextCursor(cursor);
-        int lineIndex = cursor.blockNumber();
-        if (lineIndex >= 0 && lineIndex < static_cast<int>(m_entries.size())) {
-            ViewSiteEntry dialog(&m_entries[lineIndex], this);
-            dialog.exec();
-        }
+void MainWindow::onSave() {
+    if (m_db.filePath.isEmpty())
+        onSaveAs();
+    else
+        doSave(m_db.filePath);
+}
+
+void MainWindow::onSaveAs() {
+    QString fn = QFileDialog::getSaveFileName(this, tr("Save As"), QString(),
+                                              tr("Encrypted files (*.sbc);;All Files (*)"));
+    if (fn.isEmpty())
+        return;
+    if (!fn.endsWith(".sbc", Qt::CaseInsensitive))
+        fn += ".sbc";
+    doSave(fn);
+}
+
+bool MainWindow::ensurePassphraseForSave() {
+    if (m_db.passphraseSet())
         return true;
+    ChangeMasterPassphraseDialog dlg(/*requireCurrent=*/false,
+                                     std::max(kMinMasterFloor, m_prefs.minMasterLength), this);
+    if (dlg.exec() != QDialog::Accepted)
+        return false;
+    m_db.passphrase = dlg.newPassphrase();
+    m_db.unsavedMpChange = false; // it will be written now
+    return true;
+}
+
+bool MainWindow::doSave(const QString& path) {
+    if (!ensurePassphraseForSave())
+        return false;
+    try {
+        pwstore::saveFile(path, m_db.passphrase, m_db.entries);
+    } catch (const pwstore::IoError& e) {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Could not write the file: %1").arg(e.message));
+        return false;
+    } catch (const pwstore::Error&) {
+        QMessageBox::critical(this, tr("Error"), tr("Encryption failed."));
+        return false;
+    }
+    m_db.filePath = path;
+    m_db.unsavedChanges = false;
+    m_db.unsavedMpChange = false;
+    updateStatusTiles();
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Entry actions
+// ---------------------------------------------------------------------------
+
+void MainWindow::onNewEntry() {
+    SiteEntry entry;
+    EditSiteEntry dlg(&entry, m_prefs.pwMode, m_prefs.suggestedSiteLength, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        m_db.entries.push_back(entry);
+        markDirty();
+        refreshList(static_cast<int>(m_db.entries.size()) - 1);
+    }
+}
+
+void MainWindow::onEditEntry() {
+    const int row = currentRow();
+    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+        return;
+    EditSiteEntry dlg(&m_db.entries[row], m_prefs.pwMode, m_prefs.suggestedSiteLength, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        markDirty();
+        refreshList(row);
+    }
+}
+
+void MainWindow::onDeleteEntry() {
+    const int row = currentRow();
+    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+        return;
+    const SiteEntry& e = m_db.entries[row];
+    const auto answer = QMessageBox::question(
+        this, tr("Delete entry"),
+        tr("Delete \"%1\" (%2)?").arg(e.Title, e.Site),
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (answer != QMessageBox::Yes)
+        return;
+    m_db.entries.erase(m_db.entries.begin() + row);
+    markDirty();
+    refreshList(std::min(row, static_cast<int>(m_db.entries.size()) - 1));
+}
+
+// ---------------------------------------------------------------------------
+// Tools
+// ---------------------------------------------------------------------------
+
+void MainWindow::onSortSites() {
+    std::sort(m_db.entries.begin(), m_db.entries.end(),
+              [](const SiteEntry& a, const SiteEntry& b) {
+                  return a.Title.compare(b.Title, Qt::CaseInsensitive) < 0;
+              });
+    markDirty();
+    refreshList();
+}
+
+void MainWindow::onPreferences() {
+    PreferencesDialog dlg(m_prefs, this);
+    if (dlg.exec() == QDialog::Accepted)
+        m_prefs = dlg.preferences();
+}
+
+void MainWindow::onChangeMasterPassphrase() {
+    const int minLen = std::max(kMinMasterFloor, m_prefs.minMasterLength);
+    if (!m_db.passphraseSet()) {
+        ChangeMasterPassphraseDialog dlg(/*requireCurrent=*/false, minLen, this);
+        if (dlg.exec() == QDialog::Accepted) {
+            m_db.passphrase = dlg.newPassphrase();
+            m_db.unsavedMpChange = true;
+            updateStatusTiles();
+        }
+        return;
+    }
+    ChangeMasterPassphraseDialog dlg(/*requireCurrent=*/true, minLen, this);
+    if (dlg.exec() != QDialog::Accepted)
+        return;
+    if (dlg.currentPassphrase() != m_db.passphrase) {
+        QMessageBox::warning(this, tr("Wrong passphrase"),
+                             tr("The current master passphrase is incorrect."));
+        return;
+    }
+    m_db.passphrase = dlg.newPassphrase();
+    m_db.unsavedMpChange = true; // takes effect on the next Save
+    updateStatusTiles();
+}
+
+void MainWindow::onAbout() {
+    QMessageBox::about(
+        this, tr("About fpwdman-qt"),
+        tr("<b>fpwdman-qt</b><br>A Qt password manager.<br><br>"
+           "Reads legacy SBC-encrypted (.sbc) files and writes a modern, salted, "
+           "authenticated container. Each entry holds a title, site, user ID, "
+           "password, and comments."));
+}
+
+void MainWindow::onUsage() {
+    QMessageBox::information(
+        this, tr("Usage"),
+        tr("Open a .sbc file (old or new) with its master passphrase, or start a "
+           "new database and set a passphrase when you first save.\n\n"
+           "Edit -> New Entry adds a site; double-click an entry to view it; "
+           "right-click for Copy Password. Find searches your entries; Tools -> "
+           "Preferences controls the find scope and generated-password style.\n\n"
+           "The database auto-closes after one hour of inactivity."));
+}
+
+// ---------------------------------------------------------------------------
+// List / find / clipboard
+// ---------------------------------------------------------------------------
+
+void MainWindow::onFindReturnPressed() {
+    const QString term = m_findLineEdit->text();
+    if (term.isEmpty())
+        return;
+
+    if (term != m_lastSearch) {
+        m_lastFoundRow = -1;
+        m_lastSearch = term;
+    }
+
+    const int total = static_cast<int>(m_db.entries.size());
+    if (total == 0)
+        return;
+
+    const int start = (m_lastFoundRow + 1) % total;
+    for (int i = 0; i < total; ++i) {
+        const int row = (start + i) % total;
+        const SiteEntry& e = m_db.entries[row];
+        bool hit = e.Title.contains(term, Qt::CaseInsensitive);
+        if (!hit && m_prefs.searchFullEntry) {
+            hit = e.Site.contains(term, Qt::CaseInsensitive) ||
+                  e.UserID.contains(term, Qt::CaseInsensitive) ||
+                  e.Password.contains(term, Qt::CaseInsensitive) ||
+                  e.Comment.contains(term, Qt::CaseInsensitive);
+        }
+        if (hit) {
+            m_lastFoundRow = row;
+            m_list->setCurrentRow(row);
+            m_list->setFocus();
+            return;
+        }
+    }
+}
+
+void MainWindow::onItemDoubleClicked() {
+    const int row = currentRow();
+    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+        return;
+    ViewSiteEntry dlg(&m_db.entries[row], this);
+    dlg.exec();
+}
+
+void MainWindow::onCopyPassword() {
+    const int row = currentRow();
+    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+        return;
+    QGuiApplication::clipboard()->setText(m_db.entries[row].Password);
+}
+
+void MainWindow::onListContextMenu(const QPoint& pos) {
+    if (currentRow() < 0)
+        return;
+    QMenu menu(this);
+    QAction* copyAction = menu.addAction(tr("Copy Password"));
+    QAction* viewAction = menu.addAction(tr("View"));
+    QAction* editAction = menu.addAction(tr("Edit"));
+    QAction* deleteAction = menu.addAction(tr("Delete"));
+    QAction* chosen = menu.exec(m_list->viewport()->mapToGlobal(pos));
+    if (chosen == copyAction)
+        onCopyPassword();
+    else if (chosen == viewAction)
+        onItemDoubleClicked();
+    else if (chosen == editAction)
+        onEditEntry();
+    else if (chosen == deleteAction)
+        onDeleteEntry();
+}
+
+// ---------------------------------------------------------------------------
+// Unsaved-changes guard, idle close
+// ---------------------------------------------------------------------------
+
+bool MainWindow::maybeSaveGuard() {
+    if (!m_db.unsavedChanges && !m_db.unsavedMpChange)
+        return true;
+    const auto answer = QMessageBox::warning(
+        this, tr("Unsaved changes"),
+        tr("There are unsaved changes. Save them?"),
+        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+    if (answer == QMessageBox::Save) {
+        onSave();
+        // If the save was cancelled or failed, the flags remain set.
+        return !(m_db.unsavedChanges || m_db.unsavedMpChange);
+    }
+    return answer == QMessageBox::Discard;
+}
+
+void MainWindow::onIdleTimeout() {
+    m_idleQuitting = true; // bypass the guard: closing decrypted data is the point
+    close();
+}
+
+bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
+    switch (event->type()) {
+    case QEvent::KeyPress:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseMove:
+        resetIdle();
+        break;
+    default:
+        break;
     }
     return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+    if (m_idleQuitting) {
+        event->accept();
+        return;
+    }
+    if (maybeSaveGuard())
+        event->accept();
+    else
+        event->ignore();
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

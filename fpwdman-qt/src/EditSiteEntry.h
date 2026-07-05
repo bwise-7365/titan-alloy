@@ -3,30 +3,36 @@
 #define EDITSITEENTRY_H
 
 #include <QDialog>
+
+#include "PasswordGenerator.h"
 #include "SiteEntry.h"
 
 class QLineEdit;
 
+// Add / edit a site entry. Writes back to the entry only on OK. Includes a
+// Suggest-Password button (ported from suggestSEpassword) and a show/hide toggle.
 class EditSiteEntry : public QDialog {
     Q_OBJECT
 
 public:
-    explicit EditSiteEntry(SiteEntry *entry, QWidget *parent = nullptr);
+    EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, int suggestedLength,
+                  QWidget* parent = nullptr);
 
 private slots:
     void onOkClicked();
     void onResetClicked();
-
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    void onSuggestClicked();
 
 private:
-    SiteEntry *m_entry;
-    QLineEdit *m_titleEdit;
-    QLineEdit *m_siteEdit;
-    QLineEdit *m_userIdEdit;
-    QLineEdit *m_passwordEdit;
-    QLineEdit *m_commentEdit;
+    SiteEntry* m_entry;
+    PasswordGenerator::Mode m_pwMode;
+    int m_suggestedLength;
+
+    QLineEdit* m_titleEdit;
+    QLineEdit* m_siteEdit;
+    QLineEdit* m_userIdEdit;
+    QLineEdit* m_passwordEdit;
+    QLineEdit* m_commentEdit;
 };
 
 #endif // EDITSITEENTRY_H

@@ -1,32 +1,33 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "ViewSiteEntry.h"
-#include <QVBoxLayout>
+
+#include <QClipboard>
 #include <QFormLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
 
-ViewSiteEntry::ViewSiteEntry(const SiteEntry *entry, QWidget *parent)
-    : QDialog(parent) {
+ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, QWidget* parent) : QDialog(parent) {
     setWindowTitle(tr("View Site Entry"));
-    // resize(400, 300); // Removed to allow for a compact layout
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QFormLayout *formLayout = new QFormLayout();
+    auto* mainLayout = new QVBoxLayout(this);
+    auto* formLayout = new QFormLayout();
 
-    // Ensure even and compact spacing
     const int commonSpacing = 6;
     formLayout->setVerticalSpacing(commonSpacing);
     mainLayout->setSpacing(commonSpacing);
     mainLayout->setContentsMargins(10, 10, 10, 10);
 
-    auto createReadOnlyField = [&](const QString &label, const QString &value) {
-        QLineEdit *lineEdit = new QLineEdit(value, this);
+    auto createReadOnlyField = [&](const QString& label, const QString& value) {
+        auto* lineEdit = new QLineEdit(value, this);
         lineEdit->setReadOnly(true);
         formLayout->addRow(label + ":", lineEdit);
     };
+
+    const QString password = entry ? entry->Password : QString();
 
     if (entry) {
         createReadOnlyField(tr("Title"), entry->Title);
@@ -38,22 +39,26 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry *entry, QWidget *parent)
 
     mainLayout->addLayout(formLayout);
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    auto* buttonLayout = new QHBoxLayout();
     buttonLayout->setContentsMargins(0, 0, 0, 0);
+
+    auto* copyButton = new QPushButton(tr("Copy Password"), this);
+    connect(copyButton, &QPushButton::clicked, this,
+            [password]() { QGuiApplication::clipboard()->setText(password); });
+    buttonLayout->addWidget(copyButton);
+
     buttonLayout->addStretch();
-    QPushButton *closeButton = new QPushButton(tr("Close"), this);
+    auto* closeButton = new QPushButton(tr("Close"), this);
     closeButton->setDefault(true);
     connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
     buttonLayout->addWidget(closeButton);
 
     mainLayout->addLayout(buttonLayout);
 
-    // Set fixed width to match user's general window size preference
-    // but allow height to be determined by the compact layout.
-    setFixedWidth(400);
+    setFixedWidth(420);
 }
 
-void ViewSiteEntry::keyPressEvent(QKeyEvent *event) {
+void ViewSiteEntry::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
         accept();
         return;
