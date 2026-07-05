@@ -6,6 +6,10 @@
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
+    // Identify the app so QSettings has a stable per-user location for preferences.
+    QApplication::setOrganizationName("BenPaulWise");
+    QApplication::setApplicationName("fpwdman-qt");
+
     app.setStyleSheet(
         "QPlainTextEdit, QLineEdit, QListWidget {"
         "background-color: #FFFFDD;"

@@ -1,16 +1,18 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "ViewSiteEntry.h"
 
-#include <QClipboard>
+#include <QCheckBox>
 #include <QFormLayout>
-#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
 
-ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, QWidget* parent) : QDialog(parent) {
+#include "ClipboardUtil.h"
+
+ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidget* parent)
+    : QDialog(parent) {
     setWindowTitle(tr("View Site Entry"));
 
     auto* mainLayout = new QVBoxLayout(this);
@@ -25,6 +27,7 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, QWidget* parent) : QDialog(
         auto* lineEdit = new QLineEdit(value, this);
         lineEdit->setReadOnly(true);
         formLayout->addRow(label + ":", lineEdit);
+        return lineEdit;
     };
 
     const QString password = entry ? entry->Password : QString();
@@ -33,7 +36,17 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, QWidget* parent) : QDialog(
         createReadOnlyField(tr("Title"), entry->Title);
         createReadOnlyField(tr("Site"), entry->Site);
         createReadOnlyField(tr("UserID"), entry->UserID);
-        createReadOnlyField(tr("Password"), entry->Password);
+
+        // The password is masked by default; a checkbox reveals it on demand,
+        // matching the Edit dialog and keeping it off-screen at a glance.
+        auto* passwordEdit = createReadOnlyField(tr("Password"), entry->Password);
+        passwordEdit->setEchoMode(QLineEdit::Password);
+        auto* showBox = new QCheckBox(tr("Show password"), this);
+        formLayout->addRow(QString(), showBox);
+        connect(showBox, &QCheckBox::toggled, this, [passwordEdit](bool on) {
+            passwordEdit->setEchoMode(on ? QLineEdit::Normal : QLineEdit::Password);
+        });
+
         createReadOnlyField(tr("Comment"), entry->Comment);
     }
 
@@ -44,7 +57,7 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, QWidget* parent) : QDialog(
 
     auto* copyButton = new QPushButton(tr("Copy Password"), this);
     connect(copyButton, &QPushButton::clicked, this,
-            [password]() { QGuiApplication::clipboard()->setText(password); });
+            [password, clipboardClearMs]() { cliputil::copySensitive(password, clipboardClearMs); });
     buttonLayout->addWidget(copyButton);
 
     buttonLayout->addStretch();

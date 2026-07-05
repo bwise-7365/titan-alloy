@@ -56,11 +56,14 @@ private slots:
 private:
     void setupMenus();
     void setupCentralWidget();
+    void loadPreferences();       // read m_prefs from QSettings
+    void savePreferences() const; // persist m_prefs to QSettings
     void refreshList(int selectRow = -1);
     void updateStatusTiles();
     void markDirty();
     void resetIdle();
     int currentRow() const;
+    SiteEntry* currentEntry(); // the selected entry, or nullptr if none/out of range
 
     bool maybeSaveGuard();               // true if it's OK to proceed (discard/saved)
     bool ensurePassphraseForSave();      // prompt-create a passphrase if none set

@@ -60,6 +60,7 @@ qt_add_executable(fpwdman_qt
     src/MainWindow.cpp
     src/SiteEntry.h
     src/SiteDatabase.h
+    src/ClipboardUtil.h
     src/ViewSiteEntry.h
     src/ViewSiteEntry.cpp
     src/EditSiteEntry.h

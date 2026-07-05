@@ -6,21 +6,21 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QGridLayout>
-#include <QGuiApplication>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QSettings>
 #include <QTimer>
 #include <QVBoxLayout>
 
 #include "ChangeMasterPassphraseDialog.h"
+#include "ClipboardUtil.h"
 #include "EditSiteEntry.h"
 #include "EnterMasterPassphraseDialog.h"
 #include "PasswordStore.h"
@@ -36,6 +36,7 @@ MainWindow::MainWindow(const QString& initialPath, QWidget* parent) : QMainWindo
     setWindowTitle("fpwdman-qt");
     resize(280, 380);
 
+    loadPreferences();
     setupMenus();
     setupCentralWidget();
     updateStatusTiles();
@@ -61,7 +62,7 @@ void MainWindow::setupMenus() {
     QMenuBar* bar = menuBar();
 
     QMenu* fileMenu = bar->addMenu(tr("&File"));
-    QAction* newFileAction = fileMenu->addAction(tr("&New Database"));
+    QAction* newFileAction = fileMenu->addAction(tr("&New"));
     QAction* openAction = fileMenu->addAction(tr("&Open ..."));
     QAction* saveAction = fileMenu->addAction(tr("&Save"));
     QAction* saveAsAction = fileMenu->addAction(tr("Save &As ..."));
@@ -184,6 +185,13 @@ void MainWindow::resetIdle() {
 
 int MainWindow::currentRow() const {
     return m_list->currentRow();
+}
+
+SiteEntry* MainWindow::currentEntry() {
+    const int row = currentRow();
+    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+        return nullptr;
+    return &m_db.entries[row];
 }
 
 // ---------------------------------------------------------------------------
@@ -310,21 +318,22 @@ void MainWindow::onNewEntry() {
 }
 
 void MainWindow::onEditEntry() {
-    const int row = currentRow();
-    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+    SiteEntry* entry = currentEntry();
+    if (!entry)
         return;
-    EditSiteEntry dlg(&m_db.entries[row], m_prefs.pwMode, m_prefs.suggestedSiteLength, this);
+    EditSiteEntry dlg(entry, m_prefs.pwMode, m_prefs.suggestedSiteLength, this);
     if (dlg.exec() == QDialog::Accepted) {
         markDirty();
-        refreshList(row);
+        refreshList(currentRow());
     }
 }
 
 void MainWindow::onDeleteEntry() {
-    const int row = currentRow();
-    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+    SiteEntry* entry = currentEntry();
+    if (!entry)
         return;
-    const SiteEntry& e = m_db.entries[row];
+    const int row = currentRow();
+    const SiteEntry& e = *entry;
     const auto answer = QMessageBox::question(
         this, tr("Delete entry"),
         tr("Delete \"%1\" (%2)?").arg(e.Title, e.Site),
@@ -351,8 +360,40 @@ void MainWindow::onSortSites() {
 
 void MainWindow::onPreferences() {
     PreferencesDialog dlg(m_prefs, this);
-    if (dlg.exec() == QDialog::Accepted)
+    if (dlg.exec() == QDialog::Accepted) {
         m_prefs = dlg.preferences();
+        savePreferences();
+    }
+}
+
+// Preferences persist across runs in QSettings (per-user; no passwords are stored
+// there). Unknown/first-run keys fall back to the struct's compiled-in defaults.
+void MainWindow::loadPreferences() {
+    QSettings settings;
+    settings.beginGroup("preferences");
+    const Preferences d; // defaults
+    m_prefs.searchFullEntry = settings.value("searchFullEntry", d.searchFullEntry).toBool();
+    m_prefs.pwMode = static_cast<PasswordGenerator::Mode>(
+        settings.value("pwMode", static_cast<int>(d.pwMode)).toInt());
+    m_prefs.minSiteLength = settings.value("minSiteLength", d.minSiteLength).toInt();
+    m_prefs.suggestedSiteLength =
+        settings.value("suggestedSiteLength", d.suggestedSiteLength).toInt();
+    m_prefs.minMasterLength = settings.value("minMasterLength", d.minMasterLength).toInt();
+    m_prefs.clipboardClearSeconds =
+        settings.value("clipboardClearSeconds", d.clipboardClearSeconds).toInt();
+    settings.endGroup();
+}
+
+void MainWindow::savePreferences() const {
+    QSettings settings;
+    settings.beginGroup("preferences");
+    settings.setValue("searchFullEntry", m_prefs.searchFullEntry);
+    settings.setValue("pwMode", static_cast<int>(m_prefs.pwMode));
+    settings.setValue("minSiteLength", m_prefs.minSiteLength);
+    settings.setValue("suggestedSiteLength", m_prefs.suggestedSiteLength);
+    settings.setValue("minMasterLength", m_prefs.minMasterLength);
+    settings.setValue("clipboardClearSeconds", m_prefs.clipboardClearSeconds);
+    settings.endGroup();
 }
 
 void MainWindow::onChangeMasterPassphrase() {
@@ -438,18 +479,18 @@ void MainWindow::onFindReturnPressed() {
 }
 
 void MainWindow::onItemDoubleClicked() {
-    const int row = currentRow();
-    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+    SiteEntry* entry = currentEntry();
+    if (!entry)
         return;
-    ViewSiteEntry dlg(&m_db.entries[row], this);
+    ViewSiteEntry dlg(entry, m_prefs.clipboardClearSeconds * 1000, this);
     dlg.exec();
 }
 
 void MainWindow::onCopyPassword() {
-    const int row = currentRow();
-    if (row < 0 || row >= static_cast<int>(m_db.entries.size()))
+    SiteEntry* entry = currentEntry();
+    if (!entry)
         return;
-    QGuiApplication::clipboard()->setText(m_db.entries[row].Password);
+    cliputil::copySensitive(entry->Password, m_prefs.clipboardClearSeconds * 1000);
 }
 
 void MainWindow::onListContextMenu(const QPoint& pos) {
@@ -510,12 +551,15 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 
 void MainWindow::closeEvent(QCloseEvent* event) {
     if (m_idleQuitting) {
+        cliputil::clearIfOurs(); // don't leave a copied password on the clipboard
         event->accept();
         return;
     }
-    if (maybeSaveGuard())
+    if (maybeSaveGuard()) {
+        cliputil::clearIfOurs();
         event->accept();
-    else
+    } else {
         event->ignore();
+    }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.
