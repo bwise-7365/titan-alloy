@@ -21,6 +21,23 @@ int main(int argc, char* argv[]) {
         "}"
         "QToolTip {"
         "color: white;"
+        "}"
+        // Collapse the wide icon/checkmark gutter Qt reserves on the left of every
+        // menu item -- none of these menus use icons, so it was dead space.
+        "QMenu {"
+        "padding: 4px;"
+        "}"
+        "QMenu::item {"
+        "padding: 4px 24px 4px 10px;"
+        "}"
+        "QMenu::item:selected {"
+        "background-color: #3399FF;"
+        "color: white;"
+        "}"
+        "QMenu::separator {"
+        "height: 1px;"
+        "background: #555555;"
+        "margin: 4px 6px;"
         "}");
 
     // Optional command-line argument: a .sbc file to open on startup.
