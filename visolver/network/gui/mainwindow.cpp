@@ -7,6 +7,7 @@
 // ----------------------------------------------
 #include "mainwindow.hpp"
 
+#include "gravity.hpp"
 #include "greedy.hpp"
 
 #include <QButtonGroup>
@@ -159,11 +160,13 @@ namespace VINCP::Network {
     noneRadio_ = new QRadioButton("None", this);
     closestRadio_ = new QRadioButton("Closest", this);
     greedyRadio_ = new QRadioButton("Greedy Plan", this);
+    gravityRadio_ = new QRadioButton("Gravity Plan", this);
     noneRadio_->setChecked(true);
     QButtonGroup* linkGroup = new QButtonGroup(this);
     linkGroup->addButton(noneRadio_);
     linkGroup->addButton(closestRadio_);
     linkGroup->addButton(greedyRadio_);
+    linkGroup->addButton(gravityRadio_);
 
     QPushButton* regenButton = new QPushButton("Regenerate", this);
     QPushButton* recenterButton = new QPushButton("Recenter", this);
@@ -196,6 +199,7 @@ namespace VINCP::Network {
     countRow->addStretch(1);
     modeLayout->addLayout(countRow);
     modeLayout->addWidget(greedyRadio_);
+    modeLayout->addWidget(gravityRadio_);
 
     // Swap (2-exchange) actions on the greedy plan. Right-click a node on the
     // map for its best local swap; the buttons do the global / iterated forms.
@@ -365,7 +369,7 @@ namespace VINCP::Network {
       current_ = makeRandomInstance(profile, seed);
       lastSeed_ = seed;
       haveInstanceP_ = true;
-      workingPlanValidP_ = false;   // a new instance forces a fresh greedy plan
+      workingKind_ = 0;   // a new instance forces a fresh plan on the next mode
       view_->setInstance(current_);
       histogram_->setInstance(current_);
 
@@ -406,27 +410,44 @@ namespace VINCP::Network {
     if (greedyRadio_->isChecked()) {
       view_->setNearestK(0);
       try {
-        if (!workingPlanValidP_) {
+        if (1 != workingKind_) {
           // Compute the fresh greedy plan once; swaps then mutate this copy.
           const GreedyResult result = greedyPlan(current_);
           workingPlan_ = result.plan;
           greedyTargets_ = result.targets;
           baseTonMiles_ = result.tonMilesUsed;
           swapCount_ = 0;
-          workingPlanValidP_ = true;
+          workingKind_ = 1;
+          view_->clearSwapResult();
         }
         view_->setPlan(workingPlan_);
         showFlowLists(workingPlan_);
         setSwapControlsEnabled(true);
-        refreshGreedyStatus();
+        refreshPlanStatus();
       }
       catch (const std::exception& ex) {
-        workingPlanValidP_ = false;
+        workingKind_ = 0;
         view_->clearPlan();
         hideFlowLists();
         setSwapControlsEnabled(false);
         refreshStatus(QString("greedy failed: %1").arg(ex.what()));
       }
+    }
+    else if (gravityRadio_->isChecked()) {
+      // The gravity plan is dense and cost-blind: view it, but no swaps -- a
+      // swap pass over its ~(sources x sinks) arcs is infeasibly slow.
+      view_->setNearestK(0);
+      view_->clearSwapResult();
+      setSwapControlsEnabled(false);
+      if (2 != workingKind_) {
+        workingPlan_ = gravityPlan(current_);
+        baseTonMiles_ = tonMiles(current_, workingPlan_);
+        swapCount_ = 0;
+        workingKind_ = 2;
+      }
+      view_->setPlan(workingPlan_);
+      showFlowLists(workingPlan_);
+      refreshPlanStatus();
     }
     else if (closestRadio_->isChecked()) {
       setSwapControlsEnabled(false);
@@ -448,39 +469,40 @@ namespace VINCP::Network {
   }
 
   void
-  MainWindow::refreshGreedyStatus()
+  MainWindow::refreshPlanStatus()
   {
     // The "objective" values are the weighted quadratic shortfall
     // theta = sum P_i ((target_i - R_i)/D_i)^2 -- a normalized, DIMENSIONLESS
     // score, NOT tons. "delivered / unmet" is the raw ton gap (~ D - C).
+    const bool greedyP = (1 == workingKind_);
     const double tm = tonMiles(current_, workingPlan_);
     const double totC = totalSupplyCap(current_);
     const double totD = totalDemand(current_);
     const double delivered = workingPlan_.resupply.sum();
     const double unmet = totD - delivered;
-    const double saved = baseTonMiles_ - tm;
-    const double rationedShort =
-        shortfallVsTarget(current_, greedyTargets_, workingPlan_.resupply);
     const double originalShort = shortfallObjective(current_, workingPlan_);
-    const QString head =
-        (swapCount_ > 0)
-            ? QString("greedy plan (+%1 swaps, saved %2 t-mi)")
+
+    QString head = greedyP ? QString("greedy plan") : QString("gravity plan");
+    if (greedyP && swapCount_ > 0) {
+      head += QString(" (+%1 swaps, saved %2 t-mi)")
                   .arg(swapCount_)
-                  .arg(saved, 0, 'g', 4)
-            : QString("greedy plan");
-    refreshStatus(head
-                  + QString("\nton-miles: %1\n"
-                            "supply / demand: %2 / %3 t\n"
-                            "delivered / unmet: %4 / %5 t\n"
-                            "objective vs rationed: %6\n"
-                            "objective vs original: %7")
-                        .arg(tm, 0, 'g', 4)
-                        .arg(totC, 0, 'f', 0)
-                        .arg(totD, 0, 'f', 0)
-                        .arg(delivered, 0, 'f', 0)
-                        .arg(unmet, 0, 'f', 0)
-                        .arg(rationedShort, 0, 'g', 4)
-                        .arg(originalShort, 0, 'g', 4));
+                  .arg(baseTonMiles_ - tm, 0, 'g', 4);
+    }
+    QString body = QString("\nton-miles: %1\n"
+                           "supply / demand: %2 / %3 t\n"
+                           "delivered / unmet: %4 / %5 t")
+                       .arg(tm, 0, 'g', 4)
+                       .arg(totC, 0, 'f', 0)
+                       .arg(totD, 0, 'f', 0)
+                       .arg(delivered, 0, 'f', 0)
+                       .arg(unmet, 0, 'f', 0);
+    if (greedyP) {
+      const double rationedShort =
+          shortfallVsTarget(current_, greedyTargets_, workingPlan_.resupply);
+      body += QString("\nobjective vs rationed: %1").arg(rationedShort, 0, 'g', 4);
+    }
+    body += QString("\nobjective vs original: %1").arg(originalShort, 0, 'g', 4);
+    refreshStatus(head + body);
     return;
   }
 
@@ -517,7 +539,7 @@ namespace VINCP::Network {
       ++swapCount_;
       view_->setPlan(workingPlan_);
       showFlowLists(workingPlan_);
-      refreshGreedyStatus();
+      refreshPlanStatus();
       const vector<std::pair<int, int>> arcs = {
           {static_cast<int>(move.i), static_cast<int>(move.j)},
           {static_cast<int>(move.m), static_cast<int>(move.n)},
@@ -535,7 +557,9 @@ namespace VINCP::Network {
   void
   MainWindow::onNodeSwap(int node)
   {
-    if (!workingPlanValidP_ || !greedyRadio_->isChecked()) {
+    // Right-click swaps apply only to the displayed greedy plan (gravity is too
+    // dense to swap interactively).
+    if (!greedyRadio_->isChecked() || 1 != workingKind_) {
       return;
     }
     applyAndShowSwap(bestSwapAtNode(current_, workingPlan_, node), node);
@@ -545,7 +569,7 @@ namespace VINCP::Network {
   void
   MainWindow::onNodeSwapToOptimum(int node)
   {
-    if (!workingPlanValidP_ || !greedyRadio_->isChecked()) {
+    if (!greedyRadio_->isChecked() || 1 != workingKind_) {
       return;
     }
     const SwapSummary summary =
@@ -555,7 +579,7 @@ namespace VINCP::Network {
       swapCount_ += summary.swaps;
       view_->setPlan(workingPlan_);
       showFlowLists(workingPlan_);
-      refreshGreedyStatus();
+      refreshPlanStatus();
       view_->showSwapResult(
           node,
           QStringList{QString("%1: %2 swaps").arg(name).arg(summary.swaps),
@@ -574,7 +598,7 @@ namespace VINCP::Network {
   void
   MainWindow::onBestSwap()
   {
-    if (!workingPlanValidP_) {
+    if (1 != workingKind_) {
       return;
     }
     const SwapMove move = bestSwap(current_, workingPlan_);
@@ -585,14 +609,14 @@ namespace VINCP::Network {
   void
   MainWindow::onSwapToOptimum()
   {
-    if (!workingPlanValidP_) {
+    if (1 != workingKind_) {
       return;
     }
     const SwapSummary summary = swapToLocalOptimum(current_, workingPlan_);
     swapCount_ += summary.swaps;
     view_->setPlan(workingPlan_);
     showFlowLists(workingPlan_);
-    refreshGreedyStatus();
+    refreshPlanStatus();
     const QStringList lines =
         (summary.swaps > 0)
             ? QStringList{QString("%1 swaps applied").arg(summary.swaps),
@@ -606,7 +630,7 @@ namespace VINCP::Network {
   void
   MainWindow::onResetSwaps()
   {
-    workingPlanValidP_ = false;   // force a fresh greedy on the next applyPlanMode
+    workingKind_ = 0;   // force a fresh plan (greedy or gravity) on the next mode
     view_->clearSwapResult();
     applyPlanMode();
     return;

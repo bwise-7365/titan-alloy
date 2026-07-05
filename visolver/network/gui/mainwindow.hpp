@@ -54,8 +54,8 @@ namespace VINCP::Network {
     // Set the status line from the current instance plus the given mode note.
     void refreshStatus(const QString& modeNote);
 
-    // Rebuild the multi-field greedy status from the working plan.
-    void refreshGreedyStatus();
+    // Rebuild the multi-field status from the working plan (greedy or gravity).
+    void refreshPlanStatus();
 
     // Apply a swap move (if improving) to the working plan, refresh the plan
     // overlay / lists / status, and show the result popup anchored at a node.
@@ -83,6 +83,7 @@ namespace VINCP::Network {
     QRadioButton* noneRadio_ = nullptr;
     QRadioButton* closestRadio_ = nullptr;
     QRadioButton* greedyRadio_ = nullptr;
+    QRadioButton* gravityRadio_ = nullptr;
     QCheckBox* labelsCheck_ = nullptr;
     CostHistogram* histogram_ = nullptr;
     QSpinBox* histBinsBox_ = nullptr;
@@ -99,13 +100,15 @@ namespace VINCP::Network {
     std::uint64_t lastSeed_ = 0;
     bool haveInstanceP_ = false;
 
-    // The working greedy plan: computed once per instance and MUTATED by swaps,
-    // persisting across mode switches until Regenerate / Reset invalidates it.
+    // The working plan: computed once per (instance, kind) and -- for greedy --
+    // MUTATED by swaps, persisting across None/Closest toggles until Regenerate,
+    // Reset, or a switch to the other plan kind. workingKind_: 0 none, 1 greedy,
+    // 2 gravity.
     Plan workingPlan_;
-    VectorXd greedyTargets_;      // phase-1 rationed targets (for the objective)
-    double baseTonMiles_ = 0.0;   // fresh greedy's ton-miles (for cumulative save)
-    int swapCount_ = 0;           // swaps applied since the last fresh greedy
-    bool workingPlanValidP_ = false;
+    VectorXd greedyTargets_;      // phase-1 rationed targets (greedy objective)
+    double baseTonMiles_ = 0.0;   // fresh plan's ton-miles (for cumulative save)
+    int swapCount_ = 0;           // swaps applied since the last fresh plan
+    int workingKind_ = 0;
   };
 
 } // namespace VINCP::Network

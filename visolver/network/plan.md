@@ -472,5 +472,25 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   node drives it to its swap optimum (plain right-click still = one swap). Test
   `NodeToLocalOptimumIterates` (a node with two independent crossed pairs takes
   exactly 2 swaps, saving 180, resupply invariant).
+- 2026-07-05: Gravity (proportional all-to-all) planner added as a crude
+  baseline (user request). `gravity.{hpp,cpp}` (in vincpnet): `gravityPlan` =
+  `f_ij = C_i * D_j / max(totalC, totalD)` (outer product / larger total).
+  Feasible + cost-blind + DENSE; the short side is proportionally rationed and
+  total moved = min(totalC,totalD). NOTE: user wrote "K = sum of rationed
+  demands" but that (= min) over-ships supply when C<D; the intended divisor is
+  max(C,D), and the sum-of-rationed is the resulting TOTAL DELIVERED (flagged,
+  built as max). Tests `gravity_test` (both C<D and C>D cases). GUI: a 4th
+  "Gravity Plan" radio in "Show Links" directly below "Greedy Plan"; shows the
+  dense overlay + lists + status ("gravity plan", no objective-vs-rationed line);
+  swaps stay GREEDY-ONLY (gravity is dense -> O(m^4) swaps, and it's a view-only
+  baseline). MainWindow gained a plan-kind tag (`workingKind_` 0/1/2) so
+  switching greedy<->gravity recomputes; `refreshGreedyStatus` -> generalized
+  `refreshPlanStatus`.
+- 2026-07-05: Swaps briefly enabled on gravity, then REVERTED to greedy-only:
+  a swap pass over the dense gravity plan (O(arcs^2) per bestSwap, arcs ~
+  sources x sinks) is infeasibly slow and freezes the synchronous UI. Gravity is
+  view-only again; swap controls/right-click stay gated on greedy mode
+  (`workingKind_ == 1`). (If wanted later: run "Swap to optimum" on a worker
+  thread with progress/cancel.)
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->
