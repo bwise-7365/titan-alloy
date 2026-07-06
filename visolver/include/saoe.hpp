@@ -69,6 +69,17 @@ namespace VINCP {
   // (possibly many) equilibria the solver reaches from different basins.
   VectorXd saoeRandomStart(const MatrixXd& R, const VectorXd& S, std::mt19937_64& rng);
 
+  // Build the SAOE NCP as a VIModel (zero free block; m = N*M + M) WITHOUT
+  // solving it -- for callers that drive their own engine or composition on
+  // the same problem (e.g. the alternating chain in the equilibrium-selection
+  // tests). Identical packing and G map to what saoe() uses internally.
+  // Throws std::invalid_argument on an empty R or S.size() != R.rows().
+  VIModel saoeModel(const MatrixXd& R, const VectorXd& S);
+
+  // The deterministic start saoe() uses when given no z0: e_{ij} = S_i/(N+1)
+  // (spends a little under budget), lambda = 0.
+  VectorXd saoeDefaultStart(const MatrixXd& R, const VectorXd& S);
+
   // Solve the SAOE Nash equilibrium for reward matrix R (M x N) and strengths S (M).
   // Builds the NCP (0 free components, N*M + M non-negative) and solves with solveVI.
   // The optional z0 is the starting point (layout as saoeRandomStart); if empty, the

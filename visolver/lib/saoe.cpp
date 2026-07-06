@@ -65,15 +65,15 @@ namespace VINCP {
     return z0;
   }
 
-  VIResult
-  saoe(const MatrixXd& R, const VectorXd& S,
-       const SaoeParams& params, const VectorXd& startGuess)
+  VIModel
+  saoeModel(const MatrixXd& R, const VectorXd& S)
   {
     if (0 >= R.rows() || 0 >= R.cols()) {
-      throw std::invalid_argument("saoe: R must be non-empty.");
+      throw std::invalid_argument("saoeModel: R must be non-empty.");
     }
     if (S.size() != R.rows()) {
-      throw std::invalid_argument("saoe: S length must equal R.rows() (one strength per actor).");
+      throw std::invalid_argument(
+          "saoeModel: S length must equal R.rows() (one strength per actor).");
     }
 
     const Index M = R.rows();       // actors
@@ -111,22 +111,45 @@ namespace VINCP {
       return g;
     };
 
-    const VIModel model = makeVIModel(0, dim, G);
+    return makeVIModel(0, dim, G);
+  }
 
-    // Starting point: the caller's startGuess if supplied, else the default
-    // e_{ij} = S_i/(N+1) (spends a little under budget), lambda = 0.
+  VectorXd
+  saoeDefaultStart(const MatrixXd& R, const VectorXd& S)
+  {
+    if (0 >= R.rows() || 0 >= R.cols()) {
+      throw std::invalid_argument("saoeDefaultStart: R must be non-empty.");
+    }
+    if (S.size() != R.rows()) {
+      throw std::invalid_argument(
+          "saoeDefaultStart: S length must equal R.rows() (one strength per actor).");
+    }
+    const Index M = R.rows();
+    const Index N = R.cols();
+    VectorXd z0 = VectorXd::Zero(N * M + M);
+    for (Index i = 0; i < M; ++i) {
+      const double e0 = S(i) / static_cast<double>(N + 1);
+      for (Index j = 0; j < N; ++j) {
+        z0(i * N + j) = e0;
+      }
+    }
+    return z0;
+  }
+
+  VIResult
+  saoe(const MatrixXd& R, const VectorXd& S,
+       const SaoeParams& params, const VectorXd& startGuess)
+  {
+    const VIModel model = saoeModel(R, S);   // validates R, S
+    const Index dim = model.m;
+
+    // Starting point: the caller's startGuess if supplied, else the default.
     VectorXd z0;
     if (startGuess.size() == dim) {
       z0 = startGuess;
     }
     else if (0 == startGuess.size()) {
-      z0 = VectorXd::Zero(dim);
-      for (Index i = 0; i < M; ++i) {
-        const double e0 = S(i) / static_cast<double>(N + 1);
-        for (Index j = 0; j < N; ++j) {
-          z0(i * N + j) = e0;
-        }
-      }
+      z0 = saoeDefaultStart(R, S);
     }
     else {
       throw std::invalid_argument("saoe: z0 length must be N*M + M, or empty for the default.");
