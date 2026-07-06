@@ -36,7 +36,7 @@ construction.
 | MC1  | Select + design the specialized mixed-NCP algorithm (semismooth FB Newton, DFK/Munson line) | DONE 2026-07-06 — design below |
 | MC2  | Implement it: `semismoothnewton.{hpp,cpp}` + directional Armijo + tests | DONE, verified 2026-07-06 (cubic 14 iters FD-path; degenerate 11 vs ipm 18; mixed QP 2 iters, residual exactly 0 after the kink-indicator fix) |
 | MC3  | Big-affine exercise: `solver.engine = "ssn"` in solveFlowPlan + EngineSelectable row; ssn row joins the IP4b weekend benchmark; GAMS model (incoming) designated the big-NONLINEAR acceptance test | DONE, verified 2026-07-06 (four-engine EngineSelectable green) |
-| MC4  | Translate the two GAMS models (`alloceff01cm.gms`, `deploy_v07.gms`) into multi-engine test cases (`gams_alloceff_test`, `gams_deploy_test` + shared `test/mcpengines.hpp` rows harness) | alloceff GREEN 2026-07-06 (ssn 14 iters 182 ms; jn+ipm 2 outer 83 ms; both on the PATH equilibrium; projection rows threw guards as expected) and now GATED on converge + match the PATH equilibrium. deploy run pending; reference check for it deferred until its first run is confirmed |
+| MC4  | Translate the two GAMS models (`alloceff01cm.gms`, `deploy_v07.gms`) into multi-engine test cases (`gams_alloceff_test`, `gams_deploy_test` + shared `test/mcpengines.hpp` rows harness) | BOTH GREEN. alloceff 2026-07-06, gated on converge + match the PATH equilibrium (pinned to 2 rows). deploy SOLVED 2026-07-06 by the ALTERNATING CHAIN (round 4, residual^2 6.0e-15, 17.7 s; pr {RS3 .505, RS4 .495}, pb {BS2 .600 = rho cap ACTIVE, BS5 .400}, payoffs 58.07/60.72; quadratic tail visible; no standalone engine solves it). Ben confirmed the answer MATCHES GAMS; gate now PINNED on converge + match (checkGamsEquilibrium; standalone engines kept as documented failing comparison rows). MC track COMPLETE pending the larger PPD model (cooking in another session) |
 
 Order of work when resuming: Ben rates the MCP track (MC1/MC2) **the most
 important case**; it is independent of NS1-NS3 and of IP4b, so it can go
@@ -206,6 +206,18 @@ cap 5, return best-visited. Ben REQUIRES the chain logic documented in the
 final report; the complete write-up rationale (evidence, design decisions,
 precedents) is recorded in memory `project_visolver_altchain_writeup.md`,
 condensed in makeAlternatingChainRow's header comment.
+
+Run 4 (Ben, 2026-07-06): altchain round 2 validated the alternation --
+after projection the re-linearized jn+ipm made fresh progress (1.19 -> 1.07;
+its round-1 stall was at 19.6) -- but its inner IPM threw "step length
+collapsed" before the stall cutoff tripped, and the escaping exception
+failed the row, discarding the 0.68 best. HARDENED same day (awaiting run,
+plain rebuild): each phase under try/catch -- a throw is a STALLED PHASE
+(logged, best kept, finisher runs from the projected start; both phases
+throwing ends the loop); improvement factor loosened 0.5 -> 0.9 so endgame
+rounds may grind small gains under the round cap. Open question flagged for
+Ben: mehrotraIpm throwing on step-length collapse (a stall, not a bad value)
+vs returning converged=false -- the throw stance costs composability.
 
 ## IP4a probe result (Release, seed 20260704, engine ipm, iterMax 200, maxCertificateRounds 1)
 
