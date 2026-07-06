@@ -251,6 +251,18 @@ strongest transcription-fidelity evidence the suite has; the gate is
 pinned to it, and pinned at \emph{two} passing rows so neither known-good
 engine can mask a regression in the other.
 
+The problem also supplied the library's longest-standing open item, and
+its resolution. On the \emph{reduced} formulation, the Josephy--Newton
+engines reliably converge to a negative-utility stationary point rather
+than the reference equilibrium $E$, from every start tried over the
+project's history. The alternating chain of Section~\ref{sec:t-deploy},
+pointed at the same formulation from the same deterministic default start,
+converges \emph{to $E$} (\code{saoe\_chain\_test}, run 2026-07-06,
+feasibility and RMSE at \code{saoe\_test}'s own bars) --- its third
+distinct success on a nonmonotone game. A seeded $20 \times 12$ companion
+instance (sign-quota-constrained random rewards; no known equilibrium)
+converges to a feasible allocation in the same test, as the scale datum.
+
 \section{Case study 3: the deployment game}
 \label{sec:t-deploy}
 
@@ -427,11 +439,6 @@ Recorded honestly, with their planned dispositions:
   \code{bsHe94b} in wall time at equal iterations on the SAOE runs) is
   accepted; cache/reuse across $\beta$ updates is a recorded option if the
   engine ever matters at scale.
-\item \textbf{SAOE equilibrium selection remains open}: on the reduced
-  formulation, all tested starts fall into one basin that is not the
-  reference equilibrium; the test gates on feasibility. The alternating
-  chain (with its perturbation sampler) is the natural candidate and has
-  not yet been pointed at it.
 \item \textbf{Comparative benchmark rows} (chain / \code{bshe94b} /
   \code{ssn} bounded probes on the 200-banded instance) are planned as
   report data; they gate no decision.

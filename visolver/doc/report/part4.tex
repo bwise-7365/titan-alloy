@@ -400,8 +400,9 @@ $8.2\times 10^{3}$) before the semantics were fixed.
 The library's three almost-real-world problems are treated here as peers,
 one subsection each: the quadratic flow-planning problem (a single-planner
 convex optimization), and two \emph{games} --- the strategic allocation of
-effort and the pre-position-and-deploy family --- whose Nash equilibria are
-posed directly as MCPs. The games arrive as GAMS models with verified
+effort (with a risk-averse variant forthcoming) and the
+pre-position-and-deploy family --- whose Nash equilibria are posed directly
+as MCPs. The games arrive as GAMS models with verified
 solutions and are transcribed one-to-one into \code{VIModel}s (the recipe
 is Chapter~\ref{ch:manual}); each subsection records what an OR reader
 needs to audit the formulation.
@@ -499,7 +500,7 @@ the raw scales, and the lane-oracle benchmark improved from 25\,s to
 0.04\,s on nondimensionalization alone. All tolerances live in scaled
 units; results are returned in real units.
 
-\subsection{Strategic allocation of effort}
+\subsection{Strategic allocation of effort (risk-neutral)}
 \label{sec:a-saoe}
 
 The general problem: $M$ actors with weights $w_a$ allocate effort
@@ -533,6 +534,13 @@ equilibrium, which the author confirmed is the one PATH reaches --- also
 the reference equilibrium of the library's independent, reduced-form SAOE
 implementation. A sign error essentially anywhere in the transcription
 would have split those three.
+
+\subsection{Strategic allocation of effort with risk aversion}
+\label{sec:a-saoe-risk}
+
+\emph{[Reserved: a variant of the preceding problem in which the actors are
+somewhat risk-averse. The problem statement is forthcoming and will be
+inserted here.]}
 
 \subsection{Pre-position and deploy (PPD)}
 \label{sec:a-ppd}
