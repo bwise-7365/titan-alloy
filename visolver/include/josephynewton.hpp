@@ -25,6 +25,7 @@
 #include "bshe94b.hpp"
 #include "solodovsvaiter.hpp"
 #include "chainedsolver.hpp"
+#include "mehrotraipm.hpp"
 #include "fdjacobian.hpp"
 #include "armijo.hpp"
 
@@ -65,6 +66,21 @@ namespace VINCP {
                                     ChainedSolverParams{},
                                 const IterationLogger& logger =
                                     IterationLogger{});
+
+  // Adapter for the interior-point engine. Unlike the projection adapters it
+  // needs the free/complementarity split up front, and the returned functor
+  // IGNORES both the start x0 (an interior-point method cannot warm-start)
+  // and the projector Pr: it structurally assumes K = R^numFree x R_+^rest.
+  // Bind numFree = model.n when driving solveVI with its default mixed
+  // projector; pairing this adapter with any other K (e.g. an ellipsoid)
+  // silently solves the wrong problem, so use it only where the mixed/orthant
+  // structure it encodes is the K actually intended.
+  InnerSolver makeMehrotraIpmSolver(Index numFree,
+                                    double magTol, int iterMax, int iterFreq,
+                                    const MehrotraIpmParams& params =
+                                        MehrotraIpmParams{},
+                                    const IterationLogger& logger =
+                                        IterationLogger{});
 
   // Tunable controls for the outer loop.  Defaults are reasonable starting points,
   // not verified against a particular model; expect to tune per problem. (The

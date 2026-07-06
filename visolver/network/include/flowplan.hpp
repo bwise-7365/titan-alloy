@@ -24,6 +24,13 @@ namespace VINCP::Network {
     //              roughIterMax), then bsHe94b warm-started from its iterate
     //              (task E3a; built for cold-start-hostile cases like the
     //              200-node banded instances)
+    //   "ipm"      mehrotraIpm: Mehrotra predictor-corrector interior point
+    //              on the same complementarity system. Iteration counts are
+    //              ~10-40 INDEPENDENT of the degenerate near-tied faces that
+    //              stall the projection engines, but every iteration factors
+    //              the Newton matrix -- under this engine iterMax counts LU
+    //              factorizations, so set it in the low hundreds, not the
+    //              projection engines' hundreds of thousands.
     string engine = "bshe94b";
     double roughMagTol = 1.0e-4;   // chain phase-1 squared-residual target
     int roughIterMax = 20000;      // chain phase-1 iteration cap

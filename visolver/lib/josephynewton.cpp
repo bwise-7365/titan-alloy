@@ -87,6 +87,22 @@ namespace VINCP {
     };
   }
 
+  InnerSolver
+  makeMehrotraIpmSolver(Index numFree,
+                        double magTol, int iterMax, int iterFreq,
+                        const MehrotraIpmParams& params,
+                        const IterationLogger& logger)
+  {
+    // The start and the projector are deliberately unnamed: the engine has
+    // its own interior start, and K is fixed by numFree (see the header).
+    return [numFree, magTol, iterMax, iterFreq, params, logger](
+               const VectorXd&, const MatrixXd& M,
+               const VectorXd& q, const Projector&) -> VIResult {
+      return mehrotraIpm(M, q, numFree, magTol, iterMax, iterFreq, params,
+                         logger);
+    };
+  }
+
   VIResult
   solveVI(const VIModel& model,
           const VectorXd& z0,

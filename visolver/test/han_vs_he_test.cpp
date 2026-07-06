@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "dhan06.hpp"
 #include "bshe94b.hpp"
+#include "mehrotraipm.hpp"
 #include "josephynewton.hpp"
 #include "utils.hpp"
 #include "testsupport.hpp"
@@ -20,8 +21,11 @@ using namespace VINCP;
 //   (2) a monotone nonlinear "PSD" VI (cubic gradient map) driven through the
 //       SAME Josephy-Newton outer loop with each solver plugged in as the inner
 //       solver via the InnerSolver seam.
-// Both problems are constructed with a known solution; the test requires BOTH
-// solvers to recover it on BOTH problems. The two problems share ONE RNG stream in
+// The Mehrotra interior-point engine (mehrotraIpm) runs as a third row on both
+// problems: directly on the LCP, and through the same seam on the VI via
+// makeMehrotraIpmSolver (numFree = model.n matches the default mixed projector).
+// Both problems are constructed with a known solution; the test requires EVERY
+// solver to recover it on BOTH problems. The two problems share ONE RNG stream in
 // sequence (problem 1's draws, then problem 2's), so they live in a single suite:
 // splitting them into separate cases with their own seeds would draw a different --
 // and empirically harder -- second instance. Order is preserved from the original.
@@ -57,8 +61,10 @@ TEST(HanVsHe, BothSolversRecoverBothProblems) {
 
         const SolveFn han = [&](const VectorXd& z){ return dHan06(z, M, q, projectNonnegative, kMagTol, kIterMax, 0); };
         const SolveFn he  = [&](const VectorXd& z){ return bsHe94b(z, M, q, projectNonnegative, kMagTol, kIterMax, 0); };
+        const SolveFn ipm = [&](const VectorXd&){ return mehrotraIpm(M, q, 0, kMagTol, kIterMax, 0); };
         { SCOPED_TRACE("dHan06 (LCP)");  expectSolvePasses(han, x0, { checkCloseToKnown(zSol, kSolTol) }); }
         { SCOPED_TRACE("bsHe94b (LCP)"); expectSolvePasses(he,  x0, { checkCloseToKnown(zSol, kSolTol) }); }
+        { SCOPED_TRACE("mehrotraIpm (LCP)"); expectSolvePasses(ipm, x0, { checkCloseToKnown(zSol, kSolTol) }); }
     }
 
     // ---- (2) PSD nonlinear VI: cubic gradient map through the JN outer loop ----
@@ -98,11 +104,14 @@ TEST(HanVsHe, BothSolversRecoverBothProblems) {
     // Same outer loop, same problem -- only the inner solver differs.
     const InnerSolver innerHan = makeDHan06Solver(kMagTol, kIterMax, 0);
     const InnerSolver innerHe  = makeBsHe94bSolver(kMagTol, kIterMax, 0);
+    const InnerSolver innerIpm = makeMehrotraIpmSolver(n, kMagTol, kIterMax, 0);
 
     const SolveFn han = [&](const VectorXd& start){ return solveVI(model, start, innerHan, params); };
     const SolveFn he  = [&](const VectorXd& start){ return solveVI(model, start, innerHe,  params); };
+    const SolveFn ipm = [&](const VectorXd& start){ return solveVI(model, start, innerIpm, params); };
     { SCOPED_TRACE("dHan06 (cubic VI)");  expectSolvePasses(han, z0, { checkCloseToKnown(zStar, kSolTol) }); }
     { SCOPED_TRACE("bsHe94b (cubic VI)"); expectSolvePasses(he,  z0, { checkCloseToKnown(zStar, kSolTol) }); }
+    { SCOPED_TRACE("mehrotraIpm (cubic VI)"); expectSolvePasses(ipm, z0, { checkCloseToKnown(zStar, kSolTol) }); }
     }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

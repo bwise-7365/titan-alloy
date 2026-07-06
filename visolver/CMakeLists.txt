@@ -31,6 +31,7 @@ add_library(vincp STATIC
         lib/saoe.cpp
         lib/solodovsvaiter.cpp
         lib/chainedsolver.cpp
+        lib/mehrotraipm.cpp
         lib/ellipsoidprojector.cpp
         lib/dampednewton.cpp
         lib/smoothingnewton.cpp
@@ -112,6 +113,7 @@ vincp_add_gtest(damped_newton_test)
 vincp_add_gtest(smoothing_newton_test)
 vincp_add_gtest(ss_lcp_test)
 vincp_add_gtest(ss_ellipsoid_test)
+vincp_add_gtest(mehrotra_ipm_test)
 
 # Flow-planning network layer (network/plan.md): vincpnet library + its tests.
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).

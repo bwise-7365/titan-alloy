@@ -151,8 +151,9 @@ TEST(NetworkFlowPlan, RespectsGreedyBaselineBounds) {
     EXPECT_GE(scarce.shortfall, working.shortfall - kBoundSlack);
 }
 
-// The runtime engine switch (E4): the chained SS -> He engine must reach the
-// same certified optimum as the default engine; unknown engines are refused.
+// The runtime engine switch (E4/IP3): the chained SS -> He engine and the
+// interior-point engine must each reach the same certified optimum as the
+// default engine; unknown engines are refused.
 TEST(NetworkFlowPlan, EngineSelectable) {
     Instance inst = makeMidInstance();
     inst.tonMileLimit = greedyPlan(inst).suggestedLimit;
@@ -168,6 +169,16 @@ TEST(NetworkFlowPlan, EngineSelectable) {
     EXPECT_NEAR(chained.shortfall, he.shortfall,
                 kShortfallTol * (1.0 + he.shortfall));
     EXPECT_LE(maxViolation(checkPlan(inst, chained.plan)), feasTol(inst));
+
+    FlowPlanParams ipmParams;
+    ipmParams.engine = "ipm";
+    ipmParams.iterMax = 200;         // counts LU factorizations under "ipm"
+    const FlowPlanResult ipm = solveFlowPlan(inst, ipmParams);
+    ASSERT_TRUE(ipm.vi.converged);
+    ASSERT_TRUE(ipm.certifiedP);
+    EXPECT_NEAR(ipm.shortfall, he.shortfall,
+                kShortfallTol * (1.0 + he.shortfall));
+    EXPECT_LE(maxViolation(checkPlan(inst, ipm.plan)), feasTol(inst));
 
     FlowPlanParams unknown;
     unknown.engine = "simplex";

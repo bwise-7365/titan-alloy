@@ -492,5 +492,42 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   view-only again; swap controls/right-click stay gated on greedy mode
   (`workingKind_ == 1`). (If wanted later: run "Swap to optimum" on a worker
   thread with progress/cancel.)
+- 2026-07-05: Mehrotra predictor-corrector interior-point engine added to the
+  ROOT library (engine-roadmap Option 2, stages IP1-IP3; literature research
+  and the three-option roadmap recorded in the cross-session memory).
+  `mehrotraipm.{hpp,cpp}` beside the other inner solvers: monotone MIXED LCP
+  over R^n x R_+^m (`numFree` parameter; no warm start by nature; one dense LU
+  of M + blockdiag(0, diag(s./y)) per iteration shared by predictor+corrector;
+  terminates and reports on the shared SQUARED natural-residual convention;
+  sticky `regEpsilon` free-block regularization when the Newton solve is
+  singular). Gate-verified counts: 9/19/10 iterations on clean / degenerate /
+  rank-deficient PSD LCPs and 4-5 on mixed QPs, vs bsHe94b's 60 on the
+  identical mixed instance — the degeneracy-insensitivity it was built for.
+  IP3 wiring: seam adapter `makeMehrotraIpmSolver(numFree, ...)` (ignores x0
+  and Pr — orthant/mixed K only, documented); third row in han_vs_he_test;
+  network `solver.engine = "ipm"` (numFree = 0 pure NCP; under this engine
+  iterMax counts LU factorizations — set it in the low hundreds) + docs +
+  EngineSelectable coverage. Tests: mehrotra_ipm_test (7 cases). AWAITING:
+  Ben's IP3 test run, then IP4 = 200-banded benchmark ipm vs chain vs bshe94b
+  -> performance.md addendum -> feeds the E3b verdict and the engine-dispatch
+  preprocessing design.
+- 2026-07-06: IP3 verified green (han_vs_he 214 ms; ipm rows pass). IP4a
+  bounded probe run (200-banded, engine ipm, instances=1,
+  maxCertificateRounds=1, iterMax 200, Release, seed 20260704): kept
+  10737/14500, rounds 1, final solve 35 iterations at Newton dim 10,838,
+  wall ~29.6 min, th_star 53.117 vs th_ration 39.842, dlv 0.957, lambda
+  2.2e-6, cert NO (honest one-round answer). VERDICT: the IPM's
+  degeneracy-insensitive iteration count holds at scale (35 iters where
+  bsHe94b had capped at 150k on a dim ~1.9k round-0 system); the binding
+  cost is now the R3 certificate balloon (74% of keep-all after ONE round)
+  times dense dim^3 LU (~50 s/iteration). IP4b (chain + bshe94b bounded
+  controls) DEFERRED at Ben's direction to the coming weekend; IP4c
+  (performance addendum) follows. Next build phase: the NewtonSolverFactory
+  seam + structured flow factory (per-sink rank-1 Sherman-Morrison + dual
+  Schur, SPD/LLT) enabling a no-screen keep-all solve; the algebra is
+  machine-verified by `doc/ns2-newton-check.mac` (Maxima, ALL 10 CHECKS
+  PASS, 2026-07-06). **Plan of record / status board:
+  `../2026-07-06-engine-plan.md`** (repo root), created so the gate table is
+  visible beside the working dialog.
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

@@ -55,15 +55,28 @@ Two solver layers over one shared core; the dependency arrows point one way
     `projectNonnegative` (onto `R_+^n`) and `makeMixedProjector(numFree)` (onto
     `R^numFree x R_+^(n-numFree)`).
 
-- **Inner solvers (interchangeable via the `InnerSolver` seam)** — two ports,
-  same interface (identical argument order and the shared `VectorXd`/`MatrixXd`/
+- **Inner solvers (interchangeable via the `InnerSolver` seam)** — same
+  interface (identical argument order and the shared `VectorXd`/`MatrixXd`/
   `Projector`/`IterationLogger`/`VIResult` types; only the params struct differs):
   - `dHan06` (`include/dhan06.hpp`, `lib/dhan06.cpp`) — Deren Han's 2006
     self-adaptive projection method; tunables in `DHan06Params`.
   - `bsHe94b` (`include/bshe94b.hpp`, `lib/bshe94b.cpp`) — Bingsheng He's 1994
     fixed-metric projection-contraction (eq. 16): factors `(M + I)` once and
     reuses it; tunables in `BsHe94bParams`.
-  Each solves a **linear** VI `(M x + q)` over any `K` given as the `Projector`.
+  - `solodovSvaiter` (`include/solodovsvaiter.hpp`) — matrix-free hyperplane
+    double-projection; globally convergent for pseudomonotone `F` but only a
+    GLOBALIZER (`O(1/sqrt(k))` tail whenever `||F(x*)|| > 0`), not a finisher.
+  - `chainedSolodovHe` (`include/chainedsolver.hpp`) — SS to a loose target,
+    then bsHe94b warm-started from its iterate.
+  - `mehrotraIpm` (`include/mehrotraipm.hpp`) — Mehrotra predictor-corrector
+    interior point for the monotone MIXED LCP over `R^n x R_+^m`. Iteration
+    counts (~10-40, one dense LU each) are insensitive to degenerate optimal
+    faces — the cure for near-tied instances that stall the projection
+    engines. Structural exceptions: it takes `numFree` instead of honoring an
+    arbitrary `Projector` (its seam adapter ignores `x0` and `Pr` — never pair
+    it with a non-orthant `K` like an ellipsoid), and it cannot warm-start.
+  The projection engines solve a **linear** VI `(M x + q)` over any `K` given
+  as the `Projector`; the IPM is mixed/orthant-structural only.
 
 - **Outer driver (`include/josephynewton.hpp`, `lib/josephynewton.cpp`)** —
   `solveVI`, a Josephy-Newton loop for the nonlinear VI. Each step linearizes `F`

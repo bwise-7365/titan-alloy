@@ -8,6 +8,7 @@
 
 #include "bshe94b.hpp"
 #include "chainedsolver.hpp"
+#include "mehrotraipm.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -23,9 +24,10 @@ namespace VINCP::Network {
         throw std::invalid_argument(
             "solveFlowPlan: magTol must be positive and iterMax > 0.");
       }
-      if ("bshe94b" != params.engine && "chain" != params.engine) {
+      if ("bshe94b" != params.engine && "chain" != params.engine
+          && "ipm" != params.engine) {
         throw std::invalid_argument(
-            "solveFlowPlan: engine must be 'bshe94b' or 'chain', not '"
+            "solveFlowPlan: engine must be 'bshe94b', 'chain', or 'ipm', not '"
             + params.engine + "'.");
       }
       if (!(0.0 < params.roughMagTol) || 0 >= params.roughIterMax) {
@@ -146,6 +148,12 @@ namespace VINCP::Network {
         result.vi = chainedSolodovHe(z0, lcp.M, lcp.q, projectNonnegative,
                                      params.magTol, params.iterMax,
                                      params.iterFreq, chainParams);
+      }
+      else if ("ipm" == params.engine) {
+        // The flow LCP is a pure NCP (t, mu, lambda all complementary; no
+        // free block), so numFree = 0; the engine ignores z0 by design.
+        result.vi = mehrotraIpm(lcp.M, lcp.q, 0, params.magTol,
+                                params.iterMax, params.iterFreq);
       }
       else {
         result.vi = bsHe94b(z0, lcp.M, lcp.q, projectNonnegative,
