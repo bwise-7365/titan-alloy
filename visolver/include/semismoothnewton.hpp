@@ -158,6 +158,13 @@ namespace VINCP {
   // Psi = 1/2 ||Phi||^2. 'converged' is honest: a vanishing merit gradient or
   // a failed line search returns converged = false rather than throwing.
   //
+  // The returned z and residual are the BEST-VISITED iterate in the
+  // natural-residual sense, not the last one: the nonmonotone line search may
+  // deliberately climb above the best point seen and then stall before
+  // recovering it (observed on the deploy_v07 game: a run ended at squared
+  // residual 1.7e4 after visiting 8.2e3). 'iter' still counts all iterations
+  // performed. On a converged run best and last coincide up to the final step.
+  //
   // Throws std::invalid_argument on an inconsistent model/start or parameters
   // outside their ranges, and std::runtime_error on a NaN residual, detected
   // divergence, a Jacobian of the wrong shape, or NCP diagonals of the wrong

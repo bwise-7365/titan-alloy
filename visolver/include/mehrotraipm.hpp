@@ -53,7 +53,11 @@ namespace VINCP {
     double tauFraction = 0.995;       // fraction-to-boundary damping, 0 < tau < 1
     double sigmaMin = 1.0e-6;         // centering clamp: 0 < sigmaMin <= sigma
     double sigmaMax = 1.0;            //   <= sigmaMax <= 1
-    double stallStep = 1.0e-10;       // throw when the damped step length falls below this
+    double stallStep = 1.0e-10;       // damped step length below this = stall:
+                                      //   an honest converged=false return at the
+                                      //   current iterate (a stall is not a bad
+                                      //   value; it used to throw, which cost
+                                      //   composability in engine chains)
     double regEpsilon = 1.0e-8;       // free-block diagonal regularization, applied only
                                       //   (and then stickily) if a Newton solve comes back
                                       //   non-finite (a singular-but-consistent system can
@@ -117,9 +121,11 @@ namespace VINCP {
   //
   // Throws std::invalid_argument on inconsistent dimensions or invalid
   // parameters, and std::runtime_error on a NaN residual, detected
-  // divergence, a non-finite Newton solve, a collapsed step length, an empty
-  // solver returned by the factory, or a failed newtonCheckTol consistency
-  // check. It never silently substitutes a default result.
+  // divergence, a non-finite Newton solve, an empty solver returned by the
+  // factory, or a failed newtonCheckTol consistency check. It never silently
+  // substitutes a default result. A COLLAPSED STEP LENGTH (< stallStep) is a
+  // stall, not a corrupt value: it returns honestly with converged = false at
+  // the current iterate, matching the semismooth solver's stance on stalls.
   VIResult mehrotraIpm(const MatrixXd& M,
                        const VectorXd& q,
                        Index numFree,

@@ -182,6 +182,14 @@ namespace VINCP {
 
     VectorXd z = z0;
 
+    // Best-visited iterate in the natural-residual sense. The nonmonotone
+    // line search may deliberately move ABOVE the best point seen and then
+    // stall before recovering it (observed on the deploy_v07 game, 2026-07-06:
+    // a run returned squared residual 1.7e4 after visiting 8.2e3), so the
+    // result reports the best, not the last.
+    VectorXd bestZ = z0;
+    double bestMag = std::numeric_limits<double>::infinity();
+
     // Merit of the current point and its trailing window (nonmonotone baseline).
     vector<double> meritHistory;
 
@@ -227,6 +235,11 @@ namespace VINCP {
 
       if (0 < params.iterFreq && 0 == (iter % params.iterFreq) && logger) {
         logger(iter, params.iterMax, mag, params.magTol);
+      }
+
+      if (mag < bestMag) {
+        bestMag = mag;
+        bestZ = z;
       }
 
       convergedP = (mag < params.magTol);
@@ -343,7 +356,7 @@ namespace VINCP {
       }
     }
 
-    return VIResult{ z, mag, iter, convergedP };
+    return VIResult{ bestZ, bestMag, iter, convergedP };
   }
 
 } // namespace VINCP

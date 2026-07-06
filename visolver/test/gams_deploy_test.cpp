@@ -1,4 +1,5 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
+#include "alternatingchain.hpp"
 #include "mcpengines.hpp"
 #include "vincp.hpp"
 
@@ -36,20 +37,21 @@ using namespace VINCP;
 // v07_check.mac) are transcribed literally in computeStage() below; every
 // denominator is guarded by myEps = 0.01 exactly as in the .gms.
 //
-// PASS CRITERION (upgraded 2026-07-06 after the alternating chain first
-// solved the problem and the author confirmed the answer matches the GAMS
-// solution): the MCP is NONMONOTONE (mixed curvature: concave from strength,
-// convex from weakness -- "mass or abstain") with multiple Nash equilibria,
-// so the test passes iff AT LEAST ONE engine row converges AND lands on the
-// GAMS-verified equilibrium (kRefPr / kRefPb / kRefPayoff* below):
-//     pr = (0, 0, 0.505, 0.495, 0)   -- support {RS3, RS4}
-//     pb = (0, 0.600, 0, 0, 0.400)   -- support {BS2, BS5}; pb(BS2) = rho,
-//                                       Blue's probability cap is ACTIVE
-//     PayoffR = 58.069, PayoffB = 60.717
-// Known-good: ONLY the alternating chain converges (round 4, residual^2
-// 6.0e-15, ~18 s); every standalone engine fails, which is the point of the
-// chain. Strategy probabilities, payoffs, and a natural-residual breakdown
-// are printed for every returned point either way.
+// PASS CRITERION (final form, 2026-07-06): the MCP is NONMONOTONE (mixed
+// curvature: concave from strength, convex from weakness -- "mass or
+// abstain") with MULTIPLE Nash equilibria -- confirmed empirically: the
+// alternating chain has converged to two distinct author-verified equilibria
+// (same supports {RS3, RS4} x {BS2, BS5}, mirror-image rho-cap patterns)
+// depending on its trajectory. The test therefore passes iff AT LEAST ONE
+// engine row converges to a small squared natural residual (magTol 1e-8)
+// AND lands on SOME equilibrium in the roster kKnownEquilibria (see the
+// roster note there; it grows as the author finds and verifies further
+// equilibria by repeated solving from random starts).
+// Known-good: ONLY the alternating chain converges (~20-30 s); every
+// standalone engine fails, which is the point of the chain. Strategy
+// probabilities, payoffs, and a natural-residual breakdown are printed for
+// every returned point either way, and a converged non-roster point is
+// printed as a paste-ready roster entry.
 //
 // NOTES
 //  - The .gms warns that interior starts are ESSENTIAL: the survivor function
@@ -665,38 +667,53 @@ namespace {
         return single("muAB", "BS", i - kMuABOff);
     }
 
-    // Reference equilibrium (author-confirmed 2026-07-06 to match the GAMS
-    // solution; found by the alternating chain at residual^2 6.0e-15). Values
-    // quoted to the confirming run's 3 decimals; tolerances sit above that
-    // rounding while rejecting any other equilibrium (basins differ by whole
-    // units in these outputs).
-    const double kRefPr[kNumRedStrat]  = { 0.000, 0.000, 0.505, 0.495, 0.000 };
-    const double kRefPb[kNumBlueStrat] = { 0.000, 0.600, 0.000, 0.000, 0.400 };
-    constexpr double kRefPayoffR = 58.069;
-    constexpr double kRefPayoffB = 60.717;
-    constexpr double kProbTol    = 2.0e-3;
-    constexpr double kPayoffTol  = 5.0e-2;
+    // --------------------------------------------------------------------
+    // The equilibrium roster. This game has MULTIPLE Nash equilibria (its
+    // author expects them by design: mass-or-abstain curvature, and the
+    // perturb-restart chain reached a converged point DIFFERENT from the
+    // GAMS answer on 2026-07-06), so success is convergence to ANY
+    // author-verified equilibrium, not to one blessed point. The roster
+    // grows by repeated solving from random starts: when a converged run
+    // fails the roster check, the check prints its pr/pb/payoffs as a
+    // ready-to-paste roster entry; the author verifies the point (e.g.
+    // against a GAMS/PATH run warm-started there) before adding it.
+    // Tolerances sit above the entries' 3-decimal rounding while rejecting
+    // unlisted equilibria (distinct basins differ by whole units).
+    // --------------------------------------------------------------------
+    struct ReferenceEquilibrium {
+        const char* name;
+        double pr[kNumRedStrat];
+        double pb[kNumBlueStrat];
+        double payoffR;
+        double payoffB;
+    };
+    const ReferenceEquilibrium kKnownEquilibria[] = {
+        { "gams-path (confirmed 2026-07-06)",
+          { 0.000, 0.000, 0.505, 0.495, 0.000 },
+          { 0.000, 0.600, 0.000, 0.000, 0.400 },
+          58.069, 60.717 },
+        // The perturb-restart chain's answer (round 4, residual^2 1.2e-9,
+        // 2026-07-06): the same supports {RS3, RS4} x {BS2, BS5} but the
+        // MIRROR-IMAGE cap pattern -- here RED's rho cap binds (pr(RS3) =
+        // 0.600 = rho) where the GAMS point has BLUE's binding (pb(BS2) =
+        // 0.600). Author-accepted as a distinct Nash equilibrium.
+        { "perturb-chain, Red cap active (accepted 2026-07-06)",
+          { 0.000, 0.000, 0.600, 0.400, 0.000 },
+          { 0.000, 0.400, 0.000, 0.000, 0.600 },
+          54.017, 63.743 },
+        // Add further verified equilibria here (see the roster note above).
+    };
+    constexpr double kProbTol   = 2.0e-3;
+    constexpr double kPayoffTol = 5.0e-2;
 
-    // Gating check: the decoded mixed strategies and payoffs must match the
-    // GAMS-verified equilibrium.
+    // Gating check: the decoded mixed strategies and payoffs must match SOME
+    // roster equilibrium. On failure the report carries the nearest entry and
+    // the run's own values in roster-entry form.
     CheckFn
-    checkGamsEquilibrium()
+    checkKnownEquilibria()
     {
         return [](const VIResult& res) -> CheckResult {
             const VectorXd y = res.z.tail(kNumComp);
-            double maxProbErr = 0.0;
-            for (int r = 0; r < kNumRedStrat; ++r) {
-                const double err = std::abs(y(prAt(r)) - kRefPr[r]);
-                if (maxProbErr < err) {
-                    maxProbErr = err;
-                }
-            }
-            for (int b = 0; b < kNumBlueStrat; ++b) {
-                const double err = std::abs(y(pbAt(b)) - kRefPb[b]);
-                if (maxProbErr < err) {
-                    maxProbErr = err;
-                }
-            }
             const StageTable stage = computeAllStages(y);
             double payoffR = 0.0, payoffB = 0.0;
             for (int r = 0; r < kNumRedStrat; ++r) {
@@ -709,15 +726,57 @@ namespace {
                     }
                 }
             }
-            const double payoffErr = std::max(std::abs(payoffR - kRefPayoffR),
-                                              std::abs(payoffB - kRefPayoffB));
+
+            const ReferenceEquilibrium* nearest = nullptr;
+            double nearestProbErr = std::numeric_limits<double>::infinity();
+            double nearestPayoffErr = std::numeric_limits<double>::infinity();
+            bool matchP = false;
+            for (const ReferenceEquilibrium& ref : kKnownEquilibria) {
+                double probErr = 0.0;
+                for (int r = 0; r < kNumRedStrat; ++r) {
+                    probErr = std::max(probErr, std::abs(y(prAt(r)) - ref.pr[r]));
+                }
+                for (int b = 0; b < kNumBlueStrat; ++b) {
+                    probErr = std::max(probErr, std::abs(y(pbAt(b)) - ref.pb[b]));
+                }
+                const double payoffErr = std::max(std::abs(payoffR - ref.payoffR),
+                                                  std::abs(payoffB - ref.payoffB));
+                if (probErr < nearestProbErr) {
+                    nearest = &ref;
+                    nearestProbErr = probErr;
+                    nearestPayoffErr = payoffErr;
+                }
+                if (probErr <= kProbTol && payoffErr <= kPayoffTol) {
+                    matchP = true;
+                    char buf[160];
+                    std::snprintf(buf, sizeof buf,
+                                  "matches roster equilibrium \"%s\": max |pr/pb err| "
+                                  "= %.2e (tol %.1e), max |payoff err| = %.2e (tol %.1e)",
+                                  ref.name, probErr, kProbTol, payoffErr, kPayoffTol);
+                    return CheckResult{ true, string(buf) };
+                }
+            }
+            static_cast<void>(matchP);
+
+            // No roster entry matched: print the point as a paste-ready entry
+            // so a newly discovered equilibrium is one verification away from
+            // joining the roster.
+            std::printf("  no roster match; this point as a roster entry "
+                        "(VERIFY before adding):\n"
+                        "    { \"candidate (unverified)\",\n"
+                        "      { %.3f, %.3f, %.3f, %.3f, %.3f },\n"
+                        "      { %.3f, %.3f, %.3f, %.3f, %.3f },\n"
+                        "      %.3f, %.3f },\n",
+                        y(prAt(0)), y(prAt(1)), y(prAt(2)), y(prAt(3)), y(prAt(4)),
+                        y(pbAt(0)), y(pbAt(1)), y(pbAt(2)), y(pbAt(3)), y(pbAt(4)),
+                        payoffR, payoffB);
             char buf[160];
             std::snprintf(buf, sizeof buf,
-                          "vs GAMS equilibrium: max |pr/pb err| = %.2e (tol %.1e), "
-                          "max |payoff err| = %.2e (tol %.1e)",
-                          maxProbErr, kProbTol, payoffErr, kPayoffTol);
-            const bool matchP = (maxProbErr <= kProbTol) && (payoffErr <= kPayoffTol);
-            return CheckResult{ matchP, string(buf) };
+                          "matches no roster equilibrium; nearest \"%s\": max |pr/pb "
+                          "err| = %.2e (tol %.1e), max |payoff err| = %.2e (tol %.1e)",
+                          nearest ? nearest->name : "(none)", nearestProbErr, kProbTol,
+                          nearestPayoffErr, kPayoffTol);
+            return CheckResult{ false, string(buf) };
         };
     }
 
@@ -819,59 +878,36 @@ namespace {
     }
 
     // ------------------------------------------------------------------------
-    // Alternating chain (built 2026-07-06 after three diagnostic runs; the
-    // rationale below is the seed of the final report's description).
-    //
-    // The two Newton-class engines fail in COMPLEMENTARY ways on this
-    // nonmonotone game:
-    //   - jn+ipm (Josephy-Newton outer, interior-point inner) makes huge gains
-    //     from far away -- its degeneracy-insensitive central-path steps took
-    //     the GAMS start from residual^2 1.4e5 to 19.6 in ONE linearization --
-    //     but stalls where the linearized LCP goes indefinite (run 2).
-    //   - ssn (semismooth FB Newton) descends sharply from near-feasible
-    //     points (19.6 -> 0.68 in 52 iterations, run 3) but dies far from K:
-    //     its iterates are not confined to K, and the run-3 residual breakdown
-    //     showed its plateau point holding NEGATIVE escort allocations
-    //     (BEs = -0.34 against myEps = 0.01), i.e. camped beside the
-    //     ratio-combat poles, where the Armijo search dies against the +inf
-    //     walls of the merit.
-    //
-    // Hence the alternation, from the GAMS start, up to kChainRoundsMax rounds:
-    //   1. PROJECT the iterate onto K = R^4 x R_+^446 (makeMixedProjector).
-    //      This clears the pole adjacency exactly where the finisher stalled.
-    //      Escorts projected TO zero keep a first-order re-entry signal
-    //      (dfR_dE > 0 at REs = 0 when the route carries flow), unlike flows
-    //      at zero, so the projection does not create h'(0) = 0 dead zones.
-    //   2. GLOBALIZE: jn+ipm from the projected point, under the JN stall
-    //      cutoff -- take the big linearization gains while they last.
-    //   3. FINISH: ssn-m4 from phase 2's iterate -- local semismooth descent.
-    // Each round re-linearizes each engine at the other's best point; continue
-    // while a round improves the best squared natural residual by at least
-    // 10% (kChainImproveFactor -- run 4 showed the endgame rounds grind SMALL
-    // gains, and the round cap already bounds the cost), stop on convergence,
-    // no-improvement, or the round cap. The row returns the BEST point
-    // visited, not the last: nonmonotone ssn can wander above its best
-    // (run 2's lam95 row returned 1.7e4 after visiting 8.2e3). Best-tracking
-    // is at phase-endpoint granularity; returning ssn's internal best iterate
-    // is a separate proposed library change. Precedents: PATH's crash/restart
-    // cycles (Ferris-Munson) and this library's chainedSolodovHe (E3a).
-    //
-    // A phase that THROWS is a STALLED PHASE, not a failed row (run 4: round
-    // 2's re-linearized jn+ipm was still improving, 1.19 -> 1.07, when its
-    // inner IPM died with "step length collapsed" -- and the escaping
-    // exception discarded a 0.68 best point). The catch logs the throw, keeps
-    // the best point, and hands the round's start to the other engine; if
-    // both phases of a round throw, the improvement test ends the loop and
-    // the row still returns its best honestly (converged = false).
+    // The alternating chain row. The algorithm and its full rationale
+    // (complementary engine failure modes, projection clearing the myEps
+    // poles, best-point memory, throw-as-stall) now live in the LIBRARY --
+    // alternatingchain.hpp -- where they were promoted after this problem
+    // proved them out over five diagnostic runs (2026-07-06). This row only
+    // binds the deploy-specific stages: globalizer = Josephy-Newton with the
+    // Mehrotra IPM inner under the JN stall cutoff; finisher = semismooth
+    // Newton with nonmonotone memory 4. Deploy-specific projection note:
+    // escorts projected TO zero keep a first-order re-entry signal
+    // (dfR_dE > 0 at REs = 0 when the route carries flow), unlike flows at
+    // zero, so the projection creates no h'(0) = 0 dead zones here.
     // ------------------------------------------------------------------------
-    constexpr int    kChainRoundsMax     = 5;
-    constexpr double kChainImproveFactor = 0.9;   // a round must improve >= 10%
+    constexpr int    kChainRoundsMax     = 8;
+    constexpr double kChainImproveFactor = 1.0;   // any strict improvement earns
+                                                  //   another round (the cap
+                                                  //   bounds cost). The earlier
+                                                  //   10%-per-round demand cut
+                                                  //   the chain off at 0.145 in
+                                                  //   the right basin (run 6)
+    constexpr double kChainPerturbScale  = 0.1;   // perturb-restart on stagnant
+                                                  //   rounds: runs 6-7 hit a
+                                                  //   deterministic round-map
+                                                  //   fixed point at 0.145 that
+                                                  //   verbatim retries repeat
+                                                  //   identically
 
     McpEngineRow
     makeAlternatingChainRow(const VIModel& model)
     {
         const SolveFn solve = [model](const VectorXd& z0) -> VIResult {
-            const Projector project = makeMixedProjector(model.n);
             JosephyNewtonParams jnParams;
             jnParams.outerTol      = kMagTol;
             jnParams.outerIterMax  = kOuterIterMax;
@@ -879,74 +915,46 @@ namespace {
             jnParams.stallIterMax  = kJnStallIterMax;
             const InnerSolver inner =
                 makeMehrotraIpmSolver(model.n, kInnerMagTol, kIpmIterMax, 0);
+            const StageSolver globalizer = [model, inner, jnParams](const VectorXd& start) {
+                return solveVI(model, start, inner, jnParams,
+                               heartbeatLogger("altchain jn+ipm"));
+            };
+            const StageSolver finisher = [model](const VectorXd& start) {
+                return semismoothNewtonSolve(model, start, ssnM4Params(),
+                                             heartbeatLogger("altchain ssn-m4"));
+            };
 
-            VIResult best;
-            best.z        = z0;
-            best.residual = std::numeric_limits<double>::infinity();
-            int outerTotal = 0;
-            int innerTotal = 0;
-            VectorXd z = z0;
-            for (int round = 1; round <= kChainRoundsMax; ++round) {
-                const double bestBefore = best.residual;
-                char label[48];
+            AlternatingChainParams chainParams;
+            chainParams.magTol        = kMagTol;
+            chainParams.roundsMax     = kChainRoundsMax;
+            chainParams.improveFactor = kChainImproveFactor;
+            chainParams.perturbScale  = kChainPerturbScale;
 
-                z = project(z);
-
-                // Globalize. On a throw the finisher starts from the
-                // projected point instead of the (lost) phase-1 iterate.
-                VectorXd finishStart = z;
-                std::snprintf(label, sizeof label, "altchain r%d jn+ipm", round);
-                try {
-                    const VIResult phase1 = solveVI(model, z, inner, jnParams,
-                                                    heartbeatLogger(label));
-                    outerTotal += phase1.iter;
-                    innerTotal += phase1.innerIters;
-                    if (phase1.residual < best.residual) {
-                        best = phase1;
+            // Flushed per-stage round summary beside the stages' own
+            // per-iteration heartbeats.
+            const ChainStageLogger stageLog =
+                [](int round, const char* stage, double stageResidual,
+                   double bestResidual, const string& note) {
+                    if (note.empty()) {
+                        std::printf("    altchain round %d %s: residual^2 %.3e (best %.3e)\n",
+                                    round, stage, stageResidual, bestResidual);
                     }
-                    if (phase1.converged) {
-                        break;   // best.converged now carries the success
+                    else {
+                        std::printf("    altchain round %d %s threw (stalled stage): %s\n",
+                                    round, stage, note.c_str());
                     }
-                    finishStart = phase1.z;
-                }
-                catch (const std::exception& ex) {
-                    std::printf("    %s threw (stalled phase): %s\n", label, ex.what());
                     std::fflush(stdout);
-                }
+                    return;
+                };
 
-                // Finish.
-                std::snprintf(label, sizeof label, "altchain r%d ssn-m4", round);
-                try {
-                    const VIResult phase2 = semismoothNewtonSolve(
-                        model, finishStart, ssnM4Params(), heartbeatLogger(label));
-                    outerTotal += phase2.iter;
-                    if (phase2.residual < best.residual) {
-                        best = phase2;
-                    }
-                    if (phase2.converged) {
-                        break;   // best.converged now carries the success
-                    }
-                }
-                catch (const std::exception& ex) {
-                    std::printf("    %s threw (stalled phase): %s\n", label, ex.what());
-                    std::fflush(stdout);
-                }
-
-                z = best.z;   // next round: re-project + re-linearize at the best
-                if (best.residual > kChainImproveFactor * bestBefore) {
-                    break;    // round gained less than the required 10%
-                }
-            }
-            VIResult out = best;
-            out.iter       = outerTotal;
-            out.innerIters = innerTotal;
-            return out;
+            return alternatingChainSolve(model, z0, globalizer, finisher,
+                                         chainParams, stageLog);
         };
         return McpEngineRow{ "altchain ipm->ssn", solve };
     }
 } // namespace
 
-TEST(GamsDeploy, AtLeastOneEngineReachesGamsEquilibrium) {
+TEST(GamsDeploy, AtLeastOneEngineReachesKnownEquilibrium) {
     const VIModel  model = buildModel();
     const VectorXd z0    = initialPoint();
 
@@ -975,15 +983,15 @@ TEST(GamsDeploy, AtLeastOneEngineReachesGamsEquilibrium) {
     // single-shot chain of run 3 exactly, since the GAMS start is already in K).
     rows.push_back(makeAlternatingChainRow(model));
 
-    // A row passes iff it converges AND matches the GAMS equilibrium. The
+    // A row passes iff it converges AND matches a roster equilibrium. The
     // alternating chain is the only known-good row; the standalone engines
     // are kept as (failing) comparison rows -- their inability to solve this
     // problem alone is the documented reason the chain exists.
     const int passed = countConvergedRows(
         rows, z0,
-        { printGamsOutputs(), printResidualBreakdown(), checkGamsEquilibrium() });
+        { printGamsOutputs(), printResidualBreakdown(), checkKnownEquilibria() });
     EXPECT_GE(passed, 1)
-        << "no engine converged to the GAMS equilibrium on the deploy_v07.gms "
+        << "no engine converged to a roster equilibrium on the deploy_v07.gms "
            "mixed NCP (known-good: the alternating chain)";
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

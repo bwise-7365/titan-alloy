@@ -83,6 +83,20 @@ Two solver layers over one shared core; the dependency arrows point one way
   The projection engines solve a **linear** VI `(M x + q)` over any `K` given
   as the `Projector`; the IPM is mixed/orthant-structural only.
 
+- **Direct mixed-NCP solvers and compositions (beside the inner-solver seam):**
+  - `semismoothNewtonSolve` (`include/semismoothnewton.hpp`) — penalized
+    Fischer-Burmeister semismooth Newton on `Phi(z) = [H; phi(y_i, G_i)] = 0`,
+    attacking the NONLINEAR mixed NCP directly (no Josephy-Newton nesting).
+    Seams: `NcpFunctionPair` (penalized / plain FB ready-made) and `JacobianFn`
+    (empty = FD). Returns the BEST-VISITED iterate in the natural-residual
+    sense, not the last (the nonmonotone search can end above its best).
+  - `alternatingChainSolve` (`include/alternatingchain.hpp`) — rounds of
+    project-onto-K -> globalizer -> finisher with best-point memory, for
+    NONMONOTONE problems where no single engine converges (built and proved on
+    the deploy_v07 GAMS game — see `test/gams_deploy_test.cpp`). Stage solvers
+    are seams (`StageSolver`); a stage that throws is a stalled stage, not a
+    chain failure. The header carries the full rationale.
+
 - **Outer driver (`include/josephynewton.hpp`, `lib/josephynewton.cpp`)** —
   `solveVI`, a Josephy-Newton loop for the nonlinear VI. Each step linearizes `F`
   with a finite-difference Jacobian `J`, then solves the affine VI `M = J(z_k)`,
@@ -96,6 +110,10 @@ Two solver layers over one shared core; the dependency arrows point one way
     tolerances/caps/params/logger. This lets the same outer loop drive different
     inner solvers on identical problems (see `test/han_vs_he_test.cpp`). Inner
     controls live in the functor, not in `JosephyNewtonParams` (outer-only).
+    `JosephyNewtonParams` also carries a no-progress cutoff (`stallIterMax`,
+    default off): after that many consecutive outer iterations without relative
+    residual improvement it stops honestly (converged = false) BEFORE spending
+    another Jacobian + inner solve.
 
 - **Jacobian (`include/fdjacobian.hpp`, `lib/fdjacobian.cpp`)** —
   `centralDifferenceJacobian`. **4th-order** central differences (step
@@ -132,7 +150,11 @@ Two solver layers over one shared core; the dependency arrows point one way
   exceeding `divergenceFactor * initialMag`), and a non-finite linear solve all
   throw `std::runtime_error`; dimension/parameter problems throw
   `std::invalid_argument`. Preserve this stance in new code; surface bad values
-  early rather than papering over them.
+  early rather than papering over them. But a STALL is not a bad value: a
+  collapsed step length in `mehrotraIpm`, a failed line search or direction
+  ladder in `semismoothNewtonSolve`, and the Josephy-Newton no-progress cutoff
+  all return honestly with `converged = false` at a real iterate — throwing on
+  stalls costs composability (engine chains had to catch and ignore).
 - **Han's method needs a monotone problem** (M positive semidefinite) to
   converge. This is why the two LCP tests differ: `lcp_random_test` uses a
   random indefinite `M` (a stress test that may legitimately hit the divergence

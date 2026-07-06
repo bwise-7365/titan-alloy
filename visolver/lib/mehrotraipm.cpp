@@ -272,13 +272,21 @@ namespace VINCP {
         const double alpha = std::min(1.0, params.tauFraction
                                            * maxStepToBoundary(y, dy, s, ds));
         if (alpha < params.stallStep) {
-          throw std::runtime_error("mehrotraIpm: step length collapsed; the iteration is stalled.");
+          // Step-length collapse is a STALL, not a corrupt value: the honest
+          // response is converged = false at the current iterate, matching
+          // the semismooth solver's stance on its own stalls. (It used to
+          // throw; that cost composability -- a wrapper alternating engines
+          // on a nonmonotone problem had to treat the throw as a stall
+          // anyway. Changed 2026-07-06, deploy_v07 evidence.)
+          doneP = true;
         }
-        x += alpha * dx;
-        y += alpha * dy;
-        s += alpha * ds;
+        else {
+          x += alpha * dx;
+          y += alpha * dy;
+          s += alpha * ds;
 
-        ++iter;
+          ++iter;
+        }
       }
     }
 

@@ -219,6 +219,66 @@ rounds may grind small gains under the round cap. Open question flagged for
 Ben: mehrotraIpm throwing on step-length collapse (a stall, not a bad value)
 vs returning converged=false -- the throw stance costs composability.
 
+## Post-success work package (2026-07-06, Ben approved "2+3+4, 5, commit"): CODE DONE, awaiting Ben's build+run (CMake RELOAD -- new files)
+
+1. `semismoothNewtonSolve` now returns its BEST-VISITED iterate (natural-
+   residual sense), not the last (the lam95 evidence: ended 1.7e4 after
+   visiting 8.2e3). Header documents it; iter still counts all iterations.
+2. `mehrotraIpm` step-length collapse now returns honest converged=false at
+   the current iterate instead of throwing (a stall is not a bad value; the
+   throw cost the chain a row in run 4). Header contract updated; no test
+   depended on the throw.
+3. Alternating chain PROMOTED to the library: `include/alternatingchain.hpp`
+   + `lib/alternatingchain.cpp` -- `alternatingChainSolve(model, z0,
+   globalizer, finisher, params, logger, projector)` with StageSolver seams,
+   best-point memory (chain recomputes the natural residual itself),
+   throw-as-stall, improvement cutoff, ChainStageLogger hook. Full rationale
+   in the header (the report can cite it). New `alternating_chain_test`
+   (5 cases: real-engine integration on a monotone LCP; best-point memory;
+   throw absorption; improvement cutoff; input guards -- fake fixed/throwing
+   stages drive the protocol deterministically). gams_deploy_test's row now
+   BINDS the library chain (deploy-specific stages only); its old inline
+   loop is gone. CMake: lib source + test target + aggregates.
+4. CLAUDE.md updated: direct mixed-NCP solvers section (ssn best-iterate,
+   alternating chain), JN stall cutoff, and the throw-never-substitute
+   invariant now distinguishes STALLS (honest converged=false) from bad
+   values (throw).
+
+Verification for Ben: CMake reload, then run_all_tests (expect 105 + 5 new
+chain cases + the deploy row exercising the library chain = green), with
+special eyes on gams_deploy_test still converging to the GAMS equilibrium
+through the library chain. Commit after green.
+
+Run 6 result: 109/110 -- only gams_deploy red. The library chain reached
+best 0.1449 in the RIGHT basin (support RS3/RS4 x BS2/BS5; the semantics
+changes legitimately shifted the trajectory) but the 10%-per-round
+improvement demand ended the loop after round 3, before the finisher's
+quadratic tail engaged. Fix: the cutoff became strict-improvement (default
+improveFactor 1.0; roundsMax alone bounds cost).
+
+Run 7: digit-for-digit identical to run 6 -- which is itself the diagnosis:
+round 3 made NO improvement (the 0.1449 was round 2's), and the chain is
+deterministic, so a stagnant round retried verbatim repeats identically; no
+improvement rule can help. Fix (awaiting re-run, plain rebuild):
+PERTURB-RESTART in the library chain (the pre-approved PATH-style fallback).
+New param perturbScale (default 0 = off): a stagnant round makes the NEXT
+round start from bestZ jiggled by U[-1,1] * perturbScale * sqrt(bestMag)
+(shrinks as the chain closes in), projected onto K; fixed-seed mt19937 keeps
+runs reproducible; stagnation with perturbation off still ends the chain.
+Deploy test: perturbScale 0.1, roundsMax 8 (~7 s/round worst case). New unit
+case PerturbRestartKeepsStagnantChainTrying (identity stages = a guaranteed
+fixed point) + a negative-perturbScale guard.
+
+Run 8: the perturbed chain CONVERGED (round 4, residual^2 1.2e-9, 28.8 s) --
+to a SECOND Nash equilibrium: same supports, mirror-image cap pattern
+(pr(RS3) = 0.600 = rho binds for RED where the GAMS point has Blue's
+pb(BS2) = 0.600). Ben accepted it as genuine. Gate is now an EQUILIBRIUM
+ROSTER (kKnownEquilibria): converge to magTol + match ANY verified entry;
+non-roster converged points print themselves as paste-ready entries for
+verification; the roster grows as Ben finds equilibria from random starts.
+Test renamed AtLeastOneEngineReachesKnownEquilibrium. Awaiting the
+confirming re-run (plain rebuild), then commit the whole package.
+
 ## IP4a probe result (Release, seed 20260704, engine ipm, iterMax 200, maxCertificateRounds 1)
 
     kept 10737/14500   rounds 1   final-iter 35   wall 1,778,400 ms (~30 min)
