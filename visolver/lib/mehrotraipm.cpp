@@ -9,6 +9,7 @@
 #include <cmath>
 #include <limits>
 #include <stdexcept>
+#include <string>   // newtonCheckTol failure message
 
 namespace VINCP {
 
@@ -48,6 +49,10 @@ namespace VINCP {
       }
       if (!(0.0 < params.divergenceFactor)) {
         throw std::invalid_argument("mehrotraIpm: divergenceFactor must be positive.");
+      }
+      if (0.0 > params.newtonCheckTol) {
+        throw std::invalid_argument(
+            "mehrotraIpm: newtonCheckTol must be non-negative (0 disables the check).");
       }
       return;
     }
@@ -91,13 +96,60 @@ namespace VINCP {
               int iterMax,
               int iterFreq,
               const MehrotraIpmParams& params,
-              const IterationLogger& logger)
+              const IterationLogger& logger,
+              const NewtonSolverFactory& newtonFactory)
   {
     validateInputs(M, q, numFree, magTol, params);
 
     const Index total = q.size();
     const Index n = numFree;
     const Index m = total - n;
+
+    // The built-in Newton factory: assemble K densely and factor by LU with
+    // partial pivoting -- exactly the arithmetic the engine always performed,
+    // so an empty newtonFactory preserves the historical behavior bit for bit.
+    const NewtonSolverFactory denseFactory =
+        [&M, n, m](const VectorXd& sOverY, double freeRegularization) -> NewtonSolve {
+          MatrixXd K = M;
+          K.diagonal().tail(m) += sOverY;
+          if (0.0 < freeRegularization) {
+            K.diagonal().head(n).array() += freeRegularization;
+          }
+          return [luK = PartialPivLU<MatrixXd>(K)](const VectorXd& rhs) {
+            return luK.solve(rhs);
+          };
+        };
+    const NewtonSolverFactory& factory = newtonFactory ? newtonFactory : denseFactory;
+
+    // Invoke the factory, refusing an empty solver rather than crashing on it.
+    const auto buildSolve = [&factory](const VectorXd& sOverY, double freeRegularization) {
+      NewtonSolve solve = factory(sOverY, freeRegularization);
+      if (!solve) {
+        throw std::runtime_error("mehrotraIpm: the Newton factory returned an empty solver.");
+      }
+      return solve;
+    };
+
+    // Dev-mode drift guard (params.newtonCheckTol > 0 only): the engine cannot
+    // see the factory's K, but it can verify the solve against its own data,
+    // K d = M d + blockdiag(freeRegularization I, diag(sOverY)) d, in one
+    // O(dim^2) matvec. Throws rather than iterating on a drifted step.
+    const auto checkNewtonSolve = [&M, &params, n, m](const VectorXd& d,
+                                                      const VectorXd& rhs,
+                                                      const VectorXd& sOverY,
+                                                      double freeRegularization,
+                                                      const char* phase) {
+      VectorXd Kd = M * d;
+      Kd.head(n) += freeRegularization * d.head(n);
+      Kd.tail(m) += sOverY.cwiseProduct(d.tail(m));
+      const double drift = (Kd - rhs).squaredNorm();
+      if (!(drift <= params.newtonCheckTol)) {
+        throw std::runtime_error(std::string("mehrotraIpm: the ") + phase
+                                 + " solve failed the newtonCheckTol consistency check; "
+                                   "the Newton factory's K disagrees with M.");
+      }
+      return;
+    };
 
     // Data-scaled strictly interior start (OOQP's simple rule): x = 0 and
     // y = s = beta 1.
@@ -160,18 +212,14 @@ namespace VINCP {
         // conditioning grows like 1/mu near convergence, which is benign for
         // the computed step (Gondzio 2012, sec. 4) -- the honest response is
         // the magTol/iterMax termination, not a guard on it.
-        MatrixXd K = M;
-        K.diagonal().tail(m) += sOverY;
-        if (regularizedP) {
-          K.diagonal().head(n).array() += params.regEpsilon;
-        }
-        PartialPivLU<MatrixXd> luK(K);
+        double freeRegularization = regularizedP ? params.regEpsilon : 0.0;
+        NewtonSolve solveK = buildSolve(sOverY, freeRegularization);
 
         // Predictor (affine scaling): t = -y.s, so t./y - rs = -s - rs.
         VectorXd rhs(total);
         rhs.head(n) = -rx;
         rhs.tail(m) = -s - rs;
-        VectorXd dA = luK.solve(rhs);
+        VectorXd dA = solveK(rhs);
         if (!dA.allFinite()) {
           // A singular Newton matrix can only come from the free block (the
           // y block carries the positive diagonal): add the standard tiny
@@ -181,13 +229,16 @@ namespace VINCP {
             throw std::runtime_error("mehrotraIpm: predictor solve produced non-finite values.");
           }
           regularizedP = true;
-          K.diagonal().head(n).array() += params.regEpsilon;
-          luK.compute(K);
-          dA = luK.solve(rhs);
+          freeRegularization = params.regEpsilon;
+          solveK = buildSolve(sOverY, freeRegularization);
+          dA = solveK(rhs);
           if (!dA.allFinite()) {
             throw std::runtime_error(
                 "mehrotraIpm: predictor solve stayed non-finite after free-block regularization.");
           }
+        }
+        if (0.0 < params.newtonCheckTol) {
+          checkNewtonSolve(dA, rhs, sOverY, freeRegularization, "predictor");
         }
         const VectorXd dyA = dA.tail(m);
         const VectorXd dsA = -s - sOverY.cwiseProduct(dyA);
@@ -205,9 +256,12 @@ namespace VINCP {
         const VectorXd t = VectorXd::Constant(m, sigma * mu)
                            - y.cwiseProduct(s) - dyA.cwiseProduct(dsA);
         rhs.tail(m) = t.cwiseQuotient(y) - rs;
-        const VectorXd d = luK.solve(rhs);
+        const VectorXd d = solveK(rhs);
         if (!d.allFinite()) {
           throw std::runtime_error("mehrotraIpm: corrector solve produced non-finite values.");
+        }
+        if (0.0 < params.newtonCheckTol) {
+          checkNewtonSolve(d, rhs, sOverY, freeRegularization, "corrector");
         }
         const VectorXd dx = d.head(n);
         const VectorXd dy = d.tail(m);

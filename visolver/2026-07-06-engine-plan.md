@@ -28,11 +28,11 @@ construction.
 | IP3  | `makeMehrotraIpmSolver` seam adapter; third row in `han_vs_he_test`; network `solver.engine = "ipm"`; CLAUDE.md + ledger updates | DONE, verified 2026-07-05 |
 | IP4a | 200-banded ipm bounded probe (1 certificate round) | DONE 2026-07-06 — results below |
 | IP4b | `chain` + `bshe94b` bounded control probes | **DEFERRED to next weekend (with Opus)** |
-| IP4c | performance.md addendum + close the gate in `plan.md` | TODO (after IP4b, or from IP4a alone if IP4b is dropped) |
-| NS1  | `NewtonSolverFactory` seam on `mehrotraIpm` (default dense LU; `newtonCheckTol` drift guard) | TODO (~half day) |
+| IP4c | performance.md addendum + close the gate in `plan.md` | DONE 2026-07-06 in substance — addendum P6-P9 (IP4a + NS3) written; IP4b rows will extend it but no longer gate anything |
+| NS1  | `NewtonSolverFactory` seam on `mehrotraIpm` (default dense LU; `newtonCheckTol` drift guard) | DONE, gate-verified 2026-07-06 (93/93) |
 | NS2a | Maxima algebra checker | DONE 2026-07-06 — `network/doc/ns2-newton-check.mac`, ALL 10 CHECKS PASS |
-| NS2  | `makeFlowNewtonFactory`: per-sink Sherman-Morrison + dual Schur (SPD, LLT) + parity tests vs dense | TODO (~half-full day; algebra machine-verified, transcribe do not re-derive) |
-| NS3  | Keep-all / no-screen 200-banded run; compare vs screened path and greedy+swap; addendum | TODO |
+| NS2  | `makeFlowNewtonFactory`: per-sink Sherman-Morrison + dual Schur (SPD, LLT) + parity tests vs dense | DONE, gate-verified 2026-07-06 (99/99 green) |
+| NS3  | Keep-all / no-screen 200-banded run; compare vs screened path and greedy+swap; addendum | DONE 2026-07-06 — 14500/14500 kept, 0 rounds, 36 iters, **4.51 s**, cert YES, th_star 52.908 (~394x vs IP4a's 1778 s uncertified 53.117); addendum P6-P9 in performance.md |
 | MC1  | Select + design the specialized mixed-NCP algorithm (semismooth FB Newton, DFK/Munson line) | DONE 2026-07-06 — design below |
 | MC2  | Implement it: `semismoothnewton.{hpp,cpp}` + directional Armijo + tests | DONE, verified 2026-07-06 (cubic 14 iters FD-path; degenerate 11 vs ipm 18; mixed QP 2 iters, residual exactly 0 after the kink-indicator fix) |
 | MC3  | Big-affine exercise: `solver.engine = "ssn"` in solveFlowPlan + EngineSelectable row; ssn row joins the IP4b weekend benchmark; GAMS model (incoming) designated the big-NONLINEAR acceptance test | DONE, verified 2026-07-06 (four-engine EngineSelectable green) |

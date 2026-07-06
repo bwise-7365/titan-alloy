@@ -553,5 +553,78 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   block; an ssn row joins the deferred IP4b weekend benchmark; the incoming
   reformulated GAMS model is designated the big-NONLINEAR acceptance test.
   MC3 code awaiting Ben's run (plain rebuild).
+- 2026-07-06: NS1 code done. `mehrotraIpm` gains the per-iteration
+  linear-algebra seam (OOQP layering): `NewtonSolve` / `NewtonSolverFactory`
+  types in mehrotraipm.hpp; trailing `newtonFactory` parameter (empty =
+  built-in dense-LU factory, historical behavior bit for bit — the retry
+  path assembles the identical matrix). The factory contract carries the
+  singularity-rescue protocol via `freeRegularization` (0.0, then sticky
+  regEpsilon after a non-finite solve). `MehrotraIpmParams.newtonCheckTol`
+  (default 0 = off) is the dev-mode drift guard: each Newton solve verified
+  against the engine's own M by one O(dim^2) matvec, throwing on violation
+  (catches a factory whose K disagrees with M). New tests in
+  mehrotra_ipm_test: counting dense wrapper matches the default EXACTLY
+  (equal z/iter/residual; one factorization per iteration; two solves each;
+  reg 0 throughout); rescue protocol traced on the singular-free-block QP
+  (retry call with regEpsilon in iter 0, sticky after, 2*iter+1 solves);
+  honest solves pass the drift guard (incl. regularized iterations); an
+  echo factory is caught by name; empty NewtonSolve refused; negative
+  newtonCheckTol rejected. No new files (no CMake reload). AWAITING Ben's
+  build+run; then NS2 (makeFlowNewtonFactory, algebra machine-verified by
+  ns2-newton-check.mac).
+- 2026-07-06: NS1 first run: 90/93 green (all pre-existing tests unchanged --
+  the seam's bit-for-bit acceptance held, incl. the exact-match seam test);
+  the 3 failures were all NEW tests, all test-construction bugs, fixed.
+  FINDING (verified by a standalone Eigen probe): on the singular-free-block
+  QP the rescue NEVER fires -- Eigen's partial-pivot LU leaves an exact zero
+  pivot but the flat coordinate's rhs entry is STRUCTURALLY zero (row+column
+  of M zero; nonzero q would make the free rows infeasible), and a zero
+  pivot with an exactly-zero numerator yields 0, not NaN, so the solve stays
+  finite. The old RegularizationRescuesSingularFreeBlock test had therefore
+  never exercised the rescue (renamed SingularConsistentFreeBlockConverges,
+  honest comment; header docs tightened: rescue triggers on NON-FINITE
+  solves, not on singularity per se). Fixes: rescue-protocol seam test now
+  drives the rescue deterministically via a fail-first factory (first
+  factorization returns NaN, then delegates to the honest dense solve) and
+  checks the reg-value sequence 0, regEpsilon, regEpsilon, ...; the
+  wrong-factory and empty-solver tests used M = I, q = -1 whose solution IS
+  the interior start (converged in 0 iterations, factory never called) --
+  q flipped to +1. AWAITING Ben's re-run.
+- 2026-07-06: NS1 gate-verified by Ben (93/93 green). NS2 code done.
+  `network/flownewton.{hpp,cpp}` (in vincpnet): `makeFlowNewtonFactory(lcp)`
+  returns a NewtonSolverFactory for mehrotraIpm that solves
+  K = M + diag(sOverY) by structure — per-sink Sherman-Morrison inverse of
+  the rank-1-plus-diagonal t-block (O(k_n) per slice) and an SPD dual Schur
+  complement of size numSources+1 (two-part assembly, LLT) — transcribed
+  verbatim from the Maxima-verified algebra (ns2-newton-check.mac, cited in
+  the header). O(pairs) + tiny LLT per iteration vs dense dim^3. Rejects
+  nonzero freeRegularization (pure NCP), wrong-size/non-positive sOverY,
+  inconsistent lcp; LLT failure throws. Wiring: `FlowPlanParams.ipmNewton`
+  = "dense" (default) | "flow" + `newtonCheckTol` passthrough; config keys
+  `solver.ipmNewton` / `solver.newtonCheckTol`; factory rebuilt per
+  certificate round. `LLT` added to vincp.hpp's Eigen imports. Tests
+  (`flownewton_test`, + config_test key coverage): dense-LU parity keep-all
+  (direct 1e-8 + backward-error 1e-12 on the SCALED system), extreme
+  1e-6..1e6 diagonal (backward-error metric), k_n = 1 slices, extreme Q_n
+  spread, end-to-end solveFlowPlan ipm dense-vs-flow parity with the
+  engine's newtonCheckTol drift guard ON, guard cases. `ns3-keepall.cfg`
+  staged for NS3 (200-banded keep-all, ipm + flow Newton, iterMax 200).
+  AWAITING Ben's build+run (CMake reload: new files).
+- 2026-07-06: NS2 gate-verified by Ben (99/99 green, incl. the 6 new
+  flownewton tests). NS3 run and CLOSED the same day: 200-banded keep-all
+  (ns3-keepall.cfg, seed 20260704, Release) — kept 14500/14500, 0 rounds,
+  36 iterations, **4,513.9 ms**, certified YES, th_star 52.90758, dlv
+  0.959, tm/tmG 0.800, lambda 2.22e-06. Versus IP4a (screened, dense LU,
+  same seed): ~394x faster AND exact — the one-round screened answer had
+  overshot the optimum by ~0.4% (53.117). Iteration count 36 at Newton dim
+  14,601 (vs 35 at 10,838) confirms dimension-insensitivity. VERDICT
+  (performance.md addendum P6-P9): for banded/large instances the
+  production configuration is now engine ipm + ipmNewton flow + NO screen
+  (exact by construction, no certificate machinery); small laydown-0
+  instances keep the screened bsHe94b path. E4's success criterion
+  ("200-banded solves in minutes with certified results") is exceeded by
+  ~two orders of magnitude via the NS track. IP4b weekend controls are now
+  purely comparative (they gate nothing); E3b (smoothing-Newton hybrid)
+  is moot for this problem class.
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

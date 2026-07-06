@@ -40,6 +40,19 @@ namespace VINCP::Network {
     double roughMagTol = 1.0e-4;   // chain phase-1 squared-residual target
     int roughIterMax = 20000;      // chain phase-1 iteration cap
 
+    // Newton linear algebra for the "ipm" engine (ignored by the others):
+    //   "dense"  one dense LU of the Newton matrix per iteration (default)
+    //   "flow"   makeFlowNewtonFactory (flownewton.hpp): per-sink
+    //            Sherman-Morrison + dual Schur complement, O(pairs) plus an
+    //            LLT of ~(numSources + 1)^2 per iteration instead of dense
+    //            dim^3 -- the NS2 structured factory, built to make the
+    //            keep-all / no-screen solve feasible.
+    string ipmNewton = "dense";
+    double newtonCheckTol = 0.0;   // > 0: the engine verifies every Newton
+                                   //   solve against M to this SQUARED
+                                   //   residual and throws on drift (dev-mode
+                                   //   guard for the structured factory)
+
     double magTol = 1.0e-12;   // squared-residual tolerance for the tight
                                // solve, in the NONDIMENSIONALIZED units
     int iterMax = 500000;

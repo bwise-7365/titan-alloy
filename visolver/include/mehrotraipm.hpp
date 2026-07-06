@@ -55,9 +55,36 @@ namespace VINCP {
     double sigmaMax = 1.0;            //   <= sigmaMax <= 1
     double stallStep = 1.0e-10;       // throw when the damped step length falls below this
     double regEpsilon = 1.0e-8;       // free-block diagonal regularization, applied only
-                                      //   (and then stickily) if the Newton solve is singular
+                                      //   (and then stickily) if a Newton solve comes back
+                                      //   non-finite (a singular-but-consistent system can
+                                      //   solve finitely and needs no rescue)
     double divergenceFactor = 100.0;  // guard: mag must stay below 1 + factor * initialMag
+    double newtonCheckTol = 0.0;      // > 0: after every Newton solve, verify
+                                      //   ||K d - rhs||^2 <= newtonCheckTol against the
+                                      //   engine's own M (one O(dim^2) matvec per solve)
+                                      //   and throw on violation. Dev-mode drift guard
+                                      //   for external Newton factories; 0 disables it.
   };
+
+  // One factored Newton system: solves K d = rhs for the K that was current
+  // when the factory built it. Called at least twice per iteration (the
+  // predictor and corrector share one factorization).
+  using NewtonSolve = function<VectorXd(const VectorXd& rhs)>;
+
+  // Per-iteration linear-algebra seam, layered as in OOQP (Gertz-Wright 2003):
+  // the interior-point recipe above is fixed, the Newton solve is swappable.
+  // Called once per iteration with the current complementarity diagonal; must
+  // return a solver for
+  //     K = M + blockdiag(freeRegularization * I_n, diag(sOverY)),
+  // where M and n = numFree are the data the CALLER bound when constructing
+  // the factory. The engine cannot verify that the factory's K agrees with its
+  // own M; set MehrotraIpmParams::newtonCheckTol > 0 during development to
+  // catch drift. freeRegularization carries the singularity-rescue protocol:
+  // the engine passes 0.0 until a solve comes back non-finite, retries that
+  // iteration once with params.regEpsilon, and from then on passes
+  // params.regEpsilon on every iteration (the rescue is sticky).
+  using NewtonSolverFactory =
+      function<NewtonSolve(const VectorXd& sOverY, double freeRegularization)>;
 
   // Solve the mixed LCP by the Mehrotra predictor-corrector interior-point method.
   //
@@ -67,8 +94,10 @@ namespace VINCP {
   //            satisfy 0 <= numFree < dim (at least one complementarity
   //            component). A rank-deficient free block (e.g. a flat objective
   //            direction no constraint touches) makes the Newton matrix
-  //            singular; the solver then adds regEpsilon to the free diagonal
-  //            and refactors, once, stickily, rather than failing.
+  //            singular; if that yields a non-finite solve, the solver adds
+  //            regEpsilon to the free diagonal and refactors, once, stickily,
+  //            rather than failing. (A singular-but-consistent system may
+  //            solve finitely as-is, in which case no rescue is needed.)
   //   magTol   termination tolerance on the SQUARED natural-map residual
   //            ||y - P_+(y - (M y + q))||^2, the same convention every other
   //            engine uses (internally the method steers by the plain
@@ -78,6 +107,9 @@ namespace VINCP {
   //   iterFreq logging frequency (<= 0 disables logging)
   //   params   tunable constants
   //   logger   optional logging hook
+  //   newtonFactory  optional NewtonSolverFactory (see above); empty means the
+  //            built-in dense-LU factory, which is the engine's historical
+  //            behavior exactly
   //
   // There is deliberately no start vector: an interior-point method cannot use
   // a caller iterate (it needs y, s strictly positive and near the central
@@ -85,8 +117,9 @@ namespace VINCP {
   //
   // Throws std::invalid_argument on inconsistent dimensions or invalid
   // parameters, and std::runtime_error on a NaN residual, detected
-  // divergence, a non-finite Newton solve, or a collapsed step length.
-  // It never silently substitutes a default result.
+  // divergence, a non-finite Newton solve, a collapsed step length, an empty
+  // solver returned by the factory, or a failed newtonCheckTol consistency
+  // check. It never silently substitutes a default result.
   VIResult mehrotraIpm(const MatrixXd& M,
                        const VectorXd& q,
                        Index numFree,
@@ -94,7 +127,8 @@ namespace VINCP {
                        int iterMax,
                        int iterFreq,
                        const MehrotraIpmParams& params = MehrotraIpmParams{},
-                       const IterationLogger& logger = IterationLogger{});
+                       const IterationLogger& logger = IterationLogger{},
+                       const NewtonSolverFactory& newtonFactory = NewtonSolverFactory{});
 
 } // namespace VINCP
 

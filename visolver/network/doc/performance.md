@@ -106,4 +106,50 @@ geometry. Fragile: renumbering the generator's draws would break it.)
   two levers if the banded case ever needs to be fast. 200-node planning at
   ~45 s/solve is usable for batch studies; not yet interactive.
 
+## Addendum (2026-07-06): interior point + structured Newton on 200-banded
+
+The 200-node laydown-1 case that stalled bsHe94b (150k-iteration cap on the
+round-0 system, abandoned after 10 minutes with zero rows) was rerun under
+the Mehrotra interior-point engine, first with its default dense LU (probe
+IP4a) and then with the NS2 structured Newton factory (per-sink
+Sherman-Morrison + dual Schur complement; `solver.ipmNewton = flow`) on the
+FULL pair set with no screen at all (probe NS3). Release build, seed
+20260704, single instance, iterMax 200.
+
+    config                              kept/total rnds  iter        ms  th_ration   th_star    dlv  tm/tmG    lambda  cert
+    ipm, dense LU, screen k=10+gap,
+      maxCertificateRounds=1 (IP4a)    10737/14500    1    35   1778400   39.84167  53.11743  0.957   0.800  2.22e-06    no
+    ipm, flow Newton, keep-all (NS3)   14500/14500    0    36    4513.9   39.84167  52.90758  0.959   0.800  2.22e-06   yes
+
+- **P6 — The interior point's iteration count is dimension- and
+  degeneracy-insensitive at full scale.** 35 iterations at Newton dimension
+  10,838; 36 at 14,601 — on the geometry that drove bsHe94b past 150k
+  iterations at dimension ~1.9k. The engine question raised in P5 is
+  settled: the projection-contraction rate collapse on near-tied banded
+  faces simply does not afflict the central path.
+- **P7 — The structured factory removes the linear-algebra wall, and with it
+  the need for the screen.** IP4a's cost was dense dim^3 LU (~50 s per
+  iteration) times the R3 certificate balloon (one round pulled the kept set
+  to 74% of keep-all and still could not certify). The flow factory solves
+  each Newton system in O(pairs) plus an LLT of size numSources+1, so the
+  KEEP-ALL problem — nothing excluded, hence nothing to certify, exact by
+  construction — runs end to end in 4.5 s: ~394x faster than the screened
+  dense probe and certified, on identical hardware and seed. The remaining
+  per-iteration cost is the engine's own O(dim^2) residual matvecs; the
+  one-time dense M assembly (~1.7 GB at this size) is the memory price.
+- **P8 — Keep-all is also economically better than a bounded screen.** The
+  uncertified one-round IP4a answer overshot the true optimum by ~0.4%
+  (53.117 vs 52.908) — real money the excluded pairs were worth. The
+  sandwich holds (th_ration 39.84 < th_star 52.91), delivery is 0.959 of
+  rationed targets at the 80% budget, and lambda ~ 2.2e-06 agrees across
+  both probes.
+- **P9 — Revised practical guidance.** Banded or large instances: engine
+  `ipm` + `ipmNewton = flow` + NO screen is now the production
+  configuration — seconds-scale, exact, no certificate machinery
+  (`network/ns3-keepall.cfg` is the template). Small laydown-0 instances:
+  the screened bsHe94b path remains perfectly good (sub-second) and avoids
+  the dense-M memory footprint. The IP4b weekend controls (chain / bshe94b /
+  ssn bounded probes on this instance) will complete the engine comparison;
+  they no longer gate any production decision.
+
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

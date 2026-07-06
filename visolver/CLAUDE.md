@@ -33,6 +33,11 @@ Run a single test (by ctest name) or the executable directly:
     ./build/lcp_psd_test            # Windows: build\Debug\lcp_psd_test.exe
 
 CLion configures `CMakeLists.txt` directly; its build tree is `cmake-build-debug/`.
+The aggregate targets `run_all_tests` / `run_engine_tests` / `run_network_tests`
+are custom targets whose ctest command executes during the BUILD step: in CLion
+use the hammer (Build) on them, never Run — a custom target has no executable,
+so Run reports "Executable is not specified". To run the whole suite from the
+Run button, use CLion's native "All CTest" configuration instead.
 
 The user builds and runs themselves — hand off the commands rather than invoking
 CMake/compilers/binaries to "verify". Warnings are errors-in-spirit: the library

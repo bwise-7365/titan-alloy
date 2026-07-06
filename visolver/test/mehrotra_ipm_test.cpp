@@ -5,10 +5,13 @@
 #include "testsupport.hpp"
 
 #include <Eigen/Dense>
+#include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <random>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace VINCP;
 
@@ -57,6 +60,40 @@ namespace {
             }
         }
         return A.transpose() * A;
+    }
+
+    // Squared-residual bar for the newtonCheckTol drift-guard tests: honest LU
+    // solves sit many orders below it; a wrong factory sits far above it.
+    constexpr double kNewtonCheckTol = 1.0e-8;
+
+    // Record of the NS1 seam protocol as a factory sees it: how often the
+    // factory is invoked (one factorization each), how many solves those
+    // factorizations serve, and every freeRegularization value passed.
+    struct SeamTrace {
+        int factoryCalls = 0;
+        int solveCalls = 0;
+        std::vector<double> regValues;
+    };
+
+    // Counting dense wrapper: reproduces the built-in dense-LU factory's
+    // arithmetic exactly (same K assembly, same partial-pivot LU) while
+    // recording the seam protocol in 'trace'. M and trace must outlive it.
+    NewtonSolverFactory makeCountingDenseFactory(const MatrixXd& M, Index numFree,
+                                                 SeamTrace& trace) {
+        return [&M, numFree, &trace](const VectorXd& sOverY,
+                                     double freeRegularization) -> NewtonSolve {
+            ++trace.factoryCalls;
+            trace.regValues.push_back(freeRegularization);
+            MatrixXd K = M;
+            K.diagonal().tail(sOverY.size()) += sOverY;
+            if (0.0 < freeRegularization) {
+                K.diagonal().head(numFree).array() += freeRegularization;
+            }
+            return [&trace, luK = PartialPivLU<MatrixXd>(K)](const VectorXd& rhs) {
+                ++trace.solveCalls;
+                return luK.solve(rhs);
+            };
+        };
     }
 
 } // namespace
@@ -283,14 +320,20 @@ TEST(MehrotraIpm, MixedRandomQpMatchesBsHe94b) {
     EXPECT_LT((ipm.z - he.z).norm(), crossTol);
 }
 
-// The regularization rescue: Q = diag(1, 0) leaves u2 with no curvature and
-// no constraint touches it, so the Newton matrix carries an exact zero row in
-// the free block -- the unregularized predictor solve is singular from the
-// first iteration. The solver must add regEpsilon to the free diagonal
-// (stickily), converge to u1 = 1, lambda = 0 (constraint u1 <= 10 inactive),
-// and leave the flat coordinate u2 pinned at its start value 0 (its Newton
-// row decouples under the regularization and its right-hand side is 0).
-TEST(MehrotraIpm, RegularizationRescuesSingularFreeBlock) {
+// Singular free block, consistent system: Q = diag(1, 0) leaves u2 with no
+// curvature, no constraint touches it, and nothing couples it -- row AND
+// column 1 of the Newton matrix are exactly zero, every iteration. The
+// system is nonetheless CONSISTENT (that rhs component is structurally 0:
+// anything else would make the free rows infeasible), and Eigen's
+// partial-pivot LU returns a FINITE solution with the flat coordinate pinned
+// at 0 (a zero pivot whose numerator is exactly zero yields 0, not NaN), so
+// the free-block rescue does NOT fire here -- established 2026-07-06 by the
+// NS1 seam trace; the rescue itself is exercised deterministically in
+// NewtonFactorySeamCarriesRescueProtocol. The assertions below are
+// black-box and hold either way: converge to u1 = 1, lambda = 0 (constraint
+// u1 <= 10 inactive) with u2 left at its start value 0, even should a future
+// Eigen route this through the rescue instead.
+TEST(MehrotraIpm, SingularConsistentFreeBlockConverges) {
     const Index numU = 2;
     const Index numCon = 1;
     const Index total = numU + numCon;
@@ -321,6 +364,215 @@ TEST(MehrotraIpm, RegularizationRescuesSingularFreeBlock) {
     }
 }
 
+// NS1 seam: a counting dense wrapper performs the identical arithmetic to the
+// built-in factory, so the engine must reproduce the default-path result
+// EXACTLY (bit for bit), invoke the factory once per iteration (one
+// factorization each), draw two solves from every factorization (predictor +
+// corrector), and pass freeRegularization = 0 throughout (a PD pure-LCP
+// Newton matrix never needs the rescue).
+TEST(MehrotraIpm, NewtonFactorySeamMatchesDefaultExactly) {
+    const Index N = 10;
+    const std::uint_fast32_t seed = makeSeed(0, true);
+
+    const int    intLo  = 1,    intHi  = 10;
+    const double realLo = -5.0, realHi = 10.0;
+    const double magTol = 1.0e-14;
+
+    std::mt19937 rng(seed);
+
+    VectorXd w, z;
+    makeComplementaryPair(N, rng, intLo, intHi, w, z);
+    const MatrixXd M = makeGramMatrix(N, N, rng, realLo, realHi);
+    const VectorXd q = w - M * z;
+
+    VIResult viaDefault;
+    ASSERT_NO_THROW({
+        viaDefault = mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0);
+    });
+
+    SeamTrace trace;
+    const NewtonSolverFactory counting = makeCountingDenseFactory(M, kNumFree, trace);
+    VIResult viaFactory;
+    ASSERT_NO_THROW({
+        viaFactory = mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0,
+                                 MehrotraIpmParams{}, IterationLogger{}, counting);
+    });
+    printSolveStats("mehrotraIpm(counting factory)", viaFactory);
+
+    EXPECT_TRUE(viaFactory.converged);
+    EXPECT_EQ(viaDefault.iter, viaFactory.iter);
+    EXPECT_EQ(viaDefault.residual, viaFactory.residual);
+    EXPECT_EQ(0.0, (viaDefault.z - viaFactory.z).norm());
+
+    EXPECT_EQ(viaFactory.iter, trace.factoryCalls);
+    EXPECT_EQ(2 * trace.factoryCalls, trace.solveCalls);
+    for (const double reg : trace.regValues) {
+        EXPECT_EQ(0.0, reg);
+    }
+}
+
+// NS1 seam, rescue protocol: the engine cannot know WHY a factorization is
+// bad -- its contract is simply "a non-finite predictor solve requests the
+// rescue". (A genuinely singular-but-CONSISTENT Newton matrix does NOT
+// trigger it: Eigen's LU returns a finite vector there, see
+// SingularConsistentFreeBlockConverges.) So the rescue is driven directly: a
+// factory whose FIRST factorization reports failure (a NaN solve) must be
+// re-invoked within the same iteration with freeRegularization = regEpsilon,
+// see regEpsilon on every later iteration (the rescue is sticky), and -- the
+// delegate being the honest dense solve -- still converge to the known
+// hand-QP solution.
+TEST(MehrotraIpm, NewtonFactorySeamCarriesRescueProtocol) {
+    const Index numU = 2;                        // the MixedHandQpKnownSolution problem
+    const Index numLambda = 1;
+    const Index total = numU + numLambda;
+    const double magTol = 1.0e-14;
+    const double solTol = 1.0e-6;
+
+    MatrixXd M = MatrixXd::Zero(total, total);
+    M(0, 0) = 1.0;  M(1, 1) = 1.0;               // Q = I
+    M(0, 2) = 1.0;  M(1, 2) = 1.0;               // A^T
+    M(2, 0) = -1.0; M(2, 1) = -1.0;              // -A
+
+    VectorXd q(total);
+    q << -1.0, -1.0, 1.0;                        // (-p; b)
+
+    VectorXd known(total);
+    known << 0.5, 0.5, 0.5;
+
+    std::vector<double> regValues;
+    bool failNextP = true;                       // fail exactly the first factorization
+    const NewtonSolverFactory failFirst =
+        [&](const VectorXd& sOverY, double freeRegularization) -> NewtonSolve {
+            regValues.push_back(freeRegularization);
+            if (failNextP) {
+                failNextP = false;
+                return [](const VectorXd& rhs) {
+                    return VectorXd(VectorXd::Constant(
+                        rhs.size(), std::numeric_limits<double>::quiet_NaN()));
+                };
+            }
+            MatrixXd K = M;
+            K.diagonal().tail(sOverY.size()) += sOverY;
+            if (0.0 < freeRegularization) {
+                K.diagonal().head(numU).array() += freeRegularization;
+            }
+            return [luK = PartialPivLU<MatrixXd>(K)](const VectorXd& rhs) {
+                return luK.solve(rhs);
+            };
+        };
+
+    VIResult result;
+    ASSERT_NO_THROW({
+        result = mehrotraIpm(M, q, numU, magTol, kIterMax, 0,
+                             MehrotraIpmParams{}, IterationLogger{}, failFirst);
+    });
+    printSolveStats("mehrotraIpm(fail-first factory)", result);
+
+    for (const CheckFn& check : { checkConverged(), checkIterAtMost(kIterBudget),
+                                  checkCloseToKnown(known, solTol) }) {
+        const CheckResult cr = check(result);
+        EXPECT_TRUE(cr.pass) << cr.report;
+    }
+
+    // Iteration 0 invokes the factory twice (the failed attempt + the
+    // rescue); every later iteration invokes it once, always with the sticky
+    // regEpsilon.
+    ASSERT_EQ(result.iter + 1, static_cast<int>(regValues.size()));
+    const double regEpsilon = MehrotraIpmParams{}.regEpsilon;
+    EXPECT_EQ(0.0, regValues[0]);
+    for (std::size_t k = 1; k < regValues.size(); ++k) {
+        EXPECT_EQ(regEpsilon, regValues[k]);
+    }
+}
+
+// The drift guard accepts honest solves: with newtonCheckTol enabled, the
+// built-in factory must pass the per-solve consistency check on every
+// iteration -- including the regularized ones after the rescue, which is why
+// this runs on the singular-free-block QP -- and converge as before.
+TEST(MehrotraIpm, NewtonCheckTolAcceptsHonestSolves) {
+    const Index numU = 2;
+    const Index numCon = 1;
+    const Index total = numU + numCon;
+    const double magTol = 1.0e-14;
+    const double solTol = 1.0e-5;
+
+    MatrixXd M = MatrixXd::Zero(total, total);
+    M(0, 0) = 1.0;
+    M(0, 2) = 1.0;
+    M(2, 0) = -1.0;
+
+    VectorXd q(total);
+    q << -1.0, 0.0, 10.0;
+
+    VectorXd known(total);
+    known << 1.0, 0.0, 0.0;
+
+    MehrotraIpmParams params;
+    params.newtonCheckTol = kNewtonCheckTol;
+
+    VIResult result;
+    ASSERT_NO_THROW({
+        result = mehrotraIpm(M, q, numU, magTol, kIterMax, 0, params);
+    });
+    printSolveStats("mehrotraIpm(checked)", result);
+
+    for (const CheckFn& check : { checkConverged(), checkIterAtMost(kIterBudget),
+                                  checkCloseToKnown(known, solTol) }) {
+        const CheckResult cr = check(result);
+        EXPECT_TRUE(cr.pass) << cr.report;
+    }
+}
+
+// The drift guard catches a factory whose K disagrees with the engine's M: a
+// "solver" that echoes the right-hand side back is refused on the very first
+// predictor solve, with the newtonCheckTol check named in the error. (q = +1
+// so that the interior start y = s = 1 is NOT already the solution -- with
+// q = -1 it would be, and the engine would converge without ever calling the
+// factory.)
+TEST(MehrotraIpm, NewtonCheckTolCatchesWrongFactory) {
+    const Index N = 4;
+    const double magTol = 1.0e-14;
+
+    const MatrixXd M = MatrixXd::Identity(N, N);
+    const VectorXd q = VectorXd::Constant(N, 1.0);
+
+    MehrotraIpmParams params;
+    params.newtonCheckTol = kNewtonCheckTol;
+
+    const NewtonSolverFactory echo =
+        [](const VectorXd&, double) -> NewtonSolve {
+            return [](const VectorXd& rhs) { return rhs; };
+        };
+
+    bool caughtP = false;
+    try {
+        mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0, params,
+                    IterationLogger{}, echo);
+    }
+    catch (const std::runtime_error& err) {
+        caughtP = true;
+        EXPECT_NE(string::npos, string(err.what()).find("newtonCheckTol"));
+    }
+    EXPECT_TRUE(caughtP) << "the wrong factory was not caught";
+}
+
+// An empty NewtonSolve from the factory is refused, not dereferenced.
+// (Same q = +1 caveat as above: the factory must actually be reached.)
+TEST(MehrotraIpm, RejectsEmptySolverFromFactory) {
+    const Index N = 4;
+    const double magTol = 1.0e-14;
+
+    const MatrixXd M = MatrixXd::Identity(N, N);
+    const VectorXd q = VectorXd::Constant(N, 1.0);
+
+    const NewtonSolverFactory broken =
+        [](const VectorXd&, double) -> NewtonSolve { return NewtonSolve{}; };
+
+    EXPECT_THROW(mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0,
+                             MehrotraIpmParams{}, IterationLogger{}, broken),
+                 std::runtime_error);
+}
+
 // Parameter and input guards throw rather than proceed.
 TEST(MehrotraIpm, RejectsBadParamsAndInputs) {
     MatrixXd M(2, 2);
@@ -348,6 +600,11 @@ TEST(MehrotraIpm, RejectsBadParamsAndInputs) {
     MehrotraIpmParams badReg;
     badReg.regEpsilon = 0.0;
     EXPECT_THROW(mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0, badReg),
+                 std::invalid_argument);
+
+    MehrotraIpmParams badCheck;
+    badCheck.newtonCheckTol = -1.0;
+    EXPECT_THROW(mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0, badCheck),
                  std::invalid_argument);
 
     EXPECT_THROW(mehrotraIpm(M, q, kNumFree, -1.0, kIterMax, 0),

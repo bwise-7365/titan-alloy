@@ -39,6 +39,8 @@ TEST(NetworkConfig, AppliesSolverAndScreenKeys) {
         "solver.magTol = 1.0e-10\n"
         "solver.engine = chain\n"
         "solver.roughIterMax = 5000\n"
+        "solver.ipmNewton = flow\n"
+        "solver.newtonCheckTol = 1.0e-8\n"
         "screen.maxSourcesPerSink = 7\n"
         "screen.gapFraction = 0.05\n"
         "screen.certificateSlack = 1.0e-4\n");
@@ -49,6 +51,8 @@ TEST(NetworkConfig, AppliesSolverAndScreenKeys) {
     EXPECT_EQ(params.magTol, 1.0e-10);
     EXPECT_EQ(params.engine, "chain");
     EXPECT_EQ(params.roughIterMax, 5000);
+    EXPECT_EQ(params.ipmNewton, "flow");
+    EXPECT_EQ(params.newtonCheckTol, 1.0e-8);
     EXPECT_EQ(params.maxSourcesPerSink, 7);
     EXPECT_EQ(params.gapFraction, 0.05);
     EXPECT_EQ(params.certificateSlack, 1.0e-4);

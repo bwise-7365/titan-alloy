@@ -188,6 +188,8 @@ namespace VINCP::Network {
     consumeString(entries, "solver.engine", params.engine);
     consumeDouble(entries, "solver.roughMagTol", params.roughMagTol);
     consumeInt(entries, "solver.roughIterMax", params.roughIterMax);
+    consumeString(entries, "solver.ipmNewton", params.ipmNewton);
+    consumeDouble(entries, "solver.newtonCheckTol", params.newtonCheckTol);
     consumeDouble(entries, "solver.magTol", params.magTol);
     consumeInt(entries, "solver.iterMax", params.iterMax);
     consumeInt(entries, "solver.iterFreq", params.iterFreq);

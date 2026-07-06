@@ -9,6 +9,7 @@ add_library(vincpnet STATIC
         lib/greedy.cpp
         lib/reduction.cpp
         lib/flowlcp.cpp
+        lib/flownewton.cpp
         lib/oracle.cpp
         lib/flowplan.cpp
         lib/config.cpp
@@ -44,6 +45,7 @@ vincpnet_add_gtest(plan_test)
 vincpnet_add_gtest(greedy_test)
 vincpnet_add_gtest(reduction_test)
 vincpnet_add_gtest(flowlcp_test)
+vincpnet_add_gtest(flownewton_test)
 vincpnet_add_gtest(oracle_test)
 vincpnet_add_gtest(flowplan_test)
 vincpnet_add_gtest(scale_test)

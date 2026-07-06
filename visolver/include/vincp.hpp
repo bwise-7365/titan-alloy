@@ -33,6 +33,7 @@ namespace VINCP {
   using Eigen::Index;
   using Eigen::SelfAdjointEigenSolver;
   using Eigen::PartialPivLU;
+  using Eigen::LLT;
   using Eigen::Success;
   using Eigen::EigenvaluesOnly;
 

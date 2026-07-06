@@ -6,6 +6,8 @@
 // ----------------------------------------------
 #include "flowplan.hpp"
 
+#include "flownewton.hpp"
+
 #include "bshe94b.hpp"
 #include "chainedsolver.hpp"
 #include "mehrotraipm.hpp"
@@ -34,6 +36,15 @@ namespace VINCP::Network {
       if (!(0.0 < params.roughMagTol) || 0 >= params.roughIterMax) {
         throw std::invalid_argument(
             "solveFlowPlan: chain rough params must be positive.");
+      }
+      if ("dense" != params.ipmNewton && "flow" != params.ipmNewton) {
+        throw std::invalid_argument(
+            "solveFlowPlan: ipmNewton must be 'dense' or 'flow', not '"
+            + params.ipmNewton + "'.");
+      }
+      if (0.0 > params.newtonCheckTol) {
+        throw std::invalid_argument(
+            "solveFlowPlan: newtonCheckTol must be non-negative.");
       }
       if (0 > params.maxSourcesPerSink || 0.0 > params.gapFraction
           || 0 > params.maxCertificateRounds
@@ -153,8 +164,17 @@ namespace VINCP::Network {
       else if ("ipm" == params.engine) {
         // The flow LCP is a pure NCP (t, mu, lambda all complementary; no
         // free block), so numFree = 0; the engine ignores z0 by design.
+        // ipmNewton picks the linear algebra: an empty factory is the dense
+        // LU; "flow" is the structured per-sink factory, rebuilt each round
+        // because it is bound to this round's lcp.
+        MehrotraIpmParams ipmParams;
+        ipmParams.newtonCheckTol = params.newtonCheckTol;
+        const NewtonSolverFactory factory =
+            ("flow" == params.ipmNewton) ? makeFlowNewtonFactory(lcp)
+                                         : NewtonSolverFactory{};
         result.vi = mehrotraIpm(lcp.M, lcp.q, 0, params.magTol,
-                                params.iterMax, params.iterFreq);
+                                params.iterMax, params.iterFreq, ipmParams,
+                                IterationLogger{}, factory);
       }
       else if ("ssn" == params.engine) {
         // Same system as a pure-NCP VIModel with its exact constant
