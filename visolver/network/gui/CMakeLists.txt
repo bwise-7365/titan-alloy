@@ -12,7 +12,9 @@ if (WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
     set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
 endif()
 
-find_package(Qt6 QUIET COMPONENTS Widgets)
+# Concurrent runs the optimal-plan solve off the UI thread (the gravity-swap
+# episode taught that a synchronous multi-second solve freezes the viewer).
+find_package(Qt6 QUIET COMPONENTS Widgets Concurrent)
 if (NOT Qt6_FOUND)
     message(STATUS
         "vincpnet GUI: Qt6 not found -- skipping network_viewer. "
@@ -34,7 +36,7 @@ qt_add_executable(network_viewer
     nodelistwidget.cpp
 )
 target_include_directories(network_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(network_viewer PRIVATE Qt6::Widgets vincpnet)
+target_link_libraries(network_viewer PRIVATE Qt6::Widgets Qt6::Concurrent vincpnet)
 
 # Windowed app (no console). Comment out to get a console for debug output.
 set_target_properties(network_viewer PROPERTIES WIN32_EXECUTABLE TRUE)

@@ -8,12 +8,15 @@
 #define VINCP_NETWORK_MAINWINDOW_HPP
 
 #include "costhistogram.hpp"
+#include "flowplan.hpp"
 #include "flowplanview.hpp"
 #include "nodelistwidget.hpp"
 #include "plan.hpp"
 #include "swap.hpp"
 
+#include <QFutureWatcher>
 #include <QMainWindow>
+#include <QString>
 
 class QComboBox;
 class QSpinBox;
@@ -46,6 +49,9 @@ namespace VINCP::Network {
     void onBestSwap();                   // v2: global best swap
     void onSwapToOptimum();              // v3: iterate to global local optimum
     void onResetSwaps();                 // discard swaps, recompute fresh greedy
+
+    // The background optimal-plan solve finished (success or failure).
+    void onOptimalFinished();
 
   private:
     // Assemble an InstanceProfile from the control values.
@@ -84,6 +90,7 @@ namespace VINCP::Network {
     QRadioButton* closestRadio_ = nullptr;
     QRadioButton* greedyRadio_ = nullptr;
     QRadioButton* gravityRadio_ = nullptr;
+    QRadioButton* optimalRadio_ = nullptr;
     QCheckBox* labelsCheck_ = nullptr;
     CostHistogram* histogram_ = nullptr;
     QSpinBox* histBinsBox_ = nullptr;
@@ -103,12 +110,34 @@ namespace VINCP::Network {
     // The working plan: computed once per (instance, kind) and -- for greedy --
     // MUTATED by swaps, persisting across None/Closest toggles until Regenerate,
     // Reset, or a switch to the other plan kind. workingKind_: 0 none, 1 greedy,
-    // 2 gravity.
+    // 2 gravity, 3 optimal.
     Plan workingPlan_;
     VectorXd greedyTargets_;      // phase-1 rationed targets (greedy objective)
     double baseTonMiles_ = 0.0;   // fresh plan's ton-miles (for cumulative save)
     int swapCount_ = 0;           // swaps applied since the last fresh plan
     int workingKind_ = 0;
+
+    // --- optimal plan (solveFlowPlan, computed on a worker thread) ---
+    // The solve runs off the UI thread (a multi-second synchronous solve would
+    // freeze the viewer -- the recorded gravity-swap lesson). What the worker
+    // returns: the outcome, the calibrated budget it used, and (on failure)
+    // the error text. Cached per instance; solveToken_ stamps each launch so a
+    // result arriving after a Regenerate is discarded as stale.
+    struct OptimalOutcome {
+      bool okP = false;
+      QString error;
+      FlowPlanResult result;
+      double budgetUsed = 0.0;
+      int token = 0;
+    };
+    void startOptimalSolve();
+
+    QFutureWatcher<OptimalOutcome>* optimalWatcher_ = nullptr;
+    FlowPlanResult optimalResult_;   // valid iff optimalValidP_
+    double optimalBudget_ = 0.0;     // tonMileLimit the solve was run with
+    bool optimalValidP_ = false;     // cached result matches current_
+    bool optimalBusyP_ = false;      // a solve is in flight
+    int solveToken_ = 0;             // bumped on Regenerate; stamps launches
   };
 
 } // namespace VINCP::Network

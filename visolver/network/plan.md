@@ -100,7 +100,8 @@ interactive screen/tolerance explorer follow.
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
 | F1 | **Instance viewer + node coordinates.** Retain node `(x, y)` on `Instance` (obligatory field, populated by `makeRandomInstance` for both laydowns; `validateInstance` checks it only when present, so abstract hand-built instances still pass). Qt6 `network_viewer` (`network/gui/`): draws a generated instance as a map — nodes coloured by class (supply-only / both / demand-only / **transit**), sized by tonnage, with a legend. Mouse **pan (drag) + wheel zoom**, a **Recenter** button restoring the fitted view, and a 0..N-1 **"closest links"** spinner drawing orange links from each node to its k cheapest neighbours by `(c_ij + c_ji)/2`. Seed 0 = reroll (fresh time-based seed written back to the field). Instances only (no greedy/solver overlay yet). Optional target behind `VINCPNET_BUILD_GUI`, self-disabling if Qt6 is absent so the solver/test build never depends on Qt. | M | B1 | done (2026-07-05) |
-| F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. Greedy overlay + mode radio done (2026-07-05); optimal (`solveFlowPlan`) overlay pending. | M | F1, B2, C4 | in progress |
+| F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. Greedy overlay + mode radio done (2026-07-05); optimal (`solveFlowPlan`) overlay done 2026-07-06 (worker-thread solve, ipm + flow Newton keep-all, cached per instance, theta*/certified/lambda status) | M | F1, B2, C4 | done, verified 2026-07-06 |
+| F4 | **FUTURE WORK -- sparse optimal plans.** The verified optimal overlay reduces ton-miles (greedy 3.1e7 -> swapped 2.8e7 -> optimal 2.5e7 on the observed instance) but the flow pattern is "full of tiny flows going all over": look for a way to limit the number of nonzero links. Note the LIKELY CAUSE: the IPM converges to the ANALYTIC CENTER of the optimal face -- the maximally spread-out optimal routing -- so tiny flows are the engine's signature, not noise. Candidate levers, cheapest first: (a) a crossover/purification post-step toward a vertex of the optimal face (basic solutions of network problems are forest-sparse); (b) a consolidation heuristic on the returned plan (reroute sub-threshold flows onto their cheapest kept alternative, re-verify feasibility + objective delta); (c) a larger tie-break epsilon (R4 bounds the objective cost); (d) a concave/fixed-charge sparsity term (changes the problem class -- last resort). | M | F2 | todo (noted 2026-07-06) |
 | F3 | **Interactive screen / tolerance explorer (optional).** Vary the k-cheapest / gap screen, tie-break epsilon, and tolerances at runtime and watch kept pairs, certificate rounds, and iterations — a visual companion to the E1 config controls and the C5/E4 performance study. | S | F1, E1 | todo |
 
 ### Phase D — Technical report (LaTeX, 20-50 pp)
@@ -653,5 +654,15 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   consistency, 0 undefined refs / 0 overfull lines). Ledger rows updated
   above. Still pending under D: Ben's Part-I review; IP4b comparative rows
   and F2 viewer visuals when they exist.
+- 2026-07-06: F2 optimal overlay CODED (awaiting Ben's build+run; CMake
+  reload -- gui/CMakeLists gained Qt6::Concurrent). New "Optimal Plan" radio
+  in network_viewer: solveFlowPlan(engine=ipm, ipmNewton=flow, keep-all,
+  iterMax 200) on a QtConcurrent worker thread (the gravity-swap freeze
+  lesson), budget calibrated by a greedy pre-pass (suggestedLimit) exactly
+  as the benchmark pipeline; result cached per instance, stale results
+  discarded by a solve token when Regenerate races a solve; status line
+  shows certified/converged flags, theta*, budget, lambda; swaps disabled
+  (nothing to improve); rankings/status via the shared working-plan
+  pattern (workingKind_ 3).
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

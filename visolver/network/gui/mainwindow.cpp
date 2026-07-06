@@ -10,6 +10,8 @@
 #include "gravity.hpp"
 #include "greedy.hpp"
 
+#include <QtConcurrent/QtConcurrent>
+
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
@@ -161,12 +163,17 @@ namespace VINCP::Network {
     closestRadio_ = new QRadioButton("Closest", this);
     greedyRadio_ = new QRadioButton("Greedy Plan", this);
     gravityRadio_ = new QRadioButton("Gravity Plan", this);
+    optimalRadio_ = new QRadioButton("Optimal Plan", this);
+    optimalRadio_->setToolTip("Solve the flow-planning QP (engine ipm + flow "
+                              "Newton, keep-all) on a worker thread and overlay "
+                              "the optimal flows.");
     noneRadio_->setChecked(true);
     QButtonGroup* linkGroup = new QButtonGroup(this);
     linkGroup->addButton(noneRadio_);
     linkGroup->addButton(closestRadio_);
     linkGroup->addButton(greedyRadio_);
     linkGroup->addButton(gravityRadio_);
+    linkGroup->addButton(optimalRadio_);
 
     QPushButton* regenButton = new QPushButton("Regenerate", this);
     QPushButton* recenterButton = new QPushButton("Recenter", this);
@@ -200,6 +207,7 @@ namespace VINCP::Network {
     modeLayout->addLayout(countRow);
     modeLayout->addWidget(greedyRadio_);
     modeLayout->addWidget(gravityRadio_);
+    modeLayout->addWidget(optimalRadio_);
 
     // Swap (2-exchange) actions on the greedy plan. Right-click a node on the
     // map for its best local swap; the buttons do the global / iterated forms.
@@ -313,6 +321,12 @@ namespace VINCP::Network {
               &FlowPlanView::hideNodeInfo);
     }
 
+    // The optimal-plan solve reports back through a future watcher, so the
+    // result lands on the GUI thread.
+    optimalWatcher_ = new QFutureWatcher<OptimalOutcome>(this);
+    connect(optimalWatcher_, &QFutureWatcher<OptimalOutcome>::finished, this,
+            &MainWindow::onOptimalFinished);
+
     // Swap actions: right-click on the map, and the three buttons.
     connect(view_, &FlowPlanView::nodeSwapRequested, this,
             &MainWindow::onNodeSwap);
@@ -370,6 +384,8 @@ namespace VINCP::Network {
       lastSeed_ = seed;
       haveInstanceP_ = true;
       workingKind_ = 0;   // a new instance forces a fresh plan on the next mode
+      optimalValidP_ = false;   // the cached optimal plan belongs to the old
+      ++solveToken_;            //   instance; stamp out any solve in flight
       view_->setInstance(current_);
       histogram_->setInstance(current_);
 
@@ -449,6 +465,29 @@ namespace VINCP::Network {
       showFlowLists(workingPlan_);
       refreshPlanStatus();
     }
+    else if (optimalRadio_->isChecked()) {
+      // The optimal plan is solver output: view it, but no swaps (there is
+      // nothing to improve). Cached per instance; otherwise solved on a
+      // worker thread and shown when the result lands.
+      view_->setNearestK(0);
+      view_->clearSwapResult();
+      setSwapControlsEnabled(false);
+      if (optimalValidP_) {
+        workingPlan_ = optimalResult_.plan;
+        workingKind_ = 3;
+        view_->setPlan(workingPlan_);
+        showFlowLists(workingPlan_);
+        refreshPlanStatus();
+      }
+      else if (!optimalBusyP_) {
+        view_->clearPlan();
+        hideFlowLists();
+        startOptimalSolve();
+      }
+      else {
+        refreshStatus("solving optimal plan...");
+      }
+    }
     else if (closestRadio_->isChecked()) {
       setSwapControlsEnabled(false);
       view_->clearSwapResult();
@@ -469,12 +508,69 @@ namespace VINCP::Network {
   }
 
   void
+  MainWindow::startOptimalSolve()
+  {
+    optimalBusyP_ = true;
+    refreshStatus("solving optimal plan (ipm + flow Newton, keep-all)...");
+
+    // Everything the worker needs is captured BY VALUE (the instance, the
+    // token); it touches no widget. The greedy pre-pass calibrates the
+    // ton-mile budget exactly as the benchmark pipeline does (~80% of greedy
+    // usage), because a generated instance arrives uncalibrated.
+    Instance inst = current_;
+    const int token = solveToken_;
+    optimalWatcher_->setFuture(QtConcurrent::run([inst, token]() mutable {
+      OptimalOutcome out;
+      out.token = token;
+      try {
+        const GreedyResult greedy = greedyPlan(inst);
+        inst.tonMileLimit = greedy.suggestedLimit;
+        out.budgetUsed = greedy.suggestedLimit;
+
+        FlowPlanParams params;
+        params.engine = "ipm";        // banded/large production default:
+        params.ipmNewton = "flow";    //   structured Newton, keep-all,
+        params.iterMax = 200;         //   nothing screened out to certify
+        out.result = solveFlowPlan(inst, params);
+        out.okP = true;
+      }
+      catch (const std::exception& ex) {
+        out.error = QString::fromUtf8(ex.what());
+      }
+      return out;
+    }));
+    return;
+  }
+
+  void
+  MainWindow::onOptimalFinished()
+  {
+    optimalBusyP_ = false;
+    const OptimalOutcome out = optimalWatcher_->result();
+    if (out.token != solveToken_) {
+      return;   // stale: the instance changed while the solve ran
+    }
+    if (!out.okP) {
+      refreshStatus(QString("optimal solve failed: %1").arg(out.error));
+      return;
+    }
+    optimalResult_ = out.result;
+    optimalBudget_ = out.budgetUsed;
+    optimalValidP_ = true;
+    if (optimalRadio_->isChecked()) {
+      applyPlanMode();   // shows the now-cached plan
+    }
+    return;
+  }
+
+  void
   MainWindow::refreshPlanStatus()
   {
     // The "objective" values are the weighted quadratic shortfall
     // theta = sum P_i ((target_i - R_i)/D_i)^2 -- a normalized, DIMENSIONLESS
     // score, NOT tons. "delivered / unmet" is the raw ton gap (~ D - C).
     const bool greedyP = (1 == workingKind_);
+    const bool optimalP = (3 == workingKind_);
     const double tm = tonMiles(current_, workingPlan_);
     const double totC = totalSupplyCap(current_);
     const double totD = totalDemand(current_);
@@ -482,7 +578,15 @@ namespace VINCP::Network {
     const double unmet = totD - delivered;
     const double originalShort = shortfallObjective(current_, workingPlan_);
 
-    QString head = greedyP ? QString("greedy plan") : QString("gravity plan");
+    QString head;
+    if (optimalP) {
+      head = QString("optimal plan (%1%2)")
+                 .arg(optimalResult_.certifiedP ? "certified" : "NOT certified")
+                 .arg(optimalResult_.vi.converged ? "" : ", NOT converged");
+    }
+    else {
+      head = greedyP ? QString("greedy plan") : QString("gravity plan");
+    }
     if (greedyP && swapCount_ > 0) {
       head += QString(" (+%1 swaps, saved %2 t-mi)")
                   .arg(swapCount_)
@@ -502,6 +606,12 @@ namespace VINCP::Network {
       body += QString("\nobjective vs rationed: %1").arg(rationedShort, 0, 'g', 4);
     }
     body += QString("\nobjective vs original: %1").arg(originalShort, 0, 'g', 4);
+    if (optimalP) {
+      body += QString("\ntheta* %1, budget %2 t-mi, lambda %3")
+                  .arg(optimalResult_.shortfall, 0, 'g', 6)
+                  .arg(optimalBudget_, 0, 'g', 4)
+                  .arg(optimalResult_.budgetShadowPrice, 0, 'g', 3);
+    }
     refreshStatus(head + body);
     return;
   }
