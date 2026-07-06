@@ -105,13 +105,28 @@ interactive screen/tolerance explorer follow.
 
 ### Phase D — Technical report (LaTeX, 20-50 pp)
 
+**Phase D is discharged by the LIBRARY-WIDE report at `doc/report/`**
+(2026-07-06 decisions-log entry): the scope grew from the network project
+alone to the whole VINCP library (engines, GAMS games, compositions), so
+the report is four parts at ~43 pp with the network material woven through.
+Mapping of the old boxes onto the report: D1 -> Part I (Overview);
+D2 -> Part II (Developer Manual, network layer in its own section);
+D3 -> Part IV (Mathematical Foundations; flow QP transcribed from
+formulation.md/reduction.md at the cited-proof standard);
+D5 -> Part III (Testing and Lessons Learned; banded QP and deploy as
+equal-weight case studies); D4 -> the assembly pass (terminology,
+cross-refs, number consistency). Remaining under Phase D: Ben's review of
+Parts I (and any re-reads), plus items the report defers to future data
+(IP4b comparative rows; F2 optimal-overlay visual evidence for the testing
+chapter).
+
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
-| D1 | **Skeleton + Part I (management overview).** Three-part LaTeX scaffold; Part I: problem, solution approach, challenges (scale -> reduction; degeneracy; budget calibration). | M | A1 | todo |
-| D2 | **Part II (developers' manual).** Data structures, APIs, block layouts, expected usage walkthrough (generate -> greedy -> reduce -> solve -> unpack), build instructions. | M | C4 | todo |
-| D3 | **Part III (mathematical appendix).** Full formalization; algorithm specification; proofs: convexity + existence/uniqueness of `R*`, reduction lemma, KKT <-> mixed LCP equivalence, monotonicity, convergence of the projection-contraction method (cited + conditions verified). Now also: chained-solver rationale (SS global convergence + the O(1/sqrt(k)) tail analysis motivating the chain). | L | A3, C4, E4 | todo |
-| D5 | **Part IV (testing appendix; added gate 15 at user request).** How thoroughly the result was tested: known-solution unit tests; brute-force cross-checks (Floyd-Warshall vs path enumeration); the INDEPENDENT oracle (different formulation AND solver, validating Lemma R1 end to end); hand-derived KKT points pushed through `M z + q`; R3 certificates as per-run optimality proofs; the sandwich bounds; feasibility checkers (incl. the F1 shortcut test); the SS calibration story (honest failure -> globalization-grade bars); benchmark methodology; the visual evidence from the Phase-F viewer/overlay. | M | C3, C5, E4, F1 | todo |
-| D4 | **Assembly and final pass.** Merge, cross-reference, numbers from C5, page-count check (20-50), consistency read. | M | D1, D2, D3, D5, C5 | todo |
+| D1 | **Skeleton + Part I (management overview).** Three-part LaTeX scaffold; Part I: problem, solution approach, challenges (scale -> reduction; degeneracy; budget calibration). | M | A1 | drafted (report Part I) |
+| D2 | **Part II (developers' manual).** Data structures, APIs, block layouts, expected usage walkthrough (generate -> greedy -> reduce -> solve -> unpack), build instructions. | M | C4 | done (report Part II; Ben-approved) |
+| D3 | **Part III (mathematical appendix).** Full formalization; algorithm specification; proofs: convexity + existence/uniqueness of `R*`, reduction lemma, KKT <-> mixed LCP equivalence, monotonicity, convergence of the projection-contraction method (cited + conditions verified). Now also: chained-solver rationale (SS global convergence + the O(1/sqrt(k)) tail analysis motivating the chain). | L | A3, C4, E4 | drafted (report Part IV; Ben-revised) |
+| D5 | **Part IV (testing appendix; added gate 15 at user request).** How thoroughly the result was tested: known-solution unit tests; brute-force cross-checks (Floyd-Warshall vs path enumeration); the INDEPENDENT oracle (different formulation AND solver, validating Lemma R1 end to end); hand-derived KKT points pushed through `M z + q`; R3 certificates as per-run optimality proofs; the sandwich bounds; feasibility checkers (incl. the F1 shortcut test); the SS calibration story (honest failure -> globalization-grade bars); benchmark methodology; the visual evidence from the Phase-F viewer/overlay. | M | C3, C5, E4, F1 | drafted (report Part III; Ben-approved; viewer visual evidence pending F2) |
+| D4 | **Assembly and final pass.** Merge, cross-reference, numbers from C5, page-count check (20-50), consistency read. | M | D1, D2, D3, D5, C5 | done 2026-07-06 (terminology/cross-ref/number sweep) |
 
 ## Review gates
 
@@ -626,5 +641,17 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   ~two orders of magnitude via the NS track. IP4b weekend controls are now
   purely comparative (they gate nothing); E3b (smoothing-Newton hybrid)
   is moot for this problem class.
+- 2026-07-06: Phase D discharged by the library-wide report `doc/report/`
+  (main.tex + prolog.tex style module + part1-4.tex + refs.bib; ~43 pp,
+  pdflatex+bibtex). Scope grew beyond this network project to the whole
+  VINCP library, so the old three-part network report became four parts:
+  D1 -> report Part I, D2 -> Part II (Ben-approved), D3 -> Part IV
+  (Ben-revised: regular chapter, Maxima citations, peer application
+  subsections), D5 -> Part III (Ben-approved; banded QP and the deploy
+  game as equal-weight case studies), D4 -> assembly pass done (first-use
+  terminology definitions incl. natural residual, cross-ref audit, number
+  consistency, 0 undefined refs / 0 overfull lines). Ledger rows updated
+  above. Still pending under D: Ben's Part-I review; IP4b comparative rows
+  and F2 viewer visuals when they exist.
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

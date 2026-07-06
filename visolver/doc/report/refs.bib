@@ -1,0 +1,253 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+% Annotated bibliography for the VINCP report. Each entry's note field
+% records what the library took from that source. Local copies of every
+% paper are kept under doc/.
+
+@article{he1994,
+  author  = {Bingsheng He},
+  title   = {A new method for a class of linear variational inequalities},
+  journal = {Mathematical Programming},
+  volume  = {66},
+  pages   = {137--144},
+  year    = {1994},
+  note    = {The \texttt{bsHe94b} engine: the eq.-(16) direction and the
+             factor-once $(M+I)$ metric.}
+}
+
+@article{han2006,
+  author  = {Deren Han},
+  title   = {Solving linear variational inequality problems by a
+             self-adaptive projection method},
+  journal = {Applied Mathematics and Computation},
+  volume  = {182},
+  year    = {2006},
+  note    = {The \texttt{dHan06} engine: the self-adaptive $\beta_k$ rule
+             and its monotonicity hypothesis (Thm 2.4).}
+}
+
+@article{solodov1999,
+  author  = {Michael V. Solodov and Benar F. Svaiter},
+  title   = {A new projection method for variational inequality problems},
+  journal = {SIAM Journal on Control and Optimization},
+  volume  = {37},
+  number  = {3},
+  pages   = {765--776},
+  year    = {1999},
+  note    = {The hyperplane globalizer: global convergence under
+             pseudomonotonicity; our step-size calibration explains its
+             globalizer-not-finisher role.}
+}
+
+@techreport{josephy1979,
+  author      = {Norman H. Josephy},
+  title       = {Newton's method for generalized equations},
+  institution = {Mathematics Research Center, University of
+                 Wisconsin--Madison},
+  number      = {Technical Summary Report 1965},
+  year        = {1979},
+  note        = {The outer linearization scheme of \texttt{solveVI}.}
+}
+
+@article{fischer1992,
+  author  = {Andreas Fischer},
+  title   = {A special {Newton}-type optimization method},
+  journal = {Optimization},
+  volume  = {24},
+  pages   = {269--284},
+  year    = {1992},
+  note    = {The Fischer--Burmeister NCP function underlying both the
+             smoothing and semismooth solvers.}
+}
+
+@article{deluca2000,
+  author  = {Tecla De Luca and Francisco Facchinei and Christian Kanzow},
+  title   = {A theoretical and numerical comparison of some semismooth
+             algorithms for complementarity problems},
+  journal = {Computational Optimization and Applications},
+  volume  = {16},
+  pages   = {173--205},
+  year    = {2000},
+  note    = {The semismooth Newton scheme: descent test ($p > 2$), gradient
+             fallback, global theory for the monotone line search.}
+}
+
+@article{munson2001,
+  author  = {Todd S. Munson and Francisco Facchinei and Michael C. Ferris
+             and Andreas Fischer and Christian Kanzow},
+  title   = {The semismooth algorithm for large scale complementarity
+             problems},
+  journal = {INFORMS Journal on Computing},
+  volume  = {13},
+  pages   = {294--311},
+  year    = {2001},
+  note    = {Mixed-problem treatment, stable {FB} evaluation (\S4.1),
+             singularity statistics, nonmonotone memory 4, and practical
+             parameters.}
+}
+
+@article{chen2000,
+  author  = {Bintong Chen and Xiaojun Chen and Christian Kanzow},
+  title   = {A penalized {Fischer--Burmeister} {NCP}-function},
+  journal = {Mathematical Programming},
+  volume  = {88},
+  pages   = {211--216},
+  year    = {2000},
+  note    = {The default NCP function, its generalized gradient, the kink
+             rule (Algorithm 4), and the $\lambda$ guidance.}
+}
+
+@article{kanzowkleinmichel1998,
+  author  = {Christian Kanzow and Helmut Kleinmichel},
+  title   = {A new class of semismooth {Newton}-type methods for nonlinear
+             complementarity problems},
+  journal = {Computational Optimization and Applications},
+  volume  = {11},
+  pages   = {227--251},
+  year    = {1998},
+  note    = {C-subdifferential constructions consulted for the
+             analytic-Jacobian affine case.}
+}
+
+@article{kanzow2004,
+  author  = {Christian Kanzow},
+  title   = {Inexact semismooth {Newton} methods for large-scale
+             complementarity problems},
+  journal = {Optimization Methods and Software},
+  volume  = {19},
+  year    = {2004},
+  note    = {The documented future option for truncated-Krylov inner
+             solves, with its robustness caveat.}
+}
+
+@article{ahookhosh2019,
+  author  = {Masoud Ahookhosh and Francisco J. Arag{\'o}n Artacho and
+             Ronan M. T. Fleming and Phan T. Vuong},
+  title   = {Local convergence of the {Levenberg--Marquardt} method under
+             {H}{\"o}lder metric subregularity},
+  journal = {Mathematical Programming},
+  year    = {2019},
+  note    = {Also arXiv:1703.07461. LM convergence without nonsingularity:
+             the theory behind the direction ladder's middle tier and the
+             $\lambda_{LM} \propto \|\Phi\|^2$ rule on degenerate solution
+             sets.}
+}
+
+@article{potra2000,
+  author  = {Florian A. Potra and Stephen J. Wright},
+  title   = {Interior-point methods},
+  journal = {Journal of Computational and Applied Mathematics},
+  volume  = {124},
+  pages   = {281--302},
+  year    = {2000},
+  note    = {The predictor-corrector scheme and the central-path
+             framework.}
+}
+
+@article{gondzio2012,
+  author  = {Jacek Gondzio},
+  title   = {Interior point methods 25 years later},
+  journal = {European Journal of Operational Research},
+  volume  = {218},
+  pages   = {587--601},
+  year    = {2012},
+  note    = {Implementation guidance: centering, regularization, and why
+             $\mu \to 0$ conditioning growth is benign.}
+}
+
+@article{gertz2003,
+  author  = {E. Michael Gertz and Stephen J. Wright},
+  title   = {Object-oriented software for quadratic programming},
+  journal = {ACM Transactions on Mathematical Software},
+  volume  = {29},
+  pages   = {58--81},
+  year    = {2003},
+  note    = {OOQP: the starting-point rule and the layered linear-algebra
+             pattern behind the \texttt{NewtonSolverFactory} seam.}
+}
+
+@article{potra2009,
+  author  = {Florian A. Potra and Xing Liu},
+  title   = {Corrector-predictor methods for sufficient linear
+             complementarity problems},
+  journal = {Computational Optimization and Applications},
+  volume  = {48},
+  year    = {2009},
+  note    = {Superlinear convergence on degenerate LCPs: the
+             degeneracy-insensitivity claim.}
+}
+
+@article{wright1997,
+  author  = {Stephen J. Wright},
+  title   = {Stability of augmented system factorizations in interior-point
+             methods},
+  journal = {SIAM Journal on Matrix Analysis and Applications},
+  volume  = {18},
+  year    = {1997},
+  note    = {The stability analysis behind ``terminate, don't guard'' as
+             $\mu \to 0$.}
+}
+
+@article{ferris1998,
+  author  = {Michael C. Ferris and Todd S. Munson},
+  title   = {Complementarity problems in {GAMS} and the {PATH} solver},
+  journal = {Journal of Economic Dynamics and Control},
+  volume  = {24},
+  pages   = {165--188},
+  year    = {2000},
+  note    = {Also UW--Madison TR 98-12. PATH's crash/restart/perturbation
+             playbook: the precedent for the alternating chain's
+             throw-as-stall and perturbed restarts.}
+}
+
+@article{zhang2010,
+  author  = {Che-feng Zhang and Xin-min Liu and Jian Liu},
+  title   = {A non-interior-point smoothing method for variational
+             inequality problems},
+  journal = {Journal of Computational and Applied Mathematics},
+  volume  = {234},
+  year    = {2010},
+  note    = {The smoothing reformulation kept as the smoothing-family
+             reference implementation.}
+}
+
+@misc{wu2013,
+  author       = {Shou-qiang Wu and Hui Zhao},
+  title        = {One-step smoothing inexact {Newton} method for nonlinear
+                  complementarity problems with a {$P_0$} function},
+  year         = {2013},
+  note         = {The alternative smoothing function with the
+                  everywhere-nonsingular Jacobian property.}
+}
+
+@book{amo1993,
+  author    = {Ravindra K. Ahuja and Thomas L. Magnanti and James B. Orlin},
+  title     = {Network Flows: Theory, Algorithms, and Applications},
+  publisher = {Prentice Hall},
+  year      = {1993},
+  note      = {Flow decomposition (Thm 3.5), the engine of the reduction
+               lemma's proof.}
+}
+
+@misc{maxima,
+  author       = {{Maxima Development Team}},
+  title        = {Maxima, a Computer Algebra System, version 5.49},
+  howpublished = {\url{https://maxima.sourceforge.io/}},
+  note         = {The symbolic verifier for every hand-derived formula in
+                  this report: the flow-factory algebra
+                  (\texttt{ns2-newton-check.mac}) and the PPD gradients
+                  (\texttt{v07\_check.mac}).}
+}
+
+@inproceedings{macsyma,
+  author    = {William A. Martin and Richard J. Fateman},
+  title     = {The {MACSYMA} system},
+  booktitle = {Proceedings of the 2nd ACM Symposium on Symbolic and
+               Algebraic Manipulation (SYMSAC '71)},
+  pages     = {59--75},
+  year      = {1971},
+  note      = {See also J. Moses, ``Macsyma: A personal history,'' J.
+               Symbolic Computation 47 (2012) 123--130. The original MIT
+               system of which Maxima is the open-source descendant ---
+               five decades of continuous development and use behind the
+               verifier.}
+}

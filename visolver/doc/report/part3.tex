@@ -1,0 +1,447 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------
+% Part III -- Testing and lessons learned. Drafted third per the approved
+% order. The two case studies (banded QP, deploy/PPD) carry EQUAL weight.
+% Numbers policy: every figure names its source (a performance.md section, a
+% dated run log, or a test in the suite).
+% ----------------------------------------------
+\chapter{Testing and Lessons Learned}
+\label{ch:testing}
+
+This chapter is the library's evidence. It describes how the test suite is
+built and what each layer of it gates (Sections~\ref{sec:t-infra}--%
+\ref{sec:t-protocol}); then the three application problems as case studies
+--- the banded flow-planning QP and the deployment game with equal weight,
+as the paired monotone-at-scale and nonmonotone stories, with the influence
+game between them (Sections~\ref{sec:t-flow}--\ref{sec:t-deploy}); and
+closes with the cross-cutting lessons and the known open items
+(Sections~\ref{sec:t-lessons}--\ref{sec:t-open}). Wherever a number
+appears, its source is named: a section of
+\code{network/doc/performance.md}, a dated run log, or a test that
+reproduces it.
+
+\section{Test philosophy and infrastructure}
+\label{sec:t-infra}
+
+The suite is GoogleTest, fetched by CMake \code{FetchContent} at a pinned
+release tag and compiled by the project's own toolchain and flags. At the
+time of writing it stands at 111 test cases, all green, exercised by the
+aggregate targets of Chapter~\ref{ch:manual}. Beneath GoogleTest sits a
+thin shared harness (\code{utils.hpp}): a bound solver is a
+\code{SolveFn} (everything captured but the start point), a pass/fail
+criterion is a \code{CheckFn} returning a one-line report, and
+\code{runCase} runs one solve --- timing it, printing the standard
+statistics, reporting a throw as that case's failure rather than aborting
+the program --- so every solver test in the library is the same procedure
+with different bindings. A test-only bridge (\code{testsupport.hpp}) maps
+the harness onto GoogleTest assertions without ever letting GoogleTest leak
+into the shipped library.
+
+The suite divides into three layers with different jobs:
+
+\begin{itemize}
+\item \textbf{Unit tests} pin the building blocks: line searches,
+  Levenberg--Marquardt primitives, the FD Jacobian, projectors, the config
+  parser, instance generators.
+\item \textbf{Protocol tests} pin the \emph{control logic} of engines ---
+  rescue paths, stall cutoffs, chain rounds --- by injecting deliberately
+  failing or fake components (Section~\ref{sec:t-protocol}).
+\item \textbf{Acceptance tests} pin end-to-end behavior on the three
+  application problems, gated on author-verified answers
+  (Sections~\ref{sec:t-flow}--\ref{sec:t-deploy}).
+\end{itemize}
+
+Gates are written to be \emph{honest under multiplicity}. Where a problem
+has one verified answer, the gate pins it (converge \emph{and} match).
+Where legitimate outcomes vary --- nonmonotone games where individual
+engines may honestly fail, or multiple equilibria --- the gate is expressed
+over a set: ``at least $k$ of these rows pass'' (with $k$ pinned to the
+known-good count so a regression in any known-good row is caught), or
+``the answer matches \emph{some} entry of a verified roster.'' A converged
+answer that matches no roster entry prints itself in paste-ready roster
+form, so charting a newly discovered equilibrium is one verification away
+from a one-line addition.
+
+\section{The minimal problems}
+\label{sec:t-minimal}
+
+A flock of small constructed-solution problems gives every engine a
+fast-running, exactly-checkable workout. Each family exists to gate
+something specific:
+
+\begin{itemize}
+\item \textbf{Constructed LCPs} (\code{makeComplementaryPair}: draw a
+  complementary $(w^\ast, z^\ast)$, then set $q = w^\ast - Mz^\ast$). With
+  $M = A^\top A$ (PSD by construction) they gate correctness of the
+  monotone engines (\code{lcp\_psd\_test}); with random indefinite $M$
+  (\code{lcp\_random\_test}) they gate the \emph{divergence guard itself}
+  --- the test asserts the throw. An engine that silently ``converged'' on
+  the indefinite instance would be the bug.
+\item \textbf{Cubic VIs} (\code{makeCubicProblem}: $F = A^\top g(Ax) + k$
+  with elementwise cubic $g$, PSD-forced Jacobian, known solution) drive
+  the Josephy--Newton loop end to end; the four-engine comparison test
+  (\code{han\_vs\_he\_test}) runs an identical LCP and an identical cubic
+  VI through every engine row and requires each to recover the known
+  solution --- the library's standing cross-engine consistency check.
+\item \textbf{Ellipsoid-$K$ problems} gate the claim that the projection
+  engines and the driver are generic in $K$: the same VIs solved over
+  \code{makeEllipsoidProjector}'s set, plus the projector's own
+  root-finding unit tests.
+\item \textbf{Degenerate and rank-deficient LCPs} gate the interior-point
+  engine's reason to exist: strict complementarity broken at every third
+  index, $M = A^\top A$ rank-deficient. Iteration counts 9 / 19 / 10 on
+  the clean / degenerate / rank-deficient instances
+  (\code{mehrotra\_ipm\_test}) --- tens, not thousands.
+\item \textbf{Mixed hand QPs} (small KKT systems with hand-checkable
+  solutions) gate the mixed free/orthant plumbing. One of them earned its
+  keep during development: a mixed QP whose solution sits exactly on a
+  Fischer--Burmeister kink exposed a $y$-space/$z$-space confusion in the
+  semismooth kink indicator that \emph{no pure-LCP test could see} (with
+  $n = 0$ the two spaces coincide). The fixed solver then solved that QP
+  in 2 iterations with residual exactly zero --- the expected signature of
+  Newton on a problem that is affine on the active piece
+  (\code{semismooth\_newton\_test}).
+\end{itemize}
+
+\section{Protocol testing: fakes, not hard problems}
+\label{sec:t-protocol}
+
+The suite's most transferable lesson is methodological. Engine
+\emph{protocols} --- rescue paths, drift guards, stall cutoffs, chain
+control flow --- are triggered by rare numerical events, and hunting for a
+natural problem that reliably triggers them is both fragile and, in one
+documented case, impossible:
+
+\begin{quote}
+The IPM's singularity rescue was long ``covered'' by a test named after
+rescuing a singular free block. Probing showed the rescue had \emph{never
+fired}: with an exactly singular block, partial-pivot LU leaves a zero
+pivot, but the corresponding right-hand-side entry is \emph{structurally}
+zero on any consistent system, and $0/0$ evaluated through the
+back-substitution yields finite results --- so the non-finite trigger never
+trips. Only an \emph{inconsistent} singular system (which the surrounding
+algorithm does not produce) throws NaNs. The test was renamed to assert
+what it actually shows, and the rescue is now driven the honest way.
+\end{quote}
+
+The honest way is \emph{dependency injection of failure}: every protocol
+test drives its engine with a deliberately broken or fake component bound
+through the same seams production code uses. The failing-factory test
+hands \code{mehrotraIpm} a factory whose first factorization returns NaN
+and then delegates --- the rescue's regularization sequence is asserted
+deterministically. The drift-guard test hands it an \emph{echo} factory
+and asserts \code{newtonCheckTol} catches the inconsistency by name. The
+Josephy--Newton stall cutoff is proven with a \emph{frozen} inner solver
+(returns its start; the outer step is exactly zero, so the residual
+provably cannot improve). The alternating chain's control logic ---
+best-point memory, throw-as-stall, the improvement cutoff, perturb-restart
+--- is pinned with fixed-point, throwing, and identity stages
+(\code{alternating\_chain\_test}), including the guarantee that a stagnant
+chain with perturbation disabled stops after one wasted round while the
+same chain with perturbation enabled spends its full round budget trying.
+Fakes make the rare path the \emph{common} path, deterministically, in
+milliseconds.
+
+\section{Case study 1: the banded flow-planning QP}
+\label{sec:t-flow}
+
+The flow-planning pipeline (Chapter~\ref{ch:manual}; mathematics in
+Chapter~\ref{ch:math}) was developed against two instance geometries:
+\emph{laydown 0} (random square, near-metric costs --- direct arcs
+dominate, screens work) and \emph{laydown 1} (banded rectangles,
+near-tied costs --- multi-hop routes, wide flat optimal faces, degenerate
+by construction). The second is the stress case, and its 200-node instance
+drove three generations of solver work. All numbers below are from
+\code{network/doc/performance.md} (sections P1--P9) and the dated run
+logs of 2026-07-05/06; the keep-all configuration is reproducible from
+\code{network/ns3-keepall.cfg} (seed base 20260704).
+
+\paragraph{Generation 1: projection-contraction + screens.} On spread
+geometry the screened pipeline is excellent: the 70-node profile solves in
+0.15--0.9\,s with the screen versus 144\,s keep-all ($\sim$160$\times$),
+and the certificate loop confirms the screened answer identical to 5--6
+digits (P1--P3). On the 200-node \emph{banded} instance the same engine
+hits its 150{,}000-iteration cap ($\sim$6 minutes) with no answer at LCP
+dimension $\sim$1{,}900 --- the flat-face stall of
+Chapter~\ref{ch:math} in the wild. Tightened tolerances, certificate
+slack, and tie-break adjustments all failed to rescue it (P4--P5): the
+problem was the engine class, not the tuning.
+
+\paragraph{Generation 2: the interior-point engine.} The same instance
+under \code{engine = ipm} (dense LU), screened, one certificate round:
+convergence in \textbf{35 iterations at Newton dimension 10{,}838} (the
+size of the linear system factored each iteration) ---
+degeneracy-insensitivity holding at scale --- but 29.6 minutes of wall
+time, nearly all of it dense $O(d^3)$ factorization ($\sim$50\,s per
+iteration), and an honest \code{certifiedP = false} after the certificate
+\emph{balloon} grew the kept set from $\sim$1{,}900 to 10{,}737 of 14{,}500
+pairs in a single round (run log 2026-07-06; P6--P7). Verdict: the
+iteration-count problem was solved and the cost had moved into the linear
+algebra times the screening formulation.
+
+\paragraph{Generation 3: structured linear algebra, no screen.} With the
+flow Newton factory (Chapter~\ref{ch:math}) and \emph{no screen at all} ---
+all 14{,}500 pairs kept, hence nothing to certify --- the same instance
+solves in \textbf{36 iterations and 4.51 seconds}, certified exact by
+construction, at Newton dimension 14{,}601 (P8--P9). That is
+$\sim$394$\times$ faster than the screened dense-LU path \emph{and}
+strictly better: the screened one-round answer had overshot the optimum by
+$\sim$0.4\% ($\theta = 53.117$ vs.\ $52.908$). The banded/large production
+default is now \code{ipm} + \code{ipmNewton = flow} + no screen; small
+spread-geometry instances keep screened \code{bsHe94b}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Configuration} & \textbf{Iterations} & \textbf{Wall} &
+\textbf{Kept pairs} & \textbf{Certified / $\theta^\ast$} \\
+\midrule
+\code{bshe94b}, screen $k{=}10$ & 150{,}000 (cap) & $\sim$6 min & ---
+  & no answer \\
+\code{ipm} dense, screen, 1 round & 35 & 1{,}778\,s & 10{,}737/14{,}500
+  & no / 53.117 \\
+\code{ipm} + \code{flow}, keep-all & 36 & \textbf{4.51\,s}
+  & 14{,}500/14{,}500 & \textbf{yes} / \textbf{52.908} \\
+\bottomrule
+\end{tabular}
+\caption{The 200-node banded instance across three solver generations
+(seed base 20260704; \code{performance.md} P4--P9).}
+\label{tab:banded}
+\end{table}
+
+Three findings generalize beyond this problem. \emph{Iteration count and
+per-iteration cost are independent axes}: generation 2 fixed the first and
+was still unusable until generation 3 fixed the second. \emph{Screens
+trade optimality silently}: the 0.4\% overshoot came from an honest,
+certificate-checked pipeline whose round budget ran out --- exactness by
+construction beat exactness by certification on both time and quality.
+And \emph{nondimensionalization is mandatory}: the exact rescaling of
+Chapter~\ref{ch:math} took the small lane-solve benchmark from 25\,s to
+0.04\,s before any algorithmic work at all (P1).
+
+\section{Case study 2: strategic allocation of effort}
+\label{sec:t-saoe}
+
+The influence game (Chapter~\ref{ch:math}) enters the suite twice, and the
+contrast is itself a result. The library's original reduced formulation
+(\code{saoe.hpp}: effort space only, intermediates eliminated) is solved by
+the projection engines --- \code{bsHe94b} reproduces the reference
+equilibrium. The \emph{literal} GAMS MCP transcription
+(\code{gams\_alloceff\_test}: dimension 87, with the intermediates and
+shadow prices as explicit variables) is measurably harsher on the same
+engines: both projection rows trip their divergence guards within
+milliseconds, as the explicit coupling rows make the Josephy--Newton
+linearizations indefinite. The two Newton-class engines are untroubled
+(run log 2026-07-06):
+
+\begin{itemize}
+\item \code{semismoothNewtonSolve}, cold start, FD Jacobian:
+  \textbf{14 iterations, 182\,ms}, squared residual $8.2\times 10^{-9}$;
+\item Josephy--Newton over the IPM inner: \textbf{2 outer / 16 inner
+  iterations, 83\,ms}, squared residual $1.1\times 10^{-11}$.
+\end{itemize}
+
+Both land on the \emph{same} equilibrium, which the author confirmed is
+the one PATH reaches on the GAMS side --- and which matches the reduced
+implementation's reference equilibrium. Two independent engine classes and
+two independent formulations agreeing on an author-verified point is the
+strongest transcription-fidelity evidence the suite has; the gate is
+pinned to it, and pinned at \emph{two} passing rows so neither known-good
+engine can mask a regression in the other.
+
+\section{Case study 3: the deployment game}
+\label{sec:t-deploy}
+
+The deployment game (Chapter~\ref{ch:math}: dimension 450, nonmonotone by
+design, poles just outside the orthant, multiple equilibria) is the
+library's nonmonotone acceptance challenge, and it was not solved by any
+engine as shipped. It was solved by a \emph{composition} built in eight
+short diagnostic runs over one day (2026-07-06); the sequence is worth
+recording in full because each run's failure bought the next run's design
+--- and because the diagnostic tooling mattered as much as the algorithm.
+
+\paragraph{Runs 1--2: no standalone engine, and why.} On the GAMS interior
+start, every engine failed differently. The semismooth solver cut the
+squared residual $1.4\times 10^{5} \to 2.1\times 10^{4}$ in 20 iterations
+and then died on a failed line search \emph{while still descending} ---
+not a plateau. \code{bsHe94b} threw its divergence guard immediately
+(expected off-monotone). The Josephy--Newton/IPM row made a spectacular
+first step ($1.4\times 10^{5} \to 22.9$ in one linearization) and then
+froze at $19.6$ for $\sim$22 outer iterations at $\sim$1\,s each until its
+inner IPM threw on a collapsed step length: the linearization had gone
+indefinite. Run 2 added the SEMI-style semismooth variants: nonmonotone
+memory 4 escaped the iteration-20 death (85 iterations) but plateaued at
+$1.2\times 10^{4}$; the $\lambda = 0.95$ restart \emph{visited}
+$8.2\times 10^{3}$ and then wandered up to die at $1.7\times 10^{4}$
+(the best-visited-iterate lesson); plain FB died fastest, in 10 iterations
+--- Chen--Chen--Kanzow's critique \cite{chen2000} in miniature. All cold
+semismooth endpoints differ wildly at natural-residual norm $\sim$100: a
+landscape of traps, where line-search tuning only changes which trap.
+Meanwhile the IPM's stall point was \emph{feasible}, with sensible mixed
+strategies, three orders of magnitude closer than any cold semismooth run.
+Run 2 also motivated two pieces of permanent infrastructure: the
+Josephy--Newton no-progress cutoff, and flushed per-iteration heartbeats
+(the first run of this problem was killed after minutes of \emph{buffered}
+silence, losing all its output).
+
+\paragraph{Run 3: the failure modes are complementary.} A two-phase chain
+--- Josephy--Newton/IPM to its stall, semismooth warm-started from the
+stall point --- descended $19.6 \to 0.68$ in 52 iterations, four orders of
+magnitude below any cold semismooth run, then plateaued. The new
+residual-breakdown diagnostic (print the worst natural-residual rows
+\emph{by GAMS name}, with their $y$ and $G$ values) localized the plateau
+exactly: negative escort allocations ($-0.34$ against $\epsilon = 0.01$)
+--- the iterate camped beside the poles, where the line search dies against
+$+\infty$ walls. The obstruction was geometry, not merit stationarity, and
+it named its own cure: project back onto $K$ between phases.
+
+\paragraph{Runs 4--5: the alternating chain, hardened, solves it.}
+Alternating rounds of project $\to$ globalize $\to$ finish exposed two
+robustness requirements in one run: round 2's re-linearized IPM was
+\emph{improving} ($1.19 \to 1.07$) when its inner solver threw, and the
+escaping exception destroyed a $0.68$ best point --- hence
+\emph{throw-as-stall} with best-point memory (and, later, the IPM's
+step-length collapse became an honest non-converged return in the library
+itself). With those in place, run 5 converged in round 4 to squared
+residual $6.0\times 10^{-15}$ in 17.7\,s --- with the semismooth quadratic
+tail visible in the log's last three iterations
+($3.8\times 10^{-5} \to 7.1\times 10^{-8} \to 6.0\times 10^{-15}$) --- and
+the author confirmed the answer matches the GAMS solution.
+
+\paragraph{Runs 6--8: determinism, perturbation, and a second
+equilibrium.} Promoting the chain into the library alongside two solver
+semantics changes legitimately shifted the trajectory; the new path
+reached $0.145$ \emph{in the correct basin} and stagnated --- and runs 6
+and 7 produced digit-for-digit identical output, the cleanest possible
+demonstration that a deterministic round map at a fixed point cannot be
+rescued by any stopping-rule adjustment. The remedy (PATH's playbook
+\cite{ferris1998}) is scaled perturbation on stagnation: jiggle the
+restart by $U[-1,1]\cdot s\cdot\sqrt{\rho(\mathrm{best})}$, vanishing as
+the chain closes in, from a fixed seed so runs stay reproducible. Run 8
+converged in round 4 ($1.2\times 10^{-9}$, 28.8\,s) --- to a
+\emph{different, equally valid} Nash equilibrium: same strategy supports,
+mirror-image probability-cap pattern (Red's cap active where the GAMS
+point has Blue's). The acceptance gate became a verified-equilibrium
+roster with both entries, and the perturbation acquired a second job:
+sampling the equilibrium set, which is the author's stated method for
+charting it.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{clll}
+\toprule
+\textbf{Run} & \textbf{Configuration} & \textbf{Best $\|r\|^2$} &
+\textbf{What it taught} \\
+\midrule
+1 & all standalone engines & $19.6$ (IPM stall) & failure modes differ \\
+2 & semismooth variants; stall cutoff & $1.2\times 10^{4}$
+  & tuning moves traps; return best \\
+3 & single chain IPM $\to$ ssn & $0.68$ & complementarity confirmed;
+  poles named \\
+4 & alternating chain, v1 & $0.68$ (lost) & throw = stalled stage \\
+5 & hardened chain & $\mathbf{6.0\times 10^{-15}}$ & solved; GAMS match \\
+6--7 & library chain & $0.145$, twice, identically & deterministic fixed
+  point \\
+8 & + perturb-restart & $\mathbf{1.2\times 10^{-9}}$ & solved again;
+  \emph{second} equilibrium \\
+\bottomrule
+\end{tabular}
+\caption{The eight deployment runs (all 2026-07-06; run logs recorded in
+the project notes). Runs 5 and 8 converged, to two distinct
+author-verified equilibria.}
+\label{tab:deploy-runs}
+\end{table}
+
+The standalone engines remain in the acceptance test as deliberately
+failing comparison rows: their documented inability to solve the problem
+alone \emph{is} the recorded reason the chain exists.
+
+\section{Cross-cutting lessons}
+\label{sec:t-lessons}
+
+Nine lessons recur across the case studies; each is stated with its
+evidence.
+
+\begin{enumerate}
+\item \textbf{Engine class beats engine tuning.} No amount of
+  projection-contraction tuning touched the banded stall; the central path
+  is insensitive to the geometry that causes it
+  (Table~\ref{tab:banded}). Symmetrically, no semismooth line-search
+  variant escaped the deployment traps that composition walked around
+  (Table~\ref{tab:deploy-runs}, run 2).
+\item \textbf{Structure exploitation beats screening.} The screen
+  approximates the problem to fit the solver; the structured factory made
+  the solver fit the problem --- faster ($394\times$) \emph{and} exact
+  (Section~\ref{sec:t-flow}).
+\item \textbf{Composition beats any single engine off-monotone.} The
+  chain's value is precisely that its stages' failure sets do not
+  intersect at handoff points (Chapter~\ref{ch:math}); no component
+  becomes a better standalone solver by being in it.
+\item \textbf{Stalls are not errors.} A collapsed step length or failed
+  line search at a real iterate is information; throwing on it cost a
+  converging run (run 4) and costs every wrapper a catch block. The
+  library-wide contract --- bad values throw, stalls return honestly ---
+  is a direct export of this chapter.
+\item \textbf{Return the best point visited.} Nonmonotone strategies may
+  end above their best (run 2's $\lambda$-restart: returned
+  $1.7\times 10^{4}$, had visited $8.2\times 10^{3}$); both the semismooth
+  solver and the chain now report the best, judged by one fixed
+  functional.
+\item \textbf{Determinism makes verbatim retries worthless.} Runs 6--7's
+  digit-identical outputs proved the round map was at a fixed point;
+  scaled, fixed-seed perturbation breaks the fixed point without
+  sacrificing reproducibility or convergence.
+\item \textbf{Observability is a solver feature.} Flushed heartbeats (the
+  buffered-silence incident), named residual breakdowns (which found the
+  poles), and honest \code{converged} flags turned each failed run into
+  the next run's specification. None of it costs anything when disabled.
+\item \textbf{Gate on verified answers, structured for multiplicity.}
+  Pinned answers where unique (both case-study gates), pinned
+  \emph{counts} of passing rows where engines legitimately differ,
+  self-extending rosters where equilibria multiply
+  (Section~\ref{sec:t-infra}).
+\item \textbf{Process: verify algebra before code; inject failure to test
+  protocols.} The flow factory's Maxima script \cite{maxima} found sign
+  conventions before any C++ ran; the fake-component method
+  (Section~\ref{sec:t-protocol}) is how every guard in the library is
+  actually exercised.
+\end{enumerate}
+
+\section{Known limitations and open items}
+\label{sec:t-open}
+
+Recorded honestly, with their planned dispositions:
+
+\begin{itemize}
+\item \textbf{The IPM cannot warm-start} (structural: it needs a strictly
+  interior, near-path start). Re-solve loops that would benefit from warm
+  starts use the projection engines or pay full IPM price.
+\item \textbf{Dense $M$ at scale.} The engines hold $M$ densely for
+  residual matvecs; keep-all at the 200-node profile costs
+  $\sim$1.7\,GB and $O(d^2)$ per residual. A matrix-free linear-operator
+  seam for $M$ is the noted generalization, out of scope to date.
+\item \textbf{\code{dHan06}'s refactor-per-iteration cost} ($\sim$12$\times$
+  \code{bsHe94b} in wall time at equal iterations on the SAOE runs) is
+  accepted; cache/reuse across $\beta$ updates is a recorded option if the
+  engine ever matters at scale.
+\item \textbf{SAOE equilibrium selection remains open}: on the reduced
+  formulation, all tested starts fall into one basin that is not the
+  reference equilibrium; the test gates on feasibility. The alternating
+  chain (with its perturbation sampler) is the natural candidate and has
+  not yet been pointed at it.
+\item \textbf{Comparative benchmark rows} (chain / \code{bshe94b} /
+  \code{ssn} bounded probes on the 200-banded instance) are planned as
+  report data; they gate no decision.
+\item \textbf{The engine dispatcher} (\code{chooseEngine} over problem
+  features) and the \textbf{acceleration wrappers} (Anderson/Halpern) from
+  the engine roadmap are designed but unbuilt.
+\item \textbf{More PPD versions are coming}; each arrives as data plus a
+  \code{VIModel} builder and a new roster, per the recipe of
+  Chapter~\ref{ch:manual}.
+\end{itemize}
+% ----------------------------------------------
+% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------

@@ -1,0 +1,702 @@
+﻿% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------
+% Part IV -- Mathematical foundations (a regular chapter, for OR
+% professionals). Drafted second per the approved order. Proof standard:
+% cite, and verify the cited result's conditions against our setting; do not
+% reprove. (A Detailed Proofs appendix may be added later from the saved
+% reconstruction notes.) Sources: the engine headers,
+% network/doc/{formulation,reduction}.md (transcribed, not re-derived), the
+% Maxima scripts, and the run evidence of Chapter 3.
+% ----------------------------------------------
+\chapter{Mathematical Foundations}
+\label{ch:math}
+
+This chapter gives the mathematics behind the engines and the three
+application problems, at the level an operations-research professional needs
+to audit the library's claims: each algorithm is stated as implemented, its
+convergence theory is \emph{cited} with the cited result's hypotheses
+checked against our setting, and every departure from a source is called
+out. Full re-derivations are deliberately omitted. Where our own algebra
+goes beyond the literature (the structured flow factory, the game
+formulations, the alternating chain), the load-bearing formulas were
+verified symbolically with Maxima \cite{maxima} --- a computer algebra
+system in continuous development and improvement since its origins as
+MIT's Macsyma \cite{macsyma} --- and the verification scripts are named
+where the results are used, so a reader can re-run every check rather than
+take any formula on trust.
+
+\section{Problem statement and geometry}
+\label{sec:a-problem}
+
+Throughout, the target problem is the \emph{mixed complementarity problem}
+(MCP): find $z = (x, y) \in \mathbb{R}^{n} \times \mathbb{R}^{m}$ with
+\begin{equation}
+  H(x, y) = 0, \qquad 0 \le G(x, y) \perpc y \ge 0,
+  \label{eq:mcp}
+\end{equation}
+equivalently the variational inequality VI$(F, K)$ --- find $z \in K$ with
+$F(z)^\top (w - z) \ge 0$ for all $w \in K$ --- over the polyhedral cone
+$\K$ with $F = (H, G)$. The affine case $F(z) = Mz + q$ is the mixed linear
+complementarity problem (LCP); $n = 0$ gives the pure (N)CP.
+
+\paragraph{The natural map.} With $P_K$ the Euclidean projection onto $K$,
+the natural residual
+\begin{equation}
+  r(z) \;=\; z - P_K\bigl(z - F(z)\bigr)
+  \label{eq:natres}
+\end{equation}
+vanishes exactly at solutions of \eqref{eq:mcp} (Facchinei--Pang's standard
+equivalence; for our $K$, $r$ splits into $r_x = H$ on the free block and
+$r_i = \min(y_i, G_i)$ componentwise on the orthant block). The library's
+universal convergence measure is the \emph{squared} norm $\|r(z)\|^2$;
+every engine terminates and reports on it, whatever quantity it steers by
+internally, so cross-engine comparisons are well-defined
+(Section~\ref{sec:a-measure}).
+
+\paragraph{Problem classes.} $F$ is \emph{monotone} when
+$(F(z) - F(w))^\top (z - w) \ge 0$ (for affine $F$: $M$ positive
+semidefinite --- the KKT map of a convex QP is the canonical example);
+\emph{pseudomonotone} when $F(w)^\top(z - w) \ge 0$ implies
+$F(z)^\top(z - w) \ge 0$ (strictly weaker); and otherwise general
+(``nonmonotone''). The three application problems sit at three points of
+this hierarchy: the flow-planning LCP is monotone by construction
+(Section~\ref{sec:a-flowqp}); the influence game is nonmonotone but mild
+(its nonlinearity at the shipped setting is a single rational term); the
+deployment game is nonmonotone \emph{by design}, with mixed curvature
+(Section~\ref{sec:a-ppd}).
+
+\paragraph{Degeneracy.} A solution $z^\ast$ is \emph{nondegenerate} when
+strict complementarity holds ($y_i^\ast + G_i^\ast > 0$ for every $i$) and
+suitable Jacobian blocks are nonsingular; failures of either produce the
+phenomena that drive this library's design: non-isolated solution sets
+(wide optimal faces of the QP under near-tied costs), singular semismooth
+Newton matrices (Munson et al.\ report singular factorizations in roughly
+$12\%$ of iterations across MCPLIB \cite{munson2001}), and
+projection-contraction rates approaching one
+(Section~\ref{sec:a-pc}).
+
+\section{Projection-contraction methods}
+\label{sec:a-pc}
+
+\paragraph{He's method (\code{bsHe94b}).} He's 1994 projection-contraction
+method \cite{he1994}, in the paper's equation-(16) search-direction form,
+solves the affine VI over any closed convex $K$ reachable by projection. It
+fixes the metric $G = M + I$ once, factors it once, and each iteration
+computes the projection residual, solves one system against the stored
+factorization, and takes a relaxed step ($\gamma \in (0,2)$, default $1.6$).
+The contraction argument --- $\|z_{k+1} - z^\ast\|_G^2 \le
+\|z_k - z^\ast\|_G^2 - c\,\|r(z_k)\|^2$ --- requires $M$ positive
+semidefinite; we verify that hypothesis per problem (for the flow LCP it
+holds by construction). Per-iteration cost: one back-substitution and two
+projections.
+
+\paragraph{Han's method (\code{dHan06}).} Han's 2006 self-adaptive variant
+\cite{han2006} replaces the fixed metric with $(I + \beta_k M)$, adapting
+$\beta_k$ by the paper's rule (its eq.~11) under a $\tau$-schedule.
+Convergence (Han's Thm~2.4) again assumes monotonicity. Two implementation
+notes. First, the shipped default $\beta_0 = 1$ is a deliberate departure
+from the reference implementation's $0.5$: it makes the first iteration's
+metric equal He's proven-contractive $M + I$, so the method starts stably
+even when a Josephy--Newton linearization is indefinite; Han's theory
+permits any $\beta_0 > 0$. Second, because $\beta_k$ moves, the method
+refactors \emph{every} iteration --- observed at roughly an order of
+magnitude more wall time than He's method at equal iteration counts.
+
+\paragraph{Why both stall on degenerate faces.} The contraction constant
+degrades with the conditioning of the problem restricted to the optimal
+face. Near-tied costs (the banded geometry of
+Section~\ref{sec:a-flowqp}) produce wide, nearly flat optimal faces on
+which the quadratic growth of the underlying QP objective is almost zero in
+many directions; the per-step reduction factor then approaches one, and the
+iteration count explodes with no warning other than its own slowness. This
+is a property of the method class, not of a particular tuning: it is the
+observed 150{,}000-iteration cap on the 200-node banded instance
+(Chapter~\ref{ch:testing}), and the reason the interior-point engine
+exists. We state this as a mechanism rather than a sharp theorem; the
+quantitative form would need the face's geometry explicitly.
+
+\section{Solodov--Svaiter hyperplane projection}
+\label{sec:a-ss}
+
+The double-projection method of Solodov and Svaiter \cite{solodov1999}
+computes $r = x - P_K(x - \mu F(x))$, backtracks along $r$ until the
+Armijo-type condition $\langle F(y), r\rangle \ge (\sigma/\mu)\|r\|^2$
+holds at a trial point $y$, and projects the iterate onto the separating
+hyperplane $\{z : \langle F(y), z - y\rangle = 0\}$, then back onto $K$.
+Its convergence theorem --- global convergence for \emph{continuous
+pseudomonotone} $F$, with no Lipschitz constant and nothing factored ---
+has the weakest hypotheses of any engine in the library, and its
+matrix-free iteration costs only products with $M$.
+
+The library's contribution is a sharpened understanding of its \emph{rate}
+in a regime the paper does not emphasize: whenever $\|F(x^\ast)\| > 0$ (the
+generic case for a VI whose solution is on the boundary of $K$, e.g.\
+linear objectives over an ellipsoid), the hyperplane step length scales
+like $\|r\|^2 / \|F\|^2$, and a Fej\'er argument then yields only an
+$O(1/\sqrt{k})$ tail on the squared residual. Empirically the calibration
+is exact (the ellipsoid experiment of Chapter~\ref{ch:testing}: two Newton-
+metric engines converge in 35 and 101 iterations where the hyperplane
+method is still at $10^{-3}$ after half a million). The design consequence
+is baked into the API: the method is offered as a \emph{globalizer} ---
+phase one of \code{chainedSolodovHe}, handing a warm start to He's
+contraction --- never as a finisher, and its own acceptance tests assert
+only globalization-grade accuracy.
+
+\section{The Josephy--Newton driver}
+\label{sec:a-jn}
+
+For the smooth nonlinear VI, \code{solveVI} implements the Josephy--Newton
+scheme \cite{josephy1979}: at $z_k$, solve the affine VI with
+$M = J(z_k)$, $q = F(z_k) - J(z_k) z_k$ over the \emph{same} $K$, then damp
+the step $z_{k+1} - z_k$ by an Armijo backtracking search on the natural
+merit $\tfrac12\|r(z)\|^2$. Three implementation decisions matter:
+
+\begin{itemize}
+\item \textbf{$K$ is never eliminated.} The subproblem keeps the full mixed
+  structure through the projector; there is no Schur complement on the free
+  block. This keeps the driver correct for \emph{any} projector-defined
+  $K$ (the ellipsoid tests exercise exactly this) at the cost of a larger
+  affine subproblem.
+\item \textbf{Damping is necessary, not cosmetic.} At a non-smooth
+  complementarity solution the undamped iteration exhibits a period-2
+  oscillation (overshoot across the kink, get sent back); the value-form
+  Armijo condition $\varphi(\alpha) \le (1 - c\alpha)\varphi(0)$ on the
+  natural merit suppresses it.
+\item \textbf{The accuracy floor is the inner tolerance.} With damping, the
+  outer natural residual descends monotonically to a floor that scales
+  \emph{linearly} with the inner solver's tolerance; the finite-difference
+  Jacobian does not bind (2nd- and 4th-order stencils produce identical
+  iterates on the acceptance problems). Tightening the outer tolerance
+  therefore means tightening \code{innerMagTol}, not refining the Jacobian.
+\end{itemize}
+
+The Jacobian itself is a 4th-order central difference with per-component
+steps $h_j = \mathrm{stepRel}\cdot\max(|z_j|, 1)$ snapped to exactly
+representable widths, $\mathrm{stepRel} = \varepsilon^{1/5}$ by default
+(truncation error $O(\varepsilon^{4/5})$) --- the real-arithmetic
+replacement for the reference implementation's complex-step
+differentiation. The driver also carries a no-progress cutoff (stop
+honestly after $k$ consecutive outer iterations without relative
+improvement, \emph{before} paying for the next Jacobian and inner solve),
+added when a nonmonotone problem was observed freezing the outer loop at a
+constant residual for twenty-plus iterations at a full inner solve each
+(Chapter~\ref{ch:testing}).
+
+\section{Mehrotra predictor-corrector for the mixed monotone LCP}
+\label{sec:a-ipm}
+
+\code{mehrotraIpm} is an infeasible primal-dual predictor-corrector
+path-following method assembled from the standard recipes: the survey of
+Potra and Wright \cite{potra2000} for the scheme, Gondzio \cite{gondzio2012}
+for practical safeguards, and Gertz--Wright's OOQP \cite{gertz2003} for the
+software pattern (including the layered linear-algebra seam of
+Section~\ref{sec:a-flownewton}). For the mixed LCP over \K\ ---
+$(Mz+q)_x = 0$, $0 \le y \perpc s = (Mz+q)_y \ge 0$ --- each iteration, at
+strictly interior $(y, s)$:
+
+\begin{enumerate}
+\item forms the infeasibilities $r_x = (Mz+q)_x$, $r_s = (Mz+q)_y - s$ and
+  the complementarity measure $\mu = y^\top s / m$;
+\item factors the Newton matrix
+  $\,K_\mu = M + \mathrm{blockdiag}\,(0,\ \mathrm{diag}(s/y))\,$
+  \emph{once}, shared by both solves below;
+\item \textbf{predictor}: solves for the affine-scaling direction
+  (right-hand side built from $-r_x$, $-s - r_s$), computes the largest
+  feasible step $\alpha_{\mathrm{aff}}$ and the resulting
+  $\mu_{\mathrm{aff}}$, and sets the centering parameter
+  $\sigma = \mathrm{clamp}\bigl((\mu_{\mathrm{aff}}/\mu)^3\bigr)$ ---
+  Mehrotra's heuristic;
+\item \textbf{corrector}: re-solves against the same factorization with the
+  centered, second-order-corrected complementarity right-hand side
+  $\sigma\mu\mathbf{1} - y \circ s - \Delta y_{\mathrm{aff}} \circ
+  \Delta s_{\mathrm{aff}}$;
+\item takes one \emph{common} damped step
+  $\alpha = \min(1, \tau\,\alpha_{\max})$, $\tau = 0.995$, for all blocks.
+  Separate primal/dual step lengths are an LP-only device; for LCP they
+  break the convergence theory, so the implementation forbids them.
+\end{enumerate}
+
+The start is the data-scaled interior point $x = 0$,
+$y = s = \beta\mathbf{1}$ with $\beta = \max(1, \sqrt{\|q\|_\infty})$
+(OOQP's rule); no caller iterate can be used, hence no warm starts.
+Termination and \code{residual} use the shared squared natural residual.
+Three safeguards, each with its provenance: a \emph{sticky} free-block
+regularization $\varepsilon_{\mathrm{reg}} I_n$ applied only after a Newton
+solve returns non-finite values --- non-finite output, not singularity per
+se, is the correct trigger, because a singular-but-consistent system can
+solve finitely and needs no rescue (the discovery is recounted in
+Chapter~\ref{ch:testing}); the fraction-to-boundary rule above;
+and a stall return --- a damped step below $10^{-10}$ ends the run honestly
+with \code{converged = false} at the current iterate, since on data outside
+the monotone theory (e.g.\ a nonmonotone linearization handed in by the
+Josephy--Newton driver) blocked steps are an expected outcome, not an
+error.
+
+\paragraph{Why degeneracy does not hurt.} The central path
+$\{z(\mu)\}_{\mu > 0}$ of a monotone LCP converges, as $\mu \to 0$, to the
+\emph{analytic center of the optimal face}; path-following complexity
+depends on problem data and $\log(1/\epsilon)$, not on any measure of how
+flat or tied that face is, and superlinear behavior persists on degenerate
+sufficient LCPs \cite{potra2009}. The growing conditioning of $K_\mu$ as
+$\mu \to 0$ is benign for the computed steps in the sense analyzed by
+Wright \cite{wright1997} and summarized by Gondzio \cite{gondzio2012}: the
+honest response is the tolerance/iteration-cap termination, not a
+conditioning guard. Empirically (Chapter~\ref{ch:testing}): 9/19/10
+iterations on clean/degenerate/rank-deficient constructed LCPs, and 35--36
+iterations at dimensions 10{,}838 and 14{,}601 on the banded flow problem
+--- flat in both dimension and degeneracy, exactly as the theory predicts.
+
+\section{The structured Newton solve for the flow LCP}
+\label{sec:a-flownewton}
+
+At scale, the IPM's cost is entirely its dense $O(d^3)$ factorization. The
+flow LCP's structure admits an exact factory
+(\code{makeFlowNewtonFactory}) that replaces it. Every formula in this
+section was verified with the Maxima computer algebra system
+\cite{maxima,macsyma}, symbolically and in exact rational arithmetic, by
+the script \code{network/doc/ns2-newton-check.mac} --- ten checks: the
+sink-block inverse, the KKT Jacobian against the assembled $M$,
+recipe-equals-direct on three shapes including the $k_n = 1$ edge case, the
+two-part Schur assembly, and symmetry --- all reproducible by running the
+script. The prose here states the result and the two load-bearing
+observations.
+
+With the sink-major packing $z = [\,t \mid \mu \mid \lambda\,]$
+(Section~\ref{sec:a-flowqp}), the IPM Newton matrix is
+\[
+K \;=\;
+\begin{bmatrix}
+Q_{\mathrm{blk}} + \mathrm{diag}(D_t) & E & d\\[2pt]
+-E^\top & \mathrm{diag}(D_\mu) & 0\\[2pt]
+-d^\top & 0 & D_\lambda
+\end{bmatrix},
+\]
+where $\mathrm{diag}(D_t \mid D_\mu \mid D_\lambda)$ is the interior-point
+complementarity diagonal $s/y$, $E$ scatters pairs to their sources
+($E_{p\sigma} = 1$ iff pair $p$ ships from source $\sigma$), $d$ is the
+pair-cost column, and $Q_{\mathrm{blk}} =
+\mathrm{blockdiag}_n\,(Q_n \mathbf{1}\mathbf{1}^\top)$ --- each sink's
+diagonal block is \emph{rank one}, with $Q_n = 2P_n/D_n^2$ the sink's
+objective curvature.
+
+\textbf{Observation 1 (per-sink Sherman--Morrison).} $W = (Q_{\mathrm{blk}}
++ \mathrm{diag}(D_t))^{-1}$ is block-diagonal by sink, and on sink $n$'s
+slice
+\[
+W|_n \;=\; \mathrm{diag}(1/D_t) \;-\;
+\frac{Q_n}{1 + Q_n \sigma_n}\, u_n u_n^\top,
+\qquad u_n = (1/D_{t,p})_{p \in I_n},\quad
+\sigma_n = \textstyle\sum_{p \in I_n} 1/D_{t,p},
+\]
+so applying $W$ costs $O(k_n)$ per sink --- linear in the number of kept
+pairs overall.
+
+\textbf{Observation 2 (the skew signs cancel; the Schur complement is
+SPD).} Eliminating $t$ from the dual rows, the minus signs of the
+$-E^\top, -d^\top$ blocks meet the minus signs inside the
+back-substitution and cancel, leaving
+\[
+S \;=\; \mathrm{diag}(D_\mu \mid D_\lambda) \;+\; B^\top W B,
+\qquad B = [\,E \;\ d\,],
+\]
+a symmetric positive-definite matrix of size
+$(\text{numSources}+1)$ --- so Cholesky is licensed even though $K$ itself
+is unsymmetric. $S$ is assembled in two parts:
+$B^\top \mathrm{diag}(1/D_t) B$ by an $O(\text{pairs})$ accumulation, minus
+the per-sink rank-one corrections
+$c_n (B^\top u_n)(B^\top u_n)^\top$ restricted to their support,
+$O(k_n^2)$ each. The full solve per IPM iteration is then: apply $W$,
+assemble and Cholesky-solve the small $S$, back-substitute --- about
+$O(\sum_n k_n^2)$ work versus dense $d^3$, which at the 200-node keep-all
+scale is the difference between $\sim 50$ seconds per iteration and
+milliseconds, i.e.\ between a half-hour screened solve and a 4.5-second
+exact one (Chapter~\ref{ch:testing}).
+
+Correctness in floating point is asserted by \emph{backward-error} parity
+bars against the dense factory,
+$\|Kd - \mathit{rhs}\| / (\|K\|_\infty \|d\| + \|\mathit{rhs}\|) \le
+10^{-12}$, always; direct step parity is asserted only on well-scaled
+systems, since forward error carries $\mathrm{cond}(K)$ and the interior-
+point endgame makes $K$ deliberately ill-conditioned. The engine-side
+insurance for \emph{any} external factory is the \code{newtonCheckTol}
+consistency check of Section~\ref{sec:a-ipm}.
+
+\section{Semismooth Newton for the mixed NCP}
+\label{sec:a-ssn}
+
+\code{semismoothNewtonSolve} follows the line of De Luca--Facchinei--Kanzow
+\cite{deluca2000} and the SEMI algorithm of Munson et al.\
+\cite{munson2001}, with the penalized Fischer--Burmeister function of
+Chen--Chen--Kanzow \cite{chen2000} as its default. Reformulate
+\eqref{eq:mcp} as the nonsmooth square system
+\[
+\Phi(z) =
+\begin{bmatrix} H(x, y)\\ \varphi\bigl(y_i,\, G_i(x,y)\bigr)_{i=1..m}
+\end{bmatrix} = 0,
+\qquad
+\varphi_\lambda(a,b) = \lambda\,\varphi_{FB}(a,b)
++ (1-\lambda)\,a_+ b_+,
+\]
+with $\varphi_{FB}(a,b) = a + b - \sqrt{a^2+b^2}$, $a_+ = \max(0,a)$, and
+$\lambda = 0.8$ (never below $0.5$: the penalty term then dominates the
+merit and a merit-based stop can accept sign-violating points). The
+penalization repairs plain FB's two documented weaknesses --- merit level
+sets unbounded for merely monotone $F$, and near-flatness deep in the
+positive orthant \cite{chen2000} --- and the library's own runs echo the
+comparison: on the deployment game the plain-FB variant died fastest of
+all configurations tried.
+
+\paragraph{Generalized Jacobian.} Row $n+i$ of the Newton matrix is
+$d_{a,i}\, e_{n+i}^\top + d_{b,i}\, (J_G)_i$ with the C-subdifferential
+diagonals, away from the kink,
+\[
+d_a = \lambda\Bigl(1 - \frac{a}{\|(a,b)\|}\Bigr) + (1-\lambda)\, b_+ [a>0],
+\qquad
+d_b = \lambda\Bigl(1 - \frac{b}{\|(a,b)\|}\Bigr) + (1-\lambda)\, a_+ [b>0];
+\]
+at a kink ($a_i = b_i = 0$) the limiting-direction rule of
+\cite{chen2000} (their Algorithm~4) selects a valid B-subdifferential
+element from the direction $(z_i, (J_G z)_i)$ with $z$ the kink indicator.
+One implementation subtlety is worth a permanent record: that indicator
+lives in the \emph{full} $z$-space (length $n+m$, ones at positions $n+i$),
+not in $y$-space --- with $n = 0$ the two coincide, so pure-LCP tests cannot
+catch the confusion; a mixed test hitting an exact kink can, and did.
+Evaluation is stabilized per Munson et al.\ (their \S4.1): the norm is
+computed overflow-safe by factoring out $|a|+|b|$, and for $a+b > 0$ the
+cancellation-prone $a + b - \|(a,b)\|$ is replaced by the algebraically
+equal $2ab/(a + b + \|(a,b)\|)$.
+
+\paragraph{Globalization.} A three-tier direction ladder --- the Newton
+direction if it satisfies the descent test
+$\nabla\Psi^\top d \le -\rho\|d\|^{p}$ ($p > 2$, the De Luca et al.\
+condition); else a Levenberg--Marquardt direction with damping
+$\lambda_{LM} \propto \|\Phi\|^2$ (the error-bound rule that retains fast
+local convergence on non-isolated solution sets, per the H\"older
+subregularity analysis of \cite{ahookhosh2019}, with no nonsingularity
+assumption); else the negative gradient --- followed by a
+\emph{directional} Armijo search on $\Psi = \tfrac12\|\Phi\|^2$ against a
+trailing-window baseline (\code{nonmonotoneMemory}; window 1 is the citable
+monotone theory, window 4 is SEMI's production value). The middle tier is
+not decoration: singular Newton matrices are \emph{common} on degenerate
+problems \cite{munson2001}, and the gradient tier alone is unreliable.
+
+\paragraph{Contract-level decisions.} Iterates are not confined to $K$;
+a trial point where the model throws (a domain violation, e.g.\ crossing a
+pole of a rational vector field) counts as merit $+\infty$ \emph{inside
+the line search only} --- the step backtracks away --- while non-finite
+values at accepted points remain hard errors. Termination is on the
+library's squared natural residual rather than on $\Psi$: the
+$\Psi$-stop under-enforces sign conditions for small $\lambda$ (a
+documented pitfall), and the natural residual keeps the engine comparable
+with every other. The returned iterate is the \emph{best visited} in that
+measure: the nonmonotone search may deliberately climb above its best point
+and then stall before recovering it --- observed concretely (a run
+returning squared residual $1.7\times 10^{4}$ after visiting
+$8.2\times 10^{3}$) before the semantics were fixed.
+
+\section{The application problems}
+\label{sec:a-apps}
+
+The library's three almost-real-world problems are treated here as peers,
+one subsection each: the quadratic flow-planning problem (a single-planner
+convex optimization), and two \emph{games} --- the strategic allocation of
+effort and the pre-position-and-deploy family --- whose Nash equilibria are
+posed directly as MCPs. The games arrive as GAMS models with verified
+solutions and are transcribed one-to-one into \code{VIModel}s (the recipe
+is Chapter~\ref{ch:manual}); each subsection records what an OR reader
+needs to audit the formulation.
+
+\subsection{The quadratic flow-planning problem}
+\label{sec:a-flowqp}
+
+The statements of this subsection are established in the project's working
+documents (\code{network/doc/formulation.md}, \code{reduction.md}) with
+full proofs; they are transcribed here in summary, not re-derived.
+
+\paragraph{Formulation.} On a node set $V$ with supply caps $C_i$, demands
+$D_i$, priorities $P_i > 0$, positive arc costs $c_{ij}$ (asymmetric;
+positive diagonal), and ton-mile budget $L$: choose injections
+$S_i \in [0, C_i]$, resupplies $R_i \ge 0$, and flows $f_{ij} \ge 0$ to
+minimize the dimensionless weighted shortfall
+\[
+\theta(R) = \sum_{i \in V_D} P_i \Bigl(\frac{D_i - R_i}{D_i}\Bigr)^{2},
+\qquad V_D = \{\,i : D_i > 0\,\},
+\]
+subject to flow balance, the budget
+$\sum_{ij} c_{ij} f_{ij} \le L$, and the \emph{delivery} constraint
+$R_j \le \sum_i f_{ij}$. The delivery row is a spec-audit finding
+(``F1''): without it, the written balance lets a node self-supply for free,
+contradicting the stated intent; adding it is equivalent to splitting each
+node into supply/delivery ports with a nonnegative through-flow, and forces
+self-supply through $f_{jj}$ at cost $c_{jj}$. The problem is a linearly
+constrained convex QP --- strictly convex in $R_{V_D}$ (diagonal Hessian
+$2P_i/D_i^2$) --- feasible and compact, so a minimizer exists and the
+optimal $R^\ast$ is unique (the optimal routing need not be).
+
+\paragraph{Reduction (Lemma R1).} With $\hat d_{mn}$ the arc-respecting
+shortest-path cost from source $m$ to sink $n$ (the diagonal corrected so a
+self-supplied ton uses the self-arc or a round trip), the pair problem
+\[
+(P_\varepsilon)\quad
+\min_{t \ge 0}\ \theta\bigl(R(t)\bigr)
++ \varepsilon \sum_{m,n} \hat d_{mn} t_{mn},
+\qquad
+R_n(t) = \sum_m t_{mn},\quad
+\sum_n t_{mn} \le C_m,\quad
+\sum_{m,n} \hat d_{mn} t_{mn} \le L,
+\]
+has (at $\varepsilon = 0$) the same optimal value as the full problem, and
+any feasible $t$ expands --- along stored shortest routes --- to a feasible
+full plan with the same $R$ and no greater budget use. The proof is by flow
+decomposition on the port-split digraph; the ``expand'' direction \emph{is}
+the production unpacker. The reduction collapses $M^2 + 2M$ variables to
+$|V_C||V_D|$ (at 200 nodes: $\sim$40{,}400 to $\le$10{,}000).
+
+\paragraph{KKT $\leftrightarrow$ LCP.} Substituting $R = R(t)$ out, the KKT
+system of $(P_\varepsilon)$ in the variables
+$z = [\,t \mid \mu \mid \lambda\,]$ (pair flows; capacity duals; budget
+dual) is a \emph{pure} NCP over the nonnegative orthant --- no free block
+--- whose affine map has positive semidefinite $M$: the objective
+contributes the sink-blocked rank-one curvature $Q_n \mathbf{1}\mathbf{1}^\top$
+($Q_n = 2P_n/D_n^2$), and the constraint rows enter skew-symmetrically,
+contributing nothing to the symmetric part. Monotonicity is therefore
+structural, and every monotone-theory engine applies. This packing (each
+sink's pairs contiguous) is also exactly what the structured factory of
+Section~\ref{sec:a-flownewton} exploits.
+
+\paragraph{Screening and the certificate (Proposition R3).} Restricting to
+a screened pair set and solving, optimality of the padded solution for the
+\emph{unrestricted} problem is certified by dual feasibility of every
+excluded column:
+\[
+\frac{2P_n}{D_n}\cdot\frac{D_n - R_n^\star}{D_n}
+\;\le\; (\lambda^\star + \varepsilon)\,\hat d_{mn} + \mu_m^\star
+\qquad \text{for every excluded } (m,n);
+\]
+violated pairs are added and the problem re-solved --- column generation
+with a convex master, finitely terminating at the exact optimum. A
+\code{certificateSlack} loosens the check to a \emph{bounded-suboptimality}
+certificate. The practical failure mode at scale is not incorrectness but
+the \emph{balloon}: on near-tied geometries each round buys many
+near-zero-reduced-cost pairs in expensive installments (one observed round
+grew the kept set from $\sim$1{,}900 to 10{,}737 of 14{,}500). The
+structured keep-all solve removes the screen, and with it the certificate
+loop, entirely: nothing excluded, nothing to certify.
+
+\paragraph{Tie-break (Proposition R4).} The linear term
+$\varepsilon \sum \hat d_{mn} t_{mn}$ selects minimal-ton-mile plans among
+near-optimal routings (the observed flow degeneracy is exactly ties in this
+direction) at a certified objective cost
+$\theta(t^\varepsilon) \le \theta^\star + \varepsilon L$; the shipped
+$\varepsilon = 10^{-8} \sum_n P_n / L$ prices the tie-break at $10^{-8}$ of
+full-scale shortfall.
+
+\paragraph{Nondimensionalization.} The solver works in scaled units ---
+tons divided by the largest demand, miles by the largest cost --- an
+\emph{exact} change of variables under which the optimum is invariant. It
+is not cosmetic: the projection engines' effective conditioning depends on
+the raw scales, and the lane-oracle benchmark improved from 25\,s to
+0.04\,s on nondimensionalization alone. All tolerances live in scaled
+units; results are returned in real units.
+
+\subsection{Strategic allocation of effort}
+\label{sec:a-saoe}
+
+The general problem: $M$ actors with weights $w_a$ allocate effort
+$e_{ap} \ge 0$ across $N$ options under budgets $\sum_p e_{ap} \le w_a$;
+option strengths $\sigma_p$ aggregate efforts, option probabilities are
+$\sigma_p / \gamma$ with $\gamma = \sum_p \sigma_p$, and each actor's
+stationarity row prices its marginal influence on its expected reward
+against a shadow price $\beta_a$ on its budget. The Nash equilibrium is
+posed directly as an MCP. A mixing parameter $\alpha$ interpolates the
+strength map between purely linear ($\alpha = 1$) and purely quadratic
+($\alpha = 0$); at $\alpha = 1$, the setting of the test instance, the only
+nonlinearity left is rational: the $\gamma^2$ denominator in the
+stationarity rows. The concrete instance in the acceptance suite
+(\code{alloceff01cm.gms}, transcribed in
+\code{test/gams\_alloceff\_test.cpp}) is one example of this family, at
+$M = 6$ actors and $N = 10$ options.
+
+The transcription makes two formally-justified moves. First, the GAMS
+intermediates ($\mathrm{nfv}_p$, $\sigma_p$, $\gamma$) are declared
+\code{Positive} in the source but are treated as \emph{free} variables with
+their defining equalities as $H$ rows: at any point satisfying those
+equalities, $\mathrm{nfv}_p \ge \epsilon > 0$ (an explicit floor plus a sum
+of nonnegatives), hence $\sigma_p > 0$ and $\gamma > 0$, so the bounds
+never bind and the KKT systems coincide. Second, the individual box bounds
+$e_{ap} \le w_a$ are dropped as implied by the budget row; at the corner
+where one effort exhausts the budget, the budget's multiplier absorbs the
+box multiplier in the same stationarity row, so the primal solution sets
+coincide. Empirical closure: two independent engine classes (semismooth
+Newton; Josephy--Newton over the interior-point inner) converge to the same
+equilibrium, which the author confirmed is the one PATH reaches --- also
+the reference equilibrium of the library's independent, reduced-form SAOE
+implementation. A sign error essentially anywhere in the transcription
+would have split those three.
+
+\subsection{Pre-position and deploy (PPD)}
+\label{sec:a-ppd}
+
+PPD is a \emph{family} of two-sided pre-position/deploy games, developed in
+versions of increasing sophistication (several more versions beyond the one
+tested here are in preparation). The common core: each side pre-positions
+forces at bases, assigns a mixed strategy over postures, and ships flows
+from bases to contested locations under logistical (ton-mile) budgets;
+payoffs are shares of location values determined by the forces that arrive;
+and each side's stationarity, paired with its decision variables, poses the
+Nash equilibrium directly as an MCP. Later versions enrich the interaction
+--- interdiction along routes, escort and attacker allocations, staged
+combat --- while preserving that MCP shape, so each version drops into the
+library as data plus a \code{VIModel} builder and joins the same
+multi-engine acceptance harness.
+
+The family's defining mathematical character comes from its smooth
+attrition modeling. Combat uses survivor functions of the form
+$h(x) = x^2/(x + c)$, $c > 0$, with three consequences that shape solver
+behavior across every version: $h(x) \le x$ (survivors never exceed forces
+committed, an algebraic identity); $h'(0) = 0$ with $h'' > 0$ near zero
+(token forces are wiped, mass is rewarded), so interior starts are
+\emph{essential} --- a route at zero shows no first-order reason to open,
+zero-flow local equilibria exist (economy of force in smooth form), and the
+GAMS \code{.L} levels are part of the model, transcribed exactly; and the
+composite payoff has mixed curvature --- concave in own variables from
+strong positions, convex from weak ones (``mass-or-abstain'') --- so the
+MCP is nonmonotone \emph{by design} and multiple Nash equilibria are
+expected. The $\epsilon$-guards on every denominator place poles of the
+vector field just outside the nonnegative orthant, a fact that matters for
+solver behavior (Section~\ref{sec:a-chain}).
+
+Versions in the acceptance suite to date:
+
+\begin{itemize}
+\item \textbf{\code{deploy\_v07.gms}} (transcribed in
+  \code{test/gams\_deploy\_test.cpp}): movers, attackers, and defenders
+  with interdiction along the routes and ratio combat throughout. Each side
+  pre-positions movers, mixes over five postures, ships to four contested
+  locations, and allocates escorts to its own flows and attackers against
+  the opponent's routes (escorts and attackers are pooled per strategy,
+  with no ton-mile cost). Combat is two smooth ratio stages per route ---
+  attackers surviving the escorts,
+  $\mathrm{BA2} = \mathrm{BA}^2/(\mathrm{BA} + \mathrm{RE} + \epsilon)$,
+  then movers surviving the remaining attackers,
+  $\hat f = f^2/(f + \mathrm{BA2} + \epsilon)$ --- followed by force-ratio
+  shares of location values at each node. The stationarity rows carry the
+  \emph{exact} chain-rule gradients of the two-stage survivor composition,
+  verified symbolically by the model's author with Maxima
+  \cite{maxima,macsyma} (\code{v07\_check.mac}) and transcribed literally,
+  every $\epsilon$-guard included. Dimensions: 4 free rows (two
+  probability-simplex and two pre-positioning equality multipliers) and 446
+  complementarity rows. Two Nash equilibria are currently verified,
+  discovered by the library itself and gated in the acceptance test as a
+  roster: both share the strategy supports, and they are mirror twins in
+  which exactly one side's per-strategy probability cap $\rho$ is active
+  (Red's in one, Blue's in the other) --- suggestive of a symmetry family,
+  recorded as an observation rather than a claim of enumeration.
+\end{itemize}
+
+\section{The alternating chain, formally}
+\label{sec:a-chain}
+
+No engine in this library carries a global convergence theory for
+nonmonotone MCPs, and on the deployment game every standalone engine fails
+--- each in its own way. The alternating chain
+(\code{alternatingChainSolve}) is an engineered composition whose claims
+are deliberately modest and checkable. We state them.
+
+\paragraph{Construction.} Fix a globalizer $\mathcal{G}$ and finisher
+$\mathcal{F}$ (stage solvers returning \code{VIResult}s), the projector
+$P_K$, and the residual functional $\rho(z) = \|z - P_K(z - F(z))\|^2$
+evaluated by the chain itself. A \emph{round} from incumbent best $b$ is
+\[
+z_0 = P_K(b), \qquad
+z_1 = \mathcal{G}(z_0), \qquad
+z_2 = \mathcal{F}(z_1),
+\]
+with the best point updated against $\rho$ after each stage. A stage that
+\emph{throws} is treated as a stalled stage: the round continues from the
+last good point (on a globalizer failure the finisher starts from $z_0$),
+and nothing is lost --- the incumbent is kept. Rounds repeat up to
+\code{roundsMax}; a round that fails to improve the incumbent
+(\code{improveFactor}, default: any strict improvement continues) triggers
+either termination or, with \code{perturbScale} $= s > 0$, a
+\emph{perturbed restart}: the next round starts from
+$P_K\bigl(b + \delta\bigr)$, $\delta_i \sim U[-1,1]\cdot s\cdot
+\sqrt{\rho(b)}$ from a fixed-seed generator.
+
+\paragraph{What is guaranteed.} (i) \emph{Boundedness and honesty}: at most
+\code{roundsMax} rounds of internally-bounded stages; the returned point is
+the best visited under the fixed functional $\rho$, with
+\code{converged} true iff $\rho(\mathrm{best}) < \code{magTol}$; the whole
+procedure is a deterministic function of its inputs (the perturbation seed
+is fixed), so runs are reproducible. (ii) \emph{The stagnation lemma}
+(trivial but load-bearing): both stages being deterministic, a round that
+starts from $P_K(b)$ and fails to improve $b$ will, if restarted verbatim,
+repeat identically --- so no stopping-rule refinement can rescue a stagnant
+chain, and \emph{perturbation is the only within-chain remedy}. The
+empirical form was exact: two consecutive runs of a stagnant configuration
+were digit-for-digit identical. (iii) \emph{Perturbation does not obstruct
+convergence}: $\delta$ scales with $\sqrt{\rho(b)}$, so it vanishes as the
+chain closes in.
+
+\paragraph{What is argued, not guaranteed.} The composition targets
+\emph{complementary failure sets}. The Josephy--Newton/IPM globalizer fails
+where the current linearization is indefinite --- a local property of
+$J(z_k)$; the semismooth finisher fails at merit-geometry obstructions ---
+in this problem class, characteristically \emph{outside} $K$ beside the
+$\epsilon$-guard poles, where its line search dies against $+\infty$ walls
+(the residual breakdown at one observed stall showed negative escort
+allocations of $-0.34$ against $\epsilon = 0.01$), or at nonmonotone merit
+plateaus. Neither failure property implies the other at a handoff point,
+and the inter-round projection removes the finisher's one systematic way of
+poisoning the handoff (leaving $K$ toward the poles). A deploy-specific
+check closes a potential hole in that argument: escorts projected \emph{to}
+zero retain a first-order re-entry signal ($\partial \hat f/\partial
+\mathrm{RE} > 0$ at $\mathrm{RE} = 0$ on a contested flowing route), unlike
+flows at zero, so the projection cannot create new $h'(0) = 0$ dead zones.
+There is no global theorem here and we claim none; the evidence is
+Chapter~\ref{ch:testing}'s case study, whose endpoint is a machine-precision
+solution ($\rho \approx 10^{-9}$ to $10^{-15}$) of a 450-dimensional
+nonmonotone MCP that no component engine solves alone.
+
+\paragraph{Precedents.} The design consciously follows PATH's playbook ---
+crash phase, restarts, perturbation on failure \cite{ferris1998} --- and,
+one level down, the library's own affine chain (Solodov--Svaiter
+globalizing He's contraction). The perturbed restarts double as an
+equilibrium \emph{sampler}: distinct trajectories have already produced two
+verified equilibria, and the acceptance gate is built as a growing roster
+for exactly that reason.
+
+\section{Measurement conventions}
+\label{sec:a-measure}
+
+For auditing the numbers in this report:
+
+\begin{itemize}
+\item \textbf{Residuals are squared Euclidean norms} of the natural map
+  \eqref{eq:natres}, in the problem's working units (for the flow pipeline:
+  nondimensionalized units). ``Converged at $10^{-8}$'' means
+  $\|r\|^2 < 10^{-8}$, i.e.\ $\|r\| < 10^{-4}$.
+\item \textbf{Iteration counts are not comparable across engine classes.}
+  One \code{bsHe94b} iteration is a back-substitution; one \code{mehrotraIpm}
+  iteration is a full factorization (its \code{iterMax} is set in hundreds
+  where a projection engine's is in hundreds of thousands); one
+  \code{solveVI} outer iteration contains a complete inner solve plus a
+  finite-difference Jacobian ($4(n+m)$ evaluations of $F$); composite
+  results carry the split explicitly (\code{iter} outer,
+  \code{innerIters} total inner).
+\item \textbf{Wall-time attribution}: for factorization-bound engines,
+  count factorizations times $O(d^3)$ (or the structured cost of
+  Section~\ref{sec:a-flownewton}); for the Josephy--Newton driver on
+  black-box models, the FD Jacobian's $4(n+m)$ model evaluations per outer
+  step frequently dominate; for projection engines, iteration count is the
+  cost, with factor-once vs.\ factor-every-iteration separating He from
+  Han.
+\end{itemize}
+
+The annotated bibliography at the end of this report lists every source
+cited here; local copies are kept under \code{doc/}, and each entry's
+annotation states what the library took from it.
+
+% ----------------------------------------------
+% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------

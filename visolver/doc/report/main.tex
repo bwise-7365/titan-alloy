@@ -1,0 +1,78 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------
+% VINCP report: master document. Four parts, one \include each, so parts can
+% be drafted and reviewed as gates (see doc/2026-07-06-documentation-plan.md).
+% Style lives in prolog.tex (\input below) so it can change independently;
+% this file adds only what the report needs beyond the house style: the
+% report class (chapters), listings (code), booktabs (tables), a chapter
+% font color, linktoc=all, the shared math macros, and the BibTeX hookup.
+% Build: pdflatex main; bibtex main; pdflatex main (twice) -- i.e. the
+% TeXworks pdfLaTeX+BibTeX workflow noted in prolog.tex.
+% ----------------------------------------------
+\documentclass[english, 10pt]{report}
+
+\input{prolog}
+
+% --- Report-specific additions beyond the house style -----------------------
+
+% prolog.tex styles sections for the article class; the report class adds
+% chapters, colored to match.
+\chapterfont{\color{GroupWBlue1}}
+
+% Make BOTH the heading text and the page number live links in the TOC.
+\hypersetup{linktoc=all}
+
+\usepackage{booktabs}
+\usepackage{listings}
+
+% Code and identifier styling: identifiers inline via \code{}, blocks via
+% the listings environment below.
+\newcommand{\code}[1]{\texttt{#1}}
+\definecolor{codegray}{gray}{0.45}
+\lstdefinestyle{vincp}{
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{codegray},
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  frame=single,
+  framerule=0.3pt,
+  xleftmargin=1em,
+}
+\lstset{style=vincp}
+
+% The mixed complementarity problem, used throughout.
+\newcommand{\Rn}{\mathbb{R}^{n}}
+\newcommand{\Rm}{\mathbb{R}^{m}_{+}}
+\newcommand{\K}{\ensuremath{K = \mathbb{R}^{n} \times \mathbb{R}^{m}_{+}}}
+\newcommand{\perpc}{\ \bot\ }
+
+% -----------------------------------------------------------------------------
+
+\title{VINCP: A C++ Library for Variational Inequalities and\\
+       Mixed Complementarity Problems\\
+       \large Design, Use, and Validation}
+\author{Ben Paul Wise}
+\date{\today\ (draft)}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\include{part1}   % Part I   -- Overview
+\include{part2}   % Part II  -- Developer manual / API
+\include{part3}   % Part III -- Testing and lessons learned
+\include{part4}   % Part IV  -- Mathematical foundations
+
+% Annotated bibliography (refs.bib): each entry's note field records what
+% the library took from that source; local copies of every paper are under
+% doc/.
+\bibliographystyle{plain}
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{refs}
+
+\end{document}
+% ----------------------------------------------
+% Copyright Ben Paul Wise. All Rights Reserved.
+% ----------------------------------------------

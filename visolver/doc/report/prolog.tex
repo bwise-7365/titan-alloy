@@ -1,0 +1,123 @@
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
+% process with TeXworks as pdfLaTeX+MakeIndex+BibTex
+
+
+% This file is \input by main.tex as the STYLE MODULE, so the class line is
+% commented out here and the \documentclass (report, for chapters) lives in
+% main.tex; everything below applies unchanged.
+%\documentclass[english, 10pt]{article}
+% `english' is necessary for babel, not `letter' or `a4paper'
+% default is 10pt unless specified otherwise.
+% I reserve 12 pt for legible final documents
+
+
+%\usepackage[a4paper]{geometry}
+\usepackage[letterpaper]{geometry}
+
+\usepackage{geometry}
+\geometry{verbose,lmargin=2.0cm,rmargin=2.0cm}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.75em}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{color}
+\definecolor{mypurple}{RGB}{128, 0, 128}
+\definecolor{myTeal}{RGB}{0, 128, 128}
+\definecolor{myDarkGreen}{RGB}{0, 92, 0}
+\definecolor{myLightGreen}{RGB}{0, 192, 0}
+\definecolor{myDarkRed}{RGB}{192, 0, 0}
+\definecolor{myDarkBlue}{RGB}{0, 0, 192}
+\definecolor{myBeige}{RGB}{255, 255, 192}
+
+\definecolor{GroupWBlue1}{RGB}{75, 99, 175} 
+\definecolor{GroupWGrey1}{RGB}{145, 147, 150} 
+
+\definecolor{schrift}{RGB}{0,73,114}
+
+\usepackage{amsmath} %% get AMS standards for theorems, e.g. the hollow QED box,  \qedsymbol
+%% But I like the solid "tombstone", Halmos, whatever:
+\newcommand{\qedsolid}{\rule{1ex}{1.62ex}}
+\usepackage{amssymb} % \sum
+
+
+\usepackage{empheq} % colored equation-boxes
+\usepackage[most]{tcolorbox}
+\tcbset{colback=white!90!yellow, % i.e. 90% and 10% yellow
+        colframe=green!36!blue, % i.e. 64% green and 36% blue, `schrift'
+        highlight math style= {enhanced, %<-- needed for the ’remember’ options
+            colframe=red,colback=red!10!white,boxsep=0pt}
+        }
+		
+		
+% setup colored and boxed quotes	
+% this would give a yellowish background inside a reddish frame:
+% colback=yellow!10!white, colframe=red!50!black, 
+
+%\usepackage[most]{tcolorbox}     
+\newtcolorbox{myquote}{
+colback=yellow!10!white,
+colframe=blue!50!black,
+grow to right by=-20mm,
+grow to left by=-30mm,
+%boxrule=2pt,
+boxsep=0pt,
+breakable} \makeatletter
+
+\newcommand{\blockquote}[1]{  \begin{myquote}  #1  \end{myquote}  }
+
+
+% These are usually 'schrift' not 'GroupWBlue1'
+\usepackage{hyperref}   % clickable links into or outfrom this text
+\hypersetup{
+    colorlinks=true,
+    linkcolor=GroupWBlue1,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=myTeal
+}
+
+\numberwithin{equation}{section} % number equations as (sec.eq), not just (eq)
+
+% Good reference on tables in LaTeX:
+% https://en.wikibooks.org/wiki/LaTeX/Tables 
+
+\usepackage{graphicx}
+% parameters for the 'figure box'
+\fboxsep=1mm %padding thickness
+\fboxrule=2pt %border thickness
+
+\usepackage{sectsty}
+
+% These are usually 'schrift' not 'GroupWBlue1' or 'GroupWGrey1'
+\sectionfont{\color{GroupWBlue1}}  % sets colour of sections
+\subsectionfont{\color{GroupWBlue1}}
+\subsubsectionfont{\color{GroupWBlue1}}
+
+\usepackage{lastpage}
+
+% The following two are needed to shade individual cells,
+% without the `feature' of over-writing the cell boundaries.
+% However, they seem to clash with empheq, so they are commented out.
+% this means that \cellcolor{color}{stuff} cannot be used; see revisions just prior to 2022-03-27 for colored cells.
+%\usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor, https://tex.stackexchange.com/questions/50349/color-only-a-cell-of-a-table
+%\usepackage{hhline}% http://ctan.org/pkg/hhline, https://tex.stackexchange.com/questions/25062/cell-shading-without-removing-lines
+
+
+\usepackage[T1]{fontenc} % necessary for babel
+\usepackage{babel}
+\usepackage{url} % so bitex can handle URL
+
+
+%\rhead{Basic CP}   % default rhead is section
+%\lhead{B. P. Wise} % default lhead is subsection
+
+% Some people say that ragged right edges make it easier to read.
+\raggedright
+
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
