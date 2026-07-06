@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 
 #include "ClipboardUtil.h"
+#include "PasswordField.h"
 #include "UiMetrics.h"
 
 ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidget* parent)
@@ -22,7 +23,7 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
     formLayout->setVerticalSpacing(ui::kSpacing);
     formLayout->setHorizontalSpacing(ui::kFormHSpacing);
     mainLayout->setSpacing(ui::kSpacing);
-    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
+    mainLayout->setContentsMargins(ui::snugMargins());
 
     auto createReadOnlyField = [&](const QString& label, const QString& value) {
         auto* lineEdit = new QLineEdit(value, this);
@@ -41,12 +42,9 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
         // The password is masked by default; a checkbox reveals it on demand,
         // matching the Edit dialog and keeping it off-screen at a glance.
         auto* passwordEdit = createReadOnlyField(tr("Password"), entry->Password);
-        passwordEdit->setEchoMode(QLineEdit::Password);
         auto* showBox = new QCheckBox(tr("Show password"), this);
         formLayout->addRow(QString(), showBox);
-        connect(showBox, &QCheckBox::toggled, this, [passwordEdit](bool on) {
-            passwordEdit->setEchoMode(on ? QLineEdit::Normal : QLineEdit::Password);
-        });
+        ui::wireRevealToggle(showBox, {passwordEdit});
 
         createReadOnlyField(tr("Comment"), entry->Comment);
     }

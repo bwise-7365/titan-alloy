@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include "PasswordField.h"
 #include "UiMetrics.h"
 
 EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, int suggestedLength,
@@ -21,7 +22,7 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
     formLayout->setVerticalSpacing(ui::kSpacing);
     formLayout->setHorizontalSpacing(ui::kFormHSpacing);
     mainLayout->setSpacing(ui::kSpacing);
-    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
+    mainLayout->setContentsMargins(ui::snugMargins());
 
     m_titleEdit = new QLineEdit(this);
     m_siteEdit = new QLineEdit(this);
@@ -47,10 +48,7 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
 
     formLayout->addRow(tr("Comment:"), m_commentEdit);
 
-    m_passwordEdit->setEchoMode(QLineEdit::Password);
-    connect(showBox, &QCheckBox::toggled, this, [this](bool on) {
-        m_passwordEdit->setEchoMode(on ? QLineEdit::Normal : QLineEdit::Password);
-    });
+    ui::wireRevealToggle(showBox, {m_passwordEdit});
 
     onResetClicked(); // populate fields from the entry
 

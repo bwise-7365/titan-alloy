@@ -36,6 +36,7 @@ construction.
 | MC1  | Select + design the specialized mixed-NCP algorithm (semismooth FB Newton, DFK/Munson line) | DONE 2026-07-06 — design below |
 | MC2  | Implement it: `semismoothnewton.{hpp,cpp}` + directional Armijo + tests | DONE, verified 2026-07-06 (cubic 14 iters FD-path; degenerate 11 vs ipm 18; mixed QP 2 iters, residual exactly 0 after the kink-indicator fix) |
 | MC3  | Big-affine exercise: `solver.engine = "ssn"` in solveFlowPlan + EngineSelectable row; ssn row joins the IP4b weekend benchmark; GAMS model (incoming) designated the big-NONLINEAR acceptance test | DONE, verified 2026-07-06 (four-engine EngineSelectable green) |
+| MC4  | Translate the two GAMS models (`alloceff01cm.gms`, `deploy_v07.gms`) into multi-engine test cases (`gams_alloceff_test`, `gams_deploy_test` + shared `test/mcpengines.hpp` rows harness) | alloceff GREEN 2026-07-06 (ssn 14 iters 182 ms; jn+ipm 2 outer 83 ms; both on the PATH equilibrium; projection rows threw guards as expected) and now GATED on converge + match the PATH equilibrium. deploy run pending; reference check for it deferred until its first run is confirmed |
 
 Order of work when resuming: Ben rates the MCP track (MC1/MC2) **the most
 important case**; it is independent of NS1-NS3 and of IP4b, so it can go
@@ -128,6 +129,83 @@ conditions for small lam.
    backtracked away from domain violations (SEMI's handling). At ACCEPTED
    points non-finite values still throw. This is a documented, deliberate
    softening of throw-never-substitute for trial steps only.
+
+### MC4: the GAMS acceptance tests (2026-07-06)
+
+Both models arrived (not one): `sheridan/alloceff/alloceff01cm.gms` (influence
+game, mixed NCP dim 87: free nfv/sigma/gamma intermediates + beta/eff
+complementarity) and `sheridan/deployment/deploy_v07.gms` (two-sided
+interdiction game with smooth ratio combat, dim 450: 4 free =e= multipliers +
+446 nonneg). Translated 1:1 into `test/gams_alloceff_test.cpp` and
+`test/gams_deploy_test.cpp`; each test file documents its GAMS -> VINCP
+variable/equation mapping in the header. `test/mcpengines.hpp` is the shared
+engine-rows harness (ssn / jn+bshe94b / jn+dhan06 / jn+ipm), so a problem
+drops in as data + a VIModel builder. Both problems are NONMONOTONE with
+multiple equilibria, so the gate is "at least one engine row converges"
+(saoe_test's any-of pattern); each row prints stats plus the GAMS output
+parameters (option probabilities / strategy probabilities and payoffs) for
+eyeball comparison with the verified GAMS listings.
+
+First run (Ben, 2026-07-06), alloceff: ssn 14 iters / 182 ms and jn+ipm
+2 outer / 16 inner / 83 ms both converged, and BOTH landed on the reference
+equilibrium (= saoe_test's E; Ben confirmed it is the one PATH reaches);
+jn+bshe94b and jn+dhan06 threw their divergence guards immediately (expected
+-- nonmonotone; notably this MCP formulation is harsher on the projection
+engines than the reduced saoe formulation, where bsHe94b reaches E). The
+alloceff gate was then UPGRADED per Ben: a row passes iff it converges AND
+matches the PATH equilibrium's prob/expVal (kRefProb / kRefExpVal, tol 2e-3 /
+5e-2), pinned at TWO passing rows (ssn and jn+ipm are the known-good pair).
+deploy_v07 keeps the convergence-only gate until a run identifies which
+equilibrium the engines reach.
+
+deploy_v07 first Release run (Ben, 2026-07-06, heartbeat on): NO engine
+converged -- the test is honestly RED and stands as the open acceptance
+challenge for the nonmonotone engine work. ssn cut residual^2 1.42e5 ->
+2.07e4 in 20 iterations and then stopped on a failed direction/line search
+(not a residual plateau; iterates had left the orthant). jn+ipm's first
+Josephy-Newton step reached residual^2 22.9, then froze at 19.62 for ~22
+outer iterations until the inner IPM threw "step length collapsed"
+(indefinite linearization). Proposed next-step menu (cheapest first): ssn
+nonmonotone memory 4 + FB restart ladder; multi-start; myEps continuation;
+PATH-style proximal wrapper (deferred). See the MCP design memory for detail.
+
+Menu item #1 IMPLEMENTED (2026-07-06, awaiting Ben's build+run -- CMake
+reload, one new test file): three SEMI-style ssn variant rows added to
+gams_deploy_test (ssn-m4 = nonmonotone memory 4; ssn-m4-lam95 = penalized FB
+at the 0.95 restart lambda; ssn-m4-fb = plain FB), built via the new
+makeSsnRow hook in mcpengines.hpp. ALSO: the cheap no-progress cutoff Ben
+asked for is now in the LIBRARY -- JosephyNewtonParams::stallIterMax /
+stallRelDecrease (default off; honest converged=false before the next
+Jacobian + inner solve), unit-tested in the new josephy_newton_test (frozen
+inner solver drives the stall deterministically, per the NS1 lesson);
+gams_deploy_test sets stallIterMax 5, so the jn+ipm row now stops in ~6 outer
+iterations instead of 27 s of frozen ones.
+
+Run 2 (Ben, 2026-07-06): josephy_newton_test GREEN; deploy still all-fail,
+but with sharp structure -- jn+ipm stalls at a FEASIBLE mixed-strategy point
+at residual^2 19.6 (natural norm ~4.4, three orders closer than any cold ssn
+row), ssn-m4 escaped the old iter-20 death (85 iters, plateau 1.22e4),
+ssn-m4-lam95 VISITED 8.2e3 then wandered up and died at 1.74e4 (solver
+returns last iterate, not best-visited -- improvement proposed, pending Ben),
+plain FB weakest (10 iters). Follow-up: (1) chain row "chain ipm->ssn-m4" --
+jn+ipm to its stall, ssn-m4 warm-started from that iterate; (2) report-only
+residual-breakdown check printing the worst natural-residual rows BY GAMS
+NAME (r_i = min(y_i, G_i) on orthant rows, H on free rows) with y/G values
+for every returned point.
+
+Run 3 (Ben, 2026-07-06): CHAIN CONFIRMED -- phase 2 descended 19.6 -> 0.68
+(52 iters), best of any engine by far; breakdown shows the remaining ~0.3
+violations clustered on the active pairs, led by NEGATIVE escort allocations
+(pole adjacency: the cause of the finisher's line-search death) plus
+stationarity violations and pr(RS5) wanting to enter. End point support
+pr {RS3, RS4}, pb {BS2, BS5}, payoffs 60.10 / 58.85 -- compare against the
+GAMS/PATH listing when a run converges. NEXT (built, awaiting run): the
+ALTERNATING chain "altchain ipm->ssn" -- rounds of {project onto K ->
+jn+ipm (stall) -> ssn-m4}, continue while a round halves the best residual,
+cap 5, return best-visited. Ben REQUIRES the chain logic documented in the
+final report; the complete write-up rationale (evidence, design decisions,
+precedents) is recorded in memory `project_visolver_altchain_writeup.md`,
+condensed in makeAlternatingChainRow's header comment.
 
 ## IP4a probe result (Release, seed 20260704, engine ipm, iterMax 200, maxCertificateRounds 1)
 

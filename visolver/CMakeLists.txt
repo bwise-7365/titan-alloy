@@ -116,6 +116,11 @@ vincp_add_gtest(ss_lcp_test)
 vincp_add_gtest(ss_ellipsoid_test)
 vincp_add_gtest(mehrotra_ipm_test)
 vincp_add_gtest(semismooth_newton_test)
+vincp_add_gtest(josephy_newton_test)
+# Translated GAMS MCP models (convergence-gated, multi-engine; see the test
+# headers for the .gms sources and the variable/equation mappings).
+vincp_add_gtest(gams_alloceff_test)
+vincp_add_gtest(gams_deploy_test)
 
 # Flow-planning network layer (network/plan.md): vincpnet library + its tests.
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).
@@ -127,10 +132,11 @@ add_subdirectory(network)
 # "run_all_tests" builds and runs the entire ctest suite.
 add_custom_target(run_engine_tests
     COMMAND ${CMAKE_CTEST_COMMAND}
-        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan"
+        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan|Gams"
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS semismooth_newton_test mehrotra_ipm_test han_vs_he_test flowplan_test
+            gams_alloceff_test gams_deploy_test
     USES_TERMINAL
 )
 add_custom_target(run_all_tests
@@ -139,7 +145,8 @@ add_custom_target(run_all_tests
     DEPENDS lcp_random_test lcp_psd_test lm_test han_vs_he_test saoe_test
             ellipsoid_projector_test lvi_ellipsoid_test damped_newton_test
             smoothing_newton_test ss_lcp_test ss_ellipsoid_test
-            mehrotra_ipm_test semismooth_newton_test
+            mehrotra_ipm_test semismooth_newton_test josephy_newton_test
+            gams_alloceff_test gams_deploy_test
             network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL
 )

@@ -8,6 +8,7 @@
 #include "fdjacobian.hpp"
 
 #include <cstdio>
+#include <limits>
 #include <stdexcept>
 
 namespace VINCP {
@@ -115,6 +116,12 @@ namespace VINCP {
     if (!innerSolver) {
       throw std::invalid_argument("solveVI: innerSolver must be set.");
     }
+    if (0 > params.stallIterMax) {
+      throw std::invalid_argument("solveVI: stallIterMax must be non-negative.");
+    }
+    if (0.0 > params.stallRelDecrease || 1.0 <= params.stallRelDecrease) {
+      throw std::invalid_argument("solveVI: stallRelDecrease must lie in [0, 1).");
+    }
 
     // K enters only through its projector; default to the mixed free/non-negative
     // set matching the model's (x, y) split when the caller supplies none.
@@ -130,6 +137,8 @@ namespace VINCP {
     int iter = 0;
     int innerIters = 0;
     bool converged = false;
+    double bestResidual = std::numeric_limits<double>::infinity();
+    int stallCount = 0;
 
     while (true) {
       const VectorXd Fz = evaluateF(model, z);
@@ -148,6 +157,24 @@ namespace VINCP {
       }
       if (iter >= params.outerIterMax) {
         break;
+      }
+
+      // No-progress cutoff (see JosephyNewtonParams::stallIterMax): break out
+      // honestly, BEFORE spending another Jacobian + inner solve, once too many
+      // consecutive iterations have failed to improve the best residual.
+      if (0 < params.stallIterMax) {
+        if (residual <= (1.0 - params.stallRelDecrease) * bestResidual) {
+          stallCount = 0;
+        }
+        else {
+          ++stallCount;
+          if (stallCount >= params.stallIterMax) {
+            break;
+          }
+        }
+      }
+      if (residual < bestResidual) {
+        bestResidual = residual;
       }
 
       // Linearize: M = J(z), q = F(z) - J(z) z.

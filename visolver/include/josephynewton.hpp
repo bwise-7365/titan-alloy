@@ -94,6 +94,19 @@ namespace VINCP {
     // Central-difference Jacobian relative step (<= 0 => default eps^(1/5)).
     double fdStepRel = -1.0;
 
+    // Cheap no-progress cutoff: stop honestly (converged = false) after this
+    // many CONSECUTIVE outer iterations in which the residual fails to improve
+    // the best value seen so far by at least the relative factor
+    // stallRelDecrease (progress means residual <= (1 - stallRelDecrease) *
+    // bestResidual). 0 disables the guard (historical behavior). Motivation:
+    // on a nonmonotone problem every linearized step can be rejected by the
+    // Armijo damping, and without this guard the loop burns outerIterMax
+    // expensive inner solves at a frozen residual (observed on the deploy_v07
+    // GAMS model, 2026-07-06). stallIterMax must be non-negative and
+    // stallRelDecrease must lie in [0, 1); std::invalid_argument otherwise.
+    int    stallIterMax     = 0;
+    double stallRelDecrease = 1.0e-3;
+
     // Armijo damping of the outer (Josephy-Newton) step on the natural-map
     // merit, to prevent overshoot near the non-smooth solution.
     ArmijoParams armijo = ArmijoParams{};
@@ -112,7 +125,9 @@ namespace VINCP {
   // The merit is the natural residual r(z) = z - Pi_K(z - F(z)); the loop stops when
   // ||r(z)||^2 < outerTol.  Returns the shared VIResult: its 'residual' is that
   // squared natural residual and 'converged' is true iff it fell below outerTol
-  // within outerIterMax steps (no error thrown).
+  // within outerIterMax steps (no error thrown). A run cut off by the
+  // no-progress guard (stallIterMax above) likewise returns honestly with
+  // converged = false at the stalled iterate.
   //
   // K enters only through 'projector' (Pi_K), used both for the merit and by the
   // inner solver. If left empty it defaults to makeMixedProjector(model.n) -- the

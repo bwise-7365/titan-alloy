@@ -26,6 +26,7 @@
 #include "PasswordStore.h"
 #include "PreferencesDialog.h"
 #include "UiMetrics.h"
+#include "UiTheme.h"
 #include "ViewSiteEntry.h"
 
 namespace {
@@ -105,8 +106,11 @@ void MainWindow::setupMenus() {
 
 void MainWindow::setupCentralWidget() {
     auto* container = new QWidget(this);
+    // Named so the theme's frame color reaches the window body: a plain child
+    // QWidget would otherwise repaint over the styled QMainWindow background.
+    container->setObjectName(ui::Theme::centralObjectName);
     auto* mainLayout = new QVBoxLayout(container);
-    mainLayout->setContentsMargins(ui::kMargin, ui::kMargin, ui::kMargin, ui::kMargin);
+    mainLayout->setContentsMargins(ui::snugMargins());
     mainLayout->setSpacing(ui::kSpacing);
 
     m_list = new QListWidget(this);
