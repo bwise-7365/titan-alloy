@@ -613,10 +613,24 @@ Reusable pieces beneath the engines, each independently tested:
 \label{sec:choosing}
 
 Table~\ref{tab:engine-choice} compresses the catalog into the questions that
-actually decide. A programmatic \code{chooseEngine} dispatcher over these
-same inputs (dimension, free-block size, PSD-ness, warm-start availability,
-degeneracy proxies) is planned but not yet built; today the decision is the
-caller's.
+actually decide --- and the library also mechanizes it
+(\code{chooseengine.hpp}). Three layers, separately usable:
+\code{probeMonotone(M)} decides ``is $\mathrm{sym}(M)$ PSD?'' with a single
+shifted Cholesky attempt rather than an eigensolve; the \emph{pure} function
+\code{chooseEngine(ProblemTraits)} encodes the table over
+$\{$dimension, \code{numFree}, affine?, orthant $K$?, monotone?, warm
+start?$\}$, deterministic and unit-tested rule by rule; and two executors
+run the choice --- \code{solveAffineAuto} (probe, pick
+IPM/\code{bsHe94b}/chain, run; structured Newton factories pass through to
+the IPM path) and \code{solveModelAuto} (semismooth first; on an honest
+stall or a runtime guard, fall back to the alternating chain --- the
+empirical policy of Chapter~\ref{ch:testing}). Every choice and fallback is
+announced through a \code{ChoiceLogger} hook, never taken silently. Two
+deliberate design points: there is no degeneracy proxy, because the IPM is
+already the choice for every monotone cold start and
+degeneracy-insensitivity is exactly why; and warm-start status is a
+\emph{declared} flag, since only the caller can know whether its start is a
+previous solution.
 
 \begin{table}[htbp]
 \centering

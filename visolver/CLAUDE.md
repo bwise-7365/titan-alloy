@@ -96,6 +96,14 @@ Two solver layers over one shared core; the dependency arrows point one way
     the deploy_v07 GAMS game — see `test/gams_deploy_test.cpp`). Stage solvers
     are seams (`StageSolver`); a stage that throws is a stalled stage, not a
     chain failure. The header carries the full rationale.
+  - `chooseEngine` (`include/chooseengine.hpp`) — the dispatcher:
+    `probeMonotone` (one Cholesky attempt on sym(M) + shift, not an
+    eigensolve), the PURE decision function `chooseEngine(ProblemTraits)`
+    encoding the evidence-backed selection table, and two executors —
+    `solveAffineAuto` (orthant mixed LCP: probe, pick ipm/bshe94b/chain, run)
+    and `solveModelAuto` (mixed NCP: semismooth first; on an honest stall or
+    a runtime guard, fall back to the alternating chain). Choices surface
+    through the `ChoiceLogger` hook, never silently.
 
 - **Outer driver (`include/josephynewton.hpp`, `lib/josephynewton.cpp`)** —
   `solveVI`, a Josephy-Newton loop for the nonlinear VI. Each step linearizes `F`
