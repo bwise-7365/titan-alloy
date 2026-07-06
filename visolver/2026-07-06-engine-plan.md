@@ -34,7 +34,8 @@ construction.
 | NS2  | `makeFlowNewtonFactory`: per-sink Sherman-Morrison + dual Schur (SPD, LLT) + parity tests vs dense | TODO (~half-full day; algebra machine-verified, transcribe do not re-derive) |
 | NS3  | Keep-all / no-screen 200-banded run; compare vs screened path and greedy+swap; addendum | TODO |
 | MC1  | Select + design the specialized mixed-NCP algorithm (semismooth FB Newton, DFK/Munson line) | DONE 2026-07-06 — design below |
-| MC2  | Implement it: `semismoothnewton.{hpp,cpp}` + directional Armijo + tests | IN PROGRESS |
+| MC2  | Implement it: `semismoothnewton.{hpp,cpp}` + directional Armijo + tests | DONE, verified 2026-07-06 (cubic 14 iters FD-path; degenerate 11 vs ipm 18; mixed QP 2 iters, residual exactly 0 after the kink-indicator fix) |
+| MC3  | Big-affine exercise: `solver.engine = "ssn"` in solveFlowPlan + EngineSelectable row; ssn row joins the IP4b weekend benchmark; GAMS model (incoming) designated the big-NONLINEAR acceptance test | DONE, verified 2026-07-06 (four-engine EngineSelectable green) |
 
 Order of work when resuming: Ben rates the MCP track (MC1/MC2) **the most
 important case**; it is independent of NS1-NS3 and of IP4b, so it can go
@@ -148,9 +149,11 @@ Planned for next weekend, when hours (possibly days) of benchmark time are
 available; can be driven by an Opus session. Steps:
 
 1. Bounded probes (`benchmark.instances = 1`, `screen.maxCertificateRounds
-   = 1`) for `solver.engine = chain` and `= bshe94b`, `solver.iterMax =
-   150000`. Recipe: copy `network/benchmark-example.cfg` and edit those
-   keys. Expect up to hours each (the round-1 dim ~10.8k grind is the datum).
+   = 1`) for `solver.engine = chain` and `= bshe94b` (`solver.iterMax =
+   150000`), plus `= ssn` (`solver.iterMax = 200`; MC3's big-affine datum
+   beside ipm's 35-iteration result). Recipe: copy
+   `network/benchmark-example.cfg` and edit those keys. Expect up to hours
+   each (the round-1 dim ~10.8k grind is the datum).
 2. Decide whether full 3-instance sweeps add anything beyond the bounded
    probes.
 3. IP4c: write the performance.md addendum (P6/P7) comparing ipm / chain /

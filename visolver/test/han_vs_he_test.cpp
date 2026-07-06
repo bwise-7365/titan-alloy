@@ -2,6 +2,7 @@
 #include "dhan06.hpp"
 #include "bshe94b.hpp"
 #include "mehrotraipm.hpp"
+#include "semismoothnewton.hpp"
 #include "josephynewton.hpp"
 #include "utils.hpp"
 #include "testsupport.hpp"
@@ -24,6 +25,9 @@ using namespace VINCP;
 // The Mehrotra interior-point engine (mehrotraIpm) runs as a third row on both
 // problems: directly on the LCP, and through the same seam on the VI via
 // makeMehrotraIpmSolver (numFree = model.n matches the default mixed projector).
+// The semismooth Newton solver (semismoothNewtonSolve) runs as a fourth row --
+// it is a DIRECT mixed-NCP solver taking the VIModel itself, so on the cubic VI
+// it needs no Josephy-Newton wrapper at all.
 // Both problems are constructed with a known solution; the test requires EVERY
 // solver to recover it on BOTH problems. The two problems share ONE RNG stream in
 // sequence (problem 1's draws, then problem 2's), so they live in a single suite:
@@ -62,9 +66,15 @@ TEST(HanVsHe, BothSolversRecoverBothProblems) {
         const SolveFn han = [&](const VectorXd& z){ return dHan06(z, M, q, projectNonnegative, kMagTol, kIterMax, 0); };
         const SolveFn he  = [&](const VectorXd& z){ return bsHe94b(z, M, q, projectNonnegative, kMagTol, kIterMax, 0); };
         const SolveFn ipm = [&](const VectorXd&){ return mehrotraIpm(M, q, 0, kMagTol, kIterMax, 0); };
+        const VIModel lcpModel = makeVIModel(0, N, [&](const VectorXd& z) -> VectorXd { return M * z + q; });
+        SemismoothNewtonParams ssnParams;
+        ssnParams.magTol = kMagTol;
+        ssnParams.jacobian = [&](const VectorXd&) -> MatrixXd { return M; };
+        const SolveFn ssn = [&](const VectorXd& start){ return semismoothNewtonSolve(lcpModel, start, ssnParams); };
         { SCOPED_TRACE("dHan06 (LCP)");  expectSolvePasses(han, x0, { checkCloseToKnown(zSol, kSolTol) }); }
         { SCOPED_TRACE("bsHe94b (LCP)"); expectSolvePasses(he,  x0, { checkCloseToKnown(zSol, kSolTol) }); }
         { SCOPED_TRACE("mehrotraIpm (LCP)"); expectSolvePasses(ipm, x0, { checkCloseToKnown(zSol, kSolTol) }); }
+        { SCOPED_TRACE("semismoothNewton (LCP)"); expectSolvePasses(ssn, x0, { checkCloseToKnown(zSol, kSolTol) }); }
     }
 
     // ---- (2) PSD nonlinear VI: cubic gradient map through the JN outer loop ----
@@ -109,9 +119,14 @@ TEST(HanVsHe, BothSolversRecoverBothProblems) {
     const SolveFn han = [&](const VectorXd& start){ return solveVI(model, start, innerHan, params); };
     const SolveFn he  = [&](const VectorXd& start){ return solveVI(model, start, innerHe,  params); };
     const SolveFn ipm = [&](const VectorXd& start){ return solveVI(model, start, innerIpm, params); };
+    // The semismooth row solves the NONLINEAR model directly -- no outer loop.
+    SemismoothNewtonParams ssnParams;
+    ssnParams.magTol = kMagTol;
+    const SolveFn ssn = [&](const VectorXd& start){ return semismoothNewtonSolve(model, start, ssnParams); };
     { SCOPED_TRACE("dHan06 (cubic VI)");  expectSolvePasses(han, z0, { checkCloseToKnown(zStar, kSolTol) }); }
     { SCOPED_TRACE("bsHe94b (cubic VI)"); expectSolvePasses(he,  z0, { checkCloseToKnown(zStar, kSolTol) }); }
     { SCOPED_TRACE("mehrotraIpm (cubic VI)"); expectSolvePasses(ipm, z0, { checkCloseToKnown(zStar, kSolTol) }); }
+    { SCOPED_TRACE("semismoothNewton (cubic VI)"); expectSolvePasses(ssn, z0, { checkCloseToKnown(zStar, kSolTol) }); }
     }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

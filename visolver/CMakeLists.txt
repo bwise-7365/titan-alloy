@@ -32,6 +32,7 @@ add_library(vincp STATIC
         lib/solodovsvaiter.cpp
         lib/chainedsolver.cpp
         lib/mehrotraipm.cpp
+        lib/semismoothnewton.cpp
         lib/ellipsoidprojector.cpp
         lib/dampednewton.cpp
         lib/smoothingnewton.cpp
@@ -114,10 +115,34 @@ vincp_add_gtest(smoothing_newton_test)
 vincp_add_gtest(ss_lcp_test)
 vincp_add_gtest(ss_ellipsoid_test)
 vincp_add_gtest(mehrotra_ipm_test)
+vincp_add_gtest(semismooth_newton_test)
 
 # Flow-planning network layer (network/plan.md): vincpnet library + its tests.
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).
 add_subdirectory(network)
+
+# CLion-friendly aggregates (the pattern of network/CMakeLists' run_network_tests).
+# "run_engine_tests" builds and runs the suites the MC2/MC3 engine work touches
+# (semismooth + IPM + the four-row comparison + the network engine switch);
+# "run_all_tests" builds and runs the entire ctest suite.
+add_custom_target(run_engine_tests
+    COMMAND ${CMAKE_CTEST_COMMAND}
+        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan"
+        --output-on-failure -C $<CONFIG>
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    DEPENDS semismooth_newton_test mehrotra_ipm_test han_vs_he_test flowplan_test
+    USES_TERMINAL
+)
+add_custom_target(run_all_tests
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIG>
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    DEPENDS lcp_random_test lcp_psd_test lm_test han_vs_he_test saoe_test
+            ellipsoid_projector_test lvi_ellipsoid_test damped_newton_test
+            smoothing_newton_test ss_lcp_test ss_ellipsoid_test
+            mehrotra_ipm_test semismooth_newton_test
+            network_tests lvi_demo lvi_vi_demo
+    USES_TERMINAL
+)
 
 # The two demo binaries are still run as plain smoke tests (exit 0 == pass); they
 # are not GoogleTest suites.

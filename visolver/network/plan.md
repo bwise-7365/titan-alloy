@@ -529,5 +529,29 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   PASS, 2026-07-06). **Plan of record / status board:
   `../2026-07-06-engine-plan.md`** (repo root), created so the gate table is
   visible beside the working dialog.
+- 2026-07-06: MCP track (Ben: the mixed NONLINEAR complementarity problem is
+  the most important case). MC1 done: confirmation literature pass verified
+  DFK/SEMI semismooth Newton + PENALIZED Fischer-Burmeister (Chen-Chen-Kanzow,
+  lambda 0.8 default) as the choice; design in the status board; 19 cited
+  papers archived under `../doc/` (left untracked like the existing PDFs).
+  MC2 code done: ROOT-library `semismoothnewton.{hpp,cpp}` — direct solver
+  for H = 0, 0 <= G _|_ y >= 0 over R^n x R_+^m (VIModel in, VIResult out;
+  K compiled into Phi = [H; phi(y, G)]; swappable NcpFunctionPair + JacobianFn
+  seams; Newton -> LM -> gradient ladder; directional Armijo w/ optional
+  nonmonotone memory; natural-residual stop). `armijoLineSearchDirectional`
+  added to armijo (gradient-form test; Ben-approved API addition). Tests:
+  semismooth_newton_test (5 cases) + a fourth solver row in han_vs_he_test.
+  AWAITING Ben's build+run (CMake reload needed).
+- 2026-07-06: MC2 gate-verified by Ben (cubic 14 iters; degenerate affine 11
+  vs ipm's 18; mixed QP 2 iters with residual exactly 0). One bug found by
+  the mixed-QP test and fixed: the CCK kink-indicator vector lives in the
+  FULL z-space (ones at n+i), not y-space — pure-LCP tests (n = 0) cannot
+  catch that mistake. MC3 added at Ben's request (the semismooth engine had
+  NO big-problem exercise): `solver.engine = "ssn"` dispatch in solveFlowPlan
+  (flow LCP wrapped as a pure-NCP VIModel with its exact constant Jacobian;
+  iterMax counts LU factorizations — low hundreds) + EngineSelectable ssn
+  block; an ssn row joins the deferred IP4b weekend benchmark; the incoming
+  reformulated GAMS model is designated the big-NONLINEAR acceptance test.
+  MC3 code awaiting Ben's run (plain rebuild).
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

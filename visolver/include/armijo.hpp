@@ -44,6 +44,24 @@ namespace VINCP {
                                 double merit0,
                                 const ArmijoParams& params = ArmijoParams{});
 
+  // Backtracking line search using the gradient-form (directional) Armijo test
+  //     phi(alpha) <= merit0 + c * alpha * slope0,
+  // the classical sufficient-decrease condition for a descent direction whose
+  // directional derivative at alpha = 0 is slope0 < 0 (e.g. grad(Psi) . d).
+  // Use this form when the slope is available -- the semismooth-Newton
+  // convergence theory (De Luca-Facchinei-Kanzow) is stated for exactly this
+  // test. 'merit0' is the BASELINE value: pass the current merit for a
+  // monotone search, or the max of the last few accepted merits for a
+  // nonmonotone one. Failure semantics match armijoLineSearch: the best
+  // (lowest-merit) alpha tried is returned with accepted = false.
+  //
+  // Throws std::invalid_argument on an unset meritAt, out-of-range parameters,
+  // or a non-negative slope0 (not a descent direction).
+  ArmijoResult armijoLineSearchDirectional(const function<double(double)>& meritAt,
+                                           double merit0,
+                                           double slope0,
+                                           const ArmijoParams& params = ArmijoParams{});
+
 } // namespace VINCP
 
 #endif // VINCP_ARMIJO_HPP

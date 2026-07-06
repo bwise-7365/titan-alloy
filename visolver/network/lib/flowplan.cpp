@@ -9,6 +9,7 @@
 #include "bshe94b.hpp"
 #include "chainedsolver.hpp"
 #include "mehrotraipm.hpp"
+#include "semismoothnewton.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -25,9 +26,9 @@ namespace VINCP::Network {
             "solveFlowPlan: magTol must be positive and iterMax > 0.");
       }
       if ("bshe94b" != params.engine && "chain" != params.engine
-          && "ipm" != params.engine) {
+          && "ipm" != params.engine && "ssn" != params.engine) {
         throw std::invalid_argument(
-            "solveFlowPlan: engine must be 'bshe94b', 'chain', or 'ipm', not '"
+            "solveFlowPlan: engine must be 'bshe94b', 'chain', 'ipm', or 'ssn', not '"
             + params.engine + "'.");
       }
       if (!(0.0 < params.roughMagTol) || 0 >= params.roughIterMax) {
@@ -154,6 +155,19 @@ namespace VINCP::Network {
         // free block), so numFree = 0; the engine ignores z0 by design.
         result.vi = mehrotraIpm(lcp.M, lcp.q, 0, params.magTol,
                                 params.iterMax, params.iterFreq);
+      }
+      else if ("ssn" == params.engine) {
+        // Same system as a pure-NCP VIModel with its exact constant
+        // Jacobian; like "ipm", each iteration is one factorization.
+        const VIModel lcpModel = makeVIModel(
+            0, lcp.M.rows(),
+            [&lcp](const VectorXd& v) -> VectorXd { return lcp.M * v + lcp.q; });
+        SemismoothNewtonParams ssnParams;
+        ssnParams.magTol = params.magTol;
+        ssnParams.iterMax = params.iterMax;
+        ssnParams.iterFreq = params.iterFreq;
+        ssnParams.jacobian = [&lcp](const VectorXd&) -> MatrixXd { return lcp.M; };
+        result.vi = semismoothNewtonSolve(lcpModel, z0, ssnParams);
       }
       else {
         result.vi = bsHe94b(z0, lcp.M, lcp.q, projectNonnegative,

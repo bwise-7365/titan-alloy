@@ -31,6 +31,11 @@ namespace VINCP::Network {
     //              the Newton matrix -- under this engine iterMax counts LU
     //              factorizations, so set it in the low hundreds, not the
     //              projection engines' hundreds of thousands.
+    //   "ssn"      semismoothNewtonSolve on the same system wrapped as a
+    //              pure-NCP VIModel with its exact (constant) Jacobian: the
+    //              semismooth engine's large-affine exercise (gate MC3).
+    //              Like "ipm", every iteration is one factorization, so
+    //              iterMax counts LU factorizations -- low hundreds.
     string engine = "bshe94b";
     double roughMagTol = 1.0e-4;   // chain phase-1 squared-residual target
     int roughIterMax = 20000;      // chain phase-1 iteration cap
