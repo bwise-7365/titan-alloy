@@ -1,8 +1,8 @@
 % Copyright Ben Paul Wise. All Rights Reserved.
 % ----------------------------------------------
-% Part II -- Developer manual / API. First-drafted part (it pins terminology).
-% Sources: the headers under include/ (each engine's contract comment is the
-% authoritative statement), CLAUDE.md, CMakeLists.txt.
+% Part II -- Developer manual / API. First-drafted part (it fixes the
+% terminology). Sources: the headers under include/ (each engine's contract
+% comment is the authoritative statement), CLAUDE.md, CMakeLists.txt.
 % ----------------------------------------------
 \chapter{Developer Manual}
 \label{ch:manual}
@@ -10,9 +10,9 @@
 This chapter is written for an engineer who wants to \emph{use} the library
 (pose a problem, pick an engine, interpret the result) or \emph{extend} it
 (add an engine, an NCP function, or a structured linear solver). It fixes the
-vocabulary the rest of the report uses. Everything lives in the namespace
+vocabulary the rest of the report uses. All code resides in the namespace
 \code{VINCP}; all mathematical statements are deferred to
-Chapter~\ref{ch:math} --- here they appear only as far as an API contract
+Chapter~\ref{ch:math}, and appear here only as far as an API contract
 needs them.
 
 \section{Getting started}
@@ -33,11 +33,11 @@ ctest --test-dir build --output-on-failure
 \end{lstlisting}
 
 Tests are GoogleTest suites, fetched at configure time by CMake
-\code{FetchContent} at a pinned release tag and compiled by the same
+\code{FetchContent} at a fixed release tag and compiled by the same
 toolchain with the same flags (on MSVC, \code{gtest\_force\_shared\_crt} is
 forced on to match the dynamic CRT). A single suite runs by ctest name
 (\code{ctest -R lcp\_psd\_test}) or directly as an executable. Three
-aggregate custom targets run groups during the \emph{build} step ---
+aggregate custom targets run groups during the \emph{build} step:
 \code{run\_all\_tests}, \code{run\_engine\_tests}, and
 \code{run\_network\_tests}; in an IDE they are \emph{built}, not run (a
 custom target has no executable of its own).
@@ -50,15 +50,15 @@ The directory layout, in dependency order (arrows point one way, no cycles):
 \code{include/}, \code{lib/} & the core library \code{vincp}: types, engines, drivers \\
 \code{network/}              & the flow-planning layer \code{vincpnet} (Section~\ref{sec:network}) \\
 \code{test/}                 & GoogleTest suites for the core library \\
-\code{src/}                  & runnable demos (printout, not pass/fail gates) \\
+\code{src/}                  & runnable demos (printout, not pass/fail checks) \\
 \code{doc/}                  & papers (local copies), design notes, this report \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 The library target is built with \code{/W4} (MSVC) or \code{-Wall -Wextra}
-elsewhere, and warnings are treated as errors in spirit; Eigen's headers are
-included as \code{SYSTEM} and exempt.
+elsewhere, and the working convention is that the build stays free of
+warnings; Eigen's headers are included as \code{SYSTEM} and exempt.
 
 \section{Core types}
 \label{sec:core-types}
@@ -115,25 +115,25 @@ struct VIResult {
 Two contract points deserve emphasis because they are easy to get wrong:
 
 \begin{itemize}
-\item \textbf{\code{residual} is the squared Euclidean norm of the
-  \emph{natural residual}} --- the standard defect vector of
-  complementarity theory, which is zero exactly at solutions. On our $K$ it
-  reads componentwise: $H(x,y)$ on the free rows and $\min(y_i, G_i)$ on
-  the nonnegative rows, so it measures equation violation, infeasibility,
-  and non-complementarity in one vector (the formal projection form and
-  its properties are Section~\ref{sec:a-problem}). Every tolerance in the
-  library (\code{magTol}, \code{outerTol}, \ldots) is likewise a
-  \emph{squared} norm --- a deliberate, library-wide convention
+\item \code{residual} is the squared Euclidean norm of the \emph{natural
+  residual}: the standard defect vector of complementarity theory, which is
+  zero exactly at solutions. On our $K$ it reads componentwise, $H(x,y)$ on
+  the free rows and $\min(y_i, G_i)$ on the nonnegative rows, so it measures
+  equation violation, infeasibility, and non-complementarity in one vector
+  (the formal projection form and its properties are
+  Section~\ref{sec:a-problem}). Every tolerance in the library
+  (\code{magTol}, \code{outerTol}, \ldots) is likewise a \emph{squared}
+  norm, a deliberate, library-wide convention
   (Section~\ref{sec:contracts}).
-\item \textbf{\code{converged = false} is an honest answer, not an error.}
-  A solver that stalls --- a failed line search, a vanishing merit gradient,
-  a collapsed interior-point step length, the Josephy--Newton no-progress
+\item \code{converged = false} is a defined outcome, not an error. A solver
+  that stalls --- on a failed line search, a vanishing merit gradient, a
+  collapsed interior-point step length, or the Josephy--Newton no-progress
   cutoff --- returns its iterate with \code{converged = false} rather than
   throwing. Two solvers additionally guarantee \emph{which} iterate:
   \code{semismoothNewtonSolve} and \code{alternatingChainSolve} return the
-  \emph{best point visited} (in the natural-residual sense), not the last
-  one, because their nonmonotone strategies may deliberately move above the
-  best before stalling.
+  best point visited (in the natural-residual sense), not the last one,
+  because their nonmonotone strategies may deliberately move above the best
+  before stalling.
 \end{itemize}
 
 What \code{iter} counts differs by engine (an iteration of \code{bsHe94b} is
@@ -157,11 +157,11 @@ the Euclidean projection of $v$ onto $K$. Ready-made:
 \item \code{makeEllipsoidProjector(radii, tol, iterMax)}
   (\code{ellipsoidprojector.hpp}) --- onto an axis-aligned solid ellipsoid,
   by a bracketed root-find on the KKT multiplier. It exists both for its own
-  sake and as the standing proof that the projection engines really are
-  generic in $K$.
+  use and as a working demonstration that the projection engines are generic
+  in $K$.
 \end{itemize}
 
-Not every engine honors an arbitrary $K$: the interior-point method and the
+Not every engine accepts an arbitrary $K$: the interior-point method and the
 semismooth Newton solver compile the mixed structure
 $\K$ into their algebra and take \code{numFree} (or the \code{VIModel})
 instead of a \code{Projector}. Each engine's subsection states which
@@ -175,10 +175,10 @@ double magTol)>}, called every \code{iterFreq} iterations (\code{iterFreq}
 $\le 0$ disables logging; an empty logger is never called). The
 Josephy--Newton driver's \code{OuterLogger} and the alternating chain's
 \code{ChainStageLogger} follow the same opt-in pattern at their own
-granularities. Loggers are the intended observability seam: production runs
-stay silent, a long diagnostic run attaches a flushed per-iteration
-heartbeat (a lesson recorded in Chapter~\ref{ch:testing}: under a piped test
-runner, unflushed output from a killed run is simply lost).
+granularities. Loggers are the intended instrumentation mechanism:
+production runs stay silent, and a long diagnostic run attaches a flushed
+per-iteration heartbeat (a lesson recorded in Chapter~\ref{ch:testing}:
+under a piped test runner, unflushed output from a killed run is lost).
 
 \section{Library-wide contracts}
 \label{sec:contracts}
@@ -190,15 +190,15 @@ is expected to preserve them.
 \emph{squared} Euclidean norm ($\code{dot(e,e)}$, never $\code{norm(e)}$).
 The convention matches the Octave reference implementations the library
 descends from and the tolerances validated against them; because it is
-uniform, cross-engine comparisons (and this report's tables) are
-apples-to-apples. Do not ``fix'' a squared residual to a plain norm ---
-halving the exponent of every published tolerance would silently change
-every acceptance gate.
+uniform, cross-engine comparisons (and this report's tables) are directly
+comparable. Do not convert a squared residual to a plain norm: halving the
+exponent of every published tolerance would silently change every
+acceptance test.
 
 \paragraph{Bad values throw; stalls return.} The library never silently
 substitutes a result. The dividing line:
 \begin{itemize}
-\item A \emph{bad value} --- NaN residual, divergence past the guard
+\item A \emph{bad value} --- a NaN residual, divergence past the guard
   ($\code{mag} \ge 1 + \code{divergenceFactor} \cdot \code{initialMag}$), a
   non-finite linear solve, an inconsistent Jacobian shape --- throws
   \code{std::runtime\_error}. Caller mistakes (dimension mismatches,
@@ -206,24 +206,26 @@ substitutes a result. The dividing line:
   \code{std::invalid\_argument}, validated up front.
 \item A \emph{stall} --- no descent direction, a failed line search, an
   interior-point step length below \code{stallStep}, the Josephy--Newton
-  no-progress cutoff --- is an honest outcome at a real iterate: the solver
-  returns it with \code{converged = false}. The distinction is not
-  cosmetic: engine \emph{compositions} (Section~\ref{sec:altchain}) treat a
-  stalled stage as ``switch strategy'' rather than ``abort,'' and a throw
-  where a stall belongs forces every wrapper to catch and second-guess it.
+  no-progress cutoff --- is a legitimate outcome at a real iterate: the
+  solver returns it with \code{converged = false}. The distinction has
+  practical consequences: engine \emph{compositions}
+  (Section~\ref{sec:altchain}) treat a stalled stage as ``switch strategy''
+  rather than ``abort,'' and a throw where a stall belongs forces every
+  wrapper to catch and second-guess it.
 \end{itemize}
 
-\paragraph{One result type, one convention per seam.} Every solver returns
-\code{VIResult}; every swappable component is a \code{std::function} seam
-with a documented contract (\code{Projector}, \code{InnerSolver},
-\code{NewtonSolverFactory}, \code{NcpFunctionPair}, \code{JacobianFn},
-\code{StageSolver}). Seams are preferred over boolean flags wherever a third
+\paragraph{One result type, one convention per extension point.} Every
+solver returns \code{VIResult}; every swappable component is a
+\code{std::function} extension point with a documented contract
+(\code{Projector}, \code{InnerSolver}, \code{NewtonSolverFactory},
+\code{NcpFunctionPair}, \code{JacobianFn}, \code{StageSolver}). An
+extension point is preferred over a boolean flag wherever a third
 implementation is plausible.
 
 \section{Engine catalog}
 \label{sec:engines}
 
-The library deliberately offers a \emph{menu} of engines rather than one
+The library deliberately offers a catalog of engines rather than one
 universal algorithm; Chapter~\ref{ch:testing} documents, on real problems,
 why no single entry suffices. Engines divide into three groups by the
 problem form they accept:
@@ -253,49 +255,51 @@ when to choose it.
 \label{sec:dhan06}
 
 Han's 2006 self-adaptive projection method for the linear VI over any
-projector-defined $K$. Convergence theory requires \emph{monotone} $F$ ---
+projector-defined $K$. Convergence theory requires \emph{monotone} $F$:
 for affine problems, $M$ positive semidefinite, the mathematically
 well-behaved class to which the optimality systems of convex programs
-belong (definitions in Section~\ref{sec:a-problem}). Each iteration factors $(I + \beta_k M)$ with a
-self-adaptive $\beta_k$; \code{DHan06Params} exposes the relaxation factor
-\code{gamma} $\in (0,2)$ (default 1.6), Han's constant \code{mu} (1.05), the
-initial \code{beta0}, the $\tau$-schedule (\code{tau0}, \code{tauN}), the
-divergence guard, and the diagnostic switch \code{adaptBeta}.
+belong (definitions in Section~\ref{sec:a-problem}). Each iteration factors
+$(I + \beta_k M)$ with a self-adaptive $\beta_k$; \code{DHan06Params}
+exposes the relaxation factor \code{gamma} $\in (0,2)$ (default 1.6), Han's
+constant \code{mu} (1.05), the initial \code{beta0}, the $\tau$-schedule
+(\code{tau0}, \code{tauN}), the divergence guard, and the diagnostic switch
+\code{adaptBeta}.
 
 Two practical notes. First, \code{beta0 = 1.0} (the default, a deliberate
 departure from the Octave source's $0.5$) makes the \emph{first} step's
-metric $(I + \beta_0 M) = (M + I)$ --- exactly \code{bsHe94b}'s
-proven-contractive metric --- so the method starts stably even when a
+metric $(I + \beta_0 M) = (M + I)$, which is exactly \code{bsHe94b}'s
+proven-contractive metric, so the method starts stably even when a
 linearization is indefinite and adapts from there. Second, because $\beta_k$
-changes, the factorization is redone \emph{every iteration}: on equal
-iteration counts \code{dHan06} has been observed an order of magnitude
-slower in wall time than \code{bsHe94b}. With \code{adaptBeta = false} the
-method \emph{is} \code{bsHe94b}, which isolates the self-adaptive rule for
+changes, the factorization is redone every iteration: on equal iteration
+counts \code{dHan06} has been observed an order of magnitude slower in wall
+time than \code{bsHe94b}. With \code{adaptBeta = false} the method is
+identical to \code{bsHe94b}, which isolates the self-adaptive rule for
 A/B comparison.
 
-\emph{Choose it} when the self-adaptive metric earns its cost --- in
-practice, rarely; it is the reference implementation of its paper and the
-comparison baseline.
+\emph{Choose it} when the self-adaptive metric justifies its
+refactorization cost; in practice this is rare, and the engine serves
+mainly as the reference implementation of its paper and as the comparison
+baseline.
 
 \subsection{\code{bsHe94b} --- fixed-metric projection-contraction}
 \label{sec:bshe94b}
 
 He's 1994 projection-contraction method (the paper's equation~16 search
-direction) for the linear VI over any $K$. It factors $(M + I)$ \emph{once}
+direction) for the linear VI over any $K$. It factors $(M + I)$ once
 and reuses the factorization every iteration, so the per-iteration cost is
 one back-substitution plus projections. \code{BsHe94bParams} is minimal:
 \code{gamma} $\in (0,2)$ (default 1.6) and the divergence guard.
 
-This is the library's workhorse for well-conditioned monotone affine
+This is the library's standard engine for well-conditioned monotone affine
 problems, and the finishing stage of \code{chainedSolodovHe}. Its known
 weakness is geometric: on near-degenerate problems (wide, flat optimal
 faces from near-tied costs) the contraction rate approaches 1 and the
-iteration count explodes --- the failure that motivated the interior-point
-engine (Chapters~\ref{ch:testing} and \ref{ch:math}).
+iteration count grows by orders of magnitude --- the failure that motivated
+the interior-point engine (Chapters~\ref{ch:testing} and \ref{ch:math}).
 
 \emph{Choose it} for monotone affine problems of moderate conditioning,
 for \emph{warm-started} re-solves (runs started from a previous, nearby
-solution --- projection engines exploit such starts fully), and wherever
+solution, which projection engines exploit fully), and wherever
 an arbitrary projector-defined $K$ (e.g.\ an ellipsoid) rules out the
 structural engines.
 
@@ -311,18 +315,18 @@ is the projection onto that hyperplane, re-projected onto $K$.
 \code{SolodovSvaiterParams}: \code{mu} (1.0), \code{sigma} (0.5),
 \code{gamma} (0.5), \code{maxBacktracks} (60), divergence guard.
 
-Its two distinctions: it is \textbf{matrix-free} ($M$ enters only through
+It has two distinctions: it is matrix-free ($M$ enters only through
 products; nothing is factored), and it converges globally for merely
-\textbf{pseudomonotone} continuous $F$ --- the weakest hypothesis of any
-engine here. Its equally important limitation: whenever $\|F(x^\ast)\| > 0$,
+pseudomonotone continuous $F$, the weakest hypothesis of any engine here.
+Its equally important limitation: whenever $\|F(x^\ast)\| > 0$,
 the hyperplane step collapses like $\|r\|^2/\|F\|^2$ and the squared
-residual decays only as $O(1/\sqrt{k})$. It is a \emph{globalizer, not a
-finisher} --- good for getting from an arbitrary start into a solution's
-neighborhood, too slow to polish an answer to tight tolerance --- and its
+residual decays only as $O(1/\sqrt{k})$. It is a globalizer rather than a
+finisher --- effective for moving from an arbitrary start into a solution's
+neighborhood, too slow to refine an answer to tight tolerance --- and its
 own tests assert only globalization-grade accuracy by design.
 
 \emph{Choose it} as the safe first phase from a bad start on a problem whose
-monotonicity is in doubt, or where memory forbids factorization --- and pair
+monotonicity is in doubt, or where memory forbids factorization, and pair
 it with a finisher.
 
 \subsection{\code{chainedSolodovHe} --- globalize, then contract}
@@ -331,12 +335,13 @@ it with a finisher.
 The two-phase affine composition: \code{solodovSvaiter} to a loose target
 (\code{roughMagTol}, default $10^{-4}$ squared, capped at
 \code{roughIterMax}), then \code{bsHe94b} warm-started from its iterate and
-run to the caller's \code{magTol}. Phase 1 hitting its cap is \emph{not} an
-error --- an honest warm start is the point. \code{ChainedSolverParams}
-nests the two phases' params. Accounting follows the composite convention:
-\code{iter} is phase 2's count, \code{innerIters} the total across both.
-This chain is the small-scale ancestor of the model-level alternating chain
-(Section~\ref{sec:altchain}): each method plays only its strong regime.
+run to the caller's \code{magTol}. Phase 1 reaching its iteration cap is
+not an error; producing a warm start is its purpose.
+\code{ChainedSolverParams} nests the two phases' params. Accounting follows
+the composite convention: \code{iter} is phase 2's count, \code{innerIters}
+the total across both. This chain is the small-scale ancestor of the
+model-level alternating chain (Section~\ref{sec:altchain}): each method
+plays only its strong regime.
 
 \subsection{\code{fbsHyz04} --- forward-backward splitting}
 \label{sec:fbs}
@@ -353,19 +358,19 @@ $K$. The step $\gamma$ adapts online from a smoothed secant estimate of the
 Lipschitz constant (\code{FbsHyz04Params}: \code{gamma0}, \code{theta},
 \code{lcFactor}, defaults from \code{pmedemo}). Convergence theory needs
 monotone Lipschitz $F$. An affine adapter, \code{makeFbsHyz04Solver}, fits
-the \code{InnerSolver} seam.
+the \code{InnerSolver} extension point.
 
-Two documented safeguards go beyond the
-2004 recipe: a conservative sampled-secant preflight for $\gamma_0$
-(automatic when \code{gamma0} $\le 0$), and Tseng-style step backtracking,
-which extends robustness to merely locally-Lipschitz fields; both are
-self-erasing on gentle fields.
+Two documented safeguards go beyond the 2004 recipe: a conservative
+sampled-secant preflight for $\gamma_0$ (automatic when \code{gamma0}
+$\le 0$), and Tseng-style step backtracking, which extends robustness to
+merely locally-Lipschitz fields; on well-behaved fields neither has any
+effect.
 
-\emph{Choose it} for nonlinear monotone VIs where Jacobians are unwelcome
-(black-box $F$, memory limits) or where a simple robust iterator matters
-more than a fast tail --- its historical role: it solved the strategic
-allocation game in the PME reference implementation, and its library port
-independently confirms that game's reference equilibrium
+\emph{Choose it} for nonlinear monotone VIs where Jacobians are unavailable
+or unaffordable (black-box $F$, memory limits) or where a simple robust
+iterator matters more than a fast tail. Its historical role: it solved the
+strategic allocation game in the PME reference implementation, and its
+library port independently confirms that game's reference equilibrium
 (Chapter~\ref{ch:testing}).
 
 \subsection{\code{mehrotraIpm} --- predictor-corrector interior point}
@@ -392,10 +397,10 @@ Structural departures from the affine convention, each deliberate:
 \begin{itemize}
 \item \textbf{No start vector.} An interior-point method cannot use a caller
   iterate (it needs $y, s$ strictly positive near the central path); it
-  starts from a data-scaled interior point. Consequently it \emph{cannot
-  warm-start} --- relevant for re-solve loops.
+  starts from a data-scaled interior point. Consequently it cannot
+  warm-start, which matters for re-solve loops.
 \item \textbf{No \code{Projector}.} $K$ is structurally
-  $\mathbb{R}^{\code{numFree}} \times \mathbb{R}^{m}_{+}$; pairing the seam
+  $\mathbb{R}^{\code{numFree}} \times \mathbb{R}^{m}_{+}$; pairing the
   adapter (Section~\ref{sec:jn}) with any other $K$ silently solves the
   wrong problem, so its header forbids it.
 \item \textbf{One factorization per iteration}, shared by the predictor and
@@ -404,8 +409,8 @@ Structural departures from the affine convention, each deliberate:
   projection engines.
 \end{itemize}
 
-Its reason to exist: the iteration count ($\sim$10--40) is essentially
-independent of dimension \emph{and of degeneracy} of the solution set ---
+The engine exists because its iteration count ($\sim$10--40) is essentially
+independent of dimension \emph{and of degeneracy} of the solution set:
 the central path ends at the analytic center of the optimal face, so the
 near-tied instances that stall projection-contraction cost it only a few
 extra iterations (mechanism in Chapter~\ref{ch:math}; evidence in
@@ -413,15 +418,15 @@ Chapter~\ref{ch:testing}).
 
 \code{MehrotraIpmParams}: \code{tauFraction} (0.995 fraction-to-boundary),
 centering clamps \code{sigmaMin}/\code{sigmaMax}, \code{stallStep}
-($10^{-10}$; a damped step below this returns honestly with
+($10^{-10}$; a damped step below this returns with
 \code{converged = false} --- a stall, not an error), \code{regEpsilon}
 ($10^{-8}$, the sticky free-block diagonal rescue applied only if a Newton
 solve returns non-finite values), the divergence guard, and
 \code{newtonCheckTol} (below).
 
-\paragraph{The \code{NewtonSolverFactory} seam.} The per-iteration linear
-algebra is swappable, layered as in OOQP: the interior-point recipe is
-fixed, the Newton solve is not.
+\paragraph{The \code{NewtonSolverFactory} extension point.} The
+per-iteration linear algebra is swappable, layered as in OOQP: the
+interior-point recipe is fixed, the Newton solve is not.
 
 \begin{lstlisting}[language=C++]
 using NewtonSolve = function<VectorXd(const VectorXd& rhs)>;
@@ -438,7 +443,7 @@ behavior). Because the engine cannot see the factory's $K$,
 \code{newtonCheckTol > 0} enables a development-mode drift guard: one
 $O(d^2)$ matvec verifies $\|Kd - \mathit{rhs}\|^2$ after every solve and
 throws on disagreement. \code{freeRegularization} carries the singularity
-rescue through the seam. The flow-planning layer's
+rescue through the interface. The flow-planning layer's
 \code{makeFlowNewtonFactory} (Section~\ref{sec:network}) is the production
 example: it replaces the dense $O(d^3)$ factorization with per-sink
 Sherman--Morrison and a small Schur complement, the change that turned a
@@ -446,8 +451,8 @@ Sherman--Morrison and a small Schur complement, the change that turned a
 
 \emph{Choose it} for monotone affine problems that are degenerate,
 near-degenerate, or large --- especially when problem structure admits a
-custom Newton factory --- and accept that it cannot warm-start and owns its
-$K$.
+custom Newton factory --- and accept that it cannot warm-start and that its
+$K$ is fixed by structure.
 
 \subsection{\code{solveVI} --- the Josephy--Newton driver}
 \label{sec:jn}
@@ -478,15 +483,15 @@ concrete engine's controls into the \code{InnerSolver} shape:
 $K$), and \code{makeMehrotraIpmSolver(numFree, ...)} --- which ignores both
 the start (no warm start) and the projector (structural $K$), and must only
 be used where the mixed/orthant $K$ is the set actually intended. Inner
-tolerances live in the adapter, outer controls in
+tolerances are set in the adapter, outer controls in
 \code{JosephyNewtonParams}: \code{outerTol}, \code{outerIterMax}, the
 Jacobian step \code{fdStepRel}, the Armijo block, a diagnostic
 \code{logInnerDefiniteness} (prints the smallest eigenvalue of the
 symmetrized linearization --- the monotonicity probe), and the no-progress
 cutoff \code{stallIterMax}/\code{stallRelDecrease}: after
 \code{stallIterMax} \emph{consecutive} outer iterations without relative
-improvement of the best residual, the driver stops honestly
-(\code{converged = false}) \emph{before} spending another Jacobian and inner
+improvement of the best residual, the driver stops and reports
+\code{converged = false} \emph{before} spending another Jacobian and inner
 solve. The cutoff is off by default.
 
 Two tuning facts with evidence behind them: the outer residual floor scales
@@ -496,7 +501,7 @@ does not bind that floor (2nd- and 4th-order give identical iterates).
 
 \paragraph{The forcing sequence.} Binding one tight inner tolerance up
 front wastes the early iterations: far from the solution, the linearization
-is about to move anyway, and solving it to $10^{-12}$ buys nothing. The
+is about to move anyway, and solving it to $10^{-12}$ yields no benefit. The
 \emph{forcing-sequence} overload of \code{solveVI} takes an
 \code{InnerSolverFactory} --- \code{function<InnerSolver(double
 innerMagTol)>}, a one-line lambda over any \code{make*Solver} adapter ---
@@ -513,16 +518,16 @@ Chapter~\ref{ch:math}). The observable effect is the reference profile:
 thousands of inner iterations early, around a hundred late, with no loss of
 final accuracy.
 
-\paragraph{The one-call entry.} For callers who want simple and fast with
-no decisions at all:
+\paragraph{The one-call entry.} For callers who want a single call with no
+decisions:
 \begin{lstlisting}[language=C++]
 VIResult r = solveVIVanilla(model, z0);   // optional: outerTol, outerIterMax
 \end{lstlisting}
 binds the \code{bsHe94b} inner under the forcing sequence with every other
 control at its default. One deliberate caveat, stated in its header: it has
-\emph{no basin control} --- on problems with multiple equilibria it
-converges quickly to whichever equilibrium its trajectory enters;
-deliberate equilibrium selection is the alternating chain's job
+no basin control --- on problems with multiple equilibria it converges
+quickly to whichever equilibrium its trajectory enters; deliberate
+selection among equilibria is the alternating chain's task
 (Section~\ref{sec:altchain}).
 
 \emph{Choose it} for smooth nonlinear VIs over any projector-defined $K$,
@@ -532,7 +537,7 @@ clean: \code{bsHe94b}; degenerate: the IPM adapter).
 \subsection{\code{semismoothNewtonSolve} --- direct mixed-NCP Newton}
 \label{sec:ssn}
 
-The direct solver for the nonlinear mixed NCP --- the library's core case.
+The direct solver for the nonlinear mixed NCP, the library's core case.
 Instead of projecting onto $K$, it compiles $K$ into a nonsmooth equation:
 with an NCP function $\varphi$ ($\varphi(a,b) = 0 \iff a \ge 0,\ b \ge 0,\
 ab = 0$),
@@ -547,7 +552,8 @@ Levenberg--Marquardt direction; as a last resort, the negative gradient.
 There is no Josephy--Newton nesting and no smoothing parameter: unlike
 \code{smoothingnewton} (Section~\ref{sec:blocks}), which needs a
 $\mu$-continuation precisely because plain Newton stalls at the exact
-Fischer--Burmeister kink, the semismooth method works \emph{at} the kink.
+Fischer--Burmeister kink, the semismooth method operates at the kink
+itself.
 
 \begin{lstlisting}[language=C++]
 VIResult semismoothNewtonSolve(const VIModel& model, const VectorXd& z0,
@@ -555,7 +561,7 @@ VIResult semismoothNewtonSolve(const VIModel& model, const VectorXd& z0,
                                const IterationLogger& logger = {});
 \end{lstlisting}
 
-Its two seams:
+Its two extension points:
 \begin{itemize}
 \item \code{NcpFunctionPair} --- the NCP function and its
   C-subdifferential diagonals, as a pair. Ready-made:
@@ -582,12 +588,12 @@ accepted iterates a non-finite value still throws. Termination and
 \code{VIResult::residual} use the library-standard squared natural residual
 (comparable across engines, and immune to a documented small-$\lambda$
 merit-stop pitfall), while the line search steers by $\Psi$. The returned
-point is the \emph{best visited}, not the last.
+point is the best visited, not the last.
 
 \emph{Choose it} for genuinely nonlinear mixed NCPs --- it is the engine
-built for exactly that shape --- and expect honest stalls rather than
-convergence on nonmonotone problems far from a solution (that is what the
-composition below is for).
+built for exactly that shape --- and expect reported stalls rather than
+convergence on nonmonotone problems far from a solution; the composition
+below addresses that case.
 
 \subsection{\code{alternatingChainSolve} --- the nonmonotone composition}
 \label{sec:altchain}
@@ -611,31 +617,31 @@ VIResult alternatingChainSolve(const VIModel& model, const VectorXd& z0,
                                const Projector& projector = {});
 \end{lstlisting}
 
-The caller binds complete engines into the two \code{StageSolver} seams ---
-in the validated configuration, \code{solveVI} with the IPM inner solver
-(under the stall cutoff) as globalizer and \code{semismoothNewtonSolve}
-(nonmonotone memory 4) as finisher. The chain itself: recomputes the squared
-natural residual for every stage result with its \emph{own} fixed functional
-(stage solvers' conventions cannot skew the comparison); keeps and finally
-returns the best point visited; treats a stage that \emph{throws} as a
-stalled stage, not a failure (the round continues with its other stage from
-the last good point --- the same attitude PATH takes to subsolver failure);
-and, on a round that fails to improve the best residual
-(\code{improveFactor}, default 1.0 = any strict improvement continues,
-\code{roundsMax} alone bounds cost), restarts the next round from the best
-point jiggled componentwise by
+The caller binds complete engines into the two \code{StageSolver} extension
+points --- in the validated configuration, \code{solveVI} with the IPM
+inner solver (under the stall cutoff) as globalizer and
+\code{semismoothNewtonSolve} (nonmonotone memory 4) as finisher. The chain
+itself: recomputes the squared natural residual for every stage result with
+its \emph{own} fixed functional (stage solvers' conventions cannot skew the
+comparison); keeps and finally returns the best point visited; treats a
+stage that \emph{throws} as a stalled stage, not a failure (the round
+continues with its other stage from the last good point --- the same
+treatment PATH applies to subsolver failure); and, on a round that fails to
+improve the best residual (\code{improveFactor}, default 1.0 = any strict
+improvement continues, \code{roundsMax} alone bounds cost), restarts the
+next round from the best point perturbed componentwise by
 $U[-1,1] \cdot \code{perturbScale} \cdot \sqrt{\code{bestMag}}$ --- a
-perturbation proportional to the current error, hence vanishing as the chain
-closes in, drawn from a fixed-seed generator so runs stay reproducible.
-\code{perturbScale = 0} (default) disables perturbation, and stagnation then
-ends the chain. The rationale for each element, with the run evidence that
-forced it, is the subject of Section~\ref{ch:testing}'s deploy case study
-and Chapter~\ref{ch:math}.
+perturbation proportional to the current error, hence vanishing as the
+chain approaches a solution, drawn from a fixed-seed generator so runs stay
+reproducible. \code{perturbScale = 0} (default) disables perturbation, and
+stagnation then ends the chain. The rationale for each element, with the
+run evidence that forced it, is the subject of Section~\ref{ch:testing}'s
+deploy case study and Chapter~\ref{ch:math}.
 
 \emph{Choose it} when the problem is (or may be) nonmonotone and single
-engines return honest stalls: it is bounded, reproducible, honest about
-convergence, and the only configuration in this library that has solved the
-deployment game.
+engines stall: it is bounded, reproducible, and exact in its convergence
+reporting, and it is the only configuration in this library that has solved
+the deployment game.
 
 \subsection{Building blocks}
 \label{sec:blocks}
@@ -652,8 +658,8 @@ Reusable pieces beneath the engines, each independently tested:
   nonmonotone search). On failure both return the best $\alpha$ tried with
   \code{accepted = false} --- the caller decides.
 \item \code{levenbergmarquardt.hpp} --- the damping primitives
-  \code{levenbergMarquardtDamp} ($J^\top J + \lambda I$, rectangular $J$
-  welcome) and \code{levenbergMarquardtUpdate} (the $\lambda$ policy), plus
+  \code{levenbergMarquardtDamp} ($J^\top J + \lambda I$; rectangular $J$
+  accepted) and \code{levenbergMarquardtUpdate} (the $\lambda$ policy), plus
   \code{levenbergMarquardtSolve}, a self-contained nonlinear least-squares
   solver on those primitives and the FD Jacobian.
 \item \code{fdjacobian.hpp} --- \code{centralDifferenceJacobian}: 4th-order
@@ -673,8 +679,8 @@ Reusable pieces beneath the engines, each independently tested:
 \section{Choosing an engine}
 \label{sec:choosing}
 
-Table~\ref{tab:engine-choice} compresses the catalog into the questions that
-actually decide --- and the library also mechanizes it
+Table~\ref{tab:engine-choice} reduces the catalog to the questions that
+decide the choice, and the library also mechanizes the choice
 (\code{chooseengine.hpp}). Three layers, separately usable:
 \code{probeMonotone(M)} decides ``is $\mathrm{sym}(M)$ PSD?'' with a single
 shifted Cholesky attempt rather than an eigensolve; the \emph{pure} function
@@ -683,7 +689,7 @@ $\{$dimension, \code{numFree}, affine?, orthant $K$?, monotone?, warm
 start?$\}$, deterministic and unit-tested rule by rule; and two executors
 run the choice --- \code{solveAffineAuto} (probe, pick
 IPM/\code{bsHe94b}/chain, run; structured Newton factories pass through to
-the IPM path) and \code{solveModelAuto} (semismooth first; on an honest
+the IPM path) and \code{solveModelAuto} (semismooth first; on a reported
 stall or a runtime guard, fall back to the alternating chain --- the
 empirical policy of Chapter~\ref{ch:testing}). Every choice and fallback is
 announced through a \code{ChoiceLogger} hook, never taken silently. Two
@@ -717,7 +723,7 @@ Nonlinear, smooth, $K$ arbitrary
 Nonlinear mixed NCP (the core case)
   & \code{semismoothNewtonSolve}; analytic \code{JacobianFn} if available \\
 \addlinespace
-Nonmonotone; single engines stall honestly
+Nonmonotone; single engines stall
   & \code{alternatingChainSolve} (IPM globalizer + semismooth finisher;
     enable \code{perturbScale} for stagnation) \\
 \bottomrule
@@ -729,7 +735,7 @@ Nonmonotone; single engines stall honestly
 \section{The network layer}
 \label{sec:network}
 
-The flow-planning application lives in its own static library,
+The flow-planning application is contained in its own static library,
 \code{vincpnet} (\code{network/include}, \code{network/lib}, namespace
 \code{VINCP::Network}), layered strictly on top of \code{vincp}: the core
 library knows nothing about networks. It is both a production solver for the
@@ -756,8 +762,8 @@ supplied tonnage $S_i$, resupply $R_i$, and the flow matrix $f_{ij}$;
 \code{checkPlan} returns a \code{PlanViolations} breakdown (balance,
 delivery, capacity, negativity, idle resupply, budget) and
 \code{shortfallObjective} evaluates the dimensionless objective
-$\theta = \sum_i P_i \bigl((\mathit{target}_i - R_i)/D_i\bigr)^2$. Note the
-recorded gotcha: $\theta$ is a weighted sum of squared \emph{fractions} ---
+$\theta = \sum_i P_i \bigl((\mathit{target}_i - R_i)/D_i\bigr)^2$. One
+recorded caution: $\theta$ is a weighted sum of squared \emph{fractions} ---
 $O(1)$ to a few hundred --- not a tonnage; read delivered/unmet tons
 separately.
 
@@ -765,9 +771,9 @@ separately.
 
 Three non-optimizing planners provide baselines, starts, and GUI overlays:
 \code{greedyPlan} (\code{greedy.hpp}) --- the rationing-aware greedy
-heuristic, which also \emph{calibrates the budget}: an \code{Instance} is
-born with \code{tonMileLimit = 0} and the solvers throw on a non-positive
-budget, so the standard sequence sets \code{inst.tonMileLimit =
+heuristic, which also \emph{calibrates the budget}: a newly constructed
+\code{Instance} has \code{tonMileLimit = 0} and the solvers throw on a
+non-positive budget, so the standard sequence sets \code{inst.tonMileLimit =
 greedyResult.suggestedLimit} ($\approx 80\%$ of greedy usage) first;
 \code{gravityPlan} (\code{gravity.hpp}) --- the dense cost-blind
 proportional baseline; and the 2-exchange engine (\code{swap.hpp}) ---
@@ -798,7 +804,8 @@ into a node-level \code{Plan}. The tie-break term (R4) enters here:
 Sherman--Morrison on the rank-1 $t$-blocks plus a small SPD Schur complement
 on the $\sim(\text{numSources}+1)$ duals, replacing the dense $O(d^3)$
 factorization with $O(\text{pairs})$-scale work per IPM iteration. Its
-algebra is machine-verified (\code{network/doc/ns2-newton-check.mac}).
+algebra was verified symbolically with Maxima \cite{maxima}
+(\code{network/doc/ns2-newton-check.mac}).
 
 For tiny instances only, \code{oracle.hpp} builds and solves the full
 \emph{unreduced} formulation (\code{solveOracle}, capped at
@@ -848,8 +855,8 @@ no screen; small spread-geometry instances keep screened \code{bshe94b}.
 \code{config.hpp} parses \code{key = value} text (\code{\#} comments;
 duplicate keys, empty keys or values, and --- via
 \code{requireAllConsumed} --- unknown or misspelled keys are hard errors, so
-a typo can never silently no-op). \code{applyProfileConfig} consumes the
-\code{profile.*} keys (all \code{InstanceProfile} fields);
+a mistyped key can never silently have no effect). \code{applyProfileConfig}
+consumes the \code{profile.*} keys (all \code{InstanceProfile} fields);
 \code{applyFlowPlanConfig} the \code{solver.*} and \code{screen.*} keys (all
 \code{FlowPlanParams} fields). The benchmark driver
 (\code{network\_benchmark <path-to-cfg>}, a plain Release executable) adds
@@ -875,8 +882,8 @@ whichever plan is displayed.
 
 A new problem enters the library as \emph{data plus a \code{VIModel}
 builder} --- never as copied solver or harness code. The pattern, proven
-twice by the GAMS translations, is a recipe worth stating step by step
-because fidelity lives in its details.
+twice by the GAMS translations, is a recipe worth stating step by step,
+because fidelity depends on its details.
 
 \subsection{The GAMS translation recipe}
 \label{sec:gams-recipe}
@@ -897,8 +904,8 @@ MCP}, mechanically:
   $\varepsilon$-guard the source carries.
 \item \textbf{Pair \code{=e=} rows with free multipliers as $H$.} Equality
   constraints and their (sign-unrestricted) multipliers form the free block
-  $x$; intermediate GAMS variables defined by equalities may also live here
-  when they are provably interior (document the argument --- e.g.\ a
+  $x$; intermediate GAMS variables defined by equalities may also be placed
+  here when they are provably interior (document the argument --- e.g.\ a
   variable defined as $\varepsilon$ plus a sum of nonnegatives is strictly
   positive, so its GAMS \code{Positive} bound never binds and the free
   treatment is exact).
@@ -914,12 +921,12 @@ MCP}, mechanically:
 \item \textbf{Print the GAMS output parameters.} A report-only check that
   reproduces the \code{.gms} file's own \code{Display} quantities (option
   probabilities, payoffs, \ldots) lets a converged run be compared against
-  the GAMS listing by eye before any gate is pinned.
-\item \textbf{Gate on verified answers.} Once the author confirms a solution
-  matches the reference system, pin the test to it; for games with multiple
-  equilibria, gate against a \emph{roster} of verified equilibria and have
-  the check print any converged non-roster point as a paste-ready roster
-  candidate (Chapter~\ref{ch:testing}).
+  the GAMS listing by eye before any automated check is fixed to it.
+\item \textbf{Check against verified answers.} Once the author confirms a
+  solution matches the reference system, fix the test to that answer; for
+  games with multiple equilibria, check against a \emph{roster} of verified
+  equilibria and have the check print any converged non-roster point as a
+  paste-ready roster candidate (Chapter~\ref{ch:testing}).
 \end{enumerate}
 
 Cross-validation closes the loop: two independent engine classes converging
@@ -935,7 +942,7 @@ engines, params)} produces rows from \code{\{Ssn, JnHan, JnHe, JnIpm\}},
 \code{countConvergedRows(rows, z0, extraChecks)} runs each through the
 shared \code{runCase} driver (per-row timing and statistics, throws absorbed
 and reported, output flushed per row). Because nonmonotone problems make
-individual engines fail legitimately, gates are expressed over the row
+individual engines fail legitimately, the checks are expressed over the row
 results (``at least $k$ rows pass''), not per row.
 
 \subsection{The network walkthrough}
@@ -954,12 +961,13 @@ FlowPlanResult r = solveFlowPlan(inst, p);           // 4. reduce+solve+certify
 //    r.certifiedP && r.vi.converged.
 \end{lstlisting}
 
-Steps 2--3 are where newcomers stumble: the budget calibration is not
-optional (an uncalibrated instance throws), and the engine choice changes
-the meaning of \code{iterMax}. Everything between reduction and unpacking
---- screens, the LCP build, the certificate loop, nondimensionalization ---
-is internal to \code{solveFlowPlan}; the individual stages remain public
-(Section~\ref{sec:network}) for tests and custom pipelines.
+Steps 2--3 are the ones most often done incorrectly: the budget calibration
+is not optional (an uncalibrated instance throws), and the engine choice
+changes the meaning of \code{iterMax}. Everything between reduction and
+unpacking --- screens, the LCP build, the certificate loop,
+nondimensionalization --- is internal to \code{solveFlowPlan}; the
+individual stages remain public (Section~\ref{sec:network}) for tests and
+custom pipelines.
 
 \section{Extending the library}
 \label{sec:extending}
@@ -978,7 +986,7 @@ comparison row in the cross-engine tests. Cite sources in the header
 \paragraph{Adding an NCP function.} Provide an \code{NcpFunctionPair}: the
 elementwise value and the C-subdifferential diagonals $(d_a, d_b)$,
 including a kink rule consuming the limiting-direction argument. Note the
-subtlety recorded from experience: the kink indicator lives in the full
+subtlety recorded from experience: the kink indicator is defined in the full
 $z$-space (length $n+m$), so pure-LCP tests ($n = 0$) cannot detect a
 $y$-space/$z$-space confusion --- include a mixed test that hits an exact
 kink.
@@ -997,7 +1005,7 @@ every formula before any C++ ran.
 \paragraph{The JNI boundary (planned).} Eigen is column-major by default; a
 row-major buffer arriving from Java must be mapped with an explicit
 \code{RowMajor} map or it transposes silently. This is the one recorded
-land-mine for the future Java binding.
+hazard for the future Java binding.
 % ----------------------------------------------
 % Copyright Ben Paul Wise. All Rights Reserved.
 % ----------------------------------------------

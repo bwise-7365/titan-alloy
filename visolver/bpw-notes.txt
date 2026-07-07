@@ -1,6 +1,49 @@
-Parts of Claude.md are no longer needed or accurate
-because that work has been done.
+The manual, and probably the code,
+state that for the mixed nonlinear complementarity problem
+H(x,y) must be of the same dimensionality as 'x', which
+is not correct.
 
-u , ||x-x*|| , ||y-y*|| , min(Ax-b) and max|y_i s_i| 
+The GAMS translation section probably belongs in an appendix,
+and has the has problem with 'x' dimensionality.
 
- ||x-x*|| = 1.457e-02 (< 1.0e-06), ||y-y*|| = 7.768e-03 (< 1.0e-06),  max|y_i s_i| = 2.361e-02 (< 1.0e-06)
+'honest' -> accurate, clear, transparent, etc.
+
+"seam" = ?
+
+"earns" -> justifies
+
+"fidelity lives in the details" -> details matter
+
+"a gate is pinned" -> "a test is passed"
+
+
+pin the test
+
+fidelity lives in the details
+
+expect honest stalls rather than convergence
+
+... accepts problem-specific fast linear algebra through a documented seam.
+
+a pinned release tag
+
+and an honest converged/not-converged verdict 
+
+Loggers are the intended observability seam
+
+every swappable component is a std::function seam with a documented contract
+
+Seams are preferred over boolean flags
+
+the self-adaptive metric earns its cost
+
+ 
+the gate is pinned to it, and pinned at two rows
+  
+Gate on verified answers, structured for multiplicity. Pinned answers where unique (both case-study gates), pinned counts of passing rows where engines legitimately diverge
+
+every solver reports honestly,
+
+"converged = false" is an honest answer, not an error
+
+no-progress is an honest outcome

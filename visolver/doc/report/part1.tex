@@ -11,47 +11,46 @@
 \label{sec:o-what}
 
 VINCP is a C++ library for computing solutions of \emph{complementarity
-problems} --- a single mathematical shape that captures a remarkable range
-of planning and competition questions. In words: some quantities must
-balance exactly (conservation laws, accounting identities, probabilities
-summing to one); other quantities cannot go negative (shipments,
-allocations, prices), and each of those is tied to a matching condition
-that must hold whenever the quantity is actually used, with a strict
-either/or between ``the quantity is zero'' and ``its condition is tight.''
-Optimal plans satisfy this shape (a convex optimum together with its
-shadow prices is exactly such a system), and so do competitive equilibria
-(each player's ``no profitable deviation'' conditions, side by side). One
-problem format therefore serves both a logistics planner and a two-sided
-game.
+problems}, a single mathematical form that expresses a wide range of
+planning and competition questions. In words: some quantities must balance
+exactly (conservation laws, accounting identities, probabilities summing to
+one); other quantities cannot go negative (shipments, allocations, prices),
+and each nonnegative quantity is paired with a condition such that, at a
+solution, either the quantity is zero or its condition holds with equality.
+Optimal plans satisfy this form: a convex optimum together with its shadow
+prices is exactly such a system. Competitive equilibria satisfy it as well:
+each player's ``no profitable deviation'' conditions, taken side by side,
+have the same structure. One problem format therefore serves both a
+logistics planner and a two-sided game.
 
-The library's design follows from that unification: one way to pose a
-problem, one result format --- the answer, a defect measure (the ``residual'' of
-the later chapters), the work done, and an honest converged/not-converged
-verdict --- and, between them,
-a \emph{menu} of interchangeable solver engines, because no single
-numerical method is best (or even viable) across the whole range. Posing,
-solving, and judging are kept strictly separate, so an engine can be
-swapped without touching the problem, and a new problem can be added
+The library's design follows from that unification. There is one way to
+pose a problem and one result format: the answer, a defect measure (the
+``residual'' of the later chapters), the work performed, and a
+converged-or-not verdict reported exactly as computed. Between problem and
+result stands a catalog of interchangeable solver engines, because no
+single numerical method is best, or even viable, across the whole range.
+Posing, solving, and judging are kept strictly separate, so an engine can
+be swapped without touching the problem, and a new problem can be added
 without touching any engine. The full developer's view is
 Chapter~\ref{ch:manual}; the mathematics is Chapter~\ref{ch:math}.
 
 \section{Why it exists}
 \label{sec:o-why}
 
-The library began as a careful C++ port of working GNU Octave prototypes
---- two classical projection methods and a Newton-type outer loop, with
-the reference implementations' numerics preserved and their tolerances
-verified. Two escalations drove everything since. First, a production
-problem arrived: a distribution-planning optimization over networks of a
-few hundred nodes, whose hardest instances simply could not be solved by
-the ported methods in any acceptable time. Second, a class of
-\emph{game} models arrived from a separate modeling effort --- equilibrium
+The library began as a careful C++ port of working GNU Octave prototypes:
+two classical projection methods and a Newton-type outer loop, with the
+reference implementations' numerics preserved and their tolerances
+verified. Two escalations have driven every subsequent addition. First, a
+production problem arrived: a distribution-planning optimization over
+networks of a few hundred nodes, whose hardest instances could not be
+solved by the ported methods in any acceptable time. Second, a class of
+\emph{game} models arrived from a separate modeling effort: equilibrium
 computations that are provably outside the mathematical guarantees of
 every classical method the library had. Each escalation forced new solver
-technology; the discipline throughout was that every addition be a
-\emph{general-purpose} engine or a reusable composition, never a
-one-problem special case, so that the next problem inherits the whole
-menu. Chapter~\ref{ch:testing} tells both escalation stories in full.
+technology. The discipline throughout was that every addition be a
+general-purpose engine or a reusable composition, never a one-problem
+special case, so that the next problem inherits the whole catalog.
+Chapter~\ref{ch:testing} recounts both escalations in full.
 
 \section{The problem portfolio}
 \label{sec:o-portfolio}
@@ -59,13 +58,13 @@ menu. Chapter~\ref{ch:testing} tells both escalation stories in full.
 The library is validated against two tiers of problems:
 
 \begin{itemize}
-\item \textbf{A flock of minimal problems} --- small instances built
+\item \textbf{A collection of minimal problems} --- small instances built
   backward from known answers (random monotone systems, deliberately
   ill-behaved systems, degenerate corner cases). They run in milliseconds,
-  check exactly, and pin every engine and safeguard individually; 132
-  automated tests stand green at the time of writing.
-\item \textbf{Three almost-real-world problems}, each an acceptance
-  gate:
+  check exactly, and verify every engine and safeguard individually; at
+  the time of writing, all 132 automated tests pass.
+\item \textbf{Three almost-real-world problems}, each serving as an
+  acceptance test:
   \begin{enumerate}
   \item \emph{Quadratic flow planning} --- a single planner ships goods
     over a network of up to 200 nodes to minimize priority-weighted
@@ -74,21 +73,21 @@ The library is validated against two tiers of problems:
     construction.
   \item \emph{Strategic allocation of effort} --- a competition in which
     $M$ actors spread limited effort across $N$ options to sway the odds
-    of outcomes they value differently; the target is a Nash equilibrium
-    --- an allocation from which no actor can gain by unilaterally
-    deviating --- verified against an independent industry-standard solver
+    of outcomes they value differently. The target is a Nash equilibrium
+    (an allocation from which no actor can gain by unilaterally
+    deviating), verified against an independent industry-standard solver
     (PATH).
   \item \emph{Pre-position and deploy (PPD)} --- a family of two-sided
     military-logistics games (pre-position forces, commit to postures,
     ship under transport budgets, interdict the opponent's shipments) with
-    smooth attrition. These models are \emph{deliberately} outside every
+    smooth attrition. These models are deliberately outside every
     classical solver guarantee, and more versions of increasing
     sophistication are in preparation.
   \end{enumerate}
 \end{itemize}
 
-The latter two are games; all three arrive through the same
-problem-posing interface, and adding the next one is a documented recipe
+The latter two are games. All three arrive through the same problem-posing
+interface, and adding the next one is a documented recipe
 (Chapter~\ref{ch:manual}), not a development project.
 
 \section{Solution approach}
@@ -98,30 +97,30 @@ Two ideas organize the library.
 
 \paragraph{A layered architecture.} Problem definitions, solver engines,
 outer drivers, and engine compositions are separate layers with
-one-directional dependencies. The practical payoffs: every engine is
+one-directional dependencies. The practical consequences: every engine is
 interchangeable behind a common interface; specialized linear algebra can
-be plugged into an engine without changing the engine (the decisive move
-in the flow-planning story below); and diagnostic instrumentation ---
-per-iteration progress, defect breakdowns by named constraint, honest
-failure verdicts --- is uniform, so a failed run is a specification for
-the next attempt rather than a mystery.
+be plugged into an engine without changing the engine (the change that
+resolved the flow-planning problem below); and diagnostic instrumentation
+--- per-iteration progress, defect breakdowns by named constraint, failure
+verdicts reported as computed --- is uniform, so a failed run yields a
+specification for the next attempt.
 
-\paragraph{An engine menu matched to problem class.} Classical projection
-methods are kept for the problems they are good at (well-conditioned
-monotone systems, warm restarts, unusual feasible sets). An
-interior-point engine handles the degenerate and large monotone problems
-that stall projection methods, and accepts problem-specific fast linear
-algebra through a documented seam. A semismooth Newton engine attacks
-mixed nonlinear problems directly. And for the game models that defeat
-every single engine, the library composes engines: an
+\paragraph{An engine catalog matched to problem class.} Classical
+projection methods are kept for the problems they are good at
+(well-conditioned monotone systems, warm restarts, unusual feasible sets).
+An interior-point engine handles the degenerate and large monotone
+problems that stall projection methods, and accepts problem-specific fast
+linear algebra through a documented interface. A semismooth Newton engine
+solves mixed nonlinear problems directly. For the game models on which
+every single engine fails, the library composes engines: an
 \emph{alternating chain} that repeatedly projects back to feasibility,
 runs a globally strong engine to its stall, hands off to a locally sharp
 engine, remembers the best point ever visited, treats a stage failure as
-``switch strategy'' rather than ``abort,'' and --- when progress
-deterministically stalls --- restarts from a small, reproducible,
-error-proportioned perturbation. The chain solved what nothing else
-could, and its every design element traces to a documented failed run
-(Chapter~\ref{ch:testing}).
+``switch strategy'' rather than ``abort,'' and, when progress
+deterministically stalls, restarts from a small, reproducible,
+error-proportioned perturbation. The chain solved the deployment game
+after every standalone engine had failed, and each of its design elements
+traces to a documented failed run (Chapter~\ref{ch:testing}).
 
 \section{Headline results}
 \label{sec:o-results}
@@ -134,25 +133,24 @@ could, and its every design element traces to a documented failed run
 \textbf{Problem} & \textbf{Result} \\
 \midrule
 Flow planning, 200-node hardest geometry, all 14{,}500 routing pairs
-  & Solved \textbf{certified-exact in 4.5 seconds} --- the original method
-    ran six minutes without an answer, and the first interior-point
-    attempt took half an hour for a near-miss; the final configuration is
-    $\sim$394$\times$ faster than that attempt \emph{and} $0.4\%$ better
-    in objective. \\
+  & Solved certified-exact in 4.5 seconds. The original method ran six
+    minutes without an answer, and the first interior-point attempt took
+    half an hour for a near-miss; the final configuration is
+    $\sim$394$\times$ faster than that attempt and $0.4\%$ better in
+    objective. \\
 \addlinespace
 Strategic allocation of effort ($6 \times 10$ instance)
-  & The PATH-verified Nash equilibrium reproduced independently by
-    \textbf{two different engine classes}, in 83\,ms and 182\,ms. \\
+  & The PATH-verified Nash equilibrium reproduced independently by two
+    different engine classes, in 83\,ms and 182\,ms. \\
 \addlinespace
 PPD deployment game (450 unknowns, outside all classical guarantees)
   & Solved to machine precision by the alternating chain in
-    $\sim$18--29\,s --- \textbf{twice, finding two distinct verified Nash
-    equilibria} --- where every standalone engine fails; those failures
-    are kept in the test suite as documentation. \\
+    $\sim$18--29\,s, twice, finding two distinct verified Nash
+    equilibria, where every standalone engine fails; those failures are
+    kept in the test suite as documentation. \\
 \addlinespace
 Whole suite
-  & \textbf{132 of 132 tests green}, spanning unit, protocol, and
-    acceptance layers. \\
+  & All 132 tests pass, spanning unit, protocol, and acceptance layers. \\
 \bottomrule
 \end{tabular}
 \caption{Headline results; sources and full narratives in
@@ -160,64 +158,65 @@ Chapter~\ref{ch:testing}.}
 \label{tab:headline}
 \end{table}
 
-Behind each headline sits a verified reference: the flow-planning answer
+Each headline rests on a verified reference: the flow-planning answer
 carries an optimality certificate by construction; the game answers were
 confirmed by the models' author against the GAMS/PATH reference system;
 and the equilibrium roster mechanism turns each newly discovered
 equilibrium into a one-line, author-verified addition to the acceptance
-gate.
+test.
 
 \section{Challenges and answers}
 \label{sec:o-challenges}
 
-The project's three hard problems, one paragraph each --- with the general
-principle each one bought.
+The project met three hard problems. Each is described in one paragraph,
+together with the general principle it established.
 
 \paragraph{Scale and degeneracy (flow planning).} The hardest instances
 combine size (tens of thousands of unknowns) with near-tied costs that
 make the optimum a wide, flat set rather than a point. Classical
-projection methods slow to a crawl precisely there. Screening the problem
-down helped the easy geometry and failed the hard one --- and provably
-traded away $0.4\%$ of answer quality. The resolution came in two steps:
-change the \emph{engine class} (interior-point methods are indifferent to
-the flat set --- iteration counts stayed at $\sim$35 regardless of size
-and degeneracy), then change the \emph{linear algebra} (a
-problem-structured factorization, its algebra verified symbolically in
+projection methods slow severely on exactly that geometry. Screening the
+problem down to fewer variables helped the easy geometry, failed the hard
+one, and provably traded away $0.4\%$ of answer quality. The resolution
+came in two steps: change the \emph{engine class} (interior-point
+iteration counts are insensitive to the flat set, staying near 35
+regardless of size and degeneracy), then change the \emph{linear algebra}
+(a problem-structured factorization, its algebra verified symbolically in
 Maxima before any C++ was written, cut each iteration from $\sim$50
 seconds to milliseconds). Principle: match the engine to the problem
-class, then make the expensive step exploit the problem's structure ---
-and prefer exact-by-construction over approximate-then-certify.
+class, then make the expensive step exploit the problem's structure; and
+prefer exact-by-construction over approximate-then-certify.
 
 \paragraph{Nonmonotonicity (the games).} The PPD models are designed with
-mixed incentives --- committing mass is rewarded, token efforts are wiped
-out --- which places them outside every convergence theorem in the
-library's arsenal. No single engine survives; each fails in its own
-characteristic way. The resolution was \emph{composition}: the engines'
-failure modes turn out to be complementary, and a disciplined
-alternation --- with feasibility repair between stages, best-point
-memory, failures treated as strategy switches, and reproducible
-perturbation at deterministic stalls --- reached machine-precision
-equilibria twice. Principle: where no theory guarantees a single method,
-engineer the composition, keep it bounded and honest, and let its every
-element be forced by evidence.
+mixed incentives --- committing mass is rewarded, small commitments are
+destroyed --- which places them outside every convergence theorem
+available to the library's engines. No single engine succeeds; each fails
+in its own characteristic way. The resolution was \emph{composition}: the
+engines' failure modes turn out to be complementary, and a disciplined
+alternation, with feasibility repair between stages, best-point memory,
+failures treated as strategy switches, and reproducible perturbation at
+deterministic stalls, reached machine-precision equilibria twice.
+Principle: where no theory guarantees a single method, engineer the
+composition, keep it bounded and exactly reported, and admit each element
+only on evidence.
 
 \paragraph{Trust (all three).} Numerical claims are easy to get subtly
-wrong. The library's answer is verification in depth: hand-derived
+wrong. The library's response is verification in depth: hand-derived
 algebra is checked symbolically in Maxima before implementation;
 transcribed models are cross-validated by independent engine classes
 agreeing on author-verified answers; safeguard logic is tested by
-injecting failures rather than hoping to encounter them; and every solver
-reports honestly, including the well-defined ``did not converge.''
-Principle: an answer is worth what its verification chain is worth.
+injecting failures rather than by hoping to encounter them; and every
+solver reports its outcome as computed, including the well-defined
+verdict ``did not converge.'' Principle: an answer is worth what its
+verification chain is worth.
 
 \section{Status and roadmap}
 \label{sec:o-status}
 
 The library stands complete against its current portfolio: all engines
-and compositions shipped and documented, all 132 tests green, the three
-acceptance problems gated on verified answers. Open items are recorded
-with dispositions in Chapter~\ref{ch:testing}; the near-term roadmap, in
-expected order:
+and compositions shipped and documented, all 132 tests passing, the three
+acceptance problems checked against verified answers. Open items are
+recorded with dispositions in Chapter~\ref{ch:testing}; the near-term
+roadmap, in expected order:
 
 \begin{itemize}
 \item \textbf{More PPD versions} --- larger and tougher models from the
