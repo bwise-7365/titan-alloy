@@ -31,6 +31,7 @@ add_library(vincp STATIC
         lib/saoe.cpp
         lib/solodovsvaiter.cpp
         lib/chainedsolver.cpp
+        lib/fbshyz04.cpp
         lib/mehrotraipm.cpp
         lib/semismoothnewton.cpp
         lib/alternatingchain.cpp
@@ -121,7 +122,9 @@ vincp_add_gtest(semismooth_newton_test)
 vincp_add_gtest(josephy_newton_test)
 vincp_add_gtest(alternating_chain_test)
 vincp_add_gtest(saoe_chain_test)
+vincp_add_gtest(saoe_risk_test)
 vincp_add_gtest(choose_engine_test)
+vincp_add_gtest(fbs_hyz04_test)
 # Translated GAMS MCP models (convergence-gated, multi-engine; see the test
 # headers for the .gms sources and the variable/equation mappings).
 vincp_add_gtest(gams_alloceff_test)
@@ -137,12 +140,12 @@ add_subdirectory(network)
 # "run_all_tests" builds and runs the entire ctest suite.
 add_custom_target(run_engine_tests
     COMMAND ${CMAKE_CTEST_COMMAND}
-        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan|Gams|AlternatingChain|SaoeChain|ChooseEngine"
+        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan|Gams|AlternatingChain|SaoeChain|SaoeRisk|ChooseEngine"
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS semismooth_newton_test mehrotra_ipm_test han_vs_he_test flowplan_test
             gams_alloceff_test gams_deploy_test alternating_chain_test
-            saoe_chain_test choose_engine_test
+            saoe_chain_test saoe_risk_test choose_engine_test
     USES_TERMINAL
 )
 add_custom_target(run_all_tests
@@ -152,7 +155,8 @@ add_custom_target(run_all_tests
             ellipsoid_projector_test lvi_ellipsoid_test damped_newton_test
             smoothing_newton_test ss_lcp_test ss_ellipsoid_test
             mehrotra_ipm_test semismooth_newton_test josephy_newton_test
-            alternating_chain_test saoe_chain_test choose_engine_test
+            alternating_chain_test saoe_chain_test saoe_risk_test
+            choose_engine_test fbs_hyz04_test
             gams_alloceff_test gams_deploy_test
             network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL

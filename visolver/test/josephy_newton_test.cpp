@@ -1,11 +1,14 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "josephynewton.hpp"
+#include "utils.hpp"
 #include "vincp.hpp"
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
+#include <random>
 #include <stdexcept>
+#include <vector>
 
 using namespace VINCP;
 
@@ -96,6 +99,92 @@ TEST(JosephyNewton, StallCutoffDoesNotTriggerOnHealthyRun) {
     EXPECT_TRUE(r.converged);
     EXPECT_NEAR(1.0, r.z(0), 1.0e-6);
     EXPECT_NEAR(1.0, r.z(1), 1.0e-6);
+}
+
+namespace {
+    // A monotone cubic mixed VI with a known solution, for the forcing-
+    // sequence and vanilla-entry tests (the han_vs_he scaffold, small).
+    struct KnownCubic {
+        VIModel model;
+        VectorXd zStar;
+    };
+
+    KnownCubic
+    makeKnownCubic()
+    {
+        std::mt19937 rng(20260706u);
+        const Index n = 3, m = 3, d = n + m;
+        VectorXd wStar, yStar;
+        makeComplementaryPair(m, rng, 1, 10, wStar, yStar);
+        KnownCubic k;
+        k.zStar.resize(d);
+        k.zStar << VectorXd::Constant(n, 1.0), yStar;
+        VectorXd target(d);
+        target << VectorXd::Zero(n), wStar;
+        const CubicProblem prob = makeCubicProblem(d, d, rng, k.zStar, target,
+                                                   /*forcePSD=*/true, -1.0, 1.0);
+        k.model = makeVIModel(n, m, prob.F);
+        return k;
+    }
+
+    constexpr double kCubicSolTol = 1.0e-4;   // above the 1e-10 squared stop
+} // namespace
+
+// The forcing-sequence overload solves the cubic, and the recorded inner
+// tolerances show the schedule doing its job: capped (loose) while the
+// residual is large, tightened far below the cap by the end.
+TEST(JosephyNewton, ForcingSequenceSolvesAndLoosensEarly) {
+    const KnownCubic k = makeKnownCubic();
+    const VectorXd z0 = VectorXd::Zero(k.zStar.size());
+
+    std::vector<double> requestedTols;
+    const InnerSolverFactory factory = [&requestedTols](double innerTol) {
+        requestedTols.push_back(innerTol);
+        return makeBsHe94bSolver(innerTol, 20000, 0);
+    };
+    JosephyNewtonParams params;
+    params.outerTol = 1.0e-10;
+
+    const VIResult r = solveVI(k.model, z0, factory, params);
+    EXPECT_TRUE(r.converged);
+    EXPECT_LT((r.z - k.zStar).norm(), kCubicSolTol);
+
+    ASSERT_GE(requestedTols.size(), 2u);
+    EXPECT_EQ(params.forcingCap, requestedTols.front());   // large residual: capped
+    EXPECT_LT(requestedTols.back(), 1.0e-6);               // near solution: tight
+    EXPECT_GE(requestedTols.back(), params.forcingFloor);  // never below the floor
+}
+
+// The one-call vanilla entry solves the same problem with defaults only.
+TEST(JosephyNewton, VanillaEntrySolvesInOneCall) {
+    const KnownCubic k = makeKnownCubic();
+    const VIResult r = solveVIVanilla(k.model, VectorXd::Zero(k.zStar.size()));
+    EXPECT_TRUE(r.converged);
+    EXPECT_LT((r.z - k.zStar).norm(), kCubicSolTol);
+}
+
+// Forcing-overload guards: unset factory, out-of-range forcing parameters,
+// and a factory that returns an empty solver.
+TEST(JosephyNewton, ForcingOverloadRejectsBadInputs) {
+    const KnownCubic k = makeKnownCubic();
+    const VectorXd z0 = VectorXd::Zero(k.zStar.size());
+    const InnerSolverFactory good = [](double tol) {
+        return makeBsHe94bSolver(tol, 20000, 0);
+    };
+
+    EXPECT_THROW(solveVI(k.model, z0, InnerSolverFactory{}),
+                 std::invalid_argument);
+
+    JosephyNewtonParams badRatio;
+    badRatio.forcingRatio = 1.0;
+    EXPECT_THROW(solveVI(k.model, z0, good, badRatio), std::invalid_argument);
+
+    JosephyNewtonParams badFloor;
+    badFloor.forcingFloor = 1.0;   // above the default cap
+    EXPECT_THROW(solveVI(k.model, z0, good, badFloor), std::invalid_argument);
+
+    const InnerSolverFactory empty = [](double) { return InnerSolver{}; };
+    EXPECT_THROW(solveVI(k.model, z0, empty), std::runtime_error);
 }
 
 // Parameter guards: negative cutoff and out-of-range relative decrease throw.

@@ -142,6 +142,36 @@ phase one of \code{chainedSolodovHe}, handing a warm start to He's
 contraction --- never as a finisher, and its own acceptance tests assert
 only globalization-grade accuracy.
 
+\section{Forward-backward splitting}
+\label{sec:a-fbs}
+
+The two-projection forward-backward splitting scheme of He, Yuan, and
+Zhang \cite{hyz2004} --- $\rho = P_K(x - \gamma F(x))$, then
+$x^{+} = P_K(\rho + \gamma(F(x) - F(\rho)))$ --- solves the general
+monotone Lipschitz VI with two field evaluations and two projections per
+iteration and nothing factored; the implementation adapts $\gamma$ from a
+smoothed secant estimate of the Lipschitz constant, preserving the rule of
+the author's earlier \code{pmedemo} implementation. Its place in the menu
+is between the affine projection engines and the Newton-class solvers: it
+attacks the \emph{nonlinear} problem directly like the semismooth solver,
+but Jacobian-free and over any projector-defined $K$ like the hyperplane
+method, at a linear rate. Historically it is the engine of the PME
+reference implementation, where it solved the strategic-allocation game of
+Section~\ref{sec:a-saoe} --- thousands of iterations where the Newton-class
+engines take tens, but requiring nothing beyond evaluations. The library
+port adds two documented safeguards beyond the 2004 recipe: a conservative
+sampled-secant preflight for the initial step, and Tseng-style step
+backtracking (halve $\gamma$ until $\gamma\|F(\rho) - F(x)\| \le
+0.9\|\rho - x\|$), which extends robustness to fields that are only
+\emph{locally} Lipschitz --- e.g.\ cubic maps over an unbounded $K$, where
+no start-point estimate can be globally valid. The bare recipe sufficed
+historically because SAOE-class fields are exceptionally gentle: every
+slope is divided by the total committed effort, so the field saturates and
+its Lipschitz landscape is nearly uniform --- a script proven on its
+problem and a library engine honest on any problem are different
+contracts. Both safeguards are self-erasing on gentle fields (the
+backtracking test costs nothing unless it fails).
+
 \section{The Josephy--Newton driver}
 \label{sec:a-jn}
 
@@ -169,6 +199,26 @@ merit $\tfrac12\|r(z)\|^2$. Three implementation decisions matter:
   iterates on the acceptance problems). Tightening the outer tolerance
   therefore means tightening \code{innerMagTol}, not refining the Jacobian.
 \end{itemize}
+
+\paragraph{Inexact inner solves (the forcing sequence).} There is no reason
+to solve the linearized subproblem accurately while the outer iterate is
+far from the solution: the classical inexact-Newton analysis of Dembo,
+Eisenstat, and Steihaug \cite{dembo1982} shows convergence is retained when
+each linearized system is solved only to a relative tolerance (a
+\emph{forcing term}) that shrinks appropriately, and Eisenstat--Walker
+\cite{eisenstat1996} give practical schedules tying the forcing term to the
+current residual. \code{solveVI}'s factory overload implements the
+residual-proportional member of that family,
+$\mathit{innerTol}_k = \mathrm{clamp}(c \cdot \|r(z_k)\|^2,
+\mathit{floor}, \mathit{cap})$ with $c = 10^{-2}$ --- exactly the
+\code{min(5e-4, n0/100)} rule the project's reference Octave scripts have
+always used, whose empirical signature (thousands of inner iterations on
+the first linearizations, around a hundred on the last) was the original
+motivation. Two library-specific notes: the tolerances are on \emph{squared}
+residuals like everything else here, and the floor keeps the endgame
+consistent with the fixed-tolerance floor law above (the outer residual
+floor scales with the inner tolerance, so the forcing floor is what a
+tight \code{outerTol} ultimately leans on).
 
 The Jacobian itself is a 4th-order central difference with per-component
 steps $h_j = \mathrm{stepRel}\cdot\max(|z_j|, 1)$ snapped to exactly
@@ -517,6 +567,44 @@ stationarity rows. The concrete instance in the acceptance suite
 (\code{alloceff01cm.gms}, transcribed in
 \code{test/gams\_alloceff\_test.cpp}) is one example of this family, at
 $M = 6$ actors and $N = 10$ options.
+
+\emph{Coalition persistence.} A feature of this problem --- in its applied
+setting, the \emph{policy assemblage problem} --- observed consistently
+in the parametric runs: as the risk-aversion parameter sweeps, the
+\emph{coalition structure} (which actors pool their effort on a common
+option) persists across wide parameter ranges and even across equilibrium
+switches, while the option \emph{labels} are labile --- the same multiset
+of option probabilities recurs with the probabilities attached to different
+options. Interests, like economic interests generally, carry natural
+positive and negative correlations, and it is those correlations --- not
+the option identities --- that the equilibria appear to organize around.
+The model's author has seen the same behavior in other coalition-formation
+problems; we record it here as a feature of \emph{this} problem and
+deliberately make no stronger claim: establishing it as a regularity would
+take sweeps over thousands of instances (uniform and variously structured
+payoffs), an empirical characterization, and an algebraic delineation of
+when it does and does not occur.
+
+\emph{Provenance and interior equilibria.} The test instance is not
+arbitrary: it is the ``small example'' of the PME framework paper (its
+\S4.4.6), whose rewards are value-added changes of the six sectors of a
+synthetic Leontief input-output economy under ten approximately
+GDP-neutral tax policies --- which is why its interest correlations are
+economically structured rather than random. The paper's own solve of this
+instance (forward-backward splitting, Section~\ref{sec:a-fbs}) reported an
+\emph{interior} point --- supports $\{4, 6, 9\}$ with actor~1
+\emph{splitting} its effort across options 4 and 6, the paper's
+``hedging'' narrative --- distinct from the all-in vertex equilibrium $E$.
+Whether that point is a genuine second (interior) equilibrium or an
+artifact of the historical run's looser, step-based stopping rule
+($\sim$15{,}000 iterations to $\sim$$10^{-6}$) is an \emph{open question}:
+this library's faithful reimplementation of the same splitting method
+converges to the vertex $E$ from the same start --- at both the historical
+strength floor $\epsilon = 0.1$ and the library default $0.0108$, which
+also makes $E$'s identity robust to a tenfold change in $\epsilon$ and
+gives $E$ a fourth independent method-class confirmation. The question is
+decidable by restarting the iteration from the historical allocation and
+measuring its natural residual; it is recorded here rather than resolved.
 
 The transcription makes two formally-justified moves. First, the GAMS
 intermediates ($\mathrm{nfv}_p$, $\sigma_p$, $\gamma$) are declared

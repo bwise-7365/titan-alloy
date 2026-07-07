@@ -26,6 +26,7 @@
 #include "solodovsvaiter.hpp"
 #include "chainedsolver.hpp"
 #include "mehrotraipm.hpp"
+#include "fbshyz04.hpp"
 #include "fdjacobian.hpp"
 #include "armijo.hpp"
 
@@ -66,6 +67,17 @@ namespace VINCP {
                                     ChainedSolverParams{},
                                 const IterationLogger& logger =
                                     IterationLogger{});
+  InnerSolver makeFbsHyz04Solver(double magTol, int iterMax, int iterFreq,
+                                 const FbsHyz04Params& params = FbsHyz04Params{},
+                                 const IterationLogger& logger =
+                                     IterationLogger{});
+
+  // Inner-solver FACTORY seam: given the squared inner tolerance to solve to,
+  // return a bound InnerSolver. Lets the outer loop choose the inner
+  // tolerance PER ITERATION (the inexact-Newton forcing sequence below);
+  // adapt any engine with a one-line lambda over its make*Solver adapter,
+  //     [=](double tol) { return makeBsHe94bSolver(tol, iterMax, 0); }.
+  using InnerSolverFactory = function<InnerSolver(double innerMagTol)>;
 
   // Adapter for the interior-point engine. Unlike the projection adapters it
   // needs the free/complementarity split up front, and the returned functor
@@ -93,6 +105,22 @@ namespace VINCP {
 
     // Central-difference Jacobian relative step (<= 0 => default eps^(1/5)).
     double fdStepRel = -1.0;
+
+    // Inexact-Newton forcing sequence (Dembo-Eisenstat-Steihaug; the exact
+    // rule of the reference Octave scripts, min(5e-4, n0/100)). Consumed
+    // ONLY by the InnerSolverFactory overload of solveVI: at each outer
+    // iteration the inner SQUARED tolerance is
+    //     innerTol_k = clamp(forcingRatio * residual_k,
+    //                        forcingFloor, forcingCap),
+    // with residual_k the current squared natural residual -- loose inner
+    // solves far from the solution (where precision would be wasted: the
+    // linearization is about to move anyway), tight ones near it (where the
+    // outer floor is set by the inner tolerance). Validated by that
+    // overload: all three positive, forcingFloor <= forcingCap,
+    // forcingRatio < 1.
+    double forcingCap   = 5.0e-4;
+    double forcingRatio = 1.0e-2;
+    double forcingFloor = 1.0e-14;
 
     // Cheap no-progress cutoff: stop honestly (converged = false) after this
     // many CONSECUTIVE outer iterations in which the residual fails to improve
@@ -145,6 +173,34 @@ namespace VINCP {
                    const JosephyNewtonParams& params = JosephyNewtonParams{},
                    const OuterLogger& logger = OuterLogger{},
                    const Projector& projector = Projector{});
+
+  // The FORCING-SEQUENCE overload: identical outer loop, but the inner
+  // solver is rebuilt each outer iteration by 'innerFactory' at the
+  // tolerance the forcing schedule dictates (see JosephyNewtonParams).
+  // Compared with binding one tight tolerance up front, the early inner
+  // solves are dramatically cheaper at no cost to the final accuracy --
+  // the profile of the reference Octave runs (thousands of inner
+  // iterations early, ~a hundred late). Throws std::invalid_argument on an
+  // unset factory or forcing parameters outside their ranges, and
+  // std::runtime_error if the factory returns an empty solver.
+  VIResult solveVI(const VIModel& model,
+                   const VectorXd& z0,
+                   const InnerSolverFactory& innerFactory,
+                   const JosephyNewtonParams& params = JosephyNewtonParams{},
+                   const OuterLogger& logger = OuterLogger{},
+                   const Projector& projector = Projector{});
+
+  // Plain-vanilla Josephy-Newton in ONE call, for callers who want simple
+  // and fast: bsHe94b inner (fixed contractive metric, factored once per
+  // linearization) under the forcing sequence, every other control at its
+  // default. Deliberately no basin control: on problems with multiple
+  // equilibria it converges quickly to WHICHEVER equilibrium its trajectory
+  // enters -- deliberate equilibrium selection is the alternating chain's
+  // job (alternatingchain.hpp). Throws as solveVI does.
+  VIResult solveVIVanilla(const VIModel& model,
+                          const VectorXd& z0,
+                          double outerTol = 1.0e-10,
+                          int outerIterMax = 100);
 
 } // namespace VINCP
 

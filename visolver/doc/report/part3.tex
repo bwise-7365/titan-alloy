@@ -25,7 +25,7 @@ reproduces it.
 
 The suite is GoogleTest, fetched by CMake \code{FetchContent} at a pinned
 release tag and compiled by the project's own toolchain and flags. At the
-time of writing it stands at 111 test cases, all green, exercised by the
+time of writing it stands at 132 test cases, all green, exercised by the
 aggregate targets of Chapter~\ref{ch:manual}. Beneath GoogleTest sits a
 thin shared harness (\code{utils.hpp}): a bound solver is a
 \code{SolveFn} (everything captured but the start point), a pass/fail
@@ -259,7 +259,12 @@ project's history. The alternating chain of Section~\ref{sec:t-deploy},
 pointed at the same formulation from the same deterministic default start,
 converges \emph{to $E$} (\code{saoe\_chain\_test}, run 2026-07-06,
 feasibility and RMSE at \code{saoe\_test}'s own bars) --- its third
-distinct success on a nonmonotone game. A seeded $20 \times 12$ companion
+distinct success on a nonmonotone game. The forward-backward splitting
+engine (\code{fbs\_hyz04\_test}, same day) then added a \emph{fourth}
+independent method-class confirmation of $E$ --- and showed $E$ robust to
+a tenfold change in the model's strength floor $\epsilon$, converging to
+the same point at both $\epsilon = 0.0108$ and the historical
+$\epsilon = 0.1$. A seeded $20 \times 12$ companion
 instance (sign-quota-constrained random rewards; no known equilibrium)
 converges to a feasible allocation in the same test, as the scale datum.
 

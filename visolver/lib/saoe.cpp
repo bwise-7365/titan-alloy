@@ -65,8 +65,21 @@ namespace VINCP {
     return z0;
   }
 
+  VectorXd
+  saoePayoffVariance(const MatrixXd& R, const MatrixXd& e, double eps)
+  {
+    if (R.rows() != e.rows() || R.cols() != e.cols()) {
+      throw std::invalid_argument("saoePayoffVariance: R and e must be the same shape.");
+    }
+    const VectorXd prob = saoeProbabilities(e, eps);
+    const VectorXd mean = R * prob;
+    const VectorXd meanSq = R.cwiseProduct(R) * prob;
+    return meanSq - mean.cwiseProduct(mean);
+  }
+
   VIModel
-  saoeModel(const MatrixXd& R, const VectorXd& S)
+  saoeModel(const MatrixXd& R, const VectorXd& S, double riskAversion,
+            double epsilon)
   {
     if (0 >= R.rows() || 0 >= R.cols()) {
       throw std::invalid_argument("saoeModel: R must be non-empty.");
@@ -80,10 +93,26 @@ namespace VINCP {
     const Index N = R.cols();       // options
     const Index nEffort = N * M;    // effort variables
     const Index dim = nEffort + M;  // + one multiplier per actor
-    const double eps = saoeEps(R);
+    const double eps = (0.0 < epsilon) ? epsilon : saoeEps(R);
+
+    // Per-actor risk coefficients, CONSTANT by construction (see the header):
+    // alpha_i = a * ln2 / halfSpread_i, halfSpread_i = (max_j - min_j) R_ij / 2.
+    VectorXd alpha = VectorXd::Zero(M);
+    if (0.0 != riskAversion) {
+      const double ln2 = std::log(2.0);
+      for (Index i = 0; i < M; ++i) {
+        const double halfSpread =
+            0.5 * (R.row(i).maxCoeff() - R.row(i).minCoeff());
+        // A constant reward row has nothing for risk to price (guarded;
+        // impossible for generated instances, whose rows carry both signs).
+        if (0.0 < halfSpread) {
+          alpha(i) = riskAversion * ln2 / halfSpread;
+        }
+      }
+    }
 
     // Complementarity map G(y), y = [ e (row-major), lambda ], all non-negative.
-    const auto G = [R, S, eps, M, N, nEffort](const VectorXd& y) -> VectorXd {
+    const auto G = [R, S, eps, M, N, nEffort, riskAversion, alpha](const VectorXd& y) -> VectorXd {
       MatrixXd e(M, N);
       for (Index i = 0; i < M; ++i) {
         for (Index j = 0; j < N; ++j) {
@@ -94,14 +123,31 @@ namespace VINCP {
       VectorXd colEff = e.colwise().sum().transpose();
       colEff.array() += eps;
       const double D = colEff.sum();
-      const VectorXd u = R * (colEff / D);   // u_i = sum_j R_ij P_j
+      const VectorXd prob = colEff / D;
+
+      // The reward each actor STEERS BY: R itself when risk-neutral, the
+      // risk-adjusted S_ij = R_ij (1 - alpha_i (R_ij - mu_i)) otherwise (see
+      // the header; alpha is the constant spread-calibrated coefficient, mu
+      // the mean under the CURRENT probabilities). The a = 0 branch is
+      // skipped outright so the risk-neutral model stays arithmetically
+      // identical to the historical one.
+      MatrixXd steer = R;
+      if (0.0 != riskAversion) {
+        const VectorXd mu = R * prob;
+        for (Index i = 0; i < M; ++i) {
+          for (Index j = 0; j < N; ++j) {
+            steer(i, j) = R(i, j) * (1.0 - alpha(i) * (R(i, j) - mu(i)));
+          }
+        }
+      }
+      const VectorXd u = steer * prob;   // u_i = sum_j S_ij P_j
 
       VectorXd g(nEffort + M);
-      // Effort block: G_{ij} = lambda_i - dU_{ij}, dU_{ij} = (R_{ij} - u_i)/D.
+      // Effort block: G_{ij} = lambda_i - dU_{ij}, dU_{ij} = (S_{ij} - u_i)/D.
       for (Index i = 0; i < M; ++i) {
         const double lam = y(nEffort + i);
         for (Index j = 0; j < N; ++j) {
-          g(i * N + j) = lam - (R(i, j) - u(i)) / D;
+          g(i * N + j) = lam - (steer(i, j) - u(i)) / D;
         }
       }
       // Budget block: G_i = S_i - sum_j e_{ij}.

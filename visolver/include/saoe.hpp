@@ -28,6 +28,42 @@ namespace VINCP {
   // Which inner LVI solver the Josephy-Newton loop uses.
   enum class InnerMethod { Han, He };
 
+  // ---------------------------------------------------------------------------
+  // Risk aversion (the PME framework paper, section "Risk Aversion in
+  // Coalition Formation", eq. 4.53; functional form as in the reference
+  // Octave esJ.m). Each actor evaluates a RISK-ADJUSTED reward in place of R:
+  //     S_ij = R_ij * (1 - alpha_i * (R_ij - mu_i)),
+  // where mu_i = sum_j P_j R_ij is the actor's probability-weighted mean
+  // reward under the CURRENT option probabilities, and alpha_i is a
+  // CONSTANT per actor, set from the spread of its potential rewards
+  // (revised 2026-07-06, replacing the Octave's state-dependent
+  // alpha_i = a / stdev_i(P) after that feedback produced threshold
+  // behavior in the parametric runs):
+  //     halfSpread_i = (max_j R_ij - min_j R_ij) / 2,
+  //     alpha_i      = a * (ln 2 / halfSpread_i).
+  // Interpretation of the dimensionless knob 'a': at a = 1, losing half the
+  // spread hurts twice as much as gaining half the spread helps (the
+  // exponential-utility calibration u(x) ~ -exp(-alpha x), where
+  // |u(-h)-u(0)| / |u(h)-u(0)| = e^{alpha h} = 2 at alpha h = ln 2).
+  // a = 0 is risk-neutral, a > 0 risk-averse, a < 0 risk-seeking. Guard: a
+  // constant reward row (halfSpread_i = 0 -- impossible for generated
+  // instances, whose rows carry both signs) has nothing for risk to price,
+  // and alpha_i is taken as 0.
+  //
+  // At a = 0 the adjustment is skipped outright, so the risk-neutral model
+  // is ARITHMETICALLY IDENTICAL to the unparameterized one -- the a = 0
+  // acceptance criterion is exact equality, not a tolerance match.
+  // ---------------------------------------------------------------------------
+
+  // Per-actor variance of the ORIGINAL reward R under the option
+  // probabilities implied by the effort matrix e (M x N):
+  //     var_i = sum_j P_j R_ij^2 - (sum_j P_j R_ij)^2.
+  // The risk-aversion acceptance criterion evaluates this at competing
+  // equilibria: for a > 0 every actor's variance must be no more than at
+  // the a = 0 equilibrium of the same problem. Throws std::invalid_argument
+  // on a size mismatch between R and e.
+  VectorXd saoePayoffVariance(const MatrixXd& R, const MatrixXd& e, double eps);
+
   // Controls for the SAOE solve (forwarded to the Josephy-Newton outer loop and
   // the inner LVI solver).
   struct SaoeParams {
@@ -73,8 +109,17 @@ namespace VINCP {
   // solving it -- for callers that drive their own engine or composition on
   // the same problem (e.g. the alternating chain in the equilibrium-selection
   // tests). Identical packing and G map to what saoe() uses internally.
+  // riskAversion is the fractional risk aversion 'a' above (default 0 =
+  // risk-neutral, the historical model, skipped-adjustment identical).
+  // epsilon overrides the model's strength floor: <= 0 (the default) means
+  // saoeEps(R) = RMS(R)/1e4; a positive value is used as given. The override
+  // exists for the eps-regime experiments: the 2022 pmedemo runs used the
+  // much larger eps = RMS(weights)/1e3 ~ 0.1 on the reference instance, and
+  // the smoothing appears to govern whether INTERIOR (split-effort)
+  // equilibria exist beside the all-in vertex ones.
   // Throws std::invalid_argument on an empty R or S.size() != R.rows().
-  VIModel saoeModel(const MatrixXd& R, const VectorXd& S);
+  VIModel saoeModel(const MatrixXd& R, const VectorXd& S,
+                    double riskAversion = 0.0, double epsilon = -1.0);
 
   // The deterministic start saoe() uses when given no z0: e_{ij} = S_i/(N+1)
   // (spends a little under budget), lambda = 0.

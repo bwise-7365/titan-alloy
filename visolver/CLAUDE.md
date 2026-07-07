@@ -73,6 +73,12 @@ Two solver layers over one shared core; the dependency arrows point one way
     GLOBALIZER (`O(1/sqrt(k))` tail whenever `||F(x*)|| > 0`), not a finisher.
   - `chainedSolodovHe` (`include/chainedsolver.hpp`) — SS to a loose target,
     then bsHe94b warm-started from its iterate.
+  - `fbsHyz04` (`include/fbshyz04.hpp`) — forward-backward splitting
+    (He-Yuan-Zhang 2004, ported from the author's pmedemo): the GENERAL
+    monotone VI directly — takes a `VectorField` F (not `(M, q)`) plus any
+    `Projector`; matrix-free, Jacobian-free, two F-evals + two projections
+    per iteration, adaptive step from a smoothed secant Lipschitz estimate.
+    Affine adapter `makeFbsHyz04Solver` for the InnerSolver seam.
   - `mehrotraIpm` (`include/mehrotraipm.hpp`) — Mehrotra predictor-corrector
     interior point for the monotone MIXED LCP over `R^n x R_+^m`. Iteration
     counts (~10-40, one dense LU each) are insensitive to degenerate optimal
@@ -121,7 +127,15 @@ Two solver layers over one shared core; the dependency arrows point one way
     `JosephyNewtonParams` also carries a no-progress cutoff (`stallIterMax`,
     default off): after that many consecutive outer iterations without relative
     residual improvement it stops honestly (converged = false) BEFORE spending
-    another Jacobian + inner solve.
+    another Jacobian + inner solve. A second overload takes an
+    `InnerSolverFactory` (`function<InnerSolver(double innerMagTol)>`) and runs
+    the inexact-Newton FORCING SEQUENCE: inner tolerance
+    `clamp(forcingRatio * residual, forcingFloor, forcingCap)` per outer
+    iteration — loose early, tight late (the Octave scripts' min(5e-4, n0/100)
+    rule; Dembo-Eisenstat-Steihaug / Eisenstat-Walker). `solveVIVanilla(model,
+    z0)` is the one-call plain entry (bsHe94b inner under the forcing
+    sequence, all defaults; NO basin control — deliberate equilibrium
+    selection is the alternating chain's job).
 
 - **Jacobian (`include/fdjacobian.hpp`, `lib/fdjacobian.cpp`)** —
   `centralDifferenceJacobian`. **4th-order** central differences (step

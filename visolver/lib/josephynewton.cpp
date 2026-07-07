@@ -7,6 +7,7 @@
 
 #include "fdjacobian.hpp"
 
+#include <algorithm>
 #include <cstdio>
 #include <limits>
 #include <stdexcept>
@@ -89,6 +90,21 @@ namespace VINCP {
   }
 
   InnerSolver
+  makeFbsHyz04Solver(double magTol, int iterMax, int iterFreq,
+                     const FbsHyz04Params& params,
+                     const IterationLogger& logger)
+  {
+    return [magTol, iterMax, iterFreq, params, logger](
+               const VectorXd& x0, const MatrixXd& M,
+               const VectorXd& q, const Projector& Pr) -> VIResult {
+      const VectorField F = [&M, &q](const VectorXd& x) -> VectorXd {
+        return M * x + q;
+      };
+      return fbsHyz04(x0, F, Pr, magTol, iterMax, iterFreq, params, logger);
+    };
+  }
+
+  InnerSolver
   makeMehrotraIpmSolver(Index numFree,
                         double magTol, int iterMax, int iterFreq,
                         const MehrotraIpmParams& params,
@@ -104,6 +120,23 @@ namespace VINCP {
     };
   }
 
+  namespace {
+
+    // One inner solve at the caller-chosen tolerance: the seam through which
+    // both solveVI overloads share the identical outer loop below. The fixed
+    // overload ignores 'innerTol'; the forcing overload builds from its
+    // factory at it.
+    using InnerAt = function<VIResult(const VectorXd& x0, const MatrixXd& M,
+                                      const VectorXd& q, const Projector& Pr,
+                                      double innerTol)>;
+
+    VIResult solveVICore(const VIModel& model, const VectorXd& z0,
+                         const InnerAt& innerAt, bool forcingP,
+                         const JosephyNewtonParams& params,
+                         const OuterLogger& logger, const Projector& projector);
+
+  } // namespace
+
   VIResult
   solveVI(const VIModel& model,
           const VectorXd& z0,
@@ -112,10 +145,79 @@ namespace VINCP {
           const OuterLogger& logger,
           const Projector& projector)
   {
-    validateModel(model, z0);
     if (!innerSolver) {
       throw std::invalid_argument("solveVI: innerSolver must be set.");
     }
+    const InnerAt innerAt = [&innerSolver](const VectorXd& x0, const MatrixXd& M,
+                                           const VectorXd& q, const Projector& Pr,
+                                           double) -> VIResult {
+      return innerSolver(x0, M, q, Pr);
+    };
+    return solveVICore(model, z0, innerAt, /*forcingP=*/false, params, logger,
+                       projector);
+  }
+
+  VIResult
+  solveVI(const VIModel& model,
+          const VectorXd& z0,
+          const InnerSolverFactory& innerFactory,
+          const JosephyNewtonParams& params,
+          const OuterLogger& logger,
+          const Projector& projector)
+  {
+    if (!innerFactory) {
+      throw std::invalid_argument("solveVI: innerFactory must be set.");
+    }
+    if (!(0.0 < params.forcingFloor && params.forcingFloor <= params.forcingCap)) {
+      throw std::invalid_argument(
+          "solveVI: forcing tolerances need 0 < forcingFloor <= forcingCap.");
+    }
+    if (!(0.0 < params.forcingRatio && params.forcingRatio < 1.0)) {
+      throw std::invalid_argument("solveVI: forcingRatio must lie in (0, 1).");
+    }
+    const InnerAt innerAt = [&innerFactory](const VectorXd& x0, const MatrixXd& M,
+                                            const VectorXd& q, const Projector& Pr,
+                                            double innerTol) -> VIResult {
+      const InnerSolver inner = innerFactory(innerTol);
+      if (!inner) {
+        throw std::runtime_error("solveVI: the inner factory returned an empty solver.");
+      }
+      return inner(x0, M, q, Pr);
+    };
+    return solveVICore(model, z0, innerAt, /*forcingP=*/true, params, logger,
+                       projector);
+  }
+
+  VIResult
+  solveVIVanilla(const VIModel& model,
+                 const VectorXd& z0,
+                 double outerTol,
+                 int outerIterMax)
+  {
+    // Simple and fast: contraction inner (factor-once metric) under the
+    // forcing sequence; everything else at its documented default.
+    const int innerIterMax = 20000;
+    const InnerSolverFactory factory = [innerIterMax](double innerTol) {
+      return makeBsHe94bSolver(innerTol, innerIterMax, 0);
+    };
+    JosephyNewtonParams params;
+    params.outerTol = outerTol;
+    params.outerIterMax = outerIterMax;
+    return solveVI(model, z0, factory, params);
+  }
+
+  namespace {
+
+  VIResult
+  solveVICore(const VIModel& model,
+          const VectorXd& z0,
+          const InnerAt& innerAt,
+          bool forcingP,
+          const JosephyNewtonParams& params,
+          const OuterLogger& logger,
+          const Projector& projector)
+  {
+    validateModel(model, z0);
     if (0 > params.stallIterMax) {
       throw std::invalid_argument("solveVI: stallIterMax must be non-negative.");
     }
@@ -201,7 +303,14 @@ namespace VINCP {
       }
 
       // Inner affine-VI solve over the same K gives the Josephy-Newton point.
-      const VIResult inner = innerSolver(z, jac, q, Pr);
+      // Under the forcing sequence, the inner tolerance tracks the current
+      // outer residual (loose early, tight late); the fixed overload's
+      // innerAt ignores the tolerance argument.
+      const double innerTol =
+          forcingP ? std::clamp(params.forcingRatio * residual,
+                                params.forcingFloor, params.forcingCap)
+                   : 0.0;
+      const VIResult inner = innerAt(z, jac, q, Pr, innerTol);
       innerIters += inner.iter;
 
       // Damp the step with an Armijo line search on the natural-map merit
@@ -223,6 +332,8 @@ namespace VINCP {
 
     return VIResult{ z, residual, iter, converged, innerIters };
   }
+
+  } // namespace
 
 } // namespace VINCP
 // ----------------------------------------------

@@ -1,9 +1,7 @@
-// Copyright Ben Paul Wise. All Rights Reserved.
-#include "alternatingchain.hpp"
-#include "josephynewton.hpp"
+﻿// Copyright Ben Paul Wise. All Rights Reserved.
 #include "mcpengines.hpp"
 #include "saoe.hpp"
-#include "semismoothnewton.hpp"
+#include "saoesupport.hpp"
 #include "utils.hpp"
 
 #include <Eigen/Dense>
@@ -42,7 +40,7 @@ using namespace VINCP;
 //      Gate: the chain converges to a feasible allocation. Timing comes
 //      from the runCase harness.
 //
-// Expanded-instance generation (kExpandedSeed): rewards R (20 x 12) drawn
+// Expanded-instance generation (kSaoeExpandedSeed): rewards R (20 x 12) drawn
 // U[-50, 100] with EXACTLY one third of the entries zero (80 of 240),
 // subject to: every column has at least one negative and at least one
 // positive entry; every row has at least two positive and at least two
@@ -53,304 +51,6 @@ using namespace VINCP;
 // impossible; the test re-verifies every constraint on the finished matrix.
 // ============================================================================
 
-namespace {
-    // ------------------------------------------------------------------
-    // Chain configuration shared by both instances.
-    // ------------------------------------------------------------------
-    constexpr double kMagTol        = 1.0e-10;  // squared natural residual
-    constexpr int    kSsnIterMax    = 300;
-    constexpr int    kOuterIterMax  = 50;       // JN outer cap (globalizer)
-    constexpr double kInnerMagTol   = 1.0e-12;  // IPM inner tolerance
-    constexpr int    kIpmIterMax    = 200;      // counts LU factorizations
-    constexpr int    kJnStallIterMax = 5;
-    constexpr int    kRoundsMax     = 8;
-    constexpr double kPerturbScale  = 0.1;
-
-    // Feasibility / match bars (same values as saoe_test).
-    constexpr double kFeasTol = 1.0e-3;
-    constexpr double kRmseTol = 1.0e-2;
-
-    SolveFn
-    makeSaoeChain(const VIModel& model)
-    {
-        return [model](const VectorXd& z0) -> VIResult {
-            JosephyNewtonParams jnParams;
-            jnParams.outerTol     = kMagTol;
-            jnParams.outerIterMax = kOuterIterMax;
-            jnParams.stallIterMax = kJnStallIterMax;
-            const InnerSolver inner =
-                makeMehrotraIpmSolver(model.n, kInnerMagTol, kIpmIterMax, 0);
-            const StageSolver globalizer = [model, inner, jnParams](const VectorXd& start) {
-                return solveVI(model, start, inner, jnParams);
-            };
-            SemismoothNewtonParams ssnParams;
-            ssnParams.magTol            = kMagTol;
-            ssnParams.iterMax           = kSsnIterMax;
-            ssnParams.nonmonotoneMemory = 4;
-            const StageSolver finisher = [model, ssnParams](const VectorXd& start) {
-                return semismoothNewtonSolve(model, start, ssnParams);
-            };
-
-            AlternatingChainParams chainParams;
-            chainParams.magTol       = kMagTol;
-            chainParams.roundsMax    = kRoundsMax;
-            chainParams.perturbScale = kPerturbScale;
-
-            const ChainStageLogger stageLog =
-                [](int round, const char* stage, double stageResidual,
-                   double bestResidual, const string& note) {
-                    if (note.empty()) {
-                        std::printf("    saoe-chain round %d %s: residual^2 %.3e (best %.3e)\n",
-                                    round, stage, stageResidual, bestResidual);
-                    }
-                    else {
-                        std::printf("    saoe-chain round %d %s threw (stalled stage): %s\n",
-                                    round, stage, note.c_str());
-                    }
-                    std::fflush(stdout);
-                    return;
-                };
-
-            return alternatingChainSolve(model, z0, globalizer, finisher,
-                                         chainParams, stageLog);
-        };
-    }
-
-    // Feasibility check: efforts non-negative and per-actor budgets respected.
-    CheckFn
-    checkFeasible(const MatrixXd& R, const VectorXd& S)
-    {
-        const Index M = R.rows();
-        const Index N = R.cols();
-        return [M, N, S](const VIResult& r) -> CheckResult {
-            const SaoeSolution sol = saoeDecode(r, M, N);
-            const double maxNeg  = -sol.e.minCoeff();
-            const double maxOver = (sol.e.rowwise().sum() - S).maxCoeff();
-            char buf[128];
-            std::snprintf(buf, sizeof buf,
-                          "feasibility: max negativity %.2e, max budget overrun %.2e (tol %.1e)",
-                          maxNeg, maxOver, kFeasTol);
-            return CheckResult{ maxNeg <= kFeasTol && maxOver <= kFeasTol, string(buf) };
-        };
-    }
-
-    // Report-only: print the decoded allocation, probabilities, and utilities.
-    CheckFn
-    printSolution(const MatrixXd& R)
-    {
-        const Index M = R.rows();
-        const Index N = R.cols();
-        return [R, M, N](const VIResult& r) -> CheckResult {
-            const SaoeSolution sol = saoeDecode(r, M, N);
-            saoePrintSolution(R, sol.e, saoeEps(R), /*latex=*/false);
-            const VectorXd u = saoeUtilities(R, sol.e, saoeEps(R));
-            std::printf("  utilities:");
-            for (Index i = 0; i < M; ++i) {
-                std::printf(" %8.3f", u(i));
-            }
-            std::printf("\n");
-            std::fflush(stdout);
-            return CheckResult{ true, "solution printed above" };
-        };
-    }
-
-    // ------------------------------------------------------------------
-    // Reference instance (saoe_test's standard data = alloceff01cm.gms).
-    // ------------------------------------------------------------------
-    constexpr int kRefActors  = 6;
-    constexpr int kRefOptions = 10;
-
-    void
-    referenceInstance(MatrixXd& R, VectorXd& S, MatrixXd& E)
-    {
-        R.resize(kRefActors, kRefOptions);
-        E.resize(kRefActors, kRefOptions);
-        S.resize(kRefActors);
-        R << 0.00,  181.42,  -50.43,  -26.32,  256.02,  -21.27, -132.68,  -65.12,  131.40,   14.54,
-             0.00,   31.24,  -46.53,  122.90,   39.47,  -12.94,   50.32,   70.03,    8.34, -109.78,
-             0.00,  -30.11,  -48.64,  -56.84,  -51.50,  -80.42, -130.30,  -54.20,   -8.75,   51.97,
-             0.00,   29.12,  160.04,  -27.68,   91.49,   80.93,  117.95,   27.88,   33.62,   72.34,
-             0.00, -199.26, -234.61,   67.80, -319.57,  270.83,  234.85,  -14.91, -236.86, -103.50,
-             0.00,   78.66,  -22.12,   14.25,  109.23,  -17.30,  -31.16,  -42.61,   31.46,  -46.13;
-
-        E << 0.00,    0.00,    0.00,    0.00,   68.00,    0.00,    0.00,    0.00,    0.00,    0.00,
-             0.00,    0.00,    0.00,   66.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,
-             0.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,  125.00,
-             0.00,    0.00,  101.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,    0.00,
-             0.00,    0.00,    0.00,    0.00,    0.00,  127.00,    0.00,    0.00,    0.00,    0.00,
-             0.00,    0.00,    0.00,    0.00,   96.00,    0.00,    0.00,    0.00,    0.00,    0.00;
-
-        S << 68.0, 66.0, 125.0, 101.0, 127.0, 96.0;
-        return;
-    }
-
-    // Gating check for the reference instance: land on E (RMSE over all
-    // M*N efforts, saoe_test's bar).
-    CheckFn
-    checkMatchesReference(const MatrixXd& E)
-    {
-        const Index M = E.rows();
-        const Index N = E.cols();
-        return [E, M, N](const VIResult& r) -> CheckResult {
-            const SaoeSolution sol = saoeDecode(r, M, N);
-            const double rmse = std::sqrt((sol.e - E).array().square().sum()
-                                          / static_cast<double>(M * N));
-            char buf[96];
-            std::snprintf(buf, sizeof buf,
-                          "RMSE vs reference equilibrium E = %.4e (tol %.1e)",
-                          rmse, kRmseTol);
-            return CheckResult{ rmse <= kRmseTol, string(buf) };
-        };
-    }
-
-    // ------------------------------------------------------------------
-    // Expanded instance generator (see the file header for the recipe).
-    // ------------------------------------------------------------------
-    constexpr int           kExpActors   = 20;
-    constexpr int           kExpOptions  = 12;
-    constexpr int           kExpZeros    = (kExpActors * kExpOptions) / 3;  // 80
-    constexpr std::uint32_t kExpandedSeed = 20260706u;
-    constexpr double kRewardLo   = -50.0;
-    constexpr double kRewardHi   = 100.0;
-    constexpr double kStrengthLo = 10.0;
-    constexpr double kStrengthHi = 100.0;
-    constexpr int    kRowPosQuota = 2;   // per row: >= 2 positive, >= 2 negative
-    constexpr int    kColPosQuota = 1;   // per column: >= 1 positive, >= 1 negative
-    constexpr int    kGenAttemptMax = 1000;
-
-    // Draw from (lo, hi) rejecting an exact zero, so sign quotas are unambiguous.
-    double
-    drawNonzero(std::mt19937& rng, double lo, double hi)
-    {
-        std::uniform_real_distribution<double> dist(lo, hi);
-        double v = 0.0;
-        do {
-            v = dist(rng);
-        } while (0.0 == v);
-        return v;
-    }
-
-    MatrixXd
-    makeExpandedRewards(std::uint32_t seed)
-    {
-        std::mt19937 rng(seed);
-        const int total = kExpActors * kExpOptions;
-
-        for (int attempt = 0; attempt < kGenAttemptMax; ++attempt) {
-            // Zero mask: exactly kExpZeros zeros, positioned so every row
-            // keeps >= 4 nonzeros (its sign quotas) and every column >= 2.
-            std::vector<int> order(total);
-            std::iota(order.begin(), order.end(), 0);
-            std::shuffle(order.begin(), order.end(), rng);
-            std::vector<bool> zeroP(total, false);
-            for (int k = 0; k < kExpZeros; ++k) {
-                zeroP[static_cast<size_t>(order[static_cast<size_t>(k)])] = true;
-            }
-            bool maskOkP = true;
-            for (int i = 0; maskOkP && i < kExpActors; ++i) {
-                int nonzero = 0;
-                for (int j = 0; j < kExpOptions; ++j) {
-                    nonzero += zeroP[static_cast<size_t>(i * kExpOptions + j)] ? 0 : 1;
-                }
-                maskOkP = (2 * kRowPosQuota <= nonzero);
-            }
-            for (int j = 0; maskOkP && j < kExpOptions; ++j) {
-                int nonzero = 0;
-                for (int i = 0; i < kExpActors; ++i) {
-                    nonzero += zeroP[static_cast<size_t>(i * kExpOptions + j)] ? 0 : 1;
-                }
-                maskOkP = (2 * kColPosQuota <= nonzero);
-            }
-            if (!maskOkP) {
-                continue;   // fresh mask
-            }
-
-            // Row quotas by construction: per row, shuffle the nonzero slots
-            // and force the first two positive, the next two negative; the
-            // rest draw from the full range.
-            MatrixXd R = MatrixXd::Zero(kExpActors, kExpOptions);
-            std::vector<bool> forcedP(total, false);
-            for (int i = 0; i < kExpActors; ++i) {
-                std::vector<int> slots;
-                for (int j = 0; j < kExpOptions; ++j) {
-                    if (!zeroP[static_cast<size_t>(i * kExpOptions + j)]) {
-                        slots.push_back(j);
-                    }
-                }
-                std::shuffle(slots.begin(), slots.end(), rng);
-                for (size_t s = 0; s < slots.size(); ++s) {
-                    const int j = slots[s];
-                    if (s < static_cast<size_t>(kRowPosQuota)) {
-                        R(i, j) = drawNonzero(rng, 0.0, kRewardHi);
-                        forcedP[static_cast<size_t>(i * kExpOptions + j)] = true;
-                    }
-                    else if (s < static_cast<size_t>(2 * kRowPosQuota)) {
-                        R(i, j) = drawNonzero(rng, kRewardLo, 0.0);
-                        forcedP[static_cast<size_t>(i * kExpOptions + j)] = true;
-                    }
-                    else {
-                        R(i, j) = drawNonzero(rng, kRewardLo, kRewardHi);
-                    }
-                }
-            }
-
-            // Column quotas by repair: redraw an unforced slot of the right
-            // column into the missing sign. Repairs touch only unforced
-            // slots, so the row quotas cannot be broken.
-            bool repairedOkP = true;
-            for (int j = 0; repairedOkP && j < kExpOptions; ++j) {
-                for (int sign = 0; repairedOkP && sign < 2; ++sign) {
-                    const bool wantPositiveP = (0 == sign);
-                    int have = 0;
-                    for (int i = 0; i < kExpActors; ++i) {
-                        const double v = R(i, j);
-                        have += (wantPositiveP ? (0.0 < v) : (v < 0.0)) ? 1 : 0;
-                    }
-                    while (have < kColPosQuota) {
-                        std::vector<int> candidates;
-                        for (int i = 0; i < kExpActors; ++i) {
-                            const size_t idx = static_cast<size_t>(i * kExpOptions + j);
-                            const bool wrongSignP =
-                                wantPositiveP ? (R(i, j) < 0.0) : (0.0 < R(i, j));
-                            if (!zeroP[idx] && !forcedP[idx] && wrongSignP) {
-                                candidates.push_back(i);
-                            }
-                        }
-                        if (candidates.empty()) {
-                            repairedOkP = false;   // restart with a fresh mask
-                            break;
-                        }
-                        std::uniform_int_distribution<size_t> pick(0, candidates.size() - 1);
-                        const int i = candidates[pick(rng)];
-                        R(i, j) = wantPositiveP ? drawNonzero(rng, 0.0, kRewardHi)
-                                                : drawNonzero(rng, kRewardLo, 0.0);
-                        forcedP[static_cast<size_t>(i * kExpOptions + j)] = true;
-                        ++have;
-                    }
-                }
-            }
-            if (repairedOkP) {
-                return R;
-            }
-        }
-        throw std::runtime_error(
-            "makeExpandedRewards: could not satisfy the sign quotas (seed pathology).");
-    }
-
-    VectorXd
-    makeExpandedStrengths(std::uint32_t seed)
-    {
-        // Separate stream from the rewards so a change to the reward recipe
-        // cannot silently reshuffle the strengths.
-        std::mt19937 rng(seed + 1u);
-        std::uniform_real_distribution<double> dist(kStrengthLo, kStrengthHi);
-        VectorXd S(kExpActors);
-        for (Index i = 0; i < kExpActors; ++i) {
-            S(i) = dist(rng);
-        }
-        return S;
-    }
-} // namespace
 
 // The equilibrium-selection experiment: from the deterministic default start
 // (the one that has always led the JN engines into the wrong basin), the
@@ -358,7 +58,7 @@ namespace {
 TEST(SaoeChain, ReferenceInstanceReachesKnownEquilibrium) {
     MatrixXd R, E;
     VectorXd S;
-    referenceInstance(R, S, E);
+    saoeReferenceInstance(R, S, E);
     saoePrintInputs(R, S, /*latex=*/false);
 
     const VIModel  model = saoeModel(R, S);
@@ -366,8 +66,8 @@ TEST(SaoeChain, ReferenceInstanceReachesKnownEquilibrium) {
     const SolveFn  chain = makeSaoeChain(model);
 
     const int failures = runCase("saoe-chain (reference 6x10)", chain, z0,
-                                 { printSolution(R), checkFeasible(R, S),
-                                   checkMatchesReference(E),
+                                 { saoePrintDecoded(R), saoeCheckFeasible(R, S),
+                                   saoeCheckMatchesReference(E),
                                    checkConvergedFlag() });
     EXPECT_EQ(0, failures)
         << "the alternating chain did not reach the reference equilibrium E "
@@ -378,35 +78,35 @@ TEST(SaoeChain, ReferenceInstanceReachesKnownEquilibrium) {
 // recipe (re-verified here), no known equilibrium. Gate: converge to a
 // feasible allocation; the runCase harness prints the timing.
 TEST(SaoeChain, ExpandedInstanceConverges) {
-    const MatrixXd R = makeExpandedRewards(kExpandedSeed);
-    const VectorXd S = makeExpandedStrengths(kExpandedSeed);
+    const MatrixXd R = saoeMakeExpandedRewards(kSaoeExpandedSeed);
+    const VectorXd S = saoeMakeExpandedStrengths(kSaoeExpandedSeed);
 
     // Re-verify every generator postcondition on the finished matrix.
     int zeros = 0;
-    for (Index i = 0; i < kExpActors; ++i) {
+    for (Index i = 0; i < kSaoeExpActors; ++i) {
         int rowPos = 0, rowNeg = 0;
-        for (Index j = 0; j < kExpOptions; ++j) {
+        for (Index j = 0; j < kSaoeExpOptions; ++j) {
             const double v = R(i, j);
             zeros  += (0.0 == v) ? 1 : 0;
             rowPos += (0.0 < v) ? 1 : 0;
             rowNeg += (v < 0.0) ? 1 : 0;
-            EXPECT_TRUE(kRewardLo <= v && v <= kRewardHi);
+            EXPECT_TRUE(kSaoeRewardLo <= v && v <= kSaoeRewardHi);
         }
-        EXPECT_GE(rowPos, kRowPosQuota) << "row " << i;
-        EXPECT_GE(rowNeg, kRowPosQuota) << "row " << i;
+        EXPECT_GE(rowPos, kSaoeRowPosQuota) << "row " << i;
+        EXPECT_GE(rowNeg, kSaoeRowPosQuota) << "row " << i;
     }
-    EXPECT_EQ(kExpZeros, zeros);
-    for (Index j = 0; j < kExpOptions; ++j) {
+    EXPECT_EQ(kSaoeExpZeros, zeros);
+    for (Index j = 0; j < kSaoeExpOptions; ++j) {
         int colPos = 0, colNeg = 0;
-        for (Index i = 0; i < kExpActors; ++i) {
+        for (Index i = 0; i < kSaoeExpActors; ++i) {
             colPos += (0.0 < R(i, j)) ? 1 : 0;
             colNeg += (R(i, j) < 0.0) ? 1 : 0;
         }
-        EXPECT_GE(colPos, kColPosQuota) << "column " << j;
-        EXPECT_GE(colNeg, kColPosQuota) << "column " << j;
+        EXPECT_GE(colPos, kSaoeColPosQuota) << "column " << j;
+        EXPECT_GE(colNeg, kSaoeColPosQuota) << "column " << j;
     }
-    for (Index i = 0; i < kExpActors; ++i) {
-        EXPECT_TRUE(kStrengthLo <= S(i) && S(i) <= kStrengthHi) << "strength " << i;
+    for (Index i = 0; i < kSaoeExpActors; ++i) {
+        EXPECT_TRUE(kSaoeStrengthLo <= S(i) && S(i) <= kSaoeStrengthHi) << "strength " << i;
     }
 
     saoePrintInputs(R, S, /*latex=*/false);
@@ -416,7 +116,7 @@ TEST(SaoeChain, ExpandedInstanceConverges) {
     const SolveFn  chain = makeSaoeChain(model);
 
     const int failures = runCase("saoe-chain (expanded 20x12)", chain, z0,
-                                 { printSolution(R), checkFeasible(R, S),
+                                 { saoePrintDecoded(R), saoeCheckFeasible(R, S),
                                    checkConvergedFlag() });
     EXPECT_EQ(0, failures)
         << "the alternating chain did not converge to a feasible allocation "
