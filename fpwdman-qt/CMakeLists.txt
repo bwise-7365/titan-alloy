@@ -78,15 +78,63 @@ qt_add_executable(fpwdman_qt
 
 target_link_libraries(fpwdman_qt PRIVATE Qt6::Widgets sbc pwcrypto)
 
-# Automatic DLL deployment for Windows
+# Automatic DLL deployment for Windows. windeployqt drops the Qt runtime next to
+# the exe -- the five Qt6 DLLs plus the platforms/ plugin -- so the build folder
+# runs stand-alone. The DLL flavor tracks the build type: a Debug build gets the
+# 'd'-suffixed debug DLLs + platforms/qwindowsd.dll; Release (and any other type)
+# gets the release DLLs + platforms/qwindows.dll.
 if(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if(WINDEPLOYQT_EXECUTABLE)
         message(STATUS "Found windeployqt: ${WINDEPLOYQT_EXECUTABLE}")
         add_custom_command(TARGET fpwdman_qt POST_BUILD
-            COMMAND "${WINDEPLOYQT_EXECUTABLE}" --debug "$<TARGET_FILE:fpwdman_qt>"
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+                    "$<IF:$<CONFIG:Debug>,--debug,--release>"
+                    "$<TARGET_FILE:fpwdman_qt>"
             COMMENT "Deploying Qt libraries to the executable directory..."
         )
+
+        # ---------------------------------------------------------------------
+        # 'package' target: a clean, shippable tarball -- NOT built by default.
+        #
+        # The build folder is full of artifacts a user must not have to sort
+        # through (.pdb/.ilk, _deps/, autogen, the test exes, CMake scaffolding).
+        # This stages ONLY the runtime into dist/fpwdman_qt/ -- the exe plus the
+        # Qt runtime windeployqt certifies as required -- then gzips it into
+        # fpwdman_qt.tgz, which unpacks to a single top-level fpwdman_qt/ folder.
+        #
+        # The stage is wiped and rebuilt every run, so nothing stale survives.
+        # Bloat is stripped (translations, software OpenGL, the D3D compiler) and
+        # the MSVC runtime is omitted -- recipients are assumed to have the VC++
+        # redistributable installed. The DLL flavor tracks the build type, so
+        # this is only meaningful against a Release build:
+        #     cmake --build <release-build-dir> --target package
+        # ---------------------------------------------------------------------
+        set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/fpwdman_qt")
+        add_custom_target(package
+            COMMAND "${CMAKE_COMMAND}" -E rm -rf "${PACKAGE_STAGE_DIR}"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory "${PACKAGE_STAGE_DIR}"
+            COMMAND "${CMAKE_COMMAND}" -E copy
+                    "$<TARGET_FILE:fpwdman_qt>" "${PACKAGE_STAGE_DIR}/"
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+                    "$<IF:$<CONFIG:Debug>,--debug,--release>"
+                    --dir "${PACKAGE_STAGE_DIR}"
+                    --no-translations
+                    --no-opengl-sw
+                    --no-system-d3d-compiler
+                    --no-compiler-runtime
+                    "${PACKAGE_STAGE_DIR}/fpwdman_qt.exe"
+            # tar from inside dist/ so the archive holds a single top-level
+            # fpwdman_qt/ folder. chdir (not the target's WORKING_DIRECTORY) is
+            # used because dist/ does not exist until make_directory above runs;
+            # a target-level WORKING_DIRECTORY would cd there before any command.
+            COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/dist"
+                    "${CMAKE_COMMAND}" -E tar czf
+                    "${CMAKE_BINARY_DIR}/fpwdman_qt.tgz" fpwdman_qt
+            COMMENT "Packaging stand-alone fpwdman_qt.tgz (exe + required Qt runtime)"
+            VERBATIM
+        )
+        add_dependencies(package fpwdman_qt)
     else()
         message(WARNING "windeployqt not found. DLLs will not be deployed automatically.")
     endif()
