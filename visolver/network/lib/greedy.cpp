@@ -14,12 +14,6 @@ namespace VINCP::Network {
 
   namespace {
 
-    double
-    rationWeight(const Instance& inst, Index i)
-    {
-      return inst.demand(i) * inst.demand(i) / inst.priority(i);
-    }
-
     void
     validateGreedyParams(const GreedyParams& params)
     {
@@ -37,37 +31,50 @@ namespace VINCP::Network {
   } // namespace
 
   VectorXd
-  rationTargets(const Instance& inst)
+  waterFillTargets(const VectorXd& demand, const VectorXd& priority,
+                   double meetable)
   {
-    validateInstance(inst);
-    VectorXd targets = VectorXd::Zero(inst.numNodes);
-    const double meetable =
-        std::min(totalDemand(inst), totalSupplyCap(inst));
+    if (demand.size() != priority.size()) {
+      throw std::invalid_argument(
+          "waterFillTargets: demand and priority sizes must match.");
+    }
+    // Rationing weight D_i^2 / P_i of entry i (only evaluated where D_i > 0,
+    // so callers' positive-priority-at-demand precondition keeps it finite).
+    const auto rationWeight = [&demand, &priority](Index i) {
+      return demand(i) * demand(i) / priority(i);
+    };
+
+    VectorXd targets = VectorXd::Zero(demand.size());
     if (0.0 >= meetable) {
       return targets;                       // nothing can move (or no demand)
     }
-    if (totalDemand(inst) <= totalSupplyCap(inst)) {
-      targets = inst.demand;                // all demand meetable (G1 boundary
+    if (demand.sum() <= meetable) {
+      targets = demand;                     // all demand meetable (G1 boundary
       return targets;                       // included: equality lands here)
     }
 
     // Shortfall: water-filling with the exclude-and-resolve clamp (G2). Each
-    // round solves lambda over the active set; nodes whose interior R_i comes
-    // out negative are fixed to 0 and the round repeats. The active set
+    // round solves lambda over the active set; entries whose interior R_i
+    // comes out negative are fixed to 0 and the round repeats. The active set
     // strictly shrinks, so at most |V_D| rounds.
-    vector<Index> active = sinkNodes(inst);
+    vector<Index> active;
+    for (Index i = 0; i < demand.size(); ++i) {
+      if (0.0 < demand(i)) {
+        active.push_back(i);
+      }
+    }
     while (!active.empty()) {
       double activeDemand = 0.0;
       double activeWeight = 0.0;
       for (const Index i : active) {
-        activeDemand += inst.demand(i);
-        activeWeight += rationWeight(inst, i);
+        activeDemand += demand(i);
+        activeWeight += rationWeight(i);
       }
       const double lambda = (activeDemand - meetable) / activeWeight;
       if (0.0 >= lambda) {
         // Remaining active demand fits under the cap: no rationing among them.
         for (const Index i : active) {
-          targets(i) = inst.demand(i);
+          targets(i) = demand(i);
         }
         return targets;
       }
@@ -75,7 +82,7 @@ namespace VINCP::Network {
       bool clampedP = false;
       vector<Index> survivors;
       for (const Index i : active) {
-        if (0.0 > inst.demand(i) - lambda * rationWeight(inst, i)) {
+        if (0.0 > demand(i) - lambda * rationWeight(i)) {
           clampedP = true;                  // excluded: stays at target 0
         }
         else {
@@ -84,7 +91,7 @@ namespace VINCP::Network {
       }
       if (!clampedP) {
         for (const Index i : active) {
-          targets(i) = inst.demand(i) - lambda * rationWeight(inst, i);
+          targets(i) = demand(i) - lambda * rationWeight(i);
         }
         return targets;
       }
@@ -92,7 +99,17 @@ namespace VINCP::Network {
     }
     // Unreachable: within a round the interior R_i sum to meetable > 0, so
     // they cannot all be negative. Guard per the throw-never-substitute stance.
-    throw std::runtime_error("rationTargets: clamping emptied the active set.");
+    throw std::runtime_error(
+        "waterFillTargets: clamping emptied the active set.");
+  }
+
+  VectorXd
+  rationTargets(const Instance& inst)
+  {
+    validateInstance(inst);
+    const double meetable =
+        std::min(totalDemand(inst), totalSupplyCap(inst));
+    return waterFillTargets(inst.demand, inst.priority, meetable);
   }
 
   GreedyResult

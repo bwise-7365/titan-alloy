@@ -16,14 +16,22 @@ namespace VINCP::Network {
   // Phase 1: rationing
   // ---------------------------------------------------------------------------
 
-  // Optimal resupply TARGETS ignoring routing and the budget: minimize the
-  // weighted quadratic shortfall subject to sum R_i <= min(total demand,
-  // total capacity). Closed form R_i = D_i - lambda D_i^2 / P_i on the active
-  // demand nodes, with the exclude-and-resolve clamp (any R_i that comes out
-  // negative is fixed to 0 and lambda re-solved over the rest; finitely many
-  // rounds). When total demand <= total capacity the targets are simply D.
-  // The result is also the budget-unconstrained LOWER bound theta_ration of
-  // the validation sandwich (formulation.md section 7).
+  // The water-filling core shared by rationTargets (whole instance) and the
+  // fleet planner's per-asset rationing (fleet-formulation.md Lemma FL1):
+  // minimize the weighted quadratic shortfall of a resupply vector against
+  // `demand` subject to sum R_i <= meetable. Closed form
+  // R_i = D_i - lambda D_i^2 / P_i on the active demand entries, with the
+  // exclude-and-resolve clamp (any R_i that comes out negative is fixed to 0
+  // and lambda re-solved over the rest; finitely many rounds). When total
+  // demand <= meetable the targets are simply D. `priority` must be positive
+  // wherever `demand` is positive; callers validate.
+  VectorXd waterFillTargets(const VectorXd& demand, const VectorXd& priority,
+                            double meetable);
+
+  // Optimal resupply TARGETS ignoring routing and the budget: waterFillTargets
+  // with meetable = min(total demand, total capacity). The result is also the
+  // budget-unconstrained LOWER bound theta_ration of the validation sandwich
+  // (formulation.md section 7).
   VectorXd rationTargets(const Instance& inst);
 
   // ---------------------------------------------------------------------------

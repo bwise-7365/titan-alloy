@@ -16,7 +16,7 @@
 namespace ui {
 struct Theme {
     // --- The frame: windows, dialogs, menu bar/menus, and label text ---------
-    static inline const QString frameBackground = QStringLiteral("#BBBBBB"); // medium-dark grey
+    static inline const QString frameBackground = QStringLiteral("#D0D0E0"); // medium grey, slightly blue
     static inline const QString frameText = QStringLiteral("#101010");       // near-black, for on-frame text
 
     // --- Editable input surfaces (deliberately NOT grey) ---------------------
