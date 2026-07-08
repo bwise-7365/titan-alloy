@@ -132,6 +132,20 @@ namespace VINCP::Network {
   void
   FlowPlanView::setInstance(const Instance& inst)
   {
+    // Bit-identical placement => keep the current pan/zoom. The fleet viewer
+    // swaps per-asset SLICES of one geometry through here, and refitting on
+    // every asset scroll would yank the view around.
+    const auto sameVectorP = [](const VectorXd& a, const VectorXd& b) {
+      if (a.size() != b.size()) {
+        return false;
+      }
+      return 0 == a.size() || 0.0 == (a - b).cwiseAbs().maxCoeff();
+    };
+    const bool samePlacementP = instance_.numNodes == inst.numNodes
+                                && 0 != inst.xCoord.size()
+                                && sameVectorP(instance_.xCoord, inst.xCoord)
+                                && sameVectorP(instance_.yCoord, inst.yCoord);
+
     instance_ = inst;
     if (nearestK_ > static_cast<int>(instance_.numNodes) - 1) {
       nearestK_ = std::max(0, static_cast<int>(instance_.numNodes) - 1);
@@ -143,7 +157,9 @@ namespace VINCP::Network {
     popupNode_ = -1;
     swapShownP_ = false;
     swapArcs_.clear();
-    fitPendingP_ = true;
+    if (!samePlacementP) {
+      fitPendingP_ = true;
+    }
     update();
     return;
   }
@@ -197,6 +213,13 @@ namespace VINCP::Network {
   {
     popupNode_ = -1;
     update();
+    return;
+  }
+
+  void
+  FlowPlanView::setNodeInfoProvider(std::function<QStringList(Index)> provider)
+  {
+    infoProvider_ = std::move(provider);
     return;
   }
 
@@ -412,6 +435,9 @@ namespace VINCP::Network {
   QStringList
   FlowPlanView::nodeInfoLines(Index node) const
   {
+    if (infoProvider_) {
+      return infoProvider_(node);
+    }
     return QStringList{
         QString::fromStdString(nodeLabel(instance_, node)),
         QString("C = %1").arg(instance_.supplyCap(node), 0, 'f', 1),

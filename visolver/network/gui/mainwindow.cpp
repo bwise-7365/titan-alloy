@@ -20,9 +20,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidgetItem>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -30,6 +32,7 @@
 #include <chrono>
 #include <cstdint>
 #include <exception>
+#include <limits>
 #include <utility>
 #include <vector>
 
@@ -151,8 +154,10 @@ namespace VINCP::Network {
     transitBox_->setValue(0);
 
     nearestBox_ = new QSpinBox(this);
-    nearestBox_->setRange(0, 0);
-    nearestBox_->setValue(0);
+    // Constructed wide so the initial value below survives (a [0, 0] range
+    // would clamp it to 0); regenerate() tightens the max to numNodes - 1.
+    nearestBox_->setRange(0, kMaxClassCount);
+    nearestBox_->setValue(5);
     nearestBox_->setToolTip("Draw an orange link from each node to its k "
                             "cheapest neighbours by (c_ij + c_ji)/2.");
 
@@ -214,6 +219,11 @@ namespace VINCP::Network {
     swapBestButton_ = new QPushButton("Best swap", this);
     swapOptButton_ = new QPushButton("Swap to optimum", this);
     swapResetButton_ = new QPushButton("Reset plan", this);
+    purifyButton_ = new QPushButton("Purify (sparsify)", this);
+    purifyButton_->setToolTip(
+        "Swap-as-pivot crossover (F4): improving 2-exchanges, then arc-count-"
+        "reducing ones within the ton-mile budget. Deliveries (and theta) are "
+        "invariant; only the routing consolidates. Runs on a worker thread.");
     QGroupBox* swapGroup = new QGroupBox("Swaps (2-exchange)", this);
     QVBoxLayout* swapLayout = new QVBoxLayout(swapGroup);
     QLabel* swapHint = new QLabel(
@@ -223,6 +233,21 @@ namespace VINCP::Network {
     swapLayout->addWidget(swapBestButton_);
     swapLayout->addWidget(swapOptButton_);
     swapLayout->addWidget(swapResetButton_);
+    swapLayout->addWidget(purifyButton_);
+
+    // Busy bar: background work (the optimal solve, purification) has no
+    // knowable duration, so the bar just refills over and over until the
+    // running operation reports back; idle, it sits empty.
+    busyBar_ = new QProgressBar(this);
+    busyBar_->setRange(0, 100);
+    busyBar_->setValue(0);
+    busyBar_->setTextVisible(false);
+    busyBar_->setFixedHeight(12);
+    busyTimer_ = new QTimer(this);
+    busyTimer_->setInterval(50);
+    connect(busyTimer_, &QTimer::timeout, this, [this]() {
+      busyBar_->setValue((busyBar_->value() + 4) % (busyBar_->maximum() + 1));
+    });
 
     // Cost histogram: all N^2 costs in K equal-width bins, K live via a spinner.
     histBinsBox_ = new QSpinBox(this);
@@ -255,6 +280,7 @@ namespace VINCP::Network {
     panelLayout->addWidget(genGroup);
     panelLayout->addWidget(modeGroup);
     panelLayout->addWidget(swapGroup);
+    panelLayout->addWidget(busyBar_);
     panelLayout->addWidget(dispGroup);
     panelLayout->addWidget(histGroup);
     panelLayout->addWidget(statusLabel_);
@@ -327,6 +353,11 @@ namespace VINCP::Network {
     connect(optimalWatcher_, &QFutureWatcher<OptimalOutcome>::finished, this,
             &MainWindow::onOptimalFinished);
 
+    // Purification reports back the same way.
+    purifyWatcher_ = new QFutureWatcher<PurifyOutcome>(this);
+    connect(purifyWatcher_, &QFutureWatcher<PurifyOutcome>::finished, this,
+            &MainWindow::onPurifyFinished);
+
     // Swap actions: right-click on the map, and the three buttons.
     connect(view_, &FlowPlanView::nodeSwapRequested, this,
             &MainWindow::onNodeSwap);
@@ -338,6 +369,8 @@ namespace VINCP::Network {
             &MainWindow::onSwapToOptimum);
     connect(swapResetButton_, &QPushButton::clicked, this,
             &MainWindow::onResetSwaps);
+    connect(purifyButton_, &QPushButton::clicked, this,
+            &MainWindow::onPurify);
 
     regenerate();
     return;
@@ -438,7 +471,7 @@ namespace VINCP::Network {
         }
         view_->setPlan(workingPlan_);
         showFlowLists(workingPlan_);
-        setSwapControlsEnabled(true);
+        refreshSwapControls();
         refreshPlanStatus();
       }
       catch (const std::exception& ex) {
@@ -466,25 +499,33 @@ namespace VINCP::Network {
       refreshPlanStatus();
     }
     else if (optimalRadio_->isChecked()) {
-      // The optimal plan is solver output: view it, but no swaps (there is
-      // nothing to improve). Cached per instance; otherwise solved on a
-      // worker thread and shown when the result lands.
+      // The optimal plan is solver output: theta is already optimal, but the
+      // FLOWS are the analytic center of the optimal face -- full of tiny
+      // shipments -- so purification (and Reset back to the pristine solve)
+      // applies. Like the greedy branch, the working copy persists across
+      // mode toggles; only a fresh instance or Reset re-copies the cache.
       view_->setNearestK(0);
       view_->clearSwapResult();
-      setSwapControlsEnabled(false);
       if (optimalValidP_) {
-        workingPlan_ = optimalResult_.plan;
-        workingKind_ = 3;
+        if (3 != workingKind_) {
+          workingPlan_ = optimalResult_.plan;
+          baseTonMiles_ = tonMiles(current_, workingPlan_);
+          swapCount_ = 0;
+          workingKind_ = 3;
+        }
         view_->setPlan(workingPlan_);
         showFlowLists(workingPlan_);
+        refreshSwapControls();
         refreshPlanStatus();
       }
       else if (!optimalBusyP_) {
+        setSwapControlsEnabled(false);
         view_->clearPlan();
         hideFlowLists();
         startOptimalSolve();
       }
       else {
+        setSwapControlsEnabled(false);
         refreshStatus("solving optimal plan...");
       }
     }
@@ -511,6 +552,7 @@ namespace VINCP::Network {
   MainWindow::startOptimalSolve()
   {
     optimalBusyP_ = true;
+    startBusy();
     refreshStatus("solving optimal plan (ipm + flow Newton, keep-all)...");
 
     // Everything the worker needs is captured BY VALUE (the instance, the
@@ -546,6 +588,7 @@ namespace VINCP::Network {
   MainWindow::onOptimalFinished()
   {
     optimalBusyP_ = false;
+    stopBusy();
     const OptimalOutcome out = optimalWatcher_->result();
     if (out.token != solveToken_) {
       return;   // stale: the instance changed while the solve ran
@@ -587,15 +630,17 @@ namespace VINCP::Network {
     else {
       head = greedyP ? QString("greedy plan") : QString("gravity plan");
     }
-    if (greedyP && swapCount_ > 0) {
-      head += QString(" (+%1 swaps, saved %2 t-mi)")
+    if ((greedyP || optimalP) && swapCount_ > 0) {
+      head += QString(" (+%1 pivots, saved %2 t-mi)")
                   .arg(swapCount_)
                   .arg(baseTonMiles_ - tm, 0, 'g', 4);
     }
     QString body = QString("\nton-miles: %1\n"
-                           "supply / demand: %2 / %3 t\n"
-                           "delivered / unmet: %4 / %5 t")
+                           "arcs: %2\n"
+                           "supply / demand: %3 / %4 t\n"
+                           "delivered / unmet: %5 / %6 t")
                        .arg(tm, 0, 'g', 4)
+                       .arg(positiveArcCount(workingPlan_))
                        .arg(totC, 0, 'f', 0)
                        .arg(totD, 0, 'f', 0)
                        .arg(delivered, 0, 'f', 0)
@@ -617,11 +662,59 @@ namespace VINCP::Network {
   }
 
   void
+  MainWindow::startBusy()
+  {
+    ++busyCount_;
+    if (!busyTimer_->isActive()) {
+      busyBar_->setValue(0);
+      busyTimer_->start();
+    }
+    return;
+  }
+
+  void
+  MainWindow::stopBusy()
+  {
+    busyCount_ = std::max(0, busyCount_ - 1);
+    if (0 == busyCount_) {
+      busyTimer_->stop();
+      busyBar_->setValue(0);
+    }
+    return;
+  }
+
+  void
   MainWindow::setSwapControlsEnabled(bool onP)
   {
     swapBestButton_->setEnabled(onP);
     swapOptButton_->setEnabled(onP);
     swapResetButton_->setEnabled(onP);
+    purifyButton_->setEnabled(onP);
+    return;
+  }
+
+  void
+  MainWindow::refreshSwapControls()
+  {
+    if (purifyBusyP_) {
+      setSwapControlsEnabled(false);   // nothing until the worker reports back
+      return;
+    }
+    if (1 == workingKind_) {
+      setSwapControlsEnabled(true);    // greedy: the full swap toolkit
+    }
+    else if (3 == workingKind_) {
+      // Optimal: interactive swaps are pointless (theta is optimal and the
+      // 2-exchange cannot change theta), but purification and the reset back
+      // to the pristine cached solve both apply.
+      swapBestButton_->setEnabled(false);
+      swapOptButton_->setEnabled(false);
+      swapResetButton_->setEnabled(true);
+      purifyButton_->setEnabled(true);
+    }
+    else {
+      setSwapControlsEnabled(false);
+    }
     return;
   }
 
@@ -743,6 +836,75 @@ namespace VINCP::Network {
     workingKind_ = 0;   // force a fresh plan (greedy or gravity) on the next mode
     view_->clearSwapResult();
     applyPlanMode();
+    return;
+  }
+
+  void
+  MainWindow::onPurify()
+  {
+    if (purifyBusyP_ || (1 != workingKind_ && 3 != workingKind_)) {
+      return;
+    }
+    // Purify a COPY off the UI thread: the spread optimal plan can carry
+    // thousands of positive arcs and each pivot rescans O(arcs^2) pairs. The
+    // greedy plan is uncapped (it ignores the budget by design); the optimal
+    // plan must stay within the budget its solve was run with.
+    purifyBusyP_ = true;
+    startBusy();
+    refreshSwapControls();
+    refreshStatus("purifying plan (swap pivots)...");
+
+    Instance inst = current_;
+    Plan plan = workingPlan_;
+    const double cap = (3 == workingKind_)
+                           ? optimalBudget_
+                           : std::numeric_limits<double>::infinity();
+    const int token = solveToken_;
+    const int kind = workingKind_;
+    purifyWatcher_->setFuture(QtConcurrent::run([inst, plan, cap, token,
+                                                 kind]() mutable {
+      PurifyOutcome out;
+      out.summary = purifyPlan(inst, plan, cap);
+      out.plan = std::move(plan);
+      out.token = token;
+      out.kind = kind;
+      return out;
+    }));
+    return;
+  }
+
+  void
+  MainWindow::onPurifyFinished()
+  {
+    purifyBusyP_ = false;
+    stopBusy();
+    const PurifyOutcome out = purifyWatcher_->result();
+    if (out.token != solveToken_ || out.kind != workingKind_) {
+      // Stale: the instance or the displayed plan kind changed mid-run.
+      // Restore whatever button states the current mode wants and move on.
+      refreshSwapControls();
+      return;
+    }
+    workingPlan_ = out.plan;
+    const int pivots =
+        out.summary.improvingSwaps + out.summary.consolidatingSwaps;
+    swapCount_ += pivots;
+    view_->setPlan(workingPlan_);
+    showFlowLists(workingPlan_);
+    refreshSwapControls();
+    refreshPlanStatus();
+    const QStringList lines =
+        (pivots > 0)
+            ? QStringList{QString("arcs %1 -> %2")
+                              .arg(out.summary.arcsBefore)
+                              .arg(out.summary.arcsAfter),
+                          QString("%1 improving + %2 consolidating pivots")
+                              .arg(out.summary.improvingSwaps)
+                              .arg(out.summary.consolidatingSwaps),
+                          QString("net saved %1 t-mi")
+                              .arg(out.summary.totalSaving, 0, 'g', 4)}
+            : QStringList{"already purified"};
+    view_->showSwapResult(-1, lines, {});
     return;
   }
 

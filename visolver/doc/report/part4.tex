@@ -553,6 +553,38 @@ improved from 25\,s to 0.04\,s on nondimensionalization alone. All
 tolerances are expressed in scaled units; results are returned in real
 units.
 
+\paragraph{The fleet generalization: a conservative formulation.} The
+fleet model (\code{network/doc/fleet-formulation.md}) extends the flow
+QP to $|A|$ asset types and $|K|$ vehicle types. Its full form couples
+the assets on every link through two aggregate constraints --- cargo
+weight $\sum_a w_a x^a_{ij} \le \sum_k T_k u^k_{ij}$ and cargo area
+$\sum_a s_a x^a_{ij} \le \sum_k A_k u^k_{ij}$, which jointly permit
+\emph{mixed loading} (one vehicle carrying a weight-bound and an
+area-bound asset simultaneously) --- and routes the vehicles $u^k$ as a
+per-type circulation. That problem has $(|A| + |K|)M^2 + 2|A|M$
+variables, roughly 35{,}000 at the 70-node default, and its KKT matrix
+is far beyond the dense factorizations every current engine relies on
+(\code{bsHe94b} factors $(M+I)$ once; the interior-point engine factors
+a Newton matrix each iteration). The shipped fleet optimizer therefore
+solves a \emph{conservative} formulation instead: each asset is loaded
+at the per-type rate $\kappa_{ak} = \min(T_k/w_a,\, A_k/s_a)$ units per
+vehicle, which satisfies both aggregate constraints without exploiting
+mixed loading, and vehicles travel out-and-back along shortest routes,
+which satisfies the circulation constructively. Under these two
+conventions --- the same ones the greedy fleet planner uses --- the
+vehicle variables reduce to $|K|$ budget rows over per-(asset, type)
+mileage rates, the per-asset shortest-route reduction applies, and the
+resulting QP has the same monotone pure-NCP structure as
+$(P_\varepsilon)$ with rank-one curvature blocks per demand cell and
+$|K|$ skew budget borders in place of one. The conservative optimum is
+an upper bound on the full model's optimum, and it is the exact optimum
+of the model the greedy planner bounds from above, so the validation
+sandwich $\theta_{\text{ration}} \le \theta^\ast \le
+\theta_{\text{greedy}}$ compares like with like. Solving the full
+link-coupled QP requires sparse solver machinery --- sparse assembly and
+factorization, or a matrix-free engine --- that the library does not yet
+have; it is recorded as future work (\code{network/plan.md}, G5i).
+
 \subsection{Strategic allocation of effort (risk-neutral)}
 \label{sec:a-saoe}
 

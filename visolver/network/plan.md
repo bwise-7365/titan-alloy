@@ -101,8 +101,40 @@ interactive screen/tolerance explorer follow.
 |----|------|------|-----------|--------|
 | F1 | **Instance viewer + node coordinates.** Retain node `(x, y)` on `Instance` (obligatory field, populated by `makeRandomInstance` for both laydowns; `validateInstance` checks it only when present, so abstract hand-built instances still pass). Qt6 `network_viewer` (`network/gui/`): draws a generated instance as a map — nodes coloured by class (supply-only / both / demand-only / **transit**), sized by tonnage, with a legend. Mouse **pan (drag) + wheel zoom**, a **Recenter** button restoring the fitted view, and a 0..N-1 **"closest links"** spinner drawing orange links from each node to its k cheapest neighbours by `(c_ij + c_ji)/2`. Seed 0 = reroll (fresh time-based seed written back to the field). Instances only (no greedy/solver overlay yet). Optional target behind `VINCPNET_BUILD_GUI`, self-disabling if Qt6 is absent so the solver/test build never depends on Qt. | M | B1 | done (2026-07-05) |
 | F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. Greedy overlay + mode radio done (2026-07-05); optimal (`solveFlowPlan`) overlay done 2026-07-06 (worker-thread solve, ipm + flow Newton keep-all, cached per instance, theta*/certified/lambda status) | M | F1, B2, C4 | done, verified 2026-07-06 |
-| F4 | **FUTURE WORK -- sparse optimal plans.** The verified optimal overlay reduces ton-miles (greedy 3.1e7 -> swapped 2.8e7 -> optimal 2.5e7 on the observed instance) but the flow pattern is "full of tiny flows going all over": look for a way to limit the number of nonzero links. Note the LIKELY CAUSE: the IPM converges to the ANALYTIC CENTER of the optimal face -- the maximally spread-out optimal routing -- so tiny flows are the engine's signature, not noise. Candidate levers, cheapest first: (a) a crossover/purification post-step toward a vertex of the optimal face (basic solutions of network problems are forest-sparse); (b) a consolidation heuristic on the returned plan (reroute sub-threshold flows onto their cheapest kept alternative, re-verify feasibility + objective delta); (c) a larger tie-break epsilon (R4 bounds the objective cost); (d) a concave/fixed-charge sparsity term (changes the problem class -- last resort). PREFERRED FIRST TRY (Ben, 2026-07-06): the consolidation heuristic (b). CALIBRATING OBSERVATION (same day): greedy 3.1e7 -> greedy+swap 2.8e7 -> optimal 2.5e7 ton-miles -- greedy+swapping captures half the optimality gap with a sparse plan, so it "might be hard to beat"; the consolidated-optimal must justify itself against greedy+swap, not just against the spread optimal. | M | F2 | todo (noted 2026-07-06) |
+| F4 | **FUTURE WORK -- sparse optimal plans.** The verified optimal overlay reduces ton-miles (greedy 3.1e7 -> swapped 2.8e7 -> optimal 2.5e7 on the observed instance) but the flow pattern is "full of tiny flows going all over": look for a way to limit the number of nonzero links. Note the LIKELY CAUSE: the IPM converges to the ANALYTIC CENTER of the optimal face -- the maximally spread-out optimal routing -- so tiny flows are the engine's signature, not noise. Candidate levers, cheapest first: (a) a crossover/purification post-step toward a vertex of the optimal face (basic solutions of network problems are forest-sparse); (b) a consolidation heuristic on the returned plan (reroute sub-threshold flows onto their cheapest kept alternative, re-verify feasibility + objective delta); (c) a larger tie-break epsilon (R4 bounds the objective cost); (d) a concave/fixed-charge sparsity term (changes the problem class -- last resort). PREFERRED FIRST TRY (Ben, 2026-07-06): the consolidation heuristic (b). CALIBRATING OBSERVATION (same day): greedy 3.1e7 -> greedy+swap 2.8e7 -> optimal 2.5e7 ton-miles -- greedy+swapping captures half the optimality gap with a sparse plan, so it "might be hard to beat"; the consolidated-optimal must justify itself against greedy+swap, not just against the spread optimal. RESOLVED 2026-07-07 by (a)-via-swaps ("swap-as-pivot", Ben's pick): `purifyPlan` in swap.{hpp,cpp} -- opening improving pass, then best-saving ARC-COUNT-REDUCING pivots (negative saving allowed within the ton-mile budget), with later improving pivots restricted to non-spreading ones (unrestricted ones can re-spread what a spending consolidation removed -- the A<->B cycle found during design). theta invariant by construction (2-exchange never touches S/R). GUI: "Purify (sparsify)" button on greedy AND optimal overlays (worker thread -- the spread optimal plan has thousands of arcs at O(arcs^2) per pivot), arcs count in the status line, optimal working copy now persists across mode toggles with Reset restoring the pristine cached solve. Remaining open: length-4 pivots only reach a pairwise-pivot local optimum, not a certified vertex; longer-cycle pivots or a true transportation-simplex crossover stay future work if observed sparsity disappoints. | M | F2 | done (2026-07-07; Ben's visual check pending) |
 | F3 | **Interactive screen / tolerance explorer (optional).** Vary the k-cheapest / gap screen, tie-break epsilon, and tolerances at runtime and watch kept pairs, certificate rounds, and iterations — a visual companion to the E1 config controls and the C5/E4 performance study. | S | F1, E1 | todo |
+
+### Phase G — Fleet extension: multi-vehicle, multi-asset (added 2026-07-07, user request)
+
+Capability-scoping generalization (`doc/fleet-formulation.md`): K vehicle
+types (weight cap T_k, area cap A_k, FRACTIONAL count N_k, speed v_k) over a
+horizon H, moving A asset types (unit weight w_a, unit area s_a) with
+per-(node, asset) supply/demand/priority. Per-type vehicle-mile budgets
+B_k = N_k v_k H are DATA (not calibrated); vehicles circulate at every node
+with charged deadheading; link weight AND area constraints couple cargo to
+allocated vehicles. Everything continuous — still a linearly constrained
+convex QP. Scope: data model + validation + generator + feasibility checker
++ greedy planner ONLY; the optimizer pipeline (reduction/flowlcp/flowplan/
+flownewton/oracle) and the GUI stay single-commodity and untouched.
+
+| ID | Task | Size | Depends on | Status |
+|----|------|------|-----------|--------|
+| G1 | **Formalize the fleet model.** `doc/fleet-formulation.md`: data, variables, constraints (asset balance/delivery, link weight, link area, circulation, per-type budgets), objective; findings G-F1..G-F6 (degenerate types rejected; constrained diagonal; charged deadheading; fleetScaleHint replaces suggestedLimit; conservative per-type loading; priority-weighted service order); Lemma FL1 (per-asset rationing separability, exact) and FL2 (out-and-back circulation, exactly zero under the per-arc-difference checker). Resolves the 2026-07-01 handoff's "vehicle modeling fork": mixed cargo under joint weight+area capacity, continuous throughout. | M | A1 | done (2026-07-07) |
+| G2 | **waterFillTargets extraction.** Behavior-preserving refactor of `rationTargets`'s water-fill core into a shared `waterFillTargets(demand, priority, meetable)` (greedy.hpp), reused per asset column by G4. Existing suite re-run green (58/58) with unchanged values. | S | G1 | done (2026-07-07) |
+| G3 | **Fleet data model + generator + checker.** `fleetinstance.{hpp,cpp}`: `AssetType`/`VehicleType`/`FleetInstance` (per-(node,asset) MatrixXd columns; shared distance matrix; horizon), validation, per-asset helpers, `vehicleBudget`; `FleetProfile` + `makeRandomFleetInstance` (geometry reused from `makeRandomInstance` — its cost matrix IS the distance matrix; independent xor-tagged rng stream for fleet draws; default 2 assets x 2 vehicle types engineered so weight binds on one asset and area on the other). `fleetplan.{hpp,cpp}`: `FleetPlan` (S, R, per-asset flow, per-type vehicle matrices), evaluation, and the NINE-family `checkFleetPlan` (assetBalance, delivery, capacity, negativity, idleResupply, linkWeight, linkArea, vehicleBalance, budget). `fleetinstance_test` + `fleetplan_test` (exact per-family perturbations). | M | G1 | done (2026-07-07) |
+| G4 | **Greedy fleet planner.** `fleetgreedy.{hpp,cpp}`: `rationFleetTargets` (FL1 column-wise water-fill) + `greedyFleetPlan`: serve the largest priority-weighted fractional shortfall cell from its cheapest ROUND-TRIP source, spill across vehicle types best-unit-capacity-first, out-and-back deadhead legs (FL2), exact-zero assignment of every binding resource (targets, caps, budgets — the sliver-loop guard), unservable marking on budget exhaustion, iteration cap 3mA+K+2; reports per-type miles/utilization, unserved cells, shortfall, and fleetScaleHint via an unlimited-budget advisory pass. `fleetgreedy_test`: per-asset rationing vs single-commodity water-fill, exact small cases (weight-bound, area-vs-weight, exact type mixing with utilization EXACTLY 1 on the drained type), graceful starvation, random-profile feasibility + sandwich ordering. | M | G2, G3 | done (2026-07-07) |
+| G5a | **Fleet optimizer: formulation + debt records.** fleet-formulation.md sections 9+ (reduced conservative QP; Lemma FL3 per-asset shortest-route reduction; Lemma FL4 path out-and-back circulation; no-overshoot argument; findings G-F7 conservative-vs-link-coupled, G-F8 K budget rows, G-F9 purify entry-usage cap); report Ch. 4 paragraph (conservative formulation chosen because the full link-coupled QP needs sparse solver machinery); on-disk memory + pending task for the sparse-machinery debt. User decisions 2026-07-07: conservative model; screen now / structured Newton later; purify saving >= 0 only. | M | G4 | done (2026-07-07) |
+| G5b | **MCP derivation checked with Maxima.** doc/fleet-mcp-check.mac in the ns2-newton-check.mac style: jacobian(G) of the reduced-QP KKT map reproduces the designed M block layout entry-for-entry on a mixed fixture (2 assets x 2 sources x 2 sinks x 2 types, asset 2 capable on type 1 only -- the incapable combos get no variable); symmetric part = per-cell rank-one blocks (borders cancel); the quadratic form is EXACTLY sum over cells of Q (cell sum)^2 (PSD as a sum of squares); KKT identities at hand-solved unconstrained, budget-bound (lambda* > 0), and capacity-bound (mu* > 0) optima on exact rationals; tie-break type selection (dear-type slack = eps (rho2 - rho1) exactly); unpack identities. RUN LIVE (Maxima 5.49 at C:\maxima-5.49.0): ALL 9 CHECKS PASS. C++ (G5d) cites checks by number. | M | G5a | done (2026-07-07, Maxima-verified) |
+| G5c | **fleetreduction.{hpp,cpp} + test.** Shared shortest routes on the distance matrix (computeShortestRoutes on a distance-as-cost view); per-asset REUSE of makeReducedProblem VERBATIM, fed a routes copy whose .distance is the round-trip matrix d-hat + d-hat^T (only .distance/.selfDistance are read, so the one-way successors in the copy are harmless) -- shipCost comes out as rho-hat with the screen logic untouched; kappa matrix; throws on assets with demand but no supply or no capable type. 4 tests. | M | G5a | done (2026-07-07) |
+| G5d | **fleetlcp.{hpp,cpp} + test.** buildFleetLcp: z = [y (cell-major, capable types only) | mu (per supply cell) | lambda (K rows)]; defaultFleetTieBreakEpsilon = 1e-8 (sum P) / (sum B); unpackFleetLcp: outbound path walk for cargo + loaded vehicles, reverse path walk for deadheads (self pairs close their own loop; circulation exact per arc only on single-arc routes, to rounding on multi-hop loops). 5 tests: layout/skew/Q-block/eigen-monotonicity (SMALL profile -- the 70-node keep-all fixture at ~6,500 vars took tens of Debug minutes in the eigensolve and the numVars^2 assertion sweep, found as a hung first run), hand KKT at the Maxima check-4/5 optima, multi-hop round-trip unpack, reject-bad. | M | G5b, G5c | done (2026-07-07) |
+| G5e | **fleetsolve.{hpp,cpp} + test.** solveFleetPlan mirroring flowplan.cpp: nondimensionalize (units, miles, budgets), per-asset screen (default maxSourcesPerSink = 6), certificate loop (gain vs min-over-types price), engine dispatch reused (ipm dense default). FleetSolveResult with per-type lambda_k. LOAD-BEARING TEST: A=1/K=1 equivalence with solveFlowPlan on a symmetric-distance fixture (cost = (d + d^T)/kappa, L = B, binding budget so the lambda comparison is nontrivial) -- PASSES, inheriting the oracle-validated single-commodity chain; plus certificate recovery of a screened-out source the optimum needs, sandwich + feasibility + shadow prices on a small random profile, reject-bad. "chain" engine and "flow" Newton factory deliberately not offered (G5h). | L | G5d | done (2026-07-07) |
+| G5f | **purifyFleetPlan + test.** Per asset: purifyPlan (exists) on the round-trip-cost slice with tonMileCap = that asset's entry usage (saving >= 0 initially, never exceeding entry level, G-F9); the vehicle reallocator extracted from swapFleetToLocalOptimum into a shared helper; one rebuild at the end. Tied-routing fleet test: 4 -> 2 arcs at zero saving, deliveries bitwise unchanged, miles equal, exactly feasible. | S | G5e | done (2026-07-07) |
+| G5g | **Fleet viewer: Optimal Fleet Plan + Purify.** Optimal radio, worker-thread solve (token guard, per-instance cache, NO calibration pre-pass -- budgets are data); the fleet window gains its own busy bar; working-plan/kind architecture (0 none / 1 greedy / 2 optimal) so swaps and purification persist across mode/asset toggles and Reset restores the cached plan; Purify (worker thread) enabled for greedy AND optimal; Swap to Optimum stays greedy-only; status shows live theta/utilization plus certified flags and per-type lambda_k for the optimal plan. Builds clean; all 34 fleet tests green. CAVEAT for Ben's run: the Optimal solve at the 4x3 GUI default is a ~2,500-dim dense-LU IPM -- expect noticeable Debug wall time (the busy bar covers it); Release is quick. A Debug-scale timing run was stopped before completing; the full ^Network suite gate is handed to Ben's run (fleet suites verified green 34/34 just before close). | M | G5e, G5f | done (2026-07-07; Ben's build+run pending) |
+| G5h | **FUTURE WORK -- fleet structured Newton factory.** Per-cell Sherman-Morrison + dual Schur of size numSupplyCells + K; needs its own Maxima check; makes keep-all fast. Not this week. | L | G5e | todo (follow-on) |
+| G5i | **FUTURE WORK -- sparse solver machinery for the full link-coupled fleet QP.** Sparse assembly + sparse factorization or matrix-free engine behind the InnerSolver interface (or an external QP solver), enabling the aggregate per-link weight/area coupling with mixed loading and explicit vehicle circulation (~(A+K)m^2 variables). Recorded debt from the G5a decision; memory `sparse-solver-machinery-needed`. | L | G5e | todo (follow-on) |
+| G6 | **Fleet viewer (fleet_viewer).** Second Qt executable twinned from the network viewer: Vehicle types / Asset types spinners (1-10, defaults 3/4) drawing catalog prefixes (`assetCatalog`/`vehicleCatalog`, 10 fixed types each, first two = the FleetProfile defaults); same generation path as the fleet tests (makeRandomFleetInstance -> greedyFleetPlan, synchronous); modes None/Closest/Greedy Fleet Plan; top-right "Asset Displayed" spinner (1..A) slices the map/lists/histogram per asset via single-commodity Instance/Plan slices (distance matrix doubles as slice cost); node popups show full per-asset C/D vectors via a new FlowPlanView info-provider hook; FlowPlanView now keeps pan/zoom when the placement is bit-identical (asset scrolling does not refit). | M | G4, F1 | done (2026-07-07; Ben's visual check pending) |
+| G8 | **Fleet swap improvement + viewer button.** `fleetswap.{hpp,cpp}`: `swapFleetToLocalOptimum(inst, plan)` drives each asset class in turn to a 2-exchange local optimum by calling the EXISTING single-commodity `swapToLocalOptimum` verbatim on a per-asset slice whose cost matrix is the ROUND-TRIP distance d_ij + d_ji (deadhead charged, G-F3; d_ii on the diagonal); deliveries/theta bit-invariant. Vehicles cannot swap along (u aggregates assets per link), so the vehicle matrices are REBUILT from the swapped flows by the greedy transport rule (best `unitCapacity` first within budgets, out-and-back, exact-zero drains) -- `unitCapacity` promoted from fleetgreedy's anonymous namespace to a shared fleetinstance function (G-F5). Order-pathological reallocation overflow throws (defensive; an allocation always exists since per-asset unit-round-trip-miles only shrink). `fleetswap_test` (4): exact uncrossing with vehicle rebuild, per-asset turn-taking, fixed point, random greedy plan improved with budgets/feasibility held and resupply bitwise unchanged. Fleet viewer gains a "Swap to Optimum" button (greedy plan mode only; popup shows swaps per asset + vehicle-miles before/after; utilization/miles bookkeeping refreshed). | M | G4, G6 | done (2026-07-07; Ben's visual check pending) |
+| G7 | **Fleet distance matrix: bare Euclidean + jitter.** Replace the inherited base cost model (100-mile floor + 1.35x scale) with bare Euclidean separation times an independent per-direction U[1, 1 + distanceJitterMax] multiplier (default 5%, so d_ij/d_ji within [1/1.05, 1.05]); d_ii ~ U[selfDistanceLo, Hi] (default 1-5 mi); 1-mile min-separation guard for coincident placements; drawn AFTER the C/D/P draws so a seed's supply/demand pattern is unchanged. FleetProfile gains distanceJitterMax + selfDistance band (validated). Effect on the 20260704 1x1 case: delivered 5,753 -> 14,578 u, avg round trip/unit 450 -> 178 mi, fleetScaleHint 4.32 -> 2.34, budget still 100% used. | S | G3 | done (2026-07-07) |
 
 ### Phase D — Technical report (LaTeX, 20-50 pp)
 
@@ -128,6 +160,7 @@ chapter).
 | D3 | **Part III (mathematical appendix).** Full formalization; algorithm specification; proofs: convexity + existence/uniqueness of `R*`, reduction lemma, KKT <-> mixed LCP equivalence, monotonicity, convergence of the projection-contraction method (cited + conditions verified). Now also: chained-solver rationale (SS global convergence + the O(1/sqrt(k)) tail analysis motivating the chain). | L | A3, C4, E4 | drafted (report Part IV; Ben-revised) |
 | D5 | **Part IV (testing appendix; added gate 15 at user request).** How thoroughly the result was tested: known-solution unit tests; brute-force cross-checks (Floyd-Warshall vs path enumeration); the INDEPENDENT oracle (different formulation AND solver, validating Lemma R1 end to end); hand-derived KKT points pushed through `M z + q`; R3 certificates as per-run optimality proofs; the sandwich bounds; feasibility checkers (incl. the F1 shortcut test); the SS calibration story (honest failure -> globalization-grade bars); benchmark methodology; the visual evidence from the Phase-F viewer/overlay. | M | C3, C5, E4, F1 | drafted (report Part III; Ben-approved; viewer visual evidence pending F2) |
 | D4 | **Assembly and final pass.** Merge, cross-reference, numbers from C5, page-count check (20-50), consistency read. | M | D1, D2, D3, D5, C5 | done 2026-07-06 (terminology/cross-ref/number sweep) |
+| D6 | **Testing-chapter section on the network GUI.** Explain the viewer's main layout (instance panel, Show Links modes, swaps/purify group, busy bar, rankings lists, status line) with a large figure `doc/images/initial-nw-gui.png` (image present as of 2026-07-07). Prose per `../../doc/style-instructions.md` (standing instruction for all written products, Ben 2026-07-07). SCOPE GREW at Ben's request to a full "Visual validation" section (`sec:t-viewers`, part3.tex after case study 1): network viewer walkthrough against the figure; re-implementation-grade pseudo-code (target: Java 17) for waterFill + greedyPlan, bestSwap + swapToOptimum, and the budget-limited fleetGreedy; the optimizer behind the Optimal overlay named; the tiny-flows explanation (interior point -> analytic center vs edge-following -> forest-sparse vertex) and the purify pass; the fleet viewer with asset/vehicle class definitions. First figure in the report (43 -> 51 pp). | S | D5, F2 | done (2026-07-07; Ben's read pending) |
 
 ## Review gates
 
@@ -664,5 +697,172 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   shows certified/converged flags, theta*, budget, lambda; swaps disabled
   (nothing to improve); rankings/status via the shared working-plan
   pattern (workingKind_ 3).
+- 2026-07-07: Phase G (fleet extension) added and G1-G4 done in one pass
+  (user-approved plan, Claude-run build+tests this time; Ben's own run still
+  welcome). Model per `doc/fleet-formulation.md`: K vehicle types (T_k, A_k,
+  fractional N_k, v_k), A asset types (w_a, s_a), per-(node,asset) C/D/P,
+  ONE shared distance matrix, budgets B_k = N_k v_k H as DATA, circulation
+  with CHARGED deadheading, link weight+area coupling. User decisions
+  recorded: greedy+data-model only (optimizer untouched, G5 future);
+  per-(node,asset) priorities; single distance matrix; deadhead miles count.
+  Design decisions: suggestedLimit inverts into fleetScaleHint (G-F4);
+  conservative per-type loading kappa_ak = min(T_k/w_a, A_k/s_a) (G-F5);
+  service order = priority-weighted fractional shortfall since budgets can
+  bind (G-F6); diagonal constrained (G-F2). FINDING (FL2 numerics): the
+  greedy's out-and-back u is exactly symmetric, but Eigen's contiguous
+  col().sum() and strided row().sum() associate differently, leaving ~2e-15
+  circulation residue on identical values — checkFleetPlan therefore
+  accumulates PER-ARC differences u_ij - u_ji (each exactly 0 for symmetric
+  u), and vehicleBalance asserts EXACT zero in tests. New files:
+  include/fleet{instance,plan,greedy}.hpp + lib mirrors + three test suites
+  (15 tests); CMake: 3 lib sources + 3 vincpnet_add_gtest rows. greedy.cpp
+  refactor is the ONLY touch to existing code. Full network suite 73/73
+  green (58 pre-existing unchanged + 15 new) in a fresh build-fleet/ tree
+  (Ninja + MSVC, Debug).
+- 2026-07-07: F4 done -- "swap-as-pivot" purification (Ben chose crossover-
+  via-the-swap-engine over the consolidation heuristic after a techniques
+  review: the optimal face of the flow polytope has forest-sparse vertices,
+  the IPM parks at its analytic center, and the 2-exchange IS a
+  transportation-simplex cycle pivot). `positiveArcCount` + `PurifySummary`
+  + `purifyPlan(inst, plan, tonMileCap)` in swap.{hpp,cpp}: opening
+  unrestricted improving pass; then repeatedly the best-saving pivot that
+  strictly reduces the positive-arc count, accepting NEGATIVE savings within
+  tonMileCap (theta is invariant under any 2-exchange, so budget slack may
+  be spent on sparsity); improving pivots after consolidation begins are
+  restricted to non-spreading ones. DESIGN FINDING: the naive alternation
+  cycles -- a spending consolidation re-enables the improving pivot that
+  re-spreads it (A<->B forever); the non-spreading restriction makes the
+  arc count monotone after the opening pass, which is the termination
+  proof. Tests (swap_test +4): tied-routing 4->2 arcs at zero saving;
+  improving-first ordering; spend-only-within-cap accept/refuse pair;
+  random greedy plan purified with theta bit-identical. GUI (network
+  viewer): "Purify (sparsify)" button, enabled for greedy (uncapped) and
+  optimal (cap = calibrated budget) overlays, running on a QtConcurrent
+  worker with token+kind staleness guard (the spread optimal plan is
+  O(thousands) of arcs, O(arcs^2) per pivot -- gravity-freeze lesson);
+  "arcs: N" line in the plan status; the optimal working copy now PERSISTS
+  across mode toggles (was: re-copied from cache each switch) so purification
+  sticks, Reset restores the pristine solve, and the "(+N pivots, saved X)"
+  head now covers the optimal overlay too. Suite 77/77 green (Claude-run,
+  Debug, build-fleet/); network_viewer builds; Ben's visual check of the
+  purified overlay pending (expected: arcs drop toward #sources+#sinks-1,
+  ton-miles <= budget, theta* unchanged in the status line).
+- 2026-07-07: viewer polish (Ben): closest-links spinner now STARTS at 5 --
+  root cause was the construction-time setRange(0, 0) clamping the initial
+  value to 0 before regenerate() widened the range (mainwindow.cpp:155);
+  plus a busy bar between the Swaps and Display frames that refills on a
+  50 ms timer while any unknowable-duration background operation (optimal
+  solve, purify) runs -- start/stop counted (startBusy/stopBusy) so
+  overlapping operations keep it alive until the last one lands.
+- 2026-07-07: G6 fleet viewer done (Ben's clarified spec: catalog types /
+  second executable / None+Closest+Greedy / filter-everything-by-asset).
+  New: `assetCatalog`/`vehicleCatalog` in fleetinstance (10 fixed types
+  each, prefix-ordered so small counts mix weight- and area-bound; first
+  two entries are the FleetProfile defaults; +1 fleetinstance test);
+  gui/fleetmainwindow.{hpp,cpp} + fleet_gui.cpp + CMake fleet_viewer
+  target. Reuse strategy: FlowPlanView/CostHistogram/NodeListWidget are
+  single-commodity widgets, so the fleet window feeds them per-asset
+  SLICES (Instance slice: C/D/P columns + distance-as-cost + geometry;
+  Plan slice: flow[a] + S/R columns) and re-slices when "Asset Displayed"
+  moves. Two surgical FlowPlanView changes shared with the network viewer:
+  a node-info PROVIDER hook (fleet popups show label + full C/D vectors,
+  one entry per asset) and setInstance now PRESERVES pan/zoom when the
+  placement is bit-identical (asset scrolling no longer refits; also means
+  same-seed regenerates keep the view). Status line shows the displayed
+  asset's arcs/supply/demand/delivered plus whole-plan objective, fleet
+  scale hint, and per-type utilization. Suite 78/78 green; both viewers
+  build. Pending new tasks logged: G7 (bare-Euclidean fleet distances,
+  U[0,5]% per-direction jitter) and D6 (report section on the network GUI
+  layout with doc/images/initial-nw-gui.png).
+- 2026-07-07: fleet-greedy "incompleteness" report ANALYZED -- no bug. On
+  Ben's case (seed 20260704, 20/20/30/0, 1 asset x 1 vehicle) the planner
+  delivered 5,753 of 21,463 rationed units with utilization EXACTLY 1.0000
+  and fleetScaleHint 4.317: the 40-truck catalog fleet's 129,600
+  vehicle-miles x kappa 20 u/vehicle / 450-mi avg round trip IS 5,753 u --
+  delivery equals physical fleet capacity to four digits. The basic greedy
+  ignores its budget by design (it calibrates L); the fleet greedy obeys
+  budgets as DATA, so parity holds only when the fleet does not bind.
+  Verified by Ben's proposed test: an "Unlimited fleet" checkbox in the
+  fleet viewer (x1000 vehicle counts -> budgets moot); with it the plan
+  delivers 21,460.5 u = the scaled rationed targets (basic-greedy parity),
+  unmet 1,699 u = pure supply scarcity, and the unlimited run's 559,466
+  vehicle-miles / 129,600 = 4.317 = the hint, exactly.
+- 2026-07-07: G7 done -- fleet distances are now bare Euclidean x
+  independent per-direction U[1, 1.05] (FleetProfile.distanceJitterMax),
+  d_ii ~ U[1, 5] (selfDistance band), 1-mile min-separation guard, drawn
+  from the fleet stream AFTER the C/D/P draws (seed's supply/demand pattern
+  bit-identical before/after -- confirmed on the 20260704 case). The base
+  generator's cost matrix is no longer used by the fleet path. Tests:
+  determinism test now checks separation/jitter bounds + near-symmetry
+  ratio instead of distance == base.cost; fleet-formulation.md section 1
+  records the generated-distance model. Same-case effect: delivered 5,753
+  -> 14,578 u, hint 4.32 -> 2.34, mean off-diagonal distance 821 -> 532 mi.
+- 2026-07-07: G5 (fleet optimizer) planned and G5a-G5f executed in one
+  evening session (user-approved plan; three decisions: CONSERVATIVE model
+  matching the greedy's kappa/out-and-back conventions, with the full
+  link-coupled QP recorded as sparse-machinery debt (G5i + memory); screen
+  now / structured Newton later (G5h); fleet purify saving >= 0 only,
+  per-asset entry-usage caps). Pipeline mirror: fleetreduction (reuses
+  makeReducedProblem verbatim on a round-trip routes copy) -> fleetlcp
+  (z = [y | mu | lambda_K], cell-major, Maxima-verified: fleet-mcp-check
+  .mac ALL 9 CHECKS PASS, run live on Maxima 5.49) -> fleetsolve
+  (nondimensionalize incl. budgets-through-counts, per-asset screen,
+  K-budget certificate pricing gain vs min-over-types price, engines
+  ipm/bshe94b/ssn) -> purifyFleetPlan. LOAD-BEARING: the A=1/K=1
+  equivalence test agrees with solveFlowPlan (shortfall, deliveries,
+  mileage, shadow price at a BINDING budget), inheriting the
+  oracle-validated single-commodity chain. LESSON: the first
+  LayoutAndMonotonicity fixture used the 70-node keep-all LCP (~6,500
+  vars); the Debug eigensolve + numVars^2 EXPECT sweep effectively hung
+  ctest and had to be killed -- structural tests belong on small fixtures.
+  Report Ch. 4 gains the conservative-formulation paragraph (52 pp,
+  clean); fleet-formulation.md gains sections 9+ (FL3/FL4, G-F7/8/9).
+- 2026-07-07: standing instruction (Ben): all written PROSE products
+  (report sections, docs, formal writeups) follow doc/style-instructions.md
+  at the visolver root. doc/images/initial-nw-gui.png for D6 is present.
+- 2026-07-07: G8 done -- fleet swap improvement. Reuse per Ben's directive
+  ("the already-written swap function should work: do not re-write it"):
+  swapToLocalOptimum is called VERBATIM per asset on a round-trip-cost
+  slice; the only extraction needed was unitCapacity (fleetgreedy anonymous
+  namespace -> shared fleetinstance function) for the vehicle reallocation,
+  which rebuilds u from the swapped flows with the greedy transport rule.
+  On the crossed hand case: 1 swap, vehicle-miles 20 -> 2, all families
+  exactly 0. On the random default profile: swaps fire, budgets held,
+  resupply/theta bitwise unchanged, total vehicle-miles non-increasing.
+  Viewer: "Swap to Optimum" button (swaps each asset class in turn, per
+  Ben's spec), enabled only when the greedy fleet plan is shown. Suite
+  82/82 green; both viewers build.
+- 2026-07-07: D6 done -- report section 3.5 "Visual validation: the
+  flow-plan and fleet viewers" (part3.tex, after case study 1), written to
+  doc/style-instructions.md register. Contents per Ben's spec: network GUI
+  walkthrough against doc/images/initial-nw-gui.png (the report's FIRST
+  figure); pseudo-code at Java-17 re-implementation depth for the greedy
+  planner (waterFill + phase-2 loop), swap-to-optimum (2-exchange), and
+  the budget-limited fleet greedy (kappa loading, round-trip sources,
+  unservable marking, exact-zero discipline flagged as REQUIRED for
+  termination, not style); optimizer behind the Optimal overlay stated
+  (generation-3 pipeline: reduction -> KKT mixed LCP -> Mehrotra IPM with
+  flow Newton, keep-all, budget = 0.8 x greedy); tiny flows explained as
+  the analytic center of the optimal flow face (interior-point property)
+  vs the forest-sparse vertices an edge-following method would return;
+  purify described as in-face pivoting to a corner (theta bit-invariant);
+  fleet viewer explained with asset-class (w_a, s_a; per-(node,asset)
+  C/D/P) and vehicle-class (T_k, A_k, fractional N_k, v_k; B_k = N_k v_k
+  H as DATA) definitions. pdflatex x2 clean: 51 pp, all references
+  resolved, 0 overfull boxes. AWAITING Ben's read.
+- 2026-07-07 (session close): G5g done -- fleet viewer gains Optimal Fleet
+  Plan (worker thread, cache, token, own busy bar), Purify for greedy and
+  optimal working plans, Reset, and live status (theta, utilization,
+  certified + lambda_k for optimal). All 34 fleet tests green at close.
+  HANDED TO BEN: (1) CMake reload (new files fleetreduction/fleetlcp/
+  fleetsolve + tests), build network_tests + fleet_viewer; (2) full
+  `ctest -R "^Network"` gate (only the fleet subset was re-verified after
+  two long background runs were stopped); (3) visual check: Optimal Fleet
+  Plan on the 4x3 default (expect a spread of hairline flows; the Debug
+  solve takes a while -- watch the busy bar; Release is quick), then
+  Purify (arcs collapse, theta and budgets unchanged), Reset restores;
+  (4) optional Release timing. G5h (structured fleet Newton) and G5i
+  (sparse machinery for the full link-coupled QP) remain the recorded
+  follow-ons for after the week's pause.
 
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

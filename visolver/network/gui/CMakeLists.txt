@@ -41,5 +41,23 @@ target_link_libraries(network_viewer PRIVATE Qt6::Widgets Qt6::Concurrent vincpn
 # Windowed app (no console). Comment out to get a console for debug output.
 set_target_properties(network_viewer PROPERTIES WIN32_EXECUTABLE TRUE)
 
-message(STATUS "vincpnet GUI: network_viewer enabled (Qt6 ${Qt6_VERSION}).")
+# The fleet twin: the same map/histogram/list widgets driven by the
+# multi-asset / multi-vehicle fleet model, one asset displayed at a time.
+qt_add_executable(fleet_viewer
+    fleet_gui.cpp
+    fleetmainwindow.hpp
+    fleetmainwindow.cpp
+    flowplanview.hpp
+    flowplanview.cpp
+    costhistogram.hpp
+    costhistogram.cpp
+    nodelistwidget.hpp
+    nodelistwidget.cpp
+)
+target_include_directories(fleet_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(fleet_viewer PRIVATE Qt6::Widgets Qt6::Concurrent vincpnet)
+set_target_properties(fleet_viewer PROPERTIES WIN32_EXECUTABLE TRUE)
+
+message(STATUS "vincpnet GUI: network_viewer + fleet_viewer enabled "
+               "(Qt6 ${Qt6_VERSION}).")
 # Copyright Ben Paul Wise. All Rights Reserved.

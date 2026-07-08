@@ -3,9 +3,12 @@
 // ----------------------------------------------
 // Tests for the transportation 2-exchange (swap) engine.
 // ----------------------------------------------
+#include "greedy.hpp"
 #include "swap.hpp"
 
 #include <gtest/gtest.h>
+
+#include <limits>
 
 using namespace VINCP;
 using namespace VINCP::Network;
@@ -160,6 +163,182 @@ TEST(NetworkSwap, NodeToLocalOptimumIterates) {
   EXPECT_DOUBLE_EQ(tonMiles(inst, plan), 20.0);
   EXPECT_TRUE(plan.resupply.isApprox(resupplyBefore));
   EXPECT_FALSE(bestSwapAtNode(inst, plan, 0).improvingP);
+}
+
+namespace {
+
+  const double kInf = std::numeric_limits<double>::infinity();
+
+  // Two sources (0, 1) and two sinks (2, 3) with TIED pairings:
+  // c02 + c13 = 4 + 8 = 12 = 6 + 6 = c03 + c12. Every point of the segment
+  // between the two 2-arc extreme routings is cost-equal -- a miniature
+  // optimal face whose "analytic center" is the 4-arc even split.
+  Instance makeTiedInstance() {
+    Instance inst;
+    inst.numNodes = 4;
+    inst.supplyCap = VectorXd(4);
+    inst.supplyCap << 10.0, 10.0, 0.0, 0.0;
+    inst.demand = VectorXd(4);
+    inst.demand << 0.0, 0.0, 5.0, 5.0;
+    inst.priority = VectorXd::Ones(4);
+    inst.cost = MatrixXd::Constant(4, 4, 50.0);
+    for (Index i = 0; i < 4; ++i) {
+      inst.cost(i, i) = 2.0;
+    }
+    inst.cost(0, 2) = 4.0;
+    inst.cost(0, 3) = 6.0;
+    inst.cost(1, 2) = 6.0;
+    inst.cost(1, 3) = 8.0;
+    inst.tonMileLimit = 100.0;
+    validateInstance(inst);
+    return inst;
+  }
+
+  // The spread routing: every source-sink arc carries 2.5 tons (4 arcs).
+  Plan makeSpreadPlan(const Instance& inst) {
+    Plan plan = makeZeroPlan(inst);
+    plan.flow(0, 2) = 2.5;
+    plan.flow(0, 3) = 2.5;
+    plan.flow(1, 2) = 2.5;
+    plan.flow(1, 3) = 2.5;
+    plan.supplied = plan.flow.rowwise().sum();
+    plan.resupply = plan.flow.colwise().sum().transpose();
+    return plan;
+  }
+
+} // namespace
+
+// Purification collapses the tied 4-arc spread to a 2-arc extreme routing in
+// one zero-saving consolidating pivot: ton-miles and every node's totals are
+// unchanged, only the arc count drops.
+TEST(NetworkSwap, PurifyConsolidatesTiedRouting) {
+  const Instance inst = makeTiedInstance();
+  Plan plan = makeSpreadPlan(inst);
+  ASSERT_EQ(maxViolation(checkPlan(inst, plan)), 0.0);
+  EXPECT_DOUBLE_EQ(tonMiles(inst, plan), 60.0);
+  EXPECT_EQ(positiveArcCount(plan), 4);
+
+  const VectorXd resupplyBefore = plan.resupply;
+  const VectorXd suppliedBefore = plan.supplied;
+  const PurifySummary summary =
+      purifyPlan(inst, plan, inst.tonMileLimit);
+
+  EXPECT_EQ(summary.improvingSwaps, 0);       // the tie: nothing to save
+  EXPECT_EQ(summary.consolidatingSwaps, 1);
+  EXPECT_DOUBLE_EQ(summary.totalSaving, 0.0);
+  EXPECT_EQ(summary.arcsBefore, 4);
+  EXPECT_EQ(summary.arcsAfter, 2);
+  EXPECT_EQ(positiveArcCount(plan), 2);
+  EXPECT_DOUBLE_EQ(tonMiles(inst, plan), 60.0);
+  EXPECT_TRUE(plan.resupply.isApprox(resupplyBefore));
+  EXPECT_TRUE(plan.supplied.isApprox(suppliedBefore));
+  EXPECT_EQ(maxViolation(checkPlan(inst, plan)), 0.0);
+}
+
+// On the crossed fixture the opening improving pass fires first (the plain
+// 90 ton-mile uncrossing); nothing is left to consolidate.
+TEST(NetworkSwap, PurifyRunsImprovingPassFirst) {
+  const Instance inst = makeCrossedInstance();
+  Plan plan = makeCrossedPlan(inst);
+
+  const PurifySummary summary = purifyPlan(inst, plan, inst.tonMileLimit);
+
+  EXPECT_EQ(summary.improvingSwaps, 1);
+  EXPECT_EQ(summary.consolidatingSwaps, 0);
+  EXPECT_DOUBLE_EQ(summary.totalSaving, 90.0);
+  EXPECT_EQ(summary.arcsAfter, 2);
+  EXPECT_DOUBLE_EQ(tonMiles(inst, plan), 10.0);
+}
+
+namespace {
+
+  // Two sources, two sinks, three arcs -- and the ONLY arc-reducing pivot
+  // SPENDS ton-miles: moving 5 t from (0,3) and (1,2) onto (0,2) and (1,3)
+  // costs (5 + 5) - (2 + 2) = 6 per ton more, but drops the arc count by one
+  // (net: -2 zeroed, +1 new arc (1,3)). Purification must take it exactly
+  // when the budget cap leaves 30 ton-miles of slack.
+  Instance makeSpendToConsolidateInstance(double tonMileLimit) {
+    Instance inst;
+    inst.numNodes = 4;
+    inst.supplyCap = VectorXd(4);
+    inst.supplyCap << 10.0, 10.0, 0.0, 0.0;
+    inst.demand = VectorXd(4);
+    inst.demand << 0.0, 0.0, 6.0, 5.0;
+    inst.priority = VectorXd::Ones(4);
+    inst.cost = MatrixXd::Constant(4, 4, 50.0);
+    for (Index i = 0; i < 4; ++i) {
+      inst.cost(i, i) = 2.0;
+    }
+    inst.cost(0, 2) = 5.0;
+    inst.cost(0, 3) = 2.0;
+    inst.cost(1, 2) = 2.0;
+    inst.cost(1, 3) = 5.0;
+    inst.tonMileLimit = tonMileLimit;
+    validateInstance(inst);
+    return inst;
+  }
+
+  Plan makeThreeArcPlan(const Instance& inst) {
+    Plan plan = makeZeroPlan(inst);
+    plan.flow(0, 2) = 1.0;    // 5 t-mi
+    plan.flow(0, 3) = 5.0;    // 10 t-mi
+    plan.flow(1, 2) = 5.0;    // 10 t-mi -> 25 ton-miles, 3 arcs
+    plan.supplied = plan.flow.rowwise().sum();
+    plan.resupply = plan.flow.colwise().sum().transpose();
+    return plan;
+  }
+
+} // namespace
+
+// With slack the spending consolidation fires (arcs 3 -> 2, ton-miles
+// 25 -> 55); with a tight cap it is refused and the plan is untouched.
+TEST(NetworkSwap, PurifySpendsSlackOnlyWithinCap) {
+  {
+    const Instance inst = makeSpendToConsolidateInstance(60.0);
+    Plan plan = makeThreeArcPlan(inst);
+    const PurifySummary summary = purifyPlan(inst, plan, inst.tonMileLimit);
+
+    EXPECT_EQ(summary.improvingSwaps, 0);
+    EXPECT_EQ(summary.consolidatingSwaps, 1);
+    EXPECT_DOUBLE_EQ(summary.totalSaving, -30.0);
+    EXPECT_EQ(summary.arcsAfter, 2);
+    EXPECT_DOUBLE_EQ(tonMiles(inst, plan), 55.0);
+    EXPECT_DOUBLE_EQ(plan.flow(0, 2), 6.0);
+    EXPECT_DOUBLE_EQ(plan.flow(1, 3), 5.0);
+    EXPECT_EQ(maxViolation(checkPlan(inst, plan)), 0.0);
+  }
+  {
+    const Instance inst = makeSpendToConsolidateInstance(25.0);
+    Plan plan = makeThreeArcPlan(inst);
+    const Plan before = plan;
+    const PurifySummary summary = purifyPlan(inst, plan, inst.tonMileLimit);
+
+    EXPECT_EQ(summary.improvingSwaps, 0);
+    EXPECT_EQ(summary.consolidatingSwaps, 0);
+    EXPECT_EQ(summary.arcsAfter, 3);
+    EXPECT_TRUE(plan.flow.isApprox(before.flow));
+  }
+}
+
+// Random-instance smoke test: purifying a fresh greedy plan (uncapped) never
+// raises the arc count past the opening improving pass, keeps the plan
+// feasible, and leaves theta EXACTLY unchanged (supplied/resupply untouched).
+TEST(NetworkSwap, PurifyPreservesObjectiveOnRandomInstance) {
+  const InstanceProfile profile;
+  const Instance inst = makeRandomInstance(profile, 20260703);
+  Plan plan = greedyPlan(inst).plan;
+  const VectorXd resupplyBefore = plan.resupply;
+  const double thetaBefore = shortfallObjective(inst, plan);
+
+  const PurifySummary summary = purifyPlan(inst, plan, kInf);
+
+  // The opening pass may spread (each improving pivot adds at most one arc);
+  // consolidation only ever removes.
+  EXPECT_LE(summary.arcsAfter, summary.arcsBefore + summary.improvingSwaps);
+  // Bitwise unchanged: purification never writes supplied/resupply.
+  EXPECT_EQ((plan.resupply - resupplyBefore).cwiseAbs().maxCoeff(), 0.0);
+  EXPECT_EQ(shortfallObjective(inst, plan), thetaBefore);
+  EXPECT_LE(maxViolation(checkPlan(inst, plan)), 1.0e-9);
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

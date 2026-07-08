@@ -10,6 +10,10 @@ add_library(vincpnet STATIC
         lib/fleetinstance.cpp
         lib/fleetplan.cpp
         lib/fleetgreedy.cpp
+        lib/fleetswap.cpp
+        lib/fleetreduction.cpp
+        lib/fleetlcp.cpp
+        lib/fleetsolve.cpp
         lib/reduction.cpp
         lib/flowlcp.cpp
         lib/flownewton.cpp
@@ -49,6 +53,10 @@ vincpnet_add_gtest(greedy_test)
 vincpnet_add_gtest(fleetinstance_test)
 vincpnet_add_gtest(fleetplan_test)
 vincpnet_add_gtest(fleetgreedy_test)
+vincpnet_add_gtest(fleetswap_test)
+vincpnet_add_gtest(fleetreduction_test)
+vincpnet_add_gtest(fleetlcp_test)
+vincpnet_add_gtest(fleetsolve_test)
 vincpnet_add_gtest(reduction_test)
 vincpnet_add_gtest(flowlcp_test)
 vincpnet_add_gtest(flownewton_test)

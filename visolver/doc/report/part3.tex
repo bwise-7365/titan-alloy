@@ -220,6 +220,304 @@ time and quality. Third, nondimensionalization is mandatory: the exact
 rescaling of Chapter~\ref{ch:math} took the small lane-solve benchmark
 from 25\,s to 0.04\,s before any algorithmic work at all (P1).
 
+\section{Visual validation: the flow-plan and fleet viewers}
+\label{sec:t-viewers}
+
+The numeric suites assert exact values and tolerances; some checks resist
+assertion. Whether a plan follows the geometry, whether a sparsified plan
+visibly consolidates, and whether a rationing decision distributes shortage
+plausibly are judgments a person makes in seconds from a picture and only
+laboriously from a matrix dump. Two optional Qt~6 viewers serve these
+checks: \code{network\_viewer} for the single-commodity flow-planning
+problem of Section~\ref{sec:t-flow}, and \code{fleet\_viewer} for its
+multi-vehicle, multi-asset generalization
+(\code{network/doc/fleet-formulation.md}). Both are excluded from the
+solver and test build when Qt is absent. This section describes the
+viewers and states, in pseudo-code, the three planning algorithms behind
+their buttons, at the depth needed to re-implement them --- e.g.\ in
+Java~17. Conventions for the pseudo-code: every quantity is a
+\code{double} (nothing in these models is integer, including vehicle
+counts); indices are 0-based; \code{argmax}/\code{argmin} break ties by
+lowest index, which makes runs reproducible; and dense
+$\mathit{numNodes} \times \mathit{numNodes}$ arrays are adequate at these
+sizes ($\le$ a few hundred nodes), so no linear-algebra library is
+required beyond row and column sums.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../images/initial-nw-gui.png}
+\caption{The network viewer at startup: laydown~0, seed 20260704, 70
+nodes (20 supply-only, 20 supply-and-demand, 30 demand-only), in the
+``Closest'' display mode with $k = 5$ orange links from each node to its
+five cheapest neighbours by symmetrized cost. Node colour encodes class
+(green supply-only, blue both, red demand-only); node radius scales with
+tonnage. The left panel holds the instance controls, display modes, swap
+actions, and the cost histogram; the right panel ranks nodes by plan flow
+once a plan is shown; the status line (bottom left) reports the current
+instance and mode.}
+\label{fig:nw-gui}
+\end{figure}
+
+\subsection{The network viewer}
+
+Figure~\ref{fig:nw-gui} shows the initial screen. The left panel reads
+top to bottom in the order a session proceeds. The \emph{Instance} group
+selects the generator inputs: the laydown (0 = random square, 1 = banded
+rectangles), the seed (entering 0 draws a fresh time-based seed and
+writes it back so the run can be repeated), and the four node-class
+counts. \emph{Show Links} selects one of five mutually exclusive
+overlays: \emph{None}; \emph{Closest} ($k$ cheapest neighbours per node,
+an orientation aid, shown in the figure); \emph{Greedy Plan};
+\emph{Gravity Plan} (a cost-blind proportional baseline); and
+\emph{Optimal Plan}. Plan overlays draw each flow $f_{ij} > 0$ as a
+directed teal arrow with width proportional to tonnage. The \emph{Swaps}
+group applies the 2-exchange operations of
+Section~\ref{sec:t-swap-pseudo} to the displayed plan: one best swap, a
+loop to the swap-local optimum, a reset to the freshly computed plan, and
+the purification pass of Section~\ref{sec:t-purify}. Below it, a slim
+progress bar refills while a background operation of unknowable duration
+(the optimal solve, purification) runs. The \emph{Cost histogram} bins
+all $N^2$ arc costs. On the map itself, pressing a node pops its label,
+supply capacity $C$, and demand $D$; right-press applies that node's best
+swap; the two right-hand lists rank nodes by plan throughput and by arc
+count and stay greyed until a plan mode is active. The status line
+aggregates plan facts: ton-miles, positive-arc count, delivered and unmet
+tonnage, and the shortfall objective.
+
+\subsection{Pseudo-code: the greedy planner}
+\label{sec:t-greedy-pseudo}
+
+The greedy planner (\code{network/lib/greedy.cpp}) runs in two phases.
+Phase 1 answers ``who gets shorted when demand exceeds capacity'' with no
+reference to transport at all. It minimizes the priority-weighted
+quadratic shortfall $\sum_i P_i \left((D_i - R_i)/D_i\right)^2$ subject
+to $\sum_i R_i \le M$, where $M = \min(\sum_i D_i, \sum_i C_i)$ is the
+meetable total. The optimum has the water-filling closed form
+$R_i = D_i - \lambda D_i^2 / P_i$ with one scalar multiplier $\lambda$;
+entries driven negative are clamped to zero, removed from the active set,
+and $\lambda$ is re-solved over the survivors.
+
+\begin{lstlisting}
+waterFill(D, P, M):                      // returns targets R
+  if sum(D) <= M: return D               // everything is meetable
+  active = { i : D[i] > 0 }
+  loop:                                  // at most |active| rounds
+    lambda = (sum of D[i] - M) / (sum of D[i]^2 / P[i])   // both over active
+    if lambda <= 0: R[i] = D[i] on active; return R
+    if D[i] - lambda * D[i]^2 / P[i] >= 0 for all active i:
+      R[i] = that value on active; return R
+    remove every i with a negative value from active      // their R[i] = 0
+\end{lstlisting}
+
+Phase 2 builds direct-arc flows toward the rationed targets. Targets are
+first scaled by $1 - 10^{-4}$ so total remaining demand is strictly below
+total capacity and a source with remaining capacity always exists. Each
+pass serves the largest remaining target from its cheapest source. One
+floating-point detail is required for termination and must survive
+translation: whichever bound the shipped quantity hits is \emph{assigned}
+zero rather than decremented, because \code{x -= q} can leave a
+$10^{-18}$ sliver that the loop then shaves forever. With that discipline each pass zeroes
+one target or one capacity, so the loop ends within
+$\#\text{sinks} + \#\text{sources}$ passes.
+
+\begin{lstlisting}
+greedyPlan(C, D, P, cost):
+  target = waterFill(D, P, min(sum(D), sum(C)))
+  remT = (1 - 1e-4) * target;  remC = C;  flow = 0
+  loop:
+    n = argmax_i remT[i];  if remT[n] <= 0: break
+    s = argmin over { i : remC[i] > 0 } of cost[i][n]
+    q = min(remT[n], remC[s])
+    flow[s][n] += q
+    remT[n] = (q == remT[n]) ? 0 : remT[n] - q   // assign the bound exactly
+    remC[s] = (q == remC[s]) ? 0 : remC[s] - q
+  supplied[i] = row sum of flow;  resupply[j] = column sum of flow
+  suggestedBudget = 0.8 * sum over (i, j) of cost[i][j] * flow[i][j]
+\end{lstlisting}
+
+The final line is the planner's second product: the ton-mile budget $L$
+handed to the optimizer is calibrated to 80\% of the greedy plan's own
+usage, which forces the optimizer to route better than the baseline
+rather than merely replicate it.
+
+\subsection{Pseudo-code: swap to optimum}
+\label{sec:t-swap-pseudo}
+
+A \emph{swap} is the classical transportation 2-exchange: move $x$ tons
+from arcs $(i,j)$ and $(m,n)$ onto the crossed arcs $(i,n)$ and $(m,j)$.
+Every node's total inflow and outflow are unchanged, so $S$, $R$, and the
+shortfall objective are invariant; only the routing cost moves, by
+$x \cdot \left[(c_{ij} + c_{mn}) - (c_{in} + c_{mj})\right]$.
+
+\begin{lstlisting}
+bestSwap(cost, flow):
+  arcs = all off-diagonal (i, j) with flow[i][j] > 1e-9
+  best = none
+  for each unordered pair (i,j), (m,n) from arcs
+      with i != m, j != n, i != n, m != j:          // degenerate pairs skipped
+    perUnit = (cost[i][j] + cost[m][n]) - (cost[i][n] + cost[m][j])
+    saving  = min(flow[i][j], flow[m][n]) * perUnit
+    keep the pair with the largest saving
+  return best
+
+swapToOptimum(cost, flow):
+  while bestSwap's saving > 1e-6:                   // absolute ton-miles
+    apply it: flow[i][j] -= x; flow[m][n] -= x;
+              flow[i][n] += x; flow[m][j] += x      // x = min of the two
+\end{lstlisting}
+
+Termination follows from the $10^{-6}$ ton-mile acceptance floor: total
+cost decreases by more than that each pass and is bounded below. The
+amount $x$ equals one of the two reduced flows, so each swap also zeroes
+at least one arc, though it may put flow on up to two arcs that were
+previously empty --- a swap pass can therefore \emph{raise} the
+positive-arc count by one per swap even as cost falls.
+
+\subsection{The optimal plan, and why it arrives full of tiny flows}
+\label{sec:t-purify}
+
+The \emph{Optimal Plan} overlay is produced by the generation-3 pipeline
+of Section~\ref{sec:t-flow}: the instance is reduced to source--sink
+shipments along shortest paths, the resulting convex QP's KKT conditions
+are assembled as a monotone mixed linear complementarity problem, and
+that system is solved by the Mehrotra predictor--corrector interior-point
+engine with the structured per-sink Newton factorization
+(\code{engine = ipm}, \code{ipmNewton = flow}, no screen), the ton-mile
+budget having been calibrated by a greedy pre-pass as above. The solve
+runs on a worker thread and its result is cached per instance.
+
+The first sight of a verified optimal plan was a lattice of hairline
+arrows: tonnage split across dozens of near-parallel routes, most
+carrying trivial amounts. That spread is a property of the algorithm
+class, not an error. The objective is strictly convex in the deliveries
+$R$ alone, so the optimal $R^\ast$ is unique while the \emph{flows}
+achieving it form a polytope --- every point of it exactly optimal. An
+interior-point method follows the central path, which terminates at the
+\emph{analytic center} of that optimal face, i.e.\ the point maximally
+far from all of its bounding inequalities --- and therefore the routing
+that spreads tonnage over every optimal alternative at once. An
+edge-following method such as the simplex family terminates instead at a
+vertex of the same face, and vertices of network polytopes are
+forest-sparse: at most $\#\text{sources} + \#\text{sinks} - 1$ positive
+arcs, plus one for a tight budget row.
+
+The \emph{Purify (sparsify)} button converts the former into
+(approximately) the latter without a re-solve, by pivoting within the
+optimal face: deliveries are never touched, so $\theta^\ast$ is preserved
+bit for bit. The pass has two ingredients, both built from the swap of
+Section~\ref{sec:t-swap-pseudo}: first, ordinary cost-improving swaps to
+a local optimum; then, repeatedly, the best-saving swap that strictly
+\emph{reduces} the positive-arc count, accepted even at negative saving
+as long as total ton-miles stay within the budget (the objective does not
+depend on ton-miles, so budget slack may be spent on sparsity). After
+consolidation begins, improving swaps are restricted to those that do not
+raise the arc count; an unrestricted improving swap can re-spread exactly
+what a spending consolidation removed, and the pair would cycle
+indefinitely. With the restriction the arc count is monotone and the pass
+terminates. The result is a local optimum under length-4 pivots ---
+forest-sparse in practice, though not a certified polytope vertex.
+
+\subsection{The fleet viewer}
+
+The fleet viewer drives the multi-vehicle, multi-asset generalization of
+the model. An \emph{asset class} $a$ is a kind of cargo, characterized by
+the weight $w_a$ (tons) and cargo area $s_a$ (square feet) of one unit;
+supply capacity, demand, and priority become per-(node, asset) matrices
+$C_{ia}, D_{ia}, P_{ia}$ in units of that asset. A \emph{vehicle class}
+$k$ is a kind of transport, characterized by a weight capacity $T_k$, an
+area capacity $A_k$, a fleet size $N_k$ (fractional: availability over
+the horizon, not a count of hulls), and a speed $v_k$; over a planning
+horizon of $H$ hours the class can run
+$B_k = N_k \, v_k \, H$ vehicle-miles, and that budget is \emph{data},
+in contrast to the single-commodity model's calibrated limit. Cargo on a
+link must fit the vehicles allocated to that link by weight and by area
+simultaneously; vehicles of each class circulate (what arrives at a node
+departs it), and empty repositioning legs consume budget like loaded
+ones.
+
+The window differs from Figure~\ref{fig:nw-gui} in four places. The
+Instance group gains \emph{Vehicle types} and \emph{Asset types} spinners
+(1--10 each; defaults 3 and 4), which take prefixes of a fixed catalog of
+ten asset and ten vehicle classes ordered so that small counts already
+mix weight-bound and area-bound cargo; an \emph{Unlimited fleet} check
+box multiplies every $N_k$ by 1{,}000 for the visual check that the plan
+then serves every rationed target. The display modes reduce to None,
+Closest, and \emph{Greedy Fleet Plan}. A \emph{Swap to Optimum} button
+drives each asset class in turn to its 2-exchange local optimum ---
+Section~\ref{sec:t-swap-pseudo} verbatim per asset, with the cost matrix
+set to round-trip distances $d_{ij} + d_{ji}$ because the return leg is
+charged --- and then rebuilds the vehicle allocation for the swapped
+flows. Finally, an \emph{Asset Displayed} spinner (top right) selects
+which single asset the map, histogram, and ranking lists show; the plan
+itself always covers all assets, and the node pop-ups always show the
+full vectors, e.g.\ $C = [612, 0, 337, 845]$, one entry per asset class
+in catalog order.
+
+\subsection{Pseudo-code: the budget-limited fleet greedy}
+\label{sec:t-fleetgreedy-pseudo}
+
+Rationing decomposes exactly by asset, because assets share transport but
+never supply: phase 1 is \code{waterFill} of
+Section~\ref{sec:t-greedy-pseudo} applied to each asset column with its
+own meetable total. Phase 2 generalizes the greedy loop with three new
+ingredients. First, service order matters here, because the budgets can
+run dry mid-plan, so the loop serves the cell with the largest
+priority-weighted \emph{fractional} shortfall --- the dimensionless score
+makes assets measured in different units comparable. Second, sources are
+ranked by round-trip distance, since every loaded leg pays an empty
+return leg (vehicles are added to both directions, which satisfies
+circulation exactly). Third, cargo is loaded conservatively: one vehicle
+of class $k$ carries at most
+$\kappa_{ak} = \min(T_k / w_a,\; A_k / s_a)$ units of asset $a$ (each
+ratio present only when its denominator is positive; classes with
+$\kappa = 0$ cannot carry the asset), which satisfies the weight and the
+area constraint at once. Mixing complementary assets in one vehicle could
+do better; the greedy forgoes that, and the optimizer planned as future
+work will not.
+
+\begin{lstlisting}
+fleetGreedy(C, D, P, dist, assets, vehicles, H):
+  B[k] = N[k] * v[k] * H                          // vehicle-mile budgets
+  for each asset a:
+    target[.][a] = waterFill(D[.][a], P[.][a], min of the column sums)
+  remT = (1 - 1e-4) * target;  remC = C;  remB = B
+  kappa[a][k] as above;  order[a] = classes sorted by kappa[a][k] descending
+  loop:                                           // <= 3mA + K + 2 passes
+    (n, a) = argmax of P[n][a] * (remT[n][a] / D[n][a])^2
+             over cells with remT > 0 not yet marked unservable
+    if none: break
+    s  = argmin over { i : remC[i][a] > 0 } of rt(i, n)
+         where rt(i, n) = dist[i][n] + dist[n][i], or dist[i][i] if i == n
+    total = sum over { k : remB[k] > 0, kappa[a][k] > 0 }
+            of (remB[k] / rt(s, n)) * kappa[a][k]  // units transportable
+    if total <= 0: mark (n, a) unservable; continue // budgets exhausted
+    q = min(remT[n][a], remC[s][a], total)
+    rest = q
+    for k in order[a] with remB[k] > 0 and kappa[a][k] > 0:
+      avail = (remB[k] / rt) * kappa[a][k]
+      units = min(rest, avail)
+      veh   = units / kappa[a][k]
+      u[k][s][n] += veh;  if s != n: u[k][n][s] += veh   // empty return leg
+      remB[k] = (units == avail) ? 0 : remB[k] - veh * rt // assign exactly
+      rest -= units;  if rest <= 0: break
+    flow[a][s][n] += q - rest
+    decrement remT[n][a] and remC[s][a] by (q - rest), assigning the
+      bound exactly when it is hit, as in greedyPlan
+\end{lstlisting}
+
+The exact-zero discipline extends to the budgets and is again what bounds
+the pass count: every pass zeroes a target cell, zeroes a capacity cell,
+drains the last capable budget, or marks a cell unservable, giving the
+$3mA + K + 2$ cap for $m$ nodes, $A$ assets, and $K$ vehicle classes.
+Alongside the plan the algorithm reports per-class utilization
+$\mathit{milesUsed}_k / B_k$ and a \emph{fleet scale hint}: the same loop
+re-run with unlimited budgets yields the mileage each class would want,
+and the maximum ratio of that mileage to $B_k$ states directly how much
+larger the fleet must be for this heuristic to serve every rationed
+target. On the default 70-node instance the hint reproduced the observed
+delivery shortfall to four digits, which is the property that makes it
+trustworthy as a capability-scoping number.
+
 \section{Case study 2: strategic allocation of effort}
 \label{sec:t-saoe}
 

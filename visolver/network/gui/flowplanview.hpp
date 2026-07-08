@@ -19,6 +19,7 @@
 #include <QStringList>
 #include <QWidget>
 
+#include <functional>
 #include <utility>
 #include <vector>
 
@@ -71,6 +72,11 @@ namespace VINCP::Network {
     // or a list press; -1 or hideNodeInfo() dismisses it.
     void showNodeInfo(int node);
     void hideNodeInfo();
+
+    // Override the node-info popup lines (default: name plus scalar C and D
+    // from the held instance). The fleet viewer supplies the full per-asset
+    // C / D vectors this way. Pass an empty function to restore the default.
+    void setNodeInfoProvider(std::function<QStringList(Index)> provider);
 
     // Show a swap-result popup (the given text lines) anchored near anchorNode
     // (centred if anchorNode < 0), highlighting the given arcs. Persistent until
@@ -127,6 +133,7 @@ namespace VINCP::Network {
 
     Instance instance_;
     int nearestK_ = 0;
+    std::function<QStringList(Index)> infoProvider_;   // empty = default lines
 
     // neighboursByCost_[i] = other node indices, ascending by (c_ij + c_ji)/2.
     vector<vector<int>> neighboursByCost_;

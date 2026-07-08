@@ -57,6 +57,46 @@ namespace VINCP::Network {
   SwapSummary swapToLocalOptimum(const Instance& inst, Plan& plan,
                                  int maxSwaps = 100000);
 
+  // ---------------------------------------------------------------------------
+  // Vertex purification ("swap-as-pivot" crossover, plan.md F4)
+  // ---------------------------------------------------------------------------
+
+  // Off-diagonal arcs carrying flow above the engine's flow tolerance -- the
+  // sparsity measure purification drives down.
+  int positiveArcCount(const Plan& plan);
+
+  struct PurifySummary
+  {
+    int improvingSwaps = 0;       // ton-mile-saving pivots applied
+    int consolidatingSwaps = 0;   // arc-count-reducing pivots applied
+    double totalSaving = 0.0;     // NET ton-miles removed (a consolidating
+                                  // pivot may spend some, so this can dip)
+    int arcsBefore = 0;
+    int arcsAfter = 0;
+  };
+
+  // Sparsify a plan WITHOUT changing what anyone receives: the 2-exchange is
+  // a transportation-simplex cycle pivot, supplied/resupply (hence the
+  // shortfall objective theta) are invariant, and every optimal flow pattern
+  // lives on a polytope whose vertices are forest-sparse -- an interior-point
+  // solve parks at that polytope's maximally-spread analytic center, so the
+  // tiny flows are geometry, not noise (F4). Runs an opening pass of plain
+  // improving swaps to a local optimum, then repeatedly applies the
+  // best-saving swap that strictly REDUCES the positive-arc count --
+  // accepting even a NEGATIVE saving as long as total ton-miles stay within
+  // tonMileCap (pass tonMileLimit for an optimal plan so budget feasibility
+  // is preserved; +infinity for an uncapped greedy plan) -- re-running
+  // improving swaps between consolidations, restricted to pivots that do not
+  // raise the arc count (an unrestricted improving pivot could re-spread
+  // what a spending consolidation just removed, and the pair would cycle).
+  // Terminates: after the opening pass the arc count never rises and each
+  // consolidating pivot strictly drops it; improving pivots each remove
+  // > kSaveTol ton-miles, bounded below by zero. Length-4 cycle pivots only,
+  // so the result is a pairwise-pivot local optimum -- in practice
+  // forest-sparse, though not a certified polytope vertex.
+  PurifySummary purifyPlan(const Instance& inst, Plan& plan,
+                           double tonMileCap, int maxSwaps = 100000);
+
 } // namespace VINCP::Network
 
 #endif // VINCP_NETWORK_SWAP_HPP
