@@ -993,3 +993,23 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   fixture shared with fleet-mcp-check.mac). Part I: fleet headline row
   added, counts 132 -> 182, flow bullet mentions the fleet
   generalization.
+- 2026-07-08 (GUI modularization, awaiting Ben's rebuild): the two viewer
+  windows shared ~930 lines of copy-paste (widget skeleton, seed reroll,
+  busy bar, node rankings, closest-links, regenerate bookkeeping). Per
+  Ben's request, extracted into an abstract PlannerGui base class
+  (gui/plannergui.{hpp,cpp}): the shared skeleton plus five virtual
+  hooks (rebuildInstance / nodeCount / refreshMap / applyPlanMode /
+  refreshStatus) and assembly points (addInstanceRow / addPlanRadio /
+  addSwapControl / addRightPanelTop) for the model-specific controls.
+  MainWindow and FleetMainWindow now hold only their planning logic --
+  behavior unchanged by construction (all plan/swap/solve code carried
+  over verbatim). CMake: new viewer_common static lib (plannergui +
+  flowplanview + costhistogram + nodelistwidget) compiled once and
+  linked by both executables instead of compiling the widgets twice.
+  A four-angle review pass caught and fixed one real ordering defect
+  the extraction had introduced (solveToken_ must be bumped BEFORE
+  rebuildInstance: the fleet asset spinner's setRange clamp can fire a
+  token-stamped optimal solve) and two cleanups (timeSeed now delegates
+  to the shared microsecondSeed; the closest-mode branch of both
+  applyPlanMode overrides now calls the shared applyNearestK instead of
+  re-inlining it).

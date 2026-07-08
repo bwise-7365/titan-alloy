@@ -1,14 +1,15 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// FleetMainWindow implementation: the fleet-model twin of MainWindow. The
-// FlowPlanView / histogram / node lists are single-commodity widgets, so the
-// window feeds them per-asset SLICES of the fleet instance and the working
-// plan (the distance matrix doubles as the slice's cost matrix) and swaps
-// slices when the "Asset Displayed" spinner moves. Plans: greedy (fast,
-// synchronous, all assets at once) and optimal (solveFleetPlan on a worker
-// thread, cached per instance); both can be swapped / purified in place,
-// with Reset restoring the pristine plan.
+// FleetMainWindow implementation: the model-specific half of the fleet
+// viewer. The FlowPlanView / histogram / node lists are single-commodity
+// widgets, so the window feeds them per-asset SLICES of the fleet instance
+// and the working plan (the distance matrix doubles as the slice's cost
+// matrix) and swaps slices when the "Asset Displayed" spinner moves. Plans:
+// greedy (fast, synchronous, all assets at once) and optimal (solveFleetPlan
+// on a worker thread, cached per instance); both can be swapped / purified
+// in place, with Reset restoring the pristine plan. The shared skeleton and
+// behavior live in PlannerGui.
 // ----------------------------------------------
 #include "fleetmainwindow.hpp"
 
@@ -16,109 +17,22 @@
 
 #include <QtConcurrent/QtConcurrent>
 
-#include <QButtonGroup>
 #include <QCheckBox>
-#include <QComboBox>
 #include <QFormLayout>
 #include <QGroupBox>
-#include <QHBoxLayout>
 #include <QLabel>
-#include <QListWidgetItem>
-#include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QWidget>
 
-#include <algorithm>
-#include <chrono>
 #include <cstdint>
 #include <exception>
-#include <vector>
+#include <utility>
 
 namespace VINCP::Network {
 
   namespace {
-    const int kDefaultSeed = 20260704;
-    const int kMaxClassCount = 400;   // per node class in the spin controls
-    const int kMaxSeed = 2147483647;  // QSpinBox int ceiling (2^31 - 1)
-    const int kMaxTypes = 10;         // catalog size (assetCatalog etc.)
-
-    // A fast-varying seed for the "type 0 to reroll" convenience (mirrors
-    // mainwindow.cpp).
-    int
-    timeSeed()
-    {
-      const auto since = std::chrono::system_clock::now().time_since_epoch();
-      const auto micros =
-          std::chrono::duration_cast<std::chrono::microseconds>(since).count();
-      return static_cast<int>(static_cast<std::uint64_t>(micros) & 0x7FFFFFFFULL);
-    }
-
-    // Per-node flow activity in a plan slice (mirrors mainwindow.cpp; the
-    // self-supply diagonal is excluded).
-    struct NodeFlowStat
-    {
-      Index node = 0;
-      double throughput = 0.0;   // sum of flows to and from the node (units)
-      int count = 0;             // number of nonzero flows to and from it
-    };
-
-    vector<NodeFlowStat>
-    computeNodeFlowStats(const Plan& plan)
-    {
-      const Index m = plan.flow.rows();
-      vector<NodeFlowStat> stats;
-      stats.reserve(static_cast<size_t>(m));
-      for (Index i = 0; i < m; ++i) {
-        NodeFlowStat s;
-        s.node = i;
-        for (Index j = 0; j < m; ++j) {
-          if (i != j) {
-            const double outFlow = plan.flow(i, j);
-            const double inFlow = plan.flow(j, i);
-            s.throughput += outFlow + inFlow;
-            if (outFlow > 0.0) {
-              s.count += 1;
-            }
-            if (inFlow > 0.0) {
-              s.count += 1;
-            }
-          }
-        }
-        stats.push_back(s);
-      }
-      return stats;
-    }
-
-    void
-    fillNodeList(NodeListWidget* list, const FleetInstance& inst,
-                 vector<NodeFlowStat> stats, bool byThroughputP)
-    {
-      std::sort(stats.begin(), stats.end(),
-                [byThroughputP](const NodeFlowStat& a, const NodeFlowStat& b) {
-                  if (byThroughputP) {
-                    return a.throughput > b.throughput;
-                  }
-                  return a.count > b.count;
-                });
-      list->clear();
-      for (const NodeFlowStat& s : stats) {
-        const QString name = QString::fromStdString(
-            inst.labels.empty() ? "#" + std::to_string(s.node)
-                                : inst.labels[static_cast<size_t>(s.node)]);
-        const QString value = byThroughputP
-                                  ? QString::number(s.throughput, 'f', 1)
-                                  : QString::number(s.count);
-        QListWidgetItem* item =
-            new QListWidgetItem(QString("%1   %2").arg(name, value));
-        item->setData(Qt::UserRole, static_cast<int>(s.node));
-        list->addItem(item);
-      }
-      return;
-    }
+    const int kMaxTypes = 10;   // catalog size (assetCatalog etc.)
 
     // The single-commodity view of one asset column: C/D/P from that column,
     // the shared distance matrix as the cost matrix, geometry carried over.
@@ -149,40 +63,21 @@ namespace VINCP::Network {
   } // namespace
 
   FleetMainWindow::FleetMainWindow(QWidget* parent)
-    : QMainWindow(parent)
+    : PlannerGui(Texts{.windowTitle = "Fleet-plan instance viewer",
+                       .nearestLinksTip =
+                           "Draw an orange link from each node to its k "
+                           "cheapest neighbours by (d_ij + d_ji)/2.",
+                       .histogramTitle = "Distance histogram",
+                       .histogramBinsTip =
+                           "Number of equal distance-range bins for the "
+                           "N^2 distances.",
+                       .throughputHeader = "By units"},
+                 parent)
   {
-    setWindowTitle("Fleet-plan instance viewer");
-
-    view_ = new FlowPlanView(this);
     view_->setNodeInfoProvider(
         [this](Index node) { return nodeInfoLines(static_cast<int>(node)); });
 
-    laydownBox_ = new QComboBox(this);
-    laydownBox_->addItem("0 - random square", 0);
-    laydownBox_->addItem("1 - banded", 1);
-
-    seedBox_ = new QSpinBox(this);
-    seedBox_->setRange(0, kMaxSeed);
-    seedBox_->setValue(kDefaultSeed);
-    seedBox_->setToolTip("Seed for the generator. Type 0 and Regenerate to "
-                         "draw a fresh time-based seed (shown here to copy).");
-
-    supplyOnlyBox_ = new QSpinBox(this);
-    supplyOnlyBox_->setRange(0, kMaxClassCount);
-    supplyOnlyBox_->setValue(20);
-
-    bothBox_ = new QSpinBox(this);
-    bothBox_->setRange(0, kMaxClassCount);
-    bothBox_->setValue(20);
-
-    demandOnlyBox_ = new QSpinBox(this);
-    demandOnlyBox_->setRange(0, kMaxClassCount);
-    demandOnlyBox_->setValue(30);
-
-    transitBox_ = new QSpinBox(this);
-    transitBox_->setRange(0, kMaxClassCount);
-    transitBox_->setValue(0);
-
+    // The fleet-shape controls, above the Regenerate button.
     vehicleTypesBox_ = new QSpinBox(this);
     vehicleTypesBox_->setRange(1, kMaxTypes);
     vehicleTypesBox_->setValue(3);
@@ -203,16 +98,11 @@ namespace VINCP::Network {
         "the greedy fleet plan then serves every rationed target, like the "
         "basic greedy planner (which ignores its budget by design).");
 
-    nearestBox_ = new QSpinBox(this);
-    // Constructed wide so the initial value below survives (a [0, 0] range
-    // would clamp it to 0); regenerate() tightens the max to numNodes - 1.
-    nearestBox_->setRange(0, kMaxClassCount);
-    nearestBox_->setValue(5);
-    nearestBox_->setToolTip("Draw an orange link from each node to its k "
-                            "cheapest neighbours by (d_ij + d_ji)/2.");
+    addInstanceRow("Vehicle types", vehicleTypesBox_);
+    addInstanceRow("Asset types", assetTypesBox_);
+    addInstanceRow(hugeFleetCheck_);
 
-    //noneRadio_ = new QRadioButton("None", this);
-    closestRadio_ = new QRadioButton("Closest", this);
+    // The plan radios beyond the base "Closest".
     greedyRadio_ = new QRadioButton("Greedy Fleet Plan", this);
     greedyRadio_->setToolTip("Run the greedy fleet planner (all assets, all "
                              "vehicle types) and overlay the displayed "
@@ -224,47 +114,8 @@ namespace VINCP::Network {
         "factory, keep-all -- exact by construction) on a worker thread and "
         "overlay the optimal flows. The interior-point solution spreads "
         "tonnage over the optimal face; Purify drives it to a corner.");
-    closestRadio_->setChecked(true);
-    QButtonGroup* linkGroup = new QButtonGroup(this);
-    //linkGroup->addButton(noneRadio_);
-    linkGroup->addButton(closestRadio_);
-    linkGroup->addButton(greedyRadio_);
-    linkGroup->addButton(optimalRadio_);
-
-    QPushButton* regenButton = new QPushButton("Regenerate", this);
-    QPushButton* recenterButton = new QPushButton("Recenter", this);
-    recenterButton->setToolTip("Restore the centred, fitted view "
-                               "(undo pan / zoom).");
-
-    statusLabel_ = new QLabel(this);
-    statusLabel_->setWordWrap(true);
-
-    // --- control panel layout ---
-    QGroupBox* genGroup = new QGroupBox("Instance", this);
-    QFormLayout* genForm = new QFormLayout(genGroup);
-    genForm->addRow("Laydown", laydownBox_);
-    genForm->addRow("Seed", seedBox_);
-    genForm->addRow("Supply-only", supplyOnlyBox_);
-    genForm->addRow("Both", bothBox_);
-    genForm->addRow("Demand-only", demandOnlyBox_);
-    genForm->addRow("Transit", transitBox_);
-    genForm->addRow("Vehicle types", vehicleTypesBox_);
-    genForm->addRow("Asset types", assetTypesBox_);
-    genForm->addRow(hugeFleetCheck_);
-    genForm->addRow(regenButton);
-
-    QGroupBox* modeGroup = new QGroupBox("Show Links", this);
-    QVBoxLayout* modeLayout = new QVBoxLayout(modeGroup);
-    //modeLayout->addWidget(noneRadio_);
-    modeLayout->addWidget(closestRadio_);
-    QHBoxLayout* countRow = new QHBoxLayout();
-    countRow->addSpacing(20);
-    countRow->addWidget(new QLabel("links", this));
-    countRow->addWidget(nearestBox_);
-    countRow->addStretch(1);
-    modeLayout->addLayout(countRow);
-    modeLayout->addWidget(greedyRadio_);
-    modeLayout->addWidget(optimalRadio_);
+    addPlanRadio(greedyRadio_);
+    addPlanRadio(optimalRadio_);
 
     swapOptButton_ = new QPushButton("Swap to Optimum", this);
     swapOptButton_->setEnabled(false);
@@ -281,65 +132,11 @@ namespace VINCP::Network {
         "Runs on a worker thread.");
     resetButton_ = new QPushButton("Reset plan", this);
     resetButton_->setEnabled(false);
-    QGroupBox* swapGroup = new QGroupBox("Swaps (2-exchange)", this);
-    QVBoxLayout* swapLayout = new QVBoxLayout(swapGroup);
-    swapLayout->addWidget(swapOptButton_);
-    swapLayout->addWidget(purifyButton_);
-    swapLayout->addWidget(resetButton_);
+    addSwapControl(swapOptButton_);
+    addSwapControl(purifyButton_);
+    addSwapControl(resetButton_);
 
-    // Busy bar: background work (the optimal solve, purification) has no
-    // knowable duration, so the bar refills over and over until the worker
-    // reports back; idle, it sits empty.
-    busyBar_ = new QProgressBar(this);
-    busyBar_->setRange(0, 100);
-    busyBar_->setValue(0);
-    busyBar_->setTextVisible(false);
-    busyBar_->setFixedHeight(12);
-    busyTimer_ = new QTimer(this);
-    busyTimer_->setInterval(50);
-    connect(busyTimer_, &QTimer::timeout, this, [this]() {
-      busyBar_->setValue((busyBar_->value() + 4) % (busyBar_->maximum() + 1));
-    });
-
-    histBinsBox_ = new QSpinBox(this);
-    histBinsBox_->setRange(1, 25);
-    histBinsBox_->setValue(10);
-    histBinsBox_->setToolTip("Number of equal distance-range bins for the "
-                             "N^2 distances.");
-    histogram_ = new CostHistogram(this);
-
-    QGroupBox* histGroup = new QGroupBox("Distance histogram", this);
-    QVBoxLayout* histLayout = new QVBoxLayout(histGroup);
-    QHBoxLayout* binsRow = new QHBoxLayout();
-    binsRow->addWidget(new QLabel("bins", this));
-    binsRow->addWidget(histBinsBox_);
-    binsRow->addStretch(1);
-    histLayout->addLayout(binsRow);
-    histLayout->addWidget(histogram_);
-
-    labelsCheck_ = new QCheckBox("Labels", this);
-    labelsCheck_->setChecked(false);
-    labelsCheck_->setToolTip("Show each node's label centred on its dot.");
-
-    QGroupBox* dispGroup = new QGroupBox("Display", this);
-    QVBoxLayout* dispLayout = new QVBoxLayout(dispGroup);
-    dispLayout->addWidget(labelsCheck_);
-    dispLayout->addWidget(recenterButton);
-
-    QWidget* panel = new QWidget(this);
-    QVBoxLayout* panelLayout = new QVBoxLayout(panel);
-    panelLayout->addWidget(genGroup);
-    panelLayout->addWidget(modeGroup);
-    panelLayout->addWidget(swapGroup);
-    panelLayout->addWidget(busyBar_);
-    panelLayout->addWidget(dispGroup);
-    panelLayout->addWidget(histGroup);
-    panelLayout->addWidget(statusLabel_);
-    panelLayout->addStretch(1);
-    panel->setFixedWidth(240);
-
-    // Right panel: the asset selector on top (it scopes everything below),
-    // then the two node rankings for the DISPLAYED asset.
+    // Right panel: the asset selector on top (it scopes everything below).
     assetBox_ = new QSpinBox(this);
     assetBox_->setRange(1, 1);
     assetBox_->setValue(1);
@@ -348,54 +145,10 @@ namespace VINCP::Network {
     QGroupBox* assetGroup = new QGroupBox("Asset shown", this);
     QFormLayout* assetForm = new QFormLayout(assetGroup);
     assetForm->addRow("Asset Displayed", assetBox_);
+    addRightPanelTop(assetGroup);
 
-    throughputList_ = new NodeListWidget(this);
-    countList_ = new NodeListWidget(this);
-    throughputList_->setEnabled(false);
-    countList_->setEnabled(false);
-
-    QVBoxLayout* tputCol = new QVBoxLayout();
-    tputCol->addWidget(new QLabel("By units", this));
-    tputCol->addWidget(throughputList_);
-    QVBoxLayout* countCol = new QVBoxLayout();
-    countCol->addWidget(new QLabel("By count", this));
-    countCol->addWidget(countList_);
-
-    QGroupBox* rankGroup = new QGroupBox("Flow through nodes", this);
-    QHBoxLayout* rankLayout = new QHBoxLayout(rankGroup);
-    rankLayout->addLayout(tputCol);
-    rankLayout->addLayout(countCol);
-    QWidget* rightPanel = new QWidget(this);
-    QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
-    rightLayout->addWidget(assetGroup);
-    rightLayout->addWidget(rankGroup);
-    rightPanel->setFixedWidth(260);
-
-    QWidget* central = new QWidget(this);
-    QHBoxLayout* mainLayout = new QHBoxLayout(central);
-    mainLayout->addWidget(panel);
-    mainLayout->addWidget(view_, 1);
-    mainLayout->addWidget(rightPanel);
-    setCentralWidget(central);
-
-    connect(regenButton, &QPushButton::clicked, this,
-            &FleetMainWindow::regenerate);
-    connect(laydownBox_, &QComboBox::currentIndexChanged, this,
-            &FleetMainWindow::regenerate);
     connect(hugeFleetCheck_, &QCheckBox::toggled, this,
             &FleetMainWindow::regenerate);   // counts change the instance
-    connect(nearestBox_,
-            QOverload<int>::of(&QSpinBox::valueChanged), this,
-            &FleetMainWindow::applyNearestK);
-    connect(linkGroup, &QButtonGroup::buttonClicked, this,
-            &FleetMainWindow::applyPlanMode);
-    connect(histBinsBox_,
-            QOverload<int>::of(&QSpinBox::valueChanged), histogram_,
-            &CostHistogram::setBinCount);
-    connect(recenterButton, &QPushButton::clicked, view_,
-            &FlowPlanView::recenter);
-    connect(labelsCheck_, &QCheckBox::toggled, view_,
-            &FlowPlanView::setShowLabels);
     connect(assetBox_,
             QOverload<int>::of(&QSpinBox::valueChanged), this,
             &FleetMainWindow::applyDisplayedAsset);
@@ -413,13 +166,6 @@ namespace VINCP::Network {
     connect(purifyWatcher_, &QFutureWatcher<PurifyOutcome>::finished, this,
             &FleetMainWindow::onPurifyFinished);
 
-    for (NodeListWidget* list : {throughputList_, countList_}) {
-      connect(list, &NodeListWidget::nodePressed, view_,
-              &FlowPlanView::showNodeInfo);
-      connect(list, &NodeListWidget::pressEnded, view_,
-              &FlowPlanView::hideNodeInfo);
-    }
-
     regenerate();
     return;
   }
@@ -428,11 +174,7 @@ namespace VINCP::Network {
   FleetMainWindow::currentProfile() const
   {
     FleetProfile profile;
-    profile.geometry.numSupplyOnly = supplyOnlyBox_->value();
-    profile.geometry.numBoth = bothBox_->value();
-    profile.geometry.numDemandOnly = demandOnlyBox_->value();
-    profile.geometry.numNeither = transitBox_->value();
-    profile.geometry.laydownType = laydownBox_->currentData().toInt();
+    profile.geometry = geometryProfile();
     profile.assets = assetCatalog(assetTypesBox_->value());
     profile.vehicles = vehicleCatalog(vehicleTypesBox_->value());
     if (hugeFleetCheck_->isChecked()) {
@@ -453,59 +195,34 @@ namespace VINCP::Network {
   }
 
   void
-  FleetMainWindow::refreshMapForAsset()
+  FleetMainWindow::rebuildInstance(std::uint64_t seed)
+  {
+    const FleetProfile profile = currentProfile();
+    validateFleetProfile(profile);
+    current_ = makeRandomFleetInstance(profile, seed);
+    // Plans and caches belong to the old instance (the base's solveToken_
+    // stamps out any solve/purify in flight).
+    planKind_ = 0;
+    greedyValidP_ = false;
+    optimalValidP_ = false;
+    // The asset spinner scopes to the new instance; setRange clamps the
+    // value, and any resulting valueChanged re-slices harmlessly.
+    assetBox_->setRange(1, static_cast<int>(numAssets(current_)));
+    return;
+  }
+
+  Index
+  FleetMainWindow::nodeCount() const
+  {
+    return current_.numNodes;
+  }
+
+  void
+  FleetMainWindow::refreshMap()
   {
     const Instance slice = assetSlice(current_, displayedAsset());
     view_->setInstance(slice);      // same geometry: pan/zoom preserved
     histogram_->setInstance(slice);
-    return;
-  }
-
-  void
-  FleetMainWindow::regenerate()
-  {
-    const FleetProfile profile = currentProfile();
-    // Seed 0 is the "reroll" sentinel, exactly as in the network viewer.
-    if (0 == seedBox_->value()) {
-      seedBox_->setValue(timeSeed());
-    }
-    const std::uint64_t seed =
-        static_cast<std::uint64_t>(seedBox_->value());
-    try {
-      validateFleetProfile(profile);
-      current_ = makeRandomFleetInstance(profile, seed);
-      lastSeed_ = seed;
-      haveInstanceP_ = true;
-      planKind_ = 0;               // plans belong to the old instance
-      greedyValidP_ = false;
-      optimalValidP_ = false;
-      ++solveToken_;               // stamp out any solve/purify in flight
-
-      // The asset spinner scopes to the new instance; setRange clamps the
-      // value, and any resulting valueChanged re-slices harmlessly.
-      assetBox_->setRange(1, static_cast<int>(numAssets(current_)));
-      const int hi = std::max(0, static_cast<int>(current_.numNodes) - 1);
-      nearestBox_->setRange(0, hi);
-
-      refreshMapForAsset();
-      applyPlanMode();
-    }
-    catch (const std::exception& ex) {
-      haveInstanceP_ = false;
-      view_->clearPlan();
-      statusLabel_->setText(QString("Invalid profile: %1").arg(ex.what()));
-    }
-    return;
-  }
-
-  void
-  FleetMainWindow::applyNearestK()
-  {
-    if (!haveInstanceP_ || !closestRadio_->isChecked()) {
-      return;
-    }
-    view_->setNearestK(nearestBox_->value());
-    refreshStatus(QString("closest links (k = %1)").arg(nearestBox_->value()));
     return;
   }
 
@@ -563,8 +280,7 @@ namespace VINCP::Network {
       view_->clearPlan();
       hideFlowLists();
       refreshPlanControls();
-      view_->setNearestK(nearestBox_->value());
-      refreshStatus(QString("closest links (k = %1)").arg(nearestBox_->value()));
+      applyNearestK();
     }
     else {   // None
       view_->clearPlan();
@@ -581,7 +297,7 @@ namespace VINCP::Network {
   {
     const Plan slice = planSlice(workingPlan_, displayedAsset());
     view_->setPlan(slice);
-    showFlowLists(slice);
+    showFlowLists(slice, current_.labels);
     refreshPlanControls();
     refreshPlanStatus();
     return;
@@ -768,8 +484,8 @@ namespace VINCP::Network {
     if (!haveInstanceP_) {
       return;
     }
-    refreshMapForAsset();   // setInstance clears the overlay...
-    applyPlanMode();        // ...and this re-applies the new asset's slice
+    refreshMap();      // setInstance clears the overlay...
+    applyPlanMode();   // ...and this re-applies the new asset's slice
     return;
   }
 
@@ -863,28 +579,6 @@ namespace VINCP::Network {
     return;
   }
 
-  void
-  FleetMainWindow::startBusy()
-  {
-    ++busyCount_;
-    if (!busyTimer_->isActive()) {
-      busyBar_->setValue(0);
-      busyTimer_->start();
-    }
-    return;
-  }
-
-  void
-  FleetMainWindow::stopBusy()
-  {
-    busyCount_ = std::max(0, busyCount_ - 1);
-    if (0 == busyCount_) {
-      busyTimer_->stop();
-      busyBar_->setValue(0);
-    }
-    return;
-  }
-
   QStringList
   FleetMainWindow::nodeInfoLines(int node) const
   {
@@ -899,35 +593,11 @@ namespace VINCP::Network {
       }
       return parts.join(", ");
     };
-    const QString name = QString::fromStdString(
-        current_.labels.empty() ? "#" + std::to_string(node)
-                                : current_.labels[static_cast<size_t>(node)]);
     return QStringList{
-        name,
+        nodeText(current_.labels, node),
         QString("C = [%1]").arg(vectorText(current_.supplyCap)),
         QString("D = [%1]").arg(vectorText(current_.demand)),
     };
-  }
-
-  void
-  FleetMainWindow::showFlowLists(const Plan& planSlice)
-  {
-    const vector<NodeFlowStat> stats = computeNodeFlowStats(planSlice);
-    fillNodeList(throughputList_, current_, stats, true);
-    fillNodeList(countList_, current_, stats, false);
-    throughputList_->setEnabled(true);
-    countList_->setEnabled(true);
-    return;
-  }
-
-  void
-  FleetMainWindow::hideFlowLists()
-  {
-    throughputList_->clear();
-    countList_->clear();
-    throughputList_->setEnabled(false);
-    countList_->setEnabled(false);
-    return;
   }
 
 } // namespace VINCP::Network

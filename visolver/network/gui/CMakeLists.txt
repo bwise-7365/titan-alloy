@@ -24,10 +24,11 @@ endif()
 
 set(CMAKE_AUTOMOC ON)
 
-qt_add_executable(network_viewer
-    main_gui.cpp
-    mainwindow.hpp
-    mainwindow.cpp
+# The widgets and the PlannerGui skeleton shared by both viewers, compiled
+# once and linked into each executable.
+qt_add_library(viewer_common STATIC
+    plannergui.hpp
+    plannergui.cpp
     flowplanview.hpp
     flowplanview.cpp
     costhistogram.hpp
@@ -35,8 +36,15 @@ qt_add_executable(network_viewer
     nodelistwidget.hpp
     nodelistwidget.cpp
 )
-target_include_directories(network_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(network_viewer PRIVATE Qt6::Widgets Qt6::Concurrent vincpnet)
+target_include_directories(viewer_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(viewer_common PUBLIC Qt6::Widgets vincpnet)
+
+qt_add_executable(network_viewer
+    main_gui.cpp
+    mainwindow.hpp
+    mainwindow.cpp
+)
+target_link_libraries(network_viewer PRIVATE Qt6::Concurrent viewer_common)
 
 # Windowed app (no console). Comment out to get a console for debug output.
 set_target_properties(network_viewer PROPERTIES WIN32_EXECUTABLE TRUE)
@@ -47,15 +55,8 @@ qt_add_executable(fleet_viewer
     fleet_gui.cpp
     fleetmainwindow.hpp
     fleetmainwindow.cpp
-    flowplanview.hpp
-    flowplanview.cpp
-    costhistogram.hpp
-    costhistogram.cpp
-    nodelistwidget.hpp
-    nodelistwidget.cpp
 )
-target_include_directories(fleet_viewer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(fleet_viewer PRIVATE Qt6::Widgets Qt6::Concurrent vincpnet)
+target_link_libraries(fleet_viewer PRIVATE Qt6::Concurrent viewer_common)
 set_target_properties(fleet_viewer PROPERTIES WIN32_EXECUTABLE TRUE)
 
 message(STATUS "vincpnet GUI: network_viewer + fleet_viewer enabled "
