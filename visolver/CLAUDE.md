@@ -86,6 +86,13 @@ Two solver layers over one shared core; the dependency arrows point one way
     engines. Structural exceptions: it takes `numFree` instead of honoring an
     arbitrary `Projector` (its seam adapter ignores `x0` and `Pr` — never pair
     it with a non-orthant `K` like an ellipsoid), and it cannot warm-start.
+    A second overload takes a `MatrixApply` operator instead of the explicit
+    `M` (matrix-free: O(dim) field evaluations, no O(dim^2) storage); that
+    form REQUIRES a `NewtonSolverFactory`, since the built-in dense-LU
+    factory needs the explicit matrix. The fleet pipeline's default path
+    (`ipmNewton = "fleet"`) runs fully matrix-free: `applyFleetLcpM` +
+    `makeFleetNewtonFactory` on a `buildFleetLcp(..., false)` build whose
+    dense `M` is never assembled.
   The projection engines solve a **linear** VI `(M x + q)` over any `K` given
   as the `Projector`; the IPM is mixed/orthant-structural only.
 

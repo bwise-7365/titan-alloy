@@ -7,10 +7,12 @@
 #include "fleetsolve.hpp"
 
 #include "bshe94b.hpp"
+#include "fleetnewton.hpp"
 #include "mehrotraipm.hpp"
 #include "semismoothnewton.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
@@ -31,6 +33,11 @@ namespace VINCP::Network {
         throw std::invalid_argument(
             "solveFleetPlan: engine must be 'ipm', 'bshe94b', or 'ssn', not '"
             + params.engine + "'.");
+      }
+      if ("dense" != params.ipmNewton && "fleet" != params.ipmNewton) {
+        throw std::invalid_argument(
+            "solveFleetPlan: ipmNewton must be 'dense' or 'fleet', not '"
+            + params.ipmNewton + "'.");
       }
       if (0 > params.maxSourcesPerSink || 0.0 > params.gapFraction
           || 0 > params.maxCertificateRounds
@@ -161,19 +168,42 @@ namespace VINCP::Network {
     }
 
     // Solve; with an active screen, re-solve until the certificate passes
-    // (columns are only ever added, so this terminates).
+    // (columns are only ever added, so this terminates). The structured ipm
+    // path is fully matrix-free (MF1): the dense M is neither assembled nor
+    // held -- at the production target scale it would not fit.
+    const bool matrixFreeP =
+        ("ipm" == params.engine && "fleet" == params.ipmNewton);
     FleetLcp lcp;
     for (int round = 0; round <= params.maxCertificateRounds; ++round) {
-      lcp = buildFleetLcp(scaled, reduced, epsilon);
+      lcp = buildFleetLcp(scaled, reduced, epsilon, !matrixFreeP);
       const Index dim = lcp.numVars + lcp.numSupplyCells + lcp.numTypes;
       const VectorXd z0 = VectorXd::Zero(dim);
+      if (params.roundStartLogger) {
+        params.roundStartLogger(round, lcp.numVars, dim);
+      }
+      const auto solveStart = std::chrono::steady_clock::now();
       if ("ipm" == params.engine) {
-        // Pure NCP: numFree = 0; dense-LU Newton factory (the structured
-        // fleet factory is ledger G5h).
-        result.vi = mehrotraIpm(lcp.M, lcp.q, 0, params.magTol,
-                                params.iterMax, params.iterFreq,
-                                MehrotraIpmParams{}, IterationLogger{},
-                                NewtonSolverFactory{});
+        // Pure NCP: numFree = 0. ipmNewton selects the Newton linear
+        // algebra: the structured fleet factory (FN2) with the matrix-free
+        // field (MF1), both rebuilt each certificate round with the lcp, or
+        // the generic dense-LU factory on the explicit M.
+        MehrotraIpmParams ipmParams;
+        ipmParams.newtonCheckTol = params.newtonCheckTol;
+        if (matrixFreeP) {
+          const MatrixApply applyM = [&lcp](const VectorXd& v) -> VectorXd {
+            return applyFleetLcpM(lcp, v);
+          };
+          result.vi = mehrotraIpm(applyM, lcp.q, 0, params.magTol,
+                                  params.iterMax, params.iterFreq,
+                                  ipmParams, params.logger,
+                                  makeFleetNewtonFactory(lcp));
+        }
+        else {
+          result.vi = mehrotraIpm(lcp.M, lcp.q, 0, params.magTol,
+                                  params.iterMax, params.iterFreq,
+                                  ipmParams, params.logger,
+                                  NewtonSolverFactory{});
+        }
       }
       else if ("ssn" == params.engine) {
         const VIModel lcpModel = makeVIModel(
@@ -185,11 +215,20 @@ namespace VINCP::Network {
         ssnParams.iterFreq = params.iterFreq;
         ssnParams.jacobian =
             [&lcp](const VectorXd&) -> MatrixXd { return lcp.M; };
-        result.vi = semismoothNewtonSolve(lcpModel, z0, ssnParams);
+        result.vi = semismoothNewtonSolve(lcpModel, z0, ssnParams,
+                                          params.logger);
       }
       else {
         result.vi = bsHe94b(z0, lcp.M, lcp.q, projectNonnegative,
-                            params.magTol, params.iterMax, params.iterFreq);
+                            params.magTol, params.iterMax, params.iterFreq,
+                            BsHe94bParams{}, params.logger);
+      }
+      if (params.roundEndLogger) {
+        const auto solveStop = std::chrono::steady_clock::now();
+        const double milliseconds =
+            std::chrono::duration<double, std::milli>(solveStop - solveStart)
+                .count();
+        params.roundEndLogger(round, result.vi, milliseconds);
       }
       result.certificateRounds = round;
       if (!result.vi.converged) {

@@ -5,6 +5,7 @@
 #include "testsupport.hpp"
 
 #include <Eigen/Dense>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -269,7 +270,8 @@ TEST(MehrotraIpm, MixedRandomQpMatchesBsHe94b) {
 
     const double magTol = 1.0e-14;
     const int heIterMax = 200000;
-    const double crossTol = 1.0e-5;              // ||z_ipm - z_he|| agreement bar
+    const double objectiveTol = 1.0e-6;          // relative objective agreement
+    const double crossGrossTol = 1.0e-2;         // gross ||z_ipm - z_he|| bar
 
     std::mt19937 rng(seed);
     const MatrixXd Q = makeGramMatrix(numU, numU, rng, gramLo, gramHi);
@@ -317,7 +319,21 @@ TEST(MehrotraIpm, MixedRandomQpMatchesBsHe94b) {
     EXPECT_TRUE(ipm.converged);
     EXPECT_TRUE(he.converged);
     EXPECT_LE(ipm.iter, kIterBudget);
-    EXPECT_LT((ipm.z - he.z).norm(), crossTol);
+
+    // This test rerolls its QP every run (makeSeed(0): microsecond clock),
+    // and on an unlucky draw the KKT solution set is nearly flat, so the two
+    // engines' converged POINTS legitimately differ (observed 2026-07-08:
+    // 1.4e-5 apart with both residuals ~1e-14 -- the IPM ends at the
+    // analytic center, the projection-contraction wherever it lands). The
+    // draw-independent invariant is the OBJECTIVE, constant across the
+    // solution set of a convex QP: compare it tightly, and keep only a
+    // gross-disagreement bar on the points themselves.
+    const VectorXd uIpm = ipm.z.head(numU);
+    const VectorXd uHe = he.z.head(numU);
+    const double fIpm = 0.5 * uIpm.dot(Q * uIpm) + cost.dot(uIpm);
+    const double fHe = 0.5 * uHe.dot(Q * uHe) + cost.dot(uHe);
+    EXPECT_LE(std::abs(fIpm - fHe), objectiveTol * (1.0 + std::abs(fHe)));
+    EXPECT_LT((ipm.z - he.z).norm(), crossGrossTol);
 }
 
 // Singular free block, consistent system: Q = diag(1, 0) leaves u2 with no
@@ -409,6 +425,82 @@ TEST(MehrotraIpm, NewtonFactorySeamMatchesDefaultExactly) {
     for (const double reg : trace.regValues) {
         EXPECT_EQ(0.0, reg);
     }
+}
+
+// MF1: the matrix-free overload with applyM = M v and a dense factory of the
+// identical arithmetic must reproduce the dense overload's result EXACTLY
+// (bit for bit) -- the engine touches M only through the operator, so the
+// two paths perform the same floating-point operations in the same order.
+TEST(MehrotraIpm, MatrixFreeOverloadMatchesDenseExactly) {
+    const Index N = 10;
+    const std::uint_fast32_t seed = makeSeed(0, true);
+
+    const int    intLo  = 1,    intHi  = 10;
+    const double realLo = -5.0, realHi = 10.0;
+    const double magTol = 1.0e-14;
+
+    std::mt19937 rng(seed);
+
+    VectorXd w, z;
+    makeComplementaryPair(N, rng, intLo, intHi, w, z);
+    const MatrixXd M = makeGramMatrix(N, N, rng, realLo, realHi);
+    const VectorXd q = w - M * z;
+
+    VIResult viaDense;
+    ASSERT_NO_THROW({
+        viaDense = mehrotraIpm(M, q, kNumFree, magTol, kIterMax, 0);
+    });
+
+    SeamTrace trace;
+    const NewtonSolverFactory denseFactory =
+        makeCountingDenseFactory(M, kNumFree, trace);
+    const MatrixApply applyM = [&M](const VectorXd& v) -> VectorXd {
+        return M * v;
+    };
+    VIResult viaFree;
+    ASSERT_NO_THROW({
+        viaFree = mehrotraIpm(applyM, q, kNumFree, magTol, kIterMax, 0,
+                              MehrotraIpmParams{}, IterationLogger{},
+                              denseFactory);
+    });
+    printSolveStats("mehrotraIpm(matrix-free)", viaFree);
+
+    EXPECT_TRUE(viaFree.converged);
+    EXPECT_EQ(viaDense.iter, viaFree.iter);
+    EXPECT_EQ(viaDense.residual, viaFree.residual);
+    EXPECT_EQ(0.0, (viaDense.z - viaFree.z).norm());
+}
+
+// MF1 guards: the matrix-free form requires a non-empty operator AND a
+// non-empty factory (there is no dense fallback without the explicit M),
+// and an operator returning the wrong size is refused, not iterated on.
+TEST(MehrotraIpm, MatrixFreeFormValidatesItsInputs) {
+    const Index N = 4;
+    const double magTol = 1.0e-12;
+    const MatrixXd M = MatrixXd::Identity(N, N);
+    const VectorXd q = VectorXd::Constant(N, -1.0);
+
+    SeamTrace trace;
+    const NewtonSolverFactory denseFactory =
+        makeCountingDenseFactory(M, kNumFree, trace);
+    const MatrixApply applyM = [&M](const VectorXd& v) -> VectorXd {
+        return M * v;
+    };
+
+    EXPECT_THROW(mehrotraIpm(MatrixApply{}, q, kNumFree, magTol, kIterMax, 0,
+                             MehrotraIpmParams{}, IterationLogger{},
+                             denseFactory),
+                 std::invalid_argument);
+    EXPECT_THROW(mehrotraIpm(applyM, q, kNumFree, magTol, kIterMax, 0),
+                 std::invalid_argument);
+
+    const MatrixApply wrongSize = [](const VectorXd& v) -> VectorXd {
+        return VectorXd::Zero(v.size() + 1);
+    };
+    EXPECT_THROW(mehrotraIpm(wrongSize, q, kNumFree, magTol, kIterMax, 0,
+                             MehrotraIpmParams{}, IterationLogger{},
+                             denseFactory),
+                 std::invalid_argument);
 }
 
 // NS1 seam, rescue protocol: the engine cannot know WHY a factorization is

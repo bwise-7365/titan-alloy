@@ -39,7 +39,7 @@ namespace VINCP::Network {
 
   FleetLcp
   buildFleetLcp(const FleetInstance& inst, const FleetReducedProblem& reduced,
-                double epsilon)
+                double epsilon, bool assembleDenseMatrixP)
   {
     validateFleetInstance(inst);
     if (0.0 > epsilon || !std::isfinite(epsilon)) {
@@ -129,12 +129,15 @@ namespace VINCP::Network {
     }
 
     // Assembly (Maxima checks 1-3): rank-one Q block per demand cell, skew
-    // mu incidence, skew per-type budget borders.
+    // mu incidence, skew per-type budget borders. varQuad and q are always
+    // built; the dense M only on request (the matrix-free path never needs
+    // it, and its Q-block loop alone is O(numVars^2)).
     const Index dim = lcp.numVars + lcp.numSupplyCells + numK;
     const Index muBase = lcp.numVars;
     const Index laBase = lcp.numVars + lcp.numSupplyCells;
-    lcp.M = MatrixXd::Zero(dim, dim);
+    lcp.M = assembleDenseMatrixP ? MatrixXd::Zero(dim, dim) : MatrixXd();
     lcp.q = VectorXd::Zero(dim);
+    lcp.varQuad.resize(lcp.numVars);
 
     for (Index i = 0; i < lcp.numVars; ++i) {
       const Index a = lcp.varAsset[static_cast<size_t>(i)];
@@ -143,19 +146,22 @@ namespace VINCP::Network {
           asset.sinks[static_cast<size_t>(lcp.varSinkPos[static_cast<size_t>(i)])];
       const double demand = inst.demand(sinkNode, a);
       const double quad = 2.0 * inst.priority(sinkNode, a) / (demand * demand);
+      lcp.varQuad(i) = quad;
 
-      for (Index r = 0; r < lcp.numVars; ++r) {
-        if (lcp.varCell[static_cast<size_t>(r)]
-            == lcp.varCell[static_cast<size_t>(i)]) {
-          lcp.M(i, r) = quad;
+      if (assembleDenseMatrixP) {
+        for (Index r = 0; r < lcp.numVars; ++r) {
+          if (lcp.varCell[static_cast<size_t>(r)]
+              == lcp.varCell[static_cast<size_t>(i)]) {
+            lcp.M(i, r) = quad;
+          }
         }
+        const Index muRow = muBase + lcp.varMuIndex[static_cast<size_t>(i)];
+        const Index laRow = laBase + lcp.varType[static_cast<size_t>(i)];
+        lcp.M(i, muRow) = 1.0;
+        lcp.M(muRow, i) = -1.0;
+        lcp.M(i, laRow) = lcp.varRho(i);
+        lcp.M(laRow, i) = -lcp.varRho(i);
       }
-      const Index muRow = muBase + lcp.varMuIndex[static_cast<size_t>(i)];
-      const Index laRow = laBase + lcp.varType[static_cast<size_t>(i)];
-      lcp.M(i, muRow) = 1.0;
-      lcp.M(muRow, i) = -1.0;
-      lcp.M(i, laRow) = lcp.varRho(i);
-      lcp.M(laRow, i) = -lcp.varRho(i);
 
       lcp.q(i) = -2.0 * inst.priority(sinkNode, a) / demand
                  + epsilon * lcp.varRho(i);
@@ -172,6 +178,35 @@ namespace VINCP::Network {
       lcp.q(laBase + k) = vehicleBudget(inst, k);
     }
     return lcp;
+  }
+
+  VectorXd
+  applyFleetLcpM(const FleetLcp& lcp, const VectorXd& v)
+  {
+    const Index dim = lcp.numVars + lcp.numSupplyCells + lcp.numTypes;
+    if (v.size() != dim || lcp.varQuad.size() != lcp.numVars) {
+      throw std::invalid_argument(
+          "applyFleetLcpM: v or the lcp index data has the wrong size.");
+    }
+    const Index muBase = lcp.numVars;
+    const Index laBase = lcp.numVars + lcp.numSupplyCells;
+
+    // Cell sums of the y block feed every same-cell Q entry at once.
+    VectorXd cellSum = VectorXd::Zero(lcp.numCells);
+    for (Index p = 0; p < lcp.numVars; ++p) {
+      cellSum(lcp.varCell[static_cast<size_t>(p)]) += v(p);
+    }
+
+    VectorXd result = VectorXd::Zero(dim);
+    for (Index p = 0; p < lcp.numVars; ++p) {
+      const Index mu = lcp.varMuIndex[static_cast<size_t>(p)];
+      const Index la = lcp.varType[static_cast<size_t>(p)];
+      result(p) = lcp.varQuad(p) * cellSum(lcp.varCell[static_cast<size_t>(p)])
+                  + v(muBase + mu) + lcp.varRho(p) * v(laBase + la);
+      result(muBase + mu) -= v(p);
+      result(laBase + la) -= lcp.varRho(p) * v(p);
+    }
+    return result;
   }
 
   FleetPlan

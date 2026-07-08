@@ -1,0 +1,246 @@
+/* Copyright Ben Paul Wise. All Rights Reserved. */
+/* ------------------------------------------------------------------------
+   fleet-newton-check.mac -- Maxima double-check of the FLEET structured
+   Newton-solver algebra (stage FN1 of 2026-07-08-fleet-performance-plan.md;
+   the fleet analog of ns2-newton-check.mac, ledger G5h). Run:
+       maxima -q -b fleet-newton-check.mac
+   Prints one PASS line per check and "ALL 9 CHECKS PASS" at the end; any
+   failure (or any check silently skipped) calls error() and aborts.
+
+   The interior-point Newton matrix for z = [ y | mu | lambda ] (pure NCP,
+   fleetlcp.hpp packing, y CELL-MAJOR by demand cell) is
+       K = [ Qblk + diag(Dy) |  E        | R         ]
+           [ -E^T            | diag(Dmu) | 0         ]
+           [ -R^T            | 0         | diag(Dla) ]
+   with Qblk block-diagonal BY DEMAND CELL, each block Q_cell * ones
+   (RANK 1, Q_cell = 2 P / D^2), E the (variable, supply-cell) incidence
+   (one 1 per row), and R the (variable, vehicle-type) incidence weighted
+   by rho_p (one rho per row). The fleet differences from the flow case:
+   the lambda border is K columns instead of one dense column, and a cell
+   mixes several types and several sources.
+   Claims checked, in exact symbolic / rational arithmetic:
+     1. Sherman-Morrison inverse of one cell block (symbolic k = 3).
+     2. (as 4a/4b) S is symmetric -- the skew borders cancel inside
+        B^T W B, justifying LLT on the Schur complement.
+     3. The elimination recipe (W by per-cell SM, Schur S on the duals of
+        size nmu + nla, back-substitution for dy) equals the direct solve
+        of K x = r:
+        3a fully symbolic on a 1-cell / 2-type instance (two lambda
+           columns -- the border shape flow never had),
+        3b exact-rational on the 6-variable fleet-mcp fixture, with S
+           assembled by the two-part scheme (per-variable 2x2 accumulation
+           + per-cell rank-1 downdates) and the O(k) W-apply shortcut
+           verified against the explicit W,
+        3c symbolic cell-size-1 edge case.
+   Division of labor: this file certifies the MATH; the C++ parity tests
+   (FN2, fleetnewton_test) certify the implementation. The fixture shape
+   (variables, cells, incidences) is fleet-mcp-check.mac's, so the two
+   files pin the same packing.
+
+   Maxima hygiene (from ns2-newton-check.mac; keep these):
+     - prederror:true so an undecidable predicate ABORTS instead of letting
+       an if return a noun form that skips a check silently.
+     - scalarmatrixp:false so 1x1 dot products stay matrices and [1,1]
+       indexing works in the cell-size-1 edge case.
+     - Parameters are substituted via subst(vals, ...) lists, NEVER bound
+       globally after the fact.
+     - The zero test is SYNTACTIC after ratsimp; a counter verifies all 9
+       checks really executed.
+   ------------------------------------------------------------------------ */
+
+prederror: true$
+scalarmatrixp: false$
+
+/* ---------- helpers ---------- */
+
+numPass: 0$
+
+zeropmat(Z) := block([R: ratsimp(Z)],
+  if matrixp(R)
+    then every(lambda([row], every(lambda([e], is(e = 0)), row)), args(R))
+    else is(R = 0))$
+
+check(name, Z) := if zeropmat(Z)
+  then (numPass: numPass + 1, print(sconcat("PASS: ", name)))
+  else error(sconcat("FAIL: ", name))$
+
+diagm(lst) := genmatrix(lambda([i, j], if i = j then lst[i] else 0),
+                        length(lst), length(lst))$
+
+colv(lst) := transpose(matrix(lst))$
+
+/* ---------- check 1: Sherman-Morrison for one cell block (symbolic) ----
+   (diag(dd) + qq*ones)^-1 = diag(1/dd) - (qq/(1+qq*sigma)) u u^T,
+   u = (1/dd_i), sigma = sum 1/dd_i.                                      */
+
+block([dd: [dd1, dd2, dd3], Ablk, u, sigma, Wblk],
+  Ablk: diagm(dd) + qq0 * matrix([1,1,1],[1,1,1],[1,1,1]),
+  u: colv(makelist(1/dd[i], i, 1, 3)),
+  sigma: 1/dd1 + 1/dd2 + 1/dd3,
+  Wblk: diagm(makelist(1/dd[i], i, 1, 3))
+        - (qq0/(1 + qq0*sigma)) * (u . transpose(u)),
+  check("1    Sherman-Morrison cell-block inverse (symbolic k=3)",
+        Ablk . Wblk - ident(3)))$
+
+/* ---------- shared fixture (fleet-mcp-check.mac's shape) ---------------
+   2 assets, 2 sources, 2 sinks, 2 types, asset 2 capable on type 1 only:
+     cell 1 = (n1,a1): y1=(s1,k1) y2=(s1,k2) y3=(s2,k1) y4=(s2,k2)
+     cell 2 = (n1,a2): y5=(s2,k1)
+     cell 3 = (n2,a2): y6=(s2,k1)
+   Supply cells: mu1=(s1,a1) mu2=(s2,a1) mu3=(s2,a2).  dim = 6+3+2 = 11. */
+
+nvar: 6$  nmu: 3$  nla: 2$  ndim: 11$  ndual: 5$   /* nmu + nla */
+cellOf: [1, 1, 1, 1, 2, 3]$
+muOf:   [1, 1, 2, 2, 3, 3]$
+laOf:   [1, 2, 1, 2, 1, 1]$
+rhol:   [rr1, rr2, rr3, rr4, rr5, rr6]$
+Qc:     [2*Pa/DA^2, 2*Pb/DB^2, 2*Pc/DC^2]$
+cells:  [[1, 2, 3, 4], [5], [6]]$
+
+/* M as fleetlcp.hpp states it, built from the incidence lists. */
+buildMexp() := block([Mx: zeromatrix(ndim, ndim)],
+  for p: 1 thru nvar do (
+    for r: 1 thru nvar do
+      if cellOf[p] = cellOf[r] then Mx[p, r]: Qc[cellOf[p]],
+    Mx[p, nvar + muOf[p]]: 1,
+    Mx[p, nvar + nmu + laOf[p]]: rhol[p],
+    Mx[nvar + muOf[p], p]: -1,
+    Mx[nvar + nmu + laOf[p], p]: -rhol[p]),
+  Mx)$
+
+/* ---------- check 3a: elimination recipe, fully symbolic ---------------
+   1 cell, 2 variables on DIFFERENT types (two lambda columns), 1 mu:
+   z = [y1 y2 | mu1 | la1 la2].  W = per-cell SM inverse of the y-block,
+   B = [E R],  S = diag(dm|dl) + B^T W B,
+   dual = S^-1 (r_dual + B^T W ry),  dy = W (ry - B dual).                */
+
+block([Ks, u, sigma, cq, Wsm, Bm, Sm, ry, rdu, dual, dyv, xrec, xdir],
+  Ks: matrix([qq0+dy1, qq0,     1,   c1,  0 ],
+             [qq0,     qq0+dy2, 1,   0,   c2],
+             [-1,      -1,      dm1, 0,   0 ],
+             [-c1,     0,       0,   dl1, 0 ],
+             [0,       -c2,     0,   0,   dl2]),
+  u: colv([1/dy1, 1/dy2]),
+  sigma: 1/dy1 + 1/dy2,
+  cq: qq0/(1 + qq0*sigma),
+  Wsm: diagm([1/dy1, 1/dy2]) - cq * (u . transpose(u)),
+  Bm: matrix([1, c1, 0], [1, 0, c2]),
+  Sm: diagm([dm1, dl1, dl2]) + transpose(Bm) . Wsm . Bm,
+  check("4a   S symmetric (skew borders cancel; symbolic)",
+        Sm - transpose(Sm)),
+  ry: colv([r1, r2]),
+  rdu: colv([r3, r4, r5]) + transpose(Bm) . Wsm . ry,
+  dual: invert(Sm) . rdu,
+  dyv: Wsm . (ry - Bm . dual),
+  xrec: matrix([dyv[1,1]], [dyv[2,1]], [dual[1,1]], [dual[2,1]], [dual[3,1]]),
+  xdir: invert(Ks) . colv([r1, r2, r3, r4, r5]),
+  check("3a   elimination recipe = direct solve (symbolic, 1 cell, 2 types)",
+        xrec - xdir))$
+
+/* ---------- check 3b: full fleet fixture, exact rationals --------------
+   Parameters enter ONLY via this subst list (see hygiene note above).
+   S assembled by the TWO-PART scheme exactly as the C++ will do it:
+     part 1 (per variable): row p of B has TWO nonzeros (1 at mu(p),
+       rho_p at nmu+la(p)), so B^T diag(a) B accumulates, per p, the 2x2
+       block  S[m,m]+=a_p, S[m,l]+=rho_p a_p, S[l,m]+=rho_p a_p,
+       S[l,l]+=rho_p^2 a_p  with m = mu(p), l = nmu + la(p)
+     part 2 (per cell):  S -= c_n g_n g_n^T,  g_n = B^T u_n
+   plus the O(k) W-apply shortcut, checked against the explicit W matrix. */
+
+vals: [Pa = 3/2, Pb = 5/3, Pc = 2, DA = 7/2, DB = 9/4, DC = 3,
+       rr1 = 3, rr2 = 7/2, rr3 = 4, rr4 = 9/2, rr5 = 5, rr6 = 2]$
+Dyl:  [2, 3/2, 5/2, 4/3, 7/4, 5/4]$
+Dml:  [1/2, 3/4, 5/6]$
+Dlal: [2/5, 6/7]$
+
+block([QcN, rhoN, MexpN, av, cn, Wsm, Qblk, S1, Sm, Sref, EE, RR, Bm,
+       Kfull, xt, yshort, ryl, rml, rll, rdu, dual, dyv, xrec, xdir],
+  QcN: subst(vals, Qc),
+  rhoN: subst(vals, rhol),
+  MexpN: subst(vals, buildMexp()),
+  av: makelist(1/Dyl[p], p, 1, nvar),
+  cn: makelist(QcN[n] / (1 + QcN[n]
+        * apply("+", makelist(av[p], p, cells[n]))), n, 1, 3),
+
+  /* explicit W from the per-cell SM formula */
+  Wsm: diagm(av),
+  for n: 1 thru 3 do block([uf: makelist(0, p, 1, nvar)],
+    for p in cells[n] do uf[p]: av[p],
+    Wsm: Wsm - cn[n] * (colv(uf) . matrix(uf))),
+
+  /* W must invert the y-block of the actual K */
+  Qblk: genmatrix(lambda([i, j], MexpN[i, j]), nvar, nvar),
+  check("3b-1 per-cell SM W inverts (Qblk + diag(Dy)) (rational)",
+        (Qblk + diagm(Dyl)) . Wsm - ident(nvar)),
+
+  /* O(k) W-apply shortcut vs the explicit matrix */
+  xt: [1, -2, 3/2, -1/3, 2/5, -5/7],
+  yshort: makelist(av[p] * xt[p], p, 1, nvar),
+  for n: 1 thru 3 do block([acc: 0],
+    for p in cells[n] do acc: acc + av[p] * xt[p],
+    for p in cells[n] do yshort[p]: yshort[p] - cn[n] * acc * av[p]),
+  check("3b-2 O(k) W-apply shortcut = explicit W . x",
+        colv(yshort) - Wsm . colv(xt)),
+
+  /* two-part Schur assembly */
+  S1: zeromatrix(ndual, ndual),
+  for p: 1 thru nvar do block([m: muOf[p], l: nmu + laOf[p]],
+    S1[m, m]: S1[m, m] + av[p],
+    S1[m, l]: S1[m, l] + rhoN[p] * av[p],
+    S1[l, m]: S1[l, m] + rhoN[p] * av[p],
+    S1[l, l]: S1[l, l] + rhoN[p]^2 * av[p]),
+  for n: 1 thru 3 do block([g: makelist(0, s, 1, ndual)],
+    for p in cells[n] do (
+      g[muOf[p]]:       g[muOf[p]]       + av[p],
+      g[nmu + laOf[p]]: g[nmu + laOf[p]] + rhoN[p] * av[p]),
+    S1: S1 - cn[n] * (colv(g) . matrix(g))),
+  Sm: S1 + diagm(append(Dml, Dlal)),
+
+  /* reference S from the dense definition */
+  EE: genmatrix(lambda([p, m], if muOf[p] = m then 1 else 0), nvar, nmu),
+  RR: genmatrix(lambda([p, k], if laOf[p] = k then rhoN[p] else 0),
+                nvar, nla),
+  Bm: addcol(EE, RR),
+  Sref: diagm(append(Dml, Dlal)) + transpose(Bm) . Wsm . Bm,
+  check("3b-3 two-part S assembly = dense B^T W B + diag", Sm - Sref),
+  check("4b   S symmetric (rational, full fixture)", Sm - transpose(Sm)),
+
+  /* end-to-end: recipe vs direct solve of the full 11x11 K */
+  Kfull: MexpN + diagm(append(Dyl, Dml, Dlal)),
+  ryl: [1, -2, 3/2, -1/3, 2/5, -5/7],
+  rml: [1/2, -3/2, 5/2],
+  rll: [-7/3, 4/9],
+  rdu: colv(append(rml, rll)) + transpose(Bm) . Wsm . colv(ryl),
+  dual: invert(Sm) . rdu,
+  dyv: Wsm . (colv(ryl) - Bm . dual),
+  xrec: apply(matrix, append(makelist([dyv[p, 1]], p, 1, nvar),
+                             makelist([dual[s, 1]], s, 1, ndual))),
+  xdir: invert(Kfull) . colv(append(ryl, rml, rll)),
+  check("3b-4 elimination recipe = direct solve (rational, 3 cells)",
+        xrec - xdir))$
+
+/* ---------- check 3c: cell-size-1 edge case (symbolic) ----------------- */
+
+block([K1, Wsm, Bm, Sm, rdu, dual, dyv, xrec, xdir],
+  K1: matrix([qq0 + dy1, 1,   c1],
+             [-1,        dm1, 0 ],
+             [-c1,       0,   dl1]),
+  /* one variable: u = [1/dy1], sigma = 1/dy1 */
+  Wsm: matrix([1/dy1 - (qq0/(1 + qq0/dy1)) * (1/dy1^2)]),
+  Bm: matrix([1, c1]),
+  Sm: diagm([dm1, dl1]) + transpose(Bm) . Wsm . Bm,
+  rdu: colv([r2, r3]) + transpose(Bm) . Wsm . matrix([r1]),
+  dual: invert(Sm) . rdu,
+  dyv: Wsm . (matrix([r1]) - Bm . dual),
+  xrec: matrix([dyv[1,1]], [dual[1,1]], [dual[2,1]]),
+  xdir: invert(K1) . colv([r1, r2, r3]),
+  check("3c   elimination recipe = direct solve (symbolic, cell size 1)",
+        xrec - xdir))$
+
+/* ---------- completeness guard ---------- */
+
+if numPass # 9 then error(sconcat("FAIL: only ", numPass,
+                                  " of 9 checks executed"))$
+print("ALL 9 CHECKS PASS")$
+
+/* Copyright Ben Paul Wise. All Rights Reserved. */

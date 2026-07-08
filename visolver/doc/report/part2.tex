@@ -969,6 +969,111 @@ nondimensionalization --- is internal to \code{solveFlowPlan}; the
 individual stages remain public (Section~\ref{sec:network}) for tests and
 custom pipelines.
 
+\section{Running and writing tests}
+\label{sec:tests}
+
+Section~\ref{sec:getting-started} gave the one-line commands; this section
+is the working reference: how to run subsets, how to read a suspicious
+run, and the rules a new test must follow. The taxonomy of what the suite
+checks (unit / protocol / acceptance) and the evidence it produced are in
+Chapter~\ref{ch:testing}; this section is about mechanics.
+
+\subsection{Running tests}
+
+\code{ctest} filters by regular expression over test names, and the names
+are chosen to make the filters useful: every network-layer suite name
+begins with \code{Network}, so \code{ctest -R "\^{}Network"} runs exactly
+that layer, \code{ctest -R "\^{}NetworkFleet"} the fleet subset, and
+\code{ctest -R MehrotraIpm} one engine's suite. Always pass
+\code{--output-on-failure}. In CLion the aggregate targets
+(\code{run\_all\_tests}, \code{run\_engine\_tests},
+\code{run\_network\_tests}) execute ctest during the \emph{build} step:
+use Build (the hammer) on them, never Run --- a custom target has no
+executable, and Run reports that none is specified. The native ``All
+CTest'' run configuration is the alternative when the Run button is
+wanted.
+
+Two mechanics deserve emphasis because each cost a debugging session.
+First, adding a test file or target requires a CMake \emph{reload} before
+the build, not merely a recompile; editing only existing sources needs a
+plain rebuild. Second, a stale build announces itself in the ctest
+header: the suite prints its total test count, and a run whose count does
+not match the source tree did not build what is in the editor. A
+2026-07-08 run reported a failure that no current source could produce;
+the count (177 where the tree held 182) identified the binaries as stale
+before any code was inspected.
+
+The benchmark programs (\code{network\_benchmark},
+\code{fleet\_benchmark}) are deliberately \emph{not} tests: they are
+plain executables, run manually, and their timings are meaningful only in
+a Release configuration. Both print flushed per-iteration and per-round
+progress, so a run killed mid-solve still reports the dimension and
+per-iteration cost it was attempting --- the property that made the
+bounded probes of Chapter~\ref{ch:testing} cheap to run.
+
+\subsection{Writing tests}
+
+A new test is a \code{.cpp} in \code{test/} (core) or
+\code{network/test/} (network layer), registered by one line ---
+\code{vincp\_add\_gtest(name)} or \code{vincpnet\_add\_gtest(name)} ---
+which creates the executable, links it, and enrolls it in discovery and
+the aggregate targets. Network-layer suite names must begin with
+\code{Network}, or the aggregate regex will silently exclude them. All
+dimensions and tolerances are named constants; solver cases run through
+the \code{runCase}/\code{CheckFn} harness of
+Section~\ref{sec:core-types} so timing, statistics, and throw-reporting
+are uniform.
+
+Beyond the mechanics, four design rules from this project's experience:
+
+\begin{enumerate}
+\item \textbf{Choose the comparison bar by what it can prove.} Three bars
+  recur, in increasing strictness. A \emph{backward-error} bar
+  ($\|Kd - \mathit{rhs}\| / (\|K\|_\infty \|d\| + \|\mathit{rhs}\|)$)
+  is valid at any conditioning and is the correct parity check for a
+  reimplemented linear solve. A \emph{direct} comparison of solutions or
+  steps carries the problem's conditioning and is asserted only on
+  well-scaled systems --- the parity fixtures are nondimensionalized
+  exactly as the production path is, for this reason. An \emph{exact}
+  (bit-for-bit) equality gate is reserved for refactorings whose claim is
+  ``the old path is unchanged'': the factory extension point and the
+  matrix-free overload of \code{mehrotraIpm} are each guarded by a test
+  asserting exact equality of iterates, iteration count, and residual
+  against the historical path.
+\item \textbf{Test protocols with deliberately failing fakes, not with
+  hard problems.} Rescue paths, drift guards, stall cutoffs, and chain
+  control flow are driven by injected components through the same
+  extension points production code uses. Chapter~\ref{ch:testing}
+  documents why the alternative fails, including a guard that a
+  plausible-looking natural problem had never actually triggered.
+\item \textbf{A randomized test must assert draw-independent
+  invariants.} The convention \code{makeSeed(0)} draws a fresh seed from
+  the clock each run (and prints it, so a failure is reproducible); such
+  a test is a per-run fuzzer, and its assertions must hold on
+  \emph{every} draw. The recorded counterexample (2026-07-08): a
+  cross-engine check compared two converged solution \emph{points} at
+  $10^{-5}$, and an unlucky draw produced a QP whose solution set was
+  nearly flat --- both engines were correct, and the points legitimately
+  differed by $1.4 \times 10^{-5}$. The assertion now compares the
+  objective value, which is constant across a convex QP's solution set,
+  with only a gross-disagreement bar on the points. Fixed-seed tests
+  assert exact expectations; reroll tests assert invariants.
+\item \textbf{Verify intricate algebra symbolically before implementing
+  it.} The structured Newton factories were derived on paper, checked in
+  Maxima \cite{maxima} (exact rational and symbolic arithmetic, one
+  \code{PASS} line per claim, a completeness counter so a silently
+  skipped check fails the script), and only then transcribed; the C++
+  parity tests then verify the transcription, not the mathematics. The
+  scripts ship in \code{network/doc/} and the corresponding sections of
+  Chapter~\ref{ch:math} cite them check by check.
+\end{enumerate}
+
+Finally, the license banner convention applies to test sources like any
+other file, and a check function's report string should state what was
+compared and against what bar --- the failure message is the first thing
+read six months later, usually by someone who has forgotten the test
+exists.
+
 \section{Extending the library}
 \label{sec:extending}
 

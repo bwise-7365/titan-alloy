@@ -373,6 +373,96 @@ interior-point iterations make $K$ ill-conditioned by design. The
 engine-side safeguard for \emph{any} external factory is the
 \code{newtonCheckTol} consistency check of Section~\ref{sec:a-ipm}.
 
+\section{The structured Newton solve for the fleet LCP}
+\label{sec:a-fleetnewton}
+
+The fleet optimizer (multiple asset and vehicle types;
+\code{network/doc/fleet-formulation.md}, KKT system machine-checked by
+\code{network/doc/fleet-mcp-check.mac}) generalizes the flow LCP, and its
+Newton system admits the same treatment. Every formula in this section
+was verified with Maxima \cite{maxima,macsyma}, symbolically and in exact
+rational arithmetic, by the script
+\code{network/doc/fleet-newton-check.mac} --- nine checks: the cell-block
+Sherman--Morrison inverse; recipe-equals-direct-solve fully symbolically
+on a one-cell, two-type shape (the two-column budget border the flow case
+never exercises), in exact rationals on the three-cell fixture shared with
+\code{fleet-mcp-check.mac} (so the two scripts pin the same variable
+packing), and symbolically at the cell-size-one edge case; the $O(k)$
+$W$-apply shortcut; the two-part Schur assembly against the dense
+definition; and the symmetry of $S$, symbolically and in rationals ---
+all reproducible by running the script.
+
+The fleet variables are $z = [\,y \mid \mu \mid \lambda\,]$, packed
+cell-major: one $y$ variable per (kept source--sink pair, capable vehicle
+type), the variables of one \emph{demand cell} (sink, asset) contiguous;
+one supply multiplier $\mu$ per (source, asset) cell; one budget
+multiplier $\lambda_k$ per vehicle type. The interior-point Newton matrix
+is
+\[
+K \;=\;
+\begin{bmatrix}
+Q_{\mathrm{blk}} + \mathrm{diag}(D_y) & E & R\\[2pt]
+-E^\top & \mathrm{diag}(D_\mu) & 0\\[2pt]
+-R^\top & 0 & \mathrm{diag}(D_\lambda)
+\end{bmatrix},
+\]
+where $\mathrm{diag}(D_y \mid D_\mu \mid D_\lambda)$ is the
+complementarity diagonal, $Q_{\mathrm{blk}} =
+\mathrm{blockdiag}_c\,(Q_c \mathbf{1}\mathbf{1}^\top)$ has one
+\emph{rank-one} block per demand cell $c$ with curvature
+$Q_c = 2P_c/D_c^2$, $E$ scatters variables to their supply cells (one
+unit entry per row), and $R$ scatters variables to their vehicle types
+with weight $\rho_p$ (the round-trip miles per unit; one entry per row).
+The two structural differences from Section~\ref{sec:a-flownewton}: the
+budget border is $\mathit{numTypes}$ columns rather than one dense
+column, and a cell mixes several sources \emph{and} several types.
+
+Both observations of Section~\ref{sec:a-flownewton} carry over with cells
+in place of sinks. The inverse
+$W = (Q_{\mathrm{blk}} + \mathrm{diag}(D_y))^{-1}$ is block-diagonal by
+cell with
+\[
+W|_c \;=\; \mathrm{diag}(1/D_y) \;-\;
+\frac{Q_c}{1 + Q_c \sigma_c}\, u_c u_c^\top,
+\qquad u_c = (1/D_{y,p})_{p \in c},\quad
+\sigma_c = \textstyle\sum_{p \in c} 1/D_{y,p},
+\]
+applied in $O(k_c)$ per cell; and eliminating $y$ cancels the skew signs,
+leaving the symmetric positive-definite Schur complement
+\[
+S \;=\; \mathrm{diag}(D_\mu \mid D_\lambda) \;+\; B^\top W B,
+\qquad B = [\,E \;\ R\,],
+\]
+of size $\mathit{numSupplyCells} + \mathit{numTypes}$ (131 at the
+70-node, $4 \times 3$ default; $\sim$1{,}200 at the production target),
+factored by Cholesky. $S$ is assembled in two parts: each row of $B$ has
+exactly two nonzeros ($1$ at the variable's supply cell, $\rho_p$ at its
+type), so $B^\top \mathrm{diag}(1/D_y) B$ accumulates one $2 \times 2$
+contribution per variable in $O(\mathit{numVars})$; then one rank-one
+downdate $c_c\, (B^\top u_c)(B^\top u_c)^\top$ per cell, restricted to
+the cell's support (its distinct sources plus its distinct types).
+
+The remaining scale barrier after the factory was the explicit $M$
+itself: $O(d^2)$ storage and residual products, terabytes at the
+production target. The engine touches $M$ in exactly three computations
+--- the field $Mz + q$, the \code{newtonCheckTol} drift guard, and the
+built-in dense factory --- so \code{mehrotraIpm} accepts $M$ as an apply
+operator (\code{MatrixApply}); the operator form requires an external
+Newton factory (the built-in dense one needs the explicit matrix), and
+the dense overload is proven unchanged bit for bit by an exact-equality
+test. The fleet pipeline supplies the operator from its incidence lists
+in $O(\mathit{numVars})$ --- one pass accumulating cell sums, one pass
+emitting rows --- and never assembles $M$. The measured effect of the
+factory and the operator together is the four-orders-of-magnitude
+reduction of Chapter~\ref{ch:testing} (Table~\ref{tab:fleet}): the same 14{,}579-%
+dimensional keep-all instance at 0.1\,s, identical iteration count and
+objective, the residual differing from the dense-$M$ run only in the last
+bit --- the expected signature of a changed summation order. Floating-%
+point correctness carries the same bars as the flow factory: backward
+error $\le 10^{-12}$ at any conditioning, direct parity on well-scaled
+systems only, plus a parity case built from an \code{lcp} whose dense $M$
+was never assembled.
+
 \section{Semismooth Newton for the mixed NCP}
 \label{sec:a-ssn}
 

@@ -176,6 +176,78 @@ TEST(NetworkFleetSolve, RejectsBadInputs) {
   params.engine = "simplex";
   EXPECT_THROW(solveFleetPlan(inst, params), std::invalid_argument);
 }
+
+// The observability hooks (FP0, 2026-07-08 performance plan) fire in matched
+// start/end pairs, one pair per certificate round, with consistent round
+// numbers and growing kept sets on the certificate-recovery instance; the
+// engine heartbeat logger fires at iterFreq 1; and the solution is bitwise
+// identical to a hook-free run.
+TEST(NetworkFleetSolve, RoundHooksObserveWithoutChangingTheSolve) {
+  FleetInstance inst;
+  inst.numNodes = 3;
+  inst.assets = {{"box", 1.0, 0.0}};
+  inst.vehicles = {{"cart", 1.0, 0.0, 10000.0, 1.0}};
+  inst.horizonHours = 1.0;
+  inst.supplyCap = MatrixXd::Zero(3, 1);
+  inst.supplyCap(0, 0) = 2.0;
+  inst.supplyCap(1, 0) = 10.0;
+  inst.demand = MatrixXd::Zero(3, 1);
+  inst.demand(2, 0) = 8.0;
+  inst.priority = MatrixXd::Ones(3, 1);
+  inst.distance = MatrixXd(3, 3);
+  inst.distance << 1.0,  40.0, 10.0,
+                   40.0,  1.0, 50.0,
+                   10.0, 50.0,  1.0;
+  validateFleetInstance(inst);
+
+  FleetSolveParams plainParams;
+  plainParams.maxSourcesPerSink = 1;             // forces >= 1 recovery round
+  const FleetSolveResult plain = solveFleetPlan(inst, plainParams);
+
+  vector<int> startRounds;
+  vector<Index> startKept;
+  vector<Index> startDims;
+  vector<int> endRounds;
+  int heartbeats = 0;
+
+  FleetSolveParams hookedParams = plainParams;
+  hookedParams.iterFreq = 1;
+  hookedParams.logger = [&heartbeats](int, int, double, double) {
+    ++heartbeats;
+  };
+  hookedParams.roundStartLogger = [&](int round, Index kept, Index dim) {
+    startRounds.push_back(round);
+    startKept.push_back(kept);
+    startDims.push_back(dim);
+  };
+  hookedParams.roundEndLogger = [&endRounds](int round, const VIResult&,
+                                             double milliseconds) {
+    EXPECT_LE(0.0, milliseconds);
+    endRounds.push_back(round);
+  };
+  const FleetSolveResult hooked = solveFleetPlan(inst, hookedParams);
+
+  // Matched pairs, consecutive round numbers starting at 0, one pair per
+  // round actually solved.
+  ASSERT_EQ(startRounds, endRounds);
+  ASSERT_EQ(static_cast<int>(startRounds.size()),
+            hooked.certificateRounds + 1);
+  for (size_t i = 0; i < startRounds.size(); ++i) {
+    EXPECT_EQ(static_cast<int>(i), startRounds[i]);
+    EXPECT_LT(0, startKept[i]);
+    EXPECT_LE(startKept[i], startDims[i]);
+  }
+  // The certificate added a source between round 0 and round 1.
+  ASSERT_GE(hooked.certificateRounds, 1);
+  EXPECT_LT(startKept.front(), startKept.back());
+  EXPECT_LT(0, heartbeats);
+
+  // Hooks observe; they must not perturb the solve.
+  ASSERT_TRUE(hooked.vi.converged);
+  EXPECT_EQ(plain.vi.iter, hooked.vi.iter);
+  ASSERT_EQ(plain.vi.z.size(), hooked.vi.z.size());
+  EXPECT_EQ(0.0, (plain.vi.z - hooked.vi.z).cwiseAbs().maxCoeff());
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

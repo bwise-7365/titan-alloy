@@ -220,10 +220,10 @@ namespace VINCP::Network {
     optimalRadio_ = new QRadioButton("Optimal Fleet Plan", this);
     optimalRadio_->setToolTip(
         "Solve the reduced conservative fleet QP (KKT mixed complementarity "
-        "problem, interior-point engine, per-asset screen + certificate) on "
-        "a worker thread and overlay the optimal flows. The interior-point "
-        "solution spreads tonnage over the optimal face; Purify drives it "
-        "to a corner.");
+        "problem, interior-point engine with the structured fleet Newton "
+        "factory, keep-all -- exact by construction) on a worker thread and "
+        "overlay the optimal flows. The interior-point solution spreads "
+        "tonnage over the optimal face; Purify drives it to a corner.");
     closestRadio_->setChecked(true);
     QButtonGroup* linkGroup = new QButtonGroup(this);
     //linkGroup->addButton(noneRadio_);

@@ -206,6 +206,72 @@ TEST(NetworkFleetLcp, RejectsBadInputs) {
   EXPECT_NEAR(defaultFleetTieBreakEpsilon(inst),
               1.0e-8 * 1.5 / 40.0, 1.0e-20);
 }
+
+// MF1: the structural matvec agrees with the dense M on a random keep-all
+// instance, for several deterministic vectors. The bar is a tight relative
+// tolerance, not exactness: the two paths sum the same terms in different
+// orders.
+TEST(NetworkFleetLcp, ApplyMatchesDenseMatrix) {
+  const double kApplyTol = 1.0e-12;
+  FleetProfile profile;
+  profile.geometry.numSupplyOnly = 5;
+  profile.geometry.numBoth = 4;
+  profile.geometry.numDemandOnly = 6;
+  const FleetInstance inst = makeRandomFleetInstance(profile, kSeed);
+  const FleetReducedProblem reduced = makeFleetReducedProblem(inst);
+  const FleetLcp lcp =
+      buildFleetLcp(inst, reduced, defaultFleetTieBreakEpsilon(inst));
+  const Index dim = lcp.numVars + lcp.numSupplyCells + lcp.numTypes;
+
+  for (int sweep = 0; sweep < 3; ++sweep) {
+    VectorXd v(dim);
+    for (Index i = 0; i < dim; ++i) {
+      const double sign = (0 == (i + sweep) % 2) ? 1.0 : -1.0;
+      v(i) = sign * (1.0 + static_cast<double>((i + 3 * sweep) % 11));
+    }
+    const VectorXd dense = lcp.M * v;
+    const VectorXd structural = applyFleetLcpM(lcp, v);
+    ASSERT_EQ(dense.size(), structural.size());
+    EXPECT_LT((dense - structural).norm() / dense.norm(), kApplyTol);
+  }
+
+  EXPECT_THROW(applyFleetLcpM(lcp, VectorXd::Zero(dim + 1)),
+               std::invalid_argument);
+}
+
+// MF1: the matrix-free build leaves M empty and everything else identical
+// to the dense build -- q, the index lists, varQuad, and the counts.
+TEST(NetworkFleetLcp, LeanBuildSkipsOnlyTheDenseMatrix) {
+  FleetProfile profile;
+  profile.geometry.numSupplyOnly = 5;
+  profile.geometry.numBoth = 4;
+  profile.geometry.numDemandOnly = 6;
+  const FleetInstance inst = makeRandomFleetInstance(profile, kSeed);
+  const FleetReducedProblem reduced = makeFleetReducedProblem(inst);
+  const double epsilon = defaultFleetTieBreakEpsilon(inst);
+
+  const FleetLcp dense = buildFleetLcp(inst, reduced, epsilon, true);
+  const FleetLcp lean = buildFleetLcp(inst, reduced, epsilon, false);
+
+  EXPECT_EQ(0, lean.M.size());
+  ASSERT_GT(dense.M.size(), 0);
+  EXPECT_EQ(dense.numVars, lean.numVars);
+  EXPECT_EQ(dense.numSupplyCells, lean.numSupplyCells);
+  EXPECT_EQ(dense.numCells, lean.numCells);
+  EXPECT_EQ(dense.numTypes, lean.numTypes);
+  EXPECT_EQ(0.0, (dense.q - lean.q).norm());
+  EXPECT_EQ(0.0, (dense.varQuad - lean.varQuad).norm());
+  EXPECT_EQ(0.0, (dense.varRho - lean.varRho).norm());
+  EXPECT_EQ(dense.varCell, lean.varCell);
+  EXPECT_EQ(dense.varMuIndex, lean.varMuIndex);
+  EXPECT_EQ(dense.varType, lean.varType);
+
+  // The structural matvec is available from the lean build and agrees with
+  // the dense build's explicit M.
+  const Index dim = lean.numVars + lean.numSupplyCells + lean.numTypes;
+  const VectorXd v = VectorXd::LinSpaced(dim, -1.0, 1.0);
+  EXPECT_LT((dense.M * v - applyFleetLcpM(lean, v)).norm(), 1.0e-10);
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

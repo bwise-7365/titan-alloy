@@ -16,14 +16,11 @@ namespace VINCP {
   namespace {
 
     void
-    validateInputs(const MatrixXd& M, const VectorXd& q, Index numFree,
+    validateInputs(const VectorXd& q, Index numFree,
                    double magTol, const MehrotraIpmParams& params)
     {
       if (0 == q.size()) {
         throw std::invalid_argument("mehrotraIpm: q must be non-empty.");
-      }
-      if (M.rows() != M.cols() || M.rows() != q.size()) {
-        throw std::invalid_argument("mehrotraIpm: M must be square and conformant with q.");
       }
       if (0 > numFree || q.size() <= numFree) {
         throw std::invalid_argument(
@@ -88,38 +85,35 @@ namespace VINCP {
   // The predictor uses t = -y.s (pure affine step toward complementarity);
   // the corrector uses t = sigma mu 1 - y.s - dyA.dsA, where the centering
   // weight sigma comes from Mehrotra's heuristic sigma = (muAff/mu)^3.
-  VIResult
-  mehrotraIpm(const MatrixXd& M,
-              const VectorXd& q,
-              Index numFree,
-              double magTol,
-              int iterMax,
-              int iterFreq,
-              const MehrotraIpmParams& params,
-              const IterationLogger& logger,
-              const NewtonSolverFactory& newtonFactory)
+  // File-local shared core of both public overloads: M enters only through
+  // applyM (the field and the drift guard), and the caller guarantees
+  // factory is non-empty and the inputs validated.
+  static VIResult
+  mehrotraIpmCore(const MatrixApply& applyM,
+                  const VectorXd& q,
+                  Index numFree,
+                  double magTol,
+                  int iterMax,
+                  int iterFreq,
+                  const MehrotraIpmParams& params,
+                  const IterationLogger& logger,
+                  const NewtonSolverFactory& factory)
   {
-    validateInputs(M, q, numFree, magTol, params);
-
     const Index total = q.size();
     const Index n = numFree;
     const Index m = total - n;
 
-    // The built-in Newton factory: assemble K densely and factor by LU with
-    // partial pivoting -- exactly the arithmetic the engine always performed,
-    // so an empty newtonFactory preserves the historical behavior bit for bit.
-    const NewtonSolverFactory denseFactory =
-        [&M, n, m](const VectorXd& sOverY, double freeRegularization) -> NewtonSolve {
-          MatrixXd K = M;
-          K.diagonal().tail(m) += sOverY;
-          if (0.0 < freeRegularization) {
-            K.diagonal().head(n).array() += freeRegularization;
-          }
-          return [luK = PartialPivLU<MatrixXd>(K)](const VectorXd& rhs) {
-            return luK.solve(rhs);
-          };
-        };
-    const NewtonSolverFactory& factory = newtonFactory ? newtonFactory : denseFactory;
+    // Apply M with a size check on what the operator returns: a structural
+    // apply of the wrong shape must surface immediately, not as a mysterious
+    // Eigen failure downstream.
+    const auto applyChecked = [&applyM, total](const VectorXd& v) -> VectorXd {
+      VectorXd result = applyM(v);
+      if (result.size() != total) {
+        throw std::invalid_argument(
+            "mehrotraIpm: applyM returned a vector of the wrong size.");
+      }
+      return result;
+    };
 
     // Invoke the factory, refusing an empty solver rather than crashing on it.
     const auto buildSolve = [&factory](const VectorXd& sOverY, double freeRegularization) {
@@ -133,13 +127,13 @@ namespace VINCP {
     // Dev-mode drift guard (params.newtonCheckTol > 0 only): the engine cannot
     // see the factory's K, but it can verify the solve against its own data,
     // K d = M d + blockdiag(freeRegularization I, diag(sOverY)) d, in one
-    // O(dim^2) matvec. Throws rather than iterating on a drifted step.
-    const auto checkNewtonSolve = [&M, &params, n, m](const VectorXd& d,
-                                                      const VectorXd& rhs,
-                                                      const VectorXd& sOverY,
-                                                      double freeRegularization,
-                                                      const char* phase) {
-      VectorXd Kd = M * d;
+    // matvec through applyM. Throws rather than iterating on a drifted step.
+    const auto checkNewtonSolve = [&applyChecked, &params, n, m](const VectorXd& d,
+                                                                 const VectorXd& rhs,
+                                                                 const VectorXd& sOverY,
+                                                                 double freeRegularization,
+                                                                 const char* phase) {
+      VectorXd Kd = applyChecked(d);
       Kd.head(n) += freeRegularization * d.head(n);
       Kd.tail(m) += sOverY.cwiseProduct(d.tail(m));
       const double drift = (Kd - rhs).squaredNorm();
@@ -169,7 +163,7 @@ namespace VINCP {
     while (!doneP) {
       z.head(n) = x;
       z.tail(m) = y;
-      const VectorXd w = M * z + q;   // the exact field at z
+      const VectorXd w = applyChecked(z) + q;   // the exact field at z
       const VectorXd rx = w.head(n);  // free-block infeasibility
       const VectorXd wy = w.tail(m);
       const VectorXd rs = wy - s;     // infeasibility of s = (M z + q)_y
@@ -291,6 +285,71 @@ namespace VINCP {
     }
 
     return VIResult{ z, mag, iter, convergedP };
+  }
+
+  VIResult
+  mehrotraIpm(const MatrixXd& M,
+              const VectorXd& q,
+              Index numFree,
+              double magTol,
+              int iterMax,
+              int iterFreq,
+              const MehrotraIpmParams& params,
+              const IterationLogger& logger,
+              const NewtonSolverFactory& newtonFactory)
+  {
+    if (M.rows() != M.cols() || M.rows() != q.size()) {
+      throw std::invalid_argument("mehrotraIpm: M must be square and conformant with q.");
+    }
+    validateInputs(q, numFree, magTol, params);
+
+    // The built-in Newton factory: assemble K densely and factor by LU with
+    // partial pivoting -- exactly the arithmetic the engine always performed,
+    // so an empty newtonFactory preserves the historical behavior bit for bit.
+    const Index n = numFree;
+    const Index m = q.size() - n;
+    const NewtonSolverFactory denseFactory =
+        [&M, n, m](const VectorXd& sOverY, double freeRegularization) -> NewtonSolve {
+          MatrixXd K = M;
+          K.diagonal().tail(m) += sOverY;
+          if (0.0 < freeRegularization) {
+            K.diagonal().head(n).array() += freeRegularization;
+          }
+          return [luK = PartialPivLU<MatrixXd>(K)](const VectorXd& rhs) {
+            return luK.solve(rhs);
+          };
+        };
+    const MatrixApply applyM = [&M](const VectorXd& v) -> VectorXd {
+      return M * v;
+    };
+    return mehrotraIpmCore(applyM, q, numFree, magTol, iterMax, iterFreq,
+                           params, logger,
+                           newtonFactory ? newtonFactory : denseFactory);
+  }
+
+  VIResult
+  mehrotraIpm(const MatrixApply& applyM,
+              const VectorXd& q,
+              Index numFree,
+              double magTol,
+              int iterMax,
+              int iterFreq,
+              const MehrotraIpmParams& params,
+              const IterationLogger& logger,
+              const NewtonSolverFactory& newtonFactory)
+  {
+    if (!applyM) {
+      throw std::invalid_argument(
+          "mehrotraIpm: applyM must be non-empty in the matrix-free form.");
+    }
+    if (!newtonFactory) {
+      throw std::invalid_argument(
+          "mehrotraIpm: the matrix-free form requires a NewtonSolverFactory "
+          "(the built-in dense factory needs the explicit M).");
+    }
+    validateInputs(q, numFree, magTol, params);
+    return mehrotraIpmCore(applyM, q, numFree, magTol, iterMax, iterFreq,
+                           params, logger, newtonFactory);
   }
 
 } // namespace VINCP

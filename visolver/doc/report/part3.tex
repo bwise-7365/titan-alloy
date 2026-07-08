@@ -10,10 +10,11 @@
 
 This chapter is the library's evidence. It describes how the test suite is
 built and what each layer of it checks (Sections~\ref{sec:t-infra}--%
-\ref{sec:t-protocol}); then the three application problems as case studies
---- the banded flow-planning QP and the deployment game with equal weight,
-as the paired monotone-at-scale and nonmonotone stories, with the influence
-game between them (Sections~\ref{sec:t-flow}--\ref{sec:t-deploy}); and
+\ref{sec:t-protocol}); then the application problems as case studies ---
+the banded flow-planning QP and its fleet generalization, the influence
+game, and the deployment game; the flow and deployment studies carry equal
+weight as the paired monotone-at-scale and nonmonotone stories
+(Sections~\ref{sec:t-flow}--\ref{sec:t-deploy}); and
 closes with the cross-cutting lessons and the known open items
 (Sections~\ref{sec:t-lessons}--\ref{sec:t-open}). Wherever a number
 appears, its source is named: a section of
@@ -25,8 +26,8 @@ reproduces it.
 
 The suite is GoogleTest, fetched by CMake \code{FetchContent} at a fixed
 release tag and compiled by the project's own toolchain and flags. At the
-time of writing it stands at 132 test cases, all passing, exercised by the
-aggregate targets of Chapter~\ref{ch:manual}. Beneath GoogleTest sits a
+time of writing (2026-07-08) it stands at 182 test cases, all passing,
+exercised by the aggregate targets of Chapter~\ref{ch:manual}. Beneath GoogleTest sits a
 thin shared harness (\code{utils.hpp}): a bound solver is a
 \code{SolveFn} (everything captured but the start point), a pass/fail
 criterion is a \code{CheckFn} returning a one-line report, and
@@ -517,7 +518,115 @@ target. On the default 70-node instance the hint reproduced the observed
 delivery shortfall to four digits, which is the property that makes it
 trustworthy as a capability-scoping number.
 
-\section{Case study 2: strategic allocation of effort}
+\section{Case study 2: the fleet optimizer at the viewer default}
+\label{sec:t-fleet}
+
+The fleet generalization of Section~\ref{sec:t-viewers} replayed the banded
+QP's performance history at a larger scale, and its resolution compressed
+the three generations of Section~\ref{sec:t-flow} into one instrumented
+day (2026-07-08). The episode is recorded as a case study in
+\emph{diagnosis}: a bounded probe with falsifiable predictions attributed
+the cost before any fix was built, and each fix stage was accepted against
+a prediction made in advance. All numbers below are from
+\code{network/doc/performance.md} (sections P10--P14) and the dated run
+logs of 2026-07-08; the staged plan of record is
+\code{2026-07-08-fleet-performance-plan.md} at the repository root, and
+every run is reproducible from \code{fleet\_benchmark} (seed 20260704).
+
+\paragraph{The scenario.} The fleet viewer's default problem --- 70 nodes,
+4 asset types $\times$ 3 vehicle types, banded laydown, limited fleet ---
+ran for about an hour in a Release build without finishing, at which point
+the author stopped it. The intended production problems are roughly
+200--250 nodes with 10--15 vehicle and 10--15 asset types, so the required
+improvement was orders of magnitude, beyond what parameter tuning could
+supply. The pipeline in effect was the interior-point engine with its
+generic dense-LU factorization, a per-asset screen of six sources per
+sink, and up to ten certificate re-solve rounds, over a dense $M$.
+
+\paragraph{The probe.} \code{solveFleetPlan} gained observability hooks
+(a per-round report fired \emph{before} each solve, so an aborted run
+still states the dimension it was attempting, plus flushed per-iteration
+heartbeats), and a probe executable reproduced the viewer's exact
+instance under a one-round certificate cap. Four predictions were stated
+in advance and all four held. First, iteration counts stayed in the
+interior-point band and flat across dimension: 24 iterations at dimension
+2{,}900, then 32 at 11{,}849. Second, per-iteration cost followed the
+dense $O(d^3)$ law: 0.95\,s per iteration at dimension 2{,}900 against
+$\sim$64\,s at 11{,}849, matching both the cubic ratio and the
+single-commodity datum of Section~\ref{sec:t-flow} to a few percent.
+Third, one certificate round on banded geometry grew the kept set
+4.2$\times$, from 2{,}772 to 11{,}721 of 14{,}451 variables (81\% of
+keep-all): a kept pair enters with every capable vehicle type, so the
+type catalog multiplies the single-commodity installment effect of P4.
+Fourth, the bounded two-round run cost 2{,}071\,s and was correctly
+reported uncertified --- rounds~0--1 alone account for 34.5 minutes, and
+a third round near keep-all dimension accounts for the observed hour.
+The diagnosis: iteration count was never the problem; the cost was dense
+cubic linear algebra multiplied by certificate re-solves at a growing
+dimension.
+
+\paragraph{The fix.} The same two levers as generation 3 of
+Section~\ref{sec:t-flow}, applied in three verified stages. (i) The fleet
+Newton system has a rank-one diagonal block per demand cell and thin skew
+borders --- one supply column per (source, asset) cell and one budget
+column per vehicle type --- so the per-cell Sherman--Morrison inverse and
+a symmetric positive-definite dual Schur complement of size
+$\mathit{numSupplyCells} + \mathit{numTypes}$ (131 here) replace the
+dense factorization. The algebra was verified in Maxima \emph{before}
+implementation (\code{network/doc/fleet-newton-check.mac}, nine checks;
+formulae in Chapter~\ref{ch:math}). (ii) The factory was implemented
+against parity bars (backward error $\le 10^{-12}$ at any conditioning;
+direct step parity on well-scaled systems; an end-to-end run under the
+engine's own \code{newtonCheckTol} drift guard), and keep-all became the
+default: nothing screened out, nothing to certify, exact by construction.
+(iii) The engine touches $M$ in exactly three computations --- the field
+$Mz + q$, the drift guard, and the built-in dense factory --- so a
+matrix-free overload taking an apply-$M$ operator removed the dense $M$
+entirely; the dense path is proven unchanged bit for bit by an exact
+equality test, and the fleet pipeline supplies an $O(\mathit{numVars})$
+structural apply, never assembling $M$ at all.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Configuration} & \textbf{Iterations} & \textbf{Wall} &
+\textbf{Kept variables} & \textbf{Certified / $\theta^\ast$} \\
+\midrule
+dense LU, screen 6, 10 rounds & --- & $>$1\,h (stopped) & --- & --- \\
+dense LU, screen 6, 1 round & 24+32 & 2{,}071\,s & 11{,}721/14{,}451
+  & no / 65.568 \\
+fleet factory, keep-all & 39 & 6.1\,s & 14{,}451/14{,}451
+  & yes / 65.386 \\
++ matrix-free $M$ & 39 & 0.1\,s & 14{,}451/14{,}451 & yes / 65.386 \\
+\bottomrule
+\end{tabular}
+\caption{The fleet viewer default (70-node banded, $4 \times 3$ types,
+seed 20260704) across the 2026-07-08 stages
+(\code{performance.md} P10--P14).}
+\label{tab:fleet}
+\end{table}
+
+\paragraph{The improvement.} Table~\ref{tab:fleet} summarizes: from a
+projected hour and a half to 0.1 seconds --- roughly four orders of
+magnitude --- with a better objective (the certified-no screened answer
+had overshot by 0.28\%) and a certificate. The final stage also settles
+an attribution question the middle stage raised: the 6.1-second run's
+remaining per-iteration cost was almost entirely the $O(d^2)$ dense
+residual products and the one-time $O(\mathit{numVars}^2)$ assembly, both
+absent in the matrix-free run, whose 39 iterations cost $\sim$2.5\,ms
+each at dimension 14{,}579 with the identical iteration count and
+objective. Extrapolated to the production target ($\sim$2 million
+keep-all variables, dual Schur $\sim$1{,}200), the per-iteration cost is
+linear in the variables plus one small Cholesky factorization: minutes
+per solve in memory measured in hundreds of megabytes, where the dense
+formulation would require terabytes. The viewer inherits the result
+through \code{solveFleetPlan}'s defaults; the dense factory and the
+screen remain available options for cross-checks and for the projection
+engines.
+
+\section{Case study 3: strategic allocation of effort}
 \label{sec:t-saoe}
 
 The influence game (Chapter~\ref{ch:math}) enters the suite twice, and the
@@ -564,7 +673,7 @@ seeded $20 \times 12$ companion instance (sign-quota-constrained random
 rewards; no known equilibrium) converges to a feasible allocation in the
 same test, as the scale datum.
 
-\section{Case study 3: the deployment game}
+\section{Case study 4: the deployment game}
 \label{sec:t-deploy}
 
 The deployment game (Chapter~\ref{ch:math}: dimension 450, nonmonotone by
@@ -690,8 +799,9 @@ evidence.
   avoided (Table~\ref{tab:deploy-runs}, run 2).
 \item \textbf{Exploiting structure is superior to screening.} The screen
   approximates the problem to fit the solver; the structured factory made
-  the solver fit the problem --- faster ($394\times$) and exact
-  (Section~\ref{sec:t-flow}).
+  the solver fit the problem --- faster ($394\times$ single-commodity,
+  four orders of magnitude for the fleet) and exact
+  (Sections~\ref{sec:t-flow} and~\ref{sec:t-fleet}).
 \item \textbf{Off the monotone class, composition outperforms any single
   engine.} The chain's value is precisely that its stages' failure sets do
   not intersect at handoff points (Chapter~\ref{ch:math}); no component
@@ -736,10 +846,12 @@ Recorded with their planned dispositions:
 \item \textbf{The IPM cannot warm-start} (structural: it needs a strictly
   interior, near-path start). Re-solve loops that would benefit from warm
   starts use the projection engines or pay the full interior-point cost.
-\item \textbf{Dense $M$ at scale.} The engines hold $M$ densely for
-  residual matvecs; keep-all at the 200-node profile costs
-  $\sim$1.7\,GB and $O(d^2)$ per residual. A matrix-free linear-operator
-  interface for $M$ is the noted generalization, out of scope to date.
+\item \textbf{Dense $M$ at scale: resolved for the interior-point engine,
+  open elsewhere.} \code{mehrotraIpm} accepts $M$ as an apply operator
+  (Section~\ref{sec:t-fleet}; the dense overload is unchanged bit for
+  bit), and the fleet pipeline runs on it by default. The projection
+  engines and the single-commodity flow pipeline still hold $M$ densely;
+  extending them is mechanical when a problem requires it.
 \item \textbf{\code{dHan06}'s refactor-per-iteration cost} ($\sim$12$\times$
   \code{bsHe94b} in wall time at equal iterations on the SAOE runs) is
   accepted; cache/reuse across $\beta$ updates is a recorded option if the

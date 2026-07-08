@@ -62,7 +62,7 @@ The library is validated against two tiers of problems:
   backward from known answers (random monotone systems, deliberately
   ill-behaved systems, degenerate corner cases). They run in milliseconds,
   check exactly, and verify every engine and safeguard individually; at
-  the time of writing, all 132 automated tests pass.
+  the time of writing, all 182 automated tests pass.
 \item \textbf{Three almost-real-world problems}, each serving as an
   acceptance test:
   \begin{enumerate}
@@ -70,7 +70,9 @@ The library is validated against two tiers of problems:
     over a network of up to 200 nodes to minimize priority-weighted
     shortfall under supply, delivery, and transport-budget limits; the
     hardest geometry (near-tied route costs) is degenerate by
-    construction.
+    construction. Its \emph{fleet} generalization plans multiple asset
+    types moved by multiple vehicle types under per-type vehicle-mile
+    budgets, and multiplies the problem dimension accordingly.
   \item \emph{Strategic allocation of effort} --- a competition in which
     $M$ actors spread limited effort across $N$ options to sway the odds
     of outcomes they value differently. The target is a Nash equilibrium
@@ -149,8 +151,14 @@ PPD deployment game (450 unknowns, outside all classical guarantees)
     equilibria, where every standalone engine fails; those failures are
     kept in the test suite as documentation. \\
 \addlinespace
+Fleet planning (multi-asset, multi-vehicle), 70-node banded default
+  & From over an hour (run stopped unfinished) to 0.1 seconds, certified
+    exact, in one instrumented day: a bounded probe attributed the cost,
+    then a Maxima-verified structured factorization and a matrix-free
+    field removed it --- roughly four orders of magnitude. \\
+\addlinespace
 Whole suite
-  & All 132 tests pass, spanning unit, protocol, and acceptance layers. \\
+  & All 182 tests pass, spanning unit, protocol, and acceptance layers. \\
 \bottomrule
 \end{tabular}
 \caption{Headline results; sources and full narratives in
@@ -213,7 +221,7 @@ verification chain is worth.
 \label{sec:o-status}
 
 The library stands complete against its current portfolio: all engines
-and compositions shipped and documented, all 132 tests passing, the three
+and compositions shipped and documented, all 182 tests passing, the
 acceptance problems checked against verified answers. Open items are
 recorded with dispositions in Chapter~\ref{ch:testing}; the near-term
 roadmap, in expected order:

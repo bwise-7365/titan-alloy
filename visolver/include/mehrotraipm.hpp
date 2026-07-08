@@ -75,6 +75,14 @@ namespace VINCP {
   // predictor and corrector share one factorization).
   using NewtonSolve = function<VectorXd(const VectorXd& rhs)>;
 
+  // Matrix-free form of M: applyM(v) must return M v (the LINEAR part only,
+  // no q) for every v of the problem dimension. The engine touches M through
+  // two matvecs per iteration (the field M z + q) plus two per solve when
+  // newtonCheckTol is on, so an O(dim) structural apply removes the O(dim^2)
+  // storage and residual cost of an explicit dense M (stage MF1 of the
+  // 2026-07-08 fleet performance plan).
+  using MatrixApply = function<VectorXd(const VectorXd& v)>;
+
   // Per-iteration linear-algebra seam, layered as in OOQP (Gertz-Wright 2003):
   // the interior-point recipe above is fixed, the Newton solve is swappable.
   // Called once per iteration with the current complementarity diagonal; must
@@ -127,6 +135,26 @@ namespace VINCP {
   // stall, not a corrupt value: it returns honestly with converged = false at
   // the current iterate, matching the semismooth solver's stance on stalls.
   VIResult mehrotraIpm(const MatrixXd& M,
+                       const VectorXd& q,
+                       Index numFree,
+                       double magTol,
+                       int iterMax,
+                       int iterFreq,
+                       const MehrotraIpmParams& params = MehrotraIpmParams{},
+                       const IterationLogger& logger = IterationLogger{},
+                       const NewtonSolverFactory& newtonFactory = NewtonSolverFactory{});
+
+  // Matrix-free overload: identical algorithm and argument order, with M
+  // supplied as a MatrixApply operator instead of an explicit matrix. Because
+  // the built-in dense-LU factory needs the explicit M, a NewtonSolverFactory
+  // is REQUIRED here (std::invalid_argument if empty, as for an empty
+  // applyM); the trailing default merely preserves the shared argument
+  // order. newtonCheckTol remains available: the drift guard verifies each
+  // solve through applyM, so it checks that the factory's K and the
+  // operator agree. With a dense factory wrapping the same M, this overload
+  // reproduces the dense overload's result exactly (the engine evaluates
+  // the identical matvec expressions through the operator).
+  VIResult mehrotraIpm(const MatrixApply& applyM,
                        const VectorXd& q,
                        Index numFree,
                        double magTol,

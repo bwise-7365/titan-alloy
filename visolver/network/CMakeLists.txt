@@ -13,6 +13,7 @@ add_library(vincpnet STATIC
         lib/fleetswap.cpp
         lib/fleetreduction.cpp
         lib/fleetlcp.cpp
+        lib/fleetnewton.cpp
         lib/fleetsolve.cpp
         lib/reduction.cpp
         lib/flowlcp.cpp
@@ -56,6 +57,7 @@ vincpnet_add_gtest(fleetgreedy_test)
 vincpnet_add_gtest(fleetswap_test)
 vincpnet_add_gtest(fleetreduction_test)
 vincpnet_add_gtest(fleetlcp_test)
+vincpnet_add_gtest(fleetnewton_test)
 vincpnet_add_gtest(fleetsolve_test)
 vincpnet_add_gtest(reduction_test)
 vincpnet_add_gtest(flowlcp_test)
@@ -71,6 +73,11 @@ vincpnet_add_gtest(gravity_test)
 # it manually in a Release configuration for meaningful timings.
 add_executable(network_benchmark src/benchmark.cpp)
 target_link_libraries(network_benchmark PRIVATE vincpnet)
+
+# Instrumented fleet-optimizer probe (stage FP0 of the 2026-07-08 fleet
+# performance plan): also a plain executable, Release timings only.
+add_executable(fleet_benchmark src/fleetbenchmark.cpp)
+target_link_libraries(fleet_benchmark PRIVATE vincpnet)
 
 # Optional Qt6 instance viewer. ON by default but self-disabling when Qt6 is
 # absent (gui/CMakeLists.txt returns early), so the core solver/test build never

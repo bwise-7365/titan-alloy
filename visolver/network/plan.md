@@ -130,7 +130,7 @@ flownewton/oracle) and the GUI stay single-commodity and untouched.
 | G5e | **fleetsolve.{hpp,cpp} + test.** solveFleetPlan mirroring flowplan.cpp: nondimensionalize (units, miles, budgets), per-asset screen (default maxSourcesPerSink = 6), certificate loop (gain vs min-over-types price), engine dispatch reused (ipm dense default). FleetSolveResult with per-type lambda_k. LOAD-BEARING TEST: A=1/K=1 equivalence with solveFlowPlan on a symmetric-distance fixture (cost = (d + d^T)/kappa, L = B, binding budget so the lambda comparison is nontrivial) -- PASSES, inheriting the oracle-validated single-commodity chain; plus certificate recovery of a screened-out source the optimum needs, sandwich + feasibility + shadow prices on a small random profile, reject-bad. "chain" engine and "flow" Newton factory deliberately not offered (G5h). | L | G5d | done (2026-07-07) |
 | G5f | **purifyFleetPlan + test.** Per asset: purifyPlan (exists) on the round-trip-cost slice with tonMileCap = that asset's entry usage (saving >= 0 initially, never exceeding entry level, G-F9); the vehicle reallocator extracted from swapFleetToLocalOptimum into a shared helper; one rebuild at the end. Tied-routing fleet test: 4 -> 2 arcs at zero saving, deliveries bitwise unchanged, miles equal, exactly feasible. | S | G5e | done (2026-07-07) |
 | G5g | **Fleet viewer: Optimal Fleet Plan + Purify.** Optimal radio, worker-thread solve (token guard, per-instance cache, NO calibration pre-pass -- budgets are data); the fleet window gains its own busy bar; working-plan/kind architecture (0 none / 1 greedy / 2 optimal) so swaps and purification persist across mode/asset toggles and Reset restores the cached plan; Purify (worker thread) enabled for greedy AND optimal; Swap to Optimum stays greedy-only; status shows live theta/utilization plus certified flags and per-type lambda_k for the optimal plan. Builds clean; all 34 fleet tests green. CAVEAT for Ben's run: the Optimal solve at the 4x3 GUI default is a ~2,500-dim dense-LU IPM -- expect noticeable Debug wall time (the busy bar covers it); Release is quick. A Debug-scale timing run was stopped before completing; the full ^Network suite gate is handed to Ben's run (fleet suites verified green 34/34 just before close). | M | G5e, G5f | done (2026-07-07; Ben's build+run pending) |
-| G5h | **FUTURE WORK -- fleet structured Newton factory.** Per-cell Sherman-Morrison + dual Schur of size numSupplyCells + K; needs its own Maxima check; makes keep-all fast. Not this week. | L | G5e | todo (follow-on) |
+| G5h | **Fleet structured Newton factory.** Per-cell Sherman-Morrison + dual Schur of size numSupplyCells + K; own Maxima check (fleet-newton-check.mac, 9 checks); makes keep-all fast (FN3: dim 14,579 in 6.1 s certified vs 2,070 s bounded screened probe). Defaults flipped to ipmNewton=fleet + keep-all. | L | G5e | done (2026-07-08) |
 | G5i | **FUTURE WORK -- sparse solver machinery for the full link-coupled fleet QP.** Sparse assembly + sparse factorization or matrix-free engine behind the InnerSolver interface (or an external QP solver), enabling the aggregate per-link weight/area coupling with mixed loading and explicit vehicle circulation (~(A+K)m^2 variables). Recorded debt from the G5a decision; memory `sparse-solver-machinery-needed`. | L | G5e | todo (follow-on) |
 | G6 | **Fleet viewer (fleet_viewer).** Second Qt executable twinned from the network viewer: Vehicle types / Asset types spinners (1-10, defaults 3/4) drawing catalog prefixes (`assetCatalog`/`vehicleCatalog`, 10 fixed types each, first two = the FleetProfile defaults); same generation path as the fleet tests (makeRandomFleetInstance -> greedyFleetPlan, synchronous); modes None/Closest/Greedy Fleet Plan; top-right "Asset Displayed" spinner (1..A) slices the map/lists/histogram per asset via single-commodity Instance/Plan slices (distance matrix doubles as slice cost); node popups show full per-asset C/D vectors via a new FlowPlanView info-provider hook; FlowPlanView now keeps pan/zoom when the placement is bit-identical (asset scrolling does not refit). | M | G4, F1 | done (2026-07-07; Ben's visual check pending) |
 | G8 | **Fleet swap improvement + viewer button.** `fleetswap.{hpp,cpp}`: `swapFleetToLocalOptimum(inst, plan)` drives each asset class in turn to a 2-exchange local optimum by calling the EXISTING single-commodity `swapToLocalOptimum` verbatim on a per-asset slice whose cost matrix is the ROUND-TRIP distance d_ij + d_ji (deadhead charged, G-F3; d_ii on the diagonal); deliveries/theta bit-invariant. Vehicles cannot swap along (u aggregates assets per link), so the vehicle matrices are REBUILT from the swapped flows by the greedy transport rule (best `unitCapacity` first within budgets, out-and-back, exact-zero drains) -- `unitCapacity` promoted from fleetgreedy's anonymous namespace to a shared fleetinstance function (G-F5). Order-pathological reallocation overflow throws (defensive; an allocation always exists since per-asset unit-round-trip-miles only shrink). `fleetswap_test` (4): exact uncrossing with vehicle rebuild, per-asset turn-taking, fixed point, random greedy plan improved with budgets/feasibility held and resupply bitwise unchanged. Fleet viewer gains a "Swap to Optimum" button (greedy plan mode only; popup shows swaps per asset + vehicle-miles before/after; utilization/miles bookkeeping refreshed). | M | G4, G6 | done (2026-07-07; Ben's visual check pending) |
@@ -864,5 +864,132 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   (4) optional Release timing. G5h (structured fleet Newton) and G5i
   (sparse machinery for the full link-coupled QP) remain the recorded
   follow-ons for after the week's pause.
-
-<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+- 2026-07-08: fleet performance problem opened. Ben reports the banded
+  default fleet_viewer solve ran ~1 hour in RELEASE before he stopped it;
+  target problems are 200-250 nodes x 10-15 vehicle types x 10-15 asset
+  types. Diagnosis and staged fix plan (FP0 probe, FN1 Maxima check, FN2
+  fleet Newton factory = G5h, MF1 matrix-free M, FN3 keep-all default
+  flip) recorded in `2026-07-08-fleet-performance-plan.md` at the repo
+  root. FP0 code done: FleetSolveParams gained observability hooks
+  (logger passthrough to all three engines, roundStartLogger BEFORE each
+  round's solve so aborted runs report the attempted dimension,
+  roundEndLogger after), a hook-protocol test in fleetsolve_test, and the
+  new plain executable `fleet_benchmark` (network/src/fleetbenchmark.cpp,
+  viewer-default profile, flushed heartbeats). Awaiting Ben's CMake
+  reload + Release probe run per the plan file's section 4.
+- 2026-07-08 (later): FP0 probe partial output confirms P1-P3 (Release:
+  round 0 dim 2,900 converged in 24 iters at ~0.95 s/iter; ONE certificate
+  round ballooned 2,772 -> 11,721 y-variables = 4.2x, 81% of keep-all;
+  round-1 iteration ~62 s, matching dim^3 scaling and the IP4a 50 s @
+  10.8k datum to a few percent). FN1 done: doc/fleet-newton-check.mac,
+  ALL 9 CHECKS PASS (Maxima 5.49) — per-cell Sherman-Morrison, two-part
+  Schur assembly on duals of size numSupplyCells + K, skew cancellation
+  (S symmetric, LLT-able), recipe == direct solve symbolically and on the
+  fleet-mcp fixture in exact rationals, cell-size-1 edge case. Next: FN2
+  (makeFleetNewtonFactory) after Ben's review stop.
+- 2026-07-08 (later still): FP0 CLOSED — full probe run confirms all four
+  predictions (round 1: 32 iters at dim 11,849 vs 24 at 2,900 = flat;
+  ~64 s/iter; total 2,070 s for two rounds; certified NO at cap 1; all
+  three vehicle budgets bind exactly). FN2 CODE DONE, awaiting Ben's CMake
+  reload + run: fleetnewton.{hpp,cpp} (makeFleetNewtonFactory — per-cell
+  Sherman-Morrison, two-part SPD Schur of size numSupplyCells + numTypes,
+  LLT; transcribes fleet-newton-check.mac), FleetSolveParams gains
+  ipmNewton "dense"|"fleet" (default dense until FN3) + newtonCheckTol
+  passthrough; fleetnewton_test (parity vs dense LU: keep-all moderate +
+  extreme diagonals, singleton cells, extreme Q spread, end-to-end
+  solveFleetPlan dense-vs-fleet with the drift guard on, input guards);
+  shared test helpers extracted to test/newtonsupport.hpp (flownewton_test
+  migrated onto it); fleet_benchmark gained arg 7 ipmNewton.
+- 2026-07-08 (evening): FN2 GREEN (Ben: NetworkFleetNewton 6/6, full
+  ^Network 103/103) and FN3 MEASURED (Ben's Release run): keep-all banded
+  4x3, dim 14,579, engine ipm + fleet factory: 39 iterations, 6.1 s wall,
+  certified yes, residual 3.0e-15, shortfall 65.38619 (0.28% better than
+  the certified-NO screened 65.56778) — ~340x the bounded FP0 probe and
+  ~three orders of magnitude vs the projected full default run. CLOSE-OUT:
+  FleetSolveParams defaults flipped to ipmNewton "fleet" +
+  maxSourcesPerSink 0 (keep-all; the viewer inherits automatically),
+  viewer tooltip updated, performance.md gained the fleet addendum
+  P10-P13, G5h marked done. PENDING (Ben's request): report Part III
+  gains the fleet performance case study (scenario, probe, analysis, fix,
+  improvement) — recorded as a task; follow style-instructions.md and
+  bump the title-page date when written. REMAINING STAGE: MF1 matrix-free
+  M (mehrotraipm interface + FleetLcp structure apply) — required for the
+  200-250-node x 10-15 x 10-15 production target (~2M variables; dense M
+  impossible there). Re-run of ^Network after the default flip is part of
+  the MF1 gate.
+- 2026-07-08 (MF1, code done awaiting Ben's plain rebuild + run — NO new
+  files): mehrotraIpm refactored onto a file-local core that touches M only
+  through a `MatrixApply` operator; the dense overload wraps M (identical
+  expressions — exact-parity test MatrixFreeOverloadMatchesDenseExactly
+  gates bit-for-bit equality) and a new matrix-free overload requires a
+  NewtonSolverFactory (invalid_argument if empty, or on an empty/wrong-size
+  operator). FleetLcp gained varQuad (Q per variable, both build modes) and
+  buildFleetLcp a trailing assembleDenseMatrixP (false = q + index lists
+  only, O(numVars), M left empty); new applyFleetLcpM = O(numVars) matvec
+  from structure. makeFleetNewtonFactory now reads Q from varQuad
+  (constancy-checked per cell) and accepts an empty M. solveFleetPlan's
+  ipm+fleet path is now FULLY MATRIX-FREE (lean build + operator + factory
+  per certificate round); dense M assembled only for ipm+dense / bshe94b /
+  ssn. Tests: MatrixFreeOverloadMatchesDenseExactly +
+  MatrixFreeFormValidatesItsInputs (mehrotra_ipm_test);
+  ApplyMatchesDenseMatrix + LeanBuildSkipsOnlyTheDenseMatrix
+  (fleetlcp_test); ParityFromLeanBuild (fleetnewton_test). CLAUDE.md
+  engine bullet updated. Gate = full ctest suite (also revalidates the
+  FN3 default flip) + fleet_benchmark keep-all rerun.
+- 2026-07-08 (Ben, pending report task #2): the report's DEVELOPER manual
+  (Part II) needs a section on running the tests (ctest + regex filters,
+  CLion aggregate targets and the hammer-not-Run caveat, the plain-exe
+  Release benchmarks) and on designing new tests (vincp_add_gtest /
+  vincpnet_add_gtest + CMake reload, suite naming for the aggregate
+  regexes, runCase/CheckFn, the parity-bar methodology — backward error
+  vs direct comparison vs exact bit-for-bit gates — protocol tests via
+  failing fakes, Maxima-before-code with .mac citation). Same style rules
+  and date-bump discipline as the Part III fleet case study entry above.
+- 2026-07-08 (MF1 gate run 1): STALE BUILD — Ben's ctest (177 tests) and
+  fleet_benchmark rerun executed pre-MF1 binaries (all five new MF1 tests
+  absent from the registry; benchmark output bit-identical to FN3). The
+  gate needs a full Rebuild Project in Release, then ctest (expect 182
+  tests) + the keep-all benchmark. The one failure in that stale run,
+  MehrotraIpm.MixedRandomQpMatchesBsHe94b, is a PRE-EXISTING test
+  fragility, not a regression: it rerolls its QP every run (makeSeed(0) =
+  microsecond clock) and compared the two engines' solution POINTS at
+  1e-5; on a near-degenerate draw two legitimate solutions sit ~1.4e-5
+  apart (both residuals ~1e-14). FIXED (awaiting Ben's review + rebuild):
+  the tight assertion is now on the OBJECTIVE (constant across a convex
+  QP's solution set, relative tol 1e-6) with only a gross 1e-2 bar on the
+  points; mechanism documented in the test.
+- 2026-07-08 (MF1 gate CLOSED, Ben's full rebuild): 182/182 green,
+  including the bit-for-bit dense-path gate and the restated random-QP
+  objective assertion. Keep-all banded fleet benchmark: 0.1 s wall, 39
+  iterations (~2.5 ms each at dim 14,579), shortfall 65.38619 identical,
+  residual differing in the last bit only (summation order). The FLEET
+  PERFORMANCE TRACK IS COMPLETE: 90+ min projected -> 2,070 s -> 6.1 s ->
+  0.1 s on the same instance, better and certified objective; the viewer
+  inherits it through the defaults. performance.md P14 records the
+  attribution (FN3's per-iteration remainder was the dense residual
+  matvecs + O(numVars^2) assembly) and the target-scale extrapolation
+  (~2M variables: minutes, hundreds of MB). Remaining fleet-performance
+  items are the two report tasks (Part III case study, Part II testing
+  section) and, for the full link-coupled model only, G5i.
+- 2026-07-08 (report tasks DONE, awaiting Ben's read): the two requested
+  sections written to doc/style-instructions.md and built clean (59 pp,
+  0 undefined refs, 0 overfull; date bumped to July 8, 2026).
+  Part III gained "Case study 2: the fleet optimizer at the viewer
+  default" (sec:t-fleet; scenario, probe with the four predictions,
+  attribution, three-stage fix, tab:fleet improvement table, target-scale
+  extrapolation); SAOE/deploy renumbered to case studies 3/4; test count
+  132 -> 182; the dense-M open item restated as resolved for the IPM.
+  Part II gained "Running and writing tests" (sec:tests; ctest regex
+  filters + Network naming, hammer-not-Run, CMake-reload rule,
+  stale-build detection by test count, Release-only benchmarks; writing:
+  vincp(net)_add_gtest recipe, runCase/CheckFn, the three comparison bars
+  backward/direct/exact, fakes for protocols, the makeSeed(0)
+  draw-independent-invariants rule with the 2026-07-08 counterexample,
+  Maxima-before-code). Part IV gained "The structured Newton solve for
+  the fleet LCP" (sec:a-fleetnewton) per Ben's instruction: the fleet K
+  block form, per-cell Sherman-Morrison, SPD Schur, two-part assembly,
+  and the MatrixApply operator form, with the explicit statement that
+  every formula is verified by fleet-newton-check.mac (nine checks,
+  fixture shared with fleet-mcp-check.mac). Part I: fleet headline row
+  added, counts 132 -> 182, flow bullet mentions the fleet
+  generalization.

@@ -152,4 +152,72 @@ FULL pair set with no screen at all (probe NS3). Release build, seed
   ssn bounded probes on this instance) will complete the engine comparison;
   they no longer gate any production decision.
 
+## Addendum (2026-07-08): the fleet optimizer at the viewer default (FP0/FN3)
+
+The fleet_viewer default problem (70 nodes = 20/20/30/0, 4 asset types x 3
+vehicle types, banded laydown 1, limited fleet, seed 20260704) ran about one
+hour in Release without finishing (user report, 2026-07-07 evening). The
+staged diagnosis and fix are `2026-07-08-fleet-performance-plan.md` at the
+repo root; the instrumented probe is `fleet_benchmark` (round-start /
+round-end hooks on `solveFleetPlan`, flushed per-iteration heartbeats). Both
+runs below: Release, identical instance and seed, engine `ipm`.
+
+    config                                   kept/total rnds  iter   wall s  shortfall  cert
+    dense LU, screen k=6,
+      maxCertificateRounds=1 (FP0 probe)    11721/14451    1  24+32   2070.7   65.56778    no
+    fleet Newton factory, keep-all (FN3)    14451/14451    0     39      6.1   65.38619   yes
+    + matrix-free M, keep-all (MF1)         14451/14451    0     39      0.1   65.38619   yes
+
+- **P10 — The single-commodity failure mechanism recurs, multiplied by the
+  type catalog.** A kept pair enters with every capable vehicle type, so the
+  fleet LCP is roughly (capable types) x (assets) times the per-asset pair
+  count: the k=6 screen already starts at dimension 2,900, and ONE
+  certificate round on banded geometry ballooned it 4.2x to 11,721
+  y-variables (81% of keep-all) — the P4 installment effect at fleet scale.
+  Iteration counts stayed flat (24 then 32) while the dense LU cost grew as
+  dim^3: 0.95 s per iteration at dimension 2,900, ~64 s at 11,849, matching
+  both the cubic law and the IP4a 10.8k datum to a few percent. Rounds 0-1
+  alone cost 34.5 minutes; the observed viewer hour is those rounds plus
+  part of a near-keep-all round 2.
+- **P11 — The fleet Newton factory (FN2, ledger G5h) removes the wall
+  exactly as the flow factory did.** The fleet Newton matrix has a rank-one
+  block per demand cell and thin skew borders (one supply column per
+  (source, asset) cell, one budget column per vehicle type), so the FN1
+  algebra (network/doc/fleet-newton-check.mac, 9 machine-verified checks)
+  gives a per-cell Sherman-Morrison inverse and an SPD dual Schur complement
+  of size numSupplyCells + numTypes (131 here). Keep-all at dimension
+  14,579: 39 iterations, ~0.13 s each, 6.1 s wall, certified by
+  construction, residual 3.0e-15 — ~340x the bounded two-round probe and
+  roughly three orders of magnitude against the projected full default run.
+- **P12 — Keep-all is again economically better.** The certified-NO screened
+  answer overshot by 0.28% (65.568 vs 65.386). All three vehicle budgets
+  bind exactly in both runs (miles = budget, lambda > 0), so the default
+  "limited fleet" regime is genuinely budget-constrained.
+- **P13 — Fleet practical guidance.** `solveFleetPlan` defaults are now
+  ipmNewton `fleet` + keep-all (no screen): seconds-scale and exact at the
+  viewer default. The dense factory and the screen remain available as
+  options (`ipmNewton = "dense"`, positive `maxSourcesPerSink`) for
+  cross-checks and for the projection engines. The binding constraint at
+  the production target (200-250 nodes, 10-15 vehicle types, 10-15 asset
+  types, ~2 million keep-all variables) is now the engine's dense M
+  (O(dim^2) storage and residual matvecs) — stage MF1 of the plan file, the
+  matrix-free M interface, addresses it.
+- **P14 — Matrix-free M removes the remaining O(dim^2) (MF1, 2026-07-08).**
+  With the field supplied as an O(numVars) structural apply
+  (`applyFleetLcpM`) and the dense M never assembled
+  (`buildFleetLcp(..., false)`), the same keep-all solve runs in 0.1 s —
+  ~2.5 ms per iteration at dimension 14,579 — with the identical iteration
+  count and objective (the residual differs in the last bit, the signature
+  of a changed summation order). This attributes FN3's residual
+  per-iteration cost almost entirely to the dense residual matvecs and the
+  one-time O(numVars^2) assembly. Memory is now O(numVars). End to end,
+  the 2026-07-08 sequence is: projected 90+ minutes (viewer default) ->
+  2,070 s (bounded probe) -> 6.1 s (structured factory) -> 0.1 s
+  (matrix-free), roughly four orders of magnitude, with a better and
+  certified objective. Extrapolated to the production target (~2M
+  variables, dual Schur ~1.2k): on the order of seconds per iteration and
+  minutes per solve, in memory of hundreds of MB — the target scale is
+  within reach of the current engine. The engine's dense overload is
+  unchanged bit for bit (gated by MatrixFreeOverloadMatchesDenseExactly).
+
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->

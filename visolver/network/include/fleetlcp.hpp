@@ -29,7 +29,10 @@ namespace VINCP::Network {
   // jacobian(G) = M entry-for-entry and the monotonicity of M (symmetric
   // part = per-cell rank-one Q blocks; borders skew) are Maxima checks 1-3.
   struct FleetLcp {
-    MatrixXd M;              // (numVars + numSupplyCells + numTypes) square
+    MatrixXd M;              // (numVars + numSupplyCells + numTypes) square;
+                             // EMPTY (0 x 0) when built without the dense
+                             // matrix (see buildFleetLcp) -- the index lists
+                             // below carry the full structure either way
     VectorXd q;
     // Per y variable, aligned with the y block:
     vector<Index> varAsset;      // asset index a
@@ -39,6 +42,8 @@ namespace VINCP::Network {
     VectorXd varRho;             // rho = shipCost(s, t) / kappa(a, k)
     vector<Index> varMuIndex;    // 0-based index into the mu block
     vector<Index> varCell;       // 0-based demand-cell index (certificates)
+    VectorXd varQuad;            // Q_cell = 2 P / D^2 of the variable's
+                                 // demand cell (constant across a cell)
     // Block offsets:
     vector<Index> muOffsetPerAsset;    // mu index of asset a's source 0
     vector<Index> cellOffsetPerAsset;  // cell index of asset a's sink 0
@@ -57,9 +62,24 @@ namespace VINCP::Network {
 
   // Assemble (M, q). Throws std::invalid_argument if epsilon is negative,
   // any budget B_k is not positive, the reduction yields no variables, or a
-  // sink's kept list is empty.
+  // sink's kept list is empty. With assembleDenseMatrixP = false, M is left
+  // EMPTY and only q, the index lists, and varQuad are built (O(numVars)
+  // instead of O(numVars^2) time and memory) -- sufficient for the
+  // matrix-free interior-point path (applyFleetLcpM + the fleet Newton
+  // factory, stage MF1), and the only viable form at the production target
+  // scale where the dense M does not fit.
   FleetLcp buildFleetLcp(const FleetInstance& inst,
-                         const FleetReducedProblem& reduced, double epsilon);
+                         const FleetReducedProblem& reduced, double epsilon,
+                         bool assembleDenseMatrixP = true);
+
+  // The matrix-vector product M v computed from the index lists in
+  // O(numVars), without touching (or requiring) the dense M: per y row
+  //   (M v)_p  = Q_cell(p) * (sum of v over p's demand cell)
+  //              + v_mu(p) + rho_p v_la(type(p)),
+  // per mu row the negated cell supply sum, per lambda row the negated
+  // rho-weighted type sum. Agrees with lcp.M * v when the dense M is
+  // present. Throws std::invalid_argument on a size mismatch.
+  VectorXd applyFleetLcpM(const FleetLcp& lcp, const VectorXd& v);
 
   // Expand a solution z into a full FleetPlan: each y_pk > 0 walks its
   // OUTBOUND shortest route accumulating flow[a] and vehicles[k], and the
