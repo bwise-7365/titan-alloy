@@ -314,6 +314,34 @@ available; can be driven by an Opus session. Steps:
 3. IP4c: write the performance.md addendum (P6/P7) comparing ipm / chain /
    bshe94b on identical instances, and close the gate in `network/plan.md`.
 
+## Deferred: problem input format (UNFINISHED TASK, decision pending)
+
+Ben's requirement (2026-07-08): a text-based way for people to specify
+problems -- fleet-scale, constantly changing -- including the solver to
+apply. Research done, decision NOT made (Ben is thinking it over).
+
+Findings (sources in memory `project_visolver_input_format.md`): no open
+C++ front-end exists for the AMPL language (the translator is AMPL's
+commercial core). The open, solver-standard channel is the .nl INSTANCE
+format; the AMPL/MP library (github.com/ampl/mp, BSD-style, CMake,
+Windows + Linux, active) reads it and its NLHandler has a first-class
+`OnComplementarity` callback -- the exact mixed-NCP form VIModel solves,
+and byte-identical input parity with PATH. Pyomo (BSD, Python,
+pyomo.mpec) is the open front-end that writes .nl with complementarity.
+
+Options on the table:
+- A: Pyomo/AMPL front-end -> .nl -> visolver reads via MP (days of work;
+  Python dependency on the MODELER's machine only).
+- B: bespoke restricted algebraic parser in visolver (params, sets,
+  indexed sums, linear/quadratic, complements; weeks + maintenance;
+  fully self-contained).
+- C (recommended): A now, B only if the Pyomo dependency proves
+  unacceptable -- the MP reader targets the same internal problem
+  representation either way, so nothing is wasted.
+Deciding question: who the model authors are (Python-capable vs analysts
+editing a text template). Solver choice rides outside .nl (command-line /
+options string, as PATH does; the existing .cfg precedent).
+
 ## Recipes (verified working on this machine)
 
 - Release build from the CLI (the CLion tree; plain `cmake --build` fails
