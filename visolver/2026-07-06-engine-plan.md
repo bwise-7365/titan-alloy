@@ -319,6 +319,16 @@ available; can be driven by an Opus session. Steps:
 Ben's requirement (2026-07-08): a text-based way for people to specify
 problems -- fleet-scale, constantly changing -- including the solver to
 apply. Research done, decision NOT made (Ben is thinking it over).
+The GAMS-subset census and estimate for option B (six example files,
+construct table, four-gate plan, ~a week of gated sessions, open
+decisions) is in `doc/2026-07-08-gams-subset-census.md`.
+Weighting note (Ben, 2026-07-08): the clean subset-to-VINCP mapping the
+census found is DESIGNED, not lucky -- owning an implementation of the
+GAMS/GLPK/AMPL subset he actually uses is one of the project's two
+founding motivations (the other: assessing what modern AI can do).
+Automatic differentiation is out of scope BY DESIGN: derivatives are
+Maxima's job in his workflow (stationarity conditions arrive
+hand-derived and Maxima-verified).
 
 Findings (sources in memory `project_visolver_input_format.md`): no open
 C++ front-end exists for the AMPL language (the translator is AMPL's
