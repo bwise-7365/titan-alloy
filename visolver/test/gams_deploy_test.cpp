@@ -1,4 +1,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
+//
+// "GAMS" is a registered trademark of GAMS Development Corporation. This
+// code is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this code is incompatible with most of the
+// GAMS modeling language. The software is provided without warranty of any
+// kind, express or implied, including without limitation for any particular
+// purpose. The provider makes no guarantees about its performance, accuracy,
+// or suitability for any specific application.
 #include "alternatingchain.hpp"
 #include "mcpengines.hpp"
 #include "vincp.hpp"
@@ -954,7 +962,7 @@ namespace {
     }
 } // namespace
 
-TEST(GamsDeploy, AtLeastOneEngineReachesKnownEquilibrium) {
+TEST(GmsDeploy, AtLeastOneEngineReachesKnownEquilibrium) {
     const VIModel  model = buildModel();
     const VectorXd z0    = initialPoint();
 

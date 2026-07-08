@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # the include path. EIGEN3_INCLUDE_DIR is the directory that CONTAINS the "Eigen"
 # folder, so that <Eigen/Dense> resolves -- i.e. the Eigen checkout root, NOT the
 # "Eigen" subfolder itself. It is a cache entry; override it on the command line
-# or in CLion's CMake options for a different location (e.g. /usr/include/eigen3
+    # or in CLion's CMake options for a different location (e.g. /usr/include/eigen3
 # on Debian, from sudo apt install libeigen3-dev).
 set(EIGEN3_INCLUDE_DIR "C:/repos/ghub-ext/eigen" CACHE PATH
     "Directory containing the Eigen/ header folder (the Eigen source root).")
@@ -134,13 +134,17 @@ vincp_add_gtest(gams_deploy_test)
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).
 add_subdirectory(network)
 
+# GAMS-subset front end (doc/2026-07-08-gams-frontend-plan.md): vincpgms
+# library + its tests. Also needs the GoogleTest setup above.
+add_subdirectory(gams)
+
 # CLion-friendly aggregates (the pattern of network/CMakeLists' run_network_tests).
 # "run_engine_tests" builds and runs the suites the MC2/MC3 engine work touches
 # (semismooth + IPM + the four-row comparison + the network engine switch);
 # "run_all_tests" builds and runs the entire ctest suite.
 add_custom_target(run_engine_tests
     COMMAND ${CMAKE_CTEST_COMMAND}
-        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan|Gams|AlternatingChain|SaoeChain|SaoeRisk|ChooseEngine"
+        -R "SemismoothNewton|MehrotraIpm|HanVsHe|NetworkFlowPlan|GmsAlloceff|GmsDeploy|AlternatingChain|SaoeChain|SaoeRisk|ChooseEngine"
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS semismooth_newton_test mehrotra_ipm_test han_vs_he_test flowplan_test
@@ -157,7 +161,7 @@ add_custom_target(run_all_tests
             mehrotra_ipm_test semismooth_newton_test josephy_newton_test
             alternating_chain_test saoe_chain_test saoe_risk_test
             choose_engine_test fbs_hyz04_test
-            gams_alloceff_test gams_deploy_test
+            gams_alloceff_test gams_deploy_test gms_parse_test
             network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL
 )

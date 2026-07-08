@@ -314,7 +314,34 @@ available; can be driven by an Opus session. Steps:
 3. IP4c: write the performance.md addendum (P6/P7) comparing ipm / chain /
    bshe94b on identical instances, and close the gate in `network/plan.md`.
 
-## Deferred: problem input format (UNFINISHED TASK, decision pending)
+## Problem input format: DECIDED 2026-07-08 — GAMS-subset front end, staged
+
+("GAMS" is a registered trademark of GAMS Development Corporation; this
+work is not endorsed or certified by them, and the parsed subset is
+incompatible with most of the GAMS modeling language. All GAMS mentions
+in this section mean that limited subset.)
+
+Ben chose to proceed with the bespoke GAMS-subset parser (gates GP1-GP5;
+plan of record `doc/2026-07-08-gams-frontend-plan.md`, which adds Ben's
+GP5 result-reproduction gate and its per-file evidence inventory). GP1
+(grammar + AST + canonical echo, new `gams/` module, lib `vincpgms`,
+`gms_parse_test` with the census as assertions) is CODE DONE, awaiting
+Ben's build+run (CMake RELOAD — new directory and targets; expected new
+ctest total 191 = 182 + 9 GmsParse cases). The `.nl`/AMPL-MP research
+below stays as the interoperability option to layer on later.
+
+## Deferred: remove unneeded GAMS references (PENDING TASK, Ben 2026-07-08)
+
+Sweep the tree for "GAMS"/"gams" occurrences that are not required and
+rename or reword them, keeping only (a) the mandatory trademark/subset
+disclaimers and (b) mentions that genuinely must name the language. Known
+candidates: file/target names `test/gams_alloceff_test.cpp`,
+`test/gams_deploy_test.cpp` (suites already renamed GmsAlloceff/GmsDeploy;
+the executables and files still say gams_), the `gams/` directory and
+comments/docs that could say "GMS subset" instead. Involves git renames +
+CMake + report references — do as one dedicated pass, not piecemeal.
+
+## Original research record (2026-07-08, pre-decision)
 
 Ben's requirement (2026-07-08): a text-based way for people to specify
 problems -- fleet-scale, constantly changing -- including the solver to
@@ -324,7 +351,7 @@ construct table, four-gate plan, ~a week of gated sessions, open
 decisions) is in `doc/2026-07-08-gams-subset-census.md`.
 Weighting note (Ben, 2026-07-08): the clean subset-to-VINCP mapping the
 census found is DESIGNED, not lucky -- owning an implementation of the
-GAMS/GLPK/AMPL subset he actually uses is one of the project's two
+GAMS/GLPK/AMPL/OCTAVE subset he actually uses is one of the project's two
 founding motivations (the other: assessing what modern AI can do).
 Automatic differentiation is out of scope BY DESIGN: derivatives are
 Maxima's job in his workflow (stationarity conditions arrive

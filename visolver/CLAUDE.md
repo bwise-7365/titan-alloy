@@ -144,6 +144,23 @@ Two solver layers over one shared core; the dependency arrows point one way
     sequence, all defaults; NO basin control — deliberate equilibrium
     selection is the alternating chain's job).
 
+- **GAMS front end (`gams/`)** — a parser for the GAMS SUBSET the corpus in
+  `doc/*.gms` actually uses (censused in `doc/2026-07-08-gams-subset-census.md`;
+  gate plan in `doc/2026-07-08-gams-frontend-plan.md`). GP1 (grammar + AST +
+  canonical echo, library `vincpgms`, namespace `VINCP::Gms`) parses and
+  represents only — no evaluation or solving until GP2/GP3. Standard-library
+  only (no Eigen, no `vincp` link). Identifiers are case-insensitive (every
+  name travels with a lower-cased `key`); `$macro` is expanded at token level;
+  anything outside the censused footprint throws with `file:line:col`. The
+  parser tests read the corpus files from `doc/` in place.
+  STANDING RULE (Ben, 2026-07-08): "GAMS" is a registered trademark of GAMS
+  Development Corporation; this code is not endorsed or certified by them,
+  and the parsed subset is incompatible with most of the GAMS modeling
+  language. Every `.hpp`/`.cpp` in the front end carries the full
+  trademark/no-endorsement/no-warranty disclaimer block in its top banner —
+  copy it into every NEW file of this track, and attach a "limited subset"
+  qualification wherever GAMS is mentioned in prose or documents.
+
 - **Jacobian (`include/fdjacobian.hpp`, `lib/fdjacobian.cpp`)** —
   `centralDifferenceJacobian`. **4th-order** central differences (step
   `eps^(1/5)`), snapped to an exactly representable width. Real-arithmetic

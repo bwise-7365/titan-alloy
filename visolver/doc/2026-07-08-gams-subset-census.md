@@ -2,6 +2,16 @@
 
 # GAMS-subset census and implementation estimate (2026-07-08)
 
+**Trademark and warranty disclaimer.** "GAMS" is a registered trademark of
+GAMS Development Corporation. This work is not endorsed or certified by
+GAMS Development Corporation. The subset of the GMS parsed by this code is
+incompatible with most of the GAMS modeling language. The software is
+provided without warranty of any kind, express or implied, including
+without limitation for any particular purpose. The provider makes no
+guarantees about its performance, accuracy, or suitability for any
+specific application. Every mention of GAMS in this document refers to
+that limited, incompatible subset.
+
 Input to the pending decision recorded in `2026-07-06-engine-plan.md`
 ("Deferred: problem input format"): a text-based way for people to specify
 problems, including solver choice. The candidate weighed here is a bespoke
@@ -34,10 +44,10 @@ Six files, all in `doc/`:
 | Equations `=e=` / `=g=` | `=g=` | both | `=g=` | `=g=` | both |
 | `sum` incl. multi-index `sum((i,j),...)`, alias indices | yes | yes | yes | yes | nested |
 | Intrinsics | sqrt | sqrt, round | `**` | `**` | exp, log, sqr, card, max |
-| `Model /eq.var, .../` MCP pairing | yes | yes | yes | yes | 26 pairs |
+| `Model /eq.var, .../` MCP pairing | yes | yes | yes | yes | 24 pairs |
 | `Option MCP = X;`, `Solve ... using MCP` | MILES | NLPEC | MILES | MILES | PATH |
 | `Display` | yes | yes | yes | yes | yes |
-| `$` directives | `$ONSYMLIST` | same | + `$include` | same | + `$macro` x14, nested |
+| `$` directives | `$ONSYMLIST` | same | + `$include` | same | + `$macro` x15, nested |
 
 Grammar details the corpus requires: identifiers are CASE-INSENSITIVE
 (`C_B_Red_prob` vs `C_B_Red_Prob`, `Vr` vs `VR`, `.l` vs `.L`); descriptions
@@ -79,7 +89,7 @@ Components, in cost order:
    every table in the corpus is fully dense), case-insensitive symbol
    handling, `$ONSYMLIST` ignored, `$include` spliced, and `$macro`
    textual expansion with arguments (deploy_v09 builds its combat model
-   from 14 nested macros; all bodies are parenthesized, so parse-time
+   from 15 nested macros; all bodies are parenthesized, so parse-time
    expansion is faithful). ~1,200-1,500 lines.
 2. Symbol table + eager evaluator: sets, aliases, keyed parameter arrays,
    indexed assignment loops, intrinsics {exp, log, sqrt, sqr, max, round,
