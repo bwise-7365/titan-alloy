@@ -164,7 +164,7 @@ namespace VINCP::Network {
     // Mutually exclusive link overlay: none / closest-links / greedy-plan.
     // (The Laydown menu already selects the placement kind, so placement itself
     // is not a mode here.) A QButtonGroup gives a single signal per selection.
-    noneRadio_ = new QRadioButton("None", this);
+    //noneRadio_ = new QRadioButton("None", this);
     closestRadio_ = new QRadioButton("Closest", this);
     greedyRadio_ = new QRadioButton("Greedy Plan", this);
     gravityRadio_ = new QRadioButton("Gravity Plan", this);
@@ -172,9 +172,9 @@ namespace VINCP::Network {
     optimalRadio_->setToolTip("Solve the flow-planning QP (engine ipm + flow "
                               "Newton, keep-all) on a worker thread and overlay "
                               "the optimal flows.");
-    noneRadio_->setChecked(true);
+    closestRadio_->setChecked(true);
     QButtonGroup* linkGroup = new QButtonGroup(this);
-    linkGroup->addButton(noneRadio_);
+    //linkGroup->addButton(noneRadio_);
     linkGroup->addButton(closestRadio_);
     linkGroup->addButton(greedyRadio_);
     linkGroup->addButton(gravityRadio_);
@@ -202,7 +202,7 @@ namespace VINCP::Network {
     // The closest-links count sits directly under its "Closest" radio, indented.
     QGroupBox* modeGroup = new QGroupBox("Show Links", this);
     QVBoxLayout* modeLayout = new QVBoxLayout(modeGroup);
-    modeLayout->addWidget(noneRadio_);
+    //modeLayout->addWidget(noneRadio_);
     modeLayout->addWidget(closestRadio_);
     QHBoxLayout* countRow = new QHBoxLayout();
     countRow->addSpacing(20);

@@ -246,15 +246,7 @@ required beyond row and column sums.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{../images/initial-nw-gui.png}
-\caption{The network viewer at startup: laydown~0, seed 20260704, 70
-nodes (20 supply-only, 20 supply-and-demand, 30 demand-only), in the
-``Closest'' display mode with $k = 5$ orange links from each node to its
-five cheapest neighbours by symmetrized cost. Node colour encodes class
-(green supply-only, blue both, red demand-only); node radius scales with
-tonnage. The left panel holds the instance controls, display modes, swap
-actions, and the cost histogram; the right panel ranks nodes by plan flow
-once a plan is shown; the status line (bottom left) reports the current
-instance and mode.}
+\caption{The network viewer at startup}
 \label{fig:nw-gui}
 \end{figure}
 
@@ -263,10 +255,13 @@ instance and mode.}
 Figure~\ref{fig:nw-gui} shows the initial screen. The left panel reads
 top to bottom in the order a session proceeds. The \emph{Instance} group
 selects the generator inputs: the laydown (0 = random square, 1 = banded
-rectangles), the seed (entering 0 draws a fresh time-based seed and
+rectangles), the seed (intially 20260704, entering 0 draws a fresh time-based seed and
 writes it back so the run can be repeated), and the four node-class
-counts. \emph{Show Links} selects one of five mutually exclusive
-overlays: \emph{None}; \emph{Closest} ($k$ cheapest neighbours per node,
+counts: 20 supply-only, 20 supply-and-demand, 30 demand-only. 
+Node colour encodes class; node radius scales with
+tonnage.
+\emph{Show Links} selects one of four mutually exclusive
+overlays: \emph{Closest} ($k$ cheapest neighbours per node,
 an orientation aid, shown in the figure); \emph{Greedy Plan};
 \emph{Gravity Plan} (a cost-blind proportional baseline); and
 \emph{Optimal Plan}. Plan overlays draw each flow $f_{ij} > 0$ as a
@@ -282,7 +277,11 @@ supply capacity $C$, and demand $D$; right-press applies that node's best
 swap; the two right-hand lists rank nodes by plan throughput and by arc
 count and stay greyed until a plan mode is active. The status line
 aggregates plan facts: ton-miles, positive-arc count, delivered and unmet
-tonnage, and the shortfall objective.
+tonnage, and the shortfall objective. The left panel holds the instance controls, display modes, swap
+actions, and the cost histogram; the right panel ranks nodes by plan flow
+once a plan is shown; the status line (bottom left) reports the current
+instance and mode.
+
 
 \subsection{Pseudo-code: the greedy planner}
 \label{sec:t-greedy-pseudo}

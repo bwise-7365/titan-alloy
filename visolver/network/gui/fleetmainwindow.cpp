@@ -211,7 +211,7 @@ namespace VINCP::Network {
     nearestBox_->setToolTip("Draw an orange link from each node to its k "
                             "cheapest neighbours by (d_ij + d_ji)/2.");
 
-    noneRadio_ = new QRadioButton("None", this);
+    //noneRadio_ = new QRadioButton("None", this);
     closestRadio_ = new QRadioButton("Closest", this);
     greedyRadio_ = new QRadioButton("Greedy Fleet Plan", this);
     greedyRadio_->setToolTip("Run the greedy fleet planner (all assets, all "
@@ -224,9 +224,9 @@ namespace VINCP::Network {
         "a worker thread and overlay the optimal flows. The interior-point "
         "solution spreads tonnage over the optimal face; Purify drives it "
         "to a corner.");
-    noneRadio_->setChecked(true);
+    closestRadio_->setChecked(true);
     QButtonGroup* linkGroup = new QButtonGroup(this);
-    linkGroup->addButton(noneRadio_);
+    //linkGroup->addButton(noneRadio_);
     linkGroup->addButton(closestRadio_);
     linkGroup->addButton(greedyRadio_);
     linkGroup->addButton(optimalRadio_);
@@ -255,7 +255,7 @@ namespace VINCP::Network {
 
     QGroupBox* modeGroup = new QGroupBox("Show Links", this);
     QVBoxLayout* modeLayout = new QVBoxLayout(modeGroup);
-    modeLayout->addWidget(noneRadio_);
+    //modeLayout->addWidget(noneRadio_);
     modeLayout->addWidget(closestRadio_);
     QHBoxLayout* countRow = new QHBoxLayout();
     countRow->addSpacing(20);
