@@ -12,8 +12,8 @@
 // solve fills the levels.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
-// code is not endorsed or certified by GAMS Development Corporation. The
-// subset of the GMS parsed by this code is incompatible with most of the
+// software is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this software is incompatible with most of the
 // GAMS modeling language. The software is provided without warranty of any
 // kind, express or implied, including without limitation for any particular
 // purpose. The provider makes no guarantees about its performance, accuracy,
@@ -85,6 +85,12 @@ namespace VINCP::Gms {
   // std::invalid_argument; a computed non-finite value throws
   // std::runtime_error naming the assignment.
   GmsDatabase buildGmsDatabase(const Program& program);
+
+  // Re-execute the assignment statements that FOLLOW the first Solve
+  // statement, against whatever levels the database now holds. Use after
+  // applyMcpSolution (gmsmcp.hpp) to recompute the report parameters the
+  // way GAMS would have; the first pass ran them at the initial levels.
+  void rerunPostSolveAssignments(GmsDatabase& db, const Program& program);
 
 } // namespace VINCP::Gms
 

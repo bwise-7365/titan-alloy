@@ -57,12 +57,27 @@ target_compile_definitions(gms_parity_test PRIVATE
     VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
 gtest_discover_tests(gms_parity_test)
 
+add_executable(gms_solve_test test/gms_solve_test.cpp)
+target_link_libraries(gms_solve_test PRIVATE vincpgms GTest::gtest_main)
+target_compile_definitions(gms_solve_test PRIVATE
+    VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
+gtest_discover_tests(gms_solve_test)
+
+# GP5 bounded probe (manual, fleet-benchmark style; NOT a ctest gate): the
+# three expensive corpus solves with timings and GAMS-listing comparisons.
+add_executable(gms_gp5_probe src/gms_gp5_probe.cpp)
+target_link_libraries(gms_gp5_probe PRIVATE vincpgms)
+target_compile_definitions(gms_gp5_probe PRIVATE
+    VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
+
 # CLion-friendly aggregate: build + run just the GMS front-end suites.
 add_custom_target(run_gams_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} -R "GmsParse|GmsEval|GmsModel|GmsParity"
+    COMMAND ${CMAKE_CTEST_COMMAND}
+        -R "GmsParse|GmsEval|GmsModel|GmsParity|GmsSolve"
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS gms_parse_test gms_eval_test gms_model_test gms_parity_test
+            gms_solve_test
     USES_TERMINAL
 )
 # Copyright Ben Paul Wise. All Rights Reserved.

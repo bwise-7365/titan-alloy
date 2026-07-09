@@ -13,8 +13,8 @@
 // files' own comments say their bounds are redundant at solutions).
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
-// code is not endorsed or certified by GAMS Development Corporation. The
-// subset of the GMS parsed by this code is incompatible with most of the
+// software is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this software is incompatible with most of the
 // GAMS modeling language. The software is provided without warranty of any
 // kind, express or implied, including without limitation for any particular
 // purpose. The provider makes no guarantees about its performance, accuracy,
@@ -58,6 +58,13 @@ namespace VINCP::Gms {
   // inequality, an equation/variable domain mismatch, or an equation that
   // references a variable no pair covers.
   GmsMcp buildGmsMcp(const GmsDatabase& db, const string& modelKey);
+
+  // Write a solution back into the database: z's slots land in the paired
+  // variables' .L arrays (the row-major order both sides share). Afterward
+  // rerunPostSolveAssignments (gmseval.hpp) recomputes the report
+  // parameters the way GAMS would have.
+  void applyMcpSolution(GmsDatabase& db, const GmsMcp& mcp,
+                        const VectorXd& z);
 
 } // namespace VINCP::Gms
 

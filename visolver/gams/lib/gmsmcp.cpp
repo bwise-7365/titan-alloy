@@ -6,8 +6,8 @@
 // shared expression evaluator reading variables from the solver's point.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
-// code is not endorsed or certified by GAMS Development Corporation. The
-// subset of the GMS parsed by this code is incompatible with most of the
+// software is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this software is incompatible with most of the
 // GAMS modeling language. The software is provided without warranty of any
 // kind, express or implied, including without limitation for any particular
 // purpose. The provider makes no guarantees about its performance, accuracy,
@@ -272,6 +272,29 @@ namespace VINCP::Gms {
       return evalBlock(*plan, plan->posFamilies, plan->m, x, y);
     };
     return mcp;
+  }
+
+  void
+  applyMcpSolution(GmsDatabase& db, const GmsMcp& mcp, const VectorXd& z)
+  {
+    if (mcp.model.n + mcp.model.m != z.size()) {
+      fail("applyMcpSolution: z has size " + std::to_string(z.size())
+           + ", the model needs "
+           + std::to_string(mcp.model.n + mcp.model.m));
+    }
+    for (const GmsMcpSlot& slot : mcp.slots) {
+      const auto found = db.variables.find(slot.key);
+      if (db.variables.end() == found) {
+        fail("applyMcpSolution: no variable '" + slot.key
+             + "' in the database");
+      }
+      GmsVariable& var = found->second;
+      const Index base = slot.freeP ? slot.offset : (mcp.model.n + slot.offset);
+      for (Index i = 0; i < slot.count; ++i) {
+        var.level.values[static_cast<size_t>(i)] = z[base + i];
+      }
+    }
+    return;
   }
 
 } // namespace VINCP::Gms

@@ -7,8 +7,8 @@
 // builder reads bare variables from the solver's current point.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
-// code is not endorsed or certified by GAMS Development Corporation. The
-// subset of the GMS parsed by this code is incompatible with most of the
+// software is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this software is incompatible with most of the
 // GAMS modeling language. The software is provided without warranty of any
 // kind, express or implied, including without limitation for any particular
 // purpose. The provider makes no guarantees about its performance, accuracy,
@@ -278,14 +278,198 @@ namespace VINCP::Gms {
 
   namespace {
 
-    class Evaluator {
+    // Executes ONE assignment statement (parameter, variable attribute, or
+    // model attribute), looping indexed lvalues over their domains. Shared
+    // by the full statement walk (Evaluator) and rerunPostSolveAssignments.
+    class AssignmentExecutor {
     public:
-      explicit Evaluator(GmsDatabase& db)
+      explicit AssignmentExecutor(GmsDatabase& db)
         : db_(db)
         , expr_(db, [this](const GmsVariable& var, const string& attrKey,
                            const vector<size_t>& ordinals) {
             return this->readVariableAttr(var, attrKey, ordinals);
           })
+      {
+      }
+
+      void
+      execute(const Assignment& assign)
+      {
+        // Model attribute (m.optfile = 1) goes to the model record.
+        if (!assign.attr.empty() && 0 < db_.models.count(assign.key)) {
+          if (!assign.indices.empty()) {
+            evalFail("a model attribute takes no indices");
+          }
+          db_.models[assign.key].attrs[assign.attrKey] =
+              expr_.eval(assign.value);
+          return;
+        }
+
+        GmsArray* target = nullptr;
+        vector<string> domainKeys;
+        if (assign.attr.empty()) {
+          const auto found = db_.parameters.find(assign.key);
+          if (db_.parameters.end() == found) {
+            evalFail("assignment to undeclared parameter '" + assign.name
+                     + "'");
+          }
+          GmsParameter& param = found->second;
+          if (param.domainOpenP) {
+            // First assignment to a domain-less parameter fixes its shape
+            // (rank 0 when unindexed): every index must name a set/alias.
+            param.domainOpenP = false;
+            if (!assign.indices.empty()) {
+              vector<string> keys;
+              for (const string& indexName : assign.indices) {
+                const string key = toLower(indexName);
+                if (!db_.setP(key)) {
+                  evalFail("first assignment to domain-less parameter '"
+                           + assign.name + "' must index by sets, got '"
+                           + indexName + "'");
+                }
+                keys.push_back(key);
+              }
+              param.domainKeys = keys;
+              param.data = GmsArray::filled(shapeOf(keys), 0.0);
+            }
+          }
+          target = &param.data;
+          domainKeys = param.domainKeys;
+        }
+        else {
+          const auto found = db_.variables.find(assign.key);
+          if (db_.variables.end() == found) {
+            evalFail("attribute assignment to undeclared variable '"
+                     + assign.name + "'");
+          }
+          target =
+              &attrArrayMutable(found->second, assign.attrKey, assign.name);
+          domainKeys = found->second.domainKeys;
+        }
+        if (assign.indices.size() != domainKeys.size()) {
+          evalFail("assignment to '" + assign.name
+                   + "' has the wrong number of indices");
+        }
+
+        // Each lvalue index is a set/alias to LOOP over, or a literal label
+        // to pin. Loop dimensions bind under the index's own name.
+        vector<Dim> dims;
+        for (size_t d = 0; d < assign.indices.size(); ++d) {
+          Dim dim;
+          const string key = toLower(assign.indices[d]);
+          if (db_.setP(key)) {
+            dim.loopP = true;
+            dim.key = key;
+            dim.set = &db_.resolveSet(key);
+          }
+          else {
+            dim.fixed =
+                db_.resolveSet(domainKeys[d]).ordinalOf(assign.indices[d]);
+          }
+          dims.push_back(dim);
+        }
+        assignLoop(assign, *target, dims, 0, vector<size_t>());
+        return;
+      }
+
+    protected:
+    private:
+      struct Dim {
+        bool loopP = false;
+        string key;               // binding key when looping
+        const GmsSet* set = nullptr;
+        size_t fixed = 0;         // ordinal when pinned
+      };
+
+      GmsDatabase& db_;
+      GmsExprEvaluator expr_;
+
+      // Assignments read variables through their attribute arrays only.
+      double
+      readVariableAttr(const GmsVariable& var, const string& attrKey,
+                       const vector<size_t>& ordinals) const
+      {
+        if (attrKey.empty()) {
+          evalFail("bare variable '" + var.name
+                   + "' in an assignment; read .L / .UP / .LO");
+        }
+        if ("l" == attrKey) {
+          return var.level.at(ordinals);
+        }
+        if ("up" == attrKey) {
+          return var.upper.at(ordinals);
+        }
+        if ("lo" == attrKey) {
+          return var.lower.at(ordinals);
+        }
+        evalFail("unsupported variable attribute '" + var.name + "." + attrKey
+                 + "' (only .L / .UP / .LO)");
+      }
+
+      GmsArray&
+      attrArrayMutable(GmsVariable& var, const string& attrKey,
+                       const string& varName)
+      {
+        if ("l" == attrKey) {
+          return var.level;
+        }
+        if ("up" == attrKey) {
+          return var.upper;
+        }
+        if ("lo" == attrKey) {
+          return var.lower;
+        }
+        evalFail("unsupported variable attribute '" + varName + "." + attrKey
+                 + "' (only .L / .UP / .LO)");
+      }
+
+      vector<size_t>
+      shapeOf(const vector<string>& domainKeys) const
+      {
+        vector<size_t> shape;
+        for (const string& key : domainKeys) {
+          shape.push_back(db_.resolveSet(key).size());
+        }
+        return shape;
+      }
+
+      void
+      assignLoop(const Assignment& assign, GmsArray& target,
+                 const vector<Dim>& dims, size_t d, vector<size_t> ordinals)
+      {
+        if (dims.size() == d) {
+          const double value = expr_.eval(assign.value);
+          if (!std::isfinite(value)) {
+            throw std::runtime_error("GMS evaluation: assignment to '"
+                                     + assign.name
+                                     + "' produced a non-finite value");
+          }
+          target.at(ordinals) = value;
+          return;
+        }
+        const Dim& dim = dims[d];
+        if (!dim.loopP) {
+          ordinals.push_back(dim.fixed);
+          assignLoop(assign, target, dims, d + 1, ordinals);
+          return;
+        }
+        expr_.pushBinding(dim.key, *dim.set, 0);
+        ordinals.push_back(0);
+        for (size_t ordinal = 0; ordinal < dim.set->size(); ++ordinal) {
+          expr_.setBindingOrdinal(dim.key, ordinal);
+          ordinals.back() = ordinal;
+          assignLoop(assign, target, dims, d + 1, ordinals);
+        }
+        expr_.popBinding();
+        return;
+      }
+    };
+
+    class Evaluator {
+    public:
+      explicit Evaluator(GmsDatabase& db)
+        : db_(db)
+        , executor_(db)
       {
       }
 
@@ -302,34 +486,12 @@ namespace VINCP::Gms {
     protected:
     private:
       GmsDatabase& db_;
-      GmsExprEvaluator expr_;
+      AssignmentExecutor executor_;
 
       [[noreturn]] void
       fail(const string& message) const
       {
         evalFail(message);
-      }
-
-      // Assignments read variables through their attribute arrays only.
-      double
-      readVariableAttr(const GmsVariable& var, const string& attrKey,
-                       const vector<size_t>& ordinals) const
-      {
-        if (attrKey.empty()) {
-          fail("bare variable '" + var.name
-               + "' in an assignment; read .L / .UP / .LO");
-        }
-        if ("l" == attrKey) {
-          return var.level.at(ordinals);
-        }
-        if ("up" == attrKey) {
-          return var.upper.at(ordinals);
-        }
-        if ("lo" == attrKey) {
-          return var.lower.at(ordinals);
-        }
-        fail("unsupported variable attribute '" + var.name + "." + attrKey
-             + "' (only .L / .UP / .LO)");
       }
 
       void
@@ -364,23 +526,6 @@ namespace VINCP::Gms {
           keys.push_back(toLower(name));
         }
         return keys;
-      }
-
-      GmsArray&
-      attrArrayMutable(GmsVariable& var, const string& attrKey,
-                       const string& varName)
-      {
-        if ("l" == attrKey) {
-          return var.level;
-        }
-        if ("up" == attrKey) {
-          return var.upper;
-        }
-        if ("lo" == attrKey) {
-          return var.lower;
-        }
-        fail("unsupported variable attribute '" + varName + "." + attrKey
-             + "' (only .L / .UP / .LO)");
       }
 
       // --- symbolic validation of stored equations ---------------------------
@@ -642,117 +787,7 @@ namespace VINCP::Gms {
       void
       handle(const Assignment& assign)
       {
-        // Model attribute (m.optfile = 1) goes to the model record.
-        if (!assign.attr.empty() && 0 < db_.models.count(assign.key)) {
-          if (!assign.indices.empty()) {
-            fail("a model attribute takes no indices");
-          }
-          db_.models[assign.key].attrs[assign.attrKey] =
-              expr_.eval(assign.value);
-          return;
-        }
-
-        GmsArray* target = nullptr;
-        vector<string> domainKeys;
-        if (assign.attr.empty()) {
-          const auto found = db_.parameters.find(assign.key);
-          if (db_.parameters.end() == found) {
-            fail("assignment to undeclared parameter '" + assign.name + "'");
-          }
-          GmsParameter& param = found->second;
-          if (param.domainOpenP) {
-            // First assignment to a domain-less parameter fixes its shape
-            // (rank 0 when unindexed): every index must name a set/alias.
-            param.domainOpenP = false;
-            if (!assign.indices.empty()) {
-              vector<string> keys;
-              for (const string& indexName : assign.indices) {
-                const string key = toLower(indexName);
-                if (!db_.setP(key)) {
-                  fail("first assignment to domain-less parameter '"
-                       + assign.name + "' must index by sets, got '"
-                       + indexName + "'");
-                }
-                keys.push_back(key);
-              }
-              param.domainKeys = keys;
-              param.data = GmsArray::filled(shapeOf(keys), 0.0);
-            }
-          }
-          target = &param.data;
-          domainKeys = param.domainKeys;
-        }
-        else {
-          const auto found = db_.variables.find(assign.key);
-          if (db_.variables.end() == found) {
-            fail("attribute assignment to undeclared variable '" + assign.name
-                 + "'");
-          }
-          target =
-              &attrArrayMutable(found->second, assign.attrKey, assign.name);
-          domainKeys = found->second.domainKeys;
-        }
-        if (assign.indices.size() != domainKeys.size()) {
-          fail("assignment to '" + assign.name
-               + "' has the wrong number of indices");
-        }
-
-        // Each lvalue index is a set/alias to LOOP over, or a literal label
-        // to pin. Loop dimensions bind under the index's own name.
-        struct Dim {
-          bool loopP = false;
-          string key;               // binding key when looping
-          const GmsSet* set = nullptr;
-          size_t fixed = 0;         // ordinal when pinned
-        };
-        vector<Dim> dims;
-        for (size_t d = 0; d < assign.indices.size(); ++d) {
-          Dim dim;
-          const string key = toLower(assign.indices[d]);
-          if (db_.setP(key)) {
-            dim.loopP = true;
-            dim.key = key;
-            dim.set = &db_.resolveSet(key);
-          }
-          else {
-            dim.fixed =
-                db_.resolveSet(domainKeys[d]).ordinalOf(assign.indices[d]);
-          }
-          dims.push_back(dim);
-        }
-        assignLoop(assign, *target, dims, 0, vector<size_t>());
-        return;
-      }
-
-      template <typename DimT>
-      void
-      assignLoop(const Assignment& assign, GmsArray& target,
-                 const vector<DimT>& dims, size_t d, vector<size_t> ordinals)
-      {
-        if (dims.size() == d) {
-          const double value = expr_.eval(assign.value);
-          if (!std::isfinite(value)) {
-            throw std::runtime_error("GMS evaluation: assignment to '"
-                                     + assign.name
-                                     + "' produced a non-finite value");
-          }
-          target.at(ordinals) = value;
-          return;
-        }
-        const DimT& dim = dims[d];
-        if (!dim.loopP) {
-          ordinals.push_back(dim.fixed);
-          assignLoop(assign, target, dims, d + 1, ordinals);
-          return;
-        }
-        expr_.pushBinding(dim.key, *dim.set, 0);
-        ordinals.push_back(0);
-        for (size_t ordinal = 0; ordinal < dim.set->size(); ++ordinal) {
-          expr_.setBindingOrdinal(dim.key, ordinal);
-          ordinals.back() = ordinal;
-          assignLoop(assign, target, dims, d + 1, ordinals);
-        }
-        expr_.popBinding();
+        executor_.execute(assign);
         return;
       }
 
@@ -815,6 +850,26 @@ namespace VINCP::Gms {
     Evaluator evaluator(db);
     evaluator.run(program);
     return db;
+  }
+
+  void
+  rerunPostSolveAssignments(GmsDatabase& db, const Program& program)
+  {
+    AssignmentExecutor executor(db);
+    bool pastSolveP = false;
+    for (const Statement& statement : program.statements) {
+      if (std::holds_alternative<SolveStmt>(statement)) {
+        pastSolveP = true;
+        continue;
+      }
+      if (!pastSolveP) {
+        continue;
+      }
+      if (const Assignment* assign = std::get_if<Assignment>(&statement)) {
+        executor.execute(*assign);
+      }
+    }
+    return;
   }
 
 } // namespace VINCP::Gms

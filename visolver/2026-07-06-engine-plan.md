@@ -332,7 +332,42 @@ layer on later.
   renames) + 53e60fd (the doc/*.gms corpus the tests read). Two
   expectation-side fixes during verification (deploy has 15 macros and
   24 model pairs); zero parser fixes.
-- **GP4 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
+- **GP5 DISPOSITIONS SET 2026-07-09** (details in the plan doc): forcepkg
+  MATCHES (ctest), pewem MATCHES aggregates (ctest), alloceff MATCHES
+  PATH aggregates in 2.06 s (ctest; actor attribution degenerate,
+  ungated), glra4B MATCHES via probe (affine + IPM: 16 iters / 5.1 s
+  after 489 s exact-M assembly; PATH shortfall quartet to 4 decimals;
+  TotalDlvrd 535 reconciled — supply total IS 535, the comment's 527.556
+  was an earlier config), deploy BLOCKED ON PERFORMANCE per Ben (ssn
+  probe thrashed as on deploy_v07; chain at interpreted-F cost = hours).
+  BEN'S DECISION OF RECORD: production problems = hand-built C++ matrix
+  structures + data files, one per problem; the GMS front end is the
+  reference/prototyping path. Performance levers measured and recorded
+  (AD-on-AST sparse Jacobians; tape/CSE evaluator; deploy F 0.0294 s,
+  glra4B F 0.211 s, FD Jacobian ~53 s, assembly 489 s) — deferred, do
+  not start unprompted. Awaiting: Ben's full-suite run (expect 214 with
+  the alloceff gate), then the GP5 closing commit.
+- **GP5 STEP 1 CODE DONE 2026-07-08** (CMake
+  reload — new gms_solve_test + gms_gp5_probe exe + write-back machinery):
+  applyMcpSolution (z -> .L via slots, gmsmcp) and
+  rerunPostSolveAssignments (gmseval; AssignmentExecutor extracted so the
+  statement walk and the rerun share one implementation). ctest gates for
+  the two FAST solves: forcepkg reproduces the MILES listing levels
+  (fs/beta, tol 0.02 + 1e-5 rel) and pewem reproduces the
+  DEGENERACY-ROBUST aggregates (prices/volumes/rf-pipe/fees/ship totals;
+  per-route qps deliberately ungated — both markets price at 33, split
+  not unique) + a write-back identity (psNetProfit = rps * shipped). The
+  three EXPENSIVE solves (alloceff 87, deploy 450, glra4B 1951 through
+  the AST evaluator, 10-50x a hand-coded F) go through the bounded
+  gms_gp5_probe FIRST, fleet-track style: per-stage timings, one-F-eval
+  cost, engine-choice log, feasibility summary, comparison vs the GAMS
+  listings (alloceff/deploy hard-coded refs; glra4B reporter reruns
+  post-solve and prints delivered/shortfalls vs the .gms comment
+  targets). Usage: gms_gp5_probe [alloceff|deploy|glra4b|all]
+  [ssnIterMax] [magTol]; run alloceff first. Gates for the three land in
+  step 2, sized by the probe. Expected ctest total 213 = 211 + 2.
+- **GP4 CLOSED 2026-07-08**: 211/211 green, committed 3c58f4f, ZERO fix
+  rounds. Was:
   new gms_parity_test): acceptance parity by INDEPENDENT DUAL
   TRANSCRIPTION. The in-repo hand transcriptions chose a different block
   split than the GMS Model statements (gams_alloceff_test made

@@ -7,8 +7,8 @@
 // VIModel builder. All lookups are by lower-cased key.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
-// code is not endorsed or certified by GAMS Development Corporation. The
-// subset of the GMS parsed by this code is incompatible with most of the
+// software is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this software is incompatible with most of the
 // GAMS modeling language. The software is provided without warranty of any
 // kind, express or implied, including without limitation for any particular
 // purpose. The provider makes no guarantees about its performance, accuracy,

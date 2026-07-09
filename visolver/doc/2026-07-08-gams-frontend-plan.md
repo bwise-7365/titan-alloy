@@ -29,6 +29,37 @@ the shared target either way.
 | GP4 | Acceptance parity vs in-repo references | alloceff reproduces the SAOE reference (`saoe_test` / `gams_alloceff_test` relatives); deploy family checked against `gams_deploy_test`'s verified transcription |
 | GP5 | **Result reproduction (Ben's added gate)**: reproduce recorded results for every corpus file that has them | See inventory below |
 
+### GP5 dispositions (2026-07-09, probe measurements in)
+
+- **forcepkg**: ctest-gated, MATCHES the MILES listing levels exactly
+  (`GmsSolve.ForcepkgReproducesGamsLevels`).
+- **pewem**: ctest-gated on the degeneracy-robust aggregates, MATCHES
+  (`GmsSolve.PewemReproducesGamsAggregates`).
+- **alloceff**: ctest-gated on the AGGREGATE equilibrium, MATCHES PATH
+  (gamma + nfv + sigma to listing rounding; solved in 2.06 s). The
+  actor-level attribution (beta, eff) differs and is deliberately
+  ungated: aggregative-game multiplicity — per-option totals pinned,
+  individual splits not (`GmsSolve.AlloceffReproducesPathAggregates`).
+- **glra4B**: MATCHES, verified by probe (not ctest — the run is ~8.5 min,
+  dominated by the 489 s exact-M assembly). Affinity exact (2.6e-15);
+  interior point converged in 16 iterations / 5.1 s; the PATH shortfall
+  quartet reproduced to four decimals; TotalDlvrd 535 with 28,180 of the
+  50,000 ton-mile budget used. NOTE: the `.gms` comments' "PATH delivered
+  527.556" is from an EARLIER configuration (facp 145 / ~26-27.5k
+  budgets); with this file's data, total supply is exactly 535 and PATH's
+  own shortfalls imply delivered 535.01 — the two references agree.
+- **deploy_v09**: BLOCKED ON PERFORMANCE, not correctness (Ben,
+  2026-07-09). Parse/eval/build/parity are all verified; the semismooth
+  probe (20 iterations, 24 min) thrashed the plateau exactly as every
+  standalone engine did on deploy_v07 — this family needs the
+  alternating chain, and at the interpreted-F cost (0.0294 s/F, ~53 s
+  per FD Jacobian) a chain run is hours. Measured levers if ever needed:
+  AD on the Expr trees (exact sparse Jacobians), a tape/CSE evaluator
+  (glra4B's F spends its 0.211 s recomputing one 900-term sum 900
+  times). Ben's decision of record: PRODUCTION problems get hand-built
+  C++ matrix structures + data files, one per problem; this front end
+  serves as the reference/prototyping path.
+
 ### GP5 result inventory (what "results available" means per file)
 
 Ben supplied the GAMS solution listings on 2026-07-08; they live beside
