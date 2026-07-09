@@ -138,6 +138,13 @@ add_subdirectory(network)
 # library + its tests. Also needs the GoogleTest setup above.
 add_subdirectory(gams)
 
+# Focused application framework (apps/): VINCP::App problem classes + their
+# CLI/GUI apps. Additive; links vincp + vincpgms, so it must follow both.
+option(VINCP_BUILD_APPS "Build the focused app framework under apps/" ON)
+if (VINCP_BUILD_APPS)
+    add_subdirectory(apps)
+endif()
+
 # CLion-friendly aggregates (the pattern of network/CMakeLists' run_network_tests).
 # "run_engine_tests" builds and runs the suites the MC2/MC3 engine work touches
 # (semismooth + IPM + the four-row comparison + the network engine switch);
