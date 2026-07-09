@@ -162,7 +162,7 @@ add_custom_target(run_all_tests
             alternating_chain_test saoe_chain_test saoe_risk_test
             choose_engine_test fbs_hyz04_test
             gams_alloceff_test gams_deploy_test gms_parse_test gms_eval_test
-            gms_model_test network_tests lvi_demo lvi_vi_demo
+            gms_model_test gms_parity_test network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL
 )
 

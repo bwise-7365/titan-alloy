@@ -51,12 +51,18 @@ target_compile_definitions(gms_model_test PRIVATE
     VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
 gtest_discover_tests(gms_model_test)
 
+add_executable(gms_parity_test test/gms_parity_test.cpp)
+target_link_libraries(gms_parity_test PRIVATE vincpgms GTest::gtest_main)
+target_compile_definitions(gms_parity_test PRIVATE
+    VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
+gtest_discover_tests(gms_parity_test)
+
 # CLion-friendly aggregate: build + run just the GMS front-end suites.
 add_custom_target(run_gams_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} -R "GmsParse|GmsEval|GmsModel"
+    COMMAND ${CMAKE_CTEST_COMMAND} -R "GmsParse|GmsEval|GmsModel|GmsParity"
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    DEPENDS gms_parse_test gms_eval_test gms_model_test
+    DEPENDS gms_parse_test gms_eval_test gms_model_test gms_parity_test
     USES_TERMINAL
 )
 # Copyright Ben Paul Wise. All Rights Reserved.

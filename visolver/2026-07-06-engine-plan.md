@@ -332,7 +332,28 @@ layer on later.
   renames) + 53e60fd (the doc/*.gms corpus the tests read). Two
   expectation-side fixes during verification (deploy has 15 macros and
   24 model pairs); zero parser fixes.
-- **GP3 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
+- **GP4 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
+  new gms_parity_test): acceptance parity by INDEPENDENT DUAL
+  TRANSCRIPTION. The in-repo hand transcriptions chose a different block
+  split than the GMS Model statements (gams_alloceff_test made
+  nfv/sigma/gamma free; the .gms declares them positive), so F-to-F
+  comparison against those files is not meaningful; instead each parity
+  test hand-codes the .gms residual formulas in plain C++ (no AST, no
+  evaluator) and requires the parsed model's rows to match at randomly
+  sampled points (fixed seed 20260708; parity must hold at EVERY z).
+  forcepkg = FULL 11-row affine parity; alloceff = nfDef + MVInf (alias
+  sum, gamma^2 denominator); deploy = C_B_Red_Esc (the full macro-built
+  softplus chain re-derived by hand) + L_M_Red_Log; pewem = XSupplyNG
+  (CES **) + ProdSProfit; glra4B = CompFlow (whole-network mu term over
+  900 flows) + SlackMovement. Rows located via the slot identity (row
+  offset == paired variable's offset). Tolerance relative 1e-9.
+  gms_parity_test = 5 cases; expected ctest total 211 = 206 + 5.
+- **GP3 CLOSED 2026-07-08**: 206/206 green, committed 456af8e (one fix
+  round: tolerance consistency — solves converged to the requested
+  default accuracy while the gates demanded more; tests now request
+  magTol 1e-14). GP5 upgraded with Ben's GAMS listings (all five models;
+  glra4B's is the flagged budget-violating MILES interrupt — the .gms
+  comments' PATH/NLPEC values stay the target). Was:
   new gmsmcp.{hpp,cpp}, gms_model_test; vincpgms now links vincp, the
   designed integration point): buildGmsMcp turns a Model statement into a
   VIModel — free vars + =e= rows -> H block, positive vars -> G block
