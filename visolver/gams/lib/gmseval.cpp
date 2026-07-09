@@ -1,0 +1,766 @@
+// ----------------------------------------------
+// Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------
+// buildGmsDatabase implementation: statement-order walk with an index-binding
+// environment. Indexed assignments loop over their domain sets; sums iterate
+// with shadow bindings; equation definitions are validated symbolically and
+// stored for the GP3 builder.
+// ----------------------------------------------
+// "GAMS" is a registered trademark of GAMS Development Corporation. This
+// code is not endorsed or certified by GAMS Development Corporation. The
+// subset of the GMS parsed by this code is incompatible with most of the
+// GAMS modeling language. The software is provided without warranty of any
+// kind, express or implied, including without limitation for any particular
+// purpose. The provider makes no guarantees about its performance, accuracy,
+// or suitability for any specific application.
+// ----------------------------------------------
+#include "gmseval.hpp"
+
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+#include <limits>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <variant>
+#include <vector>
+
+namespace VINCP::Gms {
+
+  namespace {
+
+    const double kInf = std::numeric_limits<double>::infinity();
+
+    string
+    toLower(const string& text)
+    {
+      string low = text;
+      for (char& c : low) {
+        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+      }
+      return low;
+    }
+
+    // One bound loop index: the NAME it is bound under (a set or alias key)
+    // and the current position in its base set.
+    struct Binding {
+      string key;
+      const GmsSet* set = nullptr;
+      size_t ordinal = 0;
+    };
+
+    class Evaluator {
+    public:
+      explicit Evaluator(GmsDatabase& db)
+        : db_(db)
+      {
+      }
+
+      void
+      run(const Program& program)
+      {
+        for (const Statement& statement : program.statements) {
+          std::visit([this](const auto& stmt) { this->handle(stmt); },
+                     statement);
+        }
+        return;
+      }
+
+    protected:
+    private:
+      GmsDatabase& db_;
+      vector<Binding> env_;
+
+      // --- shared helpers ---------------------------------------------------
+
+      [[noreturn]] void
+      fail(const string& message) const
+      {
+        throw std::invalid_argument("GMS evaluation: " + message);
+      }
+
+      void
+      requireNewSymbol(const string& key, const string& name) const
+      {
+        const bool takenP = db_.sets.count(key) || db_.aliases.count(key)
+                            || db_.parameters.count(key)
+                            || db_.variables.count(key)
+                            || db_.equations.count(key)
+                            || db_.models.count(key);
+        if (takenP) {
+          fail("symbol '" + name + "' is declared twice");
+        }
+        return;
+      }
+
+      vector<size_t>
+      shapeOf(const vector<string>& domainKeys) const
+      {
+        vector<size_t> shape;
+        for (const string& key : domainKeys) {
+          shape.push_back(db_.resolveSet(key).size());
+        }
+        return shape;
+      }
+
+      vector<string>
+      lowerAll(const vector<string>& names) const
+      {
+        vector<string> keys;
+        for (const string& name : names) {
+          keys.push_back(toLower(name));
+        }
+        return keys;
+      }
+
+      const Binding*
+      findBinding(const string& key) const
+      {
+        for (size_t i = env_.size(); 0 < i; --i) {
+          if (env_[i - 1].key == key) {
+            return &env_[i - 1];
+          }
+        }
+        return nullptr;
+      }
+
+      // Ordinal tuple for a reference's indices under the current bindings:
+      // each index is a bound name, or (fallback) a literal label of the
+      // corresponding domain set.
+      vector<size_t>
+      ordinalsFor(const string& symbolName, const vector<string>& domainKeys,
+                  const vector<string>& indices) const
+      {
+        if (indices.size() != domainKeys.size()) {
+          std::ostringstream msg;
+          msg << "'" << symbolName << "' takes " << domainKeys.size()
+              << " indices, got " << indices.size();
+          fail(msg.str());
+        }
+        vector<size_t> ordinals;
+        for (size_t d = 0; d < indices.size(); ++d) {
+          const string key = toLower(indices[d]);
+          const Binding* binding = findBinding(key);
+          if (nullptr != binding) {
+            ordinals.push_back(binding->ordinal);
+            continue;
+          }
+          // Literal label of the d-th domain set.
+          ordinals.push_back(db_.resolveSet(domainKeys[d]).ordinalOf(indices[d]));
+        }
+        return ordinals;
+      }
+
+      // --- expression evaluation -------------------------------------------
+
+      double
+      evalExpr(const Expr& expr)
+      {
+        switch (expr.kind) {
+        case Expr::Kind::Number:
+          return expr.number;
+        case Expr::Kind::Unary: {
+          const double value = evalExpr(expr.args[0]);
+          return ("-" == expr.op) ? -value : value;
+        }
+        case Expr::Kind::Binary:
+          return evalBinary(expr);
+        case Expr::Kind::Call:
+          return evalCall(expr);
+        case Expr::Kind::Sum:
+          return evalSum(expr);
+        case Expr::Kind::SymbolRef: {
+          const GmsParameter& param = db_.parameter(expr.key);
+          return param.data.at(
+              ordinalsFor(expr.name, param.domainKeys, expr.indices));
+        }
+        case Expr::Kind::AttrRef: {
+          const GmsVariable& var = db_.variable(expr.key);
+          const GmsArray& array = attrArray(var, expr.attrKey, expr.name);
+          return array.at(
+              ordinalsFor(expr.name, var.domainKeys, expr.indices));
+        }
+        default:
+          break;
+        }
+        fail("unsupported expression kind");
+      }
+
+      double
+      evalBinary(const Expr& expr)
+      {
+        const double a = evalExpr(expr.args[0]);
+        const double b = evalExpr(expr.args[1]);
+        if ("+" == expr.op) {
+          return a + b;
+        }
+        if ("-" == expr.op) {
+          return a - b;
+        }
+        if ("*" == expr.op) {
+          return a * b;
+        }
+        if ("/" == expr.op) {
+          return a / b;
+        }
+        if ("**" == expr.op) {
+          return std::pow(a, b);
+        }
+        fail("unsupported operator '" + expr.op + "'");
+      }
+
+      double
+      evalCall(const Expr& expr)
+      {
+        const string& fn = expr.key;
+        if ("card" == fn) {
+          if (1 != expr.args.size()
+              || Expr::Kind::SymbolRef != expr.args[0].kind
+              || !expr.args[0].indices.empty()) {
+            fail("card() takes one set (or alias) name");
+          }
+          return static_cast<double>(db_.resolveSet(expr.args[0].key).size());
+        }
+        vector<double> args;
+        for (const Expr& arg : expr.args) {
+          args.push_back(evalExpr(arg));
+        }
+        if ("exp" == fn) {
+          return std::exp(args.at(0));
+        }
+        if ("log" == fn) {
+          return std::log(args.at(0));
+        }
+        if ("sqrt" == fn) {
+          return std::sqrt(args.at(0));
+        }
+        if ("sqr" == fn) {
+          return args.at(0) * args.at(0);
+        }
+        if ("abs" == fn) {
+          return std::fabs(args.at(0));
+        }
+        if ("power" == fn) {
+          return std::pow(args.at(0), args.at(1));
+        }
+        if ("max" == fn || "min" == fn) {
+          if (args.empty()) {
+            fail(fn + "() needs at least one argument");
+          }
+          double best = args[0];
+          for (const double value : args) {
+            best = ("max" == fn) ? std::max(best, value)
+                                 : std::min(best, value);
+          }
+          return best;
+        }
+        if ("round" == fn) {
+          if (1 == args.size()) {
+            return std::round(args[0]);
+          }
+          if (2 == args.size()) {
+            const double scale = std::pow(10.0, args[1]);
+            return std::round(args[0] * scale) / scale;
+          }
+          fail("round() takes one or two arguments");
+        }
+        fail("unsupported function '" + expr.name + "'");
+      }
+
+      double
+      evalSum(const Expr& expr)
+      {
+        return sumOver(expr, 0);
+      }
+
+      double
+      sumOver(const Expr& expr, size_t dim)
+      {
+        if (expr.sumIndices.size() == dim) {
+          return evalExpr(expr.args[0]);
+        }
+        const string key = toLower(expr.sumIndices[dim]);
+        const GmsSet& set = db_.resolveSet(key);
+        double total = 0.0;
+        env_.push_back(Binding{key, &set, 0});
+        for (size_t ordinal = 0; ordinal < set.size(); ++ordinal) {
+          env_.back().ordinal = ordinal;
+          total += sumOver(expr, dim + 1);
+        }
+        env_.pop_back();
+        return total;
+      }
+
+      GmsArray&
+      attrArrayMutable(GmsVariable& var, const string& attrKey,
+                       const string& varName)
+      {
+        if ("l" == attrKey) {
+          return var.level;
+        }
+        if ("up" == attrKey) {
+          return var.upper;
+        }
+        if ("lo" == attrKey) {
+          return var.lower;
+        }
+        fail("unsupported variable attribute '" + varName + "." + attrKey
+             + "' (only .L / .UP / .LO)");
+      }
+
+      const GmsArray&
+      attrArray(const GmsVariable& var, const string& attrKey,
+                const string& varName) const
+      {
+        if ("l" == attrKey) {
+          return var.level;
+        }
+        if ("up" == attrKey) {
+          return var.upper;
+        }
+        if ("lo" == attrKey) {
+          return var.lower;
+        }
+        fail("unsupported variable attribute '" + varName + "." + attrKey
+             + "' (only .L / .UP / .LO)");
+      }
+
+      // --- symbolic validation of stored equations ---------------------------
+
+      void
+      validateExpr(const Expr& expr, std::set<string>& bound) const
+      {
+        switch (expr.kind) {
+        case Expr::Kind::Number:
+          return;
+        case Expr::Kind::Unary:
+        case Expr::Kind::Binary:
+          for (const Expr& arg : expr.args) {
+            validateExpr(arg, bound);
+          }
+          return;
+        case Expr::Kind::Call:
+          if ("card" == expr.key) {
+            db_.resolveSet(expr.args.at(0).key);
+            return;
+          }
+          for (const Expr& arg : expr.args) {
+            validateExpr(arg, bound);
+          }
+          return;
+        case Expr::Kind::Sum: {
+          vector<string> added;
+          for (const string& indexName : expr.sumIndices) {
+            const string key = toLower(indexName);
+            db_.resolveSet(key);   // must be a set or alias
+            if (bound.insert(key).second) {
+              added.push_back(key);
+            }
+          }
+          validateExpr(expr.args[0], bound);
+          for (const string& key : added) {
+            bound.erase(key);
+          }
+          return;
+        }
+        case Expr::Kind::SymbolRef:
+        case Expr::Kind::AttrRef: {
+          vector<string> domainKeys;
+          if (db_.parameters.count(expr.key)) {
+            domainKeys = db_.parameter(expr.key).domainKeys;
+            if (Expr::Kind::AttrRef == expr.kind) {
+              fail("'" + expr.name + "' is a parameter and has no attributes");
+            }
+          }
+          else
+          if (db_.variables.count(expr.key)) {
+            domainKeys = db_.variable(expr.key).domainKeys;
+          }
+          else {
+            fail("equation references undeclared symbol '" + expr.name + "'");
+          }
+          if (expr.indices.size() != domainKeys.size()) {
+            std::ostringstream msg;
+            msg << "'" << expr.name << "' takes " << domainKeys.size()
+                << " indices, got " << expr.indices.size();
+            fail(msg.str());
+          }
+          for (size_t d = 0; d < expr.indices.size(); ++d) {
+            const string key = toLower(expr.indices[d]);
+            if (0 < bound.count(key)) {
+              continue;
+            }
+            // Not a bound index: accept a literal label of the domain set.
+            db_.resolveSet(domainKeys[d]).ordinalOf(expr.indices[d]);
+          }
+          return;
+        }
+        default:
+          break;
+        }
+        fail("unsupported expression kind in an equation");
+      }
+
+      // --- statement handlers -----------------------------------------------
+
+      void
+      handle(const SetDecl& decl)
+      {
+        requireNewSymbol(decl.item.key, decl.item.name);
+        GmsSet set;
+        set.name = decl.item.name;
+        for (const string& label : decl.elements) {
+          const string low = toLower(label);
+          if (0 < set.ordinals.count(low)) {
+            fail("set '" + decl.item.name + "' repeats label '" + label + "'");
+          }
+          set.ordinals[low] = set.labels.size();
+          set.labels.push_back(label);
+        }
+        db_.sets[decl.item.key] = set;
+        return;
+      }
+
+      void
+      handle(const AliasDecl& decl)
+      {
+        // Exactly one of the names must already be a set; the others become
+        // its aliases.
+        string baseKey;
+        for (const string& key : decl.keys) {
+          if (0 < db_.sets.count(key)) {
+            if (!baseKey.empty()) {
+              fail("alias lists two existing sets");
+            }
+            baseKey = key;
+          }
+        }
+        if (baseKey.empty()) {
+          fail("alias needs one existing set among its names");
+        }
+        for (size_t i = 0; i < decl.keys.size(); ++i) {
+          if (decl.keys[i] == baseKey) {
+            continue;
+          }
+          requireNewSymbol(decl.keys[i], decl.names[i]);
+          db_.aliases[decl.keys[i]] = baseKey;
+        }
+        return;
+      }
+
+      void
+      handle(const ScalarDecl& decl)
+      {
+        for (const ScalarDecl::Item& item : decl.items) {
+          requireNewSymbol(item.decl.key, item.decl.name);
+          GmsParameter param;
+          param.name = item.decl.name;
+          param.data = GmsArray::filled({}, 0.0);
+          if (item.hasValueP) {
+            param.data.values[0] = item.value;
+          }
+          db_.parameters[item.decl.key] = param;
+        }
+        return;
+      }
+
+      void
+      handle(const ParameterDecl& decl)
+      {
+        for (const ParameterDecl::Item& item : decl.items) {
+          requireNewSymbol(item.decl.key, item.decl.name);
+          GmsParameter param;
+          param.name = item.decl.name;
+          param.domainKeys = lowerAll(item.decl.domain);
+          param.data = GmsArray::filled(shapeOf(param.domainKeys), 0.0);
+          // Domain-less and data-less: the first assignment fixes the shape.
+          param.domainOpenP = param.domainKeys.empty() && !item.hasDataP;
+          if (item.hasDataP) {
+            for (const DataEntry& entry : item.data) {
+              if (entry.keys.size() != param.domainKeys.size()) {
+                fail("data entry for '" + param.name
+                     + "' has the wrong number of keys");
+              }
+              vector<size_t> ordinals;
+              for (size_t d = 0; d < entry.keys.size(); ++d) {
+                ordinals.push_back(db_.resolveSet(param.domainKeys[d])
+                                       .ordinalOf(entry.keys[d]));
+              }
+              param.data.at(ordinals) = entry.value;
+            }
+          }
+          db_.parameters[item.decl.key] = param;
+        }
+        return;
+      }
+
+      void
+      handle(const TableDecl& decl)
+      {
+        requireNewSymbol(decl.decl.key, decl.decl.name);
+        if (2 != decl.decl.domain.size()) {
+          fail("table '" + decl.decl.name + "' needs a 2-dimensional domain");
+        }
+        GmsParameter param;
+        param.name = decl.decl.name;
+        param.domainKeys = lowerAll(decl.decl.domain);
+        param.data = GmsArray::filled(shapeOf(param.domainKeys), 0.0);
+        const GmsSet& rowSet = db_.resolveSet(param.domainKeys[0]);
+        const GmsSet& colSet = db_.resolveSet(param.domainKeys[1]);
+        vector<size_t> colOrdinals;
+        for (const string& column : decl.columns) {
+          colOrdinals.push_back(colSet.ordinalOf(column));
+        }
+        for (const TableDecl::Row& row : decl.rows) {
+          const size_t rowOrdinal = rowSet.ordinalOf(row.label);
+          for (size_t c = 0; c < row.values.size(); ++c) {
+            param.data.at({rowOrdinal, colOrdinals[c]}) = row.values[c];
+          }
+        }
+        db_.parameters[decl.decl.key] = param;
+        return;
+      }
+
+      void
+      handle(const VariableDecl& decl)
+      {
+        for (const DeclItem& item : decl.items) {
+          requireNewSymbol(item.key, item.name);
+          GmsVariable var;
+          var.name = item.name;
+          var.positiveP = decl.positiveP;
+          var.domainKeys = lowerAll(item.domain);
+          const vector<size_t> shape = shapeOf(var.domainKeys);
+          var.level = GmsArray::filled(shape, 0.0);
+          var.lower = GmsArray::filled(shape, decl.positiveP ? 0.0 : -kInf);
+          var.upper = GmsArray::filled(shape, kInf);
+          db_.variables[item.key] = var;
+        }
+        return;
+      }
+
+      void
+      handle(const EquationDecl& decl)
+      {
+        for (const DeclItem& item : decl.items) {
+          requireNewSymbol(item.key, item.name);
+          GmsEquation equation;
+          equation.name = item.name;
+          equation.domainKeys = lowerAll(item.domain);
+          db_.equations[item.key] = equation;
+        }
+        return;
+      }
+
+      void
+      handle(const EquationDef& def)
+      {
+        const auto found = db_.equations.find(def.key);
+        if (db_.equations.end() == found) {
+          fail("definition of undeclared equation '" + def.name + "'");
+        }
+        GmsEquation& equation = found->second;
+        if (equation.definedP) {
+          fail("equation '" + def.name + "' is defined twice");
+        }
+        std::set<string> bound;
+        for (const string& indexName : def.domain) {
+          const string key = toLower(indexName);
+          db_.resolveSet(key);
+          bound.insert(key);
+        }
+        validateExpr(def.lhs, bound);
+        validateExpr(def.rhs, bound);
+        equation.definedP = true;
+        equation.def = def;
+        // The declaration may have carried no domain (deploy declares bare
+        // names, then defines with domains); adopt the definition's.
+        if (equation.domainKeys.empty() && !def.domain.empty()) {
+          equation.domainKeys = lowerAll(def.domain);
+        }
+        return;
+      }
+
+      void
+      handle(const Assignment& assign)
+      {
+        // Model attribute (m.optfile = 1) goes to the model record.
+        if (!assign.attr.empty() && 0 < db_.models.count(assign.key)) {
+          if (!assign.indices.empty()) {
+            fail("a model attribute takes no indices");
+          }
+          db_.models[assign.key].attrs[assign.attrKey] = evalExpr(assign.value);
+          return;
+        }
+
+        GmsArray* target = nullptr;
+        vector<string> domainKeys;
+        if (assign.attr.empty()) {
+          const auto found = db_.parameters.find(assign.key);
+          if (db_.parameters.end() == found) {
+            fail("assignment to undeclared parameter '" + assign.name + "'");
+          }
+          GmsParameter& param = found->second;
+          if (param.domainOpenP) {
+            // First assignment to a domain-less parameter fixes its shape
+            // (rank 0 when unindexed): every index must name a set/alias.
+            param.domainOpenP = false;
+            if (!assign.indices.empty()) {
+              vector<string> keys;
+              for (const string& indexName : assign.indices) {
+                const string key = toLower(indexName);
+                if (!db_.setP(key)) {
+                  fail("first assignment to domain-less parameter '"
+                       + assign.name + "' must index by sets, got '"
+                       + indexName + "'");
+                }
+                keys.push_back(key);
+              }
+              param.domainKeys = keys;
+              param.data = GmsArray::filled(shapeOf(keys), 0.0);
+            }
+          }
+          target = &param.data;
+          domainKeys = param.domainKeys;
+        }
+        else {
+          const auto found = db_.variables.find(assign.key);
+          if (db_.variables.end() == found) {
+            fail("attribute assignment to undeclared variable '" + assign.name
+                 + "'");
+          }
+          target =
+              &attrArrayMutable(found->second, assign.attrKey, assign.name);
+          domainKeys = found->second.domainKeys;
+        }
+        if (assign.indices.size() != domainKeys.size()) {
+          fail("assignment to '" + assign.name
+               + "' has the wrong number of indices");
+        }
+
+        // Each lvalue index is a set/alias to LOOP over, or a literal label
+        // to pin. Loop dimensions bind under the index's own name.
+        struct Dim {
+          bool loopP = false;
+          string key;               // binding key when looping
+          const GmsSet* set = nullptr;
+          size_t fixed = 0;         // ordinal when pinned
+        };
+        vector<Dim> dims;
+        for (size_t d = 0; d < assign.indices.size(); ++d) {
+          Dim dim;
+          const string key = toLower(assign.indices[d]);
+          if (db_.setP(key)) {
+            dim.loopP = true;
+            dim.key = key;
+            dim.set = &db_.resolveSet(key);
+          }
+          else {
+            dim.fixed =
+                db_.resolveSet(domainKeys[d]).ordinalOf(assign.indices[d]);
+          }
+          dims.push_back(dim);
+        }
+        assignLoop(assign, *target, dims, 0, vector<size_t>());
+        return;
+      }
+
+      template <typename DimT>
+      void
+      assignLoop(const Assignment& assign, GmsArray& target,
+                 const vector<DimT>& dims, size_t d, vector<size_t> ordinals)
+      {
+        if (dims.size() == d) {
+          const double value = evalExpr(assign.value);
+          if (!std::isfinite(value)) {
+            throw std::runtime_error("GMS evaluation: assignment to '"
+                                     + assign.name
+                                     + "' produced a non-finite value");
+          }
+          target.at(ordinals) = value;
+          return;
+        }
+        const DimT& dim = dims[d];
+        if (!dim.loopP) {
+          ordinals.push_back(dim.fixed);
+          assignLoop(assign, target, dims, d + 1, ordinals);
+          return;
+        }
+        env_.push_back(Binding{dim.key, dim.set, 0});
+        ordinals.push_back(0);
+        for (size_t ordinal = 0; ordinal < dim.set->size(); ++ordinal) {
+          env_.back().ordinal = ordinal;
+          ordinals.back() = ordinal;
+          assignLoop(assign, target, dims, d + 1, ordinals);
+        }
+        env_.pop_back();
+        return;
+      }
+
+      void
+      handle(const ModelDecl& decl)
+      {
+        requireNewSymbol(decl.key, decl.name);
+        GmsModel model;
+        model.name = decl.name;
+        for (const ModelDecl::Pair& pair : decl.pairs) {
+          if (0 == db_.equations.count(pair.eqKey)) {
+            fail("model '" + decl.name + "' pairs undeclared equation '"
+                 + pair.eqName + "'");
+          }
+          if (0 == db_.variables.count(pair.varKey)) {
+            fail("model '" + decl.name + "' pairs undeclared variable '"
+                 + pair.varName + "'");
+          }
+        }
+        model.pairs = decl.pairs;
+        db_.models[decl.key] = model;
+        return;
+      }
+
+      void
+      handle(const OptionStmt& stmt)
+      {
+        db_.options.push_back(stmt);
+        return;
+      }
+
+      void
+      handle(const SolveStmt& stmt)
+      {
+        db_.model(stmt.modelKey);   // must exist
+        db_.solves.push_back(stmt);
+        return;
+      }
+
+      void
+      handle(const DisplayStmt& stmt)
+      {
+        for (const DisplayStmt::Item& item : stmt.items) {
+          const bool knownP = db_.parameters.count(item.key)
+                              || db_.variables.count(item.key);
+          if (!knownP) {
+            fail("Display of undeclared symbol '" + item.name + "'");
+          }
+        }
+        return;
+      }
+    };
+
+  } // namespace
+
+  GmsDatabase
+  buildGmsDatabase(const Program& program)
+  {
+    GmsDatabase db;
+    Evaluator evaluator(db);
+    evaluator.run(program);
+    return db;
+  }
+
+} // namespace VINCP::Gms
+// ----------------------------------------------
+// Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------

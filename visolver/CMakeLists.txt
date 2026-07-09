@@ -161,7 +161,7 @@ add_custom_target(run_all_tests
             mehrotra_ipm_test semismooth_newton_test josephy_newton_test
             alternating_chain_test saoe_chain_test saoe_risk_test
             choose_engine_test fbs_hyz04_test
-            gams_alloceff_test gams_deploy_test gms_parse_test
+            gams_alloceff_test gams_deploy_test gms_parse_test gms_eval_test
             network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL
 )

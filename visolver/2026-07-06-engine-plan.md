@@ -323,12 +323,35 @@ in this section mean that limited subset.)
 
 Ben chose to proceed with the bespoke GAMS-subset parser (gates GP1-GP5;
 plan of record `doc/2026-07-08-gams-frontend-plan.md`, which adds Ben's
-GP5 result-reproduction gate and its per-file evidence inventory). GP1
-(grammar + AST + canonical echo, new `gams/` module, lib `vincpgms`,
-`gms_parse_test` with the census as assertions) is CODE DONE, awaiting
-Ben's build+run (CMake RELOAD — new directory and targets; expected new
-ctest total 191 = 182 + 9 GmsParse cases). The `.nl`/AMPL-MP research
-below stays as the interoperability option to layer on later.
+GP5 result-reproduction gate and its per-file evidence inventory). The
+`.nl`/AMPL-MP research below stays as the interoperability option to
+layer on later.
+
+- **GP1 CLOSED 2026-07-08**: 191/191 green on Ben's machine; committed
+  b16e9a1 (module, tests, docs, disclaimers, GmsAlloceff/GmsDeploy suite
+  renames) + 53e60fd (the doc/*.gms corpus the tests read). Two
+  expectation-side fixes during verification (deploy has 15 macros and
+  24 model pairs); zero parser fixes.
+- **GP2 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
+  new files gmsdatabase.{hpp,cpp}, gmseval.{hpp,cpp}, gms_eval_test):
+  symbol table (sets/aliases, dense arrays for parameters and variable
+  .L/.LO/.UP) + eager statement-order evaluator (indexed assignment
+  loops, sums with shadow bindings, card/exp/log/sqrt/sqr/max/min/
+  round/abs/power/**, literal-label fallback) + symbolic validation of
+  stored equation definitions (resolvable refs, arities, bound indices)
+  + recorded Model/Option/Solve (NOT executed: post-solve assignments
+  evaluate at the initial levels, which makes several exactly
+  predictable). gms_eval_test = 8 cases: five per-file hand-computed
+  value checks (forcepkg min_ratio = 2 exactly, es('1') = 1835.91125;
+  alloceff effR = 53, prob = 0.1 exactly, expVal(A0) = 28.756; glra4B
+  Wght formula + the rho = 0 sigma == tau identity; pewem cpl/p.L;
+  deploy card() arithmetic, pool bounds, SentR = 35, LogUsedR =
+  (35/12)*178), plus solve-record, semantic-error, and non-finite
+  tests. Fix round 1: deploy declares LogUsedR/LogUsedB domain-less but
+  assigns them indexed (GAMS universal-domain behavior) — parameters
+  declared without a domain now take their shape from the first
+  assignment (GmsParameter.domainOpenP), with a pinned synthetic test.
+  gms_eval_test = 9 cases; expected ctest total 200 = 191 + 9.
 
 ## Deferred: remove unneeded GAMS references (PENDING TASK, Ben 2026-07-08)
 

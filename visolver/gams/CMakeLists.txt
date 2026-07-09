@@ -17,6 +17,8 @@ add_library(vincpgms STATIC
     lib/gmslexer.cpp
     lib/gmsparser.cpp
     lib/gmsecho.cpp
+    lib/gmsdatabase.cpp
+    lib/gmseval.cpp
 )
 target_include_directories(vincpgms PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -34,11 +36,18 @@ target_compile_definitions(gms_parse_test PRIVATE
     VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
 gtest_discover_tests(gms_parse_test)
 
-# CLion-friendly aggregate: build + run just the GAMS front-end suites.
+add_executable(gms_eval_test test/gms_eval_test.cpp)
+target_link_libraries(gms_eval_test PRIVATE vincpgms GTest::gtest_main)
+target_compile_definitions(gms_eval_test PRIVATE
+    VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
+gtest_discover_tests(gms_eval_test)
+
+# CLion-friendly aggregate: build + run just the GMS front-end suites.
 add_custom_target(run_gams_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} -R "GmsParse" --output-on-failure -C $<CONFIG>
+    COMMAND ${CMAKE_CTEST_COMMAND} -R "GmsParse|GmsEval" --output-on-failure
+        -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    DEPENDS gms_parse_test
+    DEPENDS gms_parse_test gms_eval_test
     USES_TERMINAL
 )
 # Copyright Ben Paul Wise. All Rights Reserved.
