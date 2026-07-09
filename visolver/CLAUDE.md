@@ -146,13 +146,20 @@ Two solver layers over one shared core; the dependency arrows point one way
 
 - **GAMS front end (`gams/`)** — a parser for the GAMS SUBSET the corpus in
   `doc/*.gms` actually uses (censused in `doc/2026-07-08-gams-subset-census.md`;
-  gate plan in `doc/2026-07-08-gams-frontend-plan.md`). GP1 (grammar + AST +
-  canonical echo, library `vincpgms`, namespace `VINCP::Gms`) parses and
-  represents only — no evaluation or solving until GP2/GP3. Standard-library
-  only (no Eigen, no `vincp` link). Identifiers are case-insensitive (every
-  name travels with a lower-cased `key`); `$macro` is expanded at token level;
-  anything outside the censused footprint throws with `file:line:col`. The
-  parser tests read the corpus files from `doc/` in place.
+  gate plan in `doc/2026-07-08-gams-frontend-plan.md`). Library `vincpgms`,
+  namespace `VINCP::Gms`. Layers: GP1 grammar + AST + canonical echo
+  (round-trip = idempotence); GP2 `buildGmsDatabase` — symbol table + eager
+  statement-order evaluation (Solve is RECORDED, not executed, so post-solve
+  assignments see initial levels), with `GmsExprEvaluator` as the shared
+  expression engine (pluggable variable reader); GP3 `buildGmsMcp` — the
+  Model statement's eq.var pairs become a `VIModel` (free variables + `=e=`
+  rows -> H, positive variables -> G; pairing semantics derive from the
+  VARIABLE'S KIND), z0 from `.L`, `.UP` bounds surfaced but not applied.
+  The parser/evaluator layers are standard-library only; `gmsmcp` links
+  `vincp`, and its closures read the database LIVE (keep it alive).
+  Identifiers are case-insensitive (every name travels with a lower-cased
+  `key`); `$macro` is expanded at token level; anything outside the censused
+  footprint throws with `file:line:col`. Tests read the corpus from `doc/`.
   STANDING RULE (Ben, 2026-07-08): "GAMS" is a registered trademark of GAMS
   Development Corporation; this code is not endorsed or certified by them,
   and the parsed subset is incompatible with most of the GAMS modeling

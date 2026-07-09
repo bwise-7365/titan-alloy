@@ -1,0 +1,434 @@
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  53.5.1 f2e5fac3 LEX-LEG
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----    111 PARAMETER numAct               =        6.000  number of actors
+            PARAMETER numOpt               =       10.000  number of options
+            PARAMETER epsilon              =        0.100  lowest effort on an 
+                                                           alternative
+
+----    111 PARAMETER weight  relative weight of each actor
+
+A0  68.000,    A1  66.000,    A2 125.000,    A3 101.000,    A4 127.000
+A5  96.000
+
+
+----    111 PARAMETER totalW               =      583.000  total of all weights
+            PARAMETER alpha                =        1.000  linear fraction
+            PARAMETER effR                 =       53.000  reference level of n
+                                                           et effort
+
+----    111 VARIABLE eff.L  effort by an actor for an option
+
+            P0          P1          P2          P3          P4          P5
+
+A0       6.182       6.182       6.182       6.182       6.182       6.182
+A1       6.000       6.000       6.000       6.000       6.000       6.000
+A2      11.364      11.364      11.364      11.364      11.364      11.364
+A3       9.182       9.182       9.182       9.182       9.182       9.182
+A4      11.545      11.545      11.545      11.545      11.545      11.545
+A5       8.727       8.727       8.727       8.727       8.727       8.727
+
+ +          P6          P7          P8          P9
+
+A0       6.182       6.182       6.182       6.182
+A1       6.000       6.000       6.000       6.000
+A2      11.364      11.364      11.364      11.364
+A3       9.182       9.182       9.182       9.182
+A4      11.545      11.545      11.545      11.545
+A5       8.727       8.727       8.727       8.727
+
+
+----    111 VARIABLE nfv.L  net effort for an option, as variable
+
+P0 53.100,    P1 53.100,    P2 53.100,    P3 53.100,    P4 53.100,    P5 53.100
+P6 53.100,    P7 53.100,    P8 53.100,    P9 53.100
+
+
+----    111 VARIABLE sigma.L  total strength for an option, as variable
+
+P0 2814.307,    P1 2814.307,    P2 2814.307,    P3 2814.307,    P4 2814.307
+P5 2814.307,    P6 2814.307,    P7 2814.307,    P8 2814.307,    P9 2814.307
+
+
+----    111 VARIABLE gamma.L               =    28143.067  sum of all strengths
+                                                           , as variable
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE neInf Using MCP From line 142
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.001E-01, 1.270E+02] - Zero values observed as well
+Bound     [min, max] : [ 6.600E+01, 1.270E+02] - Zero values observed as well
+Matrix    [min, max] : [ 8.298E-08, 5.300E+01]
+
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE neInf Using MCP From line 142
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS           87
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES           87
+NON ZERO ELEMENTS           821     NON LINEAR N-Z            600
+CODE LENGTH               1,441     CONSTANT POOL             556
+
+
+GENERATION TIME      =        0.004 SECONDS      4 MB  53.5.1 f2e5fac3 LEX-LEG
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE neInf Using MCP From line 142
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   neInf               
+     TYPE    MCP                 
+     SOLVER  PATH                FROM LINE  142
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+
+ RESOURCE USAGE, LIMIT          0.101 10000000000.000
+ ITERATION COUNT, LIMIT        89    2147483647
+ EVALUATION ERRORS              0             0
+87 row/cols, 821 non-zeros, 10.85% dense.
+
+Path 5.2.01 (Wed May 20 07:48:22 2026)
+Written by Todd Munson, Steven Dirkse, Youngdae Kim, and Michael Ferris
+
+INITIAL POINT STATISTICS
+Maximum of X. . . . . . . . . .  2.8143e+04 var: (gamma)
+Maximum of F. . . . . . . . . .  1.1545e+01 eqn: (EInf(A4))
+Maximum of Grad F . . . . . . .  5.3000e+01 eqn: (sigmaDef(P0))
+                                            var: (nfv(P0))
+
+INITIAL JACOBIAN NORM STATISTICS
+Maximum Row Norm. . . . . . . .  5.4000e+01 eqn: (sigmaDef(P0))
+Minimum Row Norm. . . . . . . .  1.0000e+00 eqn: (MVInf(A2,P2))
+Maximum Column Norm . . . . . .  5.4000e+01 var: (nfv(P0))
+Minimum Column Norm . . . . . .  1.0006e+00 var: (gamma)
+
+FINAL STATISTICS
+Inf-Norm of Complementarity . .  1.1260e-07 eqn: (gammaDef)
+Inf-Norm of Normal Map. . . . .  1.5050e-09 eqn: (sigmaDef(P6))
+Inf-Norm of Minimum Map . . . .  1.5050e-09 eqn: (sigmaDef(P6))
+Inf-Norm of Fischer Function. .  1.5050e-09 eqn: (sigmaDef(P6))
+Inf-Norm of Grad Fischer Fcn. .  7.9754e-08 eqn: (nfDef(P6))
+Two-Norm of Grad Fischer Fcn. .  1.2081e-07
+
+FINAL POINT STATISTICS
+Maximum of X. . . . . . . . . .  3.0952e+04 var: (gamma)
+Maximum of F. . . . . . . . . .  9.7968e-01 eqn: (MVInf(A4,P4))
+Maximum of Grad F . . . . . . .  5.3000e+01 eqn: (sigmaDef(P0))
+                                            var: (nfv(P0))
+
+
+---- EQU nfDef  definition of net effort for an option
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+P0     0.100     0.100     0.100     0.100      
+P1     0.100     0.100     0.100     0.100      
+P2     0.100     0.100     0.100   101.100      
+P3     0.100     0.100     0.100    66.100      
+P4     0.100     0.100     0.100   164.100      
+P5     0.100     0.100     0.100   127.100      
+P6     0.100     0.100     0.100     0.100      
+P7     0.100     0.100     0.100     0.100      
+P8     0.100     0.100     0.100     0.100      
+P9     0.100     0.100     0.100   125.100      
+
+---- EQU sigmaDef  definition of total strength for an option
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+P0      .    3.991E-12      .        5.307      
+P1      .    5.825E-10      .        5.307      
+P2      .    -3.64E-12      .     5358.307      
+P3      .    -9.09E-13      .     3503.307      
+P4      .    -5.82E-10      .     8697.307      
+P5      .    -1.501E-9      .     6736.307      
+P6      .    1.5050E-9      .        5.307      
+P7      .    8.393E-13      .        5.307      
+P8      .    2.642E-12      .        5.307      
+P9      .    -6.37E-12      .     6630.307      
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- EQU gammaDef        .    3.638E-12      .    30952.067      
+
+  gammaDef  definition of sum of all strength
+
+---- EQU EInf  extra influence left over for an actor
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+A0   -68.000   -68.000     +INF      0.282      
+A1   -66.000   -66.000     +INF      0.139      
+A2  -125.000  -125.000     +INF      0.089      
+A3  -101.000  -101.000     +INF      0.086      
+A4  -127.000  -127.000     +INF      0.580      
+A5   -96.000   -96.000     +INF      0.136      
+
+---- EQU MVInf  marginal value of influence for an option
+
+         LOWER     LEVEL     UPPER    MARGINAL
+
+A0.P0      .        0.382     +INF       .         
+A0.P1      .        0.072     +INF       .         
+A0.P2      .        0.469     +INF       .         
+A0.P3      .        0.427     +INF       .         
+A0.P4      .       -0.056     +INF     68.000 REDEF
+A0.P5      .        0.419     +INF       .         
+A0.P6      .        0.610     +INF       .         
+A0.P7      .        0.494     +INF       .         
+A0.P8      .        0.157     +INF       .         
+A0.P9      .        0.357     +INF       .         
+A1.P0      .        0.123     +INF       .         
+A1.P1      .        0.069     +INF       .         
+A1.P2      .        0.203     +INF       .         
+A1.P3      .       -0.087     +INF     66.000 REDEF
+A1.P4      .        0.055     +INF       .         
+A1.P5      .        0.145     +INF       .         
+A1.P6      .        0.037     +INF       .         
+A1.P7      .        0.003     +INF       .         
+A1.P8      .        0.109     +INF       .         
+A1.P9      .        0.311     +INF       .         
+A2.P0      .        0.027     +INF       .         
+A2.P1      .        0.079     +INF       .         
+A2.P2      .        0.111     +INF       .         
+A2.P3      .        0.125     +INF       .         
+A2.P4      .        0.116     +INF       .         
+A2.P5      .        0.165     +INF       .         
+A2.P6      .        0.250     +INF       .         
+A2.P7      .        0.120     +INF       .         
+A2.P8      .        0.042     +INF       .         
+A2.P9      .       -0.062     +INF    125.000 REDEF
+A3.P0      .        0.229     +INF       .         
+A3.P1      .        0.179     +INF       .         
+A3.P2      .       -0.045     +INF    101.000 REDEF
+A3.P3      .        0.276     +INF       .         
+A3.P4      .        0.072     +INF       .         
+A3.P5      .        0.090     +INF       .         
+A3.P6      .        0.027     +INF       .         
+A3.P7      .        0.181     +INF       .         
+A3.P8      .        0.171     +INF       .         
+A3.P9      .        0.105     +INF       .         
+A4.P0      .        0.432     +INF       .         
+A4.P1      .        0.774     +INF       .         
+A4.P2      .        0.834     +INF       .         
+A4.P3      .        0.316     +INF       .         
+A4.P4      .        0.980     +INF       .         
+A4.P5      .       -0.031     +INF    127.000 REDEF
+A4.P6      .        0.030     +INF       .         
+A4.P7      .        0.458     +INF       .         
+A4.P8      .        0.838     +INF       .         
+A4.P9      .        0.610     +INF       .         
+A5.P0      .        0.162     +INF       .         
+A5.P1      .        0.027     +INF       .         
+A5.P2      .        0.200     +INF       .         
+A5.P3      .        0.137     +INF       .         
+A5.P4      .       -0.025     +INF     96.000 REDEF
+A5.P5      .        0.191     +INF       .         
+A5.P6      .        0.215     +INF       .         
+A5.P7      .        0.235     +INF       .         
+A5.P8      .        0.108     +INF       .         
+A5.P9      .        0.241     +INF       .         
+
+---- VAR beta  shadow price of influence
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+A0      .        0.282     +INF       .         
+A1      .        0.139     +INF       .         
+A2      .        0.089     +INF       .         
+A3      .        0.086     +INF       .         
+A4      .        0.580     +INF       .         
+A5      .        0.136     +INF       .         
+
+---- VAR eff  effort by an actor for an option
+
+         LOWER     LEVEL     UPPER    MARGINAL
+
+A0.P0      .         .       68.000     0.382      
+A0.P1      .         .       68.000     0.072      
+A0.P2      .         .       68.000     0.469      
+A0.P3      .         .       68.000     0.427      
+A0.P4      .       68.000    68.000    -0.056      
+A0.P5      .         .       68.000     0.419      
+A0.P6      .         .       68.000     0.610      
+A0.P7      .         .       68.000     0.494      
+A0.P8      .         .       68.000     0.157      
+A0.P9      .         .       68.000     0.357      
+A1.P0      .         .       66.000     0.123      
+A1.P1      .         .       66.000     0.069      
+A1.P2      .         .       66.000     0.203      
+A1.P3      .       66.000    66.000    -0.087      
+A1.P4      .         .       66.000     0.055      
+A1.P5      .         .       66.000     0.145      
+A1.P6      .         .       66.000     0.037      
+A1.P7      .         .       66.000     0.003      
+A1.P8      .         .       66.000     0.109      
+A1.P9      .         .       66.000     0.311      
+A2.P0      .         .      125.000     0.027      
+A2.P1      .         .      125.000     0.079      
+A2.P2      .         .      125.000     0.111      
+A2.P3      .         .      125.000     0.125      
+A2.P4      .         .      125.000     0.116      
+A2.P5      .         .      125.000     0.165      
+A2.P6      .         .      125.000     0.250      
+A2.P7      .         .      125.000     0.120      
+A2.P8      .         .      125.000     0.042      
+A2.P9      .      125.000   125.000    -0.062      
+A3.P0      .         .      101.000     0.229      
+A3.P1      .         .      101.000     0.179      
+A3.P2      .      101.000   101.000    -0.045      
+A3.P3      .         .      101.000     0.276      
+A3.P4      .         .      101.000     0.072      
+A3.P5      .         .      101.000     0.090      
+A3.P6      .         .      101.000     0.027      
+A3.P7      .         .      101.000     0.181      
+A3.P8      .         .      101.000     0.171      
+A3.P9      .         .      101.000     0.105      
+A4.P0      .         .      127.000     0.432      
+A4.P1      .         .      127.000     0.774      
+A4.P2      .         .      127.000     0.834      
+A4.P3      .         .      127.000     0.316      
+A4.P4      .         .      127.000     0.980      
+A4.P5      .      127.000   127.000    -0.031      
+A4.P6      .         .      127.000     0.030      
+A4.P7      .         .      127.000     0.458      
+A4.P8      .         .      127.000     0.838      
+A4.P9      .         .      127.000     0.610      
+A5.P0      .         .       96.000     0.162      
+A5.P1      .         .       96.000     0.027      
+A5.P2      .         .       96.000     0.200      
+A5.P3      .         .       96.000     0.137      
+A5.P4      .       96.000    96.000    -0.025      
+A5.P5      .         .       96.000     0.191      
+A5.P6      .         .       96.000     0.215      
+A5.P7      .         .       96.000     0.235      
+A5.P8      .         .       96.000     0.108      
+A5.P9      .         .       96.000     0.241      
+
+---- VAR nfv  net effort for an option, as variable
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+P0      .        0.100     +INF  1.883E-14      
+P1      .        0.100     +INF  3.658E-12      
+P2      .      101.100     +INF  -1.14E-14      
+P3      .       66.100     +INF  -1.14E-14      
+P4      .      164.100     +INF  -3.65E-12      
+P5      .      127.100     +INF  -9.43E-12      
+P6      .        0.100     +INF  9.453E-12      
+P7      .        0.100     +INF  3.955E-15      
+P8      .        0.100     +INF  1.246E-14      
+P9      .      125.100     +INF  -2.56E-14      
+
+---- VAR sigma  total strength for an option, as variable
+
+      LOWER     LEVEL     UPPER    MARGINAL
+
+P0      .        5.307     +INF  3.991E-12      
+P1      .        5.307     +INF  5.825E-10      
+P2      .     5358.307     +INF  -3.64E-12      
+P3      .     3503.307     +INF  -9.09E-13      
+P4      .     8697.307     +INF  -5.82E-10      
+P5      .     6736.307     +INF  -1.501E-9      
+P6      .        5.307     +INF  1.5050E-9      
+P7      .        5.307     +INF  8.393E-13      
+P8      .        5.307     +INF  2.642E-12      
+P9      .     6630.307     +INF  -6.37E-12      
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- VAR gamma           .    30952.067     +INF  3.638E-12      
+
+  gamma  sum of all strengths, as variable
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             6  REDEFINED (REDEF)
+                             0     ERRORS
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 21:25:35 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----    157 VARIABLE eff.L  effort by an actor for an option
+
+            P2          P3          P4          P5          P9
+
+A0                              68.000
+A1                  66.000
+A2                                                     125.000
+A3     101.000
+A4                                         127.000
+A5                              96.000
+
+
+----    157 VARIABLE nfv.L  net effort for an option, as variable
+
+P0   0.100,    P1   0.100,    P2 101.100,    P3  66.100,    P4 164.100
+P5 127.100,    P6   0.100,    P7   0.100,    P8   0.100,    P9 125.100
+
+
+----    157 VARIABLE sigma.L  total strength for an option, as variable
+
+P0    5.307,    P1    5.307,    P2 5358.307,    P3 3503.307,    P4 8697.307
+P5 6736.307,    P6    5.307,    P7    5.307,    P8    5.307,    P9 6630.307
+
+
+----    157 VARIABLE gamma.L               =    30952.067  sum of all strengths
+                                                           , as variable
+
+----    157 VARIABLE sigma.L  total strength for an option, as variable
+
+P0    5.307,    P1    5.307,    P2 5358.307,    P3 3503.307,    P4 8697.307
+P5 6736.307,    P6    5.307,    P7    5.307,    P8    5.307,    P9 6630.307
+
+
+----    157 VARIABLE gamma.L               =    30952.067  sum of all strengths
+                                                           , as variable
+
+----    157 PARAMETER prob  probability an option will occur
+
+P2 0.173,    P3 0.113,    P4 0.281,    P5 0.218,    P9 0.214
+
+
+----    157 PARAMETER expVal  expected value for actor
+
+A0  58.718,    A1  -9.385,    A2 -35.719,    A3  83.391,    A4 -85.833
+A5  14.834
+
+
+
+EXECUTION TIME       =        0.149 SECONDS      4 MB  53.5.1 f2e5fac3 LEX-LEG
+
+
+USER: NEOS Server License - Production               G250831+0003Ac-GEN
+      University of Wisconsin-Madison                           DCE4604
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Restart    /var/lib/condor/execute/dir_233435/gamsexec/restart.g00
+Input      /var/lib/condor/execute/dir_233435/gamsexec/MODEL.gms
+Output     /var/lib/condor/execute/dir_233435/gamsexec/solve.lst

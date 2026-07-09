@@ -332,6 +332,22 @@ layer on later.
   renames) + 53e60fd (the doc/*.gms corpus the tests read). Two
   expectation-side fixes during verification (deploy has 15 macros and
   24 model pairs); zero parser fixes.
+- **GP3 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
+  new gmsmcp.{hpp,cpp}, gms_model_test; vincpgms now links vincp, the
+  designed integration point): buildGmsMcp turns a Model statement into a
+  VIModel — free vars + =e= rows -> H block, positive vars -> G block
+  (kind decides; relation checked: =l= and free-with-inequality throw),
+  per-dimension base-set match required, families expand row-major,
+  z0 from .L, .UP bounds SURFACED (upperBounds + anyFiniteUpperP) not
+  applied, slots exposed for GP4 write-back; closures read the db live.
+  GmsExprEvaluator extracted from the GP2 evaluator as the shared
+  expression engine (pluggable variable reader) — reuse over duplicate.
+  gms_model_test (6): synthetic mixed MCP with KNOWN solution (pins
+  pairing ORDER), forcepkg end-to-end solveModelAuto converged + KKT
+  feasible (the GP3 exit), alloceff (87) / deploy (4+446 = the PPD 450) /
+  glra4B (1951) / pewem (43, unpaired dmnd excluded) hand-counted dims +
+  F(z0) finite + bound spot checks, six pairing-rule throws. Expected
+  ctest total 206 = 200 + 6.
 - **GP2 CLOSED 2026-07-08**: 200/200 green on Ben's machine, committed
   58f9a79. One fix round (universal-domain parameters). Content:
   symbol table (sets/aliases, dense arrays for parameters and variable

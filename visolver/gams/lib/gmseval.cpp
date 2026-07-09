@@ -1,10 +1,10 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// buildGmsDatabase implementation: statement-order walk with an index-binding
-// environment. Indexed assignments loop over their domain sets; sums iterate
-// with shadow bindings; equation definitions are validated symbolically and
-// stored for the GP3 builder.
+// GmsExprEvaluator and buildGmsDatabase implementations. The expression
+// evaluator is shared: the GP2 statement walker reads variable ATTRIBUTES
+// through it (bare variables are illegal in assignments), and the GP3 model
+// builder reads bare variables from the solver's current point.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
 // code is not endorsed or certified by GAMS Development Corporation. The
@@ -43,18 +43,249 @@ namespace VINCP::Gms {
       return low;
     }
 
-    // One bound loop index: the NAME it is bound under (a set or alias key)
-    // and the current position in its base set.
-    struct Binding {
-      string key;
-      const GmsSet* set = nullptr;
-      size_t ordinal = 0;
-    };
+    [[noreturn]] void
+    evalFail(const string& message)
+    {
+      throw std::invalid_argument("GMS evaluation: " + message);
+    }
+
+  } // namespace
+
+  // ---------------------------------------------------------------------------
+  // GmsExprEvaluator
+  // ---------------------------------------------------------------------------
+
+  GmsExprEvaluator::GmsExprEvaluator(const GmsDatabase& db,
+                                     VariableReader reader)
+    : db_(db)
+    , reader_(reader)
+  {
+    if (!reader_) {
+      throw std::invalid_argument(
+          "GmsExprEvaluator: the variable reader must be set");
+    }
+  }
+
+  void
+  GmsExprEvaluator::pushBinding(const string& key, const GmsSet& set,
+                                size_t ordinal)
+  {
+    env_.push_back(Binding{key, &set, ordinal});
+    return;
+  }
+
+  void
+  GmsExprEvaluator::setBindingOrdinal(const string& key, size_t ordinal)
+  {
+    for (size_t i = env_.size(); 0 < i; --i) {
+      if (env_[i - 1].key == key) {
+        env_[i - 1].ordinal = ordinal;
+        return;
+      }
+    }
+    evalFail("no binding named '" + key + "' to retarget");
+  }
+
+  void
+  GmsExprEvaluator::popBinding()
+  {
+    env_.pop_back();
+    return;
+  }
+
+  const GmsExprEvaluator::Binding*
+  GmsExprEvaluator::findBinding(const string& key) const
+  {
+    for (size_t i = env_.size(); 0 < i; --i) {
+      if (env_[i - 1].key == key) {
+        return &env_[i - 1];
+      }
+    }
+    return nullptr;
+  }
+
+  vector<size_t>
+  GmsExprEvaluator::ordinalsFor(const string& symbolName,
+                                const vector<string>& domainKeys,
+                                const vector<string>& indices) const
+  {
+    if (indices.size() != domainKeys.size()) {
+      std::ostringstream msg;
+      msg << "'" << symbolName << "' takes " << domainKeys.size()
+          << " indices, got " << indices.size();
+      evalFail(msg.str());
+    }
+    vector<size_t> ordinals;
+    for (size_t d = 0; d < indices.size(); ++d) {
+      const string key = toLower(indices[d]);
+      const Binding* binding = findBinding(key);
+      if (nullptr != binding) {
+        ordinals.push_back(binding->ordinal);
+        continue;
+      }
+      // Literal label of the d-th domain set.
+      ordinals.push_back(db_.resolveSet(domainKeys[d]).ordinalOf(indices[d]));
+    }
+    return ordinals;
+  }
+
+  double
+  GmsExprEvaluator::eval(const Expr& expr)
+  {
+    switch (expr.kind) {
+    case Expr::Kind::Number:
+      return expr.number;
+    case Expr::Kind::Unary: {
+      const double value = eval(expr.args[0]);
+      return ("-" == expr.op) ? -value : value;
+    }
+    case Expr::Kind::Binary:
+      return evalBinary(expr);
+    case Expr::Kind::Call:
+      return evalCall(expr);
+    case Expr::Kind::Sum:
+      return sumOver(expr, 0);
+    case Expr::Kind::SymbolRef: {
+      const auto param = db_.parameters.find(expr.key);
+      if (db_.parameters.end() != param) {
+        return param->second.data.at(ordinalsFor(
+            expr.name, param->second.domainKeys, expr.indices));
+      }
+      const auto var = db_.variables.find(expr.key);
+      if (db_.variables.end() != var) {
+        return reader_(var->second, string(),
+                       ordinalsFor(expr.name, var->second.domainKeys,
+                                   expr.indices));
+      }
+      evalFail("reference to undeclared symbol '" + expr.name + "'");
+    }
+    case Expr::Kind::AttrRef: {
+      const auto var = db_.variables.find(expr.key);
+      if (db_.variables.end() == var) {
+        evalFail("'" + expr.name + "' is not a variable (attribute '"
+                 + expr.attr + "' read)");
+      }
+      return reader_(var->second, expr.attrKey,
+                     ordinalsFor(expr.name, var->second.domainKeys,
+                                 expr.indices));
+    }
+    default:
+      break;
+    }
+    evalFail("unsupported expression kind");
+  }
+
+  double
+  GmsExprEvaluator::evalBinary(const Expr& expr)
+  {
+    const double a = eval(expr.args[0]);
+    const double b = eval(expr.args[1]);
+    if ("+" == expr.op) {
+      return a + b;
+    }
+    if ("-" == expr.op) {
+      return a - b;
+    }
+    if ("*" == expr.op) {
+      return a * b;
+    }
+    if ("/" == expr.op) {
+      return a / b;
+    }
+    if ("**" == expr.op) {
+      return std::pow(a, b);
+    }
+    evalFail("unsupported operator '" + expr.op + "'");
+  }
+
+  double
+  GmsExprEvaluator::evalCall(const Expr& expr)
+  {
+    const string& fn = expr.key;
+    if ("card" == fn) {
+      if (1 != expr.args.size() || Expr::Kind::SymbolRef != expr.args[0].kind
+          || !expr.args[0].indices.empty()) {
+        evalFail("card() takes one set (or alias) name");
+      }
+      return static_cast<double>(db_.resolveSet(expr.args[0].key).size());
+    }
+    vector<double> args;
+    for (const Expr& arg : expr.args) {
+      args.push_back(eval(arg));
+    }
+    if ("exp" == fn) {
+      return std::exp(args.at(0));
+    }
+    if ("log" == fn) {
+      return std::log(args.at(0));
+    }
+    if ("sqrt" == fn) {
+      return std::sqrt(args.at(0));
+    }
+    if ("sqr" == fn) {
+      return args.at(0) * args.at(0);
+    }
+    if ("abs" == fn) {
+      return std::fabs(args.at(0));
+    }
+    if ("power" == fn) {
+      return std::pow(args.at(0), args.at(1));
+    }
+    if ("max" == fn || "min" == fn) {
+      if (args.empty()) {
+        evalFail(fn + "() needs at least one argument");
+      }
+      double best = args[0];
+      for (const double value : args) {
+        best = ("max" == fn) ? std::max(best, value) : std::min(best, value);
+      }
+      return best;
+    }
+    if ("round" == fn) {
+      if (1 == args.size()) {
+        return std::round(args[0]);
+      }
+      if (2 == args.size()) {
+        const double scale = std::pow(10.0, args[1]);
+        return std::round(args[0] * scale) / scale;
+      }
+      evalFail("round() takes one or two arguments");
+    }
+    evalFail("unsupported function '" + expr.name + "'");
+  }
+
+  double
+  GmsExprEvaluator::sumOver(const Expr& expr, size_t dim)
+  {
+    if (expr.sumIndices.size() == dim) {
+      return eval(expr.args[0]);
+    }
+    const string key = toLower(expr.sumIndices[dim]);
+    const GmsSet& set = db_.resolveSet(key);
+    double total = 0.0;
+    pushBinding(key, set, 0);
+    for (size_t ordinal = 0; ordinal < set.size(); ++ordinal) {
+      env_.back().ordinal = ordinal;
+      total += sumOver(expr, dim + 1);
+    }
+    popBinding();
+    return total;
+  }
+
+  // ---------------------------------------------------------------------------
+  // buildGmsDatabase
+  // ---------------------------------------------------------------------------
+
+  namespace {
 
     class Evaluator {
     public:
       explicit Evaluator(GmsDatabase& db)
         : db_(db)
+        , expr_(db, [this](const GmsVariable& var, const string& attrKey,
+                           const vector<size_t>& ordinals) {
+            return this->readVariableAttr(var, attrKey, ordinals);
+          })
       {
       }
 
@@ -71,14 +302,34 @@ namespace VINCP::Gms {
     protected:
     private:
       GmsDatabase& db_;
-      vector<Binding> env_;
-
-      // --- shared helpers ---------------------------------------------------
+      GmsExprEvaluator expr_;
 
       [[noreturn]] void
       fail(const string& message) const
       {
-        throw std::invalid_argument("GMS evaluation: " + message);
+        evalFail(message);
+      }
+
+      // Assignments read variables through their attribute arrays only.
+      double
+      readVariableAttr(const GmsVariable& var, const string& attrKey,
+                       const vector<size_t>& ordinals) const
+      {
+        if (attrKey.empty()) {
+          fail("bare variable '" + var.name
+               + "' in an assignment; read .L / .UP / .LO");
+        }
+        if ("l" == attrKey) {
+          return var.level.at(ordinals);
+        }
+        if ("up" == attrKey) {
+          return var.upper.at(ordinals);
+        }
+        if ("lo" == attrKey) {
+          return var.lower.at(ordinals);
+        }
+        fail("unsupported variable attribute '" + var.name + "." + attrKey
+             + "' (only .L / .UP / .LO)");
       }
 
       void
@@ -115,204 +366,9 @@ namespace VINCP::Gms {
         return keys;
       }
 
-      const Binding*
-      findBinding(const string& key) const
-      {
-        for (size_t i = env_.size(); 0 < i; --i) {
-          if (env_[i - 1].key == key) {
-            return &env_[i - 1];
-          }
-        }
-        return nullptr;
-      }
-
-      // Ordinal tuple for a reference's indices under the current bindings:
-      // each index is a bound name, or (fallback) a literal label of the
-      // corresponding domain set.
-      vector<size_t>
-      ordinalsFor(const string& symbolName, const vector<string>& domainKeys,
-                  const vector<string>& indices) const
-      {
-        if (indices.size() != domainKeys.size()) {
-          std::ostringstream msg;
-          msg << "'" << symbolName << "' takes " << domainKeys.size()
-              << " indices, got " << indices.size();
-          fail(msg.str());
-        }
-        vector<size_t> ordinals;
-        for (size_t d = 0; d < indices.size(); ++d) {
-          const string key = toLower(indices[d]);
-          const Binding* binding = findBinding(key);
-          if (nullptr != binding) {
-            ordinals.push_back(binding->ordinal);
-            continue;
-          }
-          // Literal label of the d-th domain set.
-          ordinals.push_back(db_.resolveSet(domainKeys[d]).ordinalOf(indices[d]));
-        }
-        return ordinals;
-      }
-
-      // --- expression evaluation -------------------------------------------
-
-      double
-      evalExpr(const Expr& expr)
-      {
-        switch (expr.kind) {
-        case Expr::Kind::Number:
-          return expr.number;
-        case Expr::Kind::Unary: {
-          const double value = evalExpr(expr.args[0]);
-          return ("-" == expr.op) ? -value : value;
-        }
-        case Expr::Kind::Binary:
-          return evalBinary(expr);
-        case Expr::Kind::Call:
-          return evalCall(expr);
-        case Expr::Kind::Sum:
-          return evalSum(expr);
-        case Expr::Kind::SymbolRef: {
-          const GmsParameter& param = db_.parameter(expr.key);
-          return param.data.at(
-              ordinalsFor(expr.name, param.domainKeys, expr.indices));
-        }
-        case Expr::Kind::AttrRef: {
-          const GmsVariable& var = db_.variable(expr.key);
-          const GmsArray& array = attrArray(var, expr.attrKey, expr.name);
-          return array.at(
-              ordinalsFor(expr.name, var.domainKeys, expr.indices));
-        }
-        default:
-          break;
-        }
-        fail("unsupported expression kind");
-      }
-
-      double
-      evalBinary(const Expr& expr)
-      {
-        const double a = evalExpr(expr.args[0]);
-        const double b = evalExpr(expr.args[1]);
-        if ("+" == expr.op) {
-          return a + b;
-        }
-        if ("-" == expr.op) {
-          return a - b;
-        }
-        if ("*" == expr.op) {
-          return a * b;
-        }
-        if ("/" == expr.op) {
-          return a / b;
-        }
-        if ("**" == expr.op) {
-          return std::pow(a, b);
-        }
-        fail("unsupported operator '" + expr.op + "'");
-      }
-
-      double
-      evalCall(const Expr& expr)
-      {
-        const string& fn = expr.key;
-        if ("card" == fn) {
-          if (1 != expr.args.size()
-              || Expr::Kind::SymbolRef != expr.args[0].kind
-              || !expr.args[0].indices.empty()) {
-            fail("card() takes one set (or alias) name");
-          }
-          return static_cast<double>(db_.resolveSet(expr.args[0].key).size());
-        }
-        vector<double> args;
-        for (const Expr& arg : expr.args) {
-          args.push_back(evalExpr(arg));
-        }
-        if ("exp" == fn) {
-          return std::exp(args.at(0));
-        }
-        if ("log" == fn) {
-          return std::log(args.at(0));
-        }
-        if ("sqrt" == fn) {
-          return std::sqrt(args.at(0));
-        }
-        if ("sqr" == fn) {
-          return args.at(0) * args.at(0);
-        }
-        if ("abs" == fn) {
-          return std::fabs(args.at(0));
-        }
-        if ("power" == fn) {
-          return std::pow(args.at(0), args.at(1));
-        }
-        if ("max" == fn || "min" == fn) {
-          if (args.empty()) {
-            fail(fn + "() needs at least one argument");
-          }
-          double best = args[0];
-          for (const double value : args) {
-            best = ("max" == fn) ? std::max(best, value)
-                                 : std::min(best, value);
-          }
-          return best;
-        }
-        if ("round" == fn) {
-          if (1 == args.size()) {
-            return std::round(args[0]);
-          }
-          if (2 == args.size()) {
-            const double scale = std::pow(10.0, args[1]);
-            return std::round(args[0] * scale) / scale;
-          }
-          fail("round() takes one or two arguments");
-        }
-        fail("unsupported function '" + expr.name + "'");
-      }
-
-      double
-      evalSum(const Expr& expr)
-      {
-        return sumOver(expr, 0);
-      }
-
-      double
-      sumOver(const Expr& expr, size_t dim)
-      {
-        if (expr.sumIndices.size() == dim) {
-          return evalExpr(expr.args[0]);
-        }
-        const string key = toLower(expr.sumIndices[dim]);
-        const GmsSet& set = db_.resolveSet(key);
-        double total = 0.0;
-        env_.push_back(Binding{key, &set, 0});
-        for (size_t ordinal = 0; ordinal < set.size(); ++ordinal) {
-          env_.back().ordinal = ordinal;
-          total += sumOver(expr, dim + 1);
-        }
-        env_.pop_back();
-        return total;
-      }
-
       GmsArray&
       attrArrayMutable(GmsVariable& var, const string& attrKey,
                        const string& varName)
-      {
-        if ("l" == attrKey) {
-          return var.level;
-        }
-        if ("up" == attrKey) {
-          return var.upper;
-        }
-        if ("lo" == attrKey) {
-          return var.lower;
-        }
-        fail("unsupported variable attribute '" + varName + "." + attrKey
-             + "' (only .L / .UP / .LO)");
-      }
-
-      const GmsArray&
-      attrArray(const GmsVariable& var, const string& attrKey,
-                const string& varName) const
       {
         if ("l" == attrKey) {
           return var.level;
@@ -591,7 +647,8 @@ namespace VINCP::Gms {
           if (!assign.indices.empty()) {
             fail("a model attribute takes no indices");
           }
-          db_.models[assign.key].attrs[assign.attrKey] = evalExpr(assign.value);
+          db_.models[assign.key].attrs[assign.attrKey] =
+              expr_.eval(assign.value);
           return;
         }
 
@@ -673,7 +730,7 @@ namespace VINCP::Gms {
                  const vector<DimT>& dims, size_t d, vector<size_t> ordinals)
       {
         if (dims.size() == d) {
-          const double value = evalExpr(assign.value);
+          const double value = expr_.eval(assign.value);
           if (!std::isfinite(value)) {
             throw std::runtime_error("GMS evaluation: assignment to '"
                                      + assign.name
@@ -688,14 +745,14 @@ namespace VINCP::Gms {
           assignLoop(assign, target, dims, d + 1, ordinals);
           return;
         }
-        env_.push_back(Binding{dim.key, dim.set, 0});
+        expr_.pushBinding(dim.key, *dim.set, 0);
         ordinals.push_back(0);
         for (size_t ordinal = 0; ordinal < dim.set->size(); ++ordinal) {
-          env_.back().ordinal = ordinal;
+          expr_.setBindingOrdinal(dim.key, ordinal);
           ordinals.back() = ordinal;
           assignLoop(assign, target, dims, d + 1, ordinals);
         }
-        env_.pop_back();
+        expr_.popBinding();
         return;
       }
 

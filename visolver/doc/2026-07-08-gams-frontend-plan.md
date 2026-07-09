@@ -31,23 +31,47 @@ the shared target either way.
 
 ### GP5 result inventory (what "results available" means per file)
 
-- **glra4B**: the `.gms` comments record per-solver shortfalls
-  (PATH/NLPEC: N000 13.977, N007 3.256, N019 2.440, N024 4.373) and
-  objective values (527.556 PATH/NLPEC; 529.171 KNITRO; MILES violating
-  the ton-mile limit). Gate: visolver's solve of the parsed model
-  reproduces the PATH/NLPEC shortfall pattern and objective within a
-  stated tolerance.
-- **alloceff**: the file records that NPLEC agrees with Ben's saoeJNrn
-  (Josephy-Newton) answer at alpha = 1.0, and the repo carries the
-  verified SAOE reference equilibrium. Gate: parsed model reaches the
-  reference equilibrium E (roster mechanism as in `saoe_chain_test`).
-- **deploy_v09**: no listing numbers in-file, but the file records that
-  PATH solves at aSm = 0.25 (and fails at 0.35+). Gate: parsed model
-  converges at aSm = 0.25 to a feasible equilibrium; the specific
-  equilibrium goes to Ben for roster verification (deploy_v07 precedent).
-- **forcepkg_ln, pewem01**: no recorded numbers in-file. Gate: solve to
-  convergence; Display-style output handed to Ben for plausibility (or
-  exact GAMS listings if Ben supplies them — standing data request).
+Ben supplied the GAMS solution listings on 2026-07-08; they live beside
+the models: **`doc/forcepkg_ln.solve.lst`** (MILES, Model Status 1
+Optimal, full variable levels — e.g. fs = (0, 471.718, 1819.606,
+855.367, 0), beta = (0, 0, 0.696, 0.169, 0, 0.444)),
+**`doc/pewem01.solve.lst`** (MILES, Optimal, full levels), and
+**`doc/deploy_v09.solve.lst`** (PATH, Optimal, full levels). These are
+the authoritative expected results for their models.
+
+- **forcepkg_ln**: reproduce the `forcepkg_ln.solve.lst` levels (fs,
+  beta) within a stated tolerance. The model is an LP-complementarity
+  LCP, so degenerate alternatives are possible — compare the level
+  vectors first and fall back to objective/support comparison only if a
+  legitimately different vertex appears.
+- **pewem01**: reproduce the `pewem01.solve.lst` levels (prices p,
+  quantities, rents) within tolerance; same degenerate-alternative
+  caveat.
+- **deploy_v09**: PATH's equilibrium in `deploy_v09.solve.lst` at
+  aSm = 0.25 is the reference; multiple Nash equilibria are expected in
+  this family (deploy_v07 found two), so the gate is: converge feasibly,
+  compare against the PATH levels, and send any DIFFERENT equilibrium to
+  Ben for roster verification (deploy_v07 precedent) rather than failing
+  outright.
+- **glra4B**: `doc/glra4B.solve.lst` exists but CAUTION — its own solve
+  summary reads MILES, SOLVER STATUS 2 Iteration Interrupt, MODEL STATUS
+  6 Intermediate Infeasible, TotalDlvrd 535: it is the run the `.gms`
+  comments flag as violating the ton-mile limit, NOT a clean optimum.
+  The `.gms` comments' PATH/NLPEC values remain the better target:
+  shortfalls N000 13.977, N007 3.256, N019 2.440, N024 4.373 and
+  delivered 527.556. Ben expects the solution to be unique; if it turns
+  out not to be, the gate is: FEASIBLE (budget respected) with the
+  delivered/objective value near the listed PATH/NLPEC figures. The
+  `.lst` serves as a detail record only (its ValAchieved is 14321.925 on
+  the infeasible point).
+- **alloceff01cm** (the model called "alloceff" in Ben's Octave work):
+  `doc/alloceff01cm.solve.lst` (PATH, Model Status 1 Optimal, full
+  levels) is the expected solution per Ben (2026-07-08). Historical
+  note from the `.gms` comments: PATH's equilibrium did not always match
+  the NLPEC/saoeJNrn one and multiple equilibria exist, so a converged
+  DIFFERENT equilibrium goes to Ben for verification rather than
+  failing outright; the in-repo SAOE reference (`saoe_chain_test`)
+  remains a secondary cross-check.
 
 ## GP1 — step list
 

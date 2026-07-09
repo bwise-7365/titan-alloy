@@ -1,0 +1,154 @@
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 20:46:02 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  53.5.1 f2e5fac3 LEX-LEG
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 20:46:02 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE rp Using MCP From line 104
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.378E+00, 7.188E+03]
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.290E-01, 2.955E+00]
+
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 20:46:02 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE rp Using MCP From line 104
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS           11
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           11
+NON ZERO ELEMENTS            60     NON LINEAR N-Z              0
+CODE LENGTH                   0     CONSTANT POOL              16
+
+
+GENERATION TIME      =        0.002 SECONDS      4 MB  53.5.1 f2e5fac3 LEX-LEG
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 20:46:02 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE rp Using MCP From line 104
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   rp                  
+     TYPE    MCP                 
+     SOLVER  MILES               FROM LINE  104
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+
+ RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ ITERATION COUNT, LIMIT        11    2147483647
+ EVALUATION ERRORS              0             0
+
+MILES            53.5.1 f2e5fac3 May 20, 2026          LEG x86 64bit/Linux
+
+
+ Major iterations ........     1
+ Lemke pivots ............    11
+ Refactorizations ........     1
+ Deviation ............... 9.095E-13
+ Solved.
+
+---- EQU NetCost  Net cost of own system
+
+     LOWER     LEVEL     UPPER    MARGINAL
+
+1    -2.970    -2.930     +INF       .         
+2    -1.378    -1.378     +INF    471.718      
+3    -2.280    -2.280     +INF   1819.606      
+4    -2.480    -2.480     +INF    855.367      
+5    -2.100    -1.967     +INF       .         
+
+---- EQU Advantage  Advantage in force ratio
+
+     LOWER     LEVEL     UPPER    MARGINAL
+
+1  3671.823  7526.270     +INF       .         
+2  3561.003  7242.288     +INF       .         
+3  4198.008  4198.008     +INF      0.696      
+4  4783.932  4783.932     +INF      0.169      
+5  3062.704  4137.274     +INF       .         
+6  7188.267  7188.267     +INF      0.444      
+
+---- VAR fs  level of own system
+
+     LOWER     LEVEL     UPPER    MARGINAL
+
+1      .         .        +INF      0.040      
+2      .      471.718     +INF  -2.22E-16      
+3      .     1819.606     +INF  -4.44E-16      
+4      .      855.367     +INF       .         
+5      .         .        +INF      0.133      
+
+---- VAR beta  Lagrange multiplier for slack in advantage
+
+     LOWER     LEVEL     UPPER    MARGINAL
+
+1      .         .        +INF   3854.447      
+2      .         .        +INF   3681.285      
+3      .        0.696     +INF       .         
+4      .        0.169     +INF       .         
+5      .         .        +INF   1074.570      
+6      .        0.444     +INF  -9.09E-13      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0  REDEFINED
+                             0     ERRORS
+GAMS 53.5.1  f2e5fac3 May 20, 2026          LEX-LEG x86 64bit/Linux - 07/08/26 20:46:02 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----    117 VARIABLE fs.L  level of own system
+
+2  471.718,    3 1819.606,    4  855.367
+
+
+----    117 VARIABLE beta.L  Lagrange multiplier for slack in advantage
+
+3 0.696,    4 0.169,    6 0.444
+
+
+----    117 PARAMETER es  strength of opp in each scenario
+
+1 1835.911,    2 1780.502,    3 2099.004,    4 2391.966,    5 1531.352
+6 3594.134
+
+
+----    117 PARAMETER finalFS  final strength of own in each scenario
+
+1 7526.270,    2 7242.288,    3 4198.008,    4 4783.932,    5 4137.274
+6 7188.267
+
+
+----    117 PARAMETER pwin  Probability of own win in each scenario
+
+1 0.944,    2 0.943,    3 0.800,    4 0.800,    5 0.880,    6 0.800
+
+
+
+EXECUTION TIME       =        0.031 SECONDS      4 MB  53.5.1 f2e5fac3 LEX-LEG
+
+
+USER: NEOS Server License - Production               G250831+0003Ac-GEN
+      University of Wisconsin-Madison                           DCE4604
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Restart    /var/lib/condor/execute/dir_229953/gamsexec/restart.g00
+Input      /var/lib/condor/execute/dir_229953/gamsexec/MODEL.gms
+Output     /var/lib/condor/execute/dir_229953/gamsexec/solve.lst
