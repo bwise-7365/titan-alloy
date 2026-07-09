@@ -332,8 +332,8 @@ layer on later.
   renames) + 53e60fd (the doc/*.gms corpus the tests read). Two
   expectation-side fixes during verification (deploy has 15 macros and
   24 model pairs); zero parser fixes.
-- **GP2 CODE DONE 2026-07-08, awaiting Ben's build+run** (CMake reload —
-  new files gmsdatabase.{hpp,cpp}, gmseval.{hpp,cpp}, gms_eval_test):
+- **GP2 CLOSED 2026-07-08**: 200/200 green on Ben's machine, committed
+  58f9a79. One fix round (universal-domain parameters). Content:
   symbol table (sets/aliases, dense arrays for parameters and variable
   .L/.LO/.UP) + eager statement-order evaluator (indexed assignment
   loops, sums with shadow bindings, card/exp/log/sqrt/sqr/max/min/
