@@ -31,9 +31,9 @@ namespace VINCP::App {
 
   // How to solve the fleet QP. Defaults mirror FleetSolveParams (the proven
   // production configuration: interior point with the structured "fleet" Newton
-  // factory, keep-all screening). Fleet honors Engine::Ipm (its default),
-  // Engine::Bshe94b, and Engine::Ssn; Chain / Auto belong to other problems and
-  // throw.
+  // factory, keep-all screening). Fleet HONORS exactly Engine::Ipm (its
+  // default), Engine::Bshe94b, and Engine::Ssn; ANY OTHER engine (Chain, Auto,
+  // SmoothingNewton, Fbs, ...) throws std::invalid_argument from solve.
   struct FleetParams {
     ProblemBase::Engine engine = ProblemBase::Engine::Ipm;   // Default => Ipm
     std::string ipmNewton      = "fleet";                    // "fleet" | "dense"

@@ -219,8 +219,8 @@ charged (G-F3).
 **Claim.** Phase-1 rationing — minimize $\theta(R)$ subject only to the
 per-asset aggregate caps $\sum_i R_{ia} \le \min(\sum_i D_{ia},
 \sum_i C_{ia})$ and $0 \le R_{ia} \le D_{ia}$ — decomposes exactly into $|A|$
-independent single-asset water-filling problems, each identical in form to
-the base model's `rationTargets`.
+independent single-asset continuous quadratic-knapsack (`scqkp`) problems, each
+identical in form to the base model's `rationTargets`.
 
 **Proof.** $\theta$ is a sum over assets of terms involving only column $a$
 of $R$; each aggregate cap involves only column $a$; the box bounds are
@@ -264,8 +264,8 @@ identical values; `checkFleetPlan` therefore uses the per-arc form.)
 
 ## 8. The fleet greedy planner
 
-Phase 1: `rationFleetTargets` — Lemma FL1 column-wise water-fill, reusing the
-base `waterFillTargets` core.
+Phase 1: `rationFleetTargets` — Lemma FL1 column-wise quadratic-knapsack
+rationing, reusing the base `scqkp` core.
 
 Phase 2 (loop; targets scaled by $1 - 10^{-4}$ per asset so a source with
 capacity always exists for a servable cell):

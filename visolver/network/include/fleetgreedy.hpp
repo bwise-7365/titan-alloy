@@ -17,9 +17,9 @@ namespace VINCP::Network {
   // Phase 1: per-asset rationing
   // ---------------------------------------------------------------------------
 
-  // Optimal resupply TARGETS ignoring transport entirely: one waterFillTargets
-  // water-fill per asset column, with meetable_a = min(total demand of a,
-  // total capacity of a). Exact, not heuristic -- assets never compete for
+  // Optimal resupply TARGETS ignoring transport entirely: one scqkp (continuous
+  // quadratic-knapsack) rationing per asset column, with meetable_a = min(total
+  // demand of a, total capacity of a). Exact, not heuristic -- assets never compete for
   // SUPPLY, only for transport, so the joint rationing problem decomposes
   // column-wise (fleet-formulation.md Lemma FL1).
   MatrixXd rationFleetTargets(const FleetInstance& inst);

@@ -1,8 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// Greedy notional planner implementation: water-filling rationing, then
-// cheapest-source greedy flow construction.
+// Greedy notional planner implementation: continuous quadratic-knapsack (scqkp)
+// rationing, then cheapest-source greedy flow construction.
 // ----------------------------------------------
 #include "greedy.hpp"
 
@@ -31,12 +31,12 @@ namespace VINCP::Network {
   } // namespace
 
   VectorXd
-  waterFillTargets(const VectorXd& demand, const VectorXd& priority,
-                   double meetable)
+  scqkp(const VectorXd& demand, const VectorXd& priority,
+        double meetable)
   {
     if (demand.size() != priority.size()) {
       throw std::invalid_argument(
-          "waterFillTargets: demand and priority sizes must match.");
+          "scqkp: demand and priority sizes must match.");
     }
     // Rationing weight D_i^2 / P_i of entry i (only evaluated where D_i > 0,
     // so callers' positive-priority-at-demand precondition keeps it finite).
@@ -53,10 +53,10 @@ namespace VINCP::Network {
       return targets;                       // included: equality lands here)
     }
 
-    // Shortfall: water-filling with the exclude-and-resolve clamp (G2). Each
-    // round solves lambda over the active set; entries whose interior R_i
-    // comes out negative are fixed to 0 and the round repeats. The active set
-    // strictly shrinks, so at most |V_D| rounds.
+    // Shortfall: the CQKP multiplier search with the exclude-and-resolve
+    // PEGGING clamp (G2; Patriksson). Each round solves lambda over the active
+    // set; entries whose interior R_i comes out negative are fixed to 0 and the
+    // round repeats. The active set strictly shrinks, so at most |V_D| rounds.
     vector<Index> active;
     for (Index i = 0; i < demand.size(); ++i) {
       if (0.0 < demand(i)) {
@@ -100,7 +100,7 @@ namespace VINCP::Network {
     // Unreachable: within a round the interior R_i sum to meetable > 0, so
     // they cannot all be negative. Guard per the throw-never-substitute stance.
     throw std::runtime_error(
-        "waterFillTargets: clamping emptied the active set.");
+        "scqkp: clamping emptied the active set.");
   }
 
   VectorXd
@@ -109,7 +109,7 @@ namespace VINCP::Network {
     validateInstance(inst);
     const double meetable =
         std::min(totalDemand(inst), totalSupplyCap(inst));
-    return waterFillTargets(inst.demand, inst.priority, meetable);
+    return scqkp(inst.demand, inst.priority, meetable);
   }
 
   GreedyResult

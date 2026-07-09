@@ -7,7 +7,9 @@
 // ----------------------------------------------
 #include "pformproblem.hpp"
 
+#include <algorithm>
 #include <cmath>
+#include <numeric>
 #include <random>
 #include <stdexcept>
 #include <tuple>
@@ -89,13 +91,17 @@ namespace VINCP::App {
     if (spec.weightHi < spec.weightLo) {
       throw std::invalid_argument("PForm::generate: inverted weight range.");
     }
+    if (spec.salienceHi < spec.salienceLo || spec.salienceLo < 1.0) {
+      throw std::invalid_argument(
+          "PForm::generate: salience range must satisfy 1 <= lo <= hi.");
+    }
 
     const Index M = spec.numParties;
     const Index D = spec.numIssues;
     std::mt19937_64 rng(spec.seed);
     std::uniform_real_distribution<double> unit(0.0, 1.0);
     std::uniform_real_distribution<double> weightDist(spec.weightLo, spec.weightHi);
-    std::uniform_real_distribution<double> totalSalDist(1.0, 2.0);
+    std::uniform_real_distribution<double> salienceDist(spec.salienceLo, spec.salienceHi);
 
     PformData out;
     out.weight.resize(M);
@@ -108,19 +114,18 @@ namespace VINCP::App {
         out.position(d, m) = unit(rng);
       }
     }
-    // Saliences: strictly positive draws, then each party's column scaled so its
-    // total salience lands in [1, 2] (satisfies sum_d S_dm >= 1).
-    out.salience.resize(D, M);
+    // Saliences are SPARSE: each party cares about (has positive salience on)
+    // half its issues, chosen at random, and is indifferent (zero) to the rest,
+    // so parties have complementary interests to trade on. At least one issue is
+    // always positive, so sum_d S_dm >= salienceLo >= 1.
+    const Index numPositive = std::max<Index>(1, D / 2);
+    out.salience = MatrixXd::Zero(D, M);
+    vector<Index> issues(static_cast<size_t>(D));
+    std::iota(issues.begin(), issues.end(), Index{ 0 });
     for (Index m = 0; m < M; ++m) {
-      double colSum = 0.0;
-      for (Index d = 0; d < D; ++d) {
-        const double s = 0.05 + 0.95 * unit(rng);   // in [0.05, 1.0]
-        out.salience(d, m) = s;
-        colSum += s;
-      }
-      const double scale = totalSalDist(rng) / colSum;
-      for (Index d = 0; d < D; ++d) {
-        out.salience(d, m) *= scale;
+      std::shuffle(issues.begin(), issues.end(), rng);
+      for (Index t = 0; t < numPositive; ++t) {
+        out.salience(issues[static_cast<size_t>(t)], m) = salienceDist(rng);
       }
     }
     return out;

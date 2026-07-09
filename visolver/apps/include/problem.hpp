@@ -35,15 +35,24 @@ namespace VINCP::App {
   // vocabulary. Not every engine suits every problem: each Problem documents the
   // subset it honors and throws std::invalid_argument on an unsupported choice.
   // Engine::Default means "let the problem pick its own robust default".
+  //
+  // The parenthetical after each member below names the problem class(es) that
+  // currently HONOR it (dispatch on it in their solve) -- NOT the limit of where
+  // the method could mathematically apply. E.g. Ssn is tagged (Fleet) because
+  // Fleet exposes it as a bare engine, yet semismooth Newton also runs inside
+  // SAOE's chain; it is just not offered as a standalone SAOE engine. Add a tag
+  // when you wire an engine into a problem's dispatch.
   class ProblemBase {
   public:
     enum class Engine {
-      Default,   // the problem's own robust default
-      Chain,     // alternating globalizer/finisher chain (SAOE)
-      Auto,      // chooseEngine dispatcher (SAOE)
-      Ipm,       // Mehrotra interior point (Fleet)
-      Bshe94b,   // He 1994 projection-contraction (Fleet)
-      Ssn        // semismooth Newton (Fleet)
+      Default,          // the problem's own robust default
+      Chain,            // alternating globalizer/finisher chain (SAOE)
+      Auto,             // chooseEngine dispatcher (SAOE)
+      Ipm,              // Mehrotra interior point (Fleet)
+      Bshe94b,          // He 1994 projection-contraction (Fleet)
+      Ssn,              // semismooth Newton (Fleet)
+      SmoothingNewton,  // non-interior smoothing, Zhang-Liu-Liu (SAOE/pform)
+      Fbs               // forward-backward splitting, He-Yuan-Zhang 2004 (SAOE/pform)
     };
 
   protected:

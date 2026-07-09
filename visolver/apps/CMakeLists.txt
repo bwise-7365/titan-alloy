@@ -49,23 +49,7 @@ gtest_discover_tests(pmatrix_gms_test)
 # --- Fleet application (problem class + headless test; GUI when Qt is present) --
 add_subdirectory(fleet)
 
-# --- pform: the GUI app (stub; built only when Qt6 is available) ----------------
-# Self-disabling like network/gui: the core apps never depend on Qt. On Windows
-# default Qt6_DIR to the usual install if the user has not pointed us at one.
-if (WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
-    set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
-endif()
-find_package(Qt6 QUIET COMPONENTS Widgets)
-if (Qt6_FOUND)
-    set(CMAKE_AUTOMOC ON)
-    qt_add_executable(pform
-        saoe/src/pform.cpp
-        saoe/src/pformmainwindow.hpp
-        saoe/src/pformmainwindow.cpp
-    )
-    target_link_libraries(pform PRIVATE Qt6::Widgets saoeapp)
-    set_target_properties(pform PROPERTIES WIN32_EXECUTABLE TRUE)
-else()
-    message(STATUS "apps: Qt6 not found; skipping the pform GUI stub.")
-endif()
+# --- PFORM application (parliament-formation model over SAOE + pform CLI) --------
+# The PForm GUI is a pending task (no gui/ subdir yet).
+add_subdirectory(pform)
 # Copyright Ben Paul Wise. All Rights Reserved.

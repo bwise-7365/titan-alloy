@@ -8,9 +8,11 @@
 
 #include "alternatingchain.hpp"
 #include "chooseengine.hpp"
+#include "fbshyz04.hpp"
 #include "josephynewton.hpp"
 #include "saoe.hpp"
 #include "semismoothnewton.hpp"
+#include "smoothingnewton.hpp"
 
 #include <cmath>
 #include <cstdio>
@@ -148,6 +150,54 @@ namespace VINCP::App {
     return solveModelAuto(model, z0, autoParams);
   }
 
+  // Forward-backward splitting (He-Yuan-Zhang 2004): a matrix-free,
+  // non-interior-path solve of the VI over K directly on the model's field. It
+  // already returns a VIResult in the model's z-layout with the squared natural
+  // residual, so it drops straight into the decode path.
+  static VIResult
+  solveSaoeFbs(const VIModel& model, const VectorXd& z0, const SaoeParams& params)
+  {
+    const int kFbsIterMax = 200000;   // FBS is cheap per iteration (2 F-evals)
+    const VectorField field = [&model](const VectorXd& z) {
+      return evaluateF(model, z);
+    };
+    const Projector projector = makeMixedProjector(model.n);
+    return fbsHyz04(z0, field, projector, params.magTol, kFbsIterMax, 0);
+  }
+
+  // Non-interior smoothing Newton (Zhang-Liu-Liu). It solves the mixed NCP from
+  // (H, G) and returns z = [u, x, y, s]. SAOE is a PURE orthant NCP (model.n ==
+  // 0), but smoothingNewtonSolve requires a non-empty free block, so we embed the
+  // problem with ONE trivial free variable pinned to zero by H(x, y) = x: the
+  // complementarity block G(y) -- and hence the solution y -- is unchanged, and
+  // the dummy variable is discarded on decode. The result is repacked into the
+  // model's z = y and its squared natural residual recomputed, so it is
+  // comparable with the other engines.
+  static VIResult
+  solveSaoeSmoothing(const VIModel& model, const VectorXd& z0, const SaoeParams& params)
+  {
+    const Index m = model.m;
+    const MixedField pinnedH = [](const VectorXd& x, const VectorXd&) { return x; };
+    const MixedField orthantG = [&model](const VectorXd&, const VectorXd& y) {
+      return model.G(VectorXd(0), y);
+    };
+    const VIResult raw =
+        smoothingNewtonSolve(pinnedH, orthantG, VectorXd::Zero(1), z0.tail(m));
+    const SmoothingSolution decoded = smoothingDecode(raw, 1, m);
+
+    const VectorXd z = decoded.y;   // SAOE z has no free block
+    const Projector projector = makeMixedProjector(model.n);
+    const VectorXd natural = z - projector(z - evaluateF(model, z));
+
+    VIResult out;
+    out.z          = z;
+    out.residual   = natural.squaredNorm();
+    out.iter       = raw.iter;
+    out.innerIters = raw.innerIters;
+    out.converged  = (out.residual < params.magTol);
+    return out;
+  }
+
   SAOE::Solution
   SAOE::solve(const Params& params) const
   {
@@ -164,10 +214,16 @@ namespace VINCP::App {
       case ProblemBase::Engine::Auto:
         vi = solveSaoeAuto(model, z0, params);
         break;
+      case ProblemBase::Engine::SmoothingNewton:
+        vi = solveSaoeSmoothing(model, z0, params);
+        break;
+      case ProblemBase::Engine::Fbs:
+        vi = solveSaoeFbs(model, z0, params);
+        break;
       default:
         throw std::invalid_argument(
-            "SAOE::solve: this problem honors only Engine::Chain (default) or "
-            "Engine::Auto.");
+            "SAOE::solve: this problem honors Engine::Chain (default), "
+            "Engine::Auto, Engine::SmoothingNewton, or Engine::Fbs.");
     }
 
     const Index M = data.R.rows();

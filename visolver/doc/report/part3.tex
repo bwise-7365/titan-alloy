@@ -12,9 +12,10 @@ This chapter is the library's evidence. It describes how the test suite is
 built and what each layer of it checks (Sections~\ref{sec:t-infra}--%
 \ref{sec:t-protocol}); then the application problems as case studies ---
 the banded flow-planning QP and its fleet generalization, the influence
-game, and the deployment game; the flow and deployment studies carry equal
+game, the deployment game, and the GMS front end that mechanizes problem
+entry; the flow and deployment studies carry equal
 weight as the paired monotone-at-scale and nonmonotone stories
-(Sections~\ref{sec:t-flow}--\ref{sec:t-deploy}); and
+(Sections~\ref{sec:t-flow}--\ref{sec:t-gms}); and
 closes with the cross-cutting lessons and the known open items
 (Sections~\ref{sec:t-lessons}--\ref{sec:t-open}). Wherever a number
 appears, its source is named: a section of
@@ -26,7 +27,7 @@ reproduces it.
 
 The suite is GoogleTest, fetched by CMake \code{FetchContent} at a fixed
 release tag and compiled by the project's own toolchain and flags. At the
-time of writing (2026-07-08) it stands at 182 test cases, all passing,
+time of writing (2026-07-09) it stands at 214 test cases, all passing,
 exercised by the aggregate targets of Chapter~\ref{ch:manual}. Beneath GoogleTest sits a
 thin shared harness (\code{utils.hpp}): a bound solver is a
 \code{SolveFn} (everything captured but the start point), a pass/fail
@@ -292,13 +293,21 @@ Phase 1 answers ``who gets shorted when demand exceeds capacity'' with no
 reference to transport at all. It minimizes the priority-weighted
 quadratic shortfall $\sum_i P_i \left((D_i - R_i)/D_i\right)^2$ subject
 to $\sum_i R_i \le M$, where $M = \min(\sum_i D_i, \sum_i C_i)$ is the
-meetable total. The optimum has the water-filling closed form
+meetable total. This is a very simple instance of the \emph{continuous
+quadratic knapsack problem}---the quadratic case of the continuous, separable,
+convex resource-allocation problem~\cite{patriksson2008,patrikssonStromberg2015},
+itself just a special case of the monotone complementarity problems solved
+elsewhere in this report. Its optimum has the closed form
 $R_i = D_i - \lambda D_i^2 / P_i$ with one scalar multiplier $\lambda$;
 entries driven negative are clamped to zero, removed from the active set,
-and $\lambda$ is re-solved over the survivors.
+and $\lambda$ is re-solved over the survivors---the standard finite
+\emph{pegging} (variable-fixing) algorithm~\cite{frangioniGorgone2013}. (It is
+\emph{not} the information-theory water-filling problem, whose different
+objective yields the additive $p_i=(\mu-n_i)_+$ form; only the
+raise-a-multiplier-until-the-budget-binds skeleton is shared.)
 
 \begin{lstlisting}
-waterFill(D, P, M):                      // returns targets R
+scqkp(D, P, M):                          // returns targets R
   if sum(D) <= M: return D               // everything is meetable
   active = { i : D[i] > 0 }
   loop:                                  // at most |active| rounds
@@ -322,7 +331,7 @@ $\#\text{sinks} + \#\text{sources}$ passes.
 
 \begin{lstlisting}
 greedyPlan(C, D, P, cost):
-  target = waterFill(D, P, min(sum(D), sum(C)))
+  target = scqkp(D, P, min(sum(D), sum(C)))
   remT = (1 - 1e-4) * target;  remC = C;  flow = 0
   loop:
     n = argmax_i remT[i];  if remT[n] <= 0: break
@@ -386,6 +395,7 @@ engine with the structured per-sink Newton factorization
 budget having been calibrated by a greedy pre-pass as above. The solve
 runs on a worker thread and its result is cached per instance.
 
+
 The first sight of a verified optimal plan was a lattice of hairline
 arrows: tonnage split across dozens of near-parallel routes, most
 carrying trivial amounts. That spread is a property of the algorithm
@@ -400,6 +410,15 @@ edge-following method such as the simplex family terminates instead at a
 vertex of the same face, and vertices of network polytopes are
 forest-sparse: at most $\#\text{sources} + \#\text{sinks} - 1$ positive
 arcs, plus one for a tight budget row.
+
+
+The difference between interior and corner optima can be illustrated with a very
+simple example. Suppose we want to maximize the sum of $x_i$, subject to the
+constraint that all $ x_i \ge 0$ and $\sum_i  x_i \le 1.0$.  A solver such as
+Simplex will follow edges and reach on of the $x_i = 1$ corners, with all 
+the other values at zero. However, an interior method is
+likely to arrive at a solution in the middle of the space of optimal solutions
+ more like all $x_i = 1/N$.
 
 The \emph{Purify (sparsify)} button converts the former into
 (approximately) the latter without a re-solve, by pivoting within the
@@ -435,6 +454,22 @@ simultaneously; vehicles of each class circulate (what arrives at a node
 departs it), and empty repositioning legs consume budget like loaded
 ones.
 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../images/optimal-fleet-app-110-4-5-optimized.png}
+\caption{Optimal Fleet Plan, interior point}
+\label{fig:fleet-gui-opt}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../images/optimal-fleet-app-110-4-5-optimized-sparse.png}
+\caption{Optimal Fleet Plan, corner point}
+\label{fig:fleet-gui-sparse}
+\end{figure}
+
 The window differs from Figure~\ref{fig:nw-gui} in four places. The
 Instance group gains \emph{Vehicle types} and \emph{Asset types} spinners
 (1--10 each; defaults 3 and 4), which take prefixes of a fixed catalog of
@@ -453,11 +488,18 @@ itself always covers all assets, and the node pop-ups always show the
 full vectors, e.g.\ $C = [612, 0, 337, 845]$, one entry per asset class
 in catalog order.
 
+Comparing Figure \ref{fig:fleet-gui-opt} and \ref{fig:fleet-gui-sparse}, one can
+see from the little pop-up window in the latter that while the objective function
+has not changed, a side effect of moving from an interior point to
+a corner was to greatly decrease the total ton-miles used  -  as desired.
+With this particular problem, an 83.9\% reduction in ton-miles was achieved
+compared to the original interior-point solution.
+
 \subsection{Pseudo-code: the budget-limited fleet greedy}
 \label{sec:t-fleetgreedy-pseudo}
 
 Rationing decomposes exactly by asset, because assets share transport but
-never supply: phase 1 is \code{waterFill} of
+never supply: phase 1 is \code{scqkp} of
 Section~\ref{sec:t-greedy-pseudo} applied to each asset column with its
 own meetable total. Phase 2 generalizes the greedy loop with three new
 ingredients. First, service order matters here, because the budgets can
@@ -479,7 +521,7 @@ work will not.
 fleetGreedy(C, D, P, dist, assets, vehicles, H):
   B[k] = N[k] * v[k] * H                          // vehicle-mile budgets
   for each asset a:
-    target[.][a] = waterFill(D[.][a], P[.][a], min of the column sums)
+    target[.][a] = scqkp(D[.][a], P[.][a], min of the column sums)
   remT = (1 - 1e-4) * target;  remC = C;  remB = B
   kappa[a][k] as above;  order[a] = classes sorted by kappa[a][k] descending
   loop:                                           // <= 3mA + K + 2 passes
@@ -784,10 +826,193 @@ The standalone engines remain in the acceptance test as deliberately
 failing comparison rows: their documented inability to solve the problem
 alone is the recorded reason the chain exists.
 
+\section{Case study 5: the GMS front end}
+\label{sec:t-gms}
+
+Until this point every application problem entered the library by hand
+translation: the recipe of Section~\ref{sec:gams-recipe}, applied by a
+person and checked by cross-validation. The front end
+(Section~\ref{sec:gms-frontend}) mechanizes that entry for the subset of
+the GMS language\footnote{``GAMS'' is a registered trademark of GAMS
+Development Corporation. The front end is not endorsed or certified by
+GAMS Development Corporation, and the subset it accepts is incompatible
+with most of the GAMS modeling language.} that the project's model corpus
+uses --- six files in \code{doc/}: the force-package selection, the
+influence game, the logistics resource-allocation model (with its
+\code{\$include} data file), the energy market, and the deployment game.
+Building it was itself an exercise in the methods this chapter describes,
+and it ended with a lesson expensive enough to record in full
+(Section~\ref{sec:t-gms-cost}).
+
+\subsection{Five gates, census first}
+
+Before any parser code, the six corpus files were censused construct by
+construct (\code{doc/2026-07-08-gams-subset-census.md}): which statement
+forms, which expression operators and functions, which \code{\$}
+directives actually occur. The census set the grammar's exact boundary
+--- anything outside it throws with a file, line, and column --- and it
+became the first gate's test data: the construct counts are literally the
+parser test's expected values. The work then ran as five gated steps
+(plan of record \code{doc/2026-07-08-gams-frontend-plan.md}), each closed
+by a build-and-run on the full suite (Table~\ref{tab:gms-gates}).
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{p{0.06\textwidth} p{0.40\textwidth} p{0.44\textwidth}}
+\toprule
+\textbf{Gate} & \textbf{Content} & \textbf{Exit evidence and corrections} \\
+\midrule
+GP1 & grammar, AST, canonical echo & census counts as assertions on all
+  six files; round trip gated on idempotence
+  ($\mathrm{parse}(\mathrm{echo}(\mathrm{parse}(F))) =
+  \mathrm{parse}(F)$). Two corrections, both on the expectation side (a
+  macro tally and a pair count); the parser itself was correct both
+  times. \\
+GP2 & symbol table + eager evaluation & derived parameters checked
+  against hand-computed values per file (e.g.\ the force-package
+  $\mathit{min\_ratio} = \sqrt{0.8/0.2} = 2$ exactly). One semantics
+  correction: parameters declared without a domain take their shape from
+  first assignment, as the deployment file requires. \\
+GP3 & \code{Model} statement $\to$ \code{VIModel} & a synthetic mixed MCP
+  with a known unique solution pins the pairing \emph{order}; the
+  force-package model solves end to end. One correction: the tests
+  demanded $10^{-6}$ accuracy while requesting the solver's default
+  $10^{-10}$ \emph{squared} residual (norm $\sim 10^{-5}$) --- the
+  request was tightened, not the check loosened. \\
+GP4 & parity by independent dual transcription & the residual formulas
+  hand-coded in plain C++ (no parser, no evaluator, no macro expander)
+  must equal the built model's rows at randomly sampled points; parity is
+  an identity in $z$, so agreement at random points checks the whole
+  pipeline. All five models, zero corrections. \\
+GP5 & reproduce the recorded GAMS solutions & Table~\ref{tab:gms-repro}
+  and Section~\ref{sec:t-gms-cost}. \\
+\bottomrule
+\end{tabular}
+\caption{The five gates (2026-07-08 to 07-09; commit messages carry the
+per-gate detail). The suite grew from 182 to 214 test cases.}
+\label{tab:gms-gates}
+\end{table}
+
+\subsection{Result reproduction}
+
+Ben supplied the GAMS solution listings (\code{doc/*.solve.lst}); the
+reproduction gate compares the front end's solves against them
+(Table~\ref{tab:gms-repro}). Two models required the multiplicity
+discipline of Section~\ref{sec:t-infra} in a new guise: the checked
+quantity must be the \emph{invariant} of the solution set, not an
+arbitrary member. The energy market prices both markets identically, so
+a shipper is indifferent between them and the per-route split is not
+unique; the check gates prices, volumes, and per-market totals, and
+leaves the split free. The influence game reproduces PATH's per-option
+totals to listing precision while splitting the individual actors'
+efforts differently --- the per-option aggregates of this game are
+determined at equilibrium while the attribution across actors is not ---
+so the check gates the aggregates and leaves the attribution free.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{p{0.22\textwidth} p{0.08\textwidth} p{0.60\textwidth}}
+\toprule
+\textbf{Model} & \textbf{Size} & \textbf{Outcome} \\
+\midrule
+force package & 11 & exact level match against the MILES listing
+  (automated test). \\
+energy market & 43 & aggregate match (prices, volumes, pipeline flows,
+  fees, per-market totals); per-route split degenerate as above
+  (automated test). \\
+influence game & 87 & PATH's aggregate equilibrium reproduced in
+  $2.1$\,s; actor attribution degenerate as above (automated test). \\
+logistics model & 1{,}951 & PATH's shortfall pattern reproduced to four
+  decimal places (13.9768 / 3.2557 / 2.4396 / 4.3734) via the affine path
+  of Section~\ref{sec:t-gms-cost}, feasible, 28{,}180 of the 50{,}000
+  ton-mile budget used (probe log, 2026-07-09). The listing's
+  ``delivered 527.556'' comment dates from an earlier configuration of
+  the model; with the committed data, total supply is exactly 535 and
+  PATH's own shortfalls imply delivered 535.01, in agreement with the
+  front end's 535. \\
+deployment game & 450 & blocked on evaluation performance, not
+  correctness (Section~\ref{sec:t-gms-cost}); parsing, evaluation,
+  construction, and row-level parity are all verified. \\
+\bottomrule
+\end{tabular}
+\caption{GP5 outcomes. Sources: the \code{GmsSolve} test suite and the
+dated \code{gms\_gp5\_probe} run logs recorded in the plan of record.}
+\label{tab:gms-repro}
+\end{table}
+
+\subsection{The cost of interpreted evaluation}
+\label{sec:t-gms-cost}
+
+A parsed model evaluates its $F$ by walking expression trees, and on the
+two largest models that cost --- not any defect of the mathematics ---
+decided the outcome. Three factors multiply.
+
+\begin{enumerate}
+\item \textbf{Interpretation.} Each evaluation walks \code{Expr} trees
+  with name-keyed binding lookups and per-reference indirection. Measured:
+  one $F$ costs $0.0294$\,s on the 450-row deployment model and
+  $0.211$\,s on the 1{,}951-row logistics model. For comparison, the
+  hand-coded twin of the deployment game completes entire chain
+  \emph{solves} in 18--29\,s (Table~\ref{tab:deploy-runs}).
+\item \textbf{No sharing across rows.} The interpreter re-evaluates
+  common subexpressions per row. The logistics model's flow
+  cost-benefit family contains one 900-term whole-network sum that is
+  identical in all 900 of its rows; most of the $0.211$\,s is that one
+  sum computed 900 times.
+\item \textbf{Black-box differentiation.} The engines receive $F$ as a
+  callable, so Jacobians come from finite differences --- fourth-order,
+  hence $\sim 4 \cdot \mathrm{dim}$ evaluations per Newton iteration.
+  Measured on the deployment model: $\sim$1{,}800 evaluations, 53--68\,s
+  per semismooth iteration; a bounded 20-iteration probe took 24 minutes
+  and, as on deploy\_v07, no single engine escapes this family's plateaus
+  --- the alternating chain would, but a chain run at this cost is hours.
+\end{enumerate}
+
+The decisive comparison is the reference system itself. GAMS also
+interprets its models --- it never compiles them --- yet PATH solves the
+deployment game in seconds, because GAMS supplies PATH with analytic,
+\emph{sparse} derivatives by automatic differentiation of the same
+expression trees. Interpretation alone is factors one and two; factor
+three, the one that multiplies by the dimension, is a choice of
+derivative supply, and it is the one that matters most. The recorded
+options, deferred with their measurements: automatic differentiation of
+the \code{Expr} trees (exact sparse Jacobians, removing factor three), a
+flattened-tape evaluator with common-subexpression sharing (factors one
+and two), or both.
+
+The logistics model demonstrates the same point from the other side:
+its equations are affine, so the probe assembled the exact constant $M$
+column by column ($\mathrm{dim}+1$ evaluations, once, 489\,s), verified
+affinity at a random point (relative deviation $2.6\times 10^{-15}$), and
+handed $(M, q)$ to the interior-point engine --- which converged in 16
+iterations and $5.1$\,s. Where structure replaces the black box, the
+interpreted representation costs a one-time assembly and nothing more.
+
+Two smaller lessons from the same runs. First, the probe itself had to be
+redesigned once: its first version ran the automatic engine dispatcher,
+whose chain fallback made the intended iteration bound unbounded, and it
+printed nothing between iterations --- both models appeared hung. The
+second version calls engines directly and prints a heartbeat with elapsed
+time every iteration; the lesson is the observability lesson of
+Section~\ref{sec:t-lessons} applied to measurement tools. Second, the
+interior-point run at the tightest tolerance walked past its achievable
+floor ($\sim 3\times 10^{-10}$ squared on this scaling) into a non-finite
+corrector solve; one step looser converged cleanly --- the same end-game
+behavior recorded for the engine in Chapter~\ref{ch:manual}.
+
+The decision of record (2026-07-09): production problems arrive as
+hand-built C++ structures reading data files --- the fleet pipeline
+pattern, with the translation recipe of Section~\ref{sec:gams-recipe} ---
+and the front end serves as the reference, prototyping, and cross-check
+path, where a solve measured in minutes is acceptable and four of the
+five corpus models already reproduce their GAMS references.
+
 \section{Cross-cutting lessons}
 \label{sec:t-lessons}
 
-Nine lessons recur across the case studies; each is stated with its
+Ten lessons recur across the case studies; each is stated with its
 evidence.
 
 \begin{enumerate}
@@ -835,6 +1060,15 @@ evidence.
   conventions before any C++ ran; the fake-component method
   (Section~\ref{sec:t-protocol}) is how every guard in the library is
   actually exercised.
+\item \textbf{Match the derivative supply to the engine's demand.} An
+  interpreted model representation multiplies three costs: tree-walking
+  evaluation, re-evaluation of subexpressions shared across rows, and ---
+  dominating, because it scales with the dimension --- finite-difference
+  Jacobians at $\sim 4 \cdot \mathrm{dim}$ evaluations per iteration.
+  The reference system interprets its models too and still solves in
+  seconds, because it supplies analytic sparse derivatives; where the
+  model is affine, extracting the constant matrix once removed the
+  black box entirely (Section~\ref{sec:t-gms-cost}).
 \end{enumerate}
 
 \section{Known limitations and open items}
@@ -862,6 +1096,13 @@ Recorded with their planned dispositions:
 \item \textbf{The acceleration wrappers} (Anderson/Halpern) from the engine
   roadmap are designed, literature-verified, and unbuilt --- the roadmap's
   one remaining item.
+\item \textbf{The deployment game through the GMS front end} is blocked
+  on evaluation performance (Section~\ref{sec:t-gms-cost}); the recorded
+  options are automatic differentiation of the expression trees (exact
+  sparse Jacobians) and a flattened-tape evaluator with subexpression
+  sharing, with the measured costs (one $F$: $0.0294$\,s; one Jacobian:
+  53--68\,s) as the baseline any such work is judged against. The
+  hand-built twin remains the production path.
 \item \textbf{More PPD versions are coming}; each arrives as data plus a
   \code{VIModel} builder and a new roster, per the recipe of
   Chapter~\ref{ch:manual}.

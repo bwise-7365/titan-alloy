@@ -37,7 +37,7 @@ namespace {
 
 // Rationing decomposes per asset (Lemma FL1): a slack asset keeps its full
 // demand while a scarce asset is rationed EXACTLY as the single-commodity
-// water-fill of that column.
+// scqkp (continuous quadratic-knapsack) rationing of that column.
 TEST(NetworkFleetGreedy, RationingPerAssetIndependent) {
     FleetInstance inst = makeThreeNodeSkeleton();
     inst.assets = {{"a0", 1.0, 1.0}, {"a1", 1.0, 1.0}};
@@ -63,12 +63,12 @@ TEST(NetworkFleetGreedy, RationingPerAssetIndependent) {
     EXPECT_EQ(targets(2, 0), 30.0);
 
     // Asset 1 is scarce (200 > 100): symmetric split, and identical to the
-    // single-commodity water-fill of the column -- the separability claim
+    // single-commodity scqkp rationing of the column -- the separability claim
     // made executable.
     EXPECT_NEAR(targets(1, 1), 50.0, kTol);
     EXPECT_NEAR(targets(2, 1), 50.0, kTol);
-    const VectorXd column = waterFillTargets(inst.demand.col(1),
-                                             inst.priority.col(1), 100.0);
+    const VectorXd column = scqkp(inst.demand.col(1),
+                                  inst.priority.col(1), 100.0);
     EXPECT_EQ((targets.col(1) - column).cwiseAbs().maxCoeff(), 0.0);
 }
 

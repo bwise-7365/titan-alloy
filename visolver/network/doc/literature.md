@@ -81,14 +81,27 @@ multiplier) and the shadow-price interpretation of the budget multiplier.
   exactly our budget-row structure.
   <https://www.researchgate.net/publication/277576254_Budget-constrained_minimum_cost_flows>
 
-## Claim 6 — Rationing subproblem is textbook water-filling
+## Claim 6 — Rationing subproblem is a continuous quadratic knapsack problem
 
 Phase-1 of the greedy planner (and our validation lower bound
-$\theta_{\text{ration}}$) is a KKT water-filling problem; the
-exclude-negatives-and-resolve loop is its standard finite algorithm.
+$\theta_{\text{ration}}$) is a very simple example of the CONTINUOUS QUADRATIC
+KNAPSACK PROBLEM — the quadratic case of the continuous, separable, convex
+resource-allocation problem (minimize a weighted quadratic shortfall subject to
+one budget constraint and box bounds). Its closed form
+$R_i = D_i - \lambda D_i^2/P_i$ with the exclude-negatives-and-resolve loop is
+the standard finite PEGGING (variable-fixing) algorithm. (This is NOT the
+information-theory water-filling problem — that maximizes $\sum \log$ capacity
+and has the additive $p_i=(\mu-n_i)_+$ form; only the "raise one multiplier
+until the budget binds" skeleton is shared, and that skeleton is generic to
+every singly-constrained separable convex allocation.)
 
-- S. Boyd, L. Vandenberghe, *Convex Optimization*, Cambridge University
-  Press, 2004, section 5.5.3 (water-filling example).
+- M. Patriksson, "A survey on the continuous nonlinear resource allocation
+  problem", *European Journal of Operational Research* 185(1):1–46, 2008.
+- M. Patriksson, C. Strömberg, "Algorithms for the continuous nonlinear
+  resource allocation problem — new implementations and numerical studies",
+  *EJOR* 243(3):703–722, 2015 (arXiv:1501.07035); the pegging algorithms.
+- K. Kiwiel, "On linear-time algorithms for the continuous quadratic knapsack
+  problem" / the EJOR 2013 quadratic-knapsack library.
 
 ## Not used (recorded decisions)
 

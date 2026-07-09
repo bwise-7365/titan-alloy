@@ -71,15 +71,21 @@ namespace VINCP::App {
     double   epsilon = 0.0;       // the effort floor eps derived from q (reported)
   };
 
-  // Random-instance recipe: positions ~ U[0,1]; weights ~ U[weightLo, weightHi];
-  // saliences drawn positive then column-scaled so each party's total salience
-  // lands in [1, 2] (satisfying the >= 1 constraint). Fixed seed = reproducible.
+  // Random-instance recipe: positions ~ U[0,1]; weights ~ U[weightLo, weightHi].
+  // Saliences are SPARSE: each party has positive salience ~ U[salienceLo,
+  // salienceHi] on half its issues (chosen at random) and ZERO on the rest, so
+  // parties hold complementary interests and can profit from ceding the issues
+  // they do not care about. The >= 1 total-salience constraint holds since each
+  // positive draw is at least salienceLo (>= 1) and every party keeps at least
+  // one positive issue. Fixed seed = reproducible.
   struct PformRandomSpec {
     int           numParties = 3;
     int           numIssues  = 4;
     std::uint64_t seed       = 0;
     double        weightLo   = 1.0;
     double        weightHi   = 10.0;
+    double        salienceLo = 5.0;    // positive-salience draw range U[lo, hi]
+    double        salienceHi = 15.0;
   };
 
   // Number of parliaments K = M^D. Throws std::invalid_argument on M < 2 or

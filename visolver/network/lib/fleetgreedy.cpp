@@ -1,8 +1,9 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// Greedy fleet planner implementation: per-asset water-filling rationing,
-// then greedy vehicle-borne flow construction under per-type budgets.
+// Greedy fleet planner implementation: per-asset continuous quadratic-knapsack
+// (scqkp) rationing, then greedy vehicle-borne flow construction under per-type
+// budgets.
 // ----------------------------------------------
 #include "fleetgreedy.hpp"
 
@@ -213,8 +214,8 @@ namespace VINCP::Network {
     for (Index a = 0; a < numA; ++a) {
       const double meetable = std::min(totalFleetDemand(inst, a),
                                        totalFleetSupplyCap(inst, a));
-      targets.col(a) = waterFillTargets(inst.demand.col(a),
-                                        inst.priority.col(a), meetable);
+      targets.col(a) = scqkp(inst.demand.col(a),
+                             inst.priority.col(a), meetable);
     }
     return targets;
   }

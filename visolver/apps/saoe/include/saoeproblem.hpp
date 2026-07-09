@@ -35,6 +35,13 @@ namespace VINCP::App {
   // How to solve, plus the two modeling knobs. Every solve-process default is
   // the configuration the saoe_chain_test proves reaches equilibrium E; override
   // only to trade robustness for speed deliberately.
+  // SAOE honors these engines (any other throws): Default / Chain (the robust
+  // alternating globalizer/finisher chain), Auto (the chooseEngine dispatcher),
+  // SmoothingNewton (non-interior smoothing, Zhang-Liu-Liu), and Fbs
+  // (forward-backward splitting). The last two are matrix-free, non-interior-path
+  // alternatives -- useful for checking whether a non-central-path solver
+  // concentrates the (non-unique) effort attribution rather than spreading it
+  // over the optimal face, as the chain's interior-point globalizer does.
   struct SaoeParams {
     ProblemBase::Engine engine = ProblemBase::Engine::Default;  // Default => Chain
 
@@ -96,9 +103,10 @@ namespace VINCP::App {
     // Solve the Nash equilibrium: build the NCP via saoeModel (risk aversion and
     // epsilon from params), start from the deterministic analytic-center point,
     // run the selected engine (Default/Chain = the robust alternating chain;
-    // Auto = the chooseEngine dispatcher), and decode. Throws
-    // std::invalid_argument on an empty R, S.size() != R.rows() (via saoeModel),
-    // or an engine SAOE does not honor.
+    // Auto = the chooseEngine dispatcher; SmoothingNewton / Fbs = the
+    // non-interior-path alternatives), and decode. Throws std::invalid_argument
+    // on an empty R, S.size() != R.rows() (via saoeModel), or an engine SAOE
+    // does not honor.
     Solution solve(const Params& params) const override;
 
     // One-paragraph statement of what SaoeResult guarantees (the non-uniqueness

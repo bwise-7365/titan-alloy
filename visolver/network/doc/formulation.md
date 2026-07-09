@@ -111,7 +111,7 @@ reference):
   $R_i = D_i - \tfrac{\mu}{2} D_i^2 / P_i$; the spec's $\lambda$ absorbs the
   factor 2 — **correct**. The interior formula requires $R_i \ge 0$; when
   some $R_i$ clamps to 0, $\lambda$ must be re-solved over the remaining
-  nodes (water-filling). With the stated ranges the weights
+  nodes (the quadratic-knapsack pegging step). With the stated ranges the weights
   $w_i = D_i^2/P_i$ span a factor of up to 250, so clamping is a **live
   case**, not a corner case — worth confirming the Java implementation
   iterates the clamp.
