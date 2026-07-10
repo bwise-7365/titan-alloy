@@ -5,8 +5,8 @@
 // ============================================================================
 // Test-only harness that binds ONE mixed-NCP VIModel to several solver engines
 // ("rows"), so a translated problem drops into the suite as data + a VIModel
-// builder rather than as copied solver glue. Built for the translated GAMS
-// models (gams_alloceff_test.cpp, gams_deploy_test.cpp), whose problems are
+// builder rather than as copied solver glue. Built for the translated
+// GMS-corpus models (gms_alloceff_test.cpp, gms_deploy_test.cpp), whose problems are
 // NONMONOTONE: any single engine may legitimately fail to converge or trip a
 // divergence guard, so every row runs through runCase (which times the solve,
 // prints the standard stats, and reports a throw as that row's failure without

@@ -1,5 +1,5 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
-# GAMS-subset front end (gates GP1..GP5; plan of record:
+# GMS-subset front end (gates GP1..GP5; plan of record:
 # doc/2026-07-08-gams-frontend-plan.md). The lexer/parser/evaluator layers
 # are standard-library only; GP3's model builder (gmsmcp) is the designed
 # integration point with the solver core, so vincpgms links vincp (which
@@ -71,7 +71,7 @@ target_compile_definitions(gms_gp5_probe PRIVATE
     VINCP_GMS_CORPUS_DIR="${CMAKE_SOURCE_DIR}/doc")
 
 # CLion-friendly aggregate: build + run just the GMS front-end suites.
-add_custom_target(run_gams_tests
+add_custom_target(run_gms_tests
     COMMAND ${CMAKE_CTEST_COMMAND}
         -R "GmsParse|GmsEval|GmsModel|GmsParity|GmsSolve"
         --output-on-failure -C $<CONFIG>

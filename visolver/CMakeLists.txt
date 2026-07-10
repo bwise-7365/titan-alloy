@@ -125,18 +125,18 @@ vincp_add_gtest(saoe_chain_test)
 vincp_add_gtest(saoe_risk_test)
 vincp_add_gtest(choose_engine_test)
 vincp_add_gtest(fbs_hyz04_test)
-# Translated GAMS MCP models (convergence-gated, multi-engine; see the test
-# headers for the .gms sources and the variable/equation mappings).
-vincp_add_gtest(gams_alloceff_test)
-vincp_add_gtest(gams_deploy_test)
+# Translated GMS-corpus MCP models (convergence-gated, multi-engine; see the
+# test headers for the .gms sources and the variable/equation mappings).
+vincp_add_gtest(gms_alloceff_test)
+vincp_add_gtest(gms_deploy_test)
 
 # Flow-planning network layer (network/plan.md): vincpnet library + its tests.
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).
 add_subdirectory(network)
 
-# GAMS-subset front end (doc/2026-07-08-gams-frontend-plan.md): vincpgms
+# GMS-subset front end (doc/2026-07-08-gams-frontend-plan.md): vincpgms
 # library + its tests. Also needs the GoogleTest setup above.
-add_subdirectory(gams)
+add_subdirectory(gms)
 
 # Focused application framework (apps/): VINCP::App problem classes + their
 # CLI/GUI apps. Additive; links vincp + vincpgms, so it must follow both.
@@ -155,7 +155,7 @@ add_custom_target(run_engine_tests
         --output-on-failure -C $<CONFIG>
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS semismooth_newton_test mehrotra_ipm_test han_vs_he_test flowplan_test
-            gams_alloceff_test gams_deploy_test alternating_chain_test
+            gms_alloceff_test gms_deploy_test alternating_chain_test
             saoe_chain_test saoe_risk_test choose_engine_test
     USES_TERMINAL
 )
@@ -168,7 +168,7 @@ add_custom_target(run_all_tests
             mehrotra_ipm_test semismooth_newton_test josephy_newton_test
             alternating_chain_test saoe_chain_test saoe_risk_test
             choose_engine_test fbs_hyz04_test
-            gams_alloceff_test gams_deploy_test gms_parse_test gms_eval_test
+            gms_alloceff_test gms_deploy_test gms_parse_test gms_eval_test
             gms_model_test gms_parity_test gms_solve_test
             network_tests lvi_demo lvi_vi_demo
     USES_TERMINAL

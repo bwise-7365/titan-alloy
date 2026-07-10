@@ -23,7 +23,7 @@ using namespace VINCP;
 // equilibrium for exertion of influence, 6 actors x 10 options, as a mixed
 // nonlinear complementarity problem over K = R^n x R_+^m.
 //
-// GAMS -> VINCP mapping (Model neInf / nfDef.nfv, sigmaDef.sigma,
+// GMS -> VINCP mapping (Model neInf / nfDef.nfv, sigmaDef.sigma,
 // gammaDef.gamma, EInf.beta, MVInf.eff /):
 //   free block x (n = 21) = [ nfv(10) | sigma(10) | gamma ], H rows are their
 //     defining =e= equations. The .gms declares them Positive, but each is

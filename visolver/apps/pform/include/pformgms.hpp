@@ -18,7 +18,7 @@
 // readPformGms parses a small, fixed GMS data file (see apps/pform/doc/
 // pform-example.gms) and returns the parliament instance plus the unselected-
 // probability knob. It reuses the vincpgms front end (parser + buildGmsDatabase)
-// and modifies nothing under gams/.
+// and modifies nothing under gms/.
 //
 // The accepted file (limited GMS subset) declares, and only declares:
 //   Set act ...      -- the parties  (columns of position/salience, of weight)

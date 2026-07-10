@@ -20,7 +20,7 @@
 // (parser + buildGmsDatabase), readPmatrixGms parses the file, verifies it
 // defines EXACTLY the expected symbols with sensible values, and returns the
 // reward matrix, strength vector, and risk-aversion fraction. Nothing under
-// gams/ is modified; this reader only consumes its public API.
+// gms/ is modified; this reader only consumes its public API.
 //
 // The accepted file (limited GMS subset) declares, and only declares:
 //   Set act ...     -- the actors      (rows of reward, entries of weight)

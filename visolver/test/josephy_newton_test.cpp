@@ -14,7 +14,7 @@ using namespace VINCP;
 
 // Unit tests for the Josephy-Newton driver's no-progress (stall) cutoff
 // (JosephyNewtonParams::stallIterMax / stallRelDecrease, added 2026-07-06
-// after the deploy_v07 GAMS run burned ~22 frozen outer iterations at ~1 s
+// after the deploy_v07 acceptance run burned ~22 frozen outer iterations at ~1 s
 // each). The stall is driven deterministically through the InnerSolver seam
 // with a FROZEN inner solver that returns its start point unchanged -- the
 // outer step direction is then exactly zero, so the residual can never

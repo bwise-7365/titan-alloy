@@ -34,6 +34,7 @@ Run a single test (by ctest name) or the executable directly:
 
 CLion configures `CMakeLists.txt` directly; its build tree is `cmake-build-debug/`.
 The aggregate targets `run_all_tests` / `run_engine_tests` / `run_network_tests`
+/ `run_gms_tests`
 are custom targets whose ctest command executes during the BUILD step: in CLion
 use the hammer (Build) on them, never Run — a custom target has no executable,
 so Run reports "Executable is not specified". To run the whole suite from the
@@ -106,9 +107,17 @@ Two solver layers over one shared core; the dependency arrows point one way
   - `alternatingChainSolve` (`include/alternatingchain.hpp`) — rounds of
     project-onto-K -> globalizer -> finisher with best-point memory, for
     NONMONOTONE problems where no single engine converges (built and proved on
-    the deploy_v07 GAMS game — see `test/gams_deploy_test.cpp`). Stage solvers
+    the deploy_v07 game — see `test/gms_deploy_test.cpp`). Stage solvers
     are seams (`StageSolver`); a stage that throws is a stalled stage, not a
     chain failure. The header carries the full rationale.
+  - `smoothingNewtonSolve` (`include/smoothingnewton.hpp`) — non-interior-point
+    smoothing solver for the mixed NCP (Zhang-Liu-Liu 2010 reformulation):
+    slack `s` + smoothing parameter `u` stacked into `F(z) = [u; H; s - G;
+    phi(u, y, s)] = 0`, solved as least squares by `dampedNewtonSolve` (no
+    homotopy schedule — the merit itself drives `u -> 0`). The smoothing
+    function is a seam (`SmoothingFunction`: smoothed Fischer-Burmeister
+    default, Wu-Zhao P0-safe alternative). H and G may be black boxes (FD
+    Jacobian; rectangular support allows K != N).
   - `chooseEngine` (`include/chooseengine.hpp`) — the dispatcher:
     `probeMonotone` (one Cholesky attempt on sym(M) + shift, not an
     eigensolve), the PURE decision function `chooseEngine(ProblemTraits)`
@@ -144,7 +153,7 @@ Two solver layers over one shared core; the dependency arrows point one way
     sequence, all defaults; NO basin control — deliberate equilibrium
     selection is the alternating chain's job).
 
-- **GAMS front end (`gams/`)** — a parser for the GAMS SUBSET the corpus in
+- **GMS front end (`gms/`)** — a parser for the GAMS SUBSET the corpus in
   `doc/*.gms` actually uses (censused in `doc/2026-07-08-gams-subset-census.md`;
   gate plan in `doc/2026-07-08-gams-frontend-plan.md`). Library `vincpgms`,
   namespace `VINCP::Gms`. Layers: GP1 grammar + AST + canonical echo
@@ -186,6 +195,12 @@ Two solver layers over one shared core; the dependency arrows point one way
     `F: R^n -> R^m` (m >= n), built on those primitives + the FD Jacobian and
     returning the shared `VIResult`. Exercised by `test/lm_test.cpp`. It is
     independent of the Josephy-Newton driver (which globalizes with Armijo).
+  - `include/dampednewton.hpp`, `lib/dampednewton.cpp` — `dampedNewtonSolve`
+    (port of dNewton.m): minimizes `1/2 ||F(x)||^2` for rectangular `F` by
+    blending the Gauss-Newton normal-equations step with the scaled
+    steepest-descent step (fixed weight `theta`) and backtracking with Armijo;
+    reuses `levenbergMarquardtDamp`, `armijoLineSearch`, and the FD Jacobian.
+    The smoothing-Newton engine's workhorse.
 
 ## Invariants that will bite you if ignored
 
@@ -300,55 +315,31 @@ clang-format. The hallmarks:
   `utils`'s `runCase`/`CheckFn` — a `CheckFn`'s pass/report maps naturally onto
   `EXPECT_*` inside a `TEST()`.
 
-## Planned future direction (do not start unprompted)
+## Superseded design documents (historical)
 
-A second design document, `2026-06-29-LVI_solver_handoff.md`, sketches a more
-sophisticated solver. **It was written by a Claude instance that did not know
-about this project**, so its proposed architecture, module layout, and class
-names do NOT correspond to the current code — ignore those specifics. The single
-idea to carry forward from it is the solver engine:
-
-- **Global engine:** the Solodov–Svaiter projection (hyperplane / double-
-  projection) method as a matrix-free, globally convergent safeguard — converges
-  under pseudomonotonicity, weaker than the PSD/monotone condition Han's method
-  needs.
-- **Local engine:** a Rui–Xu-style inexact smoothing Newton step for the
-  superlinear/quadratic tail (smoothing parameter `mu > 0` keeps the Jacobian
-  nonsingular; inexact truncated-Krylov linear solve).
-- **Switching logic:** track the natural-map merit `theta(x) = 1/2 ||F_nat(x)||^2`;
-  accept the smoothing-Newton step on sufficient (Armijo) decrease of `theta`,
-  otherwise fall back to a Solodov–Svaiter projection step. Drive `mu -> 0` as
-  the residual shrinks.
-
-This is deferred work: when asked, we will plan how to fit this hybrid engine
-into the existing `VINCP` framework (reusing `VIResult`, `VIModel`, the
-`Projector` abstraction, and the natural-residual merit already computed in
-`solveVI`). Do not begin implementing it without an explicit request.
-
-## Next planned work: logistics network QP (start here next session)
-
-The user is bringing a NEW problem to this codebase: a **system-optimal convex QP**
-for distribution planning over a sparse ~100-node / ~500-arc network (minimize
-weighted squared demand-shortfall subject to flow balance, supply caps, and a
-ton-mile budget), generalizing soon to multiple goods, vehicle types, and resource
-budgets. It is a single-planner optimization, NOT a game/equilibrium (do not
-conflate with SAOE). The full spec, agreed recommendations (Lagrangian-on-budget +
-convex min-cost flow; OSQP; or reuse VINCP via a monotone KKT-LCP), data-structure
-notes, the coming multi-good/multi-vehicle generalization, a staged plan skeleton,
-and open questions are in **`2026-07-01-logistics-qp-handoff.md`** — read it first.
+- `2026-06-29-LVI_solver_handoff.md` sketched a hybrid global/local engine.
+  **It was written by a Claude instance that did not know about this project**,
+  so its architecture, module layout, and class names do NOT correspond to the
+  code. Its two engine ideas have since landed in the library's own shape:
+  the Solodov–Svaiter global safeguard (`solodovsvaiter.hpp`) and a smoothing
+  Newton local engine (`smoothingnewton.hpp`, via `dampednewton.hpp`). Its
+  merit-switched hybrid was NOT built as designed; composition is handled by
+  `alternatingChainSolve` and `chooseEngine` instead.
+- `2026-07-01-logistics-qp-handoff.md` specified the logistics network QP.
+  That work is BUILT: the `network/` layer (library `vincpnet`, ledger
+  `network/plan.md`, docs under `network/doc/`) carries the flow-planning QP,
+  the fleet generalization, the screens/certificates, and the two Qt viewers.
+  Read `network/plan.md`, not the handoff, for current state.
 
 ## Outstanding tasks (revisit later; do not start unprompted)
 
-- **SAOE equilibrium selection.** On the fixed `test/saoe_test.cpp` instance the
-  solver reliably converges to a negative-utility KKT point, not the reference
-  equilibrium a now-lost earlier C++ solver found (`saoe_test` therefore gates on
-  *feasibility*, not a specific equilibrium). This game is non-monotone / non-
-  concave with multiple KKT/stationary points; random starts (the `repeatable`
-  switch in `saoe_test`) all fall into the same basin. Likely levers to reach the
-  intended equilibrium: a stronger globalization (the Solodov–Svaiter safeguard
-  above) or a homotopy/continuation start.
 - **dHan06 inner-solver cost.** In the SAOE runs dHan06 is ~12x slower in wall
   time than bsHe94b at nearly equal iteration counts, because it re-factorizes
   `(I + beta_k M)` every inner iteration (beta_k is self-adaptive) while bsHe94b
   factors `(M + I)` once and reuses it. If dHan06 speed ever matters, cache/reuse
   its factorization across beta updates (or a rank-update), or cap inner iters.
+
+(The long-standing SAOE equilibrium-selection item was CLOSED 2026-07-06: the
+alternating chain reaches the reference equilibrium E from the default start —
+gate SC1 in `2026-07-06-engine-plan.md`, test `test/saoe_chain_test.cpp`.
+`test/saoe_test.cpp` still gates the plain engines on feasibility only.)

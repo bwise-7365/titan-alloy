@@ -31,7 +31,7 @@ using namespace VINCP;
 // with smooth ratio combat en route and at the conflict locations -- as a
 // mixed nonlinear complementarity problem over K = R^n x R_+^m.
 //
-// GAMS -> VINCP mapping (Model interdict, pairings from its / ... / list):
+// GMS -> VINCP mapping (Model interdict, pairings from its / ... / list):
 //   free block x (n = 4) = [ alphaR | alphaB | lambdaR | lambdaB ], the
 //     multipliers of the four =e= constraints; H rows are those constraints
 //     (probabilities sum to one, pre-positioning exhausts the totals).

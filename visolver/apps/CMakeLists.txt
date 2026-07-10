@@ -2,7 +2,7 @@
 # Focused application framework (VINCP::App): one reusable class per problem
 # kind, wrapping the existing solver library without modifying it, plus the
 # apps that demonstrate each class. Included from the root CMakeLists AFTER the
-# GoogleTest setup and the gams/ subdirectory (the app libraries link vincp and
+# GoogleTest setup and the gms/ subdirectory (the app libraries link vincp and
 # vincpgms; the tests use gtest_discover_tests).
 
 # --- SAOE application library (the reusable core) ------------------------------

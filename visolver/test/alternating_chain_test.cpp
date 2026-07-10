@@ -17,7 +17,7 @@ using namespace VINCP;
 // NS1 lesson: test a protocol with a deliberately controlled component, not a
 // hard problem. One case runs the real engines end to end on a small monotone
 // LCP as an integration check; the chain's real nonmonotone workout is the
-// deploy_v07 acceptance test (gams_deploy_test).
+// deploy_v07 acceptance test (gms_deploy_test).
 
 namespace {
     constexpr Index kDim = 2;   // pure NCP over R_+^2 (n = 0)
