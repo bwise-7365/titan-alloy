@@ -297,7 +297,7 @@ namespace VINCP::App {
   SAOE::solve(const Params& params) const
   {
     const VIModel model =
-        saoeModel(data.R, data.S, params.riskAversion, params.epsilon);
+        saoeModel(data.R, data.S, params.riskAversion, params.epsWeight);
     const VectorXd z0 = saoeDefaultStart(data.R, data.S);
 
     VIResult vi;
@@ -325,7 +325,7 @@ namespace VINCP::App {
     const Index M = data.R.rows();
     const Index N = data.R.cols();
     const SaoeSolution decoded = saoeDecode(vi, M, N);
-    const double eps = (0.0 < params.epsilon) ? params.epsilon : saoeEps(data.R);
+    const double eps = (0.0 < params.epsWeight) ? params.epsWeight : saoeEps(data.R);
 
     SaoeResult result;
     result.probabilities = saoeProbabilities(decoded.e, eps);

@@ -151,6 +151,126 @@ TEST(PformProblem, GenerateCoversEveryRowAndColumn)
     EXPECT_NO_THROW(validatePformData(data));
   }
 }
+
+namespace {
+
+  // Build a PformResult carrying just the effort and probabilities that the
+  // coalition analysis reads; the other fields are irrelevant here.
+  PformResult
+  resultWith(const MatrixXd& effort, const VectorXd& probabilities)
+  {
+    PformResult r;
+    r.effort        = effort;
+    r.probabilities = probabilities;
+    r.utilities     = VectorXd::Zero(effort.rows());
+    r.eta           = VectorXd::Zero(effort.cols());
+    r.phi           = VectorXd::Zero(effort.cols());
+    r.deterministic = 0;
+    r.epsilon       = 0.0;
+    return r;
+  }
+
+} // namespace
+
+TEST(PformProblem, CoalitionsGroupTwoClassesWithOneFreeIssue)
+{
+  // M = 2 parties, D = 2 issues => K = 4. Issue 0 is least significant, so
+  // parliaments 0,1 share issue 1 = P0 (differ on issue 0) and 2,3 share
+  // issue 1 = P1. Both parties fund each class; the classes differ in effort.
+  MatrixXd e(2, 4);
+  e << 0.30, 0.30, 0.10, 0.10,    // P0
+       0.25, 0.25, 0.20, 0.20;    // P1
+  VectorXd p(4);
+  p << 0.30, 0.30, 0.20, 0.20;
+  const auto coalitions = pformCoalitions(resultWith(e, p), 2, 2);
+
+  ASSERT_EQ(coalitions.size(), 2u);
+
+  // Sorted by probEach descending: the issue-1 = P0 class (prob 0.30) leads.
+  const PformCoalition& x = coalitions[0];
+  EXPECT_GT(x.probEach, coalitions[1].probEach);        // ordering
+  EXPECT_EQ(x.members, (std::vector<Index>{ 0, 1 }));
+  ASSERT_EQ(x.pattern.size(), 2u);
+  EXPECT_EQ(x.pattern[0], kFreeIssue);                  // issue 0 varies
+  EXPECT_EQ(x.pattern[1], 0);                           // issue 1 pinned to P0
+  EXPECT_EQ(x.parliaments.size(), 2u);
+  EXPECT_NEAR(x.probEach, 0.30, 1.0e-12);
+  EXPECT_NEAR(x.probTotal, 0.60, 1.0e-12);
+  EXPECT_TRUE(x.regularP);
+  ASSERT_EQ(x.effortPer.size(), 2);
+  EXPECT_NEAR(x.effortPer(0), 0.30, 1.0e-9);
+  EXPECT_NEAR(x.effortPer(1), 0.25, 1.0e-9);
+
+  const PformCoalition& y = coalitions[1];
+  EXPECT_EQ(y.pattern[0], kFreeIssue);
+  EXPECT_EQ(y.pattern[1], 1);                           // issue 1 pinned to P1
+}
+
+TEST(PformProblem, CoalitionSoloWithTwoFreeIssues)
+{
+  // M = 3, D = 3 => K = 27. Only P1 funds the 9 parliaments whose issue 2 is
+  // controlled by P1 (issue 2 most significant: k in [9, 17]); issues 0 and 1
+  // are then free, forming one solo coalition.
+  const Index M = 3, D = 3, K = 27;
+  MatrixXd e = MatrixXd::Zero(M, K);
+  VectorXd p = VectorXd::Zero(K);
+  for (Index k = 9; k < 18; ++k) {
+    e(1, k) = 0.5;
+    p(k)    = 1.0 / 9.0;
+  }
+  const auto coalitions = pformCoalitions(resultWith(e, p), M, D);
+
+  ASSERT_EQ(coalitions.size(), 1u);
+  const PformCoalition& c = coalitions[0];
+  EXPECT_EQ(c.members, (std::vector<Index>{ 1 }));
+  EXPECT_EQ(c.parliaments.size(), 9u);
+  EXPECT_EQ(c.pattern[2], 1);                           // issue 2 pinned to P1
+  int freeCount = 0;
+  for (const Index q : c.pattern) {
+    if (kFreeIssue == q) {
+      ++freeCount;
+    }
+  }
+  EXPECT_EQ(freeCount, 2);
+  EXPECT_TRUE(c.regularP);                              // 9 = M^2, a full box
+}
+
+TEST(PformProblem, CoalitionFlagsIrregularClass)
+{
+  // M = 2, D = 2 => K = 4. P0 funds only k=0 ([P0 P0]) and k=3 ([P1 P1]) with
+  // identical effort, so they group together; both issues vary, but a full
+  // product on two free issues needs M^2 = 4 parliaments, not 2.
+  MatrixXd e(2, 4);
+  e << 0.5, 0.0, 0.0, 0.5,
+       0.0, 0.0, 0.0, 0.0;
+  VectorXd p(4);
+  p << 0.5, 0.0, 0.0, 0.5;
+  const auto coalitions = pformCoalitions(resultWith(e, p), 2, 2);
+
+  ASSERT_EQ(coalitions.size(), 1u);
+  const PformCoalition& c = coalitions[0];
+  EXPECT_EQ(c.members, (std::vector<Index>{ 0 }));
+  EXPECT_EQ(c.parliaments.size(), 2u);
+  EXPECT_EQ(c.pattern[0], kFreeIssue);
+  EXPECT_EQ(c.pattern[1], kFreeIssue);
+  EXPECT_FALSE(c.regularP);
+}
+
+TEST(PformProblem, CoalitionsEmptyWhenNoSupport)
+{
+  MatrixXd e = MatrixXd::Zero(2, 4);
+  VectorXd p = VectorXd::Constant(4, 0.25);
+  const auto coalitions = pformCoalitions(resultWith(e, p), 2, 2);
+  EXPECT_TRUE(coalitions.empty());
+}
+
+TEST(PformProblem, CoalitionsRejectDimensionMismatch)
+{
+  MatrixXd e = MatrixXd::Zero(2, 4);
+  VectorXd p = VectorXd::Constant(4, 0.25);
+  EXPECT_THROW(pformCoalitions(resultWith(e, p), 3, 2), std::invalid_argument);
+  EXPECT_THROW(pformCoalitions(resultWith(e, p), 2, 3), std::invalid_argument);
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

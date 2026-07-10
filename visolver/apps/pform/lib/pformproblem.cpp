@@ -9,6 +9,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
+#include <map>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -247,7 +249,7 @@ namespace VINCP::App {
       }
     }
 
-    // Effort floor from the unselected-probability knob q (eps is not an input).
+    // Effort floor from the unselected-probability knob q (epsWeight is not an input).
     const double q = params.unselectedProb;
     const double kd = static_cast<double>(K);
     const double qMax = (kd - 1.0) / kd;
@@ -256,17 +258,20 @@ namespace VINCP::App {
           "PForm: unselectedProb q must satisfy 0 < q < (K-1)/K.");
     }
     const double W = data.weight.sum();
-    const double epsilon = q * W / (kd * (1.0 - q) - 1.0);
+    const double epsWeight = q * W / (kd * (1.0 - q) - 1.0);
 
     // Solve the SAOE Nash equilibrium of the utility matrix (risk aversion is
     // already in the quadratic utility, so the inner SAOE is risk-neutral).
     SaoeParams saoeParams;
+    saoeParams.magTol       = 1.0e-9; // temporarily raised
     saoeParams.engine       = params.engine;
     saoeParams.riskAversion = 0.0;
-    saoeParams.epsilon      = epsilon;
+    saoeParams.epsWeight      = epsWeight;
     saoeParams.verbose      = params.verbose;
     const SAOE saoe(SaoeData{ R, data.weight });
     const auto [vi, saoeResult] = saoe.solve(saoeParams);
+
+    printf("\n \n Weight epsilon: %.3e \n \n", epsWeight);
 
     PformResult result;
     result.effort        = saoeResult.e;
@@ -275,9 +280,132 @@ namespace VINCP::App {
     result.eta           = eta;
     result.phi           = phi;
     result.deterministic = deterministic;
-    result.epsilon       = epsilon;
+    result.epsilon       = epsWeight;
 
     return Solution{ vi, result };
+  }
+
+  vector<PformCoalition>
+  pformCoalitions(const PformResult& result, Index numParties, Index numIssues,
+                  double supportTol, double effortTol)
+  {
+    const MatrixXd& e = result.effort;
+    const Index M = e.rows();
+    const Index K = e.cols();
+    const Index D = numIssues;
+    if (M != numParties) {
+      throw std::invalid_argument(
+          "pformCoalitions: effort row count does not match numParties.");
+    }
+    if (K != pformParliamentCount(numParties, numIssues)) {
+      throw std::invalid_argument(
+          "pformCoalitions: effort column count does not match M^D.");
+    }
+    if (result.probabilities.size() != K) {
+      throw std::invalid_argument(
+          "pformCoalitions: probabilities size does not match the effort columns.");
+    }
+    if (0 == e.size()) {
+      return {};
+    }
+
+    const double maxEffort = e.maxCoeff();
+    const double threshold = std::max(supportTol, 1.0e-6 * maxEffort);
+    const double quantum = std::max(1.0e-12, effortTol * maxEffort);
+
+    // Group supported parliaments by their quantized per-party effort vector.
+    // effortSum accumulates the exact efforts so each class's representative is
+    // the class average (robust to the solver's ~1e-5 within-class noise).
+    std::map<vector<long long>, size_t> keyToGroup;
+    vector<PformCoalition> coalitions;
+    vector<VectorXd> effortSum;
+    for (Index k = 0; k < K; ++k) {
+      if (!(threshold < e.col(k).sum())) {
+        continue;
+      }
+      vector<long long> key(static_cast<size_t>(M));
+      for (Index m = 0; m < M; ++m) {
+        key[static_cast<size_t>(m)] =
+            static_cast<long long>(std::llround(e(m, k) / quantum));
+      }
+      const auto it = keyToGroup.find(key);
+      if (keyToGroup.end() == it) {
+        keyToGroup.emplace(key, coalitions.size());
+        PformCoalition c;
+        c.parliaments.push_back(k);
+        coalitions.push_back(std::move(c));
+        effortSum.push_back(e.col(k));
+      }
+      else {
+        coalitions[it->second].parliaments.push_back(k);
+        effortSum[it->second] += e.col(k);
+      }
+    }
+
+    // Fill each coalition: representative effort, members, pinned/free pattern,
+    // probabilities, and the regular (full-product) check.
+    for (size_t g = 0; g < coalitions.size(); ++g) {
+      PformCoalition& c = coalitions[g];
+      const double count = static_cast<double>(c.parliaments.size());
+      const VectorXd rep = effortSum[g] / count;
+
+      for (Index m = 0; m < M; ++m) {
+        if (threshold < rep(m)) {
+          c.members.push_back(m);
+        }
+      }
+      c.effortPer.resize(static_cast<Index>(c.members.size()));
+      for (size_t i = 0; i < c.members.size(); ++i) {
+        c.effortPer(static_cast<Index>(i)) = rep(c.members[i]);
+      }
+
+      // An issue is PINNED if its controller is constant across the class,
+      // otherwise FREE. Seed from the first parliament, then relax to kFreeIssue
+      // wherever a later parliament disagrees.
+      c.pattern = pformMatching(c.parliaments.front(), numParties, numIssues);
+      for (size_t i = 1; i < c.parliaments.size(); ++i) {
+        const vector<Index> f = pformMatching(c.parliaments[i], numParties, numIssues);
+        for (size_t d = 0; d < static_cast<size_t>(D); ++d) {
+          if (kFreeIssue != c.pattern[d] && c.pattern[d] != f[d]) {
+            c.pattern[d] = kFreeIssue;
+          }
+        }
+      }
+
+      double probSum = 0.0;
+      for (const Index k : c.parliaments) {
+        probSum += result.probabilities(k);
+      }
+      c.probTotal = probSum;
+      c.probEach = probSum / count;
+
+      // Regular iff the class is the full Cartesian product over its free
+      // issues: exactly M^(#free) parliaments (the pinned issues are already
+      // constant, so a full count means every free combination is present).
+      Index freeCount = 0;
+      for (const Index p : c.pattern) {
+        if (kFreeIssue == p) {
+          ++freeCount;
+        }
+      }
+      long long expected = 1;
+      for (Index t = 0; t < freeCount; ++t) {
+        expected *= numParties;
+      }
+      c.regularP = (static_cast<long long>(c.parliaments.size()) == expected);
+    }
+
+    std::sort(coalitions.begin(), coalitions.end(),
+              [](const PformCoalition& a, const PformCoalition& b) {
+                if (a.probEach != b.probEach) {
+                  return a.probEach > b.probEach;
+                }
+                if (a.probTotal != b.probTotal) {
+                  return a.probTotal > b.probTotal;
+                }
+                return a.members < b.members;
+              });
+    return coalitions;
   }
 
   PformResult

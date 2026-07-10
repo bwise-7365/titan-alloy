@@ -71,6 +71,39 @@ namespace VINCP::App {
     double   epsilon = 0.0;       // the effort floor eps derived from q (reported)
   };
 
+  // Sentinel for a "free" (don't-care) issue in a coalition pattern: an issue
+  // whose controlling party is not constant across the coalition's parliaments,
+  // rendered as '*' in output.
+  constexpr Index kFreeIssue = -1;
+
+  // A coalition: a maximal class of supported parliaments that share the SAME
+  // per-party effort vector. The non-interior engines split each party's effort
+  // EVENLY over such a class, whose parliaments differ only on their FREE issues
+  // (kFreeIssue); the remaining issues are PINNED to one controlling party.
+  struct PformCoalition {
+    vector<Index> members;       // parties carrying effort here (ascending)
+    VectorXd      effortPer;     // members.size(): each member's per-parliament effort
+    vector<Index> pattern;       // D: controlling party per issue, or kFreeIssue ('*')
+    vector<Index> parliaments;   // the k's in this class (unsorted)
+    double        probEach  = 0.0;   // common per-parliament probability
+    double        probTotal = 0.0;   // = probEach * parliaments.size()
+    bool          regularP  = true;  // class is a full Cartesian product over its free issues
+  };
+
+  // Group a PForm result's SUPPORTED parliaments into coalitions. Operates on the
+  // RAW (spread) effort -- the even split is the coalition signal, which sparsify
+  // would erase. Within a class, an issue is PINNED (one party controls it in
+  // every member) or FREE (kFreeIssue, the controller ranges over parties). The
+  // returned coalitions are sorted by probEach descending (matching the
+  // parliament table's order). supportTol is the "carries effort" rule the table
+  // uses; effortTol is quantization RELATIVE to the max effort, so solver noise
+  // within a class does not split it while distinct coalitions (efforts ~0.01
+  // apart) stay separate. Throws std::invalid_argument if the result's effort
+  // dimensions disagree with (numParties, numIssues).
+  vector<PformCoalition>
+  pformCoalitions(const PformResult& result, Index numParties, Index numIssues,
+                  double supportTol = 1.0e-9, double effortTol = 1.0e-3);
+
   // Random-instance recipe: positions ~ U[0,1]; weights ~ U[weightLo, weightHi].
   // Saliences are SPARSE: each party has positive salience ~ U[salienceLo,
   // salienceHi] on half its issues (chosen at random) and ZERO on the rest, so

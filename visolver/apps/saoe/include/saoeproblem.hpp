@@ -47,7 +47,7 @@ namespace VINCP::App {
 
     // Modeling knobs (these change the equilibrium, not merely the path to it).
     double riskAversion = 0.0;    // 'a' in saoeModel: 0 = risk-neutral
-    double epsilon      = -1.0;   // effort floor; <= 0 => saoeEps(R)
+    double epsWeight      = -1.0;   // effort floor; <= 0 => saoeEps(R)
 
     // Solve-process controls (all tolerances are SQUARED natural residuals).
     double magTol               = 1.0e-10;   // chain / auto acceptance

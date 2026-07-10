@@ -58,6 +58,49 @@ namespace {
     return out;
   }
 
+  // Render a coalition pattern: a pinned issue shows its controlling party, a
+  // free issue shows '*'. Every cell is right-justified to the widest party
+  // label so the columns line up under matchingText's, e.g. [P0  * P1 P0 P1].
+  std::string
+  patternText(const std::vector<Index>& pattern,
+              const std::vector<std::string>& partyLabels)
+  {
+    std::size_t width = 1;
+    for (const std::string& label : partyLabels) {
+      width = std::max(width, label.size());
+    }
+    std::string out = "[";
+    for (std::size_t i = 0; i < pattern.size(); ++i) {
+      if (0 < i) {
+        out += " ";
+      }
+      const std::string cell =
+          (kFreeIssue == pattern[i])
+              ? std::string("*")
+              : partyLabels[static_cast<std::size_t>(pattern[i])];
+      out += std::string(width - cell.size(), ' ') + cell;
+    }
+    out += "]";
+    return out;
+  }
+
+  // Spreadsheet-style coalition label: A..Z, then AA, AB, ... for the (rare)
+  // case of more than 26 coalitions.
+  std::string
+  coalitionLabel(std::size_t index)
+  {
+    std::string out;
+    std::size_t n = index;
+    for (;;) {
+      out.insert(out.begin(), static_cast<char>('A' + static_cast<int>(n % 26)));
+      if (n < 26) {
+        break;
+      }
+      n = n / 26 - 1;
+    }
+    return out;
+  }
+
   // Echo the instance that was read/generated: the weight vector and the
   // position and salience matrices (issues x parties), all with their labels.
   void
@@ -173,6 +216,91 @@ namespace {
     return;
   }
 
+  // Print the coalition structure extracted from the (raw) result, then a
+  // per-party breakdown of how each party split its effort across coalitions.
+  void
+  printCoalitions(const CliInstance& in, const std::vector<PformCoalition>& coalitions)
+  {
+    std::printf(
+        "\nCoalition structure (parliaments grouped by identical party support;\n"
+        "'*' marks an issue whose controlling party is free within the coalition):\n");
+    if (coalitions.empty()) {
+      std::printf("  (no supported parliaments)\n");
+      return;
+    }
+
+    // Pre-render the variable-width text columns so they can be sized to fit.
+    std::vector<std::string> ids, parties, patterns, contribs;
+    std::size_t idW = 2, partyW = 7, patW = 7, conW = 13;
+    for (std::size_t g = 0; g < coalitions.size(); ++g) {
+      const PformCoalition& c = coalitions[g];
+      ids.push_back(coalitionLabel(g));
+      std::string ps;
+      std::string cs;
+      for (std::size_t i = 0; i < c.members.size(); ++i) {
+        const std::string& label = in.partyLabels[static_cast<std::size_t>(c.members[i])];
+        if (0 < i) {
+          ps += ",";
+          cs += " ";
+        }
+        ps += label;
+        char buf[64];
+        std::snprintf(buf, sizeof buf, "%s:%.2f", label.c_str(),
+                      c.effortPer(static_cast<Index>(i)));
+        cs += buf;
+      }
+      parties.push_back(ps);
+      patterns.push_back(patternText(c.pattern, in.partyLabels));
+      contribs.push_back(cs);
+      idW    = std::max(idW, ids.back().size());
+      partyW = std::max(partyW, parties.back().size());
+      patW   = std::max(patW, patterns.back().size());
+      conW   = std::max(conW, contribs.back().size());
+    }
+
+    std::printf("  %-*s %-*s %-*s %-*s %10s %6s %11s\n", static_cast<int>(idW), "id",
+                static_cast<int>(partyW), "parties", static_cast<int>(patW), "pattern",
+                static_cast<int>(conW), "contributions", "prob(each)", "seats",
+                "prob(total)");
+    for (std::size_t g = 0; g < coalitions.size(); ++g) {
+      const PformCoalition& c = coalitions[g];
+      std::printf("  %-*s %-*s %-*s %-*s %10.4f %6lld %11.4f%s\n",
+                  static_cast<int>(idW), ids[g].c_str(), static_cast<int>(partyW),
+                  parties[g].c_str(), static_cast<int>(patW), patterns[g].c_str(),
+                  static_cast<int>(conW), contribs[g].c_str(), c.probEach,
+                  static_cast<long long>(c.parliaments.size()), c.probTotal,
+                  c.regularP ? "" : "  (irregular)");
+    }
+
+    // Party vote split: how each party divided its budget across coalitions.
+    std::printf(
+        "\nParty vote split (effort committed to each coalition; xN = N seats):\n");
+    const Index M = in.data.weight.size();
+    for (Index m = 0; m < M; ++m) {
+      std::string line;
+      for (std::size_t g = 0; g < coalitions.size(); ++g) {
+        const PformCoalition& c = coalitions[g];
+        for (std::size_t i = 0; i < c.members.size(); ++i) {
+          if (c.members[i] == m) {
+            char buf[64];
+            std::snprintf(buf, sizeof buf, "  %s:%.2fx%lld", ids[g].c_str(),
+                          c.effortPer(static_cast<Index>(i)),
+                          static_cast<long long>(c.parliaments.size()));
+            line += buf;
+            break;
+          }
+        }
+      }
+      if (line.empty()) {
+        line = "  (no coalition)";
+      }
+      std::printf("  %-8s ->%s   (weight %.2f)\n",
+                  in.partyLabels[static_cast<std::size_t>(m)].c_str(), line.c_str(),
+                  in.data.weight(m));
+    }
+    return;
+  }
+
   void
   printUsage()
   {
@@ -265,8 +393,25 @@ main(int argc, char** argv)
     PformParams params;
     params.unselectedProb = in.unselectedProb;
     params.engine = engine;   // --engine, or Default (the SAOE chain)
+
+    // with interior solvers, this will likely have lots of small efforts
+    // because it will be in the center of a face.
     const auto [vi, res] = problem.solve(params);
     printResult(in, params, vi, res);
+
+    // Extract and print the coalition structure from the RAW result (the even
+    // split over each coalition is the signal; sparsify would erase it).
+    const Index nParties = in.data.weight.size();
+    const Index nIssues  = in.data.position.rows();
+    printCoalitions(in, pformCoalitions(res, nParties, nIssues));
+
+    // This will not change the result of an edge-following solver,
+    // but it will sometimes simplify that of an interior-path solver.
+    // Not often for PForm.
+    //printf("Sparsified result ... \n");
+    //const PformResult sparse = problem.sparsify(res);
+    //printResult(in, params, vi, sparse);
+
     return vi.converged ? 0 : 1;
   }
   catch (const std::exception& e) {
