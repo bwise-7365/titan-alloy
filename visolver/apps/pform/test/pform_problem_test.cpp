@@ -118,6 +118,39 @@ TEST(PformProblem, RejectsLowSalienceColumn)
   const PForm problem(data);
   EXPECT_THROW(problem.solve(PformParams{}), std::invalid_argument);
 }
+
+TEST(PformProblem, RejectsAllZeroIssue)
+{
+  // Both party columns are valid (sum 5 >= 1), but issue 1 is salient to
+  // nobody -- the row rule must reject that all-zero salience row.
+  PformData data;
+  data.weight = VectorXd::Constant(2, 1.0);
+  data.position.resize(2, 2);
+  data.position << 0.2, 0.8,
+                   0.5, 0.5;
+  data.salience.resize(2, 2);
+  data.salience << 5.0, 5.0,
+                   0.0, 0.0;
+  EXPECT_THROW(validatePformData(data), std::invalid_argument);
+}
+
+TEST(PformProblem, GenerateCoversEveryRowAndColumn)
+{
+  for (const std::uint64_t seed : { 1ULL, 7ULL, 42ULL, 100ULL }) {
+    PformRandomSpec spec;
+    spec.numParties = 4;
+    spec.numIssues  = 5;
+    spec.seed       = seed;
+    const PformData data = PForm::generate(spec);
+    for (Index d = 0; d < data.position.rows(); ++d) {
+      EXPECT_GT(data.salience.row(d).sum(), 0.0);   // no issue salient to nobody
+    }
+    for (Index m = 0; m < data.weight.size(); ++m) {
+      EXPECT_GE(data.salience.col(m).sum(), 1.0);   // every party >= 1
+    }
+    EXPECT_NO_THROW(validatePformData(data));
+  }
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

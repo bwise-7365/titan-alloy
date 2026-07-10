@@ -1,6 +1,7 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 # PFORM application: the parliament-formation sub-model over the SAOE class,
-# plus the pform CLI. Links saoeapp (the App::SAOE class + vincp) and vincpgms
+# plus the pform_cli CLI (the GUI is pending: it will be target pform_gui under
+# a gui/ subdir). Links saoeapp (the App::SAOE class + vincp) and vincpgms
 # (the GMS reader). The PForm GUI is a PENDING task (see apps/pform, no gui/ yet).
 
 # --- PFORM application library (the reusable core) -----------------------------
@@ -22,13 +23,13 @@ else()
     target_compile_options(pformapp PRIVATE -Wall -Wextra)
 endif()
 
-# --- pform: the CLI app --------------------------------------------------------
-add_executable(pform src/pform.cpp)
-target_link_libraries(pform PRIVATE pformapp)
+# --- pform_cli: the CLI app (the GUI, pending, will be target pform_gui) --------
+add_executable(pform_cli src/pform_cli.cpp)
+target_link_libraries(pform_cli PRIVATE pformapp)
 if (MSVC)
-    target_compile_options(pform PRIVATE /W4)
+    target_compile_options(pform_cli PRIVATE /W4)
 else()
-    target_compile_options(pform PRIVATE -Wall -Wextra)
+    target_compile_options(pform_cli PRIVATE -Wall -Wextra)
 endif()
 
 # --- GoogleTest suites ---------------------------------------------------------

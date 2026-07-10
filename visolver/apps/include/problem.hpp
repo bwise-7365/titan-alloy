@@ -25,7 +25,12 @@
 
 #include "vincp.hpp"
 
+#include <algorithm>
+#include <cstddef>
+#include <stdexcept>
+#include <string>
 #include <tuple>
+#include <vector>
 
 namespace VINCP::App {
 
@@ -83,11 +88,115 @@ namespace VINCP::App {
     // detected divergence / non-finite value.
     virtual Solution solve(const Params& params) const = 0;
 
+    // Drive a result to a SPARSE representative -- a vertex of the set of
+    // solutions equivalent to it -- WITHOUT changing its pinned/invariant
+    // quantities (e.g. fleet: consolidate flow arcs, deliveries unchanged; SAOE:
+    // concentrate the non-unique effort attribution, probabilities unchanged).
+    // PURE VIRTUAL by design: every solver author must consciously choose. If the
+    // solver already follows edges / returns a unique result, write the trivial
+    // pass-through `return result;`. If it does not (an interior-point / spread
+    // solution), write the real consolidation.
+    virtual Result sparsify(const Result& result) const = 0;
+
   protected:
     Problem() = default;
 
   private:
   };
+
+  // ---------------------------------------------------------------------------
+  // Engine metadata -- the single source of truth for engine names/tokens.
+  // Each Problem separately declares WHICH engines it honors (see e.g.
+  // SAOE::honoredEngines); these free functions only describe and parse the
+  // shared vocabulary, so no app re-hardcodes it. The switches deliberately have
+  // no default: a new Engine value makes the compiler flag every switch here.
+  // ---------------------------------------------------------------------------
+
+  // A short, stable CLI/config token for each engine (lower-case).
+  inline const char*
+  engineToken(ProblemBase::Engine engine)
+  {
+    switch (engine) {
+      case ProblemBase::Engine::Default:         return "default";
+      case ProblemBase::Engine::Chain:           return "chain";
+      case ProblemBase::Engine::Auto:            return "auto";
+      case ProblemBase::Engine::Ipm:             return "ipm";
+      case ProblemBase::Engine::Bshe94b:         return "bshe94b";
+      case ProblemBase::Engine::Ssn:             return "ssn";
+      case ProblemBase::Engine::SmoothingNewton: return "smoothing";
+      case ProblemBase::Engine::Fbs:             return "fbs";
+    }
+    return "?";   // unreachable (switch is exhaustive); satisfies -Wreturn-type
+  }
+
+  // A human-readable name/description for each engine.
+  inline const char*
+  engineName(ProblemBase::Engine engine)
+  {
+    switch (engine) {
+      case ProblemBase::Engine::Default:
+        return "Default (the problem's own robust default)";
+      case ProblemBase::Engine::Chain:
+        return "Chain (alternating globalizer/finisher)";
+      case ProblemBase::Engine::Auto:
+        return "Auto (chooseEngine: semismooth Newton, chain fallback)";
+      case ProblemBase::Engine::Ipm:
+        return "Ipm (Mehrotra interior point)";
+      case ProblemBase::Engine::Bshe94b:
+        return "Bshe94b (He 1994 projection-contraction)";
+      case ProblemBase::Engine::Ssn:
+        return "Ssn (semismooth Newton)";
+      case ProblemBase::Engine::SmoothingNewton:
+        return "SmoothingNewton (non-interior smoothing, Zhang-Liu-Liu)";
+      case ProblemBase::Engine::Fbs:
+        return "Fbs (forward-backward splitting, He-Yuan-Zhang 2004)";
+    }
+    return "?";
+  }
+
+  // Parse an engine token (as engineToken produces, plus the "smoothingnewton"
+  // synonym). Throws std::invalid_argument naming the offender on an unknown one.
+  inline ProblemBase::Engine
+  parseEngineToken(const std::string& token)
+  {
+    for (const ProblemBase::Engine e :
+         { ProblemBase::Engine::Default, ProblemBase::Engine::Chain,
+           ProblemBase::Engine::Auto, ProblemBase::Engine::Ipm,
+           ProblemBase::Engine::Bshe94b, ProblemBase::Engine::Ssn,
+           ProblemBase::Engine::SmoothingNewton, ProblemBase::Engine::Fbs }) {
+      if (token == engineToken(e)) {
+        return e;
+      }
+    }
+//    if ("smoothingnewton" == token) {
+//      return ProblemBase::Engine::SmoothingNewton;
+//    }
+    throw std::invalid_argument("unknown engine token '" + token + "'.");
+  }
+
+  // "chain|auto|smoothing|fbs" from a list of engines, for help / error text.
+  inline std::string
+  engineTokenList(const std::vector<ProblemBase::Engine>& engines)
+  {
+    std::string out;
+    for (std::size_t i = 0; i < engines.size(); ++i) {
+      if (0 < i) {
+        out += "|";
+      }
+      out += engineToken(engines[i]);
+    }
+    return out;
+  }
+
+  // Whether 'engine' is in 'honored' (Engine::Default is universally accepted --
+  // it resolves to each problem's own default).
+  inline bool
+  engineIsHonored(const std::vector<ProblemBase::Engine>& honored,
+                  ProblemBase::Engine engine)
+  {
+    return ProblemBase::Engine::Default == engine
+        || std::find(honored.begin(), honored.end(), engine) != honored.end();
+  }
 
 } // namespace VINCP::App
 

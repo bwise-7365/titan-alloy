@@ -135,6 +135,50 @@ TEST(SaoeProblem, GenerateRejectsBadSpec)
   inverted.rewardHi = -10.0;
   EXPECT_THROW(SAOE::generate(inverted), std::invalid_argument);
 }
+
+namespace {
+
+  SaoeResult
+  saoeResultWithEffort(const MatrixXd& e)
+  {
+    SaoeResult r;
+    r.e = e;
+    r.probabilities = VectorXd::Constant(e.cols(), 1.0 / static_cast<double>(e.cols()));
+    r.utilities = VectorXd::Zero(e.rows());
+    r.lambda = VectorXd::Zero(e.rows());
+    return r;
+  }
+
+} // namespace
+
+TEST(SaoeProblem, SparsifyProjectsInteriorToVertex)
+{
+  // A 2x2 interior effort (all four positive => a 4-cycle) with margins
+  // [2,2] rows / [2,2] cols. sparsify must drive it to a vertex.
+  MatrixXd e(2, 2);
+  e << 1.0, 1.0,
+       1.0, 1.0;
+  const SAOE problem(referenceInstance());
+  const SaoeResult s = problem.sparsify(saoeResultWithEffort(e));
+
+  EXPECT_NEAR(s.e.row(0).sum(), 2.0, 1.0e-9);   // row (party) sums preserved
+  EXPECT_NEAR(s.e.row(1).sum(), 2.0, 1.0e-9);
+  EXPECT_NEAR(s.e.col(0).sum(), 2.0, 1.0e-9);   // column (option) sums preserved
+  EXPECT_NEAR(s.e.col(1).sum(), 2.0, 1.0e-9);
+  const Index nnz = (s.e.array() > 1.0e-9).count();
+  EXPECT_LE(nnz, 3);   // a vertex has at most M + N - 1 = 3 nonzeros
+  EXPECT_LT(nnz, 4);   // strictly sparser than the interior
+}
+
+TEST(SaoeProblem, SparsifyIsIdentityOnVertex)
+{
+  MatrixXd e(2, 2);
+  e << 2.0, 0.0,
+       0.0, 2.0;   // already a vertex (acyclic support)
+  const SAOE problem(referenceInstance());
+  const SaoeResult s = problem.sparsify(saoeResultWithEffort(e));
+  EXPECT_EQ((s.e - e).cwiseAbs().maxCoeff(), 0.0);   // unchanged
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

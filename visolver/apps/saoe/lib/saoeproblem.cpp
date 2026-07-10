@@ -14,18 +14,113 @@
 #include "semismoothnewton.hpp"
 #include "smoothingnewton.hpp"
 
+#include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <cstdio>
+#include <limits>
+#include <numeric>
 #include <random>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace VINCP::App {
+
+  namespace {
+
+    // BFS path a -> b in the (undirected) spanning-forest adjacency.
+    std::vector<int>
+    treePath(int a, int b, const std::vector<std::vector<int>>& adj)
+    {
+      const std::size_t n = adj.size();
+      std::vector<int> prev(n, -1);
+      std::vector<char> seen(n, 0);
+      std::vector<int> queue;
+      queue.push_back(a);
+      seen[static_cast<std::size_t>(a)] = 1;
+      std::size_t head = 0;
+      while (head < queue.size()) {
+        const int u = queue[head++];
+        if (u == b) {
+          break;
+        }
+        for (const int v : adj[static_cast<std::size_t>(u)]) {
+          if (0 == seen[static_cast<std::size_t>(v)]) {
+            seen[static_cast<std::size_t>(v)] = 1;
+            prev[static_cast<std::size_t>(v)] = u;
+            queue.push_back(v);
+          }
+        }
+      }
+      std::vector<int> path;
+      for (int cur = b; cur != -1; cur = prev[static_cast<std::size_t>(cur)]) {
+        path.push_back(cur);
+        if (cur == a) {
+          break;
+        }
+      }
+      std::reverse(path.begin(), path.end());   // now a -> b
+      return path;
+    }
+
+    // Cancel the cycle given by the ordered node list `path` (a party/option
+    // sequence) plus the closing edge back to path[0]. Alternating +/- around the
+    // even-length bipartite cycle preserves every row and column sum and zeroes
+    // at least one edge. `numParties` splits party nodes (< it) from option nodes.
+    void
+    cancelCycle(MatrixXd& e, const std::vector<int>& path, int numParties, double tol)
+    {
+      const std::size_t len = path.size();
+      const auto entryOf = [numParties](int u, int v) -> std::pair<Index, Index> {
+        const int party  = (u < numParties) ? u : v;
+        const int option = ((u < numParties) ? v : u) - numParties;
+        return { static_cast<Index>(party), static_cast<Index>(option) };
+      };
+      double delta = std::numeric_limits<double>::infinity();
+      for (std::size_t i = 0; i < len; ++i) {
+        if (1 == i % 2) {
+          const auto [p, o] = entryOf(path[i], path[(i + 1) % len]);
+          delta = std::min(delta, e(p, o));
+        }
+      }
+      for (std::size_t i = 0; i < len; ++i) {
+        const auto [p, o] = entryOf(path[i], path[(i + 1) % len]);
+        if (0 == i % 2) {
+          e(p, o) += delta;
+        }
+        else {
+          e(p, o) -= delta;
+        }
+        if (e(p, o) < tol) {
+          e(p, o) = 0.0;   // the min "-" edge (and any dust) leaves the support
+        }
+      }
+      return;
+    }
+
+  } // namespace
 
   SAOE::SAOE(SaoeData instanceData)
     : data(std::move(instanceData))
   {
     return;
+  }
+
+  const std::vector<ProblemBase::Engine>&
+  SAOE::honoredEngines()
+  {
+    // Chain first: it is SAOE's default (Engine::Default resolves to it) and the
+    // only configuration shown to reach the reference equilibrium E. This list
+    // is the single source of truth for the solve guard and the CLIs; keep it in
+    // step with the dispatch in solve().
+    static const std::vector<ProblemBase::Engine> engines = {
+        ProblemBase::Engine::Chain,
+        ProblemBase::Engine::Auto,
+        ProblemBase::Engine::SmoothingNewton,
+        ProblemBase::Engine::Fbs,
+    };
+    return engines;
   }
 
   SaoeData
@@ -222,8 +317,9 @@ namespace VINCP::App {
         break;
       default:
         throw std::invalid_argument(
-            "SAOE::solve: this problem honors Engine::Chain (default), "
-            "Engine::Auto, Engine::SmoothingNewton, or Engine::Fbs.");
+            std::string("SAOE::solve: engine ") + engineName(params.engine)
+            + " is not honored; use one of: "
+            + engineTokenList(honoredEngines()) + ".");
     }
 
     const Index M = data.R.rows();
@@ -238,6 +334,75 @@ namespace VINCP::App {
     result.lambda        = decoded.lambda;
 
     return Solution{ vi, result };
+  }
+
+  MatrixXd
+  sparsifyEffortMatrix(const MatrixXd& effort)
+  {
+    MatrixXd e = effort;
+    const Index M = e.rows();
+    const Index N = e.cols();
+    if (0 == e.size()) {
+      return e;
+    }
+    const double tol = std::max(1.0e-12, 1.0e-9 * e.maxCoeff());
+    const int nodes = static_cast<int>(M + N);   // parties 0..M-1, options M..M+N-1
+    const long cap = static_cast<long>(M) * static_cast<long>(N) + 1;
+
+    for (long guard = 0; guard <= cap; ++guard) {
+      std::vector<int> parent(static_cast<std::size_t>(nodes));
+      std::iota(parent.begin(), parent.end(), 0);
+      const auto find = [&parent](int x) {
+        while (parent[static_cast<std::size_t>(x)] != x) {
+          parent[static_cast<std::size_t>(x)] =
+              parent[static_cast<std::size_t>(parent[static_cast<std::size_t>(x)])];
+          x = parent[static_cast<std::size_t>(x)];
+        }
+        return x;
+      };
+      std::vector<std::vector<int>> adj(static_cast<std::size_t>(nodes));
+
+      // Scan support entries, building a spanning forest; the first entry whose
+      // endpoints are already connected closes a cycle -> cancel it and restart.
+      bool cancelledP = false;
+      for (Index m = 0; m < M && !cancelledP; ++m) {
+        for (Index j = 0; j < N; ++j) {
+          if (e(m, j) <= tol) {
+            continue;
+          }
+          const int a = static_cast<int>(m);
+          const int b = static_cast<int>(M + j);
+          const int ra = find(a);
+          const int rb = find(b);
+          if (ra != rb) {
+            parent[static_cast<std::size_t>(ra)] = rb;
+            adj[static_cast<std::size_t>(a)].push_back(b);
+            adj[static_cast<std::size_t>(b)].push_back(a);
+          }
+          else {
+            cancelCycle(e, treePath(a, b, adj), static_cast<int>(M), tol);
+            cancelledP = true;
+            break;
+          }
+        }
+      }
+      if (!cancelledP) {
+        return e;   // support is a forest -> a vertex (identity if it never moved)
+      }
+    }
+    throw std::logic_error(
+        "sparsifyEffortMatrix: could not reach a vertex (support remained cyclic).");
+  }
+
+  SaoeResult
+  SAOE::sparsify(const SaoeResult& result) const
+  {
+    // Identity-or-project: the effort matrix is driven to a vertex of its
+    // transportation polytope; the probabilities, utilities, and lambda (the
+    // pinned quantities and the multiplier) are carried over unchanged.
+    SaoeResult out = result;
+    out.e = sparsifyEffortMatrix(result.e);
+    return out;
   }
 
 } // namespace VINCP::App

@@ -24,7 +24,9 @@
 
 10. **Rebutting an argument:** restate the argument accurately and in its strongest form before addressing it. Identify the specific non sequitur or unstated premise, and correct it explicitly. Do not attack the arguer's motive, competence, or character, and do not use dismissive characterizations ("that's absurd," "nobody seriously believes") as a substitute for identifying the actual logical or factual defect.
 
-11. ** Software-engineering jargon used metaphorically without definition:**  terms such as "seam," "gate," "pin/pinned" carry precise technical meanings (extension point, required check, fixed value, respectively) but read as buzzwords when used without definition or extended past their established meaning. On first use, either replace with the plain term (extension point, interface, required check, fixed/locked value) or define the term precisely and do not extend it metaphorically beyond that definition (e.g., a seam is a point for altering behavior, not a point for observing it).
+11. **Software-engineering jargon used metaphorically without definition:**  terms such as "seam," "gate," "pin/pinned" carry precise technical meanings (extension point, required check, fixed value, respectively) but read as buzzwords when used without definition or extended past their established meaning. On first use, either replace with the plain term (extension point, interface, required check, fixed/locked value) or define the term precisely and do not extend it metaphorically beyond that definition (e.g., a seam is a point for altering behavior, not a point for observing it).
+
+12. **Use moral language for abstractions:** terms such as "honesty" apply only to conscious agents, e.g. humans, never to data or software. A concept cannot be honest, so describe it as either "true" or "false". The return value from a function can be accurate or inaccurate, useful or useless, but never "honest". 
 
 Do not substitute a listed example verbatim as the only trigger — apply the underlying rule to any phrasing that performs the same function.
 

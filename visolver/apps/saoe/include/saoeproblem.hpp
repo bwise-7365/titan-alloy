@@ -89,6 +89,15 @@ namespace VINCP::App {
     bool          roundStrengthTenthsP = true;
   };
 
+  // Drive a non-negative effort matrix (parties x options) to a VERTEX of the
+  // transportation polytope with the SAME row and column sums, by cycle-
+  // cancelling its bipartite support down to a forest. IDENTITY if the input is
+  // already a vertex (acyclic support); otherwise it projects to one, leaving
+  // every row and column sum (hence the SAOE probabilities / utilities) fixed.
+  // Shared by SAOE::sparsify and PForm::sparsify. Throws std::logic_error if it
+  // cannot reach a vertex (a non-corner input left non-corner is an error).
+  MatrixXd sparsifyEffortMatrix(const MatrixXd& effort);
+
   // The SAOE problem: constructed from its data, solved under its params.
   class SAOE : public Problem<SaoeParams, SaoeResult> {
   public:
@@ -100,6 +109,12 @@ namespace VINCP::App {
     // dimension or an inverted range.
     static SaoeData generate(const SaoeRandomSpec& spec);
 
+    // The engines SAOE honors, in preference order (the first is its default;
+    // Engine::Default resolves to it). THE single source of truth: solve's guard
+    // and any CLI derive their accepted set, help text, and error messages from
+    // this list. Any other engine throws from solve.
+    static const std::vector<ProblemBase::Engine>& honoredEngines();
+
     // Solve the Nash equilibrium: build the NCP via saoeModel (risk aversion and
     // epsilon from params), start from the deterministic analytic-center point,
     // run the selected engine (Default/Chain = the robust alternating chain;
@@ -108,6 +123,14 @@ namespace VINCP::App {
     // on an empty R, S.size() != R.rows() (via saoeModel), or an engine SAOE
     // does not honor.
     Solution solve(const Params& params) const override;
+
+    // The Problem-framework hook. SAOE's effort attribution is NON-trivial to
+    // sparsify (it is the non-unique part -- the effort matrix is a point of a
+    // transportation polytope whose margins are the pinned aggregates), so this
+    // must NOT be a pass-through. The real vertex-finding process is not yet
+    // implemented; this currently throws std::logic_error rather than return a
+    // spread result.
+    SaoeResult sparsify(const SaoeResult& result) const override;
 
     // One-paragraph statement of what SaoeResult guarantees (the non-uniqueness
     // of the effort split), for an app to print in its output header. Single

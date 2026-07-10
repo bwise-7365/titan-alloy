@@ -933,6 +933,75 @@ Cross-validation closes the loop: two independent engine classes converging
 to the same author-verified point is strong evidence the transcription is
 faithful --- a sign error almost anywhere would split them.
 
+\subsection{The GMS front end: the recipe, mechanized}
+\label{sec:gms-frontend}
+
+The \code{gams/} layer (library \code{vincpgms}, namespace
+\code{VINCP::Gms}) performs the translation recipe mechanically for the
+subset of the GMS language\footnote{``GAMS'' is a registered trademark of
+GAMS Development Corporation. This front end is not endorsed or certified
+by GAMS Development Corporation, and the subset it accepts is
+incompatible with most of the GAMS modeling language; every source file
+in the layer carries the full disclaimer.} that the project's model
+corpus uses. The subset is defined by a construct-by-construct census of
+the six corpus files (\code{doc/2026-07-08-gams-subset-census.md}); the
+front end accepts exactly that footprint and throws
+\code{std::invalid\_argument}, with a file, line, and column, on anything
+outside it --- a sixth file's novelty fails loudly rather than parsing
+wrongly.
+
+Four layers, each with its own test suite:
+
+\begin{itemize}
+\item \textbf{Lexer and parser} (\code{gmslexer}, \code{gmsparser}):
+  tokens carry the original spelling plus a lower-cased key (GMS
+  identifiers are case-insensitive, and the corpus depends on this);
+  \code{\$include} splices, \code{\$macro} expands at token level with
+  rescanning for nested macros; comments count only in column one. The
+  parse tests assert the census counts on every corpus file, and a
+  canonical echo (\code{gmsecho}) gates the round trip on idempotence.
+\item \textbf{Database and evaluator} (\code{gmsdatabase},
+  \code{gmseval}): \code{buildGmsDatabase} walks the program in statement
+  order --- declarations create symbols, tables and data blocks fill
+  dense arrays, assignments evaluate immediately with indexed left-hand
+  sides looping over their domains, equation definitions are stored and
+  checked symbolically. \code{Solve} is recorded, not executed, so
+  assignments after it evaluate at the initial levels; the tests pin
+  derived parameters to hand-computed values.
+\item \textbf{Model builder} (\code{gmsmcp}): \code{buildGmsMcp} turns
+  one \code{Model} statement into a \code{VIModel} by the pairing rules
+  of Chapter~\ref{ch:math} (the variable's kind decides its block; the
+  relation is checked for consistency only), packs $z_0$ from the
+  \code{.L} levels, and \emph{surfaces} \code{.UP} bounds without
+  applying them. The returned closures read the database live, so the
+  database must outlive the model.
+\item \textbf{Write-back} (\code{applyMcpSolution},
+  \code{rerunPostSolveAssignments}): a solution vector lands back in the
+  variables' \code{.L} arrays, and the post-\code{Solve} assignments are
+  re-executed so the file's own report parameters are computed at the
+  solved point, comparable line by line against a GAMS listing.
+\end{itemize}
+
+The canonical usage is six calls:
+
+\begin{lstlisting}[language=C++]
+Program prog   = parseGmsFile("model.gms");        // throws outside the subset
+GmsDatabase db = buildGmsDatabase(prog);           // data + validated equations
+GmsMcp mcp     = buildGmsMcp(db, "modelname");     // VIModel + z0 + slots
+VIResult r     = solveModelAuto(mcp.model, mcp.z0);
+applyMcpSolution(db, mcp, r.z);                    // z -> the .L levels
+rerunPostSolveAssignments(db, prog);               // report parameters at z
+\end{lstlisting}
+
+The front end's role is reference, prototyping, and cross-check: four of
+the five corpus models reproduce their GAMS solutions through it
+(Chapter~\ref{ch:testing}, Section~\ref{sec:t-gms}), and a hand-built
+production twin can be checked row by row against the parsed model. It
+is not the production path: interpreted evaluation carries measured
+costs (Section~\ref{sec:t-gms-cost}) that hand-built structures avoid,
+and the decision of record keeps production problems on the recipe
+above.
+
 \subsection{The multi-engine test harness}
 
 \code{test/mcpengines.hpp} binds one \code{VIModel} to named solver rows so

@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// pform: a CLI app for the PFORM parliament-formation model. Reads an instance
+// pform_cli: a CLI app for the PFORM parliament-formation model. Reads an instance
 // from a limited-subset GMS file (or generates one randomly), runs the PForm /
 // SAOE solve, and prints the parliament supports and probabilities.
 // ----------------------------------------------
@@ -42,49 +42,6 @@ namespace {
     return labels;
   }
 
-  // The SAOE engine a PformParams selects (Default resolves to the SAOE chain).
-  const char*
-  engineName(ProblemBase::Engine engine)
-  {
-    switch (engine) {
-      case ProblemBase::Engine::Default:
-        return "Chain (SAOE default: alternating globalizer/finisher)";
-      case ProblemBase::Engine::Chain:
-        return "Chain (alternating globalizer/finisher)";
-      case ProblemBase::Engine::Auto:
-        return "Auto (chooseEngine: semismooth Newton, chain fallback)";
-      case ProblemBase::Engine::SmoothingNewton:
-        return "SmoothingNewton (non-interior smoothing, Zhang-Liu-Liu)";
-      case ProblemBase::Engine::Fbs:
-        return "Fbs (forward-backward splitting, He-Yuan-Zhang 2004)";
-      default:
-        return "unsupported";
-    }
-  }
-
-  // Parse a --engine argument. SAOE (and hence pform) honors these.
-  ProblemBase::Engine
-  parseEngine(const std::string& name)
-  {
-    if ("chain" == name) {
-      return ProblemBase::Engine::Chain;
-    }
-    if ("auto" == name) {
-      return ProblemBase::Engine::Auto;
-    }
-    if ("smoothing" == name || "smoothingnewton" == name) {
-      return ProblemBase::Engine::SmoothingNewton;
-    }
-    if ("fbs" == name) {
-      return ProblemBase::Engine::Fbs;
-    }
-    if ("default" == name) {
-      return ProblemBase::Engine::Default;
-    }
-    throw std::invalid_argument(
-        "unknown engine '" + name + "' (use chain|auto|smoothing|fbs).");
-  }
-
   // Render a parliament's matching as its controlling-party labels per issue.
   std::string
   matchingText(Index k, Index m, Index d, const std::vector<std::string>& partyLabels)
@@ -109,7 +66,7 @@ namespace {
     const Index M = in.data.weight.size();
     const Index D = in.data.position.rows();
 
-    std::printf("=== PFORM instance (pform) ===\n");
+    std::printf("=== PFORM instance (pform_cli) ===\n");
     if (in.randomP) {
       std::printf("Random instance, PRNG seed = %llu\n",
                   static_cast<unsigned long long>(in.seed));
@@ -150,13 +107,19 @@ namespace {
     const Index D = in.data.position.rows();
     const Index K = res.probabilities.size();
 
-    std::printf("=== PFORM result (pform) ===\n");
+    std::printf("=== PFORM result (pform_cli) ===\n");
     std::printf("Instance: %lld parties, %lld issues, K = %lld parliaments\n",
                 static_cast<long long>(M), static_cast<long long>(D),
                 static_cast<long long>(K));
     std::printf("unselectedProb q = %.4f  (derived effort floor eps = %.4e)\n",
                 params.unselectedProb, res.epsilon);
-    std::printf("Engine: %s\n", engineName(params.engine));
+    // Resolve Default to SAOE's actual default engine for the display.
+    const ProblemBase::Engine shownEngine =
+        (ProblemBase::Engine::Default == params.engine)
+            ? SAOE::honoredEngines().front()
+            : params.engine;
+    std::printf("Engine: %s%s\n", engineName(shownEngine),
+                (ProblemBase::Engine::Default == params.engine) ? " [default]" : "");
     std::printf("Solver: converged = %s, residual^2 = %.3e, "
                 "outer iters = %d, inner iters = %d\n\n",
                 vi.converged ? "true" : "false", vi.residual, vi.iter,
@@ -213,10 +176,11 @@ namespace {
   void
   printUsage()
   {
+    const std::string engines = engineTokenList(SAOE::honoredEngines());
     std::fprintf(stderr,
-                 "usage: pform [--engine chain|auto|smoothing|fbs] <file.gms>\n"
-                 "       pform [--engine chain|auto|smoothing|fbs] --random "
-                 "[seed] [parties] [issues]\n");
+                 "usage: pform_cli [--engine %s] <file.gms>\n"
+                 "       pform_cli [--engine %s] --random [seed] [parties] [issues]\n",
+                 engines.c_str(), engines.c_str());
     return;
   }
 
@@ -237,7 +201,13 @@ main(int argc, char** argv)
           printUsage();
           return 2;
         }
-        engine = parseEngine(args[i + 1]);
+        engine = parseEngineToken(args[i + 1]);
+        if (!engineIsHonored(SAOE::honoredEngines(), engine)) {
+          throw std::invalid_argument(
+              "engine '" + std::string(engineToken(engine))
+              + "' is not honored by pform/SAOE; use one of: "
+              + engineTokenList(SAOE::honoredEngines()) + ".");
+        }
         args.erase(args.begin() + static_cast<std::ptrdiff_t>(i),
                    args.begin() + static_cast<std::ptrdiff_t>(i + 2));
       }
@@ -300,7 +270,7 @@ main(int argc, char** argv)
     return vi.converged ? 0 : 1;
   }
   catch (const std::exception& e) {
-    std::fprintf(stderr, "pform: %s\n", e.what());
+    std::fprintf(stderr, "pform_cli: %s\n", e.what());
     return 2;
   }
 }

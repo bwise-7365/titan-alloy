@@ -77,7 +77,9 @@ namespace VINCP::App {
   // parties hold complementary interests and can profit from ceding the issues
   // they do not care about. The >= 1 total-salience constraint holds since each
   // positive draw is at least salienceLo (>= 1) and every party keeps at least
-  // one positive issue. Fixed seed = reproducible.
+  // one positive issue; and every issue is salient to at least one party (no
+  // all-zero row, which would make that issue irrelevant). Fixed seed =
+  // reproducible.
   struct PformRandomSpec {
     int           numParties = 3;
     int           numIssues  = 4;
@@ -98,6 +100,16 @@ namespace VINCP::App {
   // significant). Throws std::invalid_argument on an out-of-range k.
   vector<Index> pformMatching(Index k, Index numParties, Index numIssues);
 
+  // The single validator for a PformData, applied to EVERY instance (random,
+  // GMS, or hand-built) -- solve calls it, and the generator validates its own
+  // output. Enforces: M >= 2 parties, D >= 1 issues, position and salience are
+  // D x M matching weight's M, weights > 0, positions in [0, 1], saliences >= 0,
+  // each PARTY's total salience (column sum, sum_d S_dm) >= 1 (no actor with no
+  // interest in anything), and each ISSUE's total salience (row sum) > 0 (no
+  // all-zero row -- no issue of interest to nobody). Throws std::invalid_argument
+  // on the first violation.
+  void validatePformData(const PformData& data);
+
   class PForm : public Problem<PformParams, PformResult> {
   public:
     explicit PForm(PformData data);
@@ -109,6 +121,13 @@ namespace VINCP::App {
     // Throws std::invalid_argument on a malformed instance, q outside
     // (0, (K-1)/K), or an engine SAOE does not honor.
     Solution solve(const Params& params) const override;
+
+    // The Problem-framework hook. Like SAOE, PForm's effort attribution is the
+    // non-unique part, so this is NON-trivial (it would sparsify the effort
+    // matrix exactly as SAOE does, leaving the parliament probabilities fixed).
+    // Not yet implemented; throws std::logic_error rather than return a spread
+    // result.
+    PformResult sparsify(const PformResult& result) const override;
 
     Index numParties() const;
     Index numIssues() const;

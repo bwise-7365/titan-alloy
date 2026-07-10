@@ -49,7 +49,7 @@ gtest_discover_tests(pmatrix_gms_test)
 # --- Fleet application (problem class + headless test; GUI when Qt is present) --
 add_subdirectory(fleet)
 
-# --- PFORM application (parliament-formation model over SAOE + pform CLI) --------
+# --- PFORM application (parliament-formation model over SAOE + pform_cli CLI) ----
 # The PForm GUI is a pending task (no gui/ subdir yet).
 add_subdirectory(pform)
 # Copyright Ben Paul Wise. All Rights Reserved.

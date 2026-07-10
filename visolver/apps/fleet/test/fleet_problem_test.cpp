@@ -96,6 +96,19 @@ TEST(FleetProblem, UnsupportedEngineThrows)
   params.engine = ProblemBase::Engine::Chain;
   EXPECT_THROW(problem.solve(params), std::invalid_argument);
 }
+
+TEST(FleetProblem, SparsifyHookPreservesShortfallAndLowersMiles)
+{
+  // The framework hook: sparsify a whole FleetResult. Deliveries (hence
+  // shortfall) are invariant; vehicle-miles do not increase.
+  const Fleet problem = smallFleet();
+  const auto [vi, res] = problem.solve(FleetParams{});
+  (void)vi;
+  const FleetResult sparse = problem.sparsify(res);
+  EXPECT_NEAR(sparse.shortfall, res.shortfall, 1.0e-9);
+  EXPECT_LE(sparse.milesUsed.sum(), res.milesUsed.sum() + 1.0e-6);
+  EXPECT_EQ(sparse.milesUsed.size(), res.milesUsed.size());
+}
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

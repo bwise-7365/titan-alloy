@@ -62,7 +62,7 @@ The library is validated against two tiers of problems:
   backward from known answers (random monotone systems, deliberately
   ill-behaved systems, degenerate corner cases). They run in milliseconds,
   check exactly, and verify every engine and safeguard individually; at
-  the time of writing, all 182 automated tests pass.
+  the time of writing, all 214 automated tests pass.
 \item \textbf{Three almost-real-world problems}, each serving as an
   acceptance test:
   \begin{enumerate}
@@ -157,8 +157,16 @@ Fleet planning (multi-asset, multi-vehicle), 70-node banded default
     then a Maxima-verified structured factorization and a matrix-free
     field removed it --- roughly four orders of magnitude. \\
 \addlinespace
+Text-based problem entry (GMS-subset front end, five models)
+  & The project's five reference models, written in a subset of the GMS
+    modeling language, parse, evaluate, and rebuild as solver problems;
+    four of the five reproduce their GAMS/PATH reference solutions (the
+    1{,}951-unknown logistics model to four decimal places), and the
+    fifth is recorded as blocked on evaluation cost, with the cost
+    measured. \\
+\addlinespace
 Whole suite
-  & All 182 tests pass, spanning unit, protocol, and acceptance layers. \\
+  & All 214 tests pass, spanning unit, protocol, and acceptance layers. \\
 \bottomrule
 \end{tabular}
 \caption{Headline results; sources and full narratives in
@@ -221,8 +229,11 @@ verification chain is worth.
 \label{sec:o-status}
 
 The library stands complete against its current portfolio: all engines
-and compositions shipped and documented, all 182 tests passing, the
-acceptance problems checked against verified answers. Open items are
+and compositions shipped and documented, all 214 tests passing, the
+acceptance problems checked against verified answers, and a text-based
+problem-entry path (a front end for the GMS modeling subset the
+project's models use) verified against the reference system on four of
+five models. Open items are
 recorded with dispositions in Chapter~\ref{ch:testing}; the near-term
 roadmap, in expected order:
 

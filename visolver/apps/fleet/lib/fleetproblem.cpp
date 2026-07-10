@@ -28,8 +28,9 @@ namespace VINCP::App {
           return "ssn";
         default:
           throw std::invalid_argument(
-              "Fleet::solve: this problem honors only Engine::Ipm (default), "
-              "Engine::Bshe94b, or Engine::Ssn.");
+              std::string("Fleet::solve: engine ") + engineName(engine)
+              + " is not honored; use one of: "
+              + engineTokenList(Fleet::honoredEngines()) + ".");
       }
     }
 
@@ -39,6 +40,17 @@ namespace VINCP::App {
     : data(std::move(instance))
   {
     return;
+  }
+
+  const std::vector<ProblemBase::Engine>&
+  Fleet::honoredEngines()
+  {
+    static const std::vector<ProblemBase::Engine> engines = {
+        ProblemBase::Engine::Ipm,
+        ProblemBase::Engine::Bshe94b,
+        ProblemBase::Engine::Ssn,
+    };
+    return engines;
   }
 
   Network::FleetInstance
@@ -93,6 +105,25 @@ namespace VINCP::App {
   Fleet::sparsify(Network::FleetPlan& plan, int maxSwapsPerAsset) const
   {
     return Network::purifyFleetPlan(data, plan, maxSwapsPerAsset);
+  }
+
+  FleetResult
+  Fleet::sparsify(const FleetResult& result) const
+  {
+    FleetResult out = result;              // carries shortfall + solve metadata
+    Network::FleetPlan plan = result.plan;
+    sparsify(plan);                        // the plan-level overload (purify)
+    out.plan = plan;
+    // Deliveries are invariant under purification, so shortfall is unchanged;
+    // only the vehicle-miles fall, so recompute them. The dual/solve metadata
+    // (budgetShadowPrice, certifiedP, converged, kept/totalPairs,
+    // certificateRounds) describe the QP solve and carry over as-is.
+    const Index numTypes = Network::numVehicleTypes(data);
+    out.milesUsed.resize(numTypes);
+    for (Index k = 0; k < numTypes; ++k) {
+      out.milesUsed(k) = Network::vehicleMiles(data, plan, k);
+    }
+    return out;
   }
 
 } // namespace VINCP::App

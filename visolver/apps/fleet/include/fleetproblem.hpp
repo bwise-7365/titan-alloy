@@ -78,6 +78,10 @@ namespace VINCP::App {
     static Network::FleetInstance generate(const Network::FleetProfile& profile,
                                            std::uint64_t seed);
 
+    // The engines Fleet honors, in preference order (the first is its default;
+    // Engine::Default resolves to it). Single source of truth for solve's guard.
+    static const std::vector<ProblemBase::Engine>& honoredEngines();
+
     // The large conservative QP (the ProblemBase contract): builds
     // FleetSolveParams from params, calls solveFleetPlan, and decodes. Throws
     // std::invalid_argument on a bad instance (via solveFleetPlan) or an engine
@@ -93,6 +97,16 @@ namespace VINCP::App {
         const Network::FleetGreedyParams& params = {}) const;
     Network::FleetSwapSummary swapToLocalOptimum(
         Network::FleetPlan& plan, int maxSwapsPerAsset = 100000) const;
+
+    // The Problem-framework hook: sparsify a whole FleetResult. Non-trivial for
+    // Fleet -- the interior-point QP spreads flow over the optimal face. It wraps
+    // the in-place plan-level sparsify below: deliveries (hence shortfall) are
+    // invariant, vehicle-miles drop, and the solve metadata is carried over.
+    FleetResult sparsify(const FleetResult& result) const override;
+
+    // The in-place, plan-level purification the fleet GUI uses (it needs the
+    // FleetPurifySummary for its report). Kept unchanged so fleet_app behavior is
+    // byte-identical; the result-level hook above delegates to it.
     Network::FleetPurifySummary sparsify(
         Network::FleetPlan& plan, int maxSwapsPerAsset = 100000) const;
 

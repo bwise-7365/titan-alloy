@@ -79,6 +79,57 @@ namespace VINCP::App {
     return data.position.rows();
   }
 
+  void
+  validatePformData(const PformData& data)
+  {
+    const Index M = data.weight.size();
+    const Index D = data.position.rows();
+    if (M < 2) {
+      throw std::invalid_argument("PForm: need at least 2 parties.");
+    }
+    if (D < 1) {
+      throw std::invalid_argument("PForm: need at least 1 issue.");
+    }
+    if (data.position.cols() != M || data.salience.rows() != D
+        || data.salience.cols() != M) {
+      throw std::invalid_argument(
+          "PForm: position and salience must be D x M, matching weight's M.");
+    }
+    for (Index m = 0; m < M; ++m) {
+      if (!(0.0 < data.weight(m))) {
+        throw std::invalid_argument("PForm: every weight must be positive.");
+      }
+    }
+    for (Index d = 0; d < D; ++d) {
+      for (Index m = 0; m < M; ++m) {
+        const double p = data.position(d, m);
+        if (p < 0.0 || 1.0 < p) {
+          throw std::invalid_argument("PForm: positions must lie in [0, 1].");
+        }
+        if (data.salience(d, m) < 0.0) {
+          throw std::invalid_argument("PForm: saliences must be non-negative.");
+        }
+      }
+    }
+    for (Index m = 0; m < M; ++m) {
+      if (data.salience.col(m).sum() < 1.0 - kSalienceSumTol) {
+        throw std::invalid_argument(
+            "PForm: each party's total salience (column sum) must be >= 1 -- an "
+            "actor with no interest in anything does not belong in the analysis.");
+      }
+    }
+    // No all-zero issue row: an issue nobody cares about is either a poorly-posed
+    // problem or a data error, and it only creates degenerate parliament ties.
+    for (Index d = 0; d < D; ++d) {
+      if (data.salience.row(d).sum() <= 0.0) {
+        throw std::invalid_argument(
+            "PForm: each issue must have positive total salience (row sum > 0) -- "
+            "an issue of interest to no one does not belong in the analysis.");
+      }
+    }
+    return;
+  }
+
   PformData
   PForm::generate(const PformRandomSpec& spec)
   {
@@ -128,50 +179,30 @@ namespace VINCP::App {
         out.salience(issues[static_cast<size_t>(t)], m) = salienceDist(rng);
       }
     }
+    // No issue may be salient to NOBODY: an all-zero row makes that issue
+    // irrelevant and creates degenerate parliament ties. Give each such
+    // uncovered issue a positive salience for one randomly chosen party (this
+    // only adds saliences, so every party's column sum stays >= salienceLo).
+    std::uniform_int_distribution<Index> partyPick(0, M - 1);
+    for (Index d = 0; d < D; ++d) {
+      if (out.salience.row(d).sum() <= 0.0) {
+        out.salience(d, partyPick(rng)) = salienceDist(rng);
+      }
+    }
+    validatePformData(out);   // the generated instance meets the same constraints
     return out;
   }
 
   PForm::Solution
   PForm::solve(const Params& params) const
   {
+    // The universal guard: enforced for every instance, whatever the source.
+    validatePformData(data);
     const Index M = data.weight.size();
     const Index D = data.position.rows();
-    if (M < 2) {
-      throw std::invalid_argument("PForm: need at least 2 parties.");
-    }
-    if (D < 1) {
-      throw std::invalid_argument("PForm: need at least 1 issue.");
-    }
-    if (data.position.cols() != M || data.salience.rows() != D
-        || data.salience.cols() != M) {
-      throw std::invalid_argument(
-          "PForm: position and salience must be D x M, matching weight's M.");
-    }
-
-    for (Index m = 0; m < M; ++m) {
-      if (!(0.0 < data.weight(m))) {
-        throw std::invalid_argument("PForm: every weight must be positive.");
-      }
-    }
-    for (Index d = 0; d < D; ++d) {
-      for (Index m = 0; m < M; ++m) {
-        const double p = data.position(d, m);
-        if (p < 0.0 || 1.0 < p) {
-          throw std::invalid_argument("PForm: positions must lie in [0, 1].");
-        }
-        if (data.salience(d, m) < 0.0) {
-          throw std::invalid_argument("PForm: saliences must be non-negative.");
-        }
-      }
-    }
     VectorXd sumS(M);
     for (Index m = 0; m < M; ++m) {
-      const double s = data.salience.col(m).sum();
-      if (s < 1.0 - kSalienceSumTol) {
-        throw std::invalid_argument(
-            "PForm: each party's total salience sum_d S_dm must be >= 1.");
-      }
-      sumS(m) = s;
+      sumS(m) = data.salience.col(m).sum();
     }
 
     const Index K = pformParliamentCount(M, D);
@@ -247,6 +278,17 @@ namespace VINCP::App {
     result.epsilon       = epsilon;
 
     return Solution{ vi, result };
+  }
+
+  PformResult
+  PForm::sparsify(const PformResult& result) const
+  {
+    // Identity-or-project on the effort matrix, via the same transportation-
+    // vertex routine SAOE uses; the parliament probabilities, utilities, eta/phi,
+    // the deterministic guess, and epsilon are carried over unchanged.
+    PformResult out = result;
+    out.effort = sparsifyEffortMatrix(result.effort);
+    return out;
   }
 
 } // namespace VINCP::App

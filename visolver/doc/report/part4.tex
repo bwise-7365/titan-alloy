@@ -536,6 +536,68 @@ and then stall before recovering it --- observed concretely (a run
 returning squared residual $1.7\times 10^{4}$ after visiting
 $8.2\times 10^{3}$) before the semantics were fixed.
 
+\section{From the GMS Model statement to the MCP}
+\label{sec:a-gmsmcp}
+
+The front end of Chapter~\ref{ch:manual} builds a \code{VIModel} from a
+parsed \code{Model} statement\footnote{``GAMS'' is a registered trademark
+of GAMS Development Corporation; the front end parses an incompatible
+subset of the GMS language and is not endorsed or certified by GAMS
+Development Corporation.}; this section states the construction and the
+two arguments it rests on. A \code{Model} statement is a list of pairs
+$e_1.v_1, \ldots, e_k.v_k$, each an equation family and a variable
+family. The construction is:
+
+\begin{itemize}
+\item a pair whose variable is \emph{free} contributes its rows to $H$,
+  and the relation must be \code{=e=};
+\item a pair whose variable is \emph{positive} contributes its rows to
+  $G$, whatever the relation (\code{=g=} or \code{=e=});
+\item every row's residual is $\mathit{lhs} - \mathit{rhs}$, which
+  matches the library's orientation directly: the GMS pairing
+  ``$\mathit{body} \geq 0$ complementary with $v \geq 0$'' is exactly
+  $0 \leq G \perp y \geq 0$.
+\end{itemize}
+
+The block assignment is decided by the \emph{variable's kind}, with the
+relation reduced to a consistency check, because of the
+mixed-complementarity reading of an equality paired with a positive
+variable: $0 \leq v \perp g(z) \geq 0$ holds wherever the equality
+$g(z) = 0$ holds with $v \geq 0$, and conversely, whenever the model
+guarantees $v$ strictly positive at any solution, complementarity forces
+$g(z) = 0$ and the equality is recovered exactly. The influence game is
+the corpus case: its intermediate variables are declared
+\code{Positive} but are defined by equalities of the form
+$\varepsilon$ plus a sum of nonnegative terms, hence strictly positive,
+so the complementarity reading and the equality reading coincide (the
+same interiority argument as step 3 of the hand recipe in
+Chapter~\ref{ch:manual}).
+
+Each family expands over its domain in row-major order, and the
+construction requires the equation definition's domain and the paired
+variable's domain to resolve, dimension by dimension, to the same base
+sets; element $t$ of the expanded equation family then pairs with element
+$t$ of the expanded variable family, and the packed position of a
+variable element equals the row position of its equation --- one identity
+the tests re-verify on every model. The start $z_0$ packs the \code{.L}
+levels in the same order. Upper bounds (\code{.UP}) are carried on the
+result but not imposed: $K$ remains the orthant, and each corpus model
+that sets bounds also carries the argument that its pool constraints
+imply them at any solution.
+
+When every equation in the model is affine, $F(z) = Mz + q$ with a
+constant $M$, and the exact data are recoverable from evaluations alone:
+$q = F(0)$ and $M e_j = F(e_j) - q$, so $\mathrm{dim}+1$ evaluations
+assemble $(M, q)$. Affinity itself is checked at a random point $z$ by
+comparing $F(z)$ against $Mz + q$: for the censused expression grammar a
+nonaffine $F$ differs from its affine interpolant except on a
+lower-dimensional set, so a random draw detects nonaffinity with
+probability one (and the check is cheap either way). On the logistics
+corpus model the check agreed to a relative $2.6\times 10^{-15}$ and the
+assembled LCP went to the interior-point engine of
+Section~\ref{sec:a-ipm}; Chapter~\ref{ch:testing} records the
+measurements.
+
 \section{The application problems}
 \label{sec:a-apps}
 
