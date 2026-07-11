@@ -201,6 +201,21 @@ Two solver layers over one shared core; the dependency arrows point one way
     steepest-descent step (fixed weight `theta`) and backtracking with Armijo;
     reuses `levenbergMarquardtDamp`, `armijoLineSearch`, and the FD Jacobian.
     The smoothing-Newton engine's workhorse.
+  - `include/multistart.hpp`, `lib/multistart.cpp` — `multiStartSolve`, a
+    solver-agnostic multi-start driver: run any solver (same signature as
+    the chain's `StageSolver`) from `starts(0), starts(1), ...`, stop at the
+    first ACCEPTED result (default acceptance = converged; the predicate is
+    a parameter), else return the best attempt honestly; a thrown attempt is
+    a failed attempt, not a driver failure. `makeJitteredStartGenerator`:
+    attempt 0 = the plain start VERBATIM, later attempts deterministic in
+    (seed, attempt), amplitude `scale * max(|z0_i|, meanAbs)` then projected
+    onto `K` — use a LARGE scale (0.5-1.0) for basin escape. Built on the
+    deploy_v09 finding (2026-07-11): a nonmonotone game's natural-merit can
+    floor in a basin holding NO solution, and the chain's stagnation
+    perturbation (amplitude ~ `sqrt(best residual)`) cannot leave it. This
+    is the STOPGAP for wrong-basin convergence; the algorithmic fix (what
+    PATH/MILES/KNITRO do instead) is a recorded pending task on the status
+    board.
 
 ## Invariants that will bite you if ignored
 

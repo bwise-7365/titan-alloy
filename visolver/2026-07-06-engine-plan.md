@@ -454,6 +454,52 @@ corpus `doc/*.gms` / `doc/*.solve.lst` files, and dated historical
 plan/ledger entries (including the old names above, which record what the
 files were called at the time).
 
+## Deferred: cold-start basin robustness (PENDING TASK, Ben 2026-07-11)
+
+The deploy_v09 finding (apps/ppd, D3-D4 runs of 2026-07-11): from the
+model's interior .L start the alternating chain descends into a basin
+whose natural-merit floor (residual^2 1.2e-4, a degenerate near-tie on the
+pr support boundary) is NOT a solution. The transcription is verified two
+ways (FD parity on all stationarity rows; PATH's full solution sits at
+rounding-sized residual under our F), and ssn polishes PATH's point to
+1e-8 — so the failure is basin CHOICE, and within-basin machinery cannot
+help by design: the chain's stagnation perturbation has amplitude
+0.1*sqrt(best residual) ~ 1e-3, sized for stagnation NEAR a solution, not
+for leaving a confidently wrong basin.
+
+STOPGAP SHIPPED: `multistart.hpp` / `multiStartSolve` +
+`makeJitteredStartGenerator` in the core library (solver-agnostic,
+acceptance/starts/logging as parameters), wired into apps/ppd
+(`PpdParams::startAttempts/startJitterScale/startSeed`, ppd_cli
+`--starts/--jitter/--start-seed`).
+
+THE PENDING TASK: PATH, MILES, and KNITRO solve deploy_v09 cold WITHOUT
+multi-start, so a principled single-trajectory fix exists. Do a designed
+track (literature pass with citations, per the house rule): how the
+reference solvers achieve cold-start basin robustness on nonmonotone MCPs
+(PATH: Ralph pathsearch with a nonmonotone watchdog + proximal
+perturbation + crash phase; MILES: Lemke pivoting on the LCP
+linearizations; KNITRO: interior-point with penalty/filter
+globalization), then design the VINCP counterpart. Candidates already on
+the table: a PATH-style proximal-point wrapper (deferred item from the
+v07 menu), merit-filter globalization, and the model-specific aSm /
+smoothing continuation homotopy. Ben's framing (2026-07-11): the
+problem-after-problem application program exists exactly to surface such
+fundamental gaps — multi-start gets answers meanwhile, but the
+fundamental problem gets fixed.
+
+TRACK OPENED (Ben, 2026-07-11) as the PROXIMAL-POINT WRAPPER, justified
+by the deploy_v09 evidence triple (false floors at aSm 0.25; degenerate
+continuum crawl at 0.05; existence cliff >= ~0.35 — three failure
+signatures that proximal regularization addresses at once). Gates:
+
+| Gate | What | Status |
+|------|------|--------|
+| PX1  | Literature pass + design: Rockafellar 1976 proximal point; Pennanen 2002 (local convergence without monotonicity); Billups & Ferris QPCOMP / proximal perturbation for nonmonotone MCP (the PATH-adjacent scheme); Dirkse-Ferris 1995 PATH nonmonotone stabilization. Verify open access; pick the mu schedule / recenter policy with grounds | open |
+| PX2  | Library composition `proximalpoint.{hpp,cpp}`: perturbed model F_mu(z) = F(z) + mu (z - zbar) built blockwise (H + mu(x - xbar), G + mu(y - ybar), K unchanged); outer loop solve-recenter-shrink with the ORIGINAL natural residual as the accept/stop metric; seams = model-parameterized inner solver, mu policy knobs, logger; protocol tests with fakes | open |
+| PX3  | PPD hookup (Engine::Proximal — NOTE: adds a ProblemBase::Engine value, an API change; the exhaustive switches in problem.hpp flag every site) + the deploy_v09 cold-start experiment at aSm 0.25; on success the PpdProblem acceptance gate goes green and the roster grows | open |
+| PX4  | REPORT (REQUIRED, Ben 2026-07-11): a thorough explanation, BOTH INTUITIVE AND FORMAL, of the proximal-point wrapper and the perturbed model, added to the report (intuition: mu(z - zbar) as a trust anchor that makes each subproblem strongly monotone/regular, melting false floors and flats; formal: strong monotonicity of the shifted operator, Rockafellar/Pennanen convergence statements, the inexact-inner and nonmonotone caveats, with citations per Part IV's cited-proofs standard) | open |
+
 ## Original research record (2026-07-08, pre-decision)
 
 Ben's requirement (2026-07-08): a text-based way for people to specify

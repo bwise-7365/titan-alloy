@@ -36,6 +36,7 @@ add_library(vincp STATIC
         lib/semismoothnewton.cpp
         lib/alternatingchain.cpp
         lib/chooseengine.cpp
+        lib/multistart.cpp
         lib/ellipsoidprojector.cpp
         lib/dampednewton.cpp
         lib/smoothingnewton.cpp
@@ -125,6 +126,7 @@ vincp_add_gtest(saoe_chain_test)
 vincp_add_gtest(saoe_risk_test)
 vincp_add_gtest(choose_engine_test)
 vincp_add_gtest(fbs_hyz04_test)
+vincp_add_gtest(multistart_test)
 # Translated GMS-corpus MCP models (convergence-gated, multi-engine; see the
 # test headers for the .gms sources and the variable/equation mappings).
 vincp_add_gtest(gms_alloceff_test)
@@ -167,7 +169,7 @@ add_custom_target(run_all_tests
             smoothing_newton_test ss_lcp_test ss_ellipsoid_test
             mehrotra_ipm_test semismooth_newton_test josephy_newton_test
             alternating_chain_test saoe_chain_test saoe_risk_test
-            choose_engine_test fbs_hyz04_test
+            choose_engine_test fbs_hyz04_test multistart_test
             gms_alloceff_test gms_deploy_test gms_parse_test gms_eval_test
             gms_model_test gms_parity_test gms_solve_test
             network_tests lvi_demo lvi_vi_demo
