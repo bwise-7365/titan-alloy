@@ -271,7 +271,12 @@ namespace VINCP::App {
     const SAOE saoe(SaoeData{ R, data.weight });
     const auto [vi, saoeResult] = saoe.solve(saoeParams);
 
-    printf("\n \n Weight epsilon: %.3e \n \n", epsWeight);
+    // The derived floor is reported through PformResult::epsilon (and the
+    // renderPformResult "derived effort floor" line); echo it here only on
+    // request, so library callers (the GUI) get a quiet solve by default.
+    if (params.verbose) {
+      printf("\n \n Weight epsilon: %.3e \n \n", epsWeight);
+    }
 
     PformResult result;
     result.effort        = saoeResult.e;
