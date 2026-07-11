@@ -16,9 +16,10 @@
 #include <QString>
 #include <QStringList>
 
-class QCheckBox;
+class QLabel;
 class QPushButton;
 class QRadioButton;
+class QSlider;
 class QSpinBox;
 
 namespace VINCP::App {
@@ -42,24 +43,28 @@ namespace VINCP::App {
     void refreshStatus(const QString& modeNote) override;
 
   private slots:
+    void onFleetMultipleMoved();
     void applyDisplayedAsset();
     void onSwapToOptimum();
     void onPurify();
     void onResetPlan();
     void onOptimalFinished();
     void onPurifyFinished();
+    void onSwapFinished();
 
   private:
     Network::FleetProfile currentProfile() const;
+    double fleetMultiple() const;
     Index displayedAsset() const;
     void showWorkingPlan();
     void refreshPlanStatus();
     void refreshPlanControls();
     QStringList nodeInfoLines(int node) const;
 
-    QSpinBox* vehicleTypesBox_ = nullptr;   // catalog prefix, 1..10
-    QSpinBox* assetTypesBox_ = nullptr;     // catalog prefix, 1..10
-    QCheckBox* hugeFleetCheck_ = nullptr;   // x1000 vehicle counts
+    QSpinBox* vehicleTypesBox_ = nullptr;      // catalog prefix, 1..10
+    QSpinBox* assetTypesBox_ = nullptr;        // catalog prefix, 1..10
+    QSlider* fleetMultipleSlider_ = nullptr;   // x1.00..x25.00 in 0.01 ticks
+    QLabel* fleetMultipleLabel_ = nullptr;     // "x3.18" readout beside it
     QRadioButton* greedyRadio_ = nullptr;
     QRadioButton* optimalRadio_ = nullptr;
     QPushButton* swapOptButton_ = nullptr;
@@ -99,6 +104,21 @@ namespace VINCP::App {
     };
     QFutureWatcher<PurifyOutcome>* purifyWatcher_ = nullptr;
     bool purifyBusyP_ = false;
+
+    // --- swap to optimum (Fleet::swapToLocalOptimum on a worker thread) ---
+    // Same discipline as purification: the worker owns a copy, results are
+    // stamped by (token, kind), and swap/purify exclude each other because
+    // both replace the working plan.
+    struct SwapOutcome {
+      bool okP = false;
+      QString error;
+      Network::FleetPlan plan;
+      Network::FleetSwapSummary summary;
+      int token = 0;
+      int kind = 0;
+    };
+    QFutureWatcher<SwapOutcome>* swapWatcher_ = nullptr;
+    bool swapBusyP_ = false;
   };
 
 } // namespace VINCP::App

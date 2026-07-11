@@ -437,6 +437,7 @@ terminates. The result is a local optimum under length-4 pivots ---
 forest-sparse in practice, though not a certified polytope vertex.
 
 \subsection{The fleet viewer}
+\label{sec:t-fleetviewer}
 
 The fleet viewer drives the multi-vehicle, multi-asset generalization of
 the model. An \emph{asset class} $a$ is a kind of cargo, characterized by
@@ -453,6 +454,27 @@ link must fit the vehicles allocated to that link by weight and by area
 simultaneously; vehicles of each class circulate (what arrives at a node
 departs it), and empty repositioning legs consume budget like loaded
 ones.
+
+\paragraph{Fleet capability.} The capability of the fleet is a set of
+per-class vehicle-mile budgets rationed at per-class exchange rates,
+rather than a single scalar. One vehicle of class $k$ carries at most
+$\kappa_{ak} = \min(T_k / w_a,\; A_k / s_a)$ units of asset $a$: the
+binding of the weight and area constraints, with each ratio present only
+when its denominator is positive, and $\kappa_{ak} = 0$ when the asset
+needs a capacity the class lacks. Moving $x$ units of asset $a$ over $d$
+miles by class $k$ therefore consumes $d \, x / \kappa_{ak}$
+vehicle-miles of $B_k$, and the empty return leg doubles the charge. The
+two factors depend differently on fleet size: the budgets $B_k$ are
+linear in the counts $N_k$, while the exchange rates $\kappa_{ak}$ are
+set by the vehicle and asset geometry alone, so scaling the fleet moves
+the total movement capacity without changing which constraint (weight or
+area) binds on any (asset, class) pair. At the viewer default of three
+vehicle classes and the 72-hour horizon, the catalog budgets are
+$B_{\mathrm{truck}} = 40 \times 45 \times 72 = 129{,}600$,
+$B_{\mathrm{airlift}} = 3 \times 350 \times 72 = 75{,}600$, and
+$B_{\mathrm{van}} = 60 \times 55 \times 72 = 237{,}600$ vehicle-miles.
+The catalog counts are fixed data, independent of the node count, so the
+same fleet is proportionally tighter on a larger instance.
 
 
 \begin{figure}[htbp]
@@ -474,9 +496,14 @@ The window differs from Figure~\ref{fig:nw-gui} in four places. The
 Instance group gains \emph{Vehicle types} and \emph{Asset types} spinners
 (1--10 each; defaults 3 and 4), which take prefixes of a fixed catalog of
 ten asset and ten vehicle classes ordered so that small counts already
-mix weight-bound and area-bound cargo; an \emph{Unlimited fleet} check
-box multiplies every $N_k$ by 1{,}000 for the visual check that the plan
-then serves every rationed target. The display modes reduce to None,
+mix weight-bound and area-bound cargo; a \emph{Fleet multiple} slider
+scales every $N_k$ --- hence every budget $B_k$ --- by a factor of
+$1.00$ to $25.00$ in steps of $0.01$, displayed to two decimals beside
+the slider, and the status line reports the factor together with the
+scaled per-class counts. The factor is in the units of the greedy plan's
+fleet scale hint (Section~\ref{sec:t-fleetgreedy-pseudo}): a hint of,
+e.g., $3.18$ can be set exactly, or bracketed at $3.17$ and $3.19$, to
+probe the fleet size at which rationing stops. The display modes reduce to None,
 Closest, and \emph{Greedy Fleet Plan}. A \emph{Swap to Optimum} button
 drives each asset class in turn to its 2-exchange local optimum ---
 Section~\ref{sec:t-swap-pseudo} verbatim per asset, with the cost matrix
@@ -509,11 +536,9 @@ makes assets measured in different units comparable. Second, sources are
 ranked by round-trip distance, since every loaded leg pays an empty
 return leg (vehicles are added to both directions, which satisfies
 circulation exactly). Third, cargo is loaded conservatively: one vehicle
-of class $k$ carries at most
-$\kappa_{ak} = \min(T_k / w_a,\; A_k / s_a)$ units of asset $a$ (each
-ratio present only when its denominator is positive; classes with
-$\kappa = 0$ cannot carry the asset), which satisfies the weight and the
-area constraint at once. Mixing complementary assets in one vehicle could
+of class $k$ carries at most $\kappa_{ak}$ units of asset $a$ (the
+exchange rate of Section~\ref{sec:t-fleetviewer}), which satisfies the
+weight and the area constraint at once. Mixing complementary assets in one vehicle could
 do better; the greedy forgoes that, and the optimizer planned as future
 work will not.
 

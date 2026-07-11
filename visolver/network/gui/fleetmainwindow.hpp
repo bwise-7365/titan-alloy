@@ -20,9 +20,10 @@
 #include <QString>
 #include <QStringList>
 
-class QCheckBox;
+class QLabel;
 class QPushButton;
 class QRadioButton;
+class QSlider;
 class QSpinBox;
 
 namespace VINCP::Network {
@@ -46,13 +47,19 @@ namespace VINCP::Network {
     void refreshStatus(const QString& modeNote) override;
 
   private slots:
+    // The fleet-multiple slider moved: update the readout; rebuild the
+    // instance unless a drag is in progress (then the release rebuilds).
+    void onFleetMultipleMoved();
     // The "Asset Displayed" spinner moved: re-slice the map for that asset.
     void applyDisplayedAsset();
     // Drive every asset class in turn to its 2-exchange local optimum and
-    // reallocate the vehicles (greedy plan only; synchronous, it is fast).
+    // reallocate the vehicles, on a worker thread (greedy or optimal plan;
+    // the faster, weaker sibling of Purify).
     void onSwapToOptimum();
     // Purify the working plan (greedy or optimal) on a worker thread.
     void onPurify();
+    // Background completion of the swap.
+    void onSwapFinished();
     // Discard swaps/purification: recompute greedy or re-copy the cached
     // optimal solve.
     void onResetPlan();
@@ -64,6 +71,10 @@ namespace VINCP::Network {
     // Assemble a FleetProfile from the control values: geometry from the node
     // class spinners, types as catalog prefixes of the two type spinners.
     FleetProfile currentProfile() const;
+
+    // The fleet-multiple slider's value as the factor it names (ticks are
+    // hundredths: 318 -> 3.18).
+    double fleetMultiple() const;
 
     // 0-based column of the 1-based "Asset Displayed" spinner.
     Index displayedAsset() const;
@@ -77,9 +88,10 @@ namespace VINCP::Network {
     // Popup lines: node label, then C and D as one-entry-per-asset lists.
     QStringList nodeInfoLines(int node) const;
 
-    QSpinBox* vehicleTypesBox_ = nullptr;   // catalog prefix, 1..10
-    QSpinBox* assetTypesBox_ = nullptr;     // catalog prefix, 1..10
-    QCheckBox* hugeFleetCheck_ = nullptr;   // x1000 vehicle counts
+    QSpinBox* vehicleTypesBox_ = nullptr;      // catalog prefix, 1..10
+    QSpinBox* assetTypesBox_ = nullptr;        // catalog prefix, 1..10
+    QSlider* fleetMultipleSlider_ = nullptr;   // x1.00..x25.00 in 0.01 ticks
+    QLabel* fleetMultipleLabel_ = nullptr;     // "x3.18" readout beside it
     QRadioButton* greedyRadio_ = nullptr;
     QRadioButton* optimalRadio_ = nullptr;
     QPushButton* swapOptButton_ = nullptr;
@@ -126,6 +138,21 @@ namespace VINCP::Network {
     };
     QFutureWatcher<PurifyOutcome>* purifyWatcher_ = nullptr;
     bool purifyBusyP_ = false;
+
+    // --- swap to optimum (swapFleetToLocalOptimum on a worker thread) ---
+    // Same discipline as purification: the worker owns a copy, results are
+    // stamped by (token, kind), and swap/purify exclude each other because
+    // both replace the working plan.
+    struct SwapOutcome {
+      bool okP = false;
+      QString error;
+      FleetPlan plan;
+      FleetSwapSummary summary;
+      int token = 0;
+      int kind = 0;
+    };
+    QFutureWatcher<SwapOutcome>* swapWatcher_ = nullptr;
+    bool swapBusyP_ = false;
   };
 
 } // namespace VINCP::Network

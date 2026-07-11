@@ -1013,3 +1013,37 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   to the shared microsecondSeed; the closest-mode branch of both
   applyPlanMode overrides now calls the shared applyNearestK instead of
   re-inlining it).
+- 2026-07-10 (fleet-multiple control, code done awaiting Ben's rebuild +
+  run): the two fleet windows' "Unlimited fleet" check box (x1000 counts)
+  is replaced -- first by a x1..x1000 spinner, then per Ben by a
+  continuous "Fleet multiple" SLIDER, x1.00..x25.00 in 0.01 steps with a
+  two-decimal readout beside it -- scaling every N_k (hence every budget
+  B_k = N_k v_k H) in currentProfile; kappa_ak is untouched. The factor
+  is in the units of the greedy fleet scale hint, so a hint of 3.18 can
+  be set exactly (or bracketed at 3.17/3.19) for sensitivity runs. The
+  status line now always shows the factor and the scaled per-class
+  counts (the base fleet was previously invisible). Dragging moves only
+  the readout; the instance rebuilds on sliderReleased (a per-tick
+  regenerate would reroll a surprise-me seed of 0 mid-drag). Same change
+  verbatim in fleetmainwindow.{hpp,cpp} (fleet_viewer) and
+  apps/fleet/gui/fleetappmainwindow.{hpp,cpp} (fleet_app). Report
+  part3.tex: the fleet-viewer subsection (new label sec:t-fleetviewer)
+  gained a "Fleet capability" paragraph (budgets vs exchange rates,
+  d x / kappa_ak consumption, default catalog budgets, fixed-catalog
+  caveat); the slider replaces the check-box sentence; the greedy
+  pseudo-code subsection now references kappa_ak instead of redefining
+  it.
+- 2026-07-10 (Swap to Optimum on the optimal plan, per Ben; same rebuild):
+  the button is now enabled for planKind 1 OR 2 in both fleet windows --
+  the faster alternative to Purify when the IPM plan is in hand (mileage
+  drops, no deliberate arc-count reduction). swapFleetToLocalOptimum's
+  contract is plan-kind-agnostic (any feasible plan, deliveries and theta
+  unchanged, throw-on-overflow), so only the GUI gate and tooltips
+  changed. ALSO per Ben: the swap moved from the UI thread to a WORKER
+  THREAD, exactly the purify pattern (SwapOutcome + QFutureWatcher +
+  swapBusyP_, results stamped by (solveToken_, planKind); swap and purify
+  exclude each other because both replace the working plan). Because the
+  worker mutates only its own copy, a failed swap now leaves the
+  displayed plan intact ("plan unchanged") instead of recomputing;
+  purify's failure path, whose recompute was a leftover from its
+  synchronous origin, is aligned the same way (per Ben).

@@ -17,12 +17,13 @@
 
 #include <QtConcurrent/QtConcurrent>
 
-#include <QCheckBox>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSlider>
 #include <QSpinBox>
 
 #include <cstdint>
@@ -33,6 +34,11 @@ namespace VINCP::Network {
 
   namespace {
     const int kMaxTypes = 10;   // catalog size (assetCatalog etc.)
+    // The fleet-multiple slider works in hundredths (two displayed decimals):
+    // 100..2500 ticks = x1.00 (the base catalog fleet) .. x25.00.
+    const int kFleetMultipleScale = 100;
+    const int kFleetMultipleMin = 100;
+    const int kFleetMultipleMax = 2500;
 
     // The single-commodity view of one asset column: C/D/P from that column,
     // the shared distance matrix as the cost matrix, geometry carried over.
@@ -90,17 +96,27 @@ namespace VINCP::Network {
     assetTypesBox_->setToolTip("Number of asset types, taken as a prefix of "
                                "the fixed catalog (dense, bulky, ...).");
 
-    hugeFleetCheck_ = new QCheckBox("Unlimited fleet", this);
-    hugeFleetCheck_->setChecked(false);
-    hugeFleetCheck_->setToolTip(
-        "Multiply every vehicle type's count by 1000, making the per-type "
-        "vehicle-mile budgets effectively unlimited -- a visual check that "
-        "the greedy fleet plan then serves every rationed target, like the "
-        "basic greedy planner (which ignores its budget by design).");
+    fleetMultipleSlider_ = new QSlider(Qt::Horizontal, this);
+    fleetMultipleSlider_->setRange(kFleetMultipleMin, kFleetMultipleMax);
+    fleetMultipleSlider_->setValue(kFleetMultipleMin);
+    fleetMultipleSlider_->setToolTip(
+        "Scale every vehicle type's catalog count (and so its vehicle-mile "
+        "budget B_k = N_k v_k H) by this factor, x1.00 to x25.00 in steps "
+        "of 0.01. Set it to the greedy plan's fleet scale hint to give the "
+        "plan just enough fleet to serve every rationed target. The scaled "
+        "counts show in the status line.");
+    fleetMultipleLabel_ = new QLabel(this);
+    QWidget* multipleRow = new QWidget(this);
+    QHBoxLayout* multipleLayout = new QHBoxLayout(multipleRow);
+    multipleLayout->setContentsMargins(0, 0, 0, 0);
+    multipleLayout->addWidget(fleetMultipleSlider_, 1);
+    multipleLayout->addWidget(fleetMultipleLabel_);
+    fleetMultipleLabel_->setText(
+        QString("x%1").arg(fleetMultiple(), 0, 'f', 2));
 
     addInstanceRow("Vehicle types", vehicleTypesBox_);
     addInstanceRow("Asset types", assetTypesBox_);
-    addInstanceRow(hugeFleetCheck_);
+    addInstanceRow("Fleet multiple", multipleRow);
 
     // The plan radios beyond the base "Closest".
     greedyRadio_ = new QRadioButton("Greedy Fleet Plan", this);
@@ -122,7 +138,10 @@ namespace VINCP::Network {
     swapOptButton_->setToolTip(
         "Drive each asset class in turn to its 2-exchange local optimum "
         "(round-trip distances, deliveries unchanged), then reallocate the "
-        "vehicles to the swapped flows. Greedy plan only.");
+        "vehicles to the swapped flows. Works on the greedy or the optimal "
+        "plan; on the optimal plan it is the faster alternative to Purify "
+        "-- mileage drops, but there is no deliberate arc-count reduction. "
+        "Runs on a worker thread.");
     purifyButton_ = new QPushButton("Purify (sparsify)", this);
     purifyButton_->setEnabled(false);
     purifyButton_->setToolTip(
@@ -147,7 +166,9 @@ namespace VINCP::Network {
     assetForm->addRow("Asset Displayed", assetBox_);
     addRightPanelTop(assetGroup);
 
-    connect(hugeFleetCheck_, &QCheckBox::toggled, this,
+    connect(fleetMultipleSlider_, &QSlider::valueChanged, this,
+            &FleetMainWindow::onFleetMultipleMoved);
+    connect(fleetMultipleSlider_, &QSlider::sliderReleased, this,
             &FleetMainWindow::regenerate);   // counts change the instance
     connect(assetBox_,
             QOverload<int>::of(&QSpinBox::valueChanged), this,
@@ -165,6 +186,9 @@ namespace VINCP::Network {
     purifyWatcher_ = new QFutureWatcher<PurifyOutcome>(this);
     connect(purifyWatcher_, &QFutureWatcher<PurifyOutcome>::finished, this,
             &FleetMainWindow::onPurifyFinished);
+    swapWatcher_ = new QFutureWatcher<SwapOutcome>(this);
+    connect(swapWatcher_, &QFutureWatcher<SwapOutcome>::finished, this,
+            &FleetMainWindow::onSwapFinished);
 
     regenerate();
     return;
@@ -177,15 +201,36 @@ namespace VINCP::Network {
     profile.geometry = geometryProfile();
     profile.assets = assetCatalog(assetTypesBox_->value());
     profile.vehicles = vehicleCatalog(vehicleTypesBox_->value());
-    if (hugeFleetCheck_->isChecked()) {
-      // Budgets B_k = N_k v_k H scale with the counts, so x1000 makes them
-      // effectively unlimited: the plan should then serve every rationed
-      // target and utilization should read ~0%.
-      for (VehicleType& vehicle : profile.vehicles) {
-        vehicle.count *= 1000.0;
-      }
+    // Budgets B_k = N_k v_k H scale with the counts, so the fleet multiple
+    // scales movement capacity directly; the per-vehicle carrying capacity
+    // kappa_ak is untouched. Fractional counts are legal by design (partial
+    // availability over the horizon).
+    for (VehicleType& vehicle : profile.vehicles) {
+      vehicle.count *= fleetMultiple();
     }
     return profile;
+  }
+
+  double
+  FleetMainWindow::fleetMultiple() const
+  {
+    return static_cast<double>(fleetMultipleSlider_->value())
+           / kFleetMultipleScale;
+  }
+
+  void
+  FleetMainWindow::onFleetMultipleMoved()
+  {
+    fleetMultipleLabel_->setText(
+        QString("x%1").arg(fleetMultiple(), 0, 'f', 2));
+    // While the slider is dragged, only the readout follows; the instance is
+    // rebuilt once, on release (regenerating per tick would reroll a
+    // surprise-me seed of 0 mid-drag and replan per pixel). Keyboard and
+    // page steps arrive with the slider up and regenerate immediately.
+    if (!fleetMultipleSlider_->isSliderDown()) {
+      regenerate();
+    }
+    return;
   }
 
   Index
@@ -356,45 +401,81 @@ namespace VINCP::Network {
   void
   FleetMainWindow::onSwapToOptimum()
   {
-    if (1 != planKind_ || purifyBusyP_) {
+    if (swapBusyP_ || purifyBusyP_ || (1 != planKind_ && 2 != planKind_)) {
       return;
     }
-    try {
-      const FleetSwapSummary summary =
-          swapFleetToLocalOptimum(current_, workingPlan_);
-      showWorkingPlan();
-      QStringList perAsset;
-      for (Index a = 0; a < numAssets(current_); ++a) {
-        perAsset << QString::number(
-            summary.swapsPerAsset[static_cast<size_t>(a)]);
+    swapBusyP_ = true;
+    startBusy();
+    refreshPlanControls();
+    refreshStatus("swapping fleet plan (2-exchange per asset)...");
+
+    FleetInstance inst = current_;
+    FleetPlan plan = workingPlan_;
+    const int token = solveToken_;
+    const int kind = planKind_;
+    swapWatcher_->setFuture(QtConcurrent::run([inst, plan, token,
+                                               kind]() mutable {
+      SwapOutcome out;
+      out.token = token;
+      out.kind = kind;
+      try {
+        out.summary = swapFleetToLocalOptimum(inst, plan);
+        out.plan = std::move(plan);
+        out.okP = true;
       }
-      const QStringList lines =
-          (summary.totalSwaps > 0)
-              ? QStringList{QString("%1 swaps (per asset: %2)")
-                                .arg(summary.totalSwaps)
-                                .arg(perAsset.join(", ")),
-                            QString("vehicle-miles %1 -> %2")
-                                .arg(summary.milesUsedBefore.sum(), 0, 'g', 4)
-                                .arg(summary.milesUsedAfter.sum(), 0, 'g', 4)}
-              : QStringList{"already at a local optimum"};
-      view_->showSwapResult(-1, lines, {});
+      catch (const std::exception& ex) {
+        out.error = QString::fromUtf8(ex.what());
+      }
+      return out;
+    }));
+    return;
+  }
+
+  void
+  FleetMainWindow::onSwapFinished()
+  {
+    swapBusyP_ = false;
+    stopBusy();
+    const SwapOutcome out = swapWatcher_->result();
+    if (out.token != solveToken_ || out.kind != planKind_) {
+      refreshPlanControls();
+      return;   // stale: instance or displayed plan kind changed mid-run
     }
-    catch (const std::exception& ex) {
-      planKind_ = 0;   // vehicle matrices may be partially rebuilt
-      applyPlanMode();
+    if (!out.okP) {
+      // The worker mutated only its own copy, so the displayed plan is
+      // intact; report and keep it.
+      refreshPlanControls();
       view_->showSwapResult(
           -1,
-          QStringList{QString("swap failed: %1").arg(ex.what()),
-                      "plan recomputed"},
+          QStringList{QString("swap failed: %1").arg(out.error),
+                      "plan unchanged"},
           {});
+      return;
     }
+    workingPlan_ = out.plan;
+    showWorkingPlan();
+    QStringList perAsset;
+    for (Index a = 0; a < numAssets(current_); ++a) {
+      perAsset << QString::number(
+          out.summary.swapsPerAsset[static_cast<size_t>(a)]);
+    }
+    const QStringList lines =
+        (out.summary.totalSwaps > 0)
+            ? QStringList{QString("%1 swaps (per asset: %2)")
+                              .arg(out.summary.totalSwaps)
+                              .arg(perAsset.join(", ")),
+                          QString("vehicle-miles %1 -> %2")
+                              .arg(out.summary.milesUsedBefore.sum(), 0, 'g', 4)
+                              .arg(out.summary.milesUsedAfter.sum(), 0, 'g', 4)}
+            : QStringList{"already at a local optimum"};
+    view_->showSwapResult(-1, lines, {});
     return;
   }
 
   void
   FleetMainWindow::onPurify()
   {
-    if (purifyBusyP_ || (1 != planKind_ && 2 != planKind_)) {
+    if (swapBusyP_ || purifyBusyP_ || (1 != planKind_ && 2 != planKind_)) {
       return;
     }
     purifyBusyP_ = true;
@@ -435,12 +516,14 @@ namespace VINCP::Network {
       return;   // stale: instance or displayed plan kind changed mid-run
     }
     if (!out.okP) {
-      planKind_ = 0;   // per the purifyFleetPlan contract: recompute
-      applyPlanMode();
+      // The worker mutated only its own copy (the throw-then-recompute
+      // contract applies to that copy), so the displayed plan is intact;
+      // report and keep it.
+      refreshPlanControls();
       view_->showSwapResult(
           -1,
           QStringList{QString("purify failed: %1").arg(out.error),
-                      "plan recomputed"},
+                      "plan unchanged"},
           {});
       return;
     }
@@ -492,11 +575,20 @@ namespace VINCP::Network {
   void
   FleetMainWindow::refreshStatus(const QString& modeNote)
   {
+    // The fleet composition (scaled counts) is always visible, so the fleet
+    // size is never a mystery: "fleet x3 [truck 120, airlift 9, van 180]".
+    QStringList fleet;
+    for (const VehicleType& vehicle : current_.vehicles) {
+      fleet << QString("%1 %2")
+                   .arg(QString::fromStdString(vehicle.name))
+                   .arg(vehicle.count, 0, 'g', 6);
+    }
     statusLabel_->setText(
-        QString("%1 nodes, %2 assets x %3 vehicle types (seed %4) - %5")
+        QString("%1 nodes, %2 assets, fleet x%3 [%4] (seed %5) - %6")
             .arg(static_cast<int>(current_.numNodes))
             .arg(static_cast<int>(numAssets(current_)))
-            .arg(static_cast<int>(numVehicleTypes(current_)))
+            .arg(fleetMultiple(), 0, 'f', 2)
+            .arg(fleet.join(", "))
             .arg(static_cast<qulonglong>(lastSeed_))
             .arg(modeNote));
     return;
@@ -567,13 +659,13 @@ namespace VINCP::Network {
   void
   FleetMainWindow::refreshPlanControls()
   {
-    if (purifyBusyP_) {
+    if (swapBusyP_ || purifyBusyP_) {
       swapOptButton_->setEnabled(false);
       purifyButton_->setEnabled(false);
       resetButton_->setEnabled(false);
       return;
     }
-    swapOptButton_->setEnabled(1 == planKind_);
+    swapOptButton_->setEnabled(1 == planKind_ || 2 == planKind_);
     purifyButton_->setEnabled(1 == planKind_ || 2 == planKind_);
     resetButton_->setEnabled(0 != planKind_);
     return;
