@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Armijo backtracking line search: a reusable globalization building block.
 // ----------------------------------------------
-#ifndef VINCP_ARMIJO_HPP
-#define VINCP_ARMIJO_HPP
+#ifndef VIMCP_ARMIJO_HPP
+#define VIMCP_ARMIJO_HPP
 
 // Given a base merit value and a way to evaluate the merit at step length alpha
 // along a caller-fixed direction, it shrinks alpha until a sufficient decrease
@@ -15,7 +15,7 @@
 
 using std::function;
 
-namespace VINCP {
+namespace VIMCP {
 
   struct ArmijoParams {
     double alpha0             = 1.0;      // initial step length (the full step)
@@ -62,9 +62,9 @@ namespace VINCP {
                                            double slope0,
                                            const ArmijoParams& params = ArmijoParams{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_ARMIJO_HPP
+#endif // VIMCP_ARMIJO_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

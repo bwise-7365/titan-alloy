@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   Plan
   gravityPlan(const Instance& inst)
@@ -27,7 +27,7 @@ namespace VINCP::Network {
     return plan;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

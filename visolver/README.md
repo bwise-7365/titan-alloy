@@ -2,7 +2,7 @@
 # visolver — variational-inequality / complementarity solver (C++20 / Eigen)
 
 A C++20 solver for variational-inequality / nonlinear-complementarity problems
-(VINCP), ported from GNU Octave. All code is in namespace `VINCP`. Two layers
+(VIMCP), ported from GNU Octave. All code is in namespace `VIMCP`. Two layers
 sit over one shared core:
 
 - **Inner solver `dHan06`** — the self-adaptive projection method of Deren Han
@@ -31,8 +31,8 @@ sit over one shared core:
 
 ## Layout
 
-    include/vincp.hpp         core: VIResult, VIModel, evaluateF, projectors
-    lib/vincp.cpp             core implementation
+    include/vimcp.hpp         core: VIResult, VIModel, evaluateF, projectors
+    lib/vimcp.cpp             core implementation
     include/dhan06.hpp        inner LVI solver -- interface
     lib/dhan06.cpp            inner LVI solver -- implementation
     include/fdjacobian.hpp    central-difference Jacobian -- interface
@@ -45,9 +45,9 @@ sit over one shared core:
     src/driver_demo.cpp       outer-driver demo (known nonlinear VI)
     test/lcp_random_test.cpp  random indefinite LCP (stress test)
     test/lcp_psd_test.cpp     random monotone LCP, M = A^T A (guaranteed convergent)
-    CMakeLists.txt            static library `vincp` + demos + tests + ctest
+    CMakeLists.txt            static library `vimcp` + demos + tests + ctest
 
-The library is the static target `vincp` (sources in `lib/`); the demos and
+The library is the static target `vimcp` (sources in `lib/`); the demos and
 tests link against it.
 
 ## Outer-driver design choices

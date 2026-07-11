@@ -142,7 +142,7 @@ game, mixed NCP dim 87: free nfv/sigma/gamma intermediates + beta/eff
 complementarity) and `sheridan/deployment/deploy_v07.gms` (two-sided
 interdiction game with smooth ratio combat, dim 450: 4 free =e= multipliers +
 446 nonneg). Translated 1:1 into `test/gams_alloceff_test.cpp` and
-`test/gams_deploy_test.cpp`; each test file documents its GAMS -> VINCP
+`test/gams_deploy_test.cpp`; each test file documents its GAMS -> VIMCP
 variable/equation mapping in the header. `test/mcpengines.hpp` is the shared
 engine-rows harness (ssn / jn+bshe94b / jn+dhan06 / jn+ipm), so a problem
 drops in as data + a VIModel builder. Both problems are NONMONOTONE with
@@ -394,7 +394,7 @@ layer on later.
   magTol 1e-14). GP5 upgraded with Ben's GAMS listings (all five models;
   glra4B's is the flagged budget-violating MILES interrupt — the .gms
   comments' PATH/NLPEC values stay the target). Was:
-  new gmsmcp.{hpp,cpp}, gms_model_test; vincpgms now links vincp, the
+  new gmsmcp.{hpp,cpp}, gms_model_test; vimcpgms now links vimcp, the
   designed integration point): buildGmsMcp turns a Model statement into a
   VIModel — free vars + =e= rows -> H block, positive vars -> G block
   (kind decides; relation checked: =l= and free-with-inequality throw),
@@ -480,7 +480,7 @@ reference solvers achieve cold-start basin robustness on nonmonotone MCPs
 (PATH: Ralph pathsearch with a nonmonotone watchdog + proximal
 perturbation + crash phase; MILES: Lemke pivoting on the LCP
 linearizations; KNITRO: interior-point with penalty/filter
-globalization), then design the VINCP counterpart. Candidates already on
+globalization), then design the VIMCP counterpart. Candidates already on
 the table: a PATH-style proximal-point wrapper (deferred item from the
 v07 menu), merit-filter globalization, and the model-specific aSm /
 smoothing continuation homotopy. Ben's framing (2026-07-11): the
@@ -508,7 +508,7 @@ apply. Research done, decision NOT made (Ben is thinking it over).
 The GAMS-subset census and estimate for option B (six example files,
 construct table, four-gate plan, ~a week of gated sessions, open
 decisions) is in `doc/2026-07-08-gams-subset-census.md`.
-Weighting note (Ben, 2026-07-08): the clean subset-to-VINCP mapping the
+Weighting note (Ben, 2026-07-08): the clean subset-to-VIMCP mapping the
 census found is DESIGNED, not lucky -- owning an implementation of the
 GAMS/GLPK/AMPL/OCTAVE subset he actually uses is one of the project's two
 founding motivations (the other: assessing what modern AI can do).

@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // GoogleTest suite for the Mehrotra predictor-corrector interior-point engine.
 //

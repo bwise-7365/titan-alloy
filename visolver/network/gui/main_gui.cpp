@@ -12,7 +12,7 @@ main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
   app.setApplicationName("Flow-plan instance viewer");
-  VINCP::Network::MainWindow window;
+  VIMCP::Network::MainWindow window;
   window.resize(1280, 720);
   window.show();
   return app.exec();

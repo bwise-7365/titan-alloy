@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <string>   // newtonCheckTol failure message
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -352,7 +352,7 @@ namespace VINCP {
                            params, logger, newtonFactory);
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

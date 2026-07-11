@@ -5,13 +5,13 @@
 // vehicle-borne flows under per-type vehicle-mile budgets
 // (fleet-formulation.md sections 5-8).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETGREEDY_HPP
-#define VINCP_NETWORK_FLEETGREEDY_HPP
+#ifndef VIMCP_NETWORK_FLEETGREEDY_HPP
+#define VIMCP_NETWORK_FLEETGREEDY_HPP
 
 #include "fleetplan.hpp"
 #include "greedy.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Phase 1: per-asset rationing
@@ -66,9 +66,9 @@ namespace VINCP::Network {
   FleetGreedyResult greedyFleetPlan(const FleetInstance& inst,
                                     const FleetGreedyParams& params = {});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETGREEDY_HPP
+#endif // VIMCP_NETWORK_FLEETGREEDY_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

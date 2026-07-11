@@ -19,15 +19,15 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSEVAL_HPP
-#define VINCP_GMS_GMSEVAL_HPP
+#ifndef VIMCP_GMS_GMSEVAL_HPP
+#define VIMCP_GMS_GMSEVAL_HPP
 
 #include "gmsast.hpp"
 #include "gmsdatabase.hpp"
 
 #include <functional>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::function;
 
@@ -92,9 +92,9 @@ namespace VINCP::Gms {
   // way GAMS would have; the first pass ran them at the initial levels.
   void rerunPostSolveAssignments(GmsDatabase& db, const Program& program);
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSEVAL_HPP
+#endif // VIMCP_GMS_GMSEVAL_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

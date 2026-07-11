@@ -10,7 +10,7 @@
 #include <cstdio>
 
 using std::printf;
-using namespace VINCP;
+using namespace VIMCP;
 
 // Monotone LCP   0 <= x  _|_  (M x + q) >= 0   solved as an LVI on K = R_+^2.
 // Construction with known solution x* = (1, 0):

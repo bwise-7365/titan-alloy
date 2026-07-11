@@ -2,12 +2,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // App-layer Problem template: a uniform (params -> solve -> result) shell that
-// wraps the VINCP solver library into one reusable class per problem kind.
+// wraps the VIMCP solver library into one reusable class per problem kind.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PROBLEM_HPP
-#define VINCP_APPS_PROBLEM_HPP
+#ifndef VIMCP_APPS_PROBLEM_HPP
+#define VIMCP_APPS_PROBLEM_HPP
 
-// The application framework sits ABOVE the solver library (namespace VINCP) and
+// The application framework sits ABOVE the solver library (namespace VIMCP) and
 // changes nothing in it: each concrete problem (SAOE, and later Fleet) derives
 // from Problem, wraps the existing library entry points, and exposes a single
 // shape:
@@ -23,7 +23,7 @@
 // is Params, Result, the Engine menu, and solve -- and those are what this
 // template fixes.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -32,7 +32,7 @@
 #include <tuple>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The solver-engine menu shared by every problem. It is a single, non-template
   // type (living in this non-template base) so that SAOE::Engine, Fleet::Engine,
@@ -198,9 +198,9 @@ namespace VINCP::App {
         || std::find(honored.begin(), honored.end(), engine) != honored.end();
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PROBLEM_HPP
+#endif // VIMCP_APPS_PROBLEM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

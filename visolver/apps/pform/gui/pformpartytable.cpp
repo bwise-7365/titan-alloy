@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
     // Flat highlight colors (exemplar-inspired, no better/worse semantics):
@@ -302,7 +302,7 @@ namespace VINCP::App {
     return;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

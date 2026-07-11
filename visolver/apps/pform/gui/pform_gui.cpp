@@ -13,7 +13,7 @@ main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
   app.setApplicationName("PForm parliament-formation app");
-  VINCP::App::PformMainWindow window;
+  VIMCP::App::PformMainWindow window;
   window.resize(1150, 620);
   window.show();
   return app.exec();

@@ -13,12 +13,12 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSTOKEN_HPP
-#define VINCP_GMS_GMSTOKEN_HPP
+#ifndef VIMCP_GMS_GMSTOKEN_HPP
+#define VIMCP_GMS_GMSTOKEN_HPP
 
 #include <string>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::string;
 
@@ -62,9 +62,9 @@ namespace VINCP::Gms {
   // "file:line:col" for error messages.
   string describePos(const SourcePos& pos);
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSTOKEN_HPP
+#endif // VIMCP_GMS_GMSTOKEN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

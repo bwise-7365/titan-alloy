@@ -5,12 +5,12 @@
 // supply/demand/priority, the shared distance matrix, and the random fleet
 // instance generator (see network/doc/fleet-formulation.md).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETINSTANCE_HPP
-#define VINCP_NETWORK_FLEETINSTANCE_HPP
+#ifndef VIMCP_NETWORK_FLEETINSTANCE_HPP
+#define VIMCP_NETWORK_FLEETINSTANCE_HPP
 
 #include "instance.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Asset and vehicle types
@@ -175,9 +175,9 @@ namespace VINCP::Network {
   vector<AssetType> assetCatalog(Index count);
   vector<VehicleType> vehicleCatalog(Index count);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETINSTANCE_HPP
+#endif // VIMCP_NETWORK_FLEETINSTANCE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

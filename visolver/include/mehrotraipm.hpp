@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Mehrotra predictor-corrector interior-point method for the monotone LCP.
 // ----------------------------------------------
-#ifndef VINCP_MEHROTRAIPM_HPP
-#define VINCP_MEHROTRAIPM_HPP
+#ifndef VIMCP_MEHROTRAIPM_HPP
+#define VIMCP_MEHROTRAIPM_HPP
 
 // Solves the monotone MIXED linear complementarity problem over
 // K = R^n x R_+^m: with z = (x, y) and M, q partitioned conformally,
@@ -43,9 +43,9 @@
 //     complementarity problems", Comput. Optim. Appl. 48 (2009).
 //     (Superlinear convergence on degenerate problems.)
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
-namespace VINCP {
+namespace VIMCP {
 
   // Tunable constants of the predictor-corrector method. Defaults are the
   // standard values from the sources above.
@@ -164,9 +164,9 @@ namespace VINCP {
                        const IterationLogger& logger = IterationLogger{},
                        const NewtonSolverFactory& newtonFactory = NewtonSolverFactory{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_MEHROTRAIPM_HPP
+#endif // VIMCP_MEHROTRAIPM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

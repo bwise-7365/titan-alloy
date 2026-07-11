@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Alternating globalizer/finisher chain for nonmonotone mixed NCPs.
 // ----------------------------------------------
-#ifndef VINCP_ALTERNATINGCHAIN_HPP
-#define VINCP_ALTERNATINGCHAIN_HPP
+#ifndef VIMCP_ALTERNATINGCHAIN_HPP
+#define VIMCP_ALTERNATINGCHAIN_HPP
 
 // Composes two solver engines into rounds of
 //     project onto K  ->  globalize  ->  finish
@@ -51,14 +51,14 @@
 // chainedSolodovHe (chainedsolver.hpp) is the same globalizer->finisher
 // composition one level down, without rounds or projection.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <functional>
 #include <string>
 
 using std::string;
 
-namespace VINCP {
+namespace VIMCP {
 
   // A stage solver: the caller binds a complete engine (model, parameters,
   // inner solvers, per-iteration logging) leaving only the start point. Both
@@ -127,9 +127,9 @@ namespace VINCP {
                                  const ChainStageLogger& logger = ChainStageLogger{},
                                  const Projector& projector = Projector{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_ALTERNATINGCHAIN_HPP
+#endif // VIMCP_ALTERNATINGCHAIN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

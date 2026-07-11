@@ -11,7 +11,7 @@
 
 using std::string;
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -157,7 +157,7 @@ namespace VINCP {
     };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

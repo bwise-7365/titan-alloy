@@ -1,5 +1,5 @@
 <!-- Copyright Ben Paul Wise. All Rights Reserved. -->
-# Documentation plan: the VINCP report (draft outline for review)
+# Documentation plan: the VIMCP report (draft outline for review)
 
 Drafted 2026-07-06 for Ben's review. Four parts per his framing: overview,
 developer manual / API, testing and lessons learned, technical appendix for
@@ -54,7 +54,7 @@ narrative and altchain rationale).
 - **2.1 Getting started.** Build on Windows/Debian (CMake, header-only Eigen,
   `EIGEN3_INCLUDE_DIR`), running tests (ctest, aggregate targets, CLion
   notes), directory map.
-- **2.2 Core types (`vincp.hpp`).** `VIResult` -- including the two
+- **2.2 Core types (`vimcp.hpp`).** `VIResult` -- including the two
   contract subtleties: residuals are SQUARED norms, and `converged=false`
   returns are honest stalls at real iterates (best-visited for ssn).
   `VIModel` / `makeVIModel` / `evaluateF`; `Projector` and ready-made
@@ -88,7 +88,7 @@ narrative and altchain rationale).
 - **2.5 Choosing an engine.** A one-page decision table (monotone? affine?
   orthant K? warm start available? degenerate face? nonmonotone?) with the
   planned `chooseEngine` dispatcher as future work.
-- **2.6 The network layer (`vincpnet`).** Instance model and generators
+- **2.6 The network layer (`vimcpnet`).** Instance model and generators
   (laydown 0/1, node classes); greedy/gravity/swap planners; reduction and
   the sink-major LCP packing; screens and the certificate loop; `solveFlowPlan`
   and the config-file keys (`solver.engine`, `solver.ipmNewton`,

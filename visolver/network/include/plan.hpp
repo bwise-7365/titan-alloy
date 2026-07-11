@@ -3,12 +3,12 @@
 // ----------------------------------------------
 // Flow plan (S, R, f) for an Instance: evaluation and feasibility checking.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_PLAN_HPP
-#define VINCP_NETWORK_PLAN_HPP
+#ifndef VIMCP_NETWORK_PLAN_HPP
+#define VIMCP_NETWORK_PLAN_HPP
 
 #include "instance.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Plan
@@ -77,9 +77,9 @@ namespace VINCP::Network {
   // Largest violation across all families: 0 exactly when the plan is feasible.
   double maxViolation(const PlanViolations& violations);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_PLAN_HPP
+#endif // VIMCP_NETWORK_PLAN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

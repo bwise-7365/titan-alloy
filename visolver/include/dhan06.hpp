@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Han's 2006 self-adaptive projection method for the linear VI (port of dHan06).
 // ----------------------------------------------
-#ifndef VINCP_DHAN06_HPP
-#define VINCP_DHAN06_HPP
+#ifndef VIMCP_DHAN06_HPP
+#define VIMCP_DHAN06_HPP
 
 // Solves the linear variational inequality (LVI)
 //     find x in K such that (M x + q) . (w - x) >= 0  for all w in K
@@ -18,11 +18,11 @@
 
 #include <Eigen/Dense>
 #include <functional>
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
-namespace VINCP {
+namespace VIMCP {
 
-  // IterationLogger is the shared inner-solver logging hook, declared in vincp.hpp.
+  // IterationLogger is the shared inner-solver logging hook, declared in vimcp.hpp.
 
   // Tunable constants of Han's method. Defaults match the Octave source.
   struct DHan06Params {
@@ -75,9 +75,9 @@ namespace VINCP {
                   const DHan06Params& params = DHan06Params{},
                   const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_DHAN06_HPP
+#endif // VIMCP_DHAN06_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

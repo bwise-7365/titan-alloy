@@ -30,7 +30,7 @@
 #include <exception>
 #include <utility>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
     const int kMaxTypes = 10;   // catalog size (assetCatalog etc.)
@@ -692,7 +692,7 @@ namespace VINCP::Network {
     };
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -1,13 +1,13 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// Core domain types shared by every VINCP solver.
+// Core domain types shared by every VIMCP solver.
 // ----------------------------------------------
-#ifndef VINCP_HPP
-#define VINCP_HPP
+#ifndef VIMCP_HPP
+#define VIMCP_HPP
 
 // Core domain types for the variational inequality / mixed nonlinear complementarity
-// (VINCP) solvers: shared by every solver and independent of any one of them.
+// (VIMCP) solvers: shared by every solver and independent of any one of them.
 // Solves H(x,y) = 0, 0 <= G(x,y) _|_ y => 0.
 //
 //   - VIResult : the single result type returned by all solvers.
@@ -23,11 +23,11 @@
 
 using std::function;
 
-namespace VINCP {
+namespace VIMCP {
 
   // The only header that names the Eigen namespace: these using-declarations pull
-  // the Eigen types the library uses into namespace VINCP, so every other header
-  // and source (and any file that does `using namespace VINCP;`) writes short names.
+  // the Eigen types the library uses into namespace VIMCP, so every other header
+  // and source (and any file that does `using namespace VIMCP;`) writes short names.
   using Eigen::VectorXd;
   using Eigen::MatrixXd;
   using Eigen::Index;
@@ -120,9 +120,9 @@ namespace VINCP {
                          const VectorXd& x0, const MatrixXd& M,
                          const VectorXd& q, const Projector& Pr);
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_HPP
+#endif // VIMCP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

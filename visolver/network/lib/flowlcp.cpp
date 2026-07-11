@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   double
   defaultTieBreakEpsilon(const Instance& inst)
@@ -138,7 +138,7 @@ namespace VINCP::Network {
     return plan;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

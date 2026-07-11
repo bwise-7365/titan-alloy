@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <random>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit test: random MONOTONE LCP with a known complementary solution.
 //

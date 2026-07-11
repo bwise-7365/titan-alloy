@@ -17,7 +17,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   size_t
   GmsSet::ordinalOf(const string& label) const
@@ -139,7 +139,7 @@ namespace VINCP::Gms {
     return found->second;
   }
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

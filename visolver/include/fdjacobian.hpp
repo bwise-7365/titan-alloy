@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Finite-difference Jacobian for the real-valued VI port.
 // ----------------------------------------------
-#ifndef VINCP_FDJACOBIAN_HPP
-#define VINCP_FDJACOBIAN_HPP
+#ifndef VIMCP_FDJACOBIAN_HPP
+#define VIMCP_FDJACOBIAN_HPP
 
 // The Octave original computed Jacobians with the optim-package complex-step
 // method.  The C++ port is real-valued, so the outer Josephy-Newton driver
@@ -13,12 +13,12 @@
 // eps^(4/5), roughly two orders of magnitude below a 2nd-order central scheme --
 // enough to reach tight outer tolerances on stiff (e.g. cubic) maps.
 
-#include "vincp.hpp"   // Eigen type aliases (VectorXd, MatrixXd, ...) live here
+#include "vimcp.hpp"   // Eigen type aliases (VectorXd, MatrixXd, ...) live here
 
 #include <Eigen/Dense>
 #include <functional>
 
-namespace VINCP {
+namespace VIMCP {
 
   // A vector field R^d -> R^p whose Jacobian is to be approximated.
   using VectorField = std::function<VectorXd(const VectorXd&)>;
@@ -41,9 +41,9 @@ namespace VINCP {
                                      const VectorXd& z,
                                      double stepRel = -1.0);
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_FDJACOBIAN_HPP
+#endif // VIMCP_FDJACOBIAN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

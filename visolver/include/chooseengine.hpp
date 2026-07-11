@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // chooseEngine: problem-feature inspection and automatic engine dispatch.
 // ----------------------------------------------
-#ifndef VINCP_CHOOSEENGINE_HPP
-#define VINCP_CHOOSEENGINE_HPP
+#ifndef VIMCP_CHOOSEENGINE_HPP
+#define VIMCP_CHOOSEENGINE_HPP
 
 // Mechanizes the engine-selection decision table (report Part II) that the
 // 2026 engine program validated empirically: projection-contraction for
@@ -25,7 +25,7 @@
 //     fall back per the evidence. The choice is observable through the
 //     ChoiceLogger hook, never silent.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "bshe94b.hpp"
 #include "chainedsolver.hpp"
 #include "mehrotraipm.hpp"
@@ -34,7 +34,7 @@
 
 #include <functional>
 
-namespace VINCP {
+namespace VIMCP {
 
   // The engines the dispatcher can select. JosephyNewton appears for
   // completeness of the pure decision function (nonlinear over a non-orthant
@@ -168,9 +168,9 @@ namespace VINCP {
                           const VectorXd& z0,
                           const AutoModelParams& params = AutoModelParams{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_CHOOSEENGINE_HPP
+#endif // VIMCP_CHOOSEENGINE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

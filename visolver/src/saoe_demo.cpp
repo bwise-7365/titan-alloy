@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <random>
 
-using namespace VINCP;
+using namespace VIMCP;
 using std::printf;
 
 // SAOE demo: generate a random reward matrix R and strength vector S, solve the

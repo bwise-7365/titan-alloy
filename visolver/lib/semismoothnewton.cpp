@@ -15,7 +15,7 @@
 
 using std::vector;
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -359,7 +359,7 @@ namespace VINCP {
     return VIResult{ bestZ, bestMag, iter, convergedP };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

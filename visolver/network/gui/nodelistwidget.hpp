@@ -6,14 +6,14 @@
 // on release, mirroring the map's press-and-hold node popup so a list click can
 // drive the same popup.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_NODELISTWIDGET_HPP
-#define VINCP_NETWORK_NODELISTWIDGET_HPP
+#ifndef VIMCP_NETWORK_NODELISTWIDGET_HPP
+#define VIMCP_NETWORK_NODELISTWIDGET_HPP
 
 #include <QListWidget>
 
 class QMouseEvent;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   class NodeListWidget : public QListWidget
   {
@@ -31,9 +31,9 @@ namespace VINCP::Network {
     void mouseReleaseEvent(QMouseEvent* event) override;
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_NODELISTWIDGET_HPP
+#endif // VIMCP_NETWORK_NODELISTWIDGET_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

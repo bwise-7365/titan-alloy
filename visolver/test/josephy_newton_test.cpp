@@ -1,7 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "josephynewton.hpp"
 #include "utils.hpp"
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <vector>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit tests for the Josephy-Newton driver's no-progress (stall) cutoff
 // (JosephyNewtonParams::stallIterMax / stallRelDecrease, added 2026-07-06

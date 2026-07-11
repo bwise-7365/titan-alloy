@@ -13,8 +13,8 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSPARSER_HPP
-#define VINCP_GMS_GMSPARSER_HPP
+#ifndef VIMCP_GMS_GMSPARSER_HPP
+#define VIMCP_GMS_GMSPARSER_HPP
 
 #include "gmsast.hpp"
 #include "gmstoken.hpp"
@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::string;
   using std::vector;
@@ -36,9 +36,9 @@ namespace VINCP::Gms {
   Program parseGmsString(const string& text,
                          const string& pseudoFile = "<string>");
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSPARSER_HPP
+#endif // VIMCP_GMS_GMSPARSER_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

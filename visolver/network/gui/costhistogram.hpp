@@ -5,8 +5,8 @@
 // cost-range buckets [0, w), [w, 2w), ... over [0, maxCost]. K is set by the
 // owner and the widget recomputes and repaints on change.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_COSTHISTOGRAM_HPP
-#define VINCP_NETWORK_COSTHISTOGRAM_HPP
+#ifndef VIMCP_NETWORK_COSTHISTOGRAM_HPP
+#define VIMCP_NETWORK_COSTHISTOGRAM_HPP
 
 #include "instance.hpp"
 
@@ -17,7 +17,7 @@ class QPaintEvent;
 
 using std::vector;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   class CostHistogram : public QWidget
   {
@@ -45,9 +45,9 @@ namespace VINCP::Network {
     double maxCost_ = 1.0;   // upper edge of the last bin
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_COSTHISTOGRAM_HPP
+#endif // VIMCP_NETWORK_COSTHISTOGRAM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

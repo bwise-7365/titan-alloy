@@ -112,8 +112,8 @@ censused grammar; anything else throws with `file:line:col`.
 
 1. **Module skeleton.** New top-level `gams/` mirroring `network/`:
    `gams/include/`, `gams/lib/`, `gams/test/`, own CMakeLists, static lib
-   `vincpgms` at `/W4`-as-errors. Standard library only (no Eigen, no
-   `vincp` link at this gate). Namespace `VINCP::Gms`; house style
+   `vimcpgms` at `/W4`-as-errors. Standard library only (no Eigen, no
+   `vimcp` link at this gate). Namespace `VIMCP::Gms`; house style
    throughout. Files: `gmstoken.hpp`, `gmslexer.{hpp,cpp}`, `gmsast.hpp`,
    `gmsparser.{hpp,cpp}`, `gmsecho.{hpp,cpp}`.
 2. **Lexer.** Tokens: identifiers (original spelling + lower-cased key —

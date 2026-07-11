@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit tests for the chooseEngine dispatcher: the monotonicity probe, the
 // pure decision table (each rule of report Part II's engine-selection table),

@@ -5,8 +5,8 @@
 // party, column sections Weight | Position I0.. | Salience I0.. | Utility --
 // the Qt adaptation of the exemplar's aligned per-actor DataGridView strips.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PFORMPARTYTABLE_HPP
-#define VINCP_APPS_PFORMPARTYTABLE_HPP
+#ifndef VIMCP_APPS_PFORMPARTYTABLE_HPP
+#define VIMCP_APPS_PFORMPARTYTABLE_HPP
 
 #include "pformproblem.hpp"
 
@@ -17,7 +17,7 @@
 
 class QColor;
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The grid shows parties as ROWS while PformData stores position/salience as
   // issues x parties (D x M); setInstance and instanceFromCells are the ONLY
@@ -77,9 +77,9 @@ namespace VINCP::App {
     Index issueCount = 0;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PFORMPARTYTABLE_HPP
+#endif // VIMCP_APPS_PFORMPARTYTABLE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

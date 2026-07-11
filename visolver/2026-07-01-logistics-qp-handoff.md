@@ -2,17 +2,17 @@
 # Handoff: Logistics network QP (system-optimal distribution planning)
 
 *For the next Claude instance. Read before starting. Records a new problem the user
-is bringing to the `visolver` / `VINCP` codebase: the classification and
+is bringing to the `visolver` / `VIMCP` codebase: the classification and
 recommendations already agreed, the generalization coming next, and a staged-plan
 skeleton to flesh out with the user. Planning only — no code written for it yet.*
 
 ## Relationship to the existing codebase
-- `visolver` / `VINCP` solves VIs / NCPs (`dHan06`, `bsHe94b` inner LVI solvers;
+- `visolver` / `VIMCP` solves VIs / NCPs (`dHan06`, `bsHe94b` inner LVI solvers;
   `solveVI` Josephy-Newton outer loop; the SAOE Nash-equilibrium demo/test). See
   `CLAUDE.md`.
 - This new problem is a **system-optimal convex QP** (one planner), **NOT** a
   game / equilibrium. Do NOT conflate with SAOE (a non-monotone game). It may or
-  may not be solved with the VINCP tools — see recommendations.
+  may not be solved with the VIMCP tools — see recommendations.
 
 ## The current problem (single commodity, single vehicle)
 Central planner chooses flows `f_ij` on a sparse network (~100 nodes; ~500
@@ -52,7 +52,7 @@ beyond vehicle range without an intermediate stop).
 2. **OSQP (robust off-the-shelf).** Genuine convex QP; budget row + caps + balance
    + `f>=0` go in directly; sparse KKT factored once + warm-start across the many
    per-instance solves.
-3. **Reuse VINCP via KKT -> monotone affine mixed LCP.** Free block = balance
+3. **Reuse VIMCP via KKT -> monotone affine mixed LCP.** Free block = balance
    multipliers; non-negative block = flows + cap multipliers + (scalar) budget
    multiplier; solve with `bsHe94b` (factor `(M+I)` once). Monotone => converges
    cleanly (unlike SAOE). Viable reuse, but OSQP / network decomposition are more
@@ -100,7 +100,7 @@ User expects to add:
 - **Stage 3:** multiple vehicle types + per-(vehicle, good) capacity (resolve the
   vehicle fork first).
 Each stage: fix data structures, pick a solver (Lagrangian-network vs OSQP vs
-VINCP-LCP), define a small validation instance, add a test.
+VIMCP-LCP), define a small validation instance, add a test.
 
 ## Open questions to resolve tomorrow
 - Exact "flow balance at each node" semantics (transshipment conservation? supply
@@ -109,7 +109,7 @@ VINCP-LCP), define a small validation instance, add a test.
 - Are goods coupled at a node (shared handling/storage) or fully separable?
 - Vehicle modeling: shared resource budgets vs per-vehicle packing capacity.
 - Is a determinate `f` needed, or is `R*` enough? (degeneracy tie-break.)
-- Build target: OSQP dependency acceptable? keep everything in the VINCP codebase?
+- Build target: OSQP dependency acceptable? keep everything in the VIMCP codebase?
   a custom Lagrangian-network solver? (Repeated per-instance solves + possible JNI
   context favor factor-once / warm-start.)
 - Full-scale sizes (nodes, links, goods, vehicles) => whether sparsity/decomposition

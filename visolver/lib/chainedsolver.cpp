@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   VIResult
   chainedSolodovHe(const VectorXd& x0,
@@ -39,7 +39,7 @@ namespace VINCP {
     return result;
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

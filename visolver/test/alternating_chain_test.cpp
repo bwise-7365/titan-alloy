@@ -2,14 +2,14 @@
 #include "alternatingchain.hpp"
 #include "josephynewton.hpp"
 #include "semismoothnewton.hpp"
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
 #include <stdexcept>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit tests for alternatingChainSolve. The composition logic (best-point
 // memory, throw-as-stall, the improvement cutoff) is driven deterministically

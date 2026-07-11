@@ -9,7 +9,7 @@
 #include <random>
 #include <stdexcept>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit test: random INDEFINITE-M LCP -- a divergence stress test.
 //

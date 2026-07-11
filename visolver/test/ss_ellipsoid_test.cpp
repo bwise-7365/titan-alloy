@@ -29,7 +29,7 @@
 #include <random>
 #include <string>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 namespace {
 

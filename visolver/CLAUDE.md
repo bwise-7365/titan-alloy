@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 A C++20 / Eigen solver for variational-inequality / nonlinear-complementarity
-problems (VINCP), ported from GNU Octave. Everything lives in namespace `VINCP`.
+problems (VIMCP), ported from GNU Octave. Everything lives in namespace `VIMCP`.
 The mathematical target is a mixed VI over `K = R^n x R_+^m` with variable
 `z = (x, y)` (free block `x`, non-negative block `y`):
 
@@ -42,7 +42,7 @@ Run button, use CLion's native "All CTest" configuration instead.
 
 The user builds and runs themselves — hand off the commands rather than invoking
 CMake/compilers/binaries to "verify". Warnings are errors-in-spirit: the library
-target `vincp` is built with `/W4` (MSVC) or `-Wall -Wextra` (else); Eigen
+target `vimcp` is built with `/W4` (MSVC) or `-Wall -Wextra` (else); Eigen
 headers are included as `SYSTEM` so they are exempt.
 
 ## Architecture
@@ -50,7 +50,7 @@ headers are included as `SYSTEM` so they are exempt.
 Two solver layers over one shared core; the dependency arrows point one way
 (demos/tests -> solvers -> core), with no cycles.
 
-- **Core (`include/vincp.hpp`, `lib/vincp.cpp`)** — solver-independent domain
+- **Core (`include/vimcp.hpp`, `lib/vimcp.cpp`)** — solver-independent domain
   types, included by everything, including nothing itself:
   - `VIResult { VectorXd z; double residual; int iter; bool converged; }` — the
     **single** result type returned by *every* solver.
@@ -155,8 +155,8 @@ Two solver layers over one shared core; the dependency arrows point one way
 
 - **GMS front end (`gms/`)** — a parser for the GAMS SUBSET the corpus in
   `doc/*.gms` actually uses (censused in `doc/2026-07-08-gams-subset-census.md`;
-  gate plan in `doc/2026-07-08-gams-frontend-plan.md`). Library `vincpgms`,
-  namespace `VINCP::Gms`. Layers: GP1 grammar + AST + canonical echo
+  gate plan in `doc/2026-07-08-gams-frontend-plan.md`). Library `vimcpgms`,
+  namespace `VIMCP::Gms`. Layers: GP1 grammar + AST + canonical echo
   (round-trip = idempotence); GP2 `buildGmsDatabase` — symbol table + eager
   statement-order evaluation (Solve is RECORDED, not executed, so post-solve
   assignments see initial levels), with `GmsExprEvaluator` as the shared
@@ -165,7 +165,7 @@ Two solver layers over one shared core; the dependency arrows point one way
   rows -> H, positive variables -> G; pairing semantics derive from the
   VARIABLE'S KIND), z0 from `.L`, `.UP` bounds surfaced but not applied.
   The parser/evaluator layers are standard-library only; `gmsmcp` links
-  `vincp`, and its closures read the database LIVE (keep it alive).
+  `vimcp`, and its closures read the database LIVE (keep it alive).
   Identifiers are case-insensitive (every name travels with a lower-cased
   `key`); `$macro` is expanded at token level; anything outside the censused
   footprint throws with `file:line:col`. Tests read the corpus from `doc/`.
@@ -283,7 +283,7 @@ markdown, or text file, add the banner.
 - C++20; must build on **both** Windows 11 and Debian Linux — never use anything
   platform-restricted. Keep linear-algebra calls localized so the Eigen choice
   stays reversible.
-- Headers `.hpp`, sources `.cpp`; include guards are `VINCP_<FILE>_HPP` (never
+- Headers `.hpp`, sources `.cpp`; include guards are `VIMCP_<FILE>_HPP` (never
   `#pragma once`). American spelling. Split files/functions well before a few
   hundred lines.
 
@@ -298,7 +298,7 @@ clang-format. The hallmarks:
 - **`using std::…` at file scope** for the common types (`string`, `vector`,
   `function`, `ostream`, …) so they read bare; keep `std::` on calls / utilities /
   exceptions (`std::sqrt`, `std::invalid_argument`, …). `Eigen::` is named ONLY in
-  `vincp.hpp`, which pulls the Eigen types into `namespace VINCP`.
+  `vimcp.hpp`, which pulls the Eigen types into `namespace VIMCP`.
 - **Out-of-line function DEFINITIONS**: the return type is on its own line and the
   opening brace on its own line (Allman). Control flow (`if`/`for`/`while`) and
   `class`/`struct`/`namespace` keep the brace on the same line (K&R); `else` goes on
@@ -322,7 +322,7 @@ clang-format. The hallmarks:
 - Tests use **GoogleTest** (fetched via CMake `FetchContent`, pinned tag; MSVC needs
   `set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)`). To add one: drop a `.cpp`
   in `test/` using `#include <gtest/gtest.h>` and `TEST(...)`/`EXPECT_NEAR` etc., then
-  add an `add_executable` + `target_link_libraries(... vincp GTest::gtest_main)` +
+  add an `add_executable` + `target_link_libraries(... vimcp GTest::gtest_main)` +
   `gtest_discover_tests(...)` triplet in `CMakeLists.txt`. Name all
   dimensions/tolerances as named constants (no magic numbers). Legacy plain-exe
   tests (return 0/1, registered with `add_test`) may still exist during the
@@ -341,7 +341,7 @@ clang-format. The hallmarks:
   merit-switched hybrid was NOT built as designed; composition is handled by
   `alternatingChainSolve` and `chooseEngine` instead.
 - `2026-07-01-logistics-qp-handoff.md` specified the logistics network QP.
-  That work is BUILT: the `network/` layer (library `vincpnet`, ledger
+  That work is BUILT: the `network/` layer (library `vimcpnet`, ledger
   `network/plan.md`, docs under `network/doc/`) carries the flow-planning QP,
   the fleet generalization, the screens/certificates, and the two Qt viewers.
   Read `network/plan.md`, not the handoff, for current state.

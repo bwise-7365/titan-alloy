@@ -29,14 +29,14 @@
 
 namespace {
 
-  using namespace VINCP::Gms;
+  using namespace VIMCP::Gms;
   using std::string;
   using std::vector;
 
   string
   corpusPath(const string& name)
   {
-    return string(VINCP_GMS_CORPUS_DIR) + "/" + name;
+    return string(VIMCP_GMS_CORPUS_DIR) + "/" + name;
   }
 
   GmsDatabase

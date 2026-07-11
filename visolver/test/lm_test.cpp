@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit test for levenbergMarquardtSolve (and, through it, the LM building blocks
 // levenbergMarquardtDamp / levenbergMarquardtUpdate). It runs BOTH rectangular shapes

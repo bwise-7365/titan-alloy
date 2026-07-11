@@ -9,7 +9,7 @@
 // or suitability for any specific application.
 #include "alternatingchain.hpp"
 #include "mcpengines.hpp"
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
@@ -23,7 +23,7 @@
 #include <numeric>
 #include <utility>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // ============================================================================
 // Faithful translation of deploy_v07.gms (sheridan/deployment): a two-sided
@@ -31,7 +31,7 @@ using namespace VINCP;
 // with smooth ratio combat en route and at the conflict locations -- as a
 // mixed nonlinear complementarity problem over K = R^n x R_+^m.
 //
-// GMS -> VINCP mapping (Model interdict, pairings from its / ... / list):
+// GMS -> VIMCP mapping (Model interdict, pairings from its / ... / list):
 //   free block x (n = 4) = [ alphaR | alphaB | lambdaR | lambdaB ], the
 //     multipliers of the four =e= constraints; H rows are those constraints
 //     (probabilities sum to one, pre-positioning exhausts the totals).

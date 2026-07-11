@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Forward-backward splitting (He-Yuan-Zhang 2004) for the general monotone VI.
 // ----------------------------------------------
-#ifndef VINCP_FBSHYZ04_HPP
-#define VINCP_FBSHYZ04_HPP
+#ifndef VIMCP_FBSHYZ04_HPP
+#define VIMCP_FBSHYZ04_HPP
 
 // Solves the GENERAL variational inequality
 //     find x in K such that F(x) . (w - x) >= 0  for all w in K
@@ -33,10 +33,10 @@
 // theory needs monotone, Lipschitz F. An affine adapter for the
 // Josephy-Newton InnerSolver seam is makeFbsHyz04Solver (josephynewton.hpp).
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "fdjacobian.hpp"   // VectorField
 
-namespace VINCP {
+namespace VIMCP {
 
   // Tunable constants; defaults are the pmedemo values.
   struct FbsHyz04Params {
@@ -70,9 +70,9 @@ namespace VINCP {
                     const FbsHyz04Params& params = FbsHyz04Params{},
                     const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_FBSHYZ04_HPP
+#endif // VIMCP_FBSHYZ04_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

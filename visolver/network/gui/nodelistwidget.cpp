@@ -9,7 +9,7 @@
 #include <QListWidgetItem>
 #include <QMouseEvent>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   NodeListWidget::NodeListWidget(QWidget* parent)
     : QListWidget(parent)
@@ -36,7 +36,7 @@ namespace VINCP::Network {
     return;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

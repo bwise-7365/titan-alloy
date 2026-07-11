@@ -32,7 +32,7 @@ adopted" at the end.
   `.txt` uses the bare line first and last. `CLAUDE.md` is exempt.
 
 ## 2. Header guards & includes
-- `#ifndef VINCP_<FILE>_HPP` / `#define` / `#endif // VINCP_<FILE>_HPP` — include
+- `#ifndef VIMCP_<FILE>_HPP` / `#define` / `#endif // VIMCP_<FILE>_HPP` — include
   guards, **never `#pragma once`**.
 - Modern C++ standard headers (`<cstdio>`, `<cmath>`, …), not the C names.
 - Grouped includes: the module's own / project headers first, then `<Eigen/Dense>`,
@@ -44,8 +44,8 @@ adopted" at the end.
   `using std::string;`, `using std::vector;`, `using std::function;`,
   `using std::chrono::system_clock;`. Keep `std::` on calls / utilities / exceptions
   (`std::sqrt`, `std::to_string`, `std::invalid_argument`, …).
-- **`Eigen::` is named ONLY in `vincp.hpp`**, which pulls the Eigen types into
-  `namespace VINCP` (so everything else writes `VectorXd`, `MatrixXd`, `Index`).
+- **`Eigen::` is named ONLY in `vimcp.hpp`**, which pulls the Eigen types into
+  `namespace VIMCP` (so everything else writes `VectorXd`, `MatrixXd`, `Index`).
 
 ## 4. Naming
 - **Types / classes / enums:** PascalCase (`VIResult`, `DHan06Params`, `InnerMethod`).

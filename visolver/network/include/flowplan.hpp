@@ -5,8 +5,8 @@
 // bsHe94b -> R3 certificate loop -> unpack. One call from a calibrated
 // Instance to an optimal Plan (doc/reduction.md).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLOWPLAN_HPP
-#define VINCP_NETWORK_FLOWPLAN_HPP
+#ifndef VIMCP_NETWORK_FLOWPLAN_HPP
+#define VIMCP_NETWORK_FLOWPLAN_HPP
 
 #include "flowlcp.hpp"
 
@@ -14,7 +14,7 @@
 
 using std::string;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   struct FlowPlanParams {
     // Which inner engine solves the affine complementarity system (both in
@@ -98,9 +98,9 @@ namespace VINCP::Network {
   FlowPlanResult solveFlowPlan(const Instance& inst,
                                const FlowPlanParams& params = FlowPlanParams{});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLOWPLAN_HPP
+#endif // VIMCP_NETWORK_FLOWPLAN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -10,7 +10,7 @@
 #include <limits>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   MatrixXd
   centralDifferenceJacobian(const VectorField& F,
@@ -74,7 +74,7 @@ namespace VINCP {
     return jac;
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

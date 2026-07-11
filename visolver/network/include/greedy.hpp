@@ -5,12 +5,12 @@
 // flows, and ton-mile budget calibration (problem spec; formulation.md
 // section 6 audit).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_GREEDY_HPP
-#define VINCP_NETWORK_GREEDY_HPP
+#ifndef VIMCP_NETWORK_GREEDY_HPP
+#define VIMCP_NETWORK_GREEDY_HPP
 
 #include "plan.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Phase 1: rationing
@@ -71,9 +71,9 @@ namespace VINCP::Network {
   // valid inputs).
   GreedyResult greedyPlan(const Instance& inst, const GreedyParams& params = {});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_GREEDY_HPP
+#endif // VIMCP_NETWORK_GREEDY_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// GP3: build a VINCP mixed complementarity problem from a GmsDatabase model.
+// GP3: build a VIMCP mixed complementarity problem from a GmsDatabase model.
 // The Model statement's eq.var pairs drive everything: pairs with FREE
 // variables become the H block (=e= rows), pairs with POSITIVE variables the
 // G block (=g= or =e= rows -- the mixed-complementarity reading derives from
@@ -20,17 +20,17 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSMCP_HPP
-#define VINCP_GMS_GMSMCP_HPP
+#ifndef VIMCP_GMS_GMSMCP_HPP
+#define VIMCP_GMS_GMSMCP_HPP
 
 #include "gmsdatabase.hpp"
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   // Where one variable family landed in the packed z = [x | y]: offset is
   // within its block (x for free, y for positive), count is the family's
@@ -66,9 +66,9 @@ namespace VINCP::Gms {
   void applyMcpSolution(GmsDatabase& db, const GmsMcp& mcp,
                         const VectorXd& z);
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSMCP_HPP
+#endif // VIMCP_GMS_GMSMCP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

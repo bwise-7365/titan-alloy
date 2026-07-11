@@ -5,7 +5,7 @@
 // doc/2026-07-08-gams-subset-census.md as per-file assertions, round-trip
 // idempotence through the canonical echo, macro expansion, case-insensitive
 // keys, and loud failures on constructs outside the subset. The corpus files
-// are read in place from doc/ (VINCP_GMS_CORPUS_DIR).
+// are read in place from doc/ (VIMCP_GMS_CORPUS_DIR).
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
 // software is not endorsed or certified by GAMS Development Corporation. The
@@ -27,13 +27,13 @@
 
 namespace {
 
-  using namespace VINCP::Gms;
+  using namespace VIMCP::Gms;
   using std::string;
 
   string
   corpusPath(const string& name)
   {
-    return string(VINCP_GMS_CORPUS_DIR) + "/" + name;
+    return string(VIMCP_GMS_CORPUS_DIR) + "/" + name;
   }
 
   // Construct counts over a parsed program; each corpus file's expected

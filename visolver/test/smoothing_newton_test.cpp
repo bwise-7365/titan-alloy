@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <random>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Validation of the smoothing solvers on a convex QP with a known KKT point:
 //     min 1/2 ||x||^2  s.t.  A x >= b,     x in R^N, A in R^{M x N}.

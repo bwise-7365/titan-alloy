@@ -4,17 +4,17 @@
 // Fleet problem class: a Problem-template wrapper over the network library's
 // distribution-planning QP and its greedy / swap / sparsify companions.
 // ----------------------------------------------
-#ifndef VINCP_APPS_FLEETPROBLEM_HPP
-#define VINCP_APPS_FLEETPROBLEM_HPP
+#ifndef VIMCP_APPS_FLEETPROBLEM_HPP
+#define VIMCP_APPS_FLEETPROBLEM_HPP
 
 // Fleet packages the existing fleet machinery (network/, namespace
-// VINCP::Network) behind the app-framework contract: build a Fleet from its
+// VIMCP::Network) behind the app-framework contract: build a Fleet from its
 // DATA (a FleetInstance), call solve(params) for the large conservative QP, and
 // receive a tuple (VIResult, FleetResult). The greedy planner, the 2-exchange
 // swap, and the sparsify (purify) pass -- which are NOT part of the Problem
 // template -- are exposed as extra methods that delegate to the same library
 // functions the fleet_viewer uses. Nothing under network/ is modified; this
-// class only links vincpnet and calls its public API.
+// class only links vimcpnet and calls its public API.
 
 #include "problem.hpp"
 
@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <string>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // How to solve the fleet QP. Defaults mirror FleetSolveParams (the proven
   // production configuration: interior point with the structured "fleet" Newton
@@ -89,7 +89,7 @@ namespace VINCP::App {
     Solution solve(const Params& params) const override;
 
     // Extra methods (NOT in the Problem template) -- thin delegates to the
-    // vincpnet functions the fleet_viewer uses. greedyPlan is the fast
+    // vimcpnet functions the fleet_viewer uses. greedyPlan is the fast
     // heuristic; swapToLocalOptimum drives each asset's flows to a 2-exchange
     // local optimum in place; sparsify (purifyFleetPlan) consolidates arcs in
     // place without changing deliveries.
@@ -117,9 +117,9 @@ namespace VINCP::App {
     Network::FleetInstance data;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_FLEETPROBLEM_HPP
+#endif // VIMCP_APPS_FLEETPROBLEM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -1,6 +1,6 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 # Optional Qt6 instance viewer (network_viewer). This subdirectory is included
-# from network/CMakeLists.txt only when VINCPNET_BUILD_GUI is ON; even then it
+# from network/CMakeLists.txt only when VIMCPNET_BUILD_GUI is ON; even then it
 # quietly no-ops if Qt6 is not found, so the solver/test build never depends on
 # Qt. Point CMake at your Qt install with -DCMAKE_PREFIX_PATH=<qt>/msvc2022_64
 # (or -DQt6_DIR=...), the same convention the irrgo tree uses.
@@ -17,7 +17,7 @@ endif()
 find_package(Qt6 QUIET COMPONENTS Widgets Concurrent)
 if (NOT Qt6_FOUND)
     message(STATUS
-        "vincpnet GUI: Qt6 not found -- skipping network_viewer. "
+        "vimcpnet GUI: Qt6 not found -- skipping network_viewer. "
         "Set CMAKE_PREFIX_PATH or Qt6_DIR to enable it.")
     return()
 endif()
@@ -37,7 +37,7 @@ qt_add_library(viewer_common STATIC
     nodelistwidget.cpp
 )
 target_include_directories(viewer_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(viewer_common PUBLIC Qt6::Widgets vincpnet)
+target_link_libraries(viewer_common PUBLIC Qt6::Widgets vimcpnet)
 
 qt_add_executable(network_viewer
     main_gui.cpp
@@ -59,6 +59,6 @@ qt_add_executable(fleet_viewer
 target_link_libraries(fleet_viewer PRIVATE Qt6::Concurrent viewer_common)
 set_target_properties(fleet_viewer PROPERTIES WIN32_EXECUTABLE TRUE)
 
-message(STATUS "vincpnet GUI: network_viewer + fleet_viewer enabled "
+message(STATUS "vimcpnet GUI: network_viewer + fleet_viewer enabled "
                "(Qt6 ${Qt6_VERSION}).")
 # Copyright Ben Paul Wise. All Rights Reserved.

@@ -12,12 +12,12 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PFORMGMS_HPP
-#define VINCP_APPS_PFORMGMS_HPP
+#ifndef VIMCP_APPS_PFORMGMS_HPP
+#define VIMCP_APPS_PFORMGMS_HPP
 
 // readPformGms parses a small, fixed GMS data file (see apps/pform/doc/
 // pform-example.gms) and returns the parliament instance plus the unselected-
-// probability knob. It reuses the vincpgms front end (parser + buildGmsDatabase)
+// probability knob. It reuses the vimcpgms front end (parser + buildGmsDatabase)
 // and modifies nothing under gms/.
 //
 // The accepted file (limited GMS subset) declares, and only declares:
@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   using std::string;
   using std::vector;
@@ -56,9 +56,9 @@ namespace VINCP::App {
   // non-positive weight, or unselectedProb outside (0, (K-1)/K)).
   PformGmsInput readPformGms(const string& path);
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PFORMGMS_HPP
+#endif // VIMCP_APPS_PFORMGMS_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

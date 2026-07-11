@@ -9,7 +9,7 @@
 #include <memory>     // shared_ptr: one structural snapshot shared by every factorization
 #include <stdexcept>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
 
@@ -211,7 +211,7 @@ namespace VINCP::Network {
     };
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

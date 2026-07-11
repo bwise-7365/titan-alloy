@@ -390,7 +390,7 @@ with $Q_{ta} = 2 P_{ta} / D_{ta}^2$:
 The symmetric part of $M$ is block-diagonal — one PSD rank-one block per
 demand cell, zeros elsewhere; the $\mu$ and $\lambda$ borders are skew
 and cancel — so $M$ is positive semidefinite plus skew: MONOTONE, and
-every VINCP engine applies. Dimension: numPairVariables + numSupplyCells
+every VIMCP engine applies. Dimension: numPairVariables + numSupplyCells
 + $|K|$. The derivation is machine-verified in
 `doc/fleet-mcp-check.mac` (task G5b), which the C++ assembly cites by
 check number.

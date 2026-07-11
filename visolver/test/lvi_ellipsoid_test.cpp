@@ -27,7 +27,7 @@
 #include <random>
 #include <string>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 TEST(LviEllipsoid, LinearObjectiveOverEllipsoid) {
     const bool   latex        = false;    // ASCII output for the test log

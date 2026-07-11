@@ -5,8 +5,8 @@
 
 #include <cstdint>
 
-using namespace VINCP;
-using namespace VINCP::Network;
+using namespace VIMCP;
+using namespace VIMCP::Network;
 
 namespace {
 

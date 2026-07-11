@@ -8,8 +8,8 @@
 // popup on left-press, and a right-press "swap this node" request whose result
 // (swapped arcs + savings) is shown in a popup.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLOWPLANVIEW_HPP
-#define VINCP_NETWORK_FLOWPLANVIEW_HPP
+#ifndef VIMCP_NETWORK_FLOWPLANVIEW_HPP
+#define VIMCP_NETWORK_FLOWPLANVIEW_HPP
 
 #include "instance.hpp"
 #include "plan.hpp"
@@ -29,7 +29,7 @@ class QPaintEvent;
 
 using std::vector;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Node classes, derived from (C_i, D_i); drives the fill colour and legend.
   enum class NodeClass
@@ -167,9 +167,9 @@ namespace VINCP::Network {
     QPoint lastPanPos_;
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLOWPLANVIEW_HPP
+#endif // VIMCP_NETWORK_FLOWPLANVIEW_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

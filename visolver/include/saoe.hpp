@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // SAOE -- Strategic Allocation Of Effort (Nash equilibrium as an NCP).
 // ----------------------------------------------
-#ifndef VINCP_SAOE_HPP
-#define VINCP_SAOE_HPP
+#ifndef VIMCP_SAOE_HPP
+#define VIMCP_SAOE_HPP
 
 // M actors each split a strength S_i across N options to maximize expected
 // reward given every other actor. With reward matrix R (M x N), effort e_{ij},
@@ -18,12 +18,12 @@
 //     budget block:  G_i    = S_i - sum_j e_{ij}
 // solved via the library's VI machinery (makeVIModel with a zero free block).
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 #include <random>
 
-namespace VINCP {
+namespace VIMCP {
 
   // Which inner LVI solver the Josephy-Newton loop uses.
   enum class InnerMethod { Han, He };
@@ -135,9 +135,9 @@ namespace VINCP {
                 const SaoeParams& params = SaoeParams{},
                 const VectorXd& startGuess = VectorXd());
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_SAOE_HPP
+#endif // VIMCP_SAOE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

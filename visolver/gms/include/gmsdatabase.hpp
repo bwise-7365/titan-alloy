@@ -14,8 +14,8 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSDATABASE_HPP
-#define VINCP_GMS_GMSDATABASE_HPP
+#ifndef VIMCP_GMS_GMSDATABASE_HPP
+#define VIMCP_GMS_GMSDATABASE_HPP
 
 #include "gmsast.hpp"
 
@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::map;
   using std::size_t;
@@ -107,9 +107,9 @@ namespace VINCP::Gms {
     const GmsModel& model(const string& key) const;
   };
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSDATABASE_HPP
+#endif // VIMCP_GMS_GMSDATABASE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Semismooth Newton solver for the mixed nonlinear complementarity problem.
 // ----------------------------------------------
-#ifndef VINCP_SEMISMOOTHNEWTON_HPP
-#define VINCP_SEMISMOOTHNEWTON_HPP
+#ifndef VIMCP_SEMISMOOTHNEWTON_HPP
+#define VIMCP_SEMISMOOTHNEWTON_HPP
 
 // Solves the mixed nonlinear complementarity problem (the library's core case)
 //     H(x, y) = 0,   0 <= G(x, y)  _|_  y >= 0,   K = R^n x R_+^m,
@@ -39,14 +39,14 @@
 //     metric subregularity", Math. Programming (2019); arXiv:1703.07461.
 //     (LM convergence without nonsingularity.)
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "armijo.hpp"
 #include "fdjacobian.hpp"
 
 #include <Eigen/Dense>
 #include <functional>
 
-namespace VINCP {
+namespace VIMCP {
 
   // ---------------------------------------------------------------------------
   // NCP-function seam
@@ -175,9 +175,9 @@ namespace VINCP {
                                      SemismoothNewtonParams{},
                                  const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_SEMISMOOTHNEWTON_HPP
+#endif // VIMCP_SEMISMOOTHNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -5,13 +5,13 @@
 // per-asset reduced source-sink problems with ROUND-TRIP mileage
 // (fleet-formulation.md section 9, Lemma FL3).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETREDUCTION_HPP
-#define VINCP_NETWORK_FLEETREDUCTION_HPP
+#ifndef VIMCP_NETWORK_FLEETREDUCTION_HPP
+#define VIMCP_NETWORK_FLEETREDUCTION_HPP
 
 #include "fleetinstance.hpp"
 #include "reduction.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // The reduced conservative fleet problem. One shortest-route map is shared
   // by all assets (one distance matrix, G7); each asset gets its own
@@ -37,9 +37,9 @@ namespace VINCP::Network {
   FleetReducedProblem makeFleetReducedProblem(const FleetInstance& inst,
                                               const ScreenParams& screen = {});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETREDUCTION_HPP
+#endif // VIMCP_NETWORK_FLEETREDUCTION_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

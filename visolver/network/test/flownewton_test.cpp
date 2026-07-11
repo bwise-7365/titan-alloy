@@ -11,9 +11,9 @@
 #include <cstdint>
 #include <stdexcept>
 
-using namespace VINCP;
-using namespace VINCP::Network;
-using namespace VINCP::Network::TestSupport;
+using namespace VIMCP;
+using namespace VIMCP::Network;
+using namespace VIMCP::Network::TestSupport;
 
 // GoogleTest suite for the NS2 structured Newton factory (flownewton.hpp).
 // The algebra is machine-verified symbolically (ns2-newton-check.mac); these

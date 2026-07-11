@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   namespace {
 
@@ -924,7 +924,7 @@ namespace VINCP::Gms {
     return parseGmsTokens(lexed.tokens, lexed.macroNames);
   }
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

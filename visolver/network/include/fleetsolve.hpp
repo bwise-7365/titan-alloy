@@ -4,12 +4,12 @@
 // Production fleet optimizer: nondimensionalize, reduce + screen per asset,
 // solve the fleet KKT-LCP, certify, unpack (fleet-formulation.md section 9).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETSOLVE_HPP
-#define VINCP_NETWORK_FLEETSOLVE_HPP
+#ifndef VIMCP_NETWORK_FLEETSOLVE_HPP
+#define VIMCP_NETWORK_FLEETSOLVE_HPP
 
 #include "fleetlcp.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Observability hooks for solveFleetPlan (2026-07-08 performance plan,
   // stage FP0). Both are optional; empty means silent, and the solve is
@@ -88,9 +88,9 @@ namespace VINCP::Network {
   FleetSolveResult solveFleetPlan(const FleetInstance& inst,
                                   const FleetSolveParams& params = {});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETSOLVE_HPP
+#endif // VIMCP_NETWORK_FLEETSOLVE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

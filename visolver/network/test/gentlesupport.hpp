@@ -4,14 +4,14 @@
 // Shared test fixture: a gentle-scale 5-node random instance the dense
 // full-formulation oracle can afford (used by oracle_test and flowplan_test).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_GENTLESUPPORT_HPP
-#define VINCP_NETWORK_GENTLESUPPORT_HPP
+#ifndef VIMCP_NETWORK_GENTLESUPPORT_HPP
+#define VIMCP_NETWORK_GENTLESUPPORT_HPP
 
 #include "greedy.hpp"
 
 #include <cstdint>
 
-namespace VINCP::Network::TestSupport {
+namespace VIMCP::Network::TestSupport {
 
   // 5 nodes (2 supply-only, 1 both, 1 demand-only, 1 transit), single-digit
   // tonnages, two-digit costs; budget calibrated by the greedy planner.
@@ -35,9 +35,9 @@ namespace VINCP::Network::TestSupport {
     return inst;
   }
 
-} // namespace VINCP::Network::TestSupport
+} // namespace VIMCP::Network::TestSupport
 
-#endif // VINCP_NETWORK_GENTLESUPPORT_HPP
+#endif // VIMCP_NETWORK_GENTLESUPPORT_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

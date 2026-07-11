@@ -5,14 +5,14 @@
 // fleetnewton_test): deterministic complementarity diagonals and right-hand
 // sides, and the scale-aware backward error.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_TEST_NEWTONSUPPORT_HPP
-#define VINCP_NETWORK_TEST_NEWTONSUPPORT_HPP
+#ifndef VIMCP_NETWORK_TEST_NEWTONSUPPORT_HPP
+#define VIMCP_NETWORK_TEST_NEWTONSUPPORT_HPP
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <cmath>
 
-namespace VINCP::Network::TestSupport {
+namespace VIMCP::Network::TestSupport {
 
   // Deterministic sOverY sweeping the given log10 range across the vector:
   // entry i gets 10^(lo + (hi - lo) * i / (dim - 1)), scrambled by stride
@@ -55,9 +55,9 @@ namespace VINCP::Network::TestSupport {
     return (K * d - rhs).norm() / scale;
   }
 
-} // namespace VINCP::Network::TestSupport
+} // namespace VIMCP::Network::TestSupport
 
-#endif // VINCP_NETWORK_TEST_NEWTONSUPPORT_HPP
+#endif // VIMCP_NETWORK_TEST_NEWTONSUPPORT_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -8,8 +8,8 @@
 #include <fstream>
 #include <stdexcept>
 
-using namespace VINCP;
-using namespace VINCP::Network;
+using namespace VIMCP;
+using namespace VIMCP::Network;
 
 // Parsing: comments, blank lines, trimming; malformed input throws.
 TEST(NetworkConfig, ParsesTextAndRejectsGarbage) {
@@ -94,7 +94,7 @@ TEST(NetworkConfig, AppliesProfileKeys) {
 TEST(NetworkConfig, ReadsFiles) {
     namespace fs = std::filesystem;
     const fs::path path =
-        fs::temp_directory_path() / "vincp_network_config_test.cfg";
+        fs::temp_directory_path() / "vimcp_network_config_test.cfg";
     {
         std::ofstream file(path);
         ASSERT_TRUE(file.good());

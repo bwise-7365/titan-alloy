@@ -20,8 +20,8 @@ if (NOT EXISTS "${EIGEN3_INCLUDE_DIR}/Eigen/Dense")
         "Set EIGEN3_INCLUDE_DIR to the directory that contains the 'Eigen' folder.")
 endif()
 
-add_library(vincp STATIC
-        lib/vincp.cpp
+add_library(vimcp STATIC
+        lib/vimcp.cpp
         lib/dhan06.cpp
         lib/bshe94b.cpp
         lib/fdjacobian.cpp
@@ -42,18 +42,18 @@ add_library(vincp STATIC
         lib/smoothingnewton.cpp
         lib/utils.cpp
 )
-target_include_directories(vincp
+target_include_directories(vimcp
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 # SYSTEM so Eigen's own headers are not subject to /W4 and -Wall -Wextra.
-target_include_directories(vincp SYSTEM
+target_include_directories(vimcp SYSTEM
     PUBLIC ${EIGEN3_INCLUDE_DIR}
 )
 
 if (MSVC)
-    target_compile_options(vincp PRIVATE /W4)
+    target_compile_options(vimcp PRIVATE /W4)
 else()
-    target_compile_options(vincp PRIVATE -Wall -Wextra)
+    target_compile_options(vimcp PRIVATE -Wall -Wextra)
 endif()
 
 # --- GoogleTest, fetched at configure time (source, built from source here) ---
@@ -76,74 +76,74 @@ include(GoogleTest)         # provides gtest_discover_tests()
 enable_testing()           # must precede the gtest_discover_tests() calls below
 
 # test/ holds test-only headers (e.g. testsupport.hpp) that pull in <gtest/gtest.h>;
-# kept off the vincp target so GoogleTest never leaks into the library.
-set(VINCP_TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+# kept off the vimcp target so GoogleTest never leaks into the library.
+set(VIMCP_TEST_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 # Declare a GoogleTest executable: test/<name>.cpp -> target <name>, linked against
-# vincp + gtest_main, with test/ on its include path and its TEST() cases auto-
+# vimcp + gtest_main, with test/ on its include path and its TEST() cases auto-
 # registered with ctest (each shows up individually as Suite.Case).
-function(vincp_add_gtest name)
+function(vimcp_add_gtest name)
     add_executable(${name} test/${name}.cpp)
-    target_link_libraries(${name} PRIVATE vincp GTest::gtest_main)
-    target_include_directories(${name} PRIVATE ${VINCP_TEST_INCLUDE_DIR})
+    target_link_libraries(${name} PRIVATE vimcp GTest::gtest_main)
+    target_include_directories(${name} PRIVATE ${VIMCP_TEST_INCLUDE_DIR})
     gtest_discover_tests(${name})
 endfunction()
 
 add_executable(lvi_demo src/main.cpp)
-target_link_libraries(lvi_demo PRIVATE vincp)
+target_link_libraries(lvi_demo PRIVATE vimcp)
 
 add_executable(lvi_vi_demo src/driver_demo.cpp)
-target_link_libraries(lvi_vi_demo PRIVATE vincp)
+target_link_libraries(lvi_vi_demo PRIVATE vimcp)
 
 # Run-for-printout demo (not a ctest gate; the pass/fail check is han_vs_he_test).
 add_executable(han_vs_he_demo src/han_vs_he_demo.cpp)
-target_link_libraries(han_vs_he_demo PRIVATE vincp)
+target_link_libraries(han_vs_he_demo PRIVATE vimcp)
 
 # SAOE (Strategic Allocation Of Effort) demo (run for printout).
 add_executable(saoe_demo src/saoe_demo.cpp)
-target_link_libraries(saoe_demo PRIVATE vincp)
+target_link_libraries(saoe_demo PRIVATE vimcp)
 
 # GoogleTest suites. Each is a TEST()-based executable; gtest_discover_tests()
 # registers its cases with ctest individually. The lcp_random_test suite asserts
 # the divergence itself (EXPECT_THROW on the indefinite-M instance), so it no
 # longer needs the WILL_FAIL exit-code inversion that the plain-exe version did.
-vincp_add_gtest(lcp_random_test)
-vincp_add_gtest(lcp_psd_test)
-vincp_add_gtest(lm_test)
-vincp_add_gtest(han_vs_he_test)
-vincp_add_gtest(saoe_test)
-vincp_add_gtest(ellipsoid_projector_test)
-vincp_add_gtest(lvi_ellipsoid_test)
-vincp_add_gtest(damped_newton_test)
-vincp_add_gtest(smoothing_newton_test)
-vincp_add_gtest(ss_lcp_test)
-vincp_add_gtest(ss_ellipsoid_test)
-vincp_add_gtest(mehrotra_ipm_test)
-vincp_add_gtest(semismooth_newton_test)
-vincp_add_gtest(josephy_newton_test)
-vincp_add_gtest(alternating_chain_test)
-vincp_add_gtest(saoe_chain_test)
-vincp_add_gtest(saoe_risk_test)
-vincp_add_gtest(choose_engine_test)
-vincp_add_gtest(fbs_hyz04_test)
-vincp_add_gtest(multistart_test)
+vimcp_add_gtest(lcp_random_test)
+vimcp_add_gtest(lcp_psd_test)
+vimcp_add_gtest(lm_test)
+vimcp_add_gtest(han_vs_he_test)
+vimcp_add_gtest(saoe_test)
+vimcp_add_gtest(ellipsoid_projector_test)
+vimcp_add_gtest(lvi_ellipsoid_test)
+vimcp_add_gtest(damped_newton_test)
+vimcp_add_gtest(smoothing_newton_test)
+vimcp_add_gtest(ss_lcp_test)
+vimcp_add_gtest(ss_ellipsoid_test)
+vimcp_add_gtest(mehrotra_ipm_test)
+vimcp_add_gtest(semismooth_newton_test)
+vimcp_add_gtest(josephy_newton_test)
+vimcp_add_gtest(alternating_chain_test)
+vimcp_add_gtest(saoe_chain_test)
+vimcp_add_gtest(saoe_risk_test)
+vimcp_add_gtest(choose_engine_test)
+vimcp_add_gtest(fbs_hyz04_test)
+vimcp_add_gtest(multistart_test)
 # Translated GMS-corpus MCP models (convergence-gated, multi-engine; see the
 # test headers for the .gms sources and the variable/equation mappings).
-vincp_add_gtest(gms_alloceff_test)
-vincp_add_gtest(gms_deploy_test)
+vimcp_add_gtest(gms_alloceff_test)
+vimcp_add_gtest(gms_deploy_test)
 
-# Flow-planning network layer (network/plan.md): vincpnet library + its tests.
+# Flow-planning network layer (network/plan.md): vimcpnet library + its tests.
 # Must come after the GoogleTest setup above (it uses gtest_discover_tests).
 add_subdirectory(network)
 
-# GMS-subset front end (doc/2026-07-08-gams-frontend-plan.md): vincpgms
+# GMS-subset front end (doc/2026-07-08-gams-frontend-plan.md): vimcpgms
 # library + its tests. Also needs the GoogleTest setup above.
 add_subdirectory(gms)
 
-# Focused application framework (apps/): VINCP::App problem classes + their
-# CLI/GUI apps. Additive; links vincp + vincpgms, so it must follow both.
-option(VINCP_BUILD_APPS "Build the focused app framework under apps/" ON)
-if (VINCP_BUILD_APPS)
+# Focused application framework (apps/): VIMCP::App problem classes + their
+# CLI/GUI apps. Additive; links vimcp + vimcpgms, so it must follow both.
+option(VIMCP_BUILD_APPS "Build the focused app framework under apps/" ON)
+if (VIMCP_BUILD_APPS)
     add_subdirectory(apps)
 endif()
 

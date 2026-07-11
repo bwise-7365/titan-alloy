@@ -1,6 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#ifndef VINCP_SAOESUPPORT_HPP
-#define VINCP_SAOESUPPORT_HPP
+#ifndef VIMCP_SAOESUPPORT_HPP
+#define VIMCP_SAOESUPPORT_HPP
 
 // ============================================================================
 // Test-only support shared by the SAOE solver tests (saoe_chain_test,
@@ -26,7 +26,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace VINCP {
+namespace VIMCP {
 
     // Chain configuration shared by the SAOE tests (squared-norm tolerances).
     constexpr double kSaoeChainMagTol      = 1.0e-10;
@@ -372,7 +372,7 @@ namespace VINCP {
         return cases;
     }
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_SAOESUPPORT_HPP
+#endif // VIMCP_SAOESUPPORT_HPP
 // Copyright Ben Paul Wise. All Rights Reserved.

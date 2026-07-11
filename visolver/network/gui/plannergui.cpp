@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
     const int kDefaultSeed = 20260704;
@@ -456,7 +456,7 @@ namespace VINCP::Network {
     return;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

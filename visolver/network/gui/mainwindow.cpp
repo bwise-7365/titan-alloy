@@ -24,7 +24,7 @@
 #include <utility>
 #include <vector>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   MainWindow::MainWindow(QWidget* parent)
     : PlannerGui(Texts{.windowTitle = "Flow-plan instance viewer",
@@ -574,7 +574,7 @@ namespace VINCP::Network {
     return;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

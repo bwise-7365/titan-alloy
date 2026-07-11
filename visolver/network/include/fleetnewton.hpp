@@ -4,13 +4,13 @@
 // Structured Newton factory for the fleet LCP: per-cell Sherman-Morrison +
 // dual Schur complement, replacing the interior-point engine's dense LU.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETNEWTON_HPP
-#define VINCP_NETWORK_FLEETNEWTON_HPP
+#ifndef VIMCP_NETWORK_FLEETNEWTON_HPP
+#define VIMCP_NETWORK_FLEETNEWTON_HPP
 
 #include "fleetlcp.hpp"
 #include "mehrotraipm.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Build a NewtonSolverFactory (mehrotraipm.hpp extension point) that
   // solves the fleet LCP's per-iteration Newton system
@@ -64,9 +64,9 @@ namespace VINCP::Network {
   // (numerically not positive definite).
   NewtonSolverFactory makeFleetNewtonFactory(const FleetLcp& lcp);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETNEWTON_HPP
+#endif // VIMCP_NETWORK_FLEETNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

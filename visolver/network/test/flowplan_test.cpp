@@ -9,9 +9,9 @@
 #include <cstdint>
 #include <stdexcept>
 
-using namespace VINCP;
-using namespace VINCP::Network;
-using namespace VINCP::Network::TestSupport;
+using namespace VIMCP;
+using namespace VIMCP::Network;
+using namespace VIMCP::Network::TestSupport;
 
 namespace {
 

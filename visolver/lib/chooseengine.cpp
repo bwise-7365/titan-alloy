@@ -11,7 +11,7 @@
 #include <exception>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   const char*
   engineChoiceName(EngineChoice choice)
@@ -198,7 +198,7 @@ namespace VINCP {
     return alternatingChainSolve(model, z0, globalizer, finisher, chainParams);
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

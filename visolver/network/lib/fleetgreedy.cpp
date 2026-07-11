@@ -12,7 +12,7 @@
 #include <numeric>
 #include <stdexcept>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
 
@@ -284,7 +284,7 @@ namespace VINCP::Network {
     return result;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

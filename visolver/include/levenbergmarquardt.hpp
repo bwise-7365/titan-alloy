@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Levenberg-Marquardt for nonlinear least squares (building blocks + solver).
 // ----------------------------------------------
-#ifndef VINCP_LEVENBERGMARQUARDT_HPP
-#define VINCP_LEVENBERGMARQUARDT_HPP
+#ifndef VIMCP_LEVENBERGMARQUARDT_HPP
+#define VIMCP_LEVENBERGMARQUARDT_HPP
 
 // Two layers:
 //   - Building blocks: the damped normal-equations operator  J^T J + lambda I  and
@@ -16,12 +16,12 @@
 //     only J^T J and J^T F, so the Jacobian need not be square), built on those
 //     blocks and a finite-difference Jacobian. Returns the shared VIResult.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "fdjacobian.hpp"
 
 #include <Eigen/Dense>
 
-namespace VINCP {
+namespace VIMCP {
 
   struct LevenbergMarquardtParams {
     double lambda0   = 1.0e-3;    // initial damping
@@ -63,9 +63,9 @@ namespace VINCP {
                                    const VectorXd& x0,
                                    const LevenbergMarquardtSolveParams& params = LevenbergMarquardtSolveParams{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_LEVENBERGMARQUARDT_HPP
+#endif // VIMCP_LEVENBERGMARQUARDT_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

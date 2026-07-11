@@ -2,15 +2,15 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // Main window for the fleet_app: a copy of the network fleet viewer's window,
-// renamespaced to VINCP::App and routing ALL solving through the App::Fleet
+// renamespaced to VIMCP::App and routing ALL solving through the App::Fleet
 // problem class. The shared skeleton and widgets (PlannerGui, FlowPlanView,
 // CostHistogram, NodeListWidget) are REUSED unchanged from viewer_common.
 // ----------------------------------------------
-#ifndef VINCP_APPS_FLEETAPPMAINWINDOW_HPP
-#define VINCP_APPS_FLEETAPPMAINWINDOW_HPP
+#ifndef VIMCP_APPS_FLEETAPPMAINWINDOW_HPP
+#define VIMCP_APPS_FLEETAPPMAINWINDOW_HPP
 
 #include "fleetproblem.hpp"   // App::Fleet + the network fleet types it wraps
-#include "plannergui.hpp"     // VINCP::Network::PlannerGui, from viewer_common
+#include "plannergui.hpp"     // VIMCP::Network::PlannerGui, from viewer_common
 
 #include <QFutureWatcher>
 #include <QString>
@@ -22,12 +22,12 @@ class QRadioButton;
 class QSlider;
 class QSpinBox;
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
-  // Derives from the shared viewer base (in namespace VINCP::Network). Only the
+  // Derives from the shared viewer base (in namespace VIMCP::Network). Only the
   // solver call sites differ from the network fleet viewer: they go through an
   // App::Fleet instead of calling the network free functions directly.
-  class FleetAppMainWindow : public VINCP::Network::PlannerGui
+  class FleetAppMainWindow : public VIMCP::Network::PlannerGui
   {
     Q_OBJECT
 
@@ -121,9 +121,9 @@ namespace VINCP::App {
     bool swapBusyP_ = false;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_FLEETAPPMAINWINDOW_HPP
+#endif // VIMCP_APPS_FLEETAPPMAINWINDOW_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

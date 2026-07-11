@@ -6,7 +6,7 @@
 # which is linked, not duplicated.
 #
 # Self-disabling, like network/gui: viewer_common only exists when the network
-# GUI was built (VINCPNET_BUILD_GUI on AND Qt6 found). Guard on it so a headless
+# GUI was built (VIMCPNET_BUILD_GUI on AND Qt6 found). Guard on it so a headless
 # / GUI-off configuration simply skips fleet_app.
 
 if (WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
@@ -21,8 +21,8 @@ if (Qt6_FOUND AND TARGET viewer_common)
         fleetappmainwindow.hpp
         fleetappmainwindow.cpp
     )
-    # viewer_common carries Qt6::Widgets + vincpnet PUBLIC; fleetapp carries the
-    # App::Fleet class (+ vincp/vincpnet). Concurrent is for the worker threads.
+    # viewer_common carries Qt6::Widgets + vimcpnet PUBLIC; fleetapp carries the
+    # App::Fleet class (+ vimcp/vimcpnet). Concurrent is for the worker threads.
     target_link_libraries(fleet_app PRIVATE Qt6::Concurrent viewer_common fleetapp)
     set_target_properties(fleet_app PROPERTIES WIN32_EXECUTABLE TRUE)
 else()

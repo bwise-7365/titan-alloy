@@ -8,7 +8,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   double
   tau(double t0, int n, int k)
@@ -127,7 +127,7 @@ namespace VINCP {
     return VIResult{ x, mag, iter, mag < magTol };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

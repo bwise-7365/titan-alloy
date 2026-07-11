@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Non-interior-point smoothing solver for the mixed NCP / KKT system.
 // ----------------------------------------------
-#ifndef VINCP_SMOOTHINGNEWTON_HPP
-#define VINCP_SMOOTHINGNEWTON_HPP
+#ifndef VIMCP_SMOOTHINGNEWTON_HPP
+#define VIMCP_SMOOTHINGNEWTON_HPP
 
 //     0 = H(x, y),                 H : R^N x R^M -> R^K
 //     0 <= y _|_ G(x, y) >= 0,     G : R^N x R^M -> R^M
@@ -23,13 +23,13 @@
 // Because dampedNewton uses a finite-difference Jacobian, H and G may be arbitrary
 // black boxes, and its rectangular support allows K != N.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "dampednewton.hpp"
 
 #include <Eigen/Dense>
 #include <functional>
 
-namespace VINCP {
+namespace VIMCP {
 
   // A smoothed complementarity function phi(u, a, b), applied elementwise to the
   // equal-length vectors a, b with scalar smoothing parameter u. Swap in alternatives
@@ -56,7 +56,7 @@ namespace VINCP {
   // in length.
   VectorXd smoothedFB_WZ(double u, const VectorXd& a, const VectorXd& b);
 
-  // The problem maps H(x, y) and G(x, y); same shape as VIModel's H/G (vincp.hpp), but
+  // The problem maps H(x, y) and G(x, y); same shape as VIModel's H/G (vimcp.hpp), but
   // with no dimension constraint linking their outputs to x (K may differ from N).
   using MixedField = function<VectorXd(const VectorXd& x, const VectorXd& y)>;
 
@@ -125,9 +125,9 @@ namespace VINCP {
                                       const SmoothingContinuationParams& params =
                                           SmoothingContinuationParams{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_SMOOTHINGNEWTON_HPP
+#endif // VIMCP_SMOOTHINGNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

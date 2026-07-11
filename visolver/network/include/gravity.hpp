@@ -3,12 +3,12 @@
 // ----------------------------------------------
 // The gravity (proportional all-to-all) planner: a crude, cost-blind baseline.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_GRAVITY_HPP
-#define VINCP_NETWORK_GRAVITY_HPP
+#ifndef VIMCP_NETWORK_GRAVITY_HPP
+#define VIMCP_NETWORK_GRAVITY_HPP
 
 #include "plan.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Gravity plan: f_ij = C_i * D_j / max(totalC, totalD), for every (i, j).
   // DENSE (every source ships to every sink) and COST-BLIND -- a deliberately
@@ -18,9 +18,9 @@ namespace VINCP::Network {
   // min(totalC, totalD) -- the meetable (summed-rationed) amount.
   Plan gravityPlan(const Instance& inst);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_GRAVITY_HPP
+#endif // VIMCP_NETWORK_GRAVITY_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

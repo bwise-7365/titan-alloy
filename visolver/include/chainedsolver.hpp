@@ -4,8 +4,8 @@
 // Two-phase chained LVI solver: Solodov-Svaiter (rough, global) warm-starting
 // bsHe94b (tight finish).
 // ----------------------------------------------
-#ifndef VINCP_CHAINEDSOLVER_HPP
-#define VINCP_CHAINEDSOLVER_HPP
+#ifndef VIMCP_CHAINEDSOLVER_HPP
+#define VIMCP_CHAINEDSOLVER_HPP
 
 // Solves the linear variational inequality by playing each method only in
 // its strong regime (the E2b calibration, network/plan.md 2026-07-05):
@@ -25,7 +25,7 @@
 #include "bshe94b.hpp"
 #include "solodovsvaiter.hpp"
 
-namespace VINCP {
+namespace VIMCP {
 
   // Tunables. The rough (phase-1) budget is deliberately small and its
   // tolerance loose; the tight tolerance and cap are the caller's magTol /
@@ -55,9 +55,9 @@ namespace VINCP {
                             const ChainedSolverParams& params = ChainedSolverParams{},
                             const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_CHAINEDSOLVER_HPP
+#endif // VIMCP_CHAINEDSOLVER_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -14,7 +14,7 @@
 #include <string>
 
 using std::printf;
-using namespace VINCP;
+using namespace VIMCP;
 
 // A larger nonlinear mixed VI with a known, randomly generated solution and
 // genuine nonlinear cross-terms.

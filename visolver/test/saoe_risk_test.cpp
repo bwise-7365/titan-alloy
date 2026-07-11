@@ -10,7 +10,7 @@
 #include <cmath>
 #include <cstdio>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // ============================================================================
 // Risk-averse SAOE (PME framework paper, section "Risk Aversion in Coalition

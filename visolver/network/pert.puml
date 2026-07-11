@@ -28,7 +28,7 @@ rectangle "Phase C: Optimizer" as PC {
   rectangle "C1: Shortest paths +\nlink pruning [M]" as C1
   rectangle "C2: Matrix generator\n+ unpacker [M]" as C2
   rectangle "C3: Reference oracle [S]" as C3
-  rectangle "C4: Solve via VINCP\n(bsHe94b) [M]" as C4
+  rectangle "C4: Solve via VIMCP\n(bsHe94b) [M]" as C4
   rectangle "C5: Scale + performance\n(70/200 nodes) [M]" as C5
 }
 

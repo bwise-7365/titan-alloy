@@ -1,11 +1,11 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#ifndef VINCP_TESTSUPPORT_HPP
-#define VINCP_TESTSUPPORT_HPP
+#ifndef VIMCP_TESTSUPPORT_HPP
+#define VIMCP_TESTSUPPORT_HPP
 
 // ============================================================================
 // Test-only glue between the shared SolveFn/CheckFn harness (utils.hpp) and
 // GoogleTest. This header pulls in <gtest/gtest.h>, so it lives under test/ and
-// is NEVER included by the vincp library -- GoogleTest stays out of the shipped
+// is NEVER included by the vimcp library -- GoogleTest stays out of the shipped
 // code. It replaces only runCase's int-return / stdout-reporting driver role;
 // the SolveFn/CheckFn seam itself is unchanged and still lives in utils.hpp.
 // ============================================================================
@@ -16,7 +16,7 @@
 
 #include <vector>
 
-namespace VINCP {
+namespace VIMCP {
     // Run a bound solve from z0 and assert it neither throws nor fails a check.
     // A throw is fatal (ASSERT_NO_THROW aborts the case, since the checks below
     // would read an unset result); each CheckFn becomes a nonfatal EXPECT whose
@@ -31,7 +31,7 @@ namespace VINCP {
             EXPECT_TRUE(cr.pass) << cr.report;
         }
     }
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_TESTSUPPORT_HPP
+#endif // VIMCP_TESTSUPPORT_HPP
 // Copyright Ben Paul Wise. All Rights Reserved.

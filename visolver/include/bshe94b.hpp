@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // He's 1994 projection-contraction method (eq. 16) for the linear VI (bsHe94b).
 // ----------------------------------------------
-#ifndef VINCP_BSHE94B_HPP
-#define VINCP_BSHE94B_HPP
+#ifndef VIMCP_BSHE94B_HPP
+#define VIMCP_BSHE94B_HPP
 
 // Solves the linear variational inequality (LVI)
 //     find x in K such that (M x + q) . (w - x) >= 0  for all w in K
@@ -23,9 +23,9 @@
 // tunable-parameter struct differs.
 
 #include <Eigen/Dense>
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
-namespace VINCP {
+namespace VIMCP {
 
   // Tunable constants of He's method. Defaults match the Octave source.
   struct BsHe94bParams {
@@ -58,9 +58,9 @@ namespace VINCP {
                    const BsHe94bParams& params = BsHe94bParams{},
                    const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_BSHE94B_HPP
+#endif // VIMCP_BSHE94B_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -12,7 +12,7 @@
 #include <random>
 #include <stdexcept>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Forward-backward splitting (He-Yuan-Zhang 2004): the general-VI engine
 // reimplemented from the author's pmedemo code. Gated on the constructed

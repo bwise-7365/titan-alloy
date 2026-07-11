@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   OracleKkt
   buildOracleKkt(const Instance& inst)
@@ -150,7 +150,7 @@ namespace VINCP::Network {
     return result;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

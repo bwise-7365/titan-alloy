@@ -12,7 +12,7 @@ main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
   app.setApplicationName("Fleet-plan instance viewer");
-  VINCP::Network::FleetMainWindow window;
+  VIMCP::Network::FleetMainWindow window;
   window.resize(1280, 720);
   window.show();
   return app.exec();

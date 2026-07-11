@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-using namespace VINCP;
-using namespace VINCP::App;
+using namespace VIMCP;
+using namespace VIMCP::App;
 
 namespace {
 

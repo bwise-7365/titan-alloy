@@ -20,7 +20,7 @@
 #include <cmath>
 #include <utility>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Fill colours per node class (kept together so the legend and nodes agree).
   namespace {
@@ -636,7 +636,7 @@ namespace VINCP::Network {
     return;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

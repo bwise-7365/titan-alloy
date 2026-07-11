@@ -1,6 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
-#ifndef VINCP_MCPENGINES_HPP
-#define VINCP_MCPENGINES_HPP
+#ifndef VIMCP_MCPENGINES_HPP
+#define VIMCP_MCPENGINES_HPP
 
 // ============================================================================
 // Test-only harness that binds ONE mixed-NCP VIModel to several solver engines
@@ -18,14 +18,14 @@
 #include "josephynewton.hpp"
 #include "semismoothnewton.hpp"
 #include "utils.hpp"
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <cstdio>
 
 using std::string;
 using std::vector;
 
-namespace VINCP {
+namespace VIMCP {
 
     // Engines that can drive a mixed-NCP VIModel end to end.
     enum class McpEngine {
@@ -196,7 +196,7 @@ namespace VINCP {
         return converged;
     }
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_MCPENGINES_HPP
+#endif // VIMCP_MCPENGINES_HPP
 // Copyright Ben Paul Wise. All Rights Reserved.

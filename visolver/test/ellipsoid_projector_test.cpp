@@ -7,7 +7,7 @@
 #include <cmath>
 #include <stdexcept>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 namespace {
 

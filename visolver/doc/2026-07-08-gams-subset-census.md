@@ -66,7 +66,7 @@ automatic differentiation and NLP/QP objective handling. The parser only
 ever EVALUATES expressions; the FD Jacobian and the engine catalog do the
 rest.
 
-## Mapping onto VINCP
+## Mapping onto VIMCP
 
 - `Model /eq.var/` maps one-to-one onto `VIModel`: free variables paired
   with `=e=` rows form the `H` block; positive variables form the `G`

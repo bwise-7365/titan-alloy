@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Solodov-Svaiter 1999 double-projection (hyperplane) method for the LVI.
 // ----------------------------------------------
-#ifndef VINCP_SOLODOVSVAITER_HPP
-#define VINCP_SOLODOVSVAITER_HPP
+#ifndef VIMCP_SOLODOVSVAITER_HPP
+#define VIMCP_SOLODOVSVAITER_HPP
 
 // Solves the linear variational inequality (LVI)
 //     find x in K such that (M x + q) . (w - x) >= 0  for all w in K
@@ -32,9 +32,9 @@
 // only the tunable-parameter struct differs. The start x0 is projected onto K
 // before iterating, so an infeasible start is fine.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
-namespace VINCP {
+namespace VIMCP {
 
   // Tunable constants of the Solodov-Svaiter method.
   struct SolodovSvaiterParams {
@@ -72,9 +72,9 @@ namespace VINCP {
                           const SolodovSvaiterParams& params = SolodovSvaiterParams{},
                           const IterationLogger& logger = IterationLogger{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_SOLODOVSVAITER_HPP
+#endif // VIMCP_SOLODOVSVAITER_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

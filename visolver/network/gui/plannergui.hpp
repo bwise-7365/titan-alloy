@@ -9,8 +9,8 @@
 // A derived window adds its model-specific controls through the assembly
 // points and drives the skeleton through the virtual hooks.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_PLANNERGUI_HPP
-#define VINCP_NETWORK_PLANNERGUI_HPP
+#ifndef VIMCP_NETWORK_PLANNERGUI_HPP
+#define VIMCP_NETWORK_PLANNERGUI_HPP
 
 #include "costhistogram.hpp"
 #include "flowplanview.hpp"
@@ -36,7 +36,7 @@ class QSpinBox;
 class QTimer;
 class QVBoxLayout;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // "label" or "#node" when the labels do not cover it -- the display form
   // used by the node rankings and popups.
@@ -133,9 +133,9 @@ namespace VINCP::Network {
     QVBoxLayout* rightLayout_ = nullptr;
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_PLANNERGUI_HPP
+#endif // VIMCP_NETWORK_PLANNERGUI_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

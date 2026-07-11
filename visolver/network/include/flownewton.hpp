@@ -4,13 +4,13 @@
 // Structured Newton factory for the flow LCP: per-sink Sherman-Morrison +
 // dual Schur complement, replacing the interior-point engine's dense LU.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLOWNEWTON_HPP
-#define VINCP_NETWORK_FLOWNEWTON_HPP
+#ifndef VIMCP_NETWORK_FLOWNEWTON_HPP
+#define VIMCP_NETWORK_FLOWNEWTON_HPP
 
 #include "flowlcp.hpp"
 #include "mehrotraipm.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // Build a NewtonSolverFactory (mehrotraipm.hpp seam) that solves the flow
   // LCP's per-iteration Newton system
@@ -51,9 +51,9 @@ namespace VINCP::Network {
   // fails its LLT (numerically not positive definite).
   NewtonSolverFactory makeFlowNewtonFactory(const FlowLcp& lcp);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLOWNEWTON_HPP
+#endif // VIMCP_NETWORK_FLOWNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

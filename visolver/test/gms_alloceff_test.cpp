@@ -8,7 +8,7 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 #include "mcpengines.hpp"
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
@@ -16,14 +16,14 @@
 #include <cmath>
 #include <cstdio>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // ============================================================================
 // Faithful translation of alloceff01cm.gms (sheridan/alloceff): Nash
 // equilibrium for exertion of influence, 6 actors x 10 options, as a mixed
 // nonlinear complementarity problem over K = R^n x R_+^m.
 //
-// GMS -> VINCP mapping (Model neInf / nfDef.nfv, sigmaDef.sigma,
+// GMS -> VIMCP mapping (Model neInf / nfDef.nfv, sigmaDef.sigma,
 // gammaDef.gamma, EInf.beta, MVInf.eff /):
 //   free block x (n = 21) = [ nfv(10) | sigma(10) | gamma ], H rows are their
 //     defining =e= equations. The .gms declares them Positive, but each is

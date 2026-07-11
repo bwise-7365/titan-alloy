@@ -6,8 +6,8 @@
 // (log, deterministic parliament, coalition table). Solving and coalition
 // post-processing go through pformapp exactly as pform_cli.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PFORMMAINWINDOW_HPP
-#define VINCP_APPS_PFORMMAINWINDOW_HPP
+#ifndef VIMCP_APPS_PFORMMAINWINDOW_HPP
+#define VIMCP_APPS_PFORMMAINWINDOW_HPP
 
 #include "pformpartytable.hpp"
 #include "pformtext.hpp"
@@ -26,7 +26,7 @@ class QPushButton;
 class QSpinBox;
 class QTableWidget;
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The pceDistrib-era controls of the exemplar (voting-rule radios, issue
   // forecast, parliament-displayed radios, SQ/goal strips) are deliberately
@@ -119,9 +119,9 @@ namespace VINCP::App {
     std::vector<Index> deterministicMatching;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PFORMMAINWINDOW_HPP
+#endif // VIMCP_APPS_PFORMMAINWINDOW_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Euclidean projection onto an axis-aligned, origin-centered solid ellipsoid.
 // ----------------------------------------------
-#ifndef VINCP_ELLIPSOIDPROJECTOR_HPP
-#define VINCP_ELLIPSOIDPROJECTOR_HPP
+#ifndef VIMCP_ELLIPSOIDPROJECTOR_HPP
+#define VIMCP_ELLIPSOIDPROJECTOR_HPP
 
 //     E(r) = { x in R^n : sum_i (x_i / r_i)^2 <= 1 },   every r_i > 0,
 //
@@ -19,15 +19,15 @@
 // found by a hybrid of regula-falsi (for speed) and bisection (for guaranteed
 // bracket halving), matching the Octave reference.
 //
-// makeEllipsoidProjector returns a Projector (vincp.hpp) so E(r) can serve as the
+// makeEllipsoidProjector returns a Projector (vimcp.hpp) so E(r) can serve as the
 // feasible set K for the VI/NCP solvers -- e.g. minimizing a linear objective over
 // an ellipsoid.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <Eigen/Dense>
 
-namespace VINCP {
+namespace VIMCP {
 
   // Ellipsoid "norm" of x for E(r): sqrt(sum_i (x_i / r_i)^2). x is inside E(r) iff
   // this is <= 1. Throws std::invalid_argument on a size mismatch, an empty input, or
@@ -48,9 +48,9 @@ namespace VINCP {
   Projector makeEllipsoidProjector(const VectorXd& radii,
                                    double tol = 1.0e-10, int iterMax = 5000);
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_ELLIPSOIDPROJECTOR_HPP
+#endif // VIMCP_ELLIPSOIDPROJECTOR_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

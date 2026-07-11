@@ -23,7 +23,7 @@ using std::chrono::duration_cast;
 using std::chrono::microseconds;
 using std::chrono::milliseconds;
 
-namespace VINCP {
+namespace VIMCP {
 
   uint64_t
   microsecondSeed()
@@ -531,7 +531,7 @@ namespace VINCP {
     return;
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

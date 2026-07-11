@@ -5,8 +5,8 @@
 // knob -- screen rules, certificate slacks, tie-break epsilon, solver
 // tolerances, instance profiles -- without recompilation.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_CONFIG_HPP
-#define VINCP_NETWORK_CONFIG_HPP
+#ifndef VIMCP_NETWORK_CONFIG_HPP
+#define VIMCP_NETWORK_CONFIG_HPP
 
 #include "flowplan.hpp"
 
@@ -17,7 +17,7 @@
 using std::map;
 using std::string;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Parsing
@@ -73,9 +73,9 @@ namespace VINCP::Network {
   // typo guard -- an unrecognized knob must never silently do nothing).
   void requireAllConsumed(const ConfigEntries& entries);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_CONFIG_HPP
+#endif // VIMCP_NETWORK_CONFIG_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -42,7 +42,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   VectorXd
   smoothedFischerBurmeister(double u, const VectorXd& a, const VectorXd& b)
@@ -268,7 +268,7 @@ namespace VINCP {
     return VIResult{ z, residual, levels, converged, totalInner };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

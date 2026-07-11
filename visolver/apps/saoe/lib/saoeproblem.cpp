@@ -25,7 +25,7 @@
 #include <utility>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
 
@@ -405,7 +405,7 @@ namespace VINCP::App {
     return out;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

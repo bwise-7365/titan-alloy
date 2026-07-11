@@ -4,12 +4,12 @@
 // Shared test fixture: the two-node single-lane instance whose KKT points are
 // hand-computable (used by flowlcp_test and oracle_test).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_LANESUPPORT_HPP
-#define VINCP_NETWORK_LANESUPPORT_HPP
+#ifndef VIMCP_NETWORK_LANESUPPORT_HPP
+#define VIMCP_NETWORK_LANESUPPORT_HPP
 
 #include "instance.hpp"
 
-namespace VINCP::Network::TestSupport {
+namespace VIMCP::Network::TestSupport {
 
   // One source (node 0) and one sink (node 1) joined by one shipping lane:
   // d-hat(0 -> 1) = laneMiles, so t* = laneDemand - eps*laneMiles*D^2/(2P)
@@ -38,9 +38,9 @@ namespace VINCP::Network::TestSupport {
     return inst;
   }
 
-} // namespace VINCP::Network::TestSupport
+} // namespace VIMCP::Network::TestSupport
 
-#endif // VINCP_NETWORK_LANESUPPORT_HPP
+#endif // VIMCP_NETWORK_LANESUPPORT_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -12,7 +12,7 @@
 #include <limits>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -335,7 +335,7 @@ namespace VINCP {
 
   } // namespace
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

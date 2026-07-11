@@ -4,8 +4,8 @@
 // Shared text rendering for the PFORM front ends: the instance/result/coalition
 // reports both pform_cli prints and pform_gui displays, as returned strings.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PFORMTEXT_HPP
-#define VINCP_APPS_PFORMTEXT_HPP
+#ifndef VIMCP_APPS_PFORMTEXT_HPP
+#define VIMCP_APPS_PFORMTEXT_HPP
 
 // Extracted from pform_cli so the CLI and the GUI render from ONE pipeline:
 // the CLI prints these strings verbatim (byte-identical to its pre-extraction
@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The instance-plus-provenance bundle both front ends render from: the data,
   // the q knob, the display labels, and where the instance came from.
@@ -73,9 +73,9 @@ namespace VINCP::App {
   std::string renderPformCoalitions(const PformInstance& in,
                                     const std::vector<PformCoalition>& coalitions);
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PFORMTEXT_HPP
+#endif // VIMCP_APPS_PFORMTEXT_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

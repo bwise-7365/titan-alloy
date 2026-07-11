@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   namespace {
 
@@ -297,7 +297,7 @@ namespace VINCP::Gms {
     return;
   }
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

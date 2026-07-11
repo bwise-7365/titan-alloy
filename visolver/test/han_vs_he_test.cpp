@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <random>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Side-by-side comparison of the two inner LVI solvers -- Han (dHan06, self-
 // adaptive projection) and He (bsHe94b, fixed-metric projection-contraction) --

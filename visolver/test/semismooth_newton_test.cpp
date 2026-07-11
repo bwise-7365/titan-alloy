@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <string>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // GoogleTest suite for the direct mixed-NCP semismooth Newton solver (MC2).
 // The claims under test: it solves the NONLINEAR mixed problem directly (no

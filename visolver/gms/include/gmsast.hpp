@@ -15,14 +15,14 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSAST_HPP
-#define VINCP_GMS_GMSAST_HPP
+#ifndef VIMCP_GMS_GMSAST_HPP
+#define VIMCP_GMS_GMSAST_HPP
 
 #include <string>
 #include <variant>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::string;
   using std::vector;
@@ -212,9 +212,9 @@ namespace VINCP::Gms {
     }
   };
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSAST_HPP
+#endif // VIMCP_GMS_GMSAST_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

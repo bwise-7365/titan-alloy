@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   MatrixXd
   levenbergMarquardtDamp(const MatrixXd& J, double lambda)
@@ -98,7 +98,7 @@ namespace VINCP {
     return VIResult{ x, merit, iter, converged };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

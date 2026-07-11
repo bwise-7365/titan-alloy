@@ -17,7 +17,7 @@
 #include <tuple>
 #include <utility>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
     // K = M^D must stay small enough that the SAOE problem (K*M + M variables)
@@ -424,7 +424,7 @@ namespace VINCP::App {
     return out;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

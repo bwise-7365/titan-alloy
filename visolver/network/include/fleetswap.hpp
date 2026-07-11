@@ -5,13 +5,13 @@
 // 2-exchange local optimum by the single-commodity swap engine, then the
 // vehicle matrices are reallocated to carry the swapped flows.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETSWAP_HPP
-#define VINCP_NETWORK_FLEETSWAP_HPP
+#ifndef VIMCP_NETWORK_FLEETSWAP_HPP
+#define VIMCP_NETWORK_FLEETSWAP_HPP
 
 #include "fleetplan.hpp"
 #include "swap.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   struct FleetSwapSummary
   {
@@ -72,9 +72,9 @@ namespace VINCP::Network {
                                      FleetPlan& plan,
                                      int maxSwapsPerAsset = 100000);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETSWAP_HPP
+#endif // VIMCP_NETWORK_FLEETSWAP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

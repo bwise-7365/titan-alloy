@@ -9,7 +9,7 @@
 #include <random>
 #include <stdexcept>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Mirror of lcp_psd_test for the Solodov-Svaiter solver: random MONOTONE LCP
 // with a known complementary solution (makeComplementaryPair; M = A^T A is

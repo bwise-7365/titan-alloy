@@ -5,19 +5,19 @@
 // a monotone affine complementarity problem (M, q), and the expansion of its
 // solution back to a full network Plan (doc/reduction.md sections 2, 5, 7).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLOWLCP_HPP
-#define VINCP_NETWORK_FLOWLCP_HPP
+#ifndef VIMCP_NETWORK_FLOWLCP_HPP
+#define VIMCP_NETWORK_FLOWLCP_HPP
 
 #include "plan.hpp"
 #include "reduction.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // The KKT complementarity system
   // ---------------------------------------------------------------------------
 
-  // KKT of the reduced problem P_eps in the library's mixed-VINCP convention
+  // KKT of the reduced problem P_eps in the library's mixed-VIMCP convention
   // with an EMPTY free block: z = y = [ t | mu | lambda ], all >= 0, and
   //   0 <= G(z) = M z + q  _|_  z >= 0 ,
   // where t are the kept source->sink shipments (sink-major, following
@@ -70,9 +70,9 @@ namespace VINCP::Network {
                      const ReducedProblem& reduced, const FlowLcp& lcp,
                      const VectorXd& z);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLOWLCP_HPP
+#endif // VIMCP_NETWORK_FLOWLCP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

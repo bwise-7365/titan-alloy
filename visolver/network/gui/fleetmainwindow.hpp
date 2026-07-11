@@ -8,8 +8,8 @@
 // C / D vectors. Plans: greedy (synchronous) and optimal (solveFleetPlan on
 // a worker thread), both improvable by swaps / purification.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETMAINWINDOW_HPP
-#define VINCP_NETWORK_FLEETMAINWINDOW_HPP
+#ifndef VIMCP_NETWORK_FLEETMAINWINDOW_HPP
+#define VIMCP_NETWORK_FLEETMAINWINDOW_HPP
 
 #include "fleetgreedy.hpp"
 #include "fleetsolve.hpp"
@@ -26,7 +26,7 @@ class QRadioButton;
 class QSlider;
 class QSpinBox;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   class FleetMainWindow : public PlannerGui
   {
@@ -155,9 +155,9 @@ namespace VINCP::Network {
     bool swapBusyP_ = false;
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETMAINWINDOW_HPP
+#endif // VIMCP_NETWORK_FLEETMAINWINDOW_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

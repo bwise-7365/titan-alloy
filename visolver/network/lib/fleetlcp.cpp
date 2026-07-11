@@ -12,7 +12,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   double
   defaultFleetTieBreakEpsilon(const FleetInstance& inst)
@@ -257,7 +257,7 @@ namespace VINCP::Network {
     return plan;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

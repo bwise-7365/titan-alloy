@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// pmatrix GMS reader implementation: build the vincpgms database, verify the
+// pmatrix GMS reader implementation: build the vimcpgms database, verify the
 // file defines exactly the SAOE symbols with sensible values, extract SaoeData.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
@@ -23,7 +23,7 @@
 #include <iterator>
 #include <stdexcept>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
 
@@ -87,7 +87,7 @@ namespace VINCP::App {
   PmatrixInput
   readPmatrixGms(const string& path)
   {
-    // Parse and evaluate through the unchanged vincpgms front end. A malformed
+    // Parse and evaluate through the unchanged vimcpgms front end. A malformed
     // file throws std::invalid_argument with the parser's own file:line:col;
     // a semantic error (unknown label, shape clash) throws from the evaluator.
     const Gms::Program program = Gms::parseGmsFile(path);
@@ -191,7 +191,7 @@ namespace VINCP::App {
     return input;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

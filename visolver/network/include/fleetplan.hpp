@@ -4,12 +4,12 @@
 // Fleet plan (S, R, x, u) for a FleetInstance: evaluation and feasibility
 // checking (fleet-formulation.md sections 2-4).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETPLAN_HPP
-#define VINCP_NETWORK_FLEETPLAN_HPP
+#ifndef VIMCP_NETWORK_FLEETPLAN_HPP
+#define VIMCP_NETWORK_FLEETPLAN_HPP
 
 #include "fleetinstance.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // FleetPlan
@@ -92,9 +92,9 @@ namespace VINCP::Network {
   // feasible.
   double maxViolation(const FleetPlanViolations& violations);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETPLAN_HPP
+#endif // VIMCP_NETWORK_FLEETPLAN_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -10,7 +10,7 @@
 #include <random>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   VIResult
   fbsHyz04(const VectorXd& x0,
@@ -176,7 +176,7 @@ namespace VINCP {
     return VIResult{ x, mag, iter, convergedP };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

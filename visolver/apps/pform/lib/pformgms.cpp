@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// pform GMS reader implementation: build the vincpgms database, verify the file
+// pform GMS reader implementation: build the vimcpgms database, verify the file
 // defines exactly the PFORM symbols with sensible values, extract PformData.
 // ----------------------------------------------
 // "GAMS" is a registered trademark of GAMS Development Corporation. This
@@ -23,7 +23,7 @@
 #include <iterator>
 #include <stdexcept>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
 
@@ -209,7 +209,7 @@ namespace VINCP::App {
     return input;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -10,7 +10,7 @@
 #include <exception>
 #include <random>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // SAOE test on a fixed 6-actor x 10-option instance. The reference equilibrium E
 // (below) is the allocation the earlier C++ implementation and the well-regarded

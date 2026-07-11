@@ -4,12 +4,12 @@
 // Preprocessing: all-pairs shortest movement routes, dominated-arc pruning,
 // and construction of the reduced source-sink problem (doc/reduction.md).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_REDUCTION_HPP
-#define VINCP_NETWORK_REDUCTION_HPP
+#ifndef VIMCP_NETWORK_REDUCTION_HPP
+#define VIMCP_NETWORK_REDUCTION_HPP
 
 #include "instance.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Shortest movement routes (reduction.md section 1)
@@ -88,9 +88,9 @@ namespace VINCP::Network {
                                     const ShortestRoutes& routes,
                                     Index maxSourcesPerSink = 0);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_REDUCTION_HPP
+#endif // VIMCP_NETWORK_REDUCTION_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

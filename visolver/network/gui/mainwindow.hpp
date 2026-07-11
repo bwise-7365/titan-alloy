@@ -5,8 +5,8 @@
 // single-commodity flow-plan model, with greedy / gravity / optimal plans and
 // the interactive swap (2-exchange) toolkit.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_MAINWINDOW_HPP
-#define VINCP_NETWORK_MAINWINDOW_HPP
+#ifndef VIMCP_NETWORK_MAINWINDOW_HPP
+#define VIMCP_NETWORK_MAINWINDOW_HPP
 
 #include "flowplan.hpp"
 #include "plannergui.hpp"
@@ -18,7 +18,7 @@
 class QPushButton;
 class QRadioButton;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   class MainWindow : public PlannerGui
   {
@@ -127,9 +127,9 @@ namespace VINCP::Network {
     bool purifyBusyP_ = false;
   };
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_MAINWINDOW_HPP
+#endif // VIMCP_NETWORK_MAINWINDOW_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

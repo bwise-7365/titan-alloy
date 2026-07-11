@@ -12,8 +12,8 @@
 #include <cmath>
 #include <stdexcept>
 
-using namespace VINCP;
-using namespace VINCP::App;
+using namespace VIMCP;
+using namespace VIMCP::App;
 
 namespace {
 

@@ -6,12 +6,12 @@
 // path (no shortest paths, no reduction, different inner solver), so
 // agreement with it validates Lemma R1 end to end. Tiny instances only.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_ORACLE_HPP
-#define VINCP_NETWORK_ORACLE_HPP
+#ifndef VIMCP_NETWORK_ORACLE_HPP
+#define VIMCP_NETWORK_ORACLE_HPP
 
 #include "plan.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // The full-formulation KKT system
@@ -19,7 +19,7 @@ namespace VINCP::Network {
 
   // KKT of the ORIGINAL formulation (formulation.md sections 2-4), variables
   // (f, S, R) with balance equalities, delivery rows (F1), caps, and the
-  // budget. Mixed VINCP layout z = (x, y):
+  // budget. Mixed VIMCP layout z = (x, y):
   //   x = nu            balance multipliers, FREE, one per node
   //   y = [ f | S | R | delta | mu | lambda ]  all >= 0:
   //       f      arc flows, row-major (f_ab at fBase + a*numNodes + b)
@@ -91,9 +91,9 @@ namespace VINCP::Network {
   OracleResult solveOracle(const Instance& inst,
                            const OracleParams& params = OracleParams{});
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_ORACLE_HPP
+#endif // VIMCP_NETWORK_ORACLE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

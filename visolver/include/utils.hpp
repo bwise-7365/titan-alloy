@@ -3,14 +3,14 @@
 // ----------------------------------------------
 // Small shared utilities for demos and tests (printing, LCP scaffolding, harness).
 // ----------------------------------------------
-#ifndef VINCP_UTILS_HPP
-#define VINCP_UTILS_HPP
+#ifndef VIMCP_UTILS_HPP
+#define VIMCP_UTILS_HPP
 
 // Vector printing plus the LCP test scaffolding (problem construction and result
 // reporting) that would otherwise be duplicated across the test drivers. Not part
 // of the numerical core, but kept in the library so callers do not copy-paste it.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "fdjacobian.hpp"   // VectorField
 
 #include <Eigen/Dense>
@@ -25,7 +25,7 @@ using std::string;
 using std::vector;
 using std::chrono::system_clock;
 
-namespace VINCP {
+namespace VIMCP {
 
   // Microseconds since the Unix epoch, as a uint64_t. Intended ONLY as a quick
   // nondeterministic PRNG seed (e.g. std::mt19937 rng(microsecondSeed())) so a
@@ -173,9 +173,9 @@ namespace VINCP {
   void saoePrintSolution(const MatrixXd& R, const MatrixXd& e,
                          double eps, bool latex);
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_UTILS_HPP
+#endif // VIMCP_UTILS_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

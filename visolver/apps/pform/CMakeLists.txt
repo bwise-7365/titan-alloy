@@ -1,7 +1,7 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 # PFORM application: the parliament-formation sub-model over the SAOE class,
 # plus the pform_cli CLI and the pform_gui Qt viewer (gui/, built only when
-# Qt6 is available). Links saoeapp (the App::SAOE class + vincp) and vincpgms
+# Qt6 is available). Links saoeapp (the App::SAOE class + vimcp) and vimcpgms
 # (the GMS reader). Both front ends render through the shared pformtext layer.
 
 # --- PFORM application library (the reusable core) -----------------------------
@@ -14,9 +14,9 @@ target_include_directories(pformapp PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/apps/include
 )
-# saoeapp carries vincp + the App::SAOE headers (apps/include, apps/saoe/include);
-# vincpgms carries the GMS front end.
-target_link_libraries(pformapp PUBLIC saoeapp vincpgms)
+# saoeapp carries vimcp + the App::SAOE headers (apps/include, apps/saoe/include);
+# vimcpgms carries the GMS front end.
+target_link_libraries(pformapp PUBLIC saoeapp vimcpgms)
 
 if (MSVC)
     target_compile_options(pformapp PRIVATE /W4)
@@ -42,7 +42,7 @@ add_executable(pform_gms_test test/pform_gms_test.cpp)
 target_link_libraries(pform_gms_test PRIVATE pformapp GTest::gtest_main)
 # The reader test opens apps/pform/doc/pform-example.gms in place.
 target_compile_definitions(pform_gms_test PRIVATE
-    VINCP_APPS_PFORM_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+    VIMCP_APPS_PFORM_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 gtest_discover_tests(pform_gms_test)
 
 add_executable(pform_text_test test/pform_text_test.cpp)

@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // Unit test for dampedNewtonSolve, the C++ port of dNewton.m (smoothed damped-Newton
 // with a theta-blend of Gauss-Newton and scaled gradient descent, plus an Armijo line

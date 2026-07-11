@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Outer Josephy-Newton driver for the nonlinear variational inequality.
 // ----------------------------------------------
-#ifndef VINCP_JOSEPHYNEWTON_HPP
-#define VINCP_JOSEPHYNEWTON_HPP
+#ifndef VIMCP_JOSEPHYNEWTON_HPP
+#define VIMCP_JOSEPHYNEWTON_HPP
 
 //     find z in K such that F(z) . (w - z) >= 0 for all w in K.
 //
@@ -20,7 +20,7 @@
 // The structure of K is carried entirely by Pr; no Schur complement or
 // elimination of any block is needed.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "dhan06.hpp"
 #include "bshe94b.hpp"
 #include "solodovsvaiter.hpp"
@@ -33,7 +33,7 @@
 #include <Eigen/Dense>
 #include <functional>
 
-namespace VINCP {
+namespace VIMCP {
 
   // Optional per-outer-iteration logging hook (opt-in, like the inner solver's).
   using OuterLogger =
@@ -202,9 +202,9 @@ namespace VINCP {
                           double outerTol = 1.0e-10,
                           int outerIterMax = 100);
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_JOSEPHYNEWTON_HPP
+#endif // VIMCP_JOSEPHYNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

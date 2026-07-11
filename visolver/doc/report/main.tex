@@ -1,6 +1,6 @@
 % Copyright Ben Paul Wise. All Rights Reserved.
 % ----------------------------------------------
-% VINCP report: master document. Four parts, one \include each, so parts can
+% VIMCP report: master document. Four parts, one \include each, so parts can
 % be drafted and reviewed as gates (see doc/2026-07-06-documentation-plan.md).
 % Style lives in prolog.tex (\input below) so it can change independently;
 % this file adds only what the report needs beyond the house style: the
@@ -29,7 +29,7 @@
 % the listings environment below.
 \newcommand{\code}[1]{\texttt{#1}}
 \definecolor{codegray}{gray}{0.45}
-\lstdefinestyle{vincp}{
+\lstdefinestyle{vimcp}{
   basicstyle=\ttfamily\small,
   commentstyle=\color{codegray},
   columns=fullflexible,
@@ -39,7 +39,7 @@
   framerule=0.3pt,
   xleftmargin=1em,
 }
-\lstset{style=vincp}
+\lstset{style=vimcp}
 
 % The mixed complementarity problem, used throughout.
 \newcommand{\Rn}{\mathbb{R}^{n}}

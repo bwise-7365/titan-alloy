@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::map;
 
@@ -589,7 +589,7 @@ namespace VINCP::Gms {
     return lexCommon(text, pseudoFile, includeDir);
   }
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

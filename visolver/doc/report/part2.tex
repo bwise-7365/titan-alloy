@@ -11,7 +11,7 @@ This chapter is written for an engineer who wants to \emph{use} the library
 (pose a problem, pick an engine, interpret the result) or \emph{extend} it
 (add an engine, an NCP function, or a structured linear solver). It fixes the
 vocabulary the rest of the report uses. All code resides in the namespace
-\code{VINCP}; all mathematical statements are deferred to
+\code{VIMCP}; all mathematical statements are deferred to
 Chapter~\ref{ch:math}, and appear here only as far as an API contract
 needs them.
 
@@ -47,8 +47,8 @@ The directory layout, in dependency order (arrows point one way, no cycles):
 \begin{center}
 \begin{tabular}{ll}
 \toprule
-\code{include/}, \code{lib/} & the core library \code{vincp}: types, engines, drivers \\
-\code{network/}              & the flow-planning layer \code{vincpnet} (Section~\ref{sec:network}) \\
+\code{include/}, \code{lib/} & the core library \code{vimcp}: types, engines, drivers \\
+\code{network/}              & the flow-planning layer \code{vimcpnet} (Section~\ref{sec:network}) \\
 \code{test/}                 & GoogleTest suites for the core library \\
 \code{src/}                  & runnable demos (printout, not pass/fail checks) \\
 \code{doc/}                  & papers (local copies), design notes, this report \\
@@ -63,11 +63,11 @@ warnings; Eigen's headers are included as \code{SYSTEM} and exempt.
 \section{Core types}
 \label{sec:core-types}
 
-One header, \code{vincp.hpp}, defines the domain vocabulary. It is included
+One header, \code{vimcp.hpp}, defines the domain vocabulary. It is included
 by everything and includes nothing of the library itself. It is also the only
 header that names the \code{Eigen} namespace: it pulls \code{VectorXd},
 \code{MatrixXd}, \code{Index}, and the factorization types into
-\code{VINCP}, so the Eigen dependency stays localized and reversible.
+\code{VIMCP}, so the Eigen dependency stays localized and reversible.
 
 \subsection{The problem: \code{VIModel}}
 
@@ -736,8 +736,8 @@ Nonmonotone; single engines stall
 \label{sec:network}
 
 The flow-planning application is contained in its own static library,
-\code{vincpnet} (\code{network/include}, \code{network/lib}, namespace
-\code{VINCP::Network}), layered strictly on top of \code{vincp}: the core
+\code{vimcpnet} (\code{network/include}, \code{network/lib}, namespace
+\code{VIMCP::Network}), layered strictly on top of \code{vimcp}: the core
 library knows nothing about networks. It is both a production solver for the
 distribution-planning QP and the library's largest worked example of the
 ``data plus builders'' pattern. The mathematical formulation is
@@ -869,7 +869,7 @@ default).
 \subsection{The instance viewer}
 
 \code{network\_viewer} (\code{network/gui}, Qt6, behind
-\code{option(VINCPNET\_BUILD\_GUI)} with a self-disabling subdirectory when
+\code{option(VIMCPNET\_BUILD\_GUI)} with a self-disabling subdirectory when
 Qt is absent --- the solver build never depends on Qt) is the interactive
 companion: instance generation controls, the map canvas
 (\code{FlowPlanView}: nodes at true coordinates, pan/zoom, closest-links and
@@ -936,8 +936,8 @@ faithful --- a sign error almost anywhere would split them.
 \subsection{The GMS front end: the recipe, mechanized}
 \label{sec:gms-frontend}
 
-The \code{gms/} layer (library \code{vincpgms}, namespace
-\code{VINCP::Gms}) performs the translation recipe mechanically for the
+The \code{gms/} layer (library \code{vimcpgms}, namespace
+\code{VIMCP::Gms}) performs the translation recipe mechanically for the
 subset of the GMS language\footnote{``GAMS'' is a registered trademark of
 GAMS Development Corporation. This front end is not endorsed or certified
 by GAMS Development Corporation, and the subset it accepts is
@@ -1084,7 +1084,7 @@ bounded probes of Chapter~\ref{ch:testing} cheap to run.
 
 A new test is a \code{.cpp} in \code{test/} (core) or
 \code{network/test/} (network layer), registered by one line ---
-\code{vincp\_add\_gtest(name)} or \code{vincpnet\_add\_gtest(name)} ---
+\code{vimcp\_add\_gtest(name)} or \code{vimcpnet\_add\_gtest(name)} ---
 which creates the executable, links it, and enrolls it in discovery and
 the aggregate targets. Network-layer suite names must begin with
 \code{Network}, or the aggregate regex will silently exclude them. All

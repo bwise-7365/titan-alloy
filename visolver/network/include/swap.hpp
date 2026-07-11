@@ -7,12 +7,12 @@
 // (c_ij + c_mn) - (c_in + c_mj); the step is x = min(f_ij, f_mn). Three search
 // depths (node-local, global, iterate-to-local-optimum) share one evaluator.
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_SWAP_HPP
-#define VINCP_NETWORK_SWAP_HPP
+#ifndef VIMCP_NETWORK_SWAP_HPP
+#define VIMCP_NETWORK_SWAP_HPP
 
 #include "plan.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // A candidate 2-exchange. `saving` is the TOTAL ton-mile reduction of applying
   // it (amount * per-unit saving); `improvingP` is saving > a small tolerance.
@@ -97,9 +97,9 @@ namespace VINCP::Network {
   PurifySummary purifyPlan(const Instance& inst, Plan& plan,
                            double tonMileCap, int maxSwaps = 100000);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_SWAP_HPP
+#endif // VIMCP_NETWORK_SWAP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

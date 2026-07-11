@@ -7,13 +7,13 @@
 // (fleet-formulation.md section 9; derivation machine-verified in
 // doc/fleet-mcp-check.mac, whose checks are cited below by number).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_FLEETLCP_HPP
-#define VINCP_NETWORK_FLEETLCP_HPP
+#ifndef VIMCP_NETWORK_FLEETLCP_HPP
+#define VIMCP_NETWORK_FLEETLCP_HPP
 
 #include "fleetplan.hpp"
 #include "fleetreduction.hpp"
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // KKT of the reduced conservative fleet QP, empty free block:
   // z = [ y | mu | lambda ], all >= 0, 0 <= G(z) = M z + q _|_ z >= 0.
@@ -93,9 +93,9 @@ namespace VINCP::Network {
                            const FleetReducedProblem& reduced,
                            const FleetLcp& lcp, const VectorXd& z);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_FLEETLCP_HPP
+#endif // VIMCP_NETWORK_FLEETLCP_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -2,14 +2,14 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // Fleet problem class implementation: map the app params onto FleetSolveParams,
-// run the library QP, and delegate greedy / swap / sparsify to vincpnet.
+// run the library QP, and delegate greedy / swap / sparsify to vimcpnet.
 // ----------------------------------------------
 #include "fleetproblem.hpp"
 
 #include <stdexcept>
 #include <utility>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
 
@@ -126,7 +126,7 @@ namespace VINCP::App {
     return out;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

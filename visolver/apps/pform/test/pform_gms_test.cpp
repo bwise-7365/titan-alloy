@@ -13,8 +13,8 @@
 #include <stdexcept>
 #include <string>
 
-using namespace VINCP;
-using namespace VINCP::App;
+using namespace VIMCP;
+using namespace VIMCP::App;
 
 namespace {
 
@@ -52,7 +52,7 @@ namespace {
 TEST(PformGms, ExampleFileLoads)
 {
   const std::string path =
-      std::string(VINCP_APPS_PFORM_DIR) + "/doc/pform-example.gms";
+      std::string(VIMCP_APPS_PFORM_DIR) + "/doc/pform-example.gms";
   const PformGmsInput in = readPformGms(path);
 
   EXPECT_EQ(in.data.weight.size(), 3);

@@ -15,7 +15,7 @@
 #include <stdexcept>
 #include <vector>
 
-using namespace VINCP;
+using namespace VIMCP;
 
 // ============================================================================
 // The alternating chain pointed at the SAOE equilibrium-selection problem --

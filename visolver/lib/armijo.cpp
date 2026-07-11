@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -105,7 +105,7 @@ namespace VINCP {
     return ArmijoResult{ bestAlpha, bestMerit, backtracks, false };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

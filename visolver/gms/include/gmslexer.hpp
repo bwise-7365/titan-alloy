@@ -15,15 +15,15 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSLEXER_HPP
-#define VINCP_GMS_GMSLEXER_HPP
+#ifndef VIMCP_GMS_GMSLEXER_HPP
+#define VIMCP_GMS_GMSLEXER_HPP
 
 #include "gmstoken.hpp"
 
 #include <string>
 #include <vector>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::string;
   using std::vector;
@@ -41,9 +41,9 @@ namespace VINCP::Gms {
   LexResult lexGmsString(const string& text, const string& pseudoFile,
                          const string& includeDir = string());
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSLEXER_HPP
+#endif // VIMCP_GMS_GMSLEXER_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

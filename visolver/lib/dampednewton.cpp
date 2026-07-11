@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   VIResult
   dampedNewtonSolve(const VectorField& F,
@@ -78,7 +78,7 @@ namespace VINCP {
     return VIResult{ x, merit, iter, converged };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

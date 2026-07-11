@@ -8,7 +8,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -92,7 +92,7 @@ namespace VINCP {
     return VIResult{ x, mag, iter, mag < magTol };
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

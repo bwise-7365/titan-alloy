@@ -3,7 +3,7 @@
 // ----------------------------------------------
 // Core domain types: projections, model evaluation, and shared input validation.
 // ----------------------------------------------
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -12,7 +12,7 @@
 
 using std::string;
 
-namespace VINCP {
+namespace VIMCP {
 
   VectorXd
   projectNonnegative(const VectorXd& v)
@@ -120,7 +120,7 @@ namespace VINCP {
     return;
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

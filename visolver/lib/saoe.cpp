@@ -11,7 +11,7 @@
 #include <random>
 #include <stdexcept>
 
-namespace VINCP {
+namespace VIMCP {
 
   namespace {
 
@@ -228,7 +228,7 @@ namespace VINCP {
     return sol;
   }
 
-} // namespace VINCP
+} // namespace VIMCP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

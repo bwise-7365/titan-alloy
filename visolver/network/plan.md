@@ -27,7 +27,7 @@ Convex QP; unique optimal `R*`; flows possibly degenerate.
    source-sink pairs. Links with `c_ij > d_ij` are provably unused;
    epsilon-optimality bounds prune source-sink pairs further. 70-node example:
    ~2,000 vars instead of 5,040.
-2. **Solve the KKT system as an affine mixed LCP with existing VINCP tools.**
+2. **Solve the KKT system as an affine mixed LCP with existing VIMCP tools.**
    Quadratic objective + linear constraints => KKT is affine in
    `z = (x, y)`; monotone (convex QP). One `bsHe94b` call (factors `(M+I)`
    once); no Josephy-Newton outer loop. Matrix generator packs the reduced
@@ -69,9 +69,9 @@ Size: S (small), M (medium), L (large) — relative effort/usage.
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
 | C1 | **Preprocessing implementation.** Floyd-Warshall all-pairs distances + predecessor matrix; dominated-link pruning; reduced source-sink problem construction. Tests: distances vs. brute-force path enumeration on tiny graphs. | M | A3, B1 | done (2026-07-03) |
-| C2 | **Matrix generator + unpacker.** KKT of the reduced QP -> affine mixed LCP `(M, q)`, packed as `z = (x, y)` per the VINCP convention; documented block layout. Unpacker: `z -> t_mn -> (S, R, f)` via shortest-path expansion. Tests: pack/unpack round-trip, `M` monotonicity check. | M | C1 | done (2026-07-04) |
+| C2 | **Matrix generator + unpacker.** KKT of the reduced QP -> affine mixed LCP `(M, q)`, packed as `z = (x, y)` per the VIMCP convention; documented block layout. Unpacker: `z -> t_mn -> (S, R, f)` via shortest-path expansion. Tests: pack/unpack round-trip, `M` monotonicity check. | M | C1 | done (2026-07-04) |
 | C3 | **Reference oracle.** Tiny (3-6 node) instances solved independently (active-set enumeration / dense KKT solve) to give exact answers. Every later box validates against it mechanically. | S | B1 | done (2026-07-04) |
-| C4 | **Solve via VINCP.** Wire `(M, q)` + mixed projector into `bsHe94b` (single affine solve, factor-once). Validate against C3 oracle; verify KKT residuals; confirm never-worse-than-greedy on B2 instances. | M | C2, C3 | done (2026-07-04) |
+| C4 | **Solve via VIMCP.** Wire `(M, q)` + mixed projector into `bsHe94b` (single affine solve, factor-once). Validate against C3 oracle; verify KKT residuals; confirm never-worse-than-greedy on B2 instances. | M | C2, C3 | done (2026-07-04) |
 | C5 | **Scale and performance.** 70- and 200-node runs; timings; tolerance tuning (`magTol` is a SQUARED norm); objective vs. greedy across a batch of random instances; document speed/quality. | M | C4, B2 | done (2026-07-04) |
 
 ### Phase E — Hybrid engine + runtime controls (added at gate 11, user request)
@@ -99,7 +99,7 @@ interactive screen/tolerance explorer follow.
 
 | ID | Task | Size | Depends on | Status |
 |----|------|------|-----------|--------|
-| F1 | **Instance viewer + node coordinates.** Retain node `(x, y)` on `Instance` (obligatory field, populated by `makeRandomInstance` for both laydowns; `validateInstance` checks it only when present, so abstract hand-built instances still pass). Qt6 `network_viewer` (`network/gui/`): draws a generated instance as a map — nodes coloured by class (supply-only / both / demand-only / **transit**), sized by tonnage, with a legend. Mouse **pan (drag) + wheel zoom**, a **Recenter** button restoring the fitted view, and a 0..N-1 **"closest links"** spinner drawing orange links from each node to its k cheapest neighbours by `(c_ij + c_ji)/2`. Seed 0 = reroll (fresh time-based seed written back to the field). Instances only (no greedy/solver overlay yet). Optional target behind `VINCPNET_BUILD_GUI`, self-disabling if Qt6 is absent so the solver/test build never depends on Qt. | M | B1 | done (2026-07-05) |
+| F1 | **Instance viewer + node coordinates.** Retain node `(x, y)` on `Instance` (obligatory field, populated by `makeRandomInstance` for both laydowns; `validateInstance` checks it only when present, so abstract hand-built instances still pass). Qt6 `network_viewer` (`network/gui/`): draws a generated instance as a map — nodes coloured by class (supply-only / both / demand-only / **transit**), sized by tonnage, with a legend. Mouse **pan (drag) + wheel zoom**, a **Recenter** button restoring the fitted view, and a 0..N-1 **"closest links"** spinner drawing orange links from each node to its k cheapest neighbours by `(c_ij + c_ji)/2`. Seed 0 = reroll (fresh time-based seed written back to the field). Instances only (no greedy/solver overlay yet). Optional target behind `VIMCPNET_BUILD_GUI`, self-disabling if Qt6 is absent so the solver/test build never depends on Qt. | M | B1 | done (2026-07-05) |
 | F2 | **Plan / flow overlay.** Draw greedy and optimal flows on the same map (arc width ~ flow), toggle instance / greedy / optimal, and show theta and ton-miles; a visual check of solver output against the geometry. Greedy overlay + mode radio done (2026-07-05); optimal (`solveFlowPlan`) overlay done 2026-07-06 (worker-thread solve, ipm + flow Newton keep-all, cached per instance, theta*/certified/lambda status) | M | F1, B2, C4 | done, verified 2026-07-06 |
 | F4 | **FUTURE WORK -- sparse optimal plans.** The verified optimal overlay reduces ton-miles (greedy 3.1e7 -> swapped 2.8e7 -> optimal 2.5e7 on the observed instance) but the flow pattern is "full of tiny flows going all over": look for a way to limit the number of nonzero links. Note the LIKELY CAUSE: the IPM converges to the ANALYTIC CENTER of the optimal face -- the maximally spread-out optimal routing -- so tiny flows are the engine's signature, not noise. Candidate levers, cheapest first: (a) a crossover/purification post-step toward a vertex of the optimal face (basic solutions of network problems are forest-sparse); (b) a consolidation heuristic on the returned plan (reroute sub-threshold flows onto their cheapest kept alternative, re-verify feasibility + objective delta); (c) a larger tie-break epsilon (R4 bounds the objective cost); (d) a concave/fixed-charge sparsity term (changes the problem class -- last resort). PREFERRED FIRST TRY (Ben, 2026-07-06): the consolidation heuristic (b). CALIBRATING OBSERVATION (same day): greedy 3.1e7 -> greedy+swap 2.8e7 -> optimal 2.5e7 ton-miles -- greedy+swapping captures half the optimality gap with a sparse plan, so it "might be hard to beat"; the consolidated-optimal must justify itself against greedy+swap, not just against the spread optimal. RESOLVED 2026-07-07 by (a)-via-swaps ("swap-as-pivot", Ben's pick): `purifyPlan` in swap.{hpp,cpp} -- opening improving pass, then best-saving ARC-COUNT-REDUCING pivots (negative saving allowed within the ton-mile budget), with later improving pivots restricted to non-spreading ones (unrestricted ones can re-spread what a spending consolidation removed -- the A<->B cycle found during design). theta invariant by construction (2-exchange never touches S/R). GUI: "Purify (sparsify)" button on greedy AND optimal overlays (worker thread -- the spread optimal plan has thousands of arcs at O(arcs^2) per pivot), arcs count in the status line, optimal working copy now persists across mode toggles with Reset restoring the pristine cached solve. Remaining open: length-4 pivots only reach a pairwise-pivot local optimum, not a certified vertex; longer-cycle pivots or a true transportation-simplex crossover stay future work if observed sparsity disappoints. | M | F2 | done (2026-07-07; Ben's visual check pending) |
 | F3 | **Interactive screen / tolerance explorer (optional).** Vary the k-cheapest / gap screen, tie-break epsilon, and tolerances at runtime and watch kept pairs, certificate rounds, and iterations — a visual companion to the E1 config controls and the C5/E4 performance study. | S | F1, E1 | todo |
@@ -140,7 +140,7 @@ flownewton/oracle) and the GUI stay single-commodity and untouched.
 
 **Phase D is discharged by the LIBRARY-WIDE report at `doc/report/`**
 (2026-07-06 decisions-log entry): the scope grew from the network project
-alone to the whole VINCP library (engines, GAMS games, compositions), so
+alone to the whole VIMCP library (engines, GAMS games, compositions), so
 the report is four parts at ~43 pp with the network material woven through.
 Mapping of the old boxes onto the report: D1 -> Part I (Overview);
 D2 -> Part II (Developer Manual, network layer in its own section);
@@ -172,7 +172,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
 
 ## Decisions log
 
-- 2026-07-03: Plan approved as gate 0. Approach = reduce-then-VINCP-LCP
+- 2026-07-03: Plan approved as gate 0. Approach = reduce-then-VIMCP-LCP
   (option 3 of the 2026-07-01 handoff, made viable by the shortest-path
   reduction). OSQP not used (no new dependency). Lagrangian dual kept as
   contingency.
@@ -195,9 +195,9 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   bound `theta <= theta* + eps*L`, eps = 1e-8 * sum(P)/L. KKT will be packed
   as a PURE NCP (R substituted out; no free block). Sizing: 70-node fits
   dense without R3; 200-node needs R3 to stay dense-feasible.
-- 2026-07-03: B1 done. New `vincpnet` static library in `network/`
+- 2026-07-03: B1 done. New `vimcpnet` static library in `network/`
   (`include/instance.hpp`, `include/plan.hpp`, `lib/*.cpp`), nested namespace
-  `VINCP::Network` (inherits the Eigen imports from `VINCP`; keeps generic
+  `VIMCP::Network` (inherits the Eigen imports from `VIMCP`; keeps generic
   names like `Instance` out of the solver namespace). Geometric cost model:
   uniform points in a square, `c_ij = (floor + scale*dist) * jitter`, additive
   floor = per-move handling charge (near-metric; asymmetry from independent
@@ -356,7 +356,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
 - 2026-07-04: E2 split at user request (E2a solver + LCP tests; E2b ellipsoid
   LVI tests — user recalls SS difficulties on ellipsoidal K from past work).
 - 2026-07-04: E2a done. ROOT-library `solodovsvaiter.hpp`/`.cpp` (namespace
-  VINCP, beside dhan06/bshe94b, same seam): double-projection with
+  VIMCP, beside dhan06/bshe94b, same seam): double-projection with
   Armijo-style hyperplane search; matrix-free (no factorization); projects
   x0 onto K first; squared-residual convention; NaN/divergence/linesearch
   guards throw. Tests `ss_lcp_test` mirroring lcp_psd_test
@@ -432,7 +432,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   ever shows generated instances, which always have real coordinates. Qt6
   `network_viewer` in `network/gui/` (flowplanview + mainwindow + main_gui),
   matching the irrgo Qt6/MSVC2022/AUTOMOC pattern; optional behind
-  `option(VINCPNET_BUILD_GUI ON)` and self-disabling via `find_package(Qt6
+  `option(VIMCPNET_BUILD_GUI ON)` and self-disabling via `find_package(Qt6
   QUIET)` so the core build never requires Qt. Controls: laydown, seed, four
   class counts, Regenerate, and the 0..N-1 nearest-links spinner (each node ->
   its k closest neighbours, k=0 = none). Build: reload CMake in CLion (target
@@ -465,7 +465,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   MainWindow keeps the current instance so a mode switch recomputes without
   regenerating. Only the greedy radio's toggle is connected (fires
   applyPlanMode once per switch). No CMake change -- `network_viewer` already
-  links `vincpnet` (greedyPlan/tonMiles/shortfallObjective). Optimal-plan
+  links `vimcpnet` (greedyPlan/tonMiles/shortfallObjective). Optimal-plan
   (`solveFlowPlan`) overlay still pending to close F2.
 - 2026-07-05: F2 "Show" radio simplified (user request). Options are now
   **"Closest" / "Greedy Plan"** (the "Random Placement" option was dropped -- the
@@ -503,7 +503,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   objective-vs-original (the objective theta is dimensionless, ~single digits --
   NOT the ~D-C ton gap). Test `ShortfallVsTargetSeparatesRationedFromOriginal`.
 - 2026-07-05: B3 un-descoped and built (user request) as the transportation
-  2-exchange in THREE depths. Library `network/swap.{hpp,cpp}` (in vincpnet):
+  2-exchange in THREE depths. Library `network/swap.{hpp,cpp}` (in vimcpnet):
   `SwapMove`/`SwapSummary`; `bestSwapAtNode` (v1), `bestSwap` (v2),
   `swapToLocalOptimum` (v3), `applySwap`; over positive OFF-diagonal arc pairs,
   ranked by TOTAL ton-mile saving `x*((c_ij+c_mn)-(c_in+c_mj))`, `x =
@@ -522,7 +522,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   `NodeToLocalOptimumIterates` (a node with two independent crossed pairs takes
   exactly 2 swaps, saving 180, resupply invariant).
 - 2026-07-05: Gravity (proportional all-to-all) planner added as a crude
-  baseline (user request). `gravity.{hpp,cpp}` (in vincpnet): `gravityPlan` =
+  baseline (user request). `gravity.{hpp,cpp}` (in vimcpnet): `gravityPlan` =
   `f_ij = C_i * D_j / max(totalC, totalD)` (outer product / larger total).
   Feasible + cost-blind + DENSE; the short side is proportionally rationed and
   total moved = min(totalC,totalD). NOTE: user wrote "K = sum of rationed
@@ -640,7 +640,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   the interior start (converged in 0 iterations, factory never called) --
   q flipped to +1. AWAITING Ben's re-run.
 - 2026-07-06: NS1 gate-verified by Ben (93/93 green). NS2 code done.
-  `network/flownewton.{hpp,cpp}` (in vincpnet): `makeFlowNewtonFactory(lcp)`
+  `network/flownewton.{hpp,cpp}` (in vimcpnet): `makeFlowNewtonFactory(lcp)`
   returns a NewtonSolverFactory for mehrotraIpm that solves
   K = M + diag(sOverY) by structure — per-sink Sherman-Morrison inverse of
   the rank-1-plus-diagonal t-block (O(k_n) per slice) and an SPD dual Schur
@@ -651,7 +651,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   inconsistent lcp; LLT failure throws. Wiring: `FlowPlanParams.ipmNewton`
   = "dense" (default) | "flow" + `newtonCheckTol` passthrough; config keys
   `solver.ipmNewton` / `solver.newtonCheckTol`; factory rebuilt per
-  certificate round. `LLT` added to vincp.hpp's Eigen imports. Tests
+  certificate round. `LLT` added to vimcp.hpp's Eigen imports. Tests
   (`flownewton_test`, + config_test key coverage): dense-LU parity keep-all
   (direct 1e-8 + backward-error 1e-12 on the SCALED system), extreme
   1e-6..1e6 diagonal (backward-error metric), k_n = 1 slices, extreme Q_n
@@ -678,7 +678,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
 - 2026-07-06: Phase D discharged by the library-wide report `doc/report/`
   (main.tex + prolog.tex style module + part1-4.tex + refs.bib; ~43 pp,
   pdflatex+bibtex). Scope grew beyond this network project to the whole
-  VINCP library, so the old three-part network report became four parts:
+  VIMCP library, so the old three-part network report became four parts:
   D1 -> report Part I, D2 -> Part II (Ben-approved), D3 -> Part IV
   (Ben-revised: regular chapter, Maxima citations, peer application
   subsections), D5 -> Part III (Ben-approved; banded QP and the deploy
@@ -715,7 +715,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   accumulates PER-ARC differences u_ij - u_ji (each exactly 0 for symmetric
   u), and vehicleBalance asserts EXACT zero in tests. New files:
   include/fleet{instance,plan,greedy}.hpp + lib mirrors + three test suites
-  (15 tests); CMake: 3 lib sources + 3 vincpnet_add_gtest rows. greedy.cpp
+  (15 tests); CMake: 3 lib sources + 3 vimcpnet_add_gtest rows. greedy.cpp
   refactor is the ONLY touch to existing code. Full network suite 73/73
   green (58 pre-existing unchanged + 15 new) in a fresh build-fleet/ tree
   (Ninja + MSVC, Debug).
@@ -939,8 +939,8 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
 - 2026-07-08 (Ben, pending report task #2): the report's DEVELOPER manual
   (Part II) needs a section on running the tests (ctest + regex filters,
   CLion aggregate targets and the hammer-not-Run caveat, the plain-exe
-  Release benchmarks) and on designing new tests (vincp_add_gtest /
-  vincpnet_add_gtest + CMake reload, suite naming for the aggregate
+  Release benchmarks) and on designing new tests (vimcp_add_gtest /
+  vimcpnet_add_gtest + CMake reload, suite naming for the aggregate
   regexes, runCase/CheckFn, the parity-bar methodology — backward error
   vs direct comparison vs exact bit-for-bit gates — protocol tests via
   failing fakes, Maxima-before-code with .mac citation). Same style rules
@@ -982,7 +982,7 @@ runtime-controls requirement + gap screen; F1 alone delivers the viewer).
   Part II gained "Running and writing tests" (sec:tests; ctest regex
   filters + Network naming, hammer-not-Run, CMake-reload rule,
   stale-build detection by test count, Release-only benchmarks; writing:
-  vincp(net)_add_gtest recipe, runCase/CheckFn, the three comparison bars
+  vimcp(net)_add_gtest recipe, runCase/CheckFn, the three comparison bars
   backward/direct/exact, fakes for protocols, the makeSeed(0)
   draw-independent-invariants rule with the 2026-07-08 counterexample,
   Maxima-before-code). Part IV gained "The structured Newton solve for

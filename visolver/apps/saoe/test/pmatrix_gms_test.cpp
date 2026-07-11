@@ -13,8 +13,8 @@
 #include <stdexcept>
 #include <string>
 
-using namespace VINCP;
-using namespace VINCP::App;
+using namespace VIMCP;
+using namespace VIMCP::App;
 
 namespace {
 
@@ -48,7 +48,7 @@ namespace {
 TEST(PmatrixGms, ExampleFileLoadsReferenceInstance)
 {
   const std::string path =
-      std::string(VINCP_APPS_SAOE_DIR) + "/doc/pmatrix-example.gms";
+      std::string(VIMCP_APPS_SAOE_DIR) + "/doc/pmatrix-example.gms";
   const PmatrixInput in = readPmatrixGms(path);
 
   EXPECT_EQ(in.R.rows(), 6);

@@ -30,8 +30,8 @@
 
 namespace {
 
-  using namespace VINCP;
-  using namespace VINCP::Gms;
+  using namespace VIMCP;
+  using namespace VIMCP::Gms;
   using std::string;
 
   const double kFeasTol = 1.0e-6;
@@ -51,7 +51,7 @@ namespace {
   string
   corpusPath(const string& name)
   {
-    return string(VINCP_GMS_CORPUS_DIR) + "/" + name;
+    return string(VIMCP_GMS_CORPUS_DIR) + "/" + name;
   }
 
   const GmsMcpSlot&

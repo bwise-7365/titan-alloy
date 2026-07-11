@@ -5,8 +5,8 @@
 // politics builds the reward (utility) matrix; SAOE then estimates which parties
 // support which parliament.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PFORMPROBLEM_HPP
-#define VINCP_APPS_PFORMPROBLEM_HPP
+#ifndef VIMCP_APPS_PFORMPROBLEM_HPP
+#define VIMCP_APPS_PFORMPROBLEM_HPP
 
 // PFORM (parliament formation) is a sub-model followed by SAOE. There are M
 // parties with positive weights w_m, and D political issues; each party has a
@@ -38,7 +38,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   using std::vector;
 
@@ -172,9 +172,9 @@ namespace VINCP::App {
     PformData data;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PFORMPROBLEM_HPP
+#endif // VIMCP_APPS_PFORMPROBLEM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

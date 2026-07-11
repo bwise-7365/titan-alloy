@@ -39,7 +39,7 @@
 #include <exception>
 #include <string>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   namespace {
     // Exemplar-derived control ranges: the C# window offered 3..15 parties and
@@ -550,7 +550,7 @@ namespace VINCP::App {
     return;
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

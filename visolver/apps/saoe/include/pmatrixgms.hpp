@@ -12,11 +12,11 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_APPS_PMATRIXGMS_HPP
-#define VINCP_APPS_PMATRIXGMS_HPP
+#ifndef VIMCP_APPS_PMATRIXGMS_HPP
+#define VIMCP_APPS_PMATRIXGMS_HPP
 
 // The pmatrix CLI reads its SAOE instance from a small, fixed GMS data file
-// (see apps/saoe/doc/pmatrix-example.gms). Reusing the vincpgms front end
+// (see apps/saoe/doc/pmatrix-example.gms). Reusing the vimcpgms front end
 // (parser + buildGmsDatabase), readPmatrixGms parses the file, verifies it
 // defines EXACTLY the expected symbols with sensible values, and returns the
 // reward matrix, strength vector, and risk-aversion fraction. Nothing under
@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   using std::string;
   using std::vector;
@@ -58,9 +58,9 @@ namespace VINCP::App {
   // values (raFrac outside [0, 1], a non-positive weight, mismatched dimensions).
   PmatrixInput readPmatrixGms(const string& path);
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_PMATRIXGMS_HPP
+#endif // VIMCP_APPS_PMATRIXGMS_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

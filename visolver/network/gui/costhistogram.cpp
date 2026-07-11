@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
     const int kMinBins = 1;
@@ -136,7 +136,7 @@ namespace VINCP::Network {
     return;
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

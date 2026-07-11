@@ -14,7 +14,7 @@
 
 using std::string;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   namespace {
 
@@ -396,7 +396,7 @@ namespace VINCP::Network {
     return {kCatalog.begin(), kCatalog.begin() + count};
   }
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -49,8 +49,8 @@
 
 namespace {
 
-  using namespace VINCP;
-  using namespace VINCP::Gms;
+  using namespace VIMCP;
+  using namespace VIMCP::Gms;
   using std::cout;
   using std::string;
   using std::vector;
@@ -156,7 +156,7 @@ namespace {
     GmsMcp mcp;
 
     Built(const string& file, const string& modelKey)
-      : db(buildGmsDatabase(parseGmsFile(string(VINCP_GMS_CORPUS_DIR) + "/"
+      : db(buildGmsDatabase(parseGmsFile(string(VIMCP_GMS_CORPUS_DIR) + "/"
                                          + file)))
       , mcp()
     {
@@ -354,7 +354,7 @@ main(int argc, char** argv)
         [](GmsDatabase& db, const GmsMcp& mcp, const VectorXd& z) {
           applyMcpSolution(db, mcp, z);
           rerunPostSolveAssignments(
-              db, parseGmsFile(string(VINCP_GMS_CORPUS_DIR) + "/glra4B.gms"));
+              db, parseGmsFile(string(VIMCP_GMS_CORPUS_DIR) + "/glra4B.gms"));
           cout << "  TotalDlvrd " << db.parameter("totaldlvrd").data.values[0]
                << " (PATH/NLPEC 527.556)\n"
                << "  TotalUsed " << db.parameter("totalused").data.values[0]

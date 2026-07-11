@@ -4,10 +4,10 @@
 // Flow-planning problem instance: node data, movement costs, the ton-mile
 // budget, and the random instance generator (see network/doc/formulation.md).
 // ----------------------------------------------
-#ifndef VINCP_NETWORK_INSTANCE_HPP
-#define VINCP_NETWORK_INSTANCE_HPP
+#ifndef VIMCP_NETWORK_INSTANCE_HPP
+#define VIMCP_NETWORK_INSTANCE_HPP
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 
 #include <cstdint>
 #include <string>
@@ -16,7 +16,7 @@
 using std::string;
 using std::vector;
 
-namespace VINCP::Network {
+namespace VIMCP::Network {
 
   // ---------------------------------------------------------------------------
   // Instance
@@ -146,9 +146,9 @@ namespace VINCP::Network {
   // match within a platform but not necessarily across MSVC vs libstdc++.
   Instance makeRandomInstance(const InstanceProfile& profile, std::uint64_t seed);
 
-} // namespace VINCP::Network
+} // namespace VIMCP::Network
 
-#endif // VINCP_NETWORK_INSTANCE_HPP
+#endif // VIMCP_NETWORK_INSTANCE_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

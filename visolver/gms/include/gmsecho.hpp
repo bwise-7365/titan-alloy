@@ -15,23 +15,23 @@
 // purpose. The provider makes no guarantees about its performance, accuracy,
 // or suitability for any specific application.
 // ----------------------------------------------
-#ifndef VINCP_GMS_GMSECHO_HPP
-#define VINCP_GMS_GMSECHO_HPP
+#ifndef VIMCP_GMS_GMSECHO_HPP
+#define VIMCP_GMS_GMSECHO_HPP
 
 #include "gmsast.hpp"
 
 #include <string>
 
-namespace VINCP::Gms {
+namespace VIMCP::Gms {
 
   using std::string;
 
   string echoExpr(const Expr& expr);
   string echoProgram(const Program& program);
 
-} // namespace VINCP::Gms
+} // namespace VIMCP::Gms
 
-#endif // VINCP_GMS_GMSECHO_HPP
+#endif // VIMCP_GMS_GMSECHO_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -3,8 +3,8 @@
 // ----------------------------------------------
 // Smoothed damped-Newton solver for nonlinear least squares (port of dNewton.m).
 // ----------------------------------------------
-#ifndef VINCP_DAMPEDNEWTON_HPP
-#define VINCP_DAMPEDNEWTON_HPP
+#ifndef VIMCP_DAMPEDNEWTON_HPP
+#define VIMCP_DAMPEDNEWTON_HPP
 
 // For F: R^n -> R^m (any m, n) it minimizes 1/2 ||F(x)||^2 by, at each iterate,
 // blending the Gauss-Newton normal-equations (LLSE) step with the properly-scaled
@@ -21,14 +21,14 @@
 // It reuses the shared building blocks levenbergMarquardtDamp (J^T J + lambda I) and
 // armijoLineSearch, plus the finite-difference Jacobian.
 
-#include "vincp.hpp"
+#include "vimcp.hpp"
 #include "fdjacobian.hpp"
 #include "armijo.hpp"
 #include "levenbergmarquardt.hpp"
 
 #include <Eigen/Dense>
 
-namespace VINCP {
+namespace VIMCP {
 
   struct DampedNewtonParams {
     double meritTol  = 1.0e-16;   // stop when ||F(x)||^2 < meritTol (SQUARED norm)
@@ -50,9 +50,9 @@ namespace VINCP {
                              const VectorXd& x0,
                              const DampedNewtonParams& params = DampedNewtonParams{});
 
-} // namespace VINCP
+} // namespace VIMCP
 
-#endif // VINCP_DAMPEDNEWTON_HPP
+#endif // VIMCP_DAMPEDNEWTON_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

@@ -4,8 +4,8 @@
 // SAOE problem class: a Problem-template wrapper over the library's Strategic
 // Allocation Of Effort Nash-equilibrium solver, for use in focused apps.
 // ----------------------------------------------
-#ifndef VINCP_APPS_SAOEPROBLEM_HPP
-#define VINCP_APPS_SAOEPROBLEM_HPP
+#ifndef VIMCP_APPS_SAOEPROBLEM_HPP
+#define VIMCP_APPS_SAOEPROBLEM_HPP
 
 // SAOE packages the existing SAOE machinery (include/saoe.hpp plus the solver
 // engines) behind the app-framework contract: build an SAOE from its DATA (the
@@ -23,7 +23,7 @@
 
 #include <cstdint>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The SAOE problem instance: M actors (rows of R) x N options (columns).
   //   R(i, j) = reward to actor i from option j; S(i) = actor i's strength.
@@ -142,9 +142,9 @@ namespace VINCP::App {
     SaoeData data;
   };
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 
-#endif // VINCP_APPS_SAOEPROBLEM_HPP
+#endif // VIMCP_APPS_SAOEPROBLEM_HPP
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------

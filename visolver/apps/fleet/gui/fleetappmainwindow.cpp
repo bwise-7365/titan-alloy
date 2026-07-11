@@ -27,11 +27,11 @@
 #include <tuple>
 #include <utility>
 
-namespace VINCP::App {
+namespace VIMCP::App {
 
   // The shared viewer, fleet model, and its free helpers all live in
-  // VINCP::Network; bring them in so this copy reads exactly like the original.
-  using namespace VINCP::Network;
+  // VIMCP::Network; bring them in so this copy reads exactly like the original.
+  using namespace VIMCP::Network;
 
   namespace {
     const int kMaxTypes = 10;   // catalog size (assetCatalog etc.)
@@ -693,7 +693,7 @@ namespace VINCP::App {
     };
   }
 
-} // namespace VINCP::App
+} // namespace VIMCP::App
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
