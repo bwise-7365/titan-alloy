@@ -229,12 +229,14 @@ The numeric suites assert exact values and tolerances; some checks resist
 assertion. Whether a plan follows the geometry, whether a sparsified plan
 visibly consolidates, and whether a rationing decision distributes shortage
 plausibly are judgments a person makes in seconds from a picture and only
-laboriously from a matrix dump. Two optional Qt~6 viewers serve these
+laboriously from a matrix dump. Three optional Qt~6 viewers serve these
 checks: \code{network\_viewer} for the single-commodity flow-planning
-problem of Section~\ref{sec:t-flow}, and \code{fleet\_viewer} for its
+problem of Section~\ref{sec:t-flow}, \code{fleet\_viewer} for its
 multi-vehicle, multi-asset generalization
-(\code{network/doc/fleet-formulation.md}). Both are excluded from the
-solver and test build when Qt is absent. This section describes the
+(\code{network/doc/fleet-formulation.md}), and \code{pform\_gui} for the
+parliament-formation application (Section~\ref{sec:t-pformgui}). All are
+excluded from the solver and test build when Qt is absent. This section
+describes the
 viewers and states, in pseudo-code, the three planning algorithms behind
 their buttons, at the depth needed to re-implement them --- e.g.\ in
 Java~17. Conventions for the pseudo-code: every quantity is a
@@ -584,6 +586,52 @@ larger the fleet must be for this heuristic to serve every rationed
 target. On the default 70-node instance the hint reproduced the observed
 delivery shortfall to four digits, which is the property that makes it
 trustworthy as a capability-scoping number.
+
+\subsection{The parliament-formation viewer}
+\label{sec:t-pformgui}
+
+\code{pform\_gui} (under \code{apps/pform/gui}) is the window for the
+parliament-formation application: $M$ parties, each with a weight and a
+position and salience on every one of $D$ issues, generate the reward
+matrix of an influence game (Section~\ref{sec:a-saoe}) over the $K = M^D$
+candidate parliaments; the SAOE machinery of
+Section~\ref{sec:t-saoe} solves it, and the coalition post-processing
+groups the supported parliaments by identical party support. The window
+is adapted from an older WinForms application of the model's author; the
+probabilistic-Condorcet controls of that exemplar (voting-rule and
+government-selection choices) are absent, because the model's
+deterministic central-position estimate replaced that machinery. The GUI
+implements none of the mathematics a second time: instance generation,
+the GMS reader, the solve, and the coalition extraction are the same
+\code{pformapp} calls \code{pform\_cli} makes, and the log pane receives
+the shared renderers' text verbatim, so a GUI run matches a CLI run of
+the same seed line for line except for the front-end tag in two section
+headers.
+
+The instance is an editable grid, one row per party: a weight column, a
+position and a salience column per issue, and a read-only utility column
+filled by the solve. Cells display three decimals but store full
+precision, and editing a cell opens the exact value, so display rounding
+never alters an untouched number. A seed of 0 draws a fresh seed and
+writes it back into the seed field; every run is reproducible from what
+the window shows. The solve runs on a worker thread over a copy of the
+instance, and its result is discarded on arrival if the grid changed
+while it ran.
+
+After a solve, shading in the position columns records who controls
+what. In each issue's position column, the cell of the party that
+controls that issue under the deterministic parliament is shaded pale
+blue --- one cell per issue, and reading the blue cells across the
+columns reproduces the matching printed in the log, e.g.\ [P0 P1 P0].
+Selecting a row of the coalition table overlays that coalition's pattern
+in pale turquoise: each pinned issue shades at its controlling party,
+while a free issue --- shown as \code{*} in the table, an issue whose
+controller varies across the coalition's parliaments --- keeps only its
+blue mark. Pale blue therefore always shows the single central-position
+estimate; turquoise shows where the selected coalition pins control; and
+the issues left unmarked by the selection are the ones over which that
+coalition's parliaments vary --- the set its even effort split ranges
+over.
 
 \section{Case study 2: the fleet optimizer at the viewer default}
 \label{sec:t-fleet}
