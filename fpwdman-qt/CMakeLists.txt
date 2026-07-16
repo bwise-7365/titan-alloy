@@ -88,9 +88,14 @@ FetchContent_MakeAvailable(zlib)
 # sbc: the in-project Sliding Block Cipher library. Toolkit-agnostic (no Qt).
 #   sbc_core   -- the cipher engine (shared by legacy + modern paths)
 #   sbc_legacy -- read-only decoder for old .sbc files (uses zlib)
+#   sbc_kdf    -- SHA-256 / HMAC / PBKDF2 for the modern container's key
+#                 derivation. Lives here, not beside PasswordStore, because Qt's
+#                 hash classes are non-copyable and so cannot express a fast
+#                 PBKDF2 -- see doc/kdf-performance-and-security.md.
 # -----------------------------------------------------------------------------
 add_library(sbc STATIC
     src/sbc/sbc_core.cpp
+    src/sbc/sbc_kdf.cpp
     src/sbc/sbc_legacy.cpp
 )
 target_include_directories(sbc PUBLIC src/sbc)
@@ -242,10 +247,12 @@ endif()
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
-# sbc_test: Qt-free unit tests for the cipher core and the legacy reader,
-# including the golden-vector decrypt of a real old .sbc file.
+# sbc_test: Qt-free unit tests for the cipher core, the legacy reader and the
+# KDF primitives -- including the golden-vector decrypt of a real old .sbc file
+# and the published SHA-256/HMAC/PBKDF2 vectors the file format depends on.
 add_executable(sbc_test
     test/SbcCoreTest.cpp
+    test/SbcKdfTest.cpp
     test/SbcLegacyTest.cpp
 )
 target_link_libraries(sbc_test PRIVATE sbc GTest::gtest GTest::gtest_main)

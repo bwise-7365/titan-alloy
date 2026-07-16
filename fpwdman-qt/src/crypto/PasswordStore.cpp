@@ -4,15 +4,14 @@
 #include <cstdint>
 #include <cstring>
 
-#include <QCryptographicHash>
 #include <QFile>
 #include <QList>
-#include <QMessageAuthenticationCode>
 #include <QRandomGenerator>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 #include "sbc_core.h"
+#include "sbc_kdf.h"
 #include "sbc_legacy.h"
 
 namespace pwstore {
@@ -92,7 +91,13 @@ QByteArray headerField(const QByteArray& line, const char* key) {
 }
 
 QByteArray hmacSha256(const QByteArray& key, const QByteArray& data) {
-    return QMessageAuthenticationCode::hash(data, key, QCryptographicHash::Sha256);
+    QByteArray out(32, Qt::Uninitialized);
+    SBC::hmacSha256(reinterpret_cast<const uint8_t*>(key.constData()),
+                    static_cast<size_t>(key.size()),
+                    reinterpret_cast<const uint8_t*>(data.constData()),
+                    static_cast<size_t>(data.size()),
+                    reinterpret_cast<uint8_t*>(out.data()));
+    return out;
 }
 
 // SBC-CBC encrypt a byte-aligned (multiple of 128) framing buffer.
@@ -158,35 +163,25 @@ DerivedKeys deriveKeys(const QString& passphrase, const QByteArray& salt, int it
 
 // --- PBKDF2-HMAC-SHA256 -----------------------------------------------------
 
+// Thin marshalling shell over SBC::pbkdf2HmacSha256. The derivation itself lives
+// in the Qt-free sbc library because Qt's hash classes cannot be copied, and
+// copying a keyed mid-hash state is the only way to keep this loop cheap --
+// see sbc_kdf.h and doc/kdf-performance-and-security.md. Output is unchanged:
+// standard PBKDF2, so existing FPMQ1 files still decrypt.
 QByteArray pbkdf2HmacSha256(const QByteArray& password, const QByteArray& salt,
                             int iterations, int dkLen) {
-    const int hLen = 32;
-    const int blocks = (dkLen + hLen - 1) / hLen;
-    QByteArray dk;
-    QMessageAuthenticationCode mac(QCryptographicHash::Sha256);
-    mac.setKey(password);
-    for (int i = 1; i <= blocks; ++i) {
-        QByteArray idx(4, 0);
-        idx[0] = static_cast<char>((i >> 24) & 0xFF);
-        idx[1] = static_cast<char>((i >> 16) & 0xFF);
-        idx[2] = static_cast<char>((i >> 8) & 0xFF);
-        idx[3] = static_cast<char>(i & 0xFF);
+    if (dkLen <= 0)
+        return QByteArray();
 
-        mac.reset();
-        mac.addData(salt);
-        mac.addData(idx);
-        QByteArray u = mac.result();
-        QByteArray t = u;
-        for (int j = 1; j < iterations; ++j) {
-            mac.reset();
-            mac.addData(u);
-            u = mac.result();
-            for (int k = 0; k < t.size(); ++k)
-                t[k] = static_cast<char>(t[k] ^ u[k]);
-        }
-        dk.append(t);
-    }
-    return dk.left(dkLen);
+    QByteArray dk(dkLen, Qt::Uninitialized);
+    SBC::pbkdf2HmacSha256(reinterpret_cast<const uint8_t*>(password.constData()),
+                          static_cast<size_t>(password.size()),
+                          reinterpret_cast<const uint8_t*>(salt.constData()),
+                          static_cast<size_t>(salt.size()),
+                          static_cast<uint32_t>(iterations < 0 ? 0 : iterations),
+                          reinterpret_cast<uint8_t*>(dk.data()),
+                          static_cast<size_t>(dkLen));
+    return dk;
 }
 
 // --- XML mapping ------------------------------------------------------------
