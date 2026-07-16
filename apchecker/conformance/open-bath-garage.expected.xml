@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Doorless bath and garage"
+        rooms="7"
+        connections="8"
+        satisfied="8"
+        broken="3"
+        undetermined="7">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R311.1" severity="CODE" result="SATISFIED"/>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="BROKEN">
+    <finding message="IRC R302.5.1: the garage 'Garage' gives onto 'Mud room' through an opening with no door in it. The separation must be equipped with a door.">
+      <room ref="garage"/>
+      <room ref="mud"/>
+      <connection from="garage" to="mud" kind="OPENING"/>
+    </finding>
+  </verdict>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="BROKEN">
+    <finding message="The bathroom 'Bathroom' gives onto 'Hall' through an opening with no door in it.">
+      <room ref="bath"/>
+      <room ref="hall"/>
+      <connection from="bath" to="hall" kind="OPENING"/>
+    </finding>
+  </verdict>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="SATISFIED"/>
+  <verdict rule="APL-127" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="BROKEN">
+    <finding message="'Living room' is a common area but is not the centroid of the plan; some other room is more central to the household's spaces.">
+      <room ref="living"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-129-through" severity="ADVICE" result="UNDETERMINED"/>
+  <verdict rule="APL-131a" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-131b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-132" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-133" severity="PATTERN" result="UNDETERMINED"/>
+</report>

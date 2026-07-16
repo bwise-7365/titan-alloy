@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Example house"
+        rooms="14"
+        connections="15"
+        satisfied="9"
+        broken="9"
+        undetermined="0">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="BROKEN">
+    <finding message="IRC R302.5.1: a door leads from the garage 'Garage' directly into the sleeping room 'Bedroom 1'. No door construction makes this permissible.">
+      <room ref="garage"/>
+      <room ref="bed1"/>
+      <connection from="garage" to="bed1" kind="DOOR"/>
+    </finding>
+  </verdict>
+  <verdict rule="IRC-R311.1" severity="CODE" result="BROKEN">
+    <finding message="IRC R311.1: the only way out of 'Utility room' is through the garage.">
+      <room ref="utility"/>
+    </finding>
+  </verdict>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="BROKEN">
+    <finding message="'Powder room' opens directly onto the kitchen 'Kitchen'.">
+      <room ref="powder"/>
+      <room ref="kitchen"/>
+      <connection from="powder" to="kitchen" kind="DOOR"/>
+    </finding>
+  </verdict>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="SATISFIED"/>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="SATISFIED"/>
+  <verdict rule="APL-127" severity="PATTERN" result="BROKEN">
+    <finding message="'Study' can only be reached by passing through a more private room; the privacy gradient from the entrance is not monotone.">
+      <room ref="study"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-130a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="BROKEN">
+    <finding message="'Living room' is a common area but is not the centroid of the plan; some other room is more central to the household's spaces.">
+      <room ref="living"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="BROKEN">
+    <finding message="The shortest way from the entrance to 'Bedroom 1' never passes within a door of a common area - not counting a long passage, which does not put anybody in contact with the room it runs past. A common area that nobody passes will not be used.">
+      <room ref="bed1"/>
+    </finding>
+    <finding message="The shortest way from the entrance to 'Bedroom 2' never passes within a door of a common area - not counting a long passage, which does not put anybody in contact with the room it runs past. A common area that nobody passes will not be used.">
+      <room ref="bed2"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-129-through" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-131a" severity="PATTERN" result="BROKEN">
+    <finding message="'Bedroom 1' is private but is also a passage: removing it cuts the plan in two, so somebody must walk through it to reach somewhere else.">
+      <room ref="bed1"/>
+    </finding>
+    <finding message="'Bedroom 2' is private but is also a passage: removing it cuts the plan in two, so somebody must walk through it to reach somewhere else.">
+      <room ref="bed2"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-131b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-132" severity="PATTERN" result="BROKEN">
+    <finding message="'Hall' is longer than fifty feet, past the threshold at which a passage stops reading as a room.">
+      <room ref="hall"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-133" severity="PATTERN" result="BROKEN">
+    <finding message="'Stair' does not adjoin a common room. A stair reached only through passages puts the upper floor behind a dead space.">
+      <room ref="stair"/>
+    </finding>
+  </verdict>
+</report>

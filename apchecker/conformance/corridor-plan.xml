@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The corridor plan: the arrangement Alexander's pattern 131 is written against.
+  Everything hangs off one long hall. Nothing is illegal; nothing is any good.
+
+  Findings:
+    APL-131b  the public rooms form a tree, not a loop
+    APL-132   the hall is 58 feet long
+    APL-133   the stair opens off the hall, not off a room
+
+  Two things this plan teaches.
+
+  First, it breaks no code rule at all, so the exit status is 0. A tool that
+  reported only code faults would pass this house without comment, which is the
+  reason the pattern rules are here.
+
+  Second, and less comfortably: APL-129-bypass does NOT fire, though one might
+  expect it to. The route to bed runs foyer - hall - stair, and the hall is a
+  neighbor of the living room, so the trip passes within one door of the common
+  area and the closed-neighborhood test calls it tangent. That test cannot tell
+  "passes the living-room door" from "walks past the living-room door down a
+  fifty-eight-foot corridor". The corridor is condemned here by 131b and 132
+  instead, which is the right answer by a different route - but the limitation is
+  real, and pretending otherwise would be worse than recording it.
+-->
+<plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="plan.xsd"
+      name="Corridor house">
+  <rooms>
+    <room id="outside" label="Outdoors"    kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="foyer"   label="Foyer"       kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="hall"    label="Hall"        kind="PASSAGE"    privacy="PUBLIC" lengthFeet="58"/>
+    <room id="living"  label="Living room" kind="COMMON"     privacy="PUBLIC"/>
+    <room id="dining"  label="Dining room" kind="DINING"     privacy="PUBLIC"/>
+    <room id="kitchen" label="Kitchen"     kind="KITCHEN"    privacy="PUBLIC"/>
+    <room id="stair"   label="Stair"       kind="STAIR"      privacy="PUBLIC"/>
+    <room id="landing" label="Landing"     kind="PASSAGE"    privacy="SEMI_PRIVATE" lengthFeet="10"/>
+    <room id="bed1"    label="Bedroom 1"   kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bed2"    label="Bedroom 2"   kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bath"    label="Bathroom"    kind="BATH"       privacy="PRIVATE"/>
+  </rooms>
+
+  <connections>
+    <connection from="outside" to="foyer" kind="DOOR"/>
+    <connection from="foyer" to="hall" kind="OPENING"/>
+    <!-- Every public room is a leaf off the hall: a tree, not a loop. -->
+    <connection from="hall" to="living" kind="OPENING"/>
+    <connection from="hall" to="dining" kind="OPENING"/>
+    <connection from="hall" to="kitchen" kind="OPENING"/>
+    <connection from="hall" to="stair" kind="OPENING"/>
+    <connection from="stair" to="landing" kind="OPENING"/>
+    <connection from="landing" to="bed1" kind="DOOR"/>
+    <connection from="landing" to="bed2" kind="DOOR"/>
+    <connection from="landing" to="bath" kind="DOOR"/>
+  </connections>
+</plan>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Ensuite"
+        rooms="6"
+        connections="5"
+        satisfied="10"
+        broken="3"
+        undetermined="5">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R311.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="SATISFIED"/>
+  <verdict rule="APL-127" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="BROKEN">
+    <finding message="'Living room' is a common area but is not the centroid of the plan; some other room is more central to the household's spaces.">
+      <room ref="living"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-through" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-131a" severity="PATTERN" result="BROKEN">
+    <finding message="'Bedroom 1' is private but is also a passage: removing it cuts the plan in two, so somebody must walk through it to reach somewhere else.">
+      <room ref="bed1"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-131b" severity="PATTERN" result="BROKEN">
+    <finding message="The public rooms form a tree, not a loop: there is no circuit one can walk around. Pattern 131 asks for the common rooms to be chained into a loop.">
+      <room ref="hall"/>
+      <room ref="living"/>
+      <room ref="foyer"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-132" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-133" severity="PATTERN" result="UNDETERMINED"/>
+</report>

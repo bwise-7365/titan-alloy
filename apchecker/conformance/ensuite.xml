@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The ensuite bathroom: reached only through the bedroom, so the bedroom is a
+     cut vertex and a private one. APL-131a fires, and it is right to. Whether
+     the designer accepts the finding is the designer's business, which is why
+     the severity is PATTERN and not CODE. -->
+<plan name="Ensuite">
+  <rooms>
+    <room id="outside" label="Outdoors"    kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="hall"    label="Hall"        kind="PASSAGE"    privacy="PUBLIC" lengthFeet="14"/>
+    <room id="living"  label="Living room" kind="COMMON"     privacy="PUBLIC"/>
+    <room id="foyer"   label="Foyer"       kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="bed1"    label="Bedroom 1"   kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="ensuite" label="Ensuite"     kind="BATH"       privacy="PRIVATE"/>
+  </rooms>
+  <connections>
+    <connection from="outside" to="foyer" kind="DOOR"/>
+    <connection from="foyer" to="hall" kind="OPENING"/>
+    <connection from="hall" to="living" kind="OPENING"/>
+    <connection from="hall" to="bed1" kind="DOOR"/>
+    <connection from="bed1" to="ensuite" kind="DOOR"/>
+  </connections>
+</plan>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A deliberately imperfect plan, so that every check has something to say.
+  Known faults, in the order the tool reports them:
+    - a door from the garage into bedroom 1            (IRC R302.5.1)
+    - the utility room's only way out is the garage    (IRC R311.1)
+    - the powder room opens onto the kitchen           (NYCBC 1210.4)
+    - the study can be reached only through bedroom 1  (APL-127)
+    - the shortest way to bedroom 1 never passes the living room (APL-129)
+    - bedroom 1 and bedroom 2 are both passages        (APL-131)
+    - the hall is 62 feet long                         (APL-132)
+    - the stair opens off the hall, not off a room     (APL-133)
+  The public rooms do form a loop (hall - living - dining - kitchen - hall),
+  so the second half of APL-131 passes.
+-->
+<plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="plan.xsd"
+      name="Example house">
+  <rooms>
+    <room id="outside" label="Outdoors"     kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="mud"     label="Mud room"     kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="hall"    label="Hall"         kind="PASSAGE"    privacy="PUBLIC" lengthFeet="62"/>
+    <room id="living"  label="Living room"  kind="COMMON"     privacy="PUBLIC"/>
+    <room id="dining"  label="Dining room"  kind="DINING"     privacy="PUBLIC"/>
+    <room id="kitchen" label="Kitchen"      kind="KITCHEN"    privacy="PUBLIC"/>
+    <room id="powder"  label="Powder room"  kind="BATH"       privacy="PUBLIC"/>
+    <room id="stair"   label="Stair"        kind="STAIR"      privacy="PUBLIC"/>
+    <room id="garage"  label="Garage"       kind="GARAGE"     privacy="PUBLIC"/>
+    <room id="utility" label="Utility room" kind="OTHER"      privacy="SEMI_PRIVATE"/>
+    <room id="study"   label="Study"        kind="OTHER"      privacy="SEMI_PRIVATE"/>
+    <room id="bed1"    label="Bedroom 1"    kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bed2"    label="Bedroom 2"    kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bath1"   label="Ensuite bath" kind="BATH"       privacy="PRIVATE"/>
+  </rooms>
+
+  <connections>
+    <connection from="outside" to="mud" kind="DOOR"/>
+    <connection from="outside" to="garage" kind="DOOR"/>
+    <connection from="mud" to="hall" kind="OPENING"/>
+    <connection from="hall" to="living" kind="OPENING"/>
+    <connection from="living" to="dining" kind="OPENING"/>
+    <connection from="dining" to="kitchen" kind="OPENING"/>
+    <connection from="kitchen" to="hall" kind="OPENING"/>
+    <connection from="kitchen" to="powder" kind="DOOR"/>
+    <connection from="hall" to="stair" kind="OPENING"/>
+    <connection from="stair" to="bed2" kind="DOOR"/>
+    <connection from="bed2" to="bath1" kind="DOOR"/>
+    <connection from="hall" to="bed1" kind="DOOR"/>
+    <connection from="garage" to="bed1" kind="DOOR"/>
+    <connection from="garage" to="utility" kind="DOOR"/>
+    <connection from="bed1" to="study" kind="DOOR"/>
+  </connections>
+</plan>

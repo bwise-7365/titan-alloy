@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Through-the-living-room house"
+        rooms="10"
+        connections="10"
+        satisfied="14"
+        broken="1"
+        undetermined="3">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R311.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="SATISFIED"/>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="SATISFIED"/>
+  <verdict rule="APL-127" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-through" severity="ADVICE" result="BROKEN">
+    <finding message="Every route from the entrance to 'Bedroom 1' passes through a common area. Pattern 129 asks for tangent, not through: a room everyone must cross stops being a place to linger.">
+      <room ref="bed1"/>
+    </finding>
+    <finding message="Every route from the entrance to 'Bedroom 2' passes through a common area. Pattern 129 asks for tangent, not through: a room everyone must cross stops being a place to linger.">
+      <room ref="bed2"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-131a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-131b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-132" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-133" severity="PATTERN" result="SATISFIED"/>
+</report>

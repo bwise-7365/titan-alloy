@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A plan that satisfies every rule. It exists so that a clean run is demonstrably
+  possible: a rule set nothing can pass is a rule set nobody will keep.
+
+  Three things it exercises deliberately.
+
+  THE STAIR TAKES TWO CONNECTIONS, one from the living room and one from the hall.
+  Off the living room alone, every route to bed would cross the living room and
+  APL-129-through would fire. Off the hall alone, APL-133 would fire. Both
+  together make the bedrooms' route TANGENT to the living room - it passes through
+  the hall, which is open to the living room, without crossing it - which is what
+  pattern 129 asks for and what is hard to say in words but easy to say in a graph.
+
+  TWO OUTDOORS. The street at the front, the garden at the back. Bedroom 1 has a
+  garden door, which is not the privacy fault that a street door would be, and
+  APL-130b says so because it names the street rather than "the outdoors".
+
+  DOORS AND OPENINGS. The public rooms give onto one another through cased
+  openings, as they do in a real house. The bathrooms and the garage have doors,
+  and must: IRC R302.5.1 requires the garage to be equipped with one.
+-->
+<plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="plan.xsd"
+      name="Clean house">
+  <rooms>
+    <room id="street"  label="Street"        kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="garden"  label="Garden"        kind="EXTERIOR"   privacy="EXTERIOR" outdoor="GARDEN"/>
+    <room id="mud"     label="Mud room"      kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="hall"    label="Hall"          kind="PASSAGE"    privacy="PUBLIC" lengthFeet="20"/>
+    <room id="living"  label="Living room"   kind="COMMON"     privacy="PUBLIC"/>
+    <room id="dining"  label="Dining room"   kind="DINING"     privacy="PUBLIC"/>
+    <room id="kitchen" label="Kitchen"       kind="KITCHEN"    privacy="PUBLIC"/>
+    <room id="powder"  label="Powder room"   kind="BATH"       privacy="PUBLIC"/>
+    <room id="stair"   label="Stair"         kind="STAIR"      privacy="PUBLIC"/>
+    <room id="garage"  label="Garage"        kind="GARAGE"     privacy="PUBLIC"/>
+    <room id="landing" label="Landing"       kind="PASSAGE"    privacy="SEMI_PRIVATE" lengthFeet="12"/>
+    <room id="bed1"    label="Bedroom 1"     kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bed2"    label="Bedroom 2"     kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bath"    label="Bathroom"      kind="BATH"       privacy="PRIVATE"/>
+  </rooms>
+
+  <connections>
+    <!-- Arrival. The garage has its own street door, so nothing is forced to
+         leave through it, and it is joined to the house by a DOOR, as R302.5.1
+         requires. -->
+    <connection from="street" to="mud"    kind="DOOR"/>
+    <connection from="street" to="garage" kind="DOOR"/>
+    <connection from="garage" to="mud"    kind="DOOR"/>
+
+    <!-- The public loop. The rooms give onto one another; only the powder room
+         has a door. -->
+    <connection from="mud"    to="hall"    kind="OPENING"/>
+    <connection from="hall"   to="living"  kind="OPENING"/>
+    <connection from="hall"   to="kitchen" kind="OPENING"/>
+    <connection from="hall"   to="powder"  kind="DOOR"/>
+    <connection from="living" to="dining"  kind="OPENING"/>
+    <connection from="dining" to="kitchen" kind="OPENING"/>
+
+    <!-- The stair, tangent to the living room rather than behind it. -->
+    <connection from="hall"   to="stair"   kind="OPENING"/>
+    <connection from="living" to="stair"   kind="OPENING"/>
+
+    <!-- The private layer: leaves off the landing, so none of them is a cut
+         vertex, and the bathroom is reached from the landing rather than through
+         a bedroom. Every one of them has a door. -->
+    <connection from="stair"   to="landing" kind="OPENING"/>
+    <connection from="landing" to="bed1"    kind="DOOR"/>
+    <connection from="landing" to="bed2"    kind="DOOR"/>
+    <connection from="landing" to="bath"    kind="DOOR"/>
+
+    <!-- A garden door from bedroom 1. Onto the street this would be a fault; onto
+         the garden it is a pleasure. -->
+    <connection from="garden" to="bed1" kind="DOOR"/>
+  </connections>
+</plan>

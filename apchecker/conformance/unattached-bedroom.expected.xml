@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Isolated bedroom fragment"
+        rooms="4"
+        connections="2"
+        satisfied="9"
+        broken="1"
+        undetermined="8">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R311.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="BROKEN">
+    <finding message="'Bedroom 1' is not connected to the outdoors by any sequence of doors.">
+      <room ref="bed1"/>
+    </finding>
+  </verdict>
+  <verdict rule="APL-127" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-129-through" severity="ADVICE" result="SATISFIED"/>
+  <verdict rule="APL-131a" severity="PATTERN" result="SATISFIED"/>
+  <verdict rule="APL-131b" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-132" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-133" severity="PATTERN" result="UNDETERMINED"/>
+</report>

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  rules.xsd - schema for the declarative rule language.
+
+  As with plan.xsd, there is no target namespace, so a rule file references it as
+
+      <rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="rules.xsd"
+             name="...">
+
+  XSD 1.0, which the JDK validator implements.
+
+  WHAT THE SCHEMA ENFORCES
+
+  Substitution groups give the language a type system. There are three abstract
+  heads - setExpr, scalarExpr, predicate - and every concrete element belongs to
+  exactly one. Because the operand of, say, <count> is declared as ref="setExpr",
+  writing <count><literal value="3"/></count> is a schema error, not a runtime
+  surprise. The three-sorted discipline is checked statically by the validator.
+
+  Likewise, <attrOf> declares its operand as <var>, not as setExpr, so the
+  requirement "an attribute belongs to one room, and that room must be bound" is
+  enforced by the grammar rather than by a check in the evaluator.
+
+  Arity is enforced: <minus> takes exactly two operands, <union> at least two,
+  <not> exactly one, and so on.
+
+  WHAT THE SCHEMA CANNOT ENFORCE, and RuleValidator therefore does
+
+    1. A <var name="x"/> must lie inside a <forAll var="x">. This is a scoping
+       condition, and XSD has no notion of scope.
+    2. No <forAll> may shadow a name already in scope.
+    3. Every {placeholder} in a rule's message must be a variable the rule binds
+       or a witness its predicates can produce.
+
+  The catalog is CLOSED. A rule may name cutVertices, reachable,
+  monotoneReachable and centroid; it cannot define them, and it cannot add to
+  them. Every one of those needs a fixpoint, and a fixpoint in a rule file is
+  precisely what this design exists to prevent. New algorithms are new Java plus
+  a new element here; that is a deliberate speed bump.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="1.0">
+
+  <!-- ======================================================== simple types -->
+
+  <xs:simpleType name="NonEmptyToken">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Identifier">
+    <xs:annotation>
+      <xs:documentation>A variable name: a letter or underscore, then letters, digits or underscores.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Za-z_][A-Za-z0-9_]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Severity">
+    <xs:annotation>
+      <xs:documentation>
+        CODE: a building-code requirement, not negotiable; sets the exit status.
+        PATTERN: a convention from the design literature; a designer may knowingly overrule it.
+        ADVICE: a remark.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="CODE"/>
+      <xs:enumeration value="PATTERN"/>
+      <xs:enumeration value="ADVICE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RoomKind">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="EXTERIOR"/>
+      <xs:enumeration value="ENTRY_ROOM"/>
+      <xs:enumeration value="COMMON"/>
+      <xs:enumeration value="KITCHEN"/>
+      <xs:enumeration value="DINING"/>
+      <xs:enumeration value="PASSAGE"/>
+      <xs:enumeration value="STAIR"/>
+      <xs:enumeration value="BATH"/>
+      <xs:enumeration value="BEDROOM"/>
+      <xs:enumeration value="GARAGE"/>
+      <xs:enumeration value="OTHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="PrivacyLevel">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="EXTERIOR"/>
+      <xs:enumeration value="ENTRY"/>
+      <xs:enumeration value="PUBLIC"/>
+      <xs:enumeration value="SEMI_PRIVATE"/>
+      <xs:enumeration value="PRIVATE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Attribute">
+    <xs:annotation>
+      <xs:documentation>The numeric room attributes a rule may read. Closed.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="lengthFeet"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ComparisonOp">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="LT"/>
+      <xs:enumeration value="LE"/>
+      <xs:enumeration value="EQ"/>
+      <xs:enumeration value="NE"/>
+      <xs:enumeration value="GE"/>
+      <xs:enumeration value="GT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================================================ set expressions (sort 1) -->
+
+  <xs:element name="setExpr" abstract="true"/>
+
+  <xs:complexType name="Nullary"/>
+
+  <xs:complexType name="OneSet">
+    <xs:sequence>
+      <xs:element ref="setExpr"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TwoSets">
+    <xs:sequence>
+      <xs:element ref="setExpr" minOccurs="2" maxOccurs="2"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ManySets">
+    <xs:sequence>
+      <xs:element ref="setExpr" minOccurs="2" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Base sets. -->
+  <xs:element name="all"      type="Nullary" substitutionGroup="setExpr"/>
+  <xs:element name="exterior" type="Nullary" substitutionGroup="setExpr"/>
+  <xs:element name="interior" type="Nullary" substitutionGroup="setExpr"/>
+
+  <xs:element name="outdoor" substitutionGroup="setExpr">
+    <xs:annotation>
+      <xs:documentation>
+        The outdoor vertices of one sort. &lt;exterior/&gt; is all of them; this
+        names one. A bedroom door onto the GARDEN is not the fault that a bedroom
+        door onto the STREET is, and only this lets a rule say so.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="kind" type="ExteriorKind" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="ExteriorKind">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="STREET"/>
+      <xs:enumeration value="DRIVEWAY"/>
+      <xs:enumeration value="GARDEN"/>
+      <xs:enumeration value="TERRACE"/>
+      <xs:enumeration value="COURT"/>
+      <xs:enumeration value="OTHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="emptySet" type="Nullary" substitutionGroup="setExpr"/>
+
+  <xs:element name="kind" substitutionGroup="setExpr">
+    <xs:complexType>
+      <xs:attribute name="value" type="RoomKind" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="privacy" substitutionGroup="setExpr">
+    <xs:complexType>
+      <xs:attribute name="level" type="PrivacyLevel" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="privacyAtLeast" substitutionGroup="setExpr">
+    <xs:complexType>
+      <xs:attribute name="level" type="PrivacyLevel" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="var" type="Var" substitutionGroup="setExpr"/>
+  <xs:complexType name="Var">
+    <xs:annotation>
+      <xs:documentation>The singleton holding the room the named binder is on.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="name" type="Identifier" use="required"/>
+  </xs:complexType>
+
+  <!-- Attribute filters. Base sets: a room that does not carry the attribute is
+       simply not a member. That is set membership, not a defaulted read; contrast
+       <attrOf>, which reads the value and must fail when it is absent. -->
+  <xs:element name="attrAtLeast" type="AttrFilter" substitutionGroup="setExpr"/>
+  <xs:element name="attrAtMost"  type="AttrFilter" substitutionGroup="setExpr"/>
+  <xs:complexType name="AttrFilter">
+    <xs:attribute name="name"  type="Attribute"  use="required"/>
+    <xs:attribute name="value" type="xs:decimal" use="required"/>
+  </xs:complexType>
+
+  <!-- Set algebra: no fixpoints, no algorithms. -->
+  <xs:element name="union"              type="ManySets" substitutionGroup="setExpr"/>
+  <xs:element name="intersect"          type="ManySets" substitutionGroup="setExpr"/>
+  <xs:element name="minus"              type="TwoSets"  substitutionGroup="setExpr"/>
+  <xs:element name="complement"         type="OneSet"   substitutionGroup="setExpr"/>
+  <xs:element name="neighbors"          type="OneSet"   substitutionGroup="setExpr"/>
+  <xs:element name="closedNeighborhood" type="OneSet"   substitutionGroup="setExpr"/>
+
+  <!-- Named argument wrappers, so that a three-argument primitive stays readable. -->
+  <xs:complexType name="SetHolder">
+    <xs:sequence>
+      <xs:element ref="setExpr"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Derived sets: each is the answer an algorithm computed. -->
+  <xs:element name="cutVertices" substitutionGroup="setExpr">
+    <xs:annotation>
+      <xs:documentation>
+        Articulation points of the plan with the excluded rooms deleted: the
+        rooms a person must walk through to get somewhere else.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="exclude" type="SetHolder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="reachable" substitutionGroup="setExpr">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="from"  type="SetHolder"/>
+        <xs:element name="avoid" type="SetHolder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="monotoneReachable" substitutionGroup="setExpr">
+    <xs:annotation>
+      <xs:documentation>
+        Reachable by a walk whose privacy rank never decreases: the operational
+        content of Alexander's intimacy gradient.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="from" type="SetHolder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="centroid" substitutionGroup="setExpr">
+    <xs:annotation>
+      <xs:documentation>
+        The rooms of "among" minimizing total distance to the rooms of "over",
+        measured with "avoid" deleted. Returns the whole tie set, since a tie is
+        a fact about the plan and must not be broken by declaration order.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="among" type="SetHolder"/>
+        <xs:element name="over"  type="SetHolder"/>
+        <xs:element name="avoid" type="SetHolder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================= scalar expressions (sort 2) -->
+
+  <xs:element name="scalarExpr" abstract="true"/>
+
+  <xs:element name="count" type="OneSet" substitutionGroup="scalarExpr"/>
+
+  <xs:element name="dist" substitutionGroup="scalarExpr">
+    <xs:annotation>
+      <xs:documentation>
+        Least number of doors from any room of "from" to any room of "to",
+        walking with "avoid" deleted. Infinite when no such walk exists.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="from"  type="SetHolder"/>
+        <xs:element name="to"    type="SetHolder"/>
+        <xs:element name="avoid" type="SetHolder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="attrOf" substitutionGroup="scalarExpr">
+    <xs:annotation>
+      <xs:documentation>
+        A numeric attribute of one bound room. The operand is a &lt;var&gt;, not a
+        set expression, so the grammar itself forbids asking for the length of a
+        set of rooms.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="var" type="Var"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="Attribute" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="literal" substitutionGroup="scalarExpr">
+    <xs:complexType>
+      <xs:attribute name="value" type="xs:decimal" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="infinity" type="Nullary" substitutionGroup="scalarExpr"/>
+
+  <!-- ================================================== predicates (sort 3) -->
+
+  <xs:element name="predicate" abstract="true"/>
+
+  <xs:element name="subset"   type="TwoSets" substitutionGroup="predicate"/>
+  <xs:element name="disjoint" type="TwoSets" substitutionGroup="predicate"/>
+
+  <xs:element name="noEdge" substitutionGroup="predicate">
+    <xs:annotation>
+      <xs:documentation>
+        No connection of the given manner joins the two sets.
+
+        via="ANY" forbids the adjacency outright: no garage may adjoin a bedroom.
+        via="OPENING" forbids only the unclosable sort, which is how the IRC's
+        requirement that a garage be "equipped with" a door is stated - the garage
+        may adjoin the house, but not through an archway. via="DOOR" is the mirror
+        image, and is here for completeness rather than because a rule needs it yet.
+
+        The attribute is required. There is no sensible default, and guessing would
+        be the kind of silent substitution that surfaces as a bug much later.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="TwoSets">
+          <xs:attribute name="via" type="Via" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="Via">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="ANY"/>
+      <xs:enumeration value="DOOR"/>
+      <xs:enumeration value="OPENING"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="nonempty" type="OneSet"  substitutionGroup="predicate"/>
+  <xs:element name="isEmpty"  type="OneSet"  substitutionGroup="predicate"/>
+  <xs:element name="hasCycle" type="OneSet"  substitutionGroup="predicate"/>
+
+  <xs:element name="compare" substitutionGroup="predicate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="scalarExpr" minOccurs="2" maxOccurs="2"/>
+      </xs:sequence>
+      <xs:attribute name="op" type="ComparisonOp" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="forAll" substitutionGroup="predicate">
+    <xs:annotation>
+      <xs:documentation>
+        The one binder. The first child is the domain; the second is the body,
+        evaluated once per room of the domain with the variable bound to it.
+        Each failing binding becomes its own finding.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="setExpr"/>
+        <xs:element ref="predicate"/>
+      </xs:sequence>
+      <xs:attribute name="var" type="Identifier" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="ManyPredicates">
+    <xs:sequence>
+      <xs:element ref="predicate" minOccurs="2" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TwoPredicates">
+    <xs:sequence>
+      <xs:element ref="predicate" minOccurs="2" maxOccurs="2"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OnePredicate">
+    <xs:sequence>
+      <xs:element ref="predicate"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="and"     type="ManyPredicates" substitutionGroup="predicate"/>
+  <xs:element name="or"      type="ManyPredicates" substitutionGroup="predicate"/>
+  <xs:element name="not"     type="OnePredicate"   substitutionGroup="predicate"/>
+  <xs:element name="implies" type="TwoPredicates"  substitutionGroup="predicate">
+    <xs:annotation>
+      <xs:documentation>
+        Antecedent then consequent. This is how a rule guards itself: pattern 131
+        asks for a loop among the public rooms, but only where there are enough
+        of them to make one.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <!-- ======================================================= the rule file -->
+
+  <xs:element name="rules">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rule" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:documentation>
+              An optional presupposition, then the assertion.
+
+              GIVEN is what makes a rule three-valued. A rule about stairs,
+              applied to a design in which no stair has been placed, is not
+              satisfied - it has not been asked. Its verdict is UNDETERMINED.
+              Reporting SATISFIED would tell a search that a constraint had been
+              met when nothing whatever has been done about it.
+
+              The failures of a &lt;given&gt; are discarded: an inapplicable rule
+              is not a fault, so a message may not use a placeholder that only the
+              presupposition could supply, and the loader rejects a rule that
+              tries.
+
+              Whether a rule applies is a design decision, and design decisions
+              belong in the rule file where they can be read and argued with,
+              rather than in an inference buried in an evaluator.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="given" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="predicate"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element ref="predicate"/>
+            </xs:sequence>
+            <xs:attribute name="id"       type="NonEmptyToken" use="required"/>
+            <xs:attribute name="severity" type="Severity"      use="required"/>
+            <xs:attribute name="message"  type="xs:string"     use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="name" type="NonEmptyToken" use="required"/>
+    </xs:complexType>
+
+    <xs:key name="RuleId">
+      <xs:selector xpath="rule"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+  </xs:element>
+
+</xs:schema>

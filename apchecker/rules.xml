@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  rules.xml - the eleven rules, as data.
+
+  Provenance is in each rule's comment. Two kinds of rule live here, and the
+  severity says which: CODE rules come from a building code and are not
+  negotiable; PATTERN and ADVICE rules come from the design literature, chiefly
+  Alexander, Ishikawa and Silverstein, "A Pattern Language" (1977), and a
+  designer may knowingly overrule them.
+
+  Nothing in this file computes anything. Where a rule needs a closure - who can
+  reach what, which rooms are cut vertices, which room is the centroid - it names
+  a derived set and Java supplies the answer.
+-->
+<rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="rules.xsd"
+       name="IRC and A Pattern Language, graph rules">
+
+  <!-- ==================================================== building code -->
+
+  <!--
+    IRC R302.5.1. "Openings from a private garage directly into a room used for
+    sleeping purposes shall not be permitted." Unlike the other garage rules, no
+    door construction makes this one acceptable: the edge may not exist.
+  -->
+  <rule id="IRC-R302.5.1" severity="CODE"
+        message="IRC R302.5.1: a door leads from the garage '{a}' directly into the sleeping room '{b}'. No door construction makes this permissible.">
+    <given>
+      <and>
+        <nonempty><kind value="GARAGE"/></nonempty>
+        <nonempty><kind value="BEDROOM"/></nonempty>
+      </and>
+    </given>
+    <noEdge via="ANY">
+      <kind value="GARAGE"/>
+      <kind value="BEDROOM"/>
+    </noEdge>
+  </rule>
+
+  <!--
+    IRC R311.1. The means of egress must reach the egress door from every part of
+    the dwelling "without requiring travel through a garage". Delete the garage
+    vertices; every interior room must still reach the outdoors.
+  -->
+  <rule id="IRC-R311.1" severity="CODE"
+        message="IRC R311.1: the only way out of '{room}' is through the garage.">
+    <given>
+      <nonempty><kind value="GARAGE"/></nonempty>
+    </given>
+    <subset>
+      <intersect>
+        <minus>
+          <interior/>
+          <kind value="GARAGE"/>
+        </minus>
+        <!-- PRESUPPOSITION. Only a room that has SOME way out can be said to
+             have its only way out through the garage. In a partial design a
+             room may not be joined to anything yet; that is PLAN-CONNECTED's
+             business to report, once, and not this rule's business to report
+             again under a false description. -->
+        <reachable>
+          <from><exterior/></from>
+          <avoid><emptySet/></avoid>
+        </reachable>
+      </intersect>
+      <reachable>
+        <from><exterior/></from>
+        <avoid><kind value="GARAGE"/></avoid>
+      </reachable>
+    </subset>
+  </rule>
+
+  <!--
+    NYC Building Code 1210.4: in multiple dwellings no toilet room or bathroom
+    shall open onto any kitchen or kitchenette. The model IRC does not carry this
+    for one- and two-family dwellings, so whether it binds depends on the
+    jurisdiction. Delete this rule for a jurisdiction that does not impose it:
+    that is the point of the rules being data.
+  -->
+  <rule id="NYCBC-1210.4" severity="CODE"
+        message="'{a}' opens directly onto the kitchen '{b}'.">
+    <given>
+      <and>
+        <nonempty><kind value="BATH"/></nonempty>
+        <nonempty><kind value="KITCHEN"/></nonempty>
+      </and>
+    </given>
+    <noEdge via="ANY">
+      <kind value="BATH"/>
+      <kind value="KITCHEN"/>
+    </noEdge>
+  </rule>
+
+
+  <!--
+    IRC R302.5.1, second limb. The first limb (above) forbids a garage opening
+    into a sleeping room at all. This one governs every OTHER opening from the
+    garage into the residence: they "shall be equipped with solid wood doors not
+    less than 1 3/8 inches in thickness", or an equivalent, self-closing.
+
+    An archway is not a door, however solid the wall around it. So the rule is not
+    that the garage may not adjoin the house - it may, and usually should - but
+    that it may not adjoin it through an OPENING. That distinction is the whole
+    reason the graph's edges carry a kind.
+  -->
+  <rule id="IRC-R302.5.1b" severity="CODE"
+        message="IRC R302.5.1: the garage '{a}' gives onto '{b}' through an opening with no door in it. The separation must be equipped with a door.">
+    <given>
+      <nonempty><kind value="GARAGE"/></nonempty>
+    </given>
+    <noEdge via="OPENING">
+      <kind value="GARAGE"/>
+      <interior/>
+    </noEdge>
+  </rule>
+
+  <!--
+    A bathroom must be closable. This is convention rather than a clause of the
+    IRC - the model code regulates ventilation, clearances and privacy of the water
+    closet in a compartment, but does not in so many words forbid an archway into a
+    bathroom, because nobody has ever needed telling. It is a PATTERN rule for that
+    reason: true, universally observed, and not something a plans examiner will cite
+    at you.
+
+    Note the scope: an opening from a bath to ANYTHING. A bathroom that gives onto a
+    bedroom through an arch is no better than one that gives onto a hall.
+  -->
+  <rule id="BATH-DOOR" severity="PATTERN"
+        message="The bathroom '{a}' gives onto '{b}' through an opening with no door in it.">
+    <given>
+      <nonempty><kind value="BATH"/></nonempty>
+    </given>
+    <noEdge via="OPENING">
+      <kind value="BATH"/>
+      <all/>
+    </noEdge>
+  </rule>
+
+  <!--
+    Connectivity. Not a design rule but a precondition for every other one: a
+    room with no path to the outdoors is a drafting error, and the gradient rule
+    below would otherwise report it as a privacy fault.
+  -->
+  <rule id="PLAN-CONNECTED" severity="CODE"
+        message="'{room}' is not connected to the outdoors by any sequence of doors.">
+    <given>
+      <nonempty><interior/></nonempty>
+    </given>
+    <subset>
+      <all/>
+      <reachable>
+        <from><exterior/></from>
+        <avoid><emptySet/></avoid>
+      </reachable>
+    </subset>
+  </rule>
+
+  <!-- ================================================== pattern language -->
+
+  <!--
+    Pattern 127, Intimacy Gradient. "Lay out the spaces of a building so that
+    they create a sequence which begins with the entrance and the most public
+    parts of the building, then leads into the slightly more private areas, and
+    finally to the most private domains."
+
+    Operationally: every room reachable at all must be reachable by a walk whose
+    privacy rank never decreases. A room that fails can only be entered by first
+    passing through something more private than itself - a study behind a
+    bedroom, a lavatory off the master suite.
+
+    Restricting the left side to the connected rooms keeps this rule from
+    duplicating PLAN-CONNECTED above.
+  -->
+  <rule id="APL-127" severity="PATTERN"
+        message="'{room}' can only be reached by passing through a more private room; the privacy gradient from the entrance is not monotone.">
+    <given>
+      <nonempty><interior/></nonempty>
+    </given>
+    <subset>
+      <reachable>
+        <from><exterior/></from>
+        <avoid><emptySet/></avoid>
+      </reachable>
+      <monotoneReachable>
+        <from><exterior/></from>
+      </monotoneReachable>
+    </subset>
+  </rule>
+
+  <!--
+    Pattern 130, Entrance Room: a room to arrive in, somewhere to see who is at
+    the door and to shed a coat. Graph form: the outdoors must adjoin one.
+  -->
+  <rule id="APL-130a" severity="PATTERN"
+        message="No entrance room adjoins the outdoors. Pattern 130 asks for a room to arrive in.">
+    <given>
+      <nonempty><interior/></nonempty>
+    </given>
+    <nonempty>
+      <intersect>
+        <neighbors><outdoor kind="STREET"/></neighbors>
+        <kind value="ENTRY_ROOM"/>
+      </intersect>
+    </nonempty>
+  </rule>
+
+  <!-- The front door must not open into a bedroom. -->
+  <rule id="APL-130b" severity="PATTERN"
+        message="A street door opens directly into the private room '{b}'.">
+    <given>
+      <and>
+        <nonempty><privacy level="PRIVATE"/></nonempty>
+        <nonempty><outdoor kind="STREET"/></nonempty>
+      </and>
+    </given>
+    <!-- THE STREET, not the outdoors. A bedroom giving onto a private garden or a
+         terrace is a pleasure; a bedroom giving onto the sidewalk is the fault
+         pattern 130 is about. With a single exterior vertex the two were the same
+         graph and this rule could not tell them apart. -->
+    <noEdge via="ANY">
+      <outdoor kind="STREET"/>
+      <privacy level="PRIVATE"/>
+    </noEdge>
+  </rule>
+
+  <!--
+    Pattern 129, Common Areas at the Heart. "No social group - whether a family,
+    a work group, or a school group - can survive without constant informal
+    contact among its members. Create a single common area for every social
+    group." Two easy halves first: it must exist, and there should be one of it.
+  -->
+  <rule id="APL-129-exists" severity="PATTERN"
+        message="The plan declares no common area. Pattern 129 asks for a single common area for the household.">
+    <given>
+      <nonempty><interior/></nonempty>
+    </given>
+    <nonempty>
+      <kind value="COMMON"/>
+    </nonempty>
+  </rule>
+
+  <rule id="APL-129-single" severity="ADVICE"
+        message="The plan declares more than one common area; pattern 129 asks for a single one.">
+    <given>
+      <nonempty><kind value="COMMON"/></nonempty>
+    </given>
+    <compare op="LE">
+      <count><kind value="COMMON"/></count>
+      <literal value="1"/>
+    </compare>
+  </rule>
+
+  <!--
+    Pattern 129, part three: the common area sits at the center of gravity of the
+    spaces the household occupies.
+
+    "Among" excludes passages and stairs. A corridor wins the centrality contest
+    on nearly every real plan, and Alexander plainly does not mean the corridor
+    when he says "the spaces the group occupies". "Avoid" excludes the outdoors,
+    so that walking out the front door and in at the garage does not count as a
+    short cut.
+  -->
+  <rule id="APL-129-centroid" severity="ADVICE"
+        message="'{room}' is a common area but is not the centroid of the plan; some other room is more central to the household's spaces.">
+    <given>
+      <nonempty><kind value="COMMON"/></nonempty>
+    </given>
+    <subset>
+      <!-- PRESUPPOSITION, on the subject this time as well as the domain. An
+           unattached common room is not "not central"; the question of its
+           centrality has not yet arisen. PLAN-CONNECTED reports the missing
+           door, once. -->
+      <intersect>
+        <kind value="COMMON"/>
+        <reachable>
+          <from><exterior/></from>
+          <avoid><emptySet/></avoid>
+        </reachable>
+      </intersect>
+      <centroid>
+        <among>
+          <minus>
+            <intersect>
+              <interior/>
+              <reachable>
+                <from><exterior/></from>
+                <avoid><emptySet/></avoid>
+              </reachable>
+            </intersect>
+            <union>
+              <kind value="PASSAGE"/>
+              <kind value="STAIR"/>
+            </union>
+          </minus>
+        </among>
+        <!-- Both the candidates and the rooms they are measured against are
+             restricted to the connected part of the plan. Otherwise a single
+             unattached room gives EVERY candidate an infinite total, the
+             centroid is empty, and the rule reports that the living room is
+             not central when in truth the question has not yet been asked. -->
+        <over>
+          <intersect>
+            <interior/>
+            <reachable>
+              <from><exterior/></from>
+              <avoid><emptySet/></avoid>
+            </reachable>
+          </intersect>
+        </over>
+        <avoid><exterior/></avoid>
+      </centroid>
+    </subset>
+  </rule>
+
+  <!--
+    Pattern 129, part four: TANGENCY. Alexander is explicit that both extremes
+    fail. If the daily path runs THROUGH the common area, passing becomes an
+    intrusion and people stop lingering. If it BYPASSES the room entirely, nobody
+    drifts in and the room dies. The only balanced case is a path that runs
+    tangent to it, open to it in passing.
+
+    Bypass, stated without choosing among tied shortest paths: deleting the
+    common room AND its doorways must lengthen the trip to bed. If it does not,
+    some shortest route already gives the room a wide berth. The strict inequality
+    is the whole rule; note that an infinite right-hand side satisfies it, which
+    is correct - a bedroom right beside the living room is as tangent as it gets.
+
+    Guarded on there being a common area at all, so that a plan without one
+    reports the missing room once rather than once per bedroom.
+  -->
+  <rule id="APL-129-bypass" severity="PATTERN"
+        message="The shortest way from the entrance to '{b}' never passes within a door of a common area - not counting a long passage, which does not put anybody in contact with the room it runs past. A common area that nobody passes will not be used.">
+    <given>
+      <and>
+        <nonempty><kind value="COMMON"/></nonempty>
+        <nonempty><kind value="BEDROOM"/></nonempty>
+        <!-- The daily path starts at the front door. A plan with no street has no
+             daily path, and the question of whether it passes the living room does
+             not arise. -->
+        <nonempty><outdoor kind="STREET"/></nonempty>
+      </and>
+    </given>
+    <forAll var="b">
+      <!-- Reachable bedrooms only. An unattached bedroom has an infinite distance
+           on BOTH sides of the comparison, and infinity is not less than infinity,
+           so an unguarded rule would report that the route to it bypasses the
+           common area, while APL-129-through would simultaneously report that
+           every route to it crosses one. Two contradictory findings from one
+           missing door. -->
+      <intersect>
+        <kind value="BEDROOM"/>
+        <reachable>
+          <from><exterior/></from>
+          <avoid><emptySet/></avoid>
+        </reachable>
+      </intersect>
+
+      <!-- FROM THE STREET, not from the outdoors. With several exterior vertices
+           a back-garden door would otherwise put a bedroom one step from "outside"
+           and every route rule would collapse. The path pattern 129 is about is
+           the one the household walks on coming home, and that starts at the front
+           door.
+
+           Tangency, stated without choosing among tied shortest paths: deleting
+           the common room AND the rooms that adjoin it must lengthen the trip to
+           bed. If it does not, some shortest route already gives the room a wide
+           berth. An infinite right-hand side satisfies the rule, which is right -
+           a bedroom beside the living room is as tangent as it gets.
+
+           THE LONG-PASSAGE EXCLUSION. A room that adjoins the common area only
+           counts as putting you in contact with it if it is a room, not a
+           corridor. Walking fifty-eight feet down a hall that happens to have a
+           living-room door in it is not "passing the living room". So the rooms
+           that provide tangency are the closed neighborhood MINUS anything longer
+           than thirty feet.
+
+           Thirty feet is a design parameter, not a code requirement, and it is
+           here in the data precisely so that it can be argued with. Alexander's
+           fifty feet (pattern 132) is the point at which a passage stops reading
+           as a room at all; contact in passing needs a shorter figure than that.
+           Set it above fifty-eight and corridor-plan.xml is credited with
+           tangency again. -->
+      <compare op="LT">
+        <dist>
+          <from><outdoor kind="STREET"/></from>
+          <to><var name="b"/></to>
+          <avoid><emptySet/></avoid>
+        </dist>
+        <dist>
+          <from><outdoor kind="STREET"/></from>
+          <to><var name="b"/></to>
+          <avoid>
+            <minus>
+              <closedNeighborhood><kind value="COMMON"/></closedNeighborhood>
+              <attrAtLeast name="lengthFeet" value="30"/>
+            </minus>
+          </avoid>
+        </dist>
+      </compare>
+    </forAll>
+  </rule>
+
+  <!--
+    Pattern 129, part five: the other extreme. If no route to bed avoids the
+    common area at all, the household must cross it to go to sleep.
+  -->
+  <rule id="APL-129-through" severity="ADVICE"
+        message="Every route from the entrance to '{b}' passes through a common area. Pattern 129 asks for tangent, not through: a room everyone must cross stops being a place to linger.">
+    <given>
+      <and>
+        <nonempty><kind value="COMMON"/></nonempty>
+        <nonempty><kind value="BEDROOM"/></nonempty>
+        <!-- The daily path starts at the front door. A plan with no street has no
+             daily path, and the question of whether it passes the living room does
+             not arise. -->
+        <nonempty><outdoor kind="STREET"/></nonempty>
+      </and>
+    </given>
+    <forAll var="b">
+      <intersect>
+        <kind value="BEDROOM"/>
+        <reachable>
+          <from><exterior/></from>
+          <avoid><emptySet/></avoid>
+        </reachable>
+      </intersect>
+      <compare op="LT">
+        <dist>
+          <from><outdoor kind="STREET"/></from>
+          <to><var name="b"/></to>
+          <avoid><kind value="COMMON"/></avoid>
+        </dist>
+        <infinity/>
+      </compare>
+    </forAll>
+  </rule>
+
+  <!--
+    Pattern 131, The Flow Through Rooms, part one: "let the private rooms open
+    directly off the public rooms." A private room must not be a passage.
+
+    A cut vertex is a room whose removal disconnects the plan, which is the exact
+    algebraic statement of "somebody has to walk through here". The outdoors is
+    excluded from the computation: otherwise a house with two exterior doors would
+    look loop-connected merely because one can walk around the outside of it.
+
+    Expect an ensuite bathroom to trip this rule. That is correct and is why the
+    severity is PATTERN: the finding is true, and you may overrule it.
+  -->
+  <rule id="APL-131a" severity="PATTERN"
+        message="'{room}' is private but is also a passage: removing it cuts the plan in two, so somebody must walk through it to reach somewhere else.">
+    <given>
+      <nonempty><privacy level="PRIVATE"/></nonempty>
+    </given>
+    <disjoint>
+      <privacy level="PRIVATE"/>
+      <cutVertices>
+        <exclude><exterior/></exclude>
+      </cutVertices>
+    </disjoint>
+  </rule>
+
+  <!--
+    Pattern 131, part two: "place the common rooms to form a chain, or loop, so
+    that it becomes possible to walk from room to room." A public zone that is a
+    tree is a corridor plan with the corridor renamed.
+
+    Guarded: a loop needs three rooms, and reporting a missing loop in a two-room
+    public zone would be noise rather than a finding.
+  -->
+  <rule id="APL-131b" severity="PATTERN"
+        message="The public rooms form a tree, not a loop: there is no circuit one can walk around. Pattern 131 asks for the common rooms to be chained into a loop.">
+    <given>
+      <compare op="GE">
+        <count>
+          <union>
+            <privacy level="ENTRY"/>
+            <privacy level="PUBLIC"/>
+          </union>
+        </count>
+        <literal value="3"/>
+      </compare>
+    </given>
+    <hasCycle>
+      <union>
+        <privacy level="ENTRY"/>
+        <privacy level="PUBLIC"/>
+      </union>
+    </hasCycle>
+  </rule>
+
+  <!--
+    Pattern 132, Short Passages. Alexander reports a cognitive breakpoint at
+    about fifty feet, citing his own earlier corridor study and Spivack on the
+    effect of narrow corridors upon anxiety. Beyond it, a passage stops reading as
+    a room and starts reading as a corridor.
+
+    The domain is restricted to PASSAGE, which is the only kind that carries the
+    attribute. Widen the domain and the evaluator will refuse rather than treat a
+    missing length as zero.
+  -->
+  <rule id="APL-132" severity="PATTERN"
+        message="'{p}' is longer than fifty feet, past the threshold at which a passage stops reading as a room.">
+    <given>
+      <nonempty><kind value="PASSAGE"/></nonempty>
+    </given>
+    <forAll var="p">
+      <kind value="PASSAGE"/>
+      <compare op="LE">
+        <attrOf name="lengthFeet"><var name="p"/></attrOf>
+        <literal value="50"/>
+      </compare>
+    </forAll>
+  </rule>
+
+  <!--
+    Patterns 133 (Staircase as a Stage) and 158 (Open Stairs). In a house of more
+    than one story the stair is the single edge joining the upper private layer to
+    the rest of the plan. Hung off a corridor, it puts the whole upper floor
+    behind a dead space; opening off the common room, it keeps the vertical
+    circulation tangent to the heart of the plan.
+  -->
+  <rule id="APL-133" severity="PATTERN"
+        message="'{s}' does not adjoin a common room. A stair reached only through passages puts the upper floor behind a dead space.">
+    <given>
+      <nonempty><kind value="STAIR"/></nonempty>
+    </given>
+    <forAll var="s">
+      <kind value="STAIR"/>
+      <nonempty>
+        <intersect>
+          <neighbors><var name="s"/></neighbors>
+          <kind value="COMMON"/>
+        </intersect>
+      </nonempty>
+    </forAll>
+  </rule>
+
+</rules>
