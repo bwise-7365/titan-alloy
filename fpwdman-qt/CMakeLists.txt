@@ -5,8 +5,67 @@ project(fpwdman_qt)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Recommended Qt 6 setup
-set(CMAKE_PREFIX_PATH "C:/Qt/6.8.3/msvc2022_64")
+# -----------------------------------------------------------------------------
+# Link flavor.
+#
+# OFF (the default) is the stock build: the exe is linked against the Qt DLLs in
+# C:/Qt and ships beside a directory of them.
+#
+# ON links a Qt that was compiled from source as static libraries, plus the
+# static MSVC runtime, giving a single .exe that runs on a bare Windows box --
+# no Qt DLLs, no platforms/ folder, no VC++ redistributable.
+#
+# The static Qt is NOT the one under C:/Qt: that one is DLLs only and cannot be
+# linked statically. It has to be built first, once. doc/static-build.md has the
+# recipe. Then:
+#     cmake -B cmake-build-static -G Ninja -DCMAKE_BUILD_TYPE=Release -DFPWDMAN_STATIC=ON
+#     cmake --build cmake-build-static
+# -----------------------------------------------------------------------------
+option(FPWDMAN_STATIC "Link Qt and the CRT statically: one self-contained .exe" OFF)
+
+set(FPWDMAN_QT_SHARED_DIR "C:/Qt/6.8.3/msvc2022_64"
+    CACHE PATH "Prefix of the stock DLL Qt, used by the default build")
+set(FPWDMAN_QT_STATIC_DIR "C:/Qt/6.8.3-static"
+    CACHE PATH "Prefix of the self-built static Qt, used when FPWDMAN_STATIC is ON")
+
+if(FPWDMAN_STATIC)
+    if(NOT EXISTS "${FPWDMAN_QT_STATIC_DIR}")
+        message(FATAL_ERROR
+            "FPWDMAN_STATIC is ON but there is no static Qt at ${FPWDMAN_QT_STATIC_DIR}. "
+            "Build one first -- see doc/static-build.md -- or point "
+            "-DFPWDMAN_QT_STATIC_DIR at an existing one.")
+    endif()
+
+    # doc/static-build.md builds Release only, so a static Qt has no debug
+    # (/MTd) libraries. A Debug configure would sail past find_package and then
+    # die deep in the link on unresolved CRT symbols, which reads as nonsense.
+    # Refuse up front instead.
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(FATAL_ERROR
+            "FPWDMAN_STATIC is a Release-only configuration: the static Qt at "
+            "${FPWDMAN_QT_STATIC_DIR} is built -release -static-runtime and ships no "
+            "debug libraries. Configure with -DCMAKE_BUILD_TYPE=Release, or drop "
+            "FPWDMAN_STATIC and debug against the DLL Qt.")
+    endif()
+
+    set(CMAKE_PREFIX_PATH "${FPWDMAN_QT_STATIC_DIR}")
+
+    # The static Qt is configured -static-runtime, so its .lib files carry the
+    # static CRT (/MT). Every object in this build must agree: mixing /MD and /MT
+    # fails the link on duplicate and unresolved CRT symbols. This one variable
+    # covers our own targets and the FetchContent dependencies (zlib, gtest)
+    # alike -- but only under policy CMP0091, which is what moves CRT selection
+    # out of CMAKE_{C,CXX}_FLAGS and into this abstraction. Our own
+    # cmake_minimum_required(3.20) already implies CMP0091 NEW; the
+    # CMAKE_POLICY_DEFAULT line forces it on the fetched subprojects too, whose
+    # older cmake_minimum_required would otherwise reset the policy to OLD and
+    # bake a literal /MD back into their flags.
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
+else()
+    set(CMAKE_PREFIX_PATH "${FPWDMAN_QT_SHARED_DIR}")
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
@@ -78,12 +137,32 @@ qt_add_executable(fpwdman_qt
 
 target_link_libraries(fpwdman_qt PRIVATE Qt6::Widgets sbc pwcrypto)
 
+if(FPWDMAN_STATIC)
+    # Nothing to deploy: the exe is the entire product, so there is no
+    # windeployqt step and the build folder runs stand-alone by construction.
+    # 'package' still exists, and still produces fpwdman_qt.tgz unpacking to a
+    # single fpwdman_qt/ folder, so the shipping command does not change with the
+    # link flavor -- there is just one file to stage instead of a runtime tree.
+    set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/fpwdman_qt")
+    add_custom_target(package
+        COMMAND "${CMAKE_COMMAND}" -E rm -rf "${PACKAGE_STAGE_DIR}"
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${PACKAGE_STAGE_DIR}"
+        COMMAND "${CMAKE_COMMAND}" -E copy
+                "$<TARGET_FILE:fpwdman_qt>" "${PACKAGE_STAGE_DIR}/"
+        COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/dist"
+                "${CMAKE_COMMAND}" -E tar czf
+                "${CMAKE_BINARY_DIR}/fpwdman_qt.tgz" fpwdman_qt
+        COMMENT "Packaging stand-alone fpwdman_qt.tgz (single static exe)"
+        VERBATIM
+    )
+    add_dependencies(package fpwdman_qt)
+
 # Automatic DLL deployment for Windows. windeployqt drops the Qt runtime next to
 # the exe -- the five Qt6 DLLs plus the platforms/ plugin -- so the build folder
 # runs stand-alone. The DLL flavor tracks the build type: a Debug build gets the
 # 'd'-suffixed debug DLLs + platforms/qwindowsd.dll; Release (and any other type)
 # gets the release DLLs + platforms/qwindows.dll.
-if(WIN32)
+elseif(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if(WINDEPLOYQT_EXECUTABLE)
         message(STATUS "Found windeployqt: ${WINDEPLOYQT_EXECUTABLE}")
@@ -150,8 +229,16 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG v1.15.2
 )
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# For Windows: keep gtest on the same CRT as the rest of the build, rather than
+# letting it override our compiler/linker settings. ON is gtest's own name for
+# the shared CRT (/MD), which is right for the default DLL build; under
+# FPWDMAN_STATIC everything is /MT and gtest has to follow, or the test exes
+# fail to link.
+if(FPWDMAN_STATIC)
+    set(gtest_force_shared_crt OFF CACHE BOOL "" FORCE)
+else()
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+endif()
 FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
