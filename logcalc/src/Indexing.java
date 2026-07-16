@@ -9,7 +9,8 @@ import java.util.stream.IntStream;
 
 // Nominal subscript types and the containers they index.
 //
-// Each kind of subscript is its own type, so the compiler rejects
+// Each kind of subscript is its own type. If 'demand' is declared
+// to have subscripts of type (node, assetType), the compiler rejects
 // demand.get(assetType, node) even though both wrap a plain int.
 // Capacity nodes and demand nodes are distinct types because they are
 // distinct index spaces with distinct sizes; conflating them is the
