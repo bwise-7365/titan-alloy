@@ -209,8 +209,12 @@ SimGUIModule:: setupScenarioOneCU() {
       ru1->sensorRange = 1.40 * ru1->sensorRange;
       ru1->weaponRange = 1.00* ru1->weaponRange;
       cuB->add_sub(ru1);
-      tmpGV = GVector(tx * nuSim->rng->uniform(0.99, 0.550),
-		      ty * nuSim->rng->uniform(0.99, 0.550),
+      // the original passed (0.99, 0.550): the old RNG accepted
+      // reversed bounds, but std::uniform_real_distribution (inside
+      // panj::PRNG) requires min <= max and asserts otherwise.
+      // the interval, and hence the distribution, is unchanged.
+      tmpGV = GVector(tx * nuSim->rng->uniform(0.550, 0.99),
+		      ty * nuSim->rng->uniform(0.550, 0.99),
 		      nuSim->rng->uniform(0.0, 100.0));
       mc = new MRNCW1(tmpGV, ru1);
       mc->wGoal = 10.0;
@@ -335,7 +339,10 @@ SimGUIModule::setupScenarioLayeredCU() {
   double y = ty * nuSim->rng->uniform(0.01, 0.99);
   GVector tmpGV = GVector(x, y, nuSim->rng->uniform(0.0, 100.0));
 
-  Unit* cu1 = NULL;
+  // cu1 must keep its concrete type: Unit is a VIRTUAL base of
+  // CmndUnit, so a Unit* differs numerically from the CmndUnit*,
+  // and processEvent casts the event's data back to CmndUnit*.
+  CmndUnit* cu1 = NULL;
   Unit* ru1 = NULL;
   ru1 = new ResUnit(nuSim, BlueSide, tmpGV, GVector(0.0, 0.0, 0.0));
 
@@ -913,7 +920,11 @@ CmndUnit* simpleHierarchy1(ACPSim* sim,
       dp = GVector(sim->rng->uniform(-spread, spread),
 		   sim->rng->uniform(-spread, spread),
 		   sim->rng->uniform(-spread, spread)); // include vertical
-      su = new ResUnit(sim, side, center + dp, v0);
+      // rsu keeps the concrete type: Unit is a VIRTUAL base of
+      // ResUnit, so a Unit* differs numerically from the ResUnit*,
+      // and processEvent casts the event's data back to ResUnit*.
+      ResUnit* rsu = new ResUnit(sim, side, center + dp, v0);
+      su = rsu;
       // these are the guys at d=0
       // these RU should be ordered to stay 500m from their siblings
       mc = new MRBuddies2(1,  // nth siblings
@@ -927,7 +938,7 @@ CmndUnit* simpleHierarchy1(ACPSim* sim,
       // schedule the resunit su
       sse = new ACPSimEvent(sim, SSStateUpdate);
       assert (NULL != sse);
-      sse->data = (void*)(su);
+      sse->data = (void*)(rsu);
       sse->processFN = updatePV;
       t2 = sim->rng->uniform(minT, minT+dt);
       //      cout << "Scheduling resunit for " << t2 << endl;
@@ -946,7 +957,10 @@ CmndUnit* simpleHierarchy1(ACPSim* sim,
 		   sim->rng->uniform(-spread, spread),
 		   sim->rng->uniform(-spread, spread)); // include vertical
 
-      su = simpleHierarchy1(sim, side, center + dp, minT, minT+dt, depth - 1);
+      // csu keeps the concrete type (see the note on rsu above)
+      CmndUnit* csu
+	= simpleHierarchy1(sim, side, center + dp, minT, minT+dt, depth - 1);
+      su = csu;
       // this guy is at level d-1, and
       // this CU should be orderd to stay 3^^(d-1) * 1000 from siblings
       cout << "Creating MRBuddies2 for depth " << depth-1;
@@ -965,7 +979,7 @@ CmndUnit* simpleHierarchy1(ACPSim* sim,
       // he should be scheduled between minT+2dt and minT+3dt
       sse = new ACPSimEvent(sim, SSCmndUnitUpdate);
       assert (NULL != sse);
-      sse->data = (void*)(su);
+      sse->data = (void*)(csu);
       sse->processFN = updatePV;
       double t0 = minT + (2.0 * (depth - 1.0) * dt);
       double t1 = t0 + dt;

@@ -206,6 +206,28 @@ ACPSimEvent::processEvent() {
   CmndUnit* cu = NULL;
   double now = mySim->clock();
 
+#ifndef NDEBUG
+  // debugging tripwire (2026-07-16 access violation in Layered CU):
+  // a unit-update event must reference a unit still registered with
+  // the current simulation. this fires a clean assert at the FIRST
+  // stale event, instead of an access violation inside update().
+  if (((SSStateUpdate == type) || (SSCmndUnitUpdate == type))
+      && (false == cancelled)) {
+    assert (mySim == theSim);
+    assert (NULL != data);
+    if (SSStateUpdate == type) {
+      assert (mySim->rUnits->end()
+              != std::find(mySim->rUnits->begin(), mySim->rUnits->end(),
+                           ((ResUnit*) data)));
+    }
+    else {
+      assert (mySim->cUnits->end()
+              != std::find(mySim->cUnits->begin(), mySim->cUnits->end(),
+                           ((CmndUnit*) data)));
+    }
+  }
+#endif
+
   // clear the owner's back-pointer before dispatch, so that an
   // update() scheduling a fresh event is not clobbered afterward
   if ((NULL != owner) && (this == owner->nextEvent)) {

@@ -150,6 +150,12 @@ class ACPSimEvent : public Simulation::Event
 
   ACPSimEventType type;
   void (*processFN)(void*);
+
+  // data must be stored with the SAME static pointer type that the
+  // dispatch casts it back to: ResUnit* for SSStateUpdate, CmndUnit*
+  // for SSCmndUnitUpdate. Unit is a VIRTUAL base of both, so a Unit*
+  // to the object is a different address than the derived pointer,
+  // and a void* round-trip through Unit* misreads the object.
   void *data; //
 
   // the Unit whose nextEvent pointer references this event, if any.

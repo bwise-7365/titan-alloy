@@ -825,6 +825,17 @@ void OrderCUnitIntoBox::orderSubAlongCorridor(Unit* su, Box* ebx, double et) {
     et = now - (dt / 100.0); // we hope this is only SLIGHTLY in the future
   }
 
+  // the corridor times below interpolate between t0 and et, and
+  // TempCorridor stores them as float. a deadline at or barely past
+  // 'now' collapses the schedule so far that consecutive start times
+  // round to equal floats, and checkTCorridor asserts on its strict
+  // time ordering (the "occasionally ==" case its comment leaves
+  // open). enforce a minimum spread so the degenerate schedule
+  // cannot arise.
+  const double minSpread = 1.0; // seconds
+  if (et < (t0 + minSpread))
+    et = t0 + minSpread;
+
   Logical smP = box_intersect_p(sBox, mBox);
   Logical meP = box_intersect_p(mBox, eBox2);
   Logical seP = box_intersect_p(sBox, eBox2);
