@@ -100,6 +100,10 @@ public:
     // rationale and literature references in Game.cpp.
     AbsGame::MoveId chooseRolloutMove(const std::vector<AbsGame::MoveId>& legal,
                                       std::mt19937_64& rng) const override;
+    // Capture-first move ordering for the alpha-beta searcher: removals rank above
+    // custodial captures, both above quiet moves, and a reduction win above everything.
+    // Alpha-beta prunes far more when the strongest move is searched first. See Game.cpp.
+    int moveOrderScore(AbsGame::MoveId mv) const override;
 
     // ── Accessors for the GUI / renderer / move log ──────────────────────────
     int rows() const { return rows_; }
@@ -188,10 +192,6 @@ private:
     // down where two enemies would flank it (MD rule: no placing between enemies).
     bool isLegalPlacement(int square) const;
     std::vector<AbsGame::MoveId> enumerateLegalMoves() const;
-    // Number of squares `player` could step to if it were that player's turn (the
-    // disc-mobility "reach" M of staticEval). Double-counts when several discs reach
-    // the same square -- that is intentional. Zero outside the Movement phase.
-    int reachCount(int player) const;
     // One definition of "material count": free discs at full weight, Bound (immobilised)
     // discs at immobilizationDiscount, plus komi for player 1. Used by both the terminal
     // score and the leaf evaluation in staticEval.

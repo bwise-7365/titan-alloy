@@ -21,16 +21,32 @@ void GameMainWindow::startPlay(SearchController::Params params, int turns) {
         return;
     }
     search().beginTurnRun(turns);
+
+    // A derived window may supply this ply itself rather than have it searched (see
+    // autoPlayMoveOverride). Latrunculi's placement policy plays a random placement now
+    // and then, and at most two of those can fall back to back, so recursing straight
+    // into the next ply here cannot run away.
+    AbsGame::MoveId preset = AbsGame::kPass;
+    if (autoPlayMoveOverride(preset)) {
+        applyComputedMove(preset);
+        continuePlay(params, turns);
+        return;
+    }
+
     search().launch(currentGame()->clone(), params,
                     [this, params, turns](AbsGame::MoveId mv, unsigned) {
         applyComputedMove(mv);
-        search().advanceTurn();
-        if (currentGame() && !currentGame()->isTerminal() && search().turnRunActive()) {
-            startPlay(params, turns);
-        } else {
-            search().endTurnRun();
-        }
+        continuePlay(params, turns);
     });
+}
+
+void GameMainWindow::continuePlay(SearchController::Params params, int turns) {
+    search().advanceTurn();
+    if (currentGame() && !currentGame()->isTerminal() && search().turnRunActive()) {
+        startPlay(params, turns);
+    } else {
+        search().endTurnRun();
+    }
 }
 
 // ── Playback / review ─────────────────────────────────────────────────────────

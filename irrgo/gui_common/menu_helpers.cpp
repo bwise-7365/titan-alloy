@@ -81,15 +81,20 @@ QPushButton* buildNegaMaxMenu(QWidget* owner, QMenu* parent, QActionGroup* group
     return goBtn;
 }
 
-QPushButton* buildMctsMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
-                           const MctsMenuConfig& cfg,
+namespace {
+
+// Shared body of the time-budgeted submenus. The MCTS and iterative-deepening NegaMax
+// menus are the same widget set (Time [+ Turns] + Go!) and differ only in their title,
+// so they share one implementation rather than a copy each.
+QPushButton* buildTimeMenu(const char* title, QWidget* owner, QMenu* parent,
+                           QActionGroup* group, const TimeMenuConfig& cfg,
                            QComboBox*& secOut, QSpinBox*& turnsOut) {
-    auto* action = new QAction("MCTS", owner);
+    auto* action = new QAction(title, owner);
     action->setCheckable(true);
     group->addAction(action);
     parent->addAction(action);
 
-    auto* mctsMenu = new QMenu(owner);
+    auto* budgetMenu = new QMenu(owner);
     auto* widget   = new QWidget;
     auto* vbox     = new QVBoxLayout(widget);
     vbox->setContentsMargins(8, 6, 8, 6);
@@ -118,17 +123,31 @@ QPushButton* buildMctsMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
 
     auto* goBtn = new QPushButton("Go!", widget);
     vbox->addWidget(goBtn);
-    QObject::connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+    QObject::connect(goBtn, &QPushButton::clicked, budgetMenu, &QMenu::hide);
 
-    auto* wa = new QWidgetAction(mctsMenu);
+    auto* wa = new QWidgetAction(budgetMenu);
     wa->setDefaultWidget(widget);
-    mctsMenu->addAction(wa);
-    action->setMenu(mctsMenu);
+    budgetMenu->addAction(wa);
+    action->setMenu(budgetMenu);
 
-    QObject::connect(mctsMenu, &QMenu::aboutToShow, action, [action]() {
+    QObject::connect(budgetMenu, &QMenu::aboutToShow, action, [action]() {
         action->setChecked(true);
     });
     return goBtn;
+}
+
+}  // anonymous namespace
+
+QPushButton* buildMctsMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
+                           const TimeMenuConfig& cfg,
+                           QComboBox*& secOut, QSpinBox*& turnsOut) {
+    return buildTimeMenu("MCTS", owner, parent, group, cfg, secOut, turnsOut);
+}
+
+QPushButton* buildNegaMaxTimeMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
+                                  const TimeMenuConfig& cfg,
+                                  QComboBox*& secOut, QSpinBox*& turnsOut) {
+    return buildTimeMenu("NegaMax", owner, parent, group, cfg, secOut, turnsOut);
 }
 
 }  // namespace guicommon

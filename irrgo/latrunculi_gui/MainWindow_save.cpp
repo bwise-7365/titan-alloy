@@ -251,6 +251,11 @@ bool MainWindow::loadFromFile(const QString& path) {
     // The loaded move list becomes the replay timeline; positions are rebuilt from a
     // fresh game, so Load opens at ply 0 (empty board) ready to step forward.
     timeline_.assign(game_->history().begin(), game_->history().end());
+    // Random-placement provenance is display-only and not stored in the file, so a
+    // loaded game carries no [random] tags rather than tags inherited from whatever
+    // game was open before.
+    randomPlies_.clear();
+    placementPolicy_.reset(AbsGame::makeSeed(0));
     tlRows_ = rows;
     tlCols_ = cols;
     tlPerSide_ = perSide;

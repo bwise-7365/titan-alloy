@@ -32,9 +32,18 @@ protected:
     // An extra reason a search must not start (e.g. an ongoing setup animation).
     virtual bool extraSearchBlock() const { return false; }
 
+    // Lets a derived window supply one auto-play ply itself instead of searching for it:
+    // return true and set `mv`, and startPlay() plays that move and carries on with the
+    // turn run exactly as if a search had produced it. Latrunculi uses this for the
+    // random placements in its opening policy. Default: never pre-empt the search.
+    virtual bool autoPlayMoveOverride(AbsGame::MoveId&) { return false; }
+
     // Play one NegaMax/MCTS move, then auto-play up to `turns` plies, re-entering
     // itself after each completed move (identical to the old per-window loop).
     void startPlay(SearchController::Params params, int turns);
+    // Shared tail of a completed auto-play ply, whether the move came from a search or
+    // from autoPlayMoveOverride(): count the turn and either continue or end the run.
+    void continuePlay(SearchController::Params params, int turns);
 
     // ── Playback / review (opt-in) ───────────────────────────────────────────
     // A game that supports Load-replay creates a PlaybackBar + MoveListWidget,

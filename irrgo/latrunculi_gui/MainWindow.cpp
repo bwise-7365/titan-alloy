@@ -38,8 +38,14 @@ namespace gb = games::board;
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
-static const guicommon::MctsOption kMctsOptions[] = {
-    {  5, "5 sec"  }, { 15, "15 sec" },
+// Ceiling for iterative deepening. The wall-clock budget from the NegaMax menu is what
+// actually stops the search; this only bounds the loop if a position is so shallow that
+// every depth completes, which cannot happen on a real board.
+static constexpr int kMaxNegamaxDepth = 64;
+
+static const guicommon::TimeOption kMctsOptions[] = {
+    {  5, "5 sec"  },
+    {  10, "10 sec"  },{ 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
     { 90, "90 sec" }, { 120, "2 min" },
     { 240, "4 min" }, { 480, "8 min" },
@@ -280,9 +286,12 @@ void MainWindow::buildMenuBar() {
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
     {
-        guicommon::NegaMaxMenuConfig nm{1, 8, 4, true, 1, 200, 4};
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, playMenu, playGroup, nm,
-                                                  playDepthSpin_, playTurnsSpin_);
+        // NegaMax is iterative-deepening, so it is budgeted by time exactly like MCTS
+        // and offers the same choices; kMaxNegamaxDepth is only the ceiling the clock
+        // almost never lets it reach.
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
     {
@@ -297,11 +306,11 @@ void MainWindow::buildMenuBar() {
     auto* suggestGroup = new QActionGroup(this);
     suggestGroup->setExclusive(true);
     {
-        guicommon::NegaMaxMenuConfig nm{1, 8, 4};
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
         nm.withTurns = false;
         QSpinBox* unusedTurns = nullptr;
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, suggestMenu, suggestGroup, nm,
-                                                  suggestDepthSpin_, unusedTurns);
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
     }
     {
@@ -313,9 +322,11 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
-    // Keep the Play and Suggest depth spinboxes in sync.
-    connect(playDepthSpin_,    &QSpinBox::valueChanged, suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged, playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the Play and Suggest NegaMax time combos in sync.
+    connect(playNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_, &QComboBox::setCurrentIndex);
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
@@ -328,6 +339,8 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
                 .arg(perSide).arg(rows).arg(columns));
         return;
     }
+    placementPolicy_.reset(AbsGame::makeSeed(0));  // a different opening per new board
+    randomPlies_.clear();
     try {
         game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide);
     } catch (const std::exception& ex) {
@@ -433,6 +446,29 @@ AbsGame::Game* MainWindow::currentGame() {
     return game_.get();
 }
 
+// Opening variety for auto-play: the placement phase alternates between one random
+// placement and a run of searched ones (see Latrunculi::PlacementPolicy). Returning true
+// hands the move straight to startPlay, skipping the search for this ply only. Movement
+// plies always fall through and are searched.
+bool MainWindow::autoPlayMoveOverride(AbsGame::MoveId& mv) {
+    if (!game_ || game_->phase() != Latrunculi::Phase::Placement) {
+        return false;
+    }
+    if (!placementPolicy_.nextIsRandom(game_->currentPlayer())) {
+        return false;
+    }
+    const std::vector<AbsGame::MoveId> moves = game_->getLegalMoves();
+    if (moves.empty()) {
+        return false;  // no legal placement; let the normal path surface it
+    }
+    mv = placementPolicy_.pickRandomPlacement(*game_, moves);
+    // Record the ply this will become (Move::turn is 1-based) so the move list can tag
+    // it. The caller applies `mv` immediately, and it came from getLegalMoves, so the
+    // entry cannot go stale.
+    randomPlies_.insert(static_cast<int>(game_->history().size()) + 1);
+    return true;
+}
+
 void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
     if (!game_ || game_->isTerminal() || !game_->isLegalMove(mv)) {
         return;
@@ -445,8 +481,9 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = playDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
     startPlay(p, playTurnsSpin_->value());
 }
 
@@ -462,8 +499,9 @@ void MainWindow::onSuggestNegamaxGo() {
         return;
     }
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = suggestDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
     search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
         if (mv < 0) {
             suggestedLog_->setText("(no move)");
@@ -631,7 +669,11 @@ void MainWindow::rebuildMoveList() {
     QStringList rows;
     rows.reserve(static_cast<int>(timeline_.size()) + 1);
     for (const Latrunculi::Move& m : timeline_) {
-        rows << moveDescription(m);
+        // Tag the placements the opening policy chose at random rather than searched,
+        // matching the self-play move log. Provenance is GUI-side only and is not
+        // saved, so a loaded game shows no tags.
+        const bool wasRandom = randomPlies_.count(m.turn) > 0;
+        rows << (wasRandom ? moveDescription(m) + "  [random]" : moveDescription(m));
     }
     // A final, non-ply row announcing the result. Playback stays correct: gotoPly
     // clamps to the move count and setCurrentPly never highlights this extra row.

@@ -2,6 +2,8 @@
 
 #include "Game.h"
 
+#include "Eval.h"
+
 #include <algorithm>
 #include <cstddef>
 #include <numeric>
@@ -12,27 +14,8 @@ namespace Latrunculi {
 
 namespace {
 
-// Cell <-> player helpers. playerOf returns -1 for Empty.
-int playerOf(Cell c) {
-    switch (c) {
-        case Cell::P0Free:
-        case Cell::P0Bound:
-            return 0;
-        case Cell::P1Free:
-        case Cell::P1Bound:
-            return 1;
-        default:
-            return -1;
-    }
-}
-
-Cell freeCell(int player) {
-    return (player == 0) ? Cell::P0Free : Cell::P1Free;
-}
-
-Cell boundCell(int player) {
-    return (player == 0) ? Cell::P0Bound : Cell::P1Bound;
-}
+// playerOf / freeCell / boundCell now live in Eval.h so Eval.cpp shares them rather
+// than keeping a second copy.
 
 // The material-balance score s = 3M / (3M + 2N) for a side with M discs facing an
 // opponent with N (weights kMaterialSelfWeight/kMaterialOppWeight from Game.h, kWinBase
@@ -67,6 +50,16 @@ double materialScore(double M, double N) {
 //       https://arxiv.org/pdf/1406.0486
 constexpr double kRolloutEpsilon  = 0.3;
 constexpr int    kRolloutSampleCap = 12;
+
+// Move-ordering weights for the alpha-beta searcher (see Game::moveOrderScore and
+// AbsGame::Game::moveOrderScore). Alpha-beta prunes in proportion to how early the
+// strongest move is tried, and in this rule set the strongest moves are the ones that
+// take material. A removal deletes an enemy disc permanently; a custodial capture only
+// binds one, and the opponent may free it again by pinning a flanker, so a removal is
+// weighted higher. Quiet moves score 0 and keep their enumeration order.
+constexpr int kOrderDecisive = 10000;  // reduces the opponent to a single disc: a win
+constexpr int kOrderRemoval  = 10;     // per enemy disc permanently removed
+constexpr int kOrderBind     = 5;      // per enemy Free disc newly immobilised
 
 }  // namespace
 
@@ -672,38 +665,27 @@ double Game::staticEval() const {
         return (winner_ == me) ? terminal : -terminal;
     }
 
-    // Unified leaf evaluation: a "pressure" score per side, for every non-terminal
-    // position in both phases. A side wins as its opponent's reach M (squares the
-    // opponent could step to) or material D heads to zero. The product M*D vanishes iff
-    // EITHER factor does, so 1 - M*D/(Mmax*Dmax) rises to 1 near a win and is insensitive
-    // to whichever axis is already far from winning. The score is pressure(opp) -
-    // pressure(me), from the mover's perspective. D is effectiveMaterial (discounted
-    // Bound + komi) minus 1, so komi tilts an even count toward player 1, and Dmax =
-    // (perSide_ - 1) + komi is > 0 for any perSide_ >= 1 -- no divide-by-zero, no
-    // degenerate special case. Mmax/Dmax are shared positive scales that keep the leaf
-    // range well inside the kWinBase terminal band. In the placement phase reachCount is
-    // 0, so the score is 0: placement makes no captures, so material there reflects only
-    // turn order, not advantage.
-    const double Dmax = (perSide_ - 1) + komi;
-    const double Mmax = squares_;
-    auto pressure = [&](int b) {                       // my score when pressuring side b
-        const double M = reachCount(b);                // squares b's discs can reach
-        const double D = effectiveMaterial(b) - 1.0;   // b's material minus the loss line
-        return 1.0 - (M * D) / (Mmax * Dmax);
-    };
-    return pressure(opp) - pressure(me);
-}
-
-// See the header: reach M of staticEval, double-counting intentional. We flip the
-// side to move on a throwaway copy because enumerateLegalMoves() only ever speaks
-// for current_; reach is a property of the position, not of whose turn it is.
-int Game::reachCount(int player) const {
-    if (phase_ != Phase::Movement) {
-        return 0;
-    }
-    Game probe(*this);
-    probe.current_ = player;
-    return static_cast<int>(probe.enumerateLegalMoves().size());
+    // Leaf evaluation in "disc units" (1.0 == one Free disc), from the mover's
+    // perspective: material plus positional terms, each taken as the difference between
+    // the two sides. See Eval.h for what the positional terms are and why the previous
+    // mobility-times-material score had to go -- it rewarded dispersal and so paid both
+    // sides to avoid the contact a custodial capture needs.
+    //
+    // Every term is a me-minus-opponent difference, so the score is antisymmetric. That
+    // matters: negamax negates the child score, and a term both sides valued positively
+    // (raw contact, say) would make the search incoherent rather than merely aggressive.
+    //
+    // Both phases use the same formula. In placement the material difference is uniform
+    // across every move available at a given ply -- it tracks only who has placed more --
+    // so it shifts the score without affecting the choice between siblings, while the
+    // positional terms do the discriminating. Realistic magnitudes stay well under 50,
+    // far inside the kWinBase (1000+) band a decisive terminal occupies, so positional
+    // compensation can never outweigh a real win.
+    const double material = effectiveMaterial(me) - effectiveMaterial(opp);
+    const double positional =
+        positionalScore(positionalTerms(board_, rows_, columns_, me)) -
+        positionalScore(positionalTerms(board_, rows_, columns_, opp));
+    return material + positional;
 }
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
@@ -754,6 +736,59 @@ AbsGame::MoveId Game::chooseRolloutMove(const std::vector<AbsGame::MoveId>& lega
         }
     }
     return (capturing >= 0) ? capturing : legal[pick(rng)];
+}
+
+// Capture-first move ordering for negamax (see the kOrder* weights above). Scores the
+// material the move takes from the opponent: resolve the move on a scratch board and
+// compare the opponent's disc counts before and after.
+int Game::moveOrderScore(AbsGame::MoveId mv) const {
+    // Placement can never capture, so there is nothing to order on; every placement
+    // scores 0 and the searcher's stable sort leaves enumeration order untouched.
+    if (phase_ != Phase::Movement) {
+        return 0;
+    }
+
+    const int me = current_;
+    const int opp = 1 - me;
+
+    int freeBefore = 0;
+    int boundBefore = 0;
+    for (Cell c : board_) {
+        if (c == freeCell(opp)) {
+            ++freeBefore;
+        } else if (c == boundCell(opp)) {
+            ++boundBefore;
+        }
+    }
+
+    int rem = -1;
+    int from = -1;
+    int to = -1;
+    decodeMovement(mv, rem, from, to);
+    std::vector<Cell> b = board_;
+    applyRemoveMoveCapturesTo(b, rem, from, to, me);
+
+    int freeAfter = 0;
+    int boundAfter = 0;
+    for (Cell c : b) {
+        if (c == freeCell(opp)) {
+            ++freeAfter;
+        } else if (c == boundCell(opp)) {
+            ++boundAfter;
+        }
+    }
+
+    if (freeAfter + boundAfter <= 1) {
+        return kOrderDecisive;  // win by reduction: search this first, always
+    }
+
+    // Only a Bound disc can be removed, so a drop in the opponent's total is a removal.
+    // A drop in their Free count beyond that is a disc newly bound by this move. Freeing
+    // one of their captives (by pinning a flanker of mine) makes newlyBound negative, so
+    // the move sorts behind the quiet ones -- which is correct, it hands material back.
+    const int removed = (freeBefore + boundBefore) - (freeAfter + boundAfter);
+    const int newlyBound = freeBefore - freeAfter;
+    return removed * kOrderRemoval + newlyBound * kOrderBind;
 }
 
 }  // namespace Latrunculi
