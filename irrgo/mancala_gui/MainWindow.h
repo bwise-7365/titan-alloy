@@ -48,15 +48,16 @@ private:
     QTextEdit*     suggestedLog_;
     QPushButton*   clearSuggestBtn_;
 
-    // Play menu controls
+    // Play menu controls. NegaMax runs iterative deepening bounded by a wall clock, so it
+    // is budgeted by time like MCTS and its control is a time combo, not a depth spinbox.
     QAction*  manualAction_      = nullptr;
-    QSpinBox* playDepthSpin_     = nullptr;
+    QComboBox* playNegamaxSecCombo_ = nullptr;
     QComboBox* playMctsSecCombo_ = nullptr;
     QSpinBox*  playTurnsSpin_    = nullptr;
     QSpinBox*  playMctsTurnsSpin_ = nullptr;
 
     // Suggest menu controls
-    QSpinBox*  suggestDepthSpin_     = nullptr;
+    QComboBox* suggestNegamaxSecCombo_ = nullptr;
     QComboBox* suggestMctsSecCombo_  = nullptr;
 
     // Game state

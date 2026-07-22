@@ -164,7 +164,14 @@ int main(int argc, char** argv) {
     while (!game.isTerminal()) {
         const std::vector<AbsGame::MoveId> moves = game.getLegalMoves();
         if (moves.empty()) {
-            break;  // guard; isTerminal() should already be true
+            // The engine ends any position with no legal move (Game::
+            // checkImmobilizationTerminal, both phases), so isTerminal() must already
+            // have been true and the loop must not have reached here. Reaching it means
+            // the engine disagrees with itself; say so rather than breaking out and
+            // reporting whatever the score happens to be.
+            std::cerr << "error: no legal moves at ply " << game.history().size() + 1
+                      << " but the game is not terminal\n";
+            return 1;
         }
 
         if (game.phase() == Phase::Movement && !announcedMovement) {
@@ -220,8 +227,12 @@ int main(int argc, char** argv) {
                   << game.freeDiscs(w) << " free, " << game.boundDiscs(w) << " bound) vs "
                   << game.totalDiscs(l) << " for " << loser << ".\n";
     } else {
-        std::cout << "Draw: A " << game.totalDiscs(0) << " discs vs B "
-                  << game.totalDiscs(1) << ".\n";
+        // Komi makes an exact material tie impossible and every terminal names a winner,
+        // so this branch is unreachable. It used to print "Draw", which invented a result
+        // the rules do not contain and hid a real engine fault behind it.
+        std::cerr << "error: the game loop ended with a game that is not over (A "
+                  << game.totalDiscs(0) << " discs vs B " << game.totalDiscs(1) << ")\n";
+        return 1;
     }
     std::cout << "Total plies: " << game.history().size()
               << " (movement plies: " << movementPlies << ").\n";

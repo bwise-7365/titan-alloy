@@ -60,6 +60,10 @@ static const struct { QColor color; const char* label; } kBgColors[] = {
 static const int kMaxEdges[]       = { 3, 4, 5, 6 };
 static constexpr int kDefaultMaxEdgesIdx = 1; // value 4
 
+// Iterative-deepening ceiling for NegaMax. The clock is what actually stops the search;
+// this only has to be past any depth the budget could reach, so it never binds.
+static constexpr int kMaxNegamaxDepth = 64;
+
 static const guicommon::MctsOption kMctsOptions[] = {
     {  10, "10 sec"   },
     {  30, "30 sec"   },
@@ -306,9 +310,13 @@ void MainWindow::buildMenuBar() {
     playGroup->addAction(manualAction_);
 
     {
-        guicommon::NegaMaxMenuConfig nm;  // defaults: depth 1-6/2, turns 1-50/2
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, playMenu, playGroup, nm,
-                                                  playDepthSpin_, playTurnsSpin_);
+        // Same time choices as MCTS: both are wall-clock budgets now, and offering two
+        // different scales for the same quantity would only invite confusion.
+        guicommon::TimeMenuConfig nm;  // defaults: turns 1-999/10
+        nm.options     = kMctsOptions;
+        nm.optionCount = std::size(kMctsOptions);
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
 
@@ -327,10 +335,12 @@ void MainWindow::buildMenuBar() {
     suggestGroup->setExclusive(true);
 
     {
-        guicommon::NegaMaxMenuConfig nm;
-        nm.withTurns = false;
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, suggestMenu, suggestGroup, nm,
-                                                  suggestDepthSpin_, suggestTurnsSpin_);
+        guicommon::TimeMenuConfig nm;
+        nm.options     = kMctsOptions;
+        nm.optionCount = std::size(kMctsOptions);
+        nm.withTurns   = false;
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, suggestTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestGo);
     }
 
@@ -346,11 +356,11 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
-    // Keep Play and Suggest depth spinboxes in sync
-    connect(playDepthSpin_,    &QSpinBox::valueChanged,
-            suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged,
-            playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the Play and Suggest NegaMax time combos in sync
+    connect(playNegamaxSecCombo_,    &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_,    &QComboBox::setCurrentIndex);
 
     // ── Random ────────────────────────────────────────────────────────────────
     auto* randomMenu = menuBar()->addMenu("Random");
@@ -574,8 +584,11 @@ void MainWindow::onSuggestGo() {
     int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
 
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = suggestDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
+    // The clock bounds this search, so the search bar shows the elapsed fraction.
+    p.negamaxTimeBudgeted = true;
     search().launch(game_->clone(), p, [this, isBlack, turn](AbsGame::MoveId mv, unsigned) {
         QString text;
         if (mv == AbsGame::kPass) {
@@ -634,8 +647,10 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = playDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;  // as in onSuggestGo: the clock bounds this search
     startPlay(p, playTurnsSpin_->value());
 }
 

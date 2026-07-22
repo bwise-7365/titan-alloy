@@ -54,6 +54,29 @@ enum class MoveStyle : std::uint8_t { StepLeap, Slide };
 // The rule set a game uses when its constructor is not told otherwise.
 inline constexpr MoveStyle kDefaultMoveStyle = MoveStyle::Slide;
 
+// How decisively the winner won, as a number in [0, 1] scaling the terminal score.
+//
+//   Gradient     — the original s = 3M/(3M+2N) for a winner holding M against N. CONCAVE
+//                  in the lead and floored at 0.6 when M == N, so a bare win already
+//                  collects most of what a rout collects.
+//   ConvexMargin — s = ((M-N)/(M+N))^kMarginExponent. Convex: the marginal value of
+//                  taking one more disc RISES with the lead instead of falling.
+//
+// Why this is selectable rather than simply replaced: the Gradient payoff made stalling
+// the leader's optimal policy, provably — a quiet-game win at 10 free against 9 scored
+// 0.612 against 0.950 for annihilation, a ratio of 1.55 for a win that is close to
+// certain once one disc ahead. Self-play bore that out: 20 of 20 step/leap games ended on
+// the quiet-game limit (doc/bench/, 2026-07-22). Keeping both means the change can be
+// measured against what it replaced instead of asserted. Analysis recommendation 5(c).
+enum class PayoffStyle : std::uint8_t { Gradient, ConvexMargin };
+
+inline constexpr PayoffStyle kDefaultPayoffStyle = PayoffStyle::ConvexMargin;
+
+// Convexity of ConvexMargin. 1.0 is linear in the disc margin; above 1 the reward for
+// pressing an advantage grows faster than the advantage does. At 2.0 the two games above
+// score 0.003 and 0.766 — a ratio of 291 rather than 1.55.
+inline constexpr double kMarginExponent = 2.0;
+
 // How a finished game ended (None while the game is still in progress). Reduction =
 // the loser was cut to a single disc; Immobilization = the side to move had no legal
 // move; QuietGame = the Pacific no-capture limit was reached and the winner was
@@ -65,10 +88,25 @@ enum class WinReason { None, Reduction, Immobilization, QuietGame };
 // of a full piece, so immobilising an opponent is rewarded as partial progress.
 inline constexpr double immobilizationDiscount = 0.375;
 
-// Half-point komi credited to player 1 (the second player) in every disc-count
-// evaluation, compensating for the first-move disadvantage. Used uniformly, an even
-// disc count resolves in player 1's favour and integer-count ties never draw.
-inline constexpr double komi = 0.5;
+// Komi credited to player 1 (the second player) in every disc-count evaluation,
+// compensating for the first-move disadvantage. It must not be a whole number: disc
+// counts are integers, so an integral komi would let the two sides tie exactly, and this
+// engine has no draw to report the tie with.
+//
+// 1.5 rather than the original 0.5 as of 2026-07-22, from measurement rather than taste:
+// across four 50-game batches the quiet-game tiebreak at 0.5 favoured player 0, and 1.5
+// is the value that brings it closest to even in every rule set tested (see
+// doc/bench/README.md). Note that this corrects only the quiet-game tiebreak. The larger
+// first-player advantage lives in games decided by reduction, which komi cannot reach at
+// all, and raising komi far enough to mask that would unbalance the half of the game komi
+// actually governs.
+inline constexpr double kDefaultKomi = 1.5;
+
+// Throws std::invalid_argument unless `komi` is positive and not a whole number. The Game
+// constructors call this; it is public so a caller parsing user input can reject a bad
+// value at the point of entry rather than letting it surface from inside a constructor
+// later. One definition of the rule, used by both.
+void validateKomi(double komi);
 
 // Quiet-game ("Pacific") termination: if the movement phase runs this many consecutive
 // plies with no capture and no captive removal, the game ends and is decided on
@@ -81,10 +119,13 @@ inline constexpr int kDefaultColumns = 10;
 inline constexpr int kDefaultPerSide = 20;
 
 // Search scoring. A decisive terminal is scaled by kWinBase so a real win/loss
-// dominates the heuristic (non-terminal) leaf range. The winner's gradient score is
-// s = (kMaterialSelfWeight*M) / (kMaterialSelfWeight*M + kMaterialOppWeight*N) for a
-// side with material M facing an opponent with N.
+// dominates the heuristic (non-terminal) leaf range: the terminal score is
+// kWinBase * (1 + s), where s in [0, 1] is the decisiveness given by PayoffStyle. Any
+// win therefore beats any loss whatever s is, which is what keeps a low-margin win from
+// ever being preferred to a high-margin one of the opposite sign.
 inline constexpr double kWinBase = 1000.0;
+// Weights of the Gradient payoff only: s = (kMaterialSelfWeight*M) /
+// (kMaterialSelfWeight*M + kMaterialOppWeight*N). Unused by ConvexMargin.
 inline constexpr double kMaterialSelfWeight = 3.0;
 inline constexpr double kMaterialOppWeight = 2.0;
 
@@ -106,7 +147,9 @@ public:
     // Empty board; both sides place `perSide` discs (placement phase) before
     // movement begins. Requires rows,columns >= 1 and 2*perSide <= rows*columns.
     Game(int rows = kDefaultRows, int columns = kDefaultColumns, int perSide = kDefaultPerSide,
-         MoveStyle style = kDefaultMoveStyle);
+         MoveStyle style = kDefaultMoveStyle,
+         PayoffStyle payoff = kDefaultPayoffStyle,
+         double komi = kDefaultKomi);
     Game(const Game&) = default;
 
     // Reconstruct an arbitrary mid-game position (used by the GUI's Load). `board`
@@ -119,7 +162,9 @@ public:
          Phase phase, int current, int placed0, int placed1,
          std::vector<Move> history = {},
          std::unordered_set<std::uint64_t> seen = {},
-         MoveStyle style = kDefaultMoveStyle);
+         MoveStyle style = kDefaultMoveStyle,
+         PayoffStyle payoff = kDefaultPayoffStyle,
+         double komi = kDefaultKomi);
 
     // ── AbsGame::Game overrides ──────────────────────────────────────────────
     int currentPlayer() const override { return current_; }
@@ -145,14 +190,16 @@ public:
     int squareCount() const { return squares_; }
     Phase phase() const { return phase_; }
     MoveStyle moveStyle() const { return moveStyle_; }
+    PayoffStyle payoffStyle() const { return payoffStyle_; }
+    double komi() const { return komi_; }
     Cell cellAt(int square) const { return board_[static_cast<std::size_t>(square)]; }
     int ownerAt(int square) const;  // -1 if empty, else the owning player (0 or 1)
     int perSide() const { return perSide_; }
     bool isOver() const { return gameOver_; }
     int winner() const { return winner_; }  // valid only when isOver()
     WinReason winReason() const { return winReason_; }  // how it ended; valid when isOver()
-    // The winner's terminal score s = 3M/(3M+2N) (the loser scores -s). Valid only
-    // when isOver() with a winner; throws otherwise.
+    // The winner's decisiveness s in [0, 1], per this game's PayoffStyle (the loser
+    // scores -s). Valid only when isOver() with a winner; throws otherwise.
     double winnerScore() const;
     int totalDiscs(int player) const;
     int freeDiscs(int player) const;
@@ -172,6 +219,8 @@ private:
     int perSide_;
     int squares_;
     MoveStyle moveStyle_ = kDefaultMoveStyle;
+    PayoffStyle payoffStyle_ = kDefaultPayoffStyle;
+    double komi_ = kDefaultKomi;
     std::vector<Cell> board_;
     int current_ = 0;
     Phase phase_ = Phase::Placement;
@@ -185,6 +234,10 @@ private:
     // that would recreate one is illegal. The board only (not the side to move) is
     // hashed, per the rule "it does not matter whose turn it is".
     std::unordered_set<std::uint64_t> seenPositions_;
+    // Zobrist hash of board_, maintained incrementally by every mutation. Seeded from
+    // hashBoard() in the constructors, and copied by the compiler-generated copy
+    // constructor that clone() uses, so a search line inherits a correct hash.
+    std::uint64_t hash_ = 0;
     // A shuffled permutation of 0..squares-1, fixed once per game (copied by
     // clone()). Move generation scans squares in this order so the engine does not
     // favour the top-left when several moves are equally good.
@@ -201,11 +254,19 @@ private:
     // (flanked left/right or top/bottom, or corner-trapped). Mirrors the renderer's
     // is_immobilized rule: an already-Bound flanker does not pin.
     bool pinnedOn(const std::vector<Cell>& b, int pos, int byPlayer) const;
+    // Writes cell `c` to `square` of `b`. When `hash` is non-null it is updated in place
+    // by XORing out the old cell's Zobrist key and XORing in the new one, which is what
+    // makes a candidate move's position hash O(1) instead of O(squares). Callers that do
+    // not need a hash pass nullptr.
+    void setCell(std::vector<Cell>& b, int square, Cell c, std::uint64_t* hash) const;
     // Moves the disc from->to on board b and resolves the captures it triggers (no
-    // removal). applyRemoveMoveCapturesTo prepends an optional captive removal.
-    void moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const;
+    // removal). applyRemoveMoveCapturesTo prepends an optional captive removal. Both
+    // thread `hash` through setCell; pass nullptr when the resulting hash is not wanted.
+    void moveAndCapture(std::vector<Cell>& b, int from, int to, int me,
+                        std::uint64_t* hash = nullptr) const;
     void applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
-                                   int from, int to, int me) const;
+                                   int from, int to, int me,
+                                   std::uint64_t* hash = nullptr) const;
     // Empty squares reachable from `from` on board b, under whichever MoveStyle this
     // game plays: for StepLeap, orthogonal single steps plus own-color multi-leaps; for
     // Slide, every empty square along the four rays out of `from`. The two are
@@ -216,12 +277,18 @@ private:
     // Rook rays out of `from`: walk each orthogonal direction while the squares are
     // empty and stop at the first occupied one (of either colour) or the board edge.
     void collectSlides(const std::vector<Cell>& b, int from, std::vector<bool>& reach) const;
-    // FNV-1a hash of the board arrangement (occupancy + bound flags), for super-ko.
+    // Zobrist hash of the board arrangement (occupancy + bound flags), for super-ko.
+    // Full recomputation, O(squares): used to seed hash_ in the constructors. Everywhere
+    // else the hash is maintained incrementally through setCell.
     std::uint64_t hashBoard(const std::vector<Cell>& b) const;
     // True if moving from->to on the post-removal board `b` is legal: it neither
     // self-captures (the moved disc pinned by surviving enemy Free discs) nor
-    // recreates a previously-seen position (super-ko).
-    bool moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me) const;
+    // recreates a previously-seen position (super-ko). `baseHash` must be the Zobrist
+    // hash of `b`, so the resulting position's hash follows from the move alone.
+    // `scratch` is a caller-owned working board; it is overwritten, and passing the same
+    // one across a loop keeps its allocation instead of reallocating per candidate.
+    bool moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me,
+                       std::uint64_t baseHash, std::vector<Cell>& scratch) const;
     // A representative path {from, landings..., to} for the move log.
     std::vector<int> movePath(const std::vector<Cell>& b, int from, int to, int me) const;
     bool findLeapPath(const std::vector<Cell>& b, int pos, int to,
@@ -237,6 +304,9 @@ private:
     // score and the leaf evaluation in staticEval.
     double effectiveMaterial(int player) const;
     void recordMove(int from, int to, int removed, const std::vector<int>& path = {});
+    // Ends the game if the side to move has no legal move at all. Applies in BOTH
+    // phases: a player with no legal placement is stuck for the same reason a player
+    // with no legal movement is, and loses for the same reason.
     void checkImmobilizationTerminal();
     void initScanOrder();  // fill scanOrder_ with a fresh shuffle (per-game)
 };

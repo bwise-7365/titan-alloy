@@ -48,10 +48,13 @@ inline Cell boundCell(int player) {
 // Positional features of one side, counted over a board arrangement. All four are
 // defined in both phases, so the evaluation no longer goes blind during placement.
 struct PositionalTerms {
-    // Enemy Free discs this side half-pins: this side holds one end of an orthogonal
-    // axis through the enemy disc with a Free disc, and the square at the other end is
-    // on the board and empty. One move into that square completes the custodial capture,
-    // so a threat is material that is one tempo away.
+    // Enemy Free discs this side threatens: this side holds one end of an orthogonal axis
+    // through the enemy disc with a Free disc, the square at the other end is on the board
+    // and empty, AND this side has a Free disc that can move onto that square under the
+    // game's MoveStyle. The last condition is what makes the count mean something -- a
+    // half-pin whose completing square no disc can reach is not a threat, and counting it
+    // mispriced every position where that square was walled off. See canOccupy() in
+    // Eval.cpp for what the reachability test does and does not check.
     int threats = 0;
     // Orthogonally adjacent pairs of this side's own Free discs, each counted once. A
     // pair is half of a pincer and a launch platform for a leap, and it is the smallest

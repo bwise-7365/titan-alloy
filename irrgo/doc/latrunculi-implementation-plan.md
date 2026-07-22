@@ -124,8 +124,9 @@ fidelity to the Seneca variant, or (b) adopt the Locus Ludi **Piso** variant ins
 moot. Do not do half of each.
 
 ### Stage 4 — Super-ko [DONE] + draw counter [DONE]
-Super-ko DONE: hashBoard (FNV-1a over the Cell bytes) of every end-of-turn board is recorded in
-seenPositions_; moveIsLegalOn rejects any move whose resulting board repeats a seen position
+Super-ko DONE: the Zobrist hash of every end-of-turn board is recorded in
+seenPositions_ (FNV-1a over the Cell bytes until 2026-07-22; see Stage 8);
+moveIsLegalOn rejects any move whose resulting board repeats a seen position
 (occupancy + bound flags; whose-turn irrelevant; leap intermediates aren't hashed since only the
 final board is). clone() copies the set so each search line respects it. Cyclic games now
 terminate -- a player whose only moves all repeat a position is immobilised -> loss.
@@ -199,7 +200,13 @@ DONE:
   `MctsOption`/`MctsMenuConfig` are now aliases of `TimeOption`/`TimeMenuConfig` so irrgo and
   mancala compile untouched. `kMaxNegamaxDepth` = 64 is only the ID ceiling.
 
-DEFERRED (MCTS). Do these IN THIS ORDER; the first is a prerequisite for the rest:
+DEFERRED (MCTS). SUPERSEDED 2026-07-22 by `doc/2026-07-22-latrunculi-mcts-assessment.md`,
+which revises this ordering (truncated rollouts move much earlier, because the Pacific rule
+makes a full playout a slow re-derivation of current material) and records Ben's decision that
+MCTS work is not worthwhile now. Read that document instead of the list below; the list is kept
+only because the reasoning for items 1 and 3 is still accurate.
+
+Do these IN THIS ORDER; the first is a prerequisite for the rest:
 1. Normalise rewards to [-1, 1] before backup. Alpha-beta is scale-invariant, UCT is not:
    non-terminal leaf values are ~0.05-0.1 against a UCB1 exploration term of 0.37-3.72, so UCT
    selection is currently uniform random; when a rollout does terminate the reward jumps to ~1600
@@ -260,23 +267,104 @@ replaying a slide game under the step rules would reject its own move list. The 
 StepLeap game, which is a fact about the format's history rather than a fallback, and an
 unrecognised value is refused rather than guessed at.
 
-NOT YET MEASURED. Open questions this raises:
-- Branching factor roughly triples on 8x8 (from ~4-9 destinations per disc to up to 14), and
-  `enumerateLegalMoves` copies the board and runs a full FNV hash per candidate. Iterative
-  deepening degrades gracefully — it just reaches a shallower depth — but the per-node cost noted
-  in Stage 2 ("optimise before heavy MCTS") is now the binding constraint, not a future one.
-- `PositionalTerms::openNeighbours` counts empty ORTHOGONAL NEIGHBOURS as a mobility proxy. Under
-  a slide that is no longer even approximately mobility: a disc with one open neighbour may still
-  reach seven squares. Either make the proxy style-aware or drop the term. See also the pair-term
-  problem below, which is what produced the blobs in the first place.
+NOT YET MEASURED. Three things followed from it, all resolved the same day:
+- Branching roughly triples, and `enumerateLegalMoves` copied the board and ran a full FNV hash per
+  candidate. The per-node cost noted in Stage 2 ("optimise before heavy MCTS") became the binding
+  constraint. Addressed in Stage 8.
+- `PositionalTerms::openNeighbours` counted empty ORTHOGONAL NEIGHBOURS as a mobility proxy, which
+  under a slide is not even approximately mobility. Made style-aware the same day (`mobilityProxy`
+  / `slideDestinations` in Eval.cpp): under Slide it counts ray destinations, i.e. the real move
+  count. That multiplied the term's scale by roughly 3 with `kMobilityWeight` unchanged at 0.02.
 - `kPairWeight` pays for EVERY adjacency between own discs, so the bonus grows quadratically with
   clumping while the mobility penalty grows only linearly. The blob was the eval's stated optimum,
-  not a search artifact. DONE 2026-07-22: lowered 0.10 -> 0.02, which flips the 3x3-block
-  comparison from +1.20 vs +0.24 to +0.24 vs +0.72. This is independent of the slide (the first
-  slide run produced MORE blobs, not fewer) and only rebalances the weights -- the term's shape is
-  still farmable. If 0.02 is not enough, the next moves, one at a time, are: raise
-  `kMobilityWeight` 0.02 -> 0.05; make `pairs` saturate at one pair per disc; or count only pairs
-  aimed at an enemy disc, which is what the header already claims the term measures.
+  not a search artifact. Lowered 0.10 -> 0.02, flipping the 3x3-block comparison from +1.20 vs
+  +0.24 to +0.24 vs +0.72. The term's SHAPE is still farmable; only its magnitude changed.
+
+RESULT: with the slide, `kPairWeight` = 0.02 and the style-aware mobility term all in place, the
+blobbing stopped and Ben's verdict was "far better". The three cannot be attributed individually —
+the slide ALONE made blobbing worse, so the eval was the dominant term and the combination is what
+worked. If any one is reverted, expect the other two to behave differently.
+
+### Stage 8 — Correctness and cost  [2026-07-22; DONE, UNMEASURED]
+Three contained fixes taken before starting any measurement programme, on the principle that
+anything which changes how the engine plays has to land before a baseline is established.
+
+- **Placement dead end.** `checkImmobilizationTerminal` returned early unless
+  `phase_ == Movement`, so a placement position with no legal placement was not terminal, returned
+  an empty move list, and the self-play driver broke out of its loop and printed "Draw" — a result
+  no rule in this game produces. The phase restriction is gone: a player who cannot place is stuck
+  in exactly the sense the immobilisation rule describes and loses the same way. The state-
+  injecting constructor now runs the check in both phases too (reduction stays movement-only,
+  since a side legitimately holds one disc or none during placement). The driver's two silent
+  paths — the empty-move-list `break` and the trailing "Draw" branch — are now diagnostics on
+  stderr with a non-zero exit. NOTE: treating "cannot place" as a loss is a rules reading, not
+  something the MD source states; it is the minimal one consistent with the engine's existing
+  immobilisation rule, but it is worth confirming.
+- **Incremental Zobrist hashing.** Super-ko used a full FNV-1a pass over every cell, run once per
+  candidate move — O(squares) per candidate, against a candidate count the slide had just tripled.
+  Now a fixed-seed Zobrist key table (one key per square x cell state, Empty included) with the
+  hash carried on the game as `hash_` and updated through a new `setCell(b, square, c, hash)`
+  helper that XORs the old key out and the new one in. `moveAndCapture` and
+  `applyRemoveMoveCapturesTo` thread an optional `std::uint64_t*`; callers that do not want a hash
+  (`moveOrderScore`, `chooseRolloutMove`) pass nullptr and are unchanged. `moveIsLegalOn` takes
+  the base hash and a caller-owned scratch board, so enumeration reuses one allocation instead of
+  making one per candidate. The key table is capped at 256 squares and a larger board is refused
+  rather than silently wrapping. `hashBoard` survives as the O(squares) seed used by the
+  constructors. Hash values are not serialised, so no save-format impact.
+- **Threats are now valued, not just counted.** `PositionalTerms::threats` paid `kThreatWeight`
+  for every enemy disc with a flanker on one side and an empty square on the other, whether or not
+  anything could actually move into that square. A half-pin nobody can complete is worth nothing,
+  and the search paid for it and then discovered the truth a ply later at full cost. `canOccupy()`
+  in Eval.cpp now requires a Free disc of the right colour with a clear line to the completing
+  square, under the game's MoveStyle. It does NOT check self-capture or super-ko — both need game
+  state Eval deliberately does not hold, and both err toward over-counting, the same direction the
+  term already errs by ignoring leap chains. The flanker needs no excluding: the axis reads
+  [flanker][target][empty], so a ray cast back from the empty square hits the target first.
+
+All three change how the engine plays, so the Stage 7 games are not comparable with what follows.
+
+### Stage 9 — Instrumented batch self-play  [2026-07-22; DONE]
+The measurement programme §1 of `doc/2026-07-22-latrunculi-further-improvements.md` asks for.
+Until this existed, every claim about whether a change made the game better was a viewing.
+
+- `latrunculi_game/GameStats.{h,cpp}` — pure metrics over a FINISHED game, computed by replaying
+  its move history on a fresh board, so nothing is smeared through the play loop. Duration
+  (plies, split by phase), activity (captures, removals, last active ply, longest quiet run),
+  decisiveness (winner, WinReason, final free-disc margin) and drama (lead changes, peak margin).
+  Metric choice follows Browne's thesis and the DLP's own comparison method. `analyseGame` throws
+  on an unfinished game or a history that will not replay rather than returning partial numbers.
+- `latrunculi_game/bench.cpp` -> target `latrunculi_bench`. Batch driver, deliberately Qt-free and
+  with no per-ply PNG rendering (which would dominate the wall clock). Args are positional:
+  `games msPerMove seed style rows columns perSide`; game g uses seed base+g so any row of the
+  table can be reproduced alone. A malformed argument is an error, not something to default from.
+- `latrunculi_selfplay` is unchanged and remains the single-game visual driver.
+
+Both are in `latrunculi_lib` / the same CMakeLists. Build with `--target latrunculi_bench`.
+
+### Stage 10 — Convex capture payoff  [2026-07-22; DONE and MEASURED]
+Analysis recommendation 5(c), added as a selectable `PayoffStyle { Gradient, ConvexMargin }`
+on `Game` (default ConvexMargin) so the old reward stays reproducible and the change could be
+measured rather than asserted. `Gradient` is the original s = 3M/(3M+2N); `ConvexMargin` is
+s = ((M-N)/(M+N))^kMarginExponent with the exponent at 2.0. The margin floors at zero because
+an immobilisation win can be held by the side with LESS material, and at an even exponent a
+negative margin would otherwise come back positive and pay a bonus for losing on material.
+
+MEASURED over a 2x2 (movement rule x payoff), 50 games per cell, same 50 seeds in every cell,
+1000 ms/ply, 8x10x20. Full table and caveats in `doc/bench/README.md`. Findings:
+
+- **The movement rule is the whole difference.** Step/leap under EITHER payoff: 0 decisive
+  finishes in 100 games, dead tail exactly pacificMoveLimit every time. Slide: 42-52% decisive.
+- **The payoff multiplies the slide rather than substituting for it.** With the slide held
+  fixed, convex takes decisive finishes 42% -> 52%, dead tail 23.2 -> 18.4 plies, final margin
+  3.6 -> 4.9. With step/leap held fixed it moves the final margin 1.8 -> 2.2 and nothing else:
+  the incentive landed but there was no move available to act on it.
+- **Komi 0.5 is undersized**, unrelated to any change made today. Player A wins above chance in
+  all four cells (34, 36, 42, 35 of 50) and did in the 300 ms runs too. Now a measurable
+  question -- see `doc/2026-07-22-latrunculi-further-improvements.md`.
+
+NOT plumbed into the GUI: `PayoffStyle` has no Board-menu control and is not in the save format,
+unlike `MoveStyle`. It affects scoring only, never legality, so a loaded game still replays
+correctly; but the GUI silently uses the default. Worth closing if the payoff stays selectable.
 
 ## CMake
 - Top `CMakeLists.txt`: add_subdirectory(latrunculi_game); add_subdirectory(latrunculi_gui) AFTER

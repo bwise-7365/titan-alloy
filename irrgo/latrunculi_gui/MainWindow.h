@@ -62,9 +62,11 @@ private:
     int  playbackPlyCount() const override;  // length of the move timeline (M)
     void rebuildToPly(int ply) override;     // reconstruct the game at ply (replay)
 
-    void newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style);
-    // The movement rule currently chosen in the Board menu.
+    void newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style,
+                 double komi);
+    // The movement rule and komi currently chosen in the Board menu.
     Latrunculi::MoveStyle selectedMoveStyle() const;
+    double selectedKomi() const;
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
     void updateSwatches();               // recolor the side A/B tally squares
@@ -100,8 +102,10 @@ private:
     QSpinBox* rowsSpin_    = nullptr;
     QSpinBox* colsSpin_    = nullptr;
     QSpinBox* perSideSpin_ = nullptr;
-    // Movement rule set; takes effect on the next new game, like the size spinboxes.
+    // Movement rule set and komi; both take effect on the next new game, like the size
+    // spinboxes, and both are part of the board definition rather than a display option.
     QComboBox* movementCombo_ = nullptr;
+    QComboBox* komiCombo_ = nullptr;
     QColor    colorA_ = latgui::kDefaultSideA;
     QColor    colorB_ = latgui::kDefaultSideB;
     QColor    background_ = latgui::kDefaultBackground;
@@ -128,6 +132,7 @@ private:
     // rules (or the reverse) would reject legal moves, so this travels with the timeline
     // rather than being re-read from the Board menu.
     Latrunculi::MoveStyle tlStyle_ = Latrunculi::kDefaultMoveStyle;
+    double tlKomi_ = Latrunculi::kDefaultKomi;
 
     // Placement-seeding animation (analogous to IrrGo's stone setup): places a
     // percentage of each side's discs at random no-capture squares, one at a time.

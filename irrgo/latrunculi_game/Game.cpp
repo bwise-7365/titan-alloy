@@ -5,6 +5,8 @@
 #include "Eval.h"
 
 #include <algorithm>
+#include <array>
+#include <cmath>
 #include <cstddef>
 #include <numeric>
 #include <random>
@@ -25,6 +27,25 @@ namespace {
 double materialScore(double M, double N) {
     const double denom = kMaterialSelfWeight * M + kMaterialOppWeight * N;
     return (denom > 0.0) ? (kMaterialSelfWeight * M) / denom : 0.0;
+}
+
+// PayoffStyle::ConvexMargin. The winner's decisiveness as the disc margin raised to
+// kMarginExponent, so the marginal value of one more disc rises with the lead rather than
+// falling. See PayoffStyle in Game.h for why the Gradient form above had to be replaced.
+double marginScore(double M, double N) {
+    const double total = M + N;
+    if (total <= 0.0) {
+        // Unreachable: komi is required to be positive, so player 1's effective material
+        // is positive even on an empty board. Saying so out loud beats dividing by
+        // zero and letting an infinity propagate into the search as a plausible number.
+        throw std::logic_error("Latrunculi: total material is not positive");
+    }
+    // A winner can hold LESS material than the loser: immobilisation ends the game on
+    // legal moves, not on discs, so a player can be strangled while ahead. That is a win
+    // with no material margin -- worth the bare win and no bonus -- so the margin floors
+    // at zero rather than going negative and (at an even exponent) coming back positive.
+    const double margin = std::max(0.0, (M - N) / total);
+    return std::pow(margin, kMarginExponent);
 }
 
 // MCTS rollout policy (epsilon-greedy "heavy playout"). Random rollouts in
@@ -61,14 +82,61 @@ constexpr int kOrderDecisive = 10000;  // reduces the opponent to a single disc:
 constexpr int kOrderRemoval  = 10;     // per enemy disc permanently removed
 constexpr int kOrderBind     = 5;      // per enemy Free disc newly immobilised
 
+// ── Zobrist keys (super-ko hashing) ─────────────────────────────────────────
+// One random 64-bit key per (square, cell state), Empty included, so a square's
+// contribution can be XORed out and its replacement XORed in. That makes the hash of a
+// candidate position O(1) in the number of cells the move touches instead of O(squares),
+// which matters because legal-move enumeration hashes once per candidate and the slide
+// rule set raised the candidate count several-fold.
+//
+// The seed is fixed rather than clock-derived. The keys must be identical across every
+// Game and every clone in a run for super-ko to mean anything, and a fixed seed also
+// makes a hash collision reproducible if one is ever suspected.
+constexpr int kZobristStates  = 5;    // Cell has five values
+constexpr int kZobristSquares = 256;  // 16x16; boards larger than this are rejected
+
+const std::array<std::uint64_t, kZobristSquares * kZobristStates>& zobristKeys() {
+    static const std::array<std::uint64_t, kZobristSquares * kZobristStates> keys = [] {
+        std::array<std::uint64_t, kZobristSquares * kZobristStates> k{};
+        std::mt19937_64 rng(0x9E3779B97F4A7C15ULL);
+        for (std::uint64_t& v : k) {
+            v = rng();
+        }
+        return k;
+    }();
+    return keys;
+}
+
+std::uint64_t cellKey(int square, Cell c) {
+    return zobristKeys()[static_cast<std::size_t>(square) * kZobristStates +
+                         static_cast<std::size_t>(c)];
+}
+
 }  // namespace
 
-Game::Game(int rows, int columns, int perSide, MoveStyle style)
+// Disc counts are integers, so an integral komi lets the two sides tie exactly -- and this
+// engine has no draw to report that with: every terminal names a winner and winnerScore()
+// throws without one. Rejecting it up front is the difference between a clear error at the
+// point of entry and a logic_error thrown from inside a search hours later.
+void validateKomi(double komi) {
+    if (!(komi > 0.0)) {
+        throw std::invalid_argument("Latrunculi: komi must be positive");
+    }
+    if (komi == std::floor(komi)) {
+        throw std::invalid_argument(
+            "Latrunculi: komi must not be a whole number (it would allow an exact tie)");
+    }
+}
+
+Game::Game(int rows, int columns, int perSide, MoveStyle style, PayoffStyle payoff,
+           double komi)
     : rows_(rows),
       columns_(columns),
       perSide_(perSide),
       squares_(rows * columns),
       moveStyle_(style),
+      payoffStyle_(payoff),
+      komi_(komi),
       board_(static_cast<std::size_t>(rows * columns), Cell::Empty) {
     if (rows < 1 || columns < 1) {
         throw std::invalid_argument("Latrunculi: rows and columns must be >= 1");
@@ -76,18 +144,25 @@ Game::Game(int rows, int columns, int perSide, MoveStyle style)
     if (perSide < 0 || 2 * perSide > squares_) {
         throw std::invalid_argument("Latrunculi: need 2*perSide <= rows*columns");
     }
+    if (squares_ > kZobristSquares) {
+        throw std::invalid_argument("Latrunculi: board exceeds the Zobrist key table");
+    }
+    validateKomi(komi_);
+    hash_ = hashBoard(board_);
     initScanOrder();
 }
 
 Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
            Phase phase, int current, int placed0, int placed1,
            std::vector<Move> history, std::unordered_set<std::uint64_t> seen,
-           MoveStyle style)
+           MoveStyle style, PayoffStyle payoff, double komi)
     : rows_(rows),
       columns_(columns),
       perSide_(perSide),
       squares_(rows * columns),
       moveStyle_(style),
+      payoffStyle_(payoff),
+      komi_(komi),
       board_(std::move(board)),
       current_(current),
       phase_(phase),
@@ -103,13 +178,21 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
     if (current_ != 0 && current_ != 1) {
         throw std::invalid_argument("Latrunculi: current player must be 0 or 1");
     }
-    // Build the scan order BEFORE any terminal recompute: checkImmobilizationTerminal()
-    // below calls enumerateLegalMoves(), which indexes scanOrder_, so it must already
-    // be sized to squares_.
+    if (squares_ > kZobristSquares) {
+        throw std::invalid_argument("Latrunculi: board exceeds the Zobrist key table");
+    }
+    validateKomi(komi_);
+    // Seed the incremental hash and build the scan order BEFORE any terminal recompute:
+    // checkImmobilizationTerminal() below calls enumerateLegalMoves(), which indexes
+    // scanOrder_ and reads hash_, so both must already be valid.
+    hash_ = hashBoard(board_);
     initScanOrder();
     // Recompute terminal status from the restored position so a loaded game that
     // is already decided reports correctly. Win by reduction (a side reduced to one
     // disc) takes precedence; otherwise the side to move may be immobilised.
+    //
+    // Reduction is checked only in movement: during placement a side legitimately holds
+    // one disc or none, and reading that as a rout would end the game at ply 1.
     if (phase_ == Phase::Movement) {
         if (totalDiscs(0) <= 1) {
             gameOver_ = true;
@@ -122,6 +205,8 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
         } else {
             checkImmobilizationTerminal();
         }
+    } else {
+        checkImmobilizationTerminal();
     }
 }
 
@@ -208,9 +293,18 @@ bool Game::pinnedOn(const std::vector<Cell>& b, int pos, int byPlayer) const {
     return false;
 }
 
-void Game::moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const {
-    b[static_cast<std::size_t>(to)] = b[static_cast<std::size_t>(from)];
-    b[static_cast<std::size_t>(from)] = Cell::Empty;
+void Game::setCell(std::vector<Cell>& b, int square, Cell c, std::uint64_t* hash) const {
+    const std::size_t i = static_cast<std::size_t>(square);
+    if (hash != nullptr) {
+        *hash ^= cellKey(square, b[i]) ^ cellKey(square, c);
+    }
+    b[i] = c;
+}
+
+void Game::moveAndCapture(std::vector<Cell>& b, int from, int to, int me,
+                          std::uint64_t* hash) const {
+    setCell(b, to, b[static_cast<std::size_t>(from)], hash);
+    setCell(b, from, Cell::Empty, hash);
 
     // Custodial capture: each enemy Free disc adjacent to the moved disc that is
     // now pinned by my Free discs flips to Bound (immobilised, not removed).
@@ -227,17 +321,18 @@ void Game::moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const 
         }
         const int n = idx(nr, nc);
         if (b[static_cast<std::size_t>(n)] == freeCell(opp) && pinnedOn(b, n, me)) {
-            b[static_cast<std::size_t>(n)] = boundCell(opp);
+            setCell(b, n, boundCell(opp), hash);
         }
     }
 }
 
 void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
-                                     int from, int to, int me) const {
+                                     int from, int to, int me,
+                                     std::uint64_t* hash) const {
     if (removeSquare >= 0 && removeSquare < squares_) {
-        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
+        setCell(b, removeSquare, Cell::Empty, hash);
     }
-    moveAndCapture(b, from, to, me);
+    moveAndCapture(b, from, to, me, hash);
 }
 
 // ── Reachability: rook slide, or single step + own-color multi-leaps ─────────
@@ -312,21 +407,22 @@ std::vector<bool> Game::reachableMask(const std::vector<Cell>& b, int from, int 
 }
 
 std::uint64_t Game::hashBoard(const std::vector<Cell>& b) const {
-    std::uint64_t h = 1469598103934665603ULL;  // FNV-1a 64-bit offset basis
-    for (Cell c : b) {
-        h ^= static_cast<std::uint64_t>(static_cast<std::uint8_t>(c));
-        h *= 1099511628211ULL;  // FNV-1a 64-bit prime
+    std::uint64_t h = 0;
+    for (int s = 0; s < squares_; ++s) {
+        h ^= cellKey(s, b[static_cast<std::size_t>(s)]);
     }
     return h;
 }
 
-bool Game::moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me) const {
-    std::vector<Cell> result = b;
-    moveAndCapture(result, from, to, me);
-    if (pinnedOn(result, to, 1 - me)) {
+bool Game::moveIsLegalOn(const std::vector<Cell>& b, int from, int to, int me,
+                         std::uint64_t baseHash, std::vector<Cell>& scratch) const {
+    scratch = b;  // reuses scratch's buffer once the caller has looped at least once
+    std::uint64_t h = baseHash;
+    moveAndCapture(scratch, from, to, me, &h);
+    if (pinnedOn(scratch, to, 1 - me)) {
         return false;  // self-capture
     }
-    if (seenPositions_.find(hashBoard(result)) != seenPositions_.end()) {
+    if (seenPositions_.find(h) != seenPositions_.end()) {
         return false;  // super-ko: this exact board has occurred earlier this game
     }
     return true;
@@ -420,14 +516,16 @@ bool Game::isLegalMovement(int removeSquare, int from, int to) const {
     // On the post-removal board, `to` must be reachable (single step or leap chain)
     // -- which also requires it to be empty -- and not a self-capture.
     std::vector<Cell> b = board_;
+    std::uint64_t baseHash = hash_;
     if (removeSquare >= 0) {
-        b[static_cast<std::size_t>(removeSquare)] = Cell::Empty;
+        setCell(b, removeSquare, Cell::Empty, &baseHash);
     }
     const std::vector<bool> reach = reachableMask(b, from, me);
     if (!reach[static_cast<std::size_t>(to)]) {
         return false;
     }
-    return moveIsLegalOn(b, from, to, me);
+    std::vector<Cell> scratch;
+    return moveIsLegalOn(b, from, to, me, baseHash, scratch);
 }
 
 // ── Legal-move enumeration ───────────────────────────────────────────────────
@@ -498,10 +596,14 @@ std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
         removals.push_back(-1);  // no removal
     }
 
+    // One scratch board for the whole enumeration: moveIsLegalOn overwrites it per
+    // candidate, and reusing it keeps the allocation instead of making one per move.
+    std::vector<Cell> scratch;
     for (int rem : removals) {
         std::vector<Cell> b = board_;
+        std::uint64_t baseHash = hash_;
         if (rem >= 0) {
-            b[static_cast<std::size_t>(rem)] = Cell::Empty;
+            setCell(b, rem, Cell::Empty, &baseHash);
         }
         for (int fi = 0; fi < squares_; ++fi) {
             const int from = scanOrder_[static_cast<std::size_t>(fi)];
@@ -512,7 +614,7 @@ std::vector<AbsGame::MoveId> Game::enumerateLegalMoves() const {
             for (int ti = 0; ti < squares_; ++ti) {
                 const int to = scanOrder_[static_cast<std::size_t>(ti)];
                 if (reach[static_cast<std::size_t>(to)] &&
-                    moveIsLegalOn(b, from, to, me)) {
+                    moveIsLegalOn(b, from, to, me, baseHash, scratch)) {
                     moves.push_back(movementMove(from, to, rem));
                 }
             }
@@ -570,8 +672,17 @@ void Game::recordMove(int from, int to, int removed, const std::vector<int>& pat
     moveHistory_.push_back(m);
 }
 
+// Applies in BOTH phases. It used to return early during placement, which left a player
+// with no legal placement in a position that was not terminal and returned an empty move
+// list -- and the self-play driver then reported a draw that no rule produces. A player
+// who cannot place is stuck in exactly the sense the immobilisation rule describes, so
+// the same rule decides it: the side to move loses.
+//
+// That position is reachable: every empty square can be one that would complete a
+// custodial capture, which placement forbids. It is rare, and it was invisible before
+// only because the engine invented a draw instead of reporting it.
 void Game::checkImmobilizationTerminal() {
-    if (phase_ != Phase::Movement || gameOver_) {
+    if (gameOver_) {
         return;
     }
     if (enumerateLegalMoves().empty()) {
@@ -590,9 +701,9 @@ bool Game::applyMove(AbsGame::MoveId mv) {
         if (!isLegalPlacement(mv)) {
             return false;
         }
-        board_[static_cast<std::size_t>(mv)] = freeCell(current_);
+        setCell(board_, mv, freeCell(current_), &hash_);
         ++placed_[current_];
-        seenPositions_.insert(hashBoard(board_));
+        seenPositions_.insert(hash_);
         recordMove(-1, mv, -1);
         if (placed_[0] >= perSide_ && placed_[1] >= perSide_) {
             phase_ = Phase::Movement;
@@ -624,8 +735,8 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     const int opp = 1 - current_;
     const int oppFreeBefore = freeDiscs(opp);
 
-    applyRemoveMoveCapturesTo(board_, removeSquare, from, to, current_);
-    seenPositions_.insert(hashBoard(board_));
+    applyRemoveMoveCapturesTo(board_, removeSquare, from, to, current_, &hash_);
+    seenPositions_.insert(hash_);
     recordMove(from, to, removeSquare, path);
 
     // Pacific (quiet-game) counter: a turn that captures (opponent's Free count drops)
@@ -656,7 +767,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     // Free count goes to the second player and there is never a draw.
     if (!gameOver_ && pacificPlies_ >= pacificMoveLimit) {
         const double freeP0 = freeDiscs(0);
-        const double freeP1 = freeDiscs(1) + komi;
+        const double freeP1 = freeDiscs(1) + komi_;
         gameOver_ = true;
         winner_ = (freeP1 > freeP0) ? 1 : 0;
         winReason_ = WinReason::QuietGame;
@@ -672,7 +783,7 @@ bool Game::applyMove(AbsGame::MoveId mv) {
 double Game::effectiveMaterial(int player) const {
     double material = freeDiscs(player) + immobilizationDiscount * boundDiscs(player);
     if (player == 1) {
-        material += komi;
+        material += komi_;
     }
     return material;
 }
@@ -681,7 +792,15 @@ double Game::winnerScore() const {
     if (winner_ < 0) {
         throw std::logic_error("Latrunculi: winnerScore() called with no winner");
     }
-    return materialScore(effectiveMaterial(winner_), effectiveMaterial(1 - winner_));
+    const double mine = effectiveMaterial(winner_);
+    const double theirs = effectiveMaterial(1 - winner_);
+    switch (payoffStyle_) {
+        case PayoffStyle::Gradient:
+            return materialScore(mine, theirs);
+        case PayoffStyle::ConvexMargin:
+            return marginScore(mine, theirs);
+    }
+    throw std::logic_error("Latrunculi: unknown PayoffStyle");
 }
 
 double Game::staticEval() const {

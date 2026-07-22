@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LatrunculiBoard xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="latrunculi.xsd">
+    <dims rows="8" cols="10"/>
+    <perSide val="25"/>
+    <phase val="Movement"/>
+    <sideToMove val="0"/>
+    <placed p0="25" p1="25"/>
+    <colors sideA="#1f2014" sideB="#852532" background="#f5e8c7"/>
+    <Position>
+        <cell sq="0" state="P0Free"/>
+        <cell sq="1" state="P0Free"/>
+        <cell sq="2" state="P1Free"/>
+        <cell sq="3" state="P1Free"/>
+        <cell sq="6" state="P0Free"/>
+        <cell sq="10" state="P1Free"/>
+        <cell sq="12" state="P0Free"/>
+        <cell sq="13" state="P0Free"/>
+        <cell sq="17" state="P0Free"/>
+        <cell sq="20" state="P1Free"/>
+        <cell sq="21" state="P0Free"/>
+        <cell sq="22" state="P0Free"/>
+        <cell sq="23" state="P0Free"/>
+        <cell sq="26" state="P0Free"/>
+        <cell sq="29" state="P0Free"/>
+        <cell sq="30" state="P1Free"/>
+        <cell sq="31" state="P1Free"/>
+        <cell sq="32" state="P0Free"/>
+        <cell sq="37" state="P0Free"/>
+        <cell sq="38" state="P0Free"/>
+        <cell sq="39" state="P0Free"/>
+        <cell sq="40" state="P1Free"/>
+        <cell sq="41" state="P1Free"/>
+        <cell sq="43" state="P0Free"/>
+        <cell sq="44" state="P0Free"/>
+        <cell sq="45" state="P1Free"/>
+        <cell sq="46" state="P1Free"/>
+        <cell sq="48" state="P0Free"/>
+        <cell sq="50" state="P1Free"/>
+        <cell sq="51" state="P1Free"/>
+        <cell sq="52" state="P0Free"/>
+        <cell sq="54" state="P1Free"/>
+        <cell sq="55" state="P1Free"/>
+        <cell sq="57" state="P1Free"/>
+        <cell sq="59" state="P1Free"/>
+        <cell sq="67" state="P1Free"/>
+        <cell sq="69" state="P1Free"/>
+        <cell sq="71" state="P1Free"/>
+        <cell sq="76" state="P1Free"/>
+        <cell sq="77" state="P0Free"/>
+        <cell sq="78" state="P0Free"/>
+        <cell sq="79" state="P1Free"/>
+    </Position>
+    <move_list>
+        <move turn="1" player="0" from="-1" to="18" removed="-1" path=""/>
+        <move turn="2" player="1" from="-1" to="46" removed="-1" path=""/>
+        <move turn="3" player="0" from="-1" to="34" removed="-1" path=""/>
+        <move turn="4" player="1" from="-1" to="4" removed="-1" path=""/>
+        <move turn="5" player="0" from="-1" to="59" removed="-1" path=""/>
+        <move turn="6" player="1" from="-1" to="60" removed="-1" path=""/>
+        <move turn="7" player="0" from="-1" to="12" removed="-1" path=""/>
+        <move turn="8" player="1" from="-1" to="73" removed="-1" path=""/>
+        <move turn="9" player="0" from="-1" to="33" removed="-1" path=""/>
+        <move turn="10" player="1" from="-1" to="48" removed="-1" path=""/>
+        <move turn="11" player="0" from="-1" to="77" removed="-1" path=""/>
+        <move turn="12" player="1" from="-1" to="40" removed="-1" path=""/>
+        <move turn="13" player="0" from="-1" to="58" removed="-1" path=""/>
+        <move turn="14" player="1" from="-1" to="67" removed="-1" path=""/>
+        <move turn="15" player="0" from="-1" to="27" removed="-1" path=""/>
+        <move turn="16" player="1" from="-1" to="20" removed="-1" path=""/>
+        <move turn="17" player="0" from="-1" to="0" removed="-1" path=""/>
+        <move turn="18" player="1" from="-1" to="10" removed="-1" path=""/>
+        <move turn="19" player="0" from="-1" to="63" removed="-1" path=""/>
+        <move turn="20" player="1" from="-1" to="35" removed="-1" path=""/>
+        <move turn="21" player="0" from="-1" to="22" removed="-1" path=""/>
+        <move turn="22" player="1" from="-1" to="54" removed="-1" path=""/>
+        <move turn="23" player="0" from="-1" to="26" removed="-1" path=""/>
+        <move turn="24" player="1" from="-1" to="74" removed="-1" path=""/>
+        <move turn="25" player="0" from="-1" to="24" removed="-1" path=""/>
+        <move turn="26" player="1" from="-1" to="36" removed="-1" path=""/>
+        <move turn="27" player="0" from="-1" to="49" removed="-1" path=""/>
+        <move turn="28" player="1" from="-1" to="3" removed="-1" path=""/>
+        <move turn="29" player="0" from="-1" to="65" removed="-1" path=""/>
+        <move turn="30" player="1" from="-1" to="41" removed="-1" path=""/>
+        <move turn="31" player="0" from="-1" to="25" removed="-1" path=""/>
+        <move turn="32" player="1" from="-1" to="66" removed="-1" path=""/>
+        <move turn="33" player="0" from="-1" to="1" removed="-1" path=""/>
+        <move turn="34" player="1" from="-1" to="19" removed="-1" path=""/>
+        <move turn="35" player="0" from="-1" to="51" removed="-1" path=""/>
+        <move turn="36" player="1" from="-1" to="56" removed="-1" path=""/>
+        <move turn="37" player="0" from="-1" to="32" removed="-1" path=""/>
+        <move turn="38" player="1" from="-1" to="79" removed="-1" path=""/>
+        <move turn="39" player="0" from="-1" to="15" removed="-1" path=""/>
+        <move turn="40" player="1" from="-1" to="44" removed="-1" path=""/>
+        <move turn="41" player="0" from="-1" to="53" removed="-1" path=""/>
+        <move turn="42" player="1" from="-1" to="30" removed="-1" path=""/>
+        <move turn="43" player="0" from="-1" to="78" removed="-1" path=""/>
+        <move turn="44" player="1" from="-1" to="62" removed="-1" path=""/>
+        <move turn="45" player="0" from="-1" to="72" removed="-1" path=""/>
+        <move turn="46" player="1" from="-1" to="75" removed="-1" path=""/>
+        <move turn="47" player="0" from="-1" to="17" removed="-1" path=""/>
+        <move turn="48" player="1" from="-1" to="38" removed="-1" path=""/>
+        <move turn="49" player="0" from="-1" to="11" removed="-1" path=""/>
+        <move turn="50" player="1" from="-1" to="31" removed="-1" path=""/>
+        <move turn="51" player="0" from="51" to="52" removed="-1" path="51 52"/>
+        <move turn="52" player="1" from="56" to="57" removed="-1" path="56 57"/>
+        <move turn="53" player="0" from="22" to="23" removed="62" path="22 23"/>
+        <move turn="54" player="1" from="54" to="55" removed="-1" path="54 55"/>
+        <move turn="55" player="0" from="49" to="39" removed="-1" path="49 39"/>
+        <move turn="56" player="1" from="44" to="45" removed="65" path="44 45"/>
+        <move turn="57" player="0" from="26" to="28" removed="-1" path="26 28"/>
+        <move turn="58" player="1" from="66" to="68" removed="-1" path="66 68"/>
+        <move turn="59" player="0" from="17" to="37" removed="-1" path="17 37"/>
+        <move turn="60" player="1" from="68" to="69" removed="58" path="68 69"/>
+        <move turn="61" player="0" from="59" to="49" removed="38" path="59 49"/>
+        <move turn="62" player="1" from="60" to="50" removed="-1" path="60 50"/>
+        <move turn="63" player="0" from="27" to="47" removed="-1" path="27 47"/>
+        <move turn="64" player="1" from="69" to="59" removed="-1" path="69 59"/>
+        <move turn="65" player="0" from="28" to="38" removed="48" path="28 38"/>
+        <move turn="66" player="1" from="4" to="2" removed="-1" path="4 2"/>
+        <move turn="67" player="0" from="63" to="43" removed="-1" path="63 43"/>
+        <move turn="68" player="1" from="75" to="65" removed="-1" path="75 65"/>
+        <move turn="69" player="0" from="11" to="13" removed="-1" path="11 13"/>
+        <move turn="70" player="1" from="19" to="29" removed="-1" path="19 29"/>
+        <move turn="71" player="0" from="47" to="27" removed="-1" path="47 27"/>
+        <move turn="72" player="1" from="36" to="54" removed="-1" path="36 56 54"/>
+        <move turn="73" player="0" from="12" to="14" removed="-1" path="12 14"/>
+        <move turn="74" player="1" from="74" to="75" removed="-1" path="74 75"/>
+        <move turn="75" player="0" from="52" to="42" removed="-1" path="52 42"/>
+        <move turn="76" player="1" from="20" to="21" removed="-1" path="20 21"/>
+        <move turn="77" player="0" from="24" to="22" removed="-1" path="24 22"/>
+        <move turn="78" player="1" from="50" to="51" removed="-1" path="50 51"/>
+        <move turn="79" player="0" from="18" to="19" removed="-1" path="18 19"/>
+        <move turn="80" player="1" from="46" to="66" removed="-1" path="46 44 64 66"/>
+        <move turn="81" player="0" from="14" to="4" removed="29" path="14 4"/>
+        <move turn="82" player="1" from="65" to="64" removed="-1" path="65 64"/>
+        <move turn="83" player="0" from="13" to="12" removed="-1" path="13 12"/>
+        <move turn="84" player="1" from="64" to="46" removed="-1" path="64 44 46"/>
+        <move turn="85" player="0" from="25" to="26" removed="-1" path="25 26"/>
+        <move turn="86" player="1" from="55" to="56" removed="-1" path="55 56"/>
+        <move turn="87" player="0" from="72" to="62" removed="-1" path="72 62"/>
+        <move turn="88" player="1" from="35" to="55" removed="-1" path="35 55"/>
+        <move turn="89" player="0" from="43" to="44" removed="-1" path="43 44"/>
+        <move turn="90" player="1" from="73" to="72" removed="-1" path="73 72"/>
+        <move turn="91" player="0" from="27" to="5" removed="-1" path="27 25 5"/>
+        <move turn="92" player="1" from="51" to="52" removed="-1" path="51 52"/>
+        <move turn="93" player="0" from="37" to="47" removed="-1" path="37 47"/>
+        <move turn="94" player="1" from="66" to="68" removed="62" path="66 68"/>
+        <move turn="95" player="0" from="33" to="43" removed="-1" path="33 43"/>
+        <move turn="96" player="1" from="68" to="58" removed="53" path="68 58"/>
+        <move turn="97" player="0" from="49" to="48" removed="-1" path="49 48"/>
+        <move turn="98" player="1" from="79" to="69" removed="-1" path="79 69"/>
+        <move turn="99" player="0" from="19" to="18" removed="-1" path="19 18"/>
+        <move turn="100" player="1" from="59" to="49" removed="-1" path="59 49"/>
+        <move turn="101" player="0" from="4" to="6" removed="-1" path="4 6"/>
+        <move turn="102" player="1" from="54" to="53" removed="-1" path="54 53"/>
+        <move turn="103" player="0" from="18" to="8" removed="-1" path="18 8"/>
+        <move turn="104" player="1" from="67" to="68" removed="-1" path="67 68"/>
+        <move turn="105" player="0" from="34" to="33" removed="-1" path="34 33"/>
+        <move turn="106" player="1" from="52" to="51" removed="-1" path="52 51"/>
+        <move turn="107" player="0" from="6" to="4" removed="-1" path="6 4"/>
+        <move turn="108" player="1" from="68" to="67" removed="-1" path="68 67"/>
+        <move turn="109" player="0" from="5" to="6" removed="-1" path="5 6"/>
+        <move turn="110" player="1" from="21" to="20" removed="-1" path="21 20"/>
+        <move turn="111" player="0" from="4" to="14" removed="-1" path="4 14"/>
+        <move turn="112" player="1" from="58" to="59" removed="-1" path="58 59"/>
+        <move turn="113" player="0" from="14" to="24" removed="-1" path="14 24"/>
+        <move turn="114" player="1" from="55" to="54" removed="-1" path="55 54"/>
+        <move turn="115" player="0" from="33" to="34" removed="-1" path="33 34"/>
+        <move turn="116" player="1" from="56" to="58" removed="-1" path="56 58"/>
+        <move turn="117" player="0" from="15" to="25" removed="-1" path="15 25"/>
+        <move turn="118" player="1" from="72" to="62" removed="-1" path="72 62"/>
+        <move turn="119" player="0" from="34" to="14" removed="-1" path="34 14"/>
+        <move turn="120" player="1" from="53" to="52" removed="-1" path="53 52"/>
+        <move turn="121" player="0" from="47" to="37" removed="-1" path="47 37"/>
+        <move turn="122" player="1" from="52" to="50" removed="-1" path="52 50"/>
+        <move turn="123" player="0" from="8" to="7" removed="-1" path="8 7"/>
+        <move turn="124" player="1" from="69" to="79" removed="-1" path="69 79"/>
+        <move turn="125" player="0" from="7" to="17" removed="-1" path="7 17"/>
+        <move turn="126" player="1" from="49" to="69" removed="-1" path="49 69"/>
+        <move turn="127" player="0" from="42" to="52" removed="-1" path="42 52"/>
+        <move turn="128" player="1" from="75" to="76" removed="-1" path="75 76"/>
+        <move turn="129" player="0" from="23" to="21" removed="-1" path="23 21"/>
+        <move turn="130" player="1" from="62" to="61" removed="-1" path="62 61"/>
+        <move turn="131" player="0" from="14" to="13" removed="-1" path="14 13"/>
+        <move turn="132" player="1" from="54" to="55" removed="-1" path="54 55"/>
+        <move turn="133" player="0" from="25" to="29" removed="-1" path="25 27 47 49 29"/>
+        <move turn="134" player="1" from="61" to="71" removed="-1" path="61 71"/>
+        <move turn="135" player="0" from="24" to="23" removed="-1" path="24 23"/>
+        <move turn="136" player="1" from="58" to="54" removed="-1" path="58 56 54"/>
+    </move_list>
+</LatrunculiBoard>

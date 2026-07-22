@@ -21,6 +21,10 @@
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
+// Iterative-deepening ceiling for NegaMax. The clock is what actually stops the search;
+// this only has to be past any depth the budget could reach, so it never binds.
+static constexpr int kMaxNegamaxDepth = 64;
+
 static const guicommon::MctsOption kMctsOptions[] = {
     {  1, "1 sec" }, {  2, "2 sec" }, {  5, "5 sec" },
     {  10, "10 sec" }, {  30, "30 sec" }, {  60, "60 sec" },
@@ -172,9 +176,10 @@ void MainWindow::buildMenuBar() {
 
     // NegaMax submenu
     {
-        guicommon::NegaMaxMenuConfig nm{1, 12, 6, true, 1, 200, 4};
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, playMenu, playGroup, nm,
-                                                  playDepthSpin_, playTurnsSpin_);
+        // Same time choices as MCTS: both are wall-clock budgets now.
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
 
@@ -193,11 +198,11 @@ void MainWindow::buildMenuBar() {
 
     // NegaMax suggest
     {
-        guicommon::NegaMaxMenuConfig nm{1, 12, 6};
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
         nm.withTurns = false;
         QSpinBox* unusedTurns = nullptr;
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, suggestMenu, suggestGroup, nm,
-                                                  suggestDepthSpin_, unusedTurns);
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
     }
 
@@ -211,11 +216,11 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
-    // Keep depth spinboxes in sync.
-    connect(playDepthSpin_,    &QSpinBox::valueChanged,
-            suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged,
-            playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the NegaMax time combos in sync.
+    connect(playNegamaxSecCombo_,    &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_,    &QComboBox::setCurrentIndex);
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
@@ -274,8 +279,11 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = playDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
+    // The clock bounds this search, so the search bar shows the elapsed fraction.
+    p.negamaxTimeBudgeted = true;
     startPlay(p, playTurnsSpin_->value());
 }
 
@@ -293,8 +301,10 @@ void MainWindow::onSuggestNegamaxGo() {
     int numPits = game_->numPits();
 
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = suggestDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
     search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
         if (mv >= 0) {
             int pitNum = (cp == 0) ? mv + 1 : mv - numPits;

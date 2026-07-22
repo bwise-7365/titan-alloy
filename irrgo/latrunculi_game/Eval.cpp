@@ -56,27 +56,91 @@ double centrality(int row, int column, int rows, int columns) {
     return 0.5 * (rowTerm + columnTerm);
 }
 
-// True if the disc at (row, column) is half-pinned along the axis (dRow, dColumn) by
-// `flanker`: one end of the axis holds a flanker disc and the other end is on the board
-// and empty, so a single move into it completes the custodial capture.
-bool halfPinnedOnAxis(const std::vector<Cell>& cells, int rows, int columns,
+// If the disc at (row, column) is half-pinned along the axis (dRow, dColumn) by
+// `flanker` -- one end of the axis holds a flanker disc and the other end is on the board
+// and empty -- returns the index of that empty square, the one whose occupation completes
+// the custodial capture. Returns -1 if the disc is not half-pinned on this axis.
+int halfPinCompletion(const std::vector<Cell>& cells, int rows, int columns,
                       int row, int column, int dRow, int dColumn, Cell flanker) {
     const int aRow = row - dRow;
     const int aColumn = column - dColumn;
     const int bRow = row + dRow;
     const int bColumn = column + dColumn;
     if (!inBounds(aRow, aColumn, rows, columns) || !inBounds(bRow, bColumn, rows, columns)) {
-        return false;
+        return -1;
     }
-    const Cell a = cells[index(aRow, aColumn, columns)];
-    const Cell b = cells[index(bRow, bColumn, columns)];
-    return (a == flanker && b == Cell::Empty) || (b == flanker && a == Cell::Empty);
+    const std::size_t aIndex = index(aRow, aColumn, columns);
+    const std::size_t bIndex = index(bRow, bColumn, columns);
+    const Cell a = cells[aIndex];
+    const Cell b = cells[bIndex];
+    if (a == flanker && b == Cell::Empty) {
+        return static_cast<int>(bIndex);
+    }
+    if (b == flanker && a == Cell::Empty) {
+        return static_cast<int>(aIndex);
+    }
+    return -1;
 }
 
-bool halfPinned(const std::vector<Cell>& cells, int rows, int columns,
-                int row, int column, Cell flanker) {
-    return halfPinnedOnAxis(cells, rows, columns, row, column, 1, 0, flanker) ||
-           halfPinnedOnAxis(cells, rows, columns, row, column, 0, 1, flanker);
+// True if `player` has a Free disc that can move onto the empty square `square` in one
+// move under `style`. This is what separates a threat from a shape that merely looks like
+// one: a half-pin nobody can complete costs the opponent nothing, and paying for it
+// misprices every position where the completing square is walled off.
+//
+// The flanker holding the pin can never be the disc found here, so it needs no excluding:
+// the axis reads [flanker][target][empty], and a ray cast from the empty square toward
+// the flanker meets the target disc first and stops.
+//
+// Checked: that a mover of the right colour exists with a clear line to the square. NOT
+// checked: whether the completing move would self-capture, or would repeat a position
+// (super-ko). Both need game state this module deliberately does not hold, and both make
+// the count too high rather than too low -- the same direction the term already errs in
+// by ignoring leap chains under StepLeap.
+bool canOccupy(const std::vector<Cell>& cells, int rows, int columns, int square,
+               int player, MoveStyle style) {
+    const int row = square / columns;
+    const int column = square % columns;
+    const Cell mine = freeCell(player);
+    const int dRow[4] = {-1, 1, 0, 0};
+    const int dColumn[4] = {0, 0, -1, 1};
+    for (int k = 0; k < 4; ++k) {
+        int nRow = row + dRow[k];
+        int nColumn = column + dColumn[k];
+        if (style == MoveStyle::Slide) {
+            // Walk to the first occupied square on this ray: only that disc could slide
+            // in, and only if it is mine.
+            while (inBounds(nRow, nColumn, rows, columns) &&
+                   cells[index(nRow, nColumn, columns)] == Cell::Empty) {
+                nRow += dRow[k];
+                nColumn += dColumn[k];
+            }
+        }
+        if (!inBounds(nRow, nColumn, rows, columns)) {
+            continue;
+        }
+        if (cells[index(nRow, nColumn, columns)] == mine) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// True if the enemy disc at (row, column) is one completable move from being captured by
+// `player`, on either axis.
+bool isThreatened(const std::vector<Cell>& cells, int rows, int columns,
+                  int row, int column, int player, MoveStyle style) {
+    const Cell flanker = freeCell(player);
+    const int dRow[2] = {1, 0};
+    const int dColumn[2] = {0, 1};
+    for (int k = 0; k < 2; ++k) {
+        const int completion = halfPinCompletion(cells, rows, columns, row, column,
+                                                 dRow[k], dColumn[k], flanker);
+        if (completion >= 0 &&
+            canOccupy(cells, rows, columns, completion, player, style)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 int emptyNeighbours(const std::vector<Cell>& cells, int rows, int columns,
@@ -154,7 +218,7 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
             // Only Free discs can be threatened: a Bound disc is already captured, and a
             // Bound flanker does not pin (it mirrors Game::pinnedOn).
             if (cell == theirs) {
-                if (halfPinned(cells, rows, columns, row, column, mine)) {
+                if (isThreatened(cells, rows, columns, row, column, player, style)) {
                     ++terms.threats;
                 }
                 continue;

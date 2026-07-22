@@ -103,6 +103,11 @@ void MainWindow::saveToFile(const QString& path) {
     xml.writeAttribute("val", game_->moveStyle() == Latrunculi::MoveStyle::Slide
                                   ? "Slide" : "StepLeap");
 
+    // Komi decides every quiet-game termination and shifts the search's material term, so
+    // it is part of the board definition, not a preference.
+    xml.writeEmptyElement("komi");
+    xml.writeAttribute("val", QString::number(game_->komi(), 'f', 1));
+
     xml.writeEmptyElement("phase");
     xml.writeAttribute("val", game_->phase() == Latrunculi::Phase::Placement
                                   ? "Placement" : "Movement");
@@ -178,6 +183,9 @@ bool MainWindow::loadFromFile(const QString& path) {
     // such file was written by a step/leap build. That is a fact about the format's
     // history, not a guess standing in for missing data.
     Latrunculi::MoveStyle style = Latrunculi::MoveStyle::StepLeap;
+    // Likewise: a file with no <komi> predates the value being selectable, and every such
+    // file was written when komi was fixed at 0.5.
+    double komi = 0.5;
     std::vector<Latrunculi::Cell> board;
     std::vector<Latrunculi::Move> history;
     bool haveDims = false;
@@ -215,6 +223,15 @@ bool MainWindow::loadFromFile(const QString& path) {
                         .arg(val.toString()));
                 return false;
             }
+        } else if (name == QLatin1String("komi")) {
+            bool ok = false;
+            const double k = a.value(QLatin1String("val")).toDouble(&ok);
+            if (!ok) {
+                QMessageBox::warning(this, "Latrunculi",
+                    "Unreadable komi value in the game file.");
+                return false;
+            }
+            komi = k;  // the Game constructor rejects a whole number or a non-positive one
         } else if (name == QLatin1String("phase")) {
             phase = (a.value(QLatin1String("val")) == QLatin1String("Movement"))
                         ? Latrunculi::Phase::Movement : Latrunculi::Phase::Placement;
@@ -265,7 +282,8 @@ bool MainWindow::loadFromFile(const QString& path) {
         game_ = std::make_unique<Latrunculi::Game>(
             rows, cols, perSide, std::move(board), phase, current,
             placed0, placed1, std::move(history),
-            std::unordered_set<std::uint64_t>{}, style);
+            std::unordered_set<std::uint64_t>{}, style,
+            Latrunculi::kDefaultPayoffStyle, komi);
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, "Latrunculi", ex.what());
         return false;
@@ -285,9 +303,15 @@ bool MainWindow::loadFromFile(const QString& path) {
     tlCols_ = cols;
     tlPerSide_ = perSide;
     tlStyle_ = style;
-    // Point the Board menu at the loaded rule set, so the next New Game does not silently
-    // switch rules out from under a file the user just opened.
+    tlKomi_ = komi;
+    // Point the Board menu at the loaded rule set and komi, so the next New Game does not
+    // silently switch either out from under a file the user just opened. A komi the combo
+    // does not offer leaves it unchanged (findData returns -1) rather than picking one.
     movementCombo_->setCurrentIndex(movementCombo_->findData(static_cast<int>(style)));
+    const int komiIndex = komiCombo_->findData(komi);
+    if (komiIndex >= 0) {
+        komiCombo_->setCurrentIndex(komiIndex);
+    }
     suggestedLog_->clear();
     // Adopt the loaded colors (or the retained defaults if the file had none).
     colorA_     = loadedColorA;

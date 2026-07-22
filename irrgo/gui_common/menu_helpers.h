@@ -30,13 +30,7 @@ struct TimeOption {
 // Historical name, kept so existing call sites read unchanged.
 using MctsOption = TimeOption;
 
-struct NegaMaxMenuConfig {
-    int depthMin = 1, depthMax = 6, depthDefault = 2;
-    bool withTurns = true;
-    int turnsMin = 1, turnsMax = 50, turnsDefault = 2;
-};
-
-// Config for any time-budgeted submenu (MCTS, or NegaMax once it is iterative-deepening).
+// Config for any time-budgeted submenu (MCTS or NegaMax -- both are wall-clock budgets).
 struct TimeMenuConfig {
     const TimeOption* options = nullptr;
     std::size_t optionCount = 0;
@@ -45,26 +39,18 @@ struct TimeMenuConfig {
 };
 using MctsMenuConfig = TimeMenuConfig;
 
-// Build a checkable "NegaMax" submenu (Depth [+ Turns] + Go!) under `parent`,
-// added to the exclusive `group`; `owner` parents the created QObjects.
-// depthOut/turnsOut receive the controls (turnsOut == nullptr if !withTurns).
+// Build a checkable "MCTS" submenu (Time [+ Turns] + Go!) under `parent`, added to the
+// exclusive `group`; `owner` parents the created QObjects. secOut receives the time combo
+// (item data = seconds); turnsOut receives the Turns spinbox, or nullptr if !withTurns.
 // Returns the Go! button so the caller can connect it to a slot.
-QPushButton* buildNegaMaxMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
-                              const NegaMaxMenuConfig& cfg,
-                              QSpinBox*& depthOut, QSpinBox*& turnsOut);
-
-// Build a checkable "MCTS" submenu (Time [+ Turns] + Go!). secOut receives the
-// time combo (item data = seconds); turnsOut as above. Returns the Go! button.
 QPushButton* buildMctsMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
                            const TimeMenuConfig& cfg,
                            QComboBox*& secOut, QSpinBox*& turnsOut);
 
-// Build a checkable "NegaMax" submenu budgeted by TIME rather than depth -- the same
-// widget set as the MCTS menu, under a NegaMax heading. Prefer this wherever NegaMax
-// runs iterative deepening: the wall-clock budget is what actually bounds the search,
-// and a fixed depth no longer describes what the engine does (it is only an upper
-// limit the clock almost never lets it reach). buildNegaMaxMenu above remains for the
-// games still driven by an explicit depth.
+// The same widget set under a "NegaMax" heading. NegaMax runs iterative deepening in
+// every game now, so a wall clock is what bounds it and a fixed depth no longer describes
+// what the engine does -- depth survives only as a ceiling the clock rarely lets it reach.
+// The depth-budgeted builder this replaced was removed once its last caller migrated.
 QPushButton* buildNegaMaxTimeMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
                                   const TimeMenuConfig& cfg,
                                   QComboBox*& secOut, QSpinBox*& turnsOut);

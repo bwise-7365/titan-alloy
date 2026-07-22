@@ -32,60 +32,11 @@ QProgressBar* makeStatusBar(QWidget* parent, int heightPx) {
     return bar;
 }
 
-QPushButton* buildNegaMaxMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
-                              const NegaMaxMenuConfig& cfg,
-                              QSpinBox*& depthOut, QSpinBox*& turnsOut) {
-    auto* action = new QAction("NegaMax", owner);
-    action->setCheckable(true);
-    group->addAction(action);
-    parent->addAction(action);
-
-    auto* nmMenu = new QMenu(owner);
-    auto* widget = new QWidget;
-    auto* vbox   = new QVBoxLayout(widget);
-    vbox->setContentsMargins(8, 6, 8, 6);
-    auto* form   = new QFormLayout;
-    form->setSpacing(6);
-    vbox->addLayout(form);
-
-    depthOut = new QSpinBox(widget);
-    depthOut->setRange(cfg.depthMin, cfg.depthMax);
-    depthOut->setValue(cfg.depthDefault);
-    form->addRow("Depth:", depthOut);
-
-    if (cfg.withTurns) {
-        turnsOut = new QSpinBox(widget);
-        turnsOut->setRange(cfg.turnsMin, cfg.turnsMax);
-        turnsOut->setValue(cfg.turnsDefault);
-        form->addRow("Turns:", turnsOut);
-    } else {
-        turnsOut = nullptr;
-    }
-
-    auto* sep = new QFrame(widget);
-    sep->setFrameShape(QFrame::HLine);
-    vbox->addWidget(sep);
-
-    auto* goBtn = new QPushButton("Go!", widget);
-    vbox->addWidget(goBtn);
-    QObject::connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
-
-    auto* wa = new QWidgetAction(nmMenu);
-    wa->setDefaultWidget(widget);
-    nmMenu->addAction(wa);
-    action->setMenu(nmMenu);
-
-    QObject::connect(nmMenu, &QMenu::aboutToShow, action, [action]() {
-        action->setChecked(true);
-    });
-    return goBtn;
-}
-
 namespace {
 
-// Shared body of the time-budgeted submenus. The MCTS and iterative-deepening NegaMax
-// menus are the same widget set (Time [+ Turns] + Go!) and differ only in their title,
-// so they share one implementation rather than a copy each.
+// Shared body of the time-budgeted submenus. The MCTS and NegaMax menus are the same
+// widget set (Time [+ Turns] + Go!) and differ only in their title, so they share one
+// implementation rather than a copy each.
 QPushButton* buildTimeMenu(const char* title, QWidget* owner, QMenu* parent,
                            QActionGroup* group, const TimeMenuConfig& cfg,
                            QComboBox*& secOut, QSpinBox*& turnsOut) {

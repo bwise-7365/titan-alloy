@@ -1,0 +1,39 @@
+Latrunculi bench: 20 games, 8x10, 20 per side, slide, 300 ms per searched ply
+base seed: 777001  (game g uses seed base+g)
+
+game   plies  moveP  capt  remv lastAct    tail  quiet   lead   peak  margin win  reason
+0        185    145    34    34     185       0     30      0      4       4   A  Reduction
+1        177    137    29    33     137      40     40      1      3      -1   B  QuietGame
+2        114     74    18    19      74      40     40      3      3      -3   B  QuietGame
+3        183    143    27    29     143      40     40      2      3       3   A  QuietGame
+4        143    103    30    31     143       0     22      0      7       7   A  Reduction
+5        165    125    31    31     125      40     40      0      5       5   A  QuietGame
+6        169    129    28    28     129      40     40      2      2       2   A  QuietGame
+7        135     95    30    31     135       0     18      0      7       7   A  Reduction
+8        197    157    30    33     157      40     40      1      4      -3   B  QuietGame
+9        186    146    34    34     146      40     40      4      1       0   B  QuietGame
+10       163    123    28    29     123      40     40      0      4       3   A  QuietGame
+11       167    127    32    35     167       0     23      0      3       3   A  Reduction
+12       161    121    33    34     161       0     25      0      4       4   A  Reduction
+13       199    159    33    35     159      40     40      4      2       1   A  QuietGame
+14       197    157    31    31     157      40     40      0      5       5   A  QuietGame
+15       209    169    31    32     169      40     40      0      4       4   A  QuietGame
+16       153    113    22    23     113      40     40      3      2      -1   B  QuietGame
+17       177    137    33    33     137      40     40      1      4      -3   B  QuietGame
+18       218    178    33    36     218       0     37      3      3      -2   B  Reduction
+19       137     97    32    33     137       0     10      0      5       5   A  Reduction
+
+games                20
+mean plies           171.8   (movement 131.8)
+mean captures        29.9
+mean removals        31.2
+mean dead tail       26.0   plies after the last capture or removal
+mean longest quiet   34.2
+mean lead changes    1.2   (10 of 20 games had any)
+mean peak margin     3.8
+mean final margin    3.3   (absolute)
+ended by quiet game  13  (65%)
+ended by reduction   7  (35%)
+ended by immobilize  0  (0%)
+won by A / B         13 / 7
+wall clock           951.38 s

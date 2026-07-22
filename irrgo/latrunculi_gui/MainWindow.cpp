@@ -182,7 +182,7 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     resize(835, 505);
 
     newGame(latgui::kStartRows, latgui::kStartColumns, latgui::kStartPerSide,
-            selectedMoveStyle());
+            selectedMoveStyle(), selectedKomi());
 }
 
 void MainWindow::setBannerFont(const QString& family) {
@@ -242,6 +242,17 @@ void MainWindow::buildMenuBar() {
     movementCombo_->setCurrentIndex(
         movementCombo_->findData(static_cast<int>(Latrunculi::kDefaultMoveStyle)));
     form->addRow("Movement:", movementCombo_);
+
+    // Komi credited to side B. Half-integers only: an integral komi would allow an exact
+    // tie, which this engine has no draw to report (Latrunculi::validateKomi rejects it).
+    // A combo rather than a spinbox so a whole number cannot be entered at all.
+    komiCombo_ = new QComboBox(bmw);
+    for (int whole = 0; whole < 6; ++whole) {
+        const double k = whole + 0.5;
+        komiCombo_->addItem(QString::number(k, 'f', 1), k);
+    }
+    komiCombo_->setCurrentIndex(komiCombo_->findData(Latrunculi::kDefaultKomi));
+    form->addRow("Komi (B):", komiCombo_);
 
     // When the board size changes, cap the per-side maximum to the area and reset the
     // count to the default fraction (kDefaultStoneFraction = 20/64) of the new area.
@@ -347,7 +358,12 @@ Latrunculi::MoveStyle MainWindow::selectedMoveStyle() const {
     return static_cast<Latrunculi::MoveStyle>(movementCombo_->currentData().toInt());
 }
 
-void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style) {
+double MainWindow::selectedKomi() const {
+    return komiCombo_->currentData().toDouble();
+}
+
+void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style,
+                         double komi) {
     stopSeed();
     if (2 * perSide > rows * columns) {
         QMessageBox::warning(this, "Latrunculi",
@@ -358,7 +374,8 @@ void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveSty
     placementPolicy_.reset(AbsGame::makeSeed(0));  // a different opening per new board
     randomPlies_.clear();
     try {
-        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide, style);
+        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide, style,
+                                                   Latrunculi::kDefaultPayoffStyle, komi);
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, "Latrunculi", ex.what());
         return;
@@ -369,6 +386,7 @@ void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveSty
     tlCols_ = columns;
     tlPerSide_ = perSide;
     tlStyle_ = style;
+    tlKomi_ = komi;
     timeline_.clear();
     rebuildMoveList();
     suggestedLog_->clear();
@@ -385,7 +403,7 @@ void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveSty
 
 void MainWindow::onNewGame() {
     newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
-            selectedMoveStyle());
+            selectedMoveStyle(), selectedKomi());
 }
 
 // ── Placement seeding (analogous to IrrGo's stone setup) ──────────────────────
@@ -409,7 +427,7 @@ void MainWindow::onSeedSelected(QAction* action) {
     // Start a fresh game at the current board settings, then seed it. newGame()
     // calls stopSeed(), so any in-progress seeding is cancelled first.
     newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
-            selectedMoveStyle());
+            selectedMoveStyle(), selectedKomi());
     if (!game_) {
         return;  // invalid board size; newGame already reported it
     }
@@ -503,6 +521,9 @@ void MainWindow::onPlayNegamaxGo() {
     p.algo          = guicommon::SearchController::Algorithm::NegaMax;
     p.depth         = kMaxNegamaxDepth;
     p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
+    // The clock bounds this search, not kMaxNegamaxDepth, so the search bar can show the
+    // real elapsed fraction instead of sweeping.
+    p.negamaxTimeBudgeted = true;
     startPlay(p, playTurnsSpin_->value());
 }
 
@@ -521,6 +542,7 @@ void MainWindow::onSuggestNegamaxGo() {
     p.algo          = guicommon::SearchController::Algorithm::NegaMax;
     p.depth         = kMaxNegamaxDepth;
     p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
     search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
         if (mv < 0) {
             suggestedLog_->setText("(no move)");
@@ -749,7 +771,8 @@ void MainWindow::rebuildToPly(int ply) {
     if (tlRows_ <= 0) {
         return;
     }
-    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_, tlStyle_);
+    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_, tlStyle_,
+                                                Latrunculi::kDefaultPayoffStyle, tlKomi_);
     const int k = std::min(ply, static_cast<int>(timeline_.size()));
     for (int i = 0; i < k; ++i) {
         const Latrunculi::Move& m = timeline_[static_cast<std::size_t>(i)];
