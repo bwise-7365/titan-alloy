@@ -57,19 +57,30 @@ struct PositionalTerms {
     // pair is half of a pincer and a launch platform for a leap, and it is the smallest
     // unit of structure a placement phase can build.
     int pairs = 0;
-    // Empty orthogonal neighbours summed over this side's Free discs: a cheap stand-in
-    // for mobility that needs no move enumeration. It ignores leap chains, which is why
-    // it carries only a small weight.
+    // A cheap stand-in for mobility, summed over this side's Free discs and measured in
+    // whatever a move actually is under the game's MoveStyle:
+    //   StepLeap - empty orthogonal neighbours. Ignores leap chains, which is part of why
+    //              the term carries only a small weight.
+    //   Slide    - empty squares along the four rays out of the disc, i.e. exactly the
+    //              destinations a slide can reach, so under this rule set the proxy is
+    //              the real move count.
+    // The two are on different scales: a disc has at most 4 empty neighbours but can have
+    // up to (rows-1)+(columns-1) slide destinations. That is a property of the rule sets,
+    // not a defect, but it means kMobilityWeight does NOT mean the same thing in both --
+    // the weights want separate calibration per style.
     int openNeighbours = 0;
     // Summed centrality of this side's Free discs; see centrality() in Eval.cpp.
     double centrality = 0.0;
 };
 
 // Count `player`'s positional features over `cells`, a rows x columns board in row-major
-// order. Throws std::invalid_argument if rows/columns are not positive or do not match
-// cells.size(), rather than quietly scoring a malformed board.
+// order, under the movement rule `style` (which only affects openNeighbours; the other
+// three terms are pure board shape). Throws std::invalid_argument if rows/columns are not
+// positive or do not match cells.size(), rather than quietly scoring a malformed board.
+// `style` has no default: a caller that does not know which rule set it is scoring cannot
+// produce a meaningful mobility figure, and should not be handed a plausible one.
 PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int columns,
-                                int player);
+                                int player, MoveStyle style);
 
 // The positional terms combined into one score in "disc units", where 1.0 is worth one
 // Free disc of material. Weights are declared and justified in Eval.cpp.

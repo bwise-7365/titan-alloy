@@ -215,13 +215,68 @@ ALSO OPEN:
 - Tune the `Eval` weights against self-play.
 - `moveOrderScore` returns 0 in placement, so placement search gets no ordering and iterative
   deepening reaches only ~depth 2-3 in a second. Rank placements by positional delta.
-- Rules-side recommendations 3-5 of the analysis (slide movement + immediate removal; Seneca ->
-  Piso; convex capture payoff and not rewarding the stall). Recommendation 4 interacts with
-  Stage 3 above -- read that caveat.
+- Rules-side recommendations 4-5 of the analysis (Seneca -> Piso; convex capture payoff and not
+  rewarding the stall). Recommendation 4 interacts with Stage 3 above -- read that caveat.
+  Recommendation 3 is now Stage 7.
 - BUG: a placement position with no legal placement is not terminal and returns an empty move
   list; `checkImmobilizationTerminal` returns early unless `phase_ == Movement`. The self-play
   driver then silently `break`s and prints "Draw". Violates the no-silent-default rule in
   CLAUDE.md.
+
+### Stage 7 — Kharebga slide movement  [2026-07-22; DONE, UNMEASURED]
+Everything still outstanding after this stage is collected in
+`doc/2026-07-22-latrunculi-further-improvements.md` — read that before reopening the
+"boring games" thread.
+
+Recommendation 3 of the analysis, adopted as a *selectable* rule set rather than a replacement.
+Motivation: after Stage 6 the engine stopped drifting aimlessly and instead found a new way to
+reach the quiet-game limit — it builds two large mutually-defending blobs, which under step
+movement cannot be broken, so the material leader simply waits. The Digital Ludeme Project's
+diagnosis of step movement is the same mechanism: an engine "may have difficulty detecting a move
+that brings it closer to an opposing piece in order to make a capture if they are distant from one
+another". A slide makes a threat creatable from across the board in one ply, so no formation is
+safely out of reach.
+
+`Latrunculi::MoveStyle { StepLeap, Slide }` in Game.h, defaulting to `Slide`:
+- `Slide` — rook-like: any distance along a rank or file, stopping before the first disc of either
+  colour. A step is the distance-1 case and leaps have no analogue, so it REPLACES StepLeap; the
+  two are never a union.
+- Implemented entirely in `reachableMask` (new `collectSlides` helper) and `movePath` (a slide has
+  no intermediate landings). Capture geometry, super-ko, the Pacific rule, placement, move
+  encoding and `moveOrderScore` are all untouched — the movement rule is the only difference.
+
+Only the movement half of the DLP's Kharebga ruleset was taken. Their version also removes
+captures immediately; the Bound/incitus state, the mandatory remove-then-move and
+`immobilizationDiscount` are all retained here, deliberately, so a Slide run differs from a
+StepLeap run in exactly ONE rule and any change in the games is attributable. Adopting immediate
+removal remains available as a separate step, and would make Stage 3 moot (as Piso does).
+
+Plumbing: `Game` carries `moveStyle_` (copied by `clone()`, so every search line plays the same
+rules); both constructors take it. `latrunculi_selfplay` selects it with a named constant at the
+top of `main` and prints it in the banner. The GUI adds a "Movement:" combo to the Board menu that
+takes effect on the next new game; `MainWindow::tlStyle_` travels with the replay timeline, since
+replaying a slide game under the step rules would reject its own move list. The save format gains
+`<movement val="Slide|StepLeap"/>` (schema `doc/latrunculi.xsd`); a file lacking the element is a
+StepLeap game, which is a fact about the format's history rather than a fallback, and an
+unrecognised value is refused rather than guessed at.
+
+NOT YET MEASURED. Open questions this raises:
+- Branching factor roughly triples on 8x8 (from ~4-9 destinations per disc to up to 14), and
+  `enumerateLegalMoves` copies the board and runs a full FNV hash per candidate. Iterative
+  deepening degrades gracefully — it just reaches a shallower depth — but the per-node cost noted
+  in Stage 2 ("optimise before heavy MCTS") is now the binding constraint, not a future one.
+- `PositionalTerms::openNeighbours` counts empty ORTHOGONAL NEIGHBOURS as a mobility proxy. Under
+  a slide that is no longer even approximately mobility: a disc with one open neighbour may still
+  reach seven squares. Either make the proxy style-aware or drop the term. See also the pair-term
+  problem below, which is what produced the blobs in the first place.
+- `kPairWeight` pays for EVERY adjacency between own discs, so the bonus grows quadratically with
+  clumping while the mobility penalty grows only linearly. The blob was the eval's stated optimum,
+  not a search artifact. DONE 2026-07-22: lowered 0.10 -> 0.02, which flips the 3x3-block
+  comparison from +1.20 vs +0.24 to +0.24 vs +0.72. This is independent of the slide (the first
+  slide run produced MORE blobs, not fewer) and only rebalances the weights -- the term's shape is
+  still farmable. If 0.02 is not enough, the next moves, one at a time, are: raise
+  `kMobilityWeight` 0.02 -> 0.05; make `pairs` saturate at one pair per disc; or count only pairs
+  aimed at an enemy disc, which is what the header already claims the term measures.
 
 ## CMake
 - Top `CMakeLists.txt`: add_subdirectory(latrunculi_game); add_subdirectory(latrunculi_gui) AFTER

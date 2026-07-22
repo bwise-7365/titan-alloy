@@ -62,7 +62,9 @@ private:
     int  playbackPlyCount() const override;  // length of the move timeline (M)
     void rebuildToPly(int ply) override;     // reconstruct the game at ply (replay)
 
-    void newGame(int rows, int columns, int perSide);
+    void newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style);
+    // The movement rule currently chosen in the Board menu.
+    Latrunculi::MoveStyle selectedMoveStyle() const;
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
     void updateSwatches();               // recolor the side A/B tally squares
@@ -98,6 +100,8 @@ private:
     QSpinBox* rowsSpin_    = nullptr;
     QSpinBox* colsSpin_    = nullptr;
     QSpinBox* perSideSpin_ = nullptr;
+    // Movement rule set; takes effect on the next new game, like the size spinboxes.
+    QComboBox* movementCombo_ = nullptr;
     QColor    colorA_ = latgui::kDefaultSideA;
     QColor    colorB_ = latgui::kDefaultSideB;
     QColor    background_ = latgui::kDefaultBackground;
@@ -120,6 +124,10 @@ private:
     // any prefix of it (game_ is always the position at the playback cursor).
     std::vector<Latrunculi::Move> timeline_;
     int tlRows_ = 0, tlCols_ = 0, tlPerSide_ = 0;
+    // The rule set the timeline was played under. Replaying a slide game under the step
+    // rules (or the reverse) would reject legal moves, so this travels with the timeline
+    // rather than being re-read from the Board menu.
+    Latrunculi::MoveStyle tlStyle_ = Latrunculi::kDefaultMoveStyle;
 
     // Placement-seeding animation (analogous to IrrGo's stone setup): places a
     // percentage of each side's discs at random no-capture squares, one at a time.

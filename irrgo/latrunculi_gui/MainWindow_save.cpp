@@ -12,6 +12,7 @@
 
 #include "PlaybackBar.h"
 #include <QColor>
+#include <QComboBox>
 #include <QFile>
 #include <QFileDialog>
 #include <QLatin1String>
@@ -95,6 +96,13 @@ void MainWindow::saveToFile(const QString& path) {
     xml.writeEmptyElement("perSide");
     xml.writeAttribute("val", QString::number(game_->perSide()));
 
+    // The movement rule set. A position's legal moves depend on it, so it is game state,
+    // not a preference: a slide game reloaded under the step rules would reject its own
+    // move list. See Latrunculi::MoveStyle.
+    xml.writeEmptyElement("movement");
+    xml.writeAttribute("val", game_->moveStyle() == Latrunculi::MoveStyle::Slide
+                                  ? "Slide" : "StepLeap");
+
     xml.writeEmptyElement("phase");
     xml.writeAttribute("val", game_->phase() == Latrunculi::Phase::Placement
                                   ? "Placement" : "Movement");
@@ -166,6 +174,10 @@ bool MainWindow::loadFromFile(const QString& path) {
 
     int rows = 0, cols = 0, perSide = 0, current = 0, placed0 = 0, placed1 = 0;
     Latrunculi::Phase phase = Latrunculi::Phase::Placement;
+    // A file with no <movement> element predates the rule being selectable, and every
+    // such file was written by a step/leap build. That is a fact about the format's
+    // history, not a guess standing in for missing data.
+    Latrunculi::MoveStyle style = Latrunculi::MoveStyle::StepLeap;
     std::vector<Latrunculi::Cell> board;
     std::vector<Latrunculi::Move> history;
     bool haveDims = false;
@@ -191,6 +203,18 @@ bool MainWindow::loadFromFile(const QString& path) {
             }
         } else if (name == QLatin1String("perSide")) {
             perSide = a.value(QLatin1String("val")).toInt();
+        } else if (name == QLatin1String("movement")) {
+            const QStringView val = a.value(QLatin1String("val"));
+            if (val == QLatin1String("Slide")) {
+                style = Latrunculi::MoveStyle::Slide;
+            } else if (val == QLatin1String("StepLeap")) {
+                style = Latrunculi::MoveStyle::StepLeap;
+            } else {
+                QMessageBox::warning(this, "Latrunculi",
+                    QString("Unknown movement rule \"%1\" in the game file.")
+                        .arg(val.toString()));
+                return false;
+            }
         } else if (name == QLatin1String("phase")) {
             phase = (a.value(QLatin1String("val")) == QLatin1String("Movement"))
                         ? Latrunculi::Phase::Movement : Latrunculi::Phase::Placement;
@@ -240,7 +264,8 @@ bool MainWindow::loadFromFile(const QString& path) {
     try {
         game_ = std::make_unique<Latrunculi::Game>(
             rows, cols, perSide, std::move(board), phase, current,
-            placed0, placed1, std::move(history));
+            placed0, placed1, std::move(history),
+            std::unordered_set<std::uint64_t>{}, style);
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, "Latrunculi", ex.what());
         return false;
@@ -259,6 +284,10 @@ bool MainWindow::loadFromFile(const QString& path) {
     tlRows_ = rows;
     tlCols_ = cols;
     tlPerSide_ = perSide;
+    tlStyle_ = style;
+    // Point the Board menu at the loaded rule set, so the next New Game does not silently
+    // switch rules out from under a file the user just opened.
+    movementCombo_->setCurrentIndex(movementCombo_->findData(static_cast<int>(style)));
     suggestedLog_->clear();
     // Adopt the loaded colors (or the retained defaults if the file had none).
     colorA_     = loadedColorA;

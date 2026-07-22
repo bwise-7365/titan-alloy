@@ -63,11 +63,12 @@ constexpr int kOrderBind     = 5;      // per enemy Free disc newly immobilised
 
 }  // namespace
 
-Game::Game(int rows, int columns, int perSide)
+Game::Game(int rows, int columns, int perSide, MoveStyle style)
     : rows_(rows),
       columns_(columns),
       perSide_(perSide),
       squares_(rows * columns),
+      moveStyle_(style),
       board_(static_cast<std::size_t>(rows * columns), Cell::Empty) {
     if (rows < 1 || columns < 1) {
         throw std::invalid_argument("Latrunculi: rows and columns must be >= 1");
@@ -80,11 +81,13 @@ Game::Game(int rows, int columns, int perSide)
 
 Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
            Phase phase, int current, int placed0, int placed1,
-           std::vector<Move> history, std::unordered_set<std::uint64_t> seen)
+           std::vector<Move> history, std::unordered_set<std::uint64_t> seen,
+           MoveStyle style)
     : rows_(rows),
       columns_(columns),
       perSide_(perSide),
       squares_(rows * columns),
+      moveStyle_(style),
       board_(std::move(board)),
       current_(current),
       phase_(phase),
@@ -237,7 +240,27 @@ void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
     moveAndCapture(b, from, to, me);
 }
 
-// ── Reachability: single step + own-color multi-leaps ───────────────────────
+// ── Reachability: rook slide, or single step + own-color multi-leaps ─────────
+
+void Game::collectSlides(const std::vector<Cell>& b, int from,
+                         std::vector<bool>& reach) const {
+    const int dr[4] = {-1, 1, 0, 0};
+    const int dc[4] = {0, 0, -1, 1};
+    const int fr = from / columns_;
+    const int fc = from % columns_;
+    for (int k = 0; k < 4; ++k) {
+        int r = fr + dr[k];
+        int c = fc + dc[k];
+        // Stop at the first occupied square: a disc of EITHER colour blocks the ray, and
+        // is not itself a destination -- there is no capture by displacement in this
+        // rule set, only custodial capture resolved after the move lands.
+        while (inBounds(r, c) && b[static_cast<std::size_t>(idx(r, c))] == Cell::Empty) {
+            reach[static_cast<std::size_t>(idx(r, c))] = true;
+            r += dr[k];
+            c += dc[k];
+        }
+    }
+}
 
 void Game::collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
                         std::vector<bool>& reach, int me) const {
@@ -268,6 +291,10 @@ void Game::collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& 
 
 std::vector<bool> Game::reachableMask(const std::vector<Cell>& b, int from, int me) const {
     std::vector<bool> reach(static_cast<std::size_t>(squares_), false);
+    if (moveStyle_ == MoveStyle::Slide) {
+        collectSlides(b, from, reach);
+        return reach;  // the slide subsumes the step; leaps do not exist in this rule set
+    }
     const int dr[4] = {-1, 1, 0, 0};
     const int dc[4] = {0, 0, -1, 1};
     const int fr = from / columns_;
@@ -342,6 +369,11 @@ bool Game::findLeapPath(const std::vector<Cell>& b, int pos, int to,
 }
 
 std::vector<int> Game::movePath(const std::vector<Cell>& b, int from, int to, int me) const {
+    if (moveStyle_ == MoveStyle::Slide) {
+        // A slide is one straight run along a rank or file, so there are no intermediate
+        // landings to record -- the endpoints describe the move completely.
+        return {from, to};
+    }
     const int dr = (to / columns_) - (from / columns_);
     const int dc = (to % columns_) - (from % columns_);
     const int adr = dr < 0 ? -dr : dr;
@@ -683,8 +715,8 @@ double Game::staticEval() const {
     // compensation can never outweigh a real win.
     const double material = effectiveMaterial(me) - effectiveMaterial(opp);
     const double positional =
-        positionalScore(positionalTerms(board_, rows_, columns_, me)) -
-        positionalScore(positionalTerms(board_, rows_, columns_, opp));
+        positionalScore(positionalTerms(board_, rows_, columns_, me, moveStyle_)) -
+        positionalScore(positionalTerms(board_, rows_, columns_, opp, moveStyle_));
     return material + positional;
 }
 

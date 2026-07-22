@@ -16,7 +16,20 @@ namespace {
 // tie-breakers whose job is to choose between otherwise equal quiet moves -- they must
 // never add up to a real capture, which is why they are an order of magnitude smaller.
 constexpr double kThreatWeight   = 0.25;
-constexpr double kPairWeight     = 0.10;
+// Lowered 0.10 -> 0.02 on 2026-07-22 after self-play under both movement rules produced
+// two large mutually-defending blobs and ran out the quiet-game limit. `pairs` counts
+// EVERY adjacency between own discs, so the bonus grows quadratically with clumping
+// while the mobility penalty grows only linearly: nine discs in a solid 3x3 block hold
+// 12 pairs against 12 open neighbours, where the same nine dispersed hold 0 pairs and 36
+// open neighbours. At 0.10 that was +1.20 against +0.24 -- the engine was paid roughly
+// three quarters of a captured disc, every ply, to build a fortress, and the blob was
+// this function's stated optimum rather than a search artifact. At 0.02 the block scores
+// +0.24 against +0.72 and dispersal wins outright.
+//
+// This rebalances the two weights; it does not fix the term's shape. A saturating count
+// (each disc in at most one pair) or one restricted to pairs actually aimed at an enemy
+// would make shape unfarmable. See doc/latrunculi-implementation-plan.md, Stage 7.
+constexpr double kPairWeight     = 0.02;
 constexpr double kMobilityWeight = 0.02;
 constexpr double kCentreWeight   = 0.05;
 
@@ -84,10 +97,40 @@ int emptyNeighbours(const std::vector<Cell>& cells, int rows, int columns,
     return count;
 }
 
+// Empty squares along the four rays out of (row, column), stopping at the first occupied
+// square of either colour: the exact destination count of a slide. Mirrors
+// Game::collectSlides -- if that blocking rule changes, this must change with it.
+int slideDestinations(const std::vector<Cell>& cells, int rows, int columns,
+                      int row, int column) {
+    const int dRow[4] = {-1, 1, 0, 0};
+    const int dColumn[4] = {0, 0, -1, 1};
+    int count = 0;
+    for (int k = 0; k < 4; ++k) {
+        int nRow = row + dRow[k];
+        int nColumn = column + dColumn[k];
+        while (inBounds(nRow, nColumn, rows, columns) &&
+               cells[index(nRow, nColumn, columns)] == Cell::Empty) {
+            ++count;
+            nRow += dRow[k];
+            nColumn += dColumn[k];
+        }
+    }
+    return count;
+}
+
+// The mobility proxy appropriate to `style`; see PositionalTerms::openNeighbours.
+int mobilityProxy(const std::vector<Cell>& cells, int rows, int columns,
+                  int row, int column, MoveStyle style) {
+    if (style == MoveStyle::Slide) {
+        return slideDestinations(cells, rows, columns, row, column);
+    }
+    return emptyNeighbours(cells, rows, columns, row, column);
+}
+
 }  // namespace
 
 PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int columns,
-                                int player) {
+                                int player, MoveStyle style) {
     if (rows < 1 || columns < 1) {
         throw std::invalid_argument("Latrunculi eval: rows and columns must be >= 1");
     }
@@ -121,7 +164,7 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
             }
 
             terms.centrality += centrality(row, column, rows, columns);
-            terms.openNeighbours += emptyNeighbours(cells, rows, columns, row, column);
+            terms.openNeighbours += mobilityProxy(cells, rows, columns, row, column, style);
             // Look only right and down so each pair is counted exactly once.
             if (column + 1 < columns && cells[index(row, column + 1, columns)] == mine) {
                 ++terms.pairs;

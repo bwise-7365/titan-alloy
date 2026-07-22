@@ -115,16 +115,22 @@ int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);  // initialises Qt (fonts, image backend) for rendering
     using namespace Latrunculi;
 
-    const int rows = 6;
-    const int columns = 6;
-    const int perSide = 9;               // 18 discs on 36 squares
+    const int rows = 8;
+    const int columns = 10;
+    const int perSide = 20;              // 40 discs on 80 squares
     const int searchDepth = 6;
     const int searchMs = 1000;
+    // Which movement rule to play under. Switch to MoveStyle::StepLeap to run the same
+    // driver over the older Seneca rules; everything else is identical, so the two runs
+    // are directly comparable (see MoveStyle in Game.h).
+    const MoveStyle moveStyle = MoveStyle::Slide;
 
-    Game game(rows, columns, perSide);
+    Game game(rows, columns, perSide, moveStyle);
 
     std::cout << "Latrunculi self-play: " << rows << "x" << columns << ", "
-              << perSide << " discs per side.\n\n";
+              << perSide << " discs per side, movement = "
+              << (moveStyle == MoveStyle::Slide ? "Kharebga slide" : "Seneca step/leap")
+              << ".\n\n";
 
     // Position rendering (irregular_grids): a hand-scratched board the same size.
     gb::BoardSpec look;

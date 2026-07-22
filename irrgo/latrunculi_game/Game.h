@@ -9,7 +9,8 @@
 #include <vector>
 
 // Latrunculi ("Ludus Latrunculorum"): two-phase play (placement then movement),
-// movement = an orthogonal step OR own-color multi-leaps (Stage 2), custodial
+// movement geometry selected by MoveStyle (a rook-like slide, or the older step /
+// own-color multi-leap), custodial
 // capture -> immobilisation, mandatory remove-one-captive-then-move, and the two
 // win conditions with the gradient score s = 3M / (3M + 2N), and super-ko (no
 // board position may repeat). The second player gets a half-point komi in every
@@ -23,6 +24,35 @@ namespace Latrunculi {
 enum class Cell : std::uint8_t { Empty, P0Free, P0Bound, P1Free, P1Bound };
 
 enum class Phase { Placement, Movement };
+
+// Which movement rule the game plays under. Both are Dux-free custodial-capture rule
+// sets and differ only in the geometry of one move:
+//
+//   StepLeap — the Locus Ludi *Seneca* reading built first: one orthogonal step onto an
+//              empty square, or a chain of leaps over one's own discs (plan Stage 2).
+//   Slide    — *Kharebga* movement: rook-like, any distance along a rank or file,
+//              stopping before the first disc of either colour. A step is the distance-1
+//              case and a leap has no analogue, so this REPLACES StepLeap rather than
+//              extending it.
+//
+// Why Slide exists: the Digital Ludeme Project searched 1006 traditional games for the
+// rules actually attested for latrunculi and ran alpha-beta self-play over every intact
+// Roman board size; the Kharebga ruleset won on duration, completion and branching
+// factor. Their diagnosis of step movement matches the behaviour observed here — an
+// engine "may have difficulty detecting a move that brings it closer to an opposing
+// piece in order to make a capture if they are distant from one another". Under a slide,
+// a threat can be created from across the board in a single ply, which is exactly what a
+// shallow search can see.
+//
+// Captures are deliberately NOT changed: both styles bind custodially (Free -> Bound)
+// and keep the mandatory remove-then-move rule, although the DLP's Kharebga also removes
+// captures immediately. Adopting only the movement half means a run under Slide differs
+// from a run under StepLeap in exactly one rule, so any change in the games is
+// attributable. See doc/2026-07-21-latrunculi-dynamism-analysis.md, recommendation 3.
+enum class MoveStyle : std::uint8_t { StepLeap, Slide };
+
+// The rule set a game uses when its constructor is not told otherwise.
+inline constexpr MoveStyle kDefaultMoveStyle = MoveStyle::Slide;
 
 // How a finished game ended (None while the game is still in progress). Reduction =
 // the loser was cut to a single disc; Immobilization = the side to move had no legal
@@ -47,7 +77,7 @@ inline constexpr int pacificMoveLimit = 40;
 
 // Default board for the no-argument constructor.
 inline constexpr int kDefaultRows = 8;
-inline constexpr int kDefaultColumns = 8;
+inline constexpr int kDefaultColumns = 10;
 inline constexpr int kDefaultPerSide = 20;
 
 // Search scoring. A decisive terminal is scaled by kWinBase so a real win/loss
@@ -75,17 +105,21 @@ class Game : public AbsGame::Game {
 public:
     // Empty board; both sides place `perSide` discs (placement phase) before
     // movement begins. Requires rows,columns >= 1 and 2*perSide <= rows*columns.
-    Game(int rows = kDefaultRows, int columns = kDefaultColumns, int perSide = kDefaultPerSide);
+    Game(int rows = kDefaultRows, int columns = kDefaultColumns, int perSide = kDefaultPerSide,
+         MoveStyle style = kDefaultMoveStyle);
     Game(const Game&) = default;
 
     // Reconstruct an arbitrary mid-game position (used by the GUI's Load). `board`
     // must hold rows*columns cells. Terminal status is recomputed from the
     // position; `seen` (the super-ko history) may be empty. The Pacific (no-capture)
-    // ply counter is not restored -- it resets to 0 on Load.
+    // ply counter is not restored -- it resets to 0 on Load. `style` must be the rule
+    // set the position was played under: a position is only reachable, and its legal
+    // moves are only correct, under the movement rule that produced it.
     Game(int rows, int columns, int perSide, std::vector<Cell> board,
          Phase phase, int current, int placed0, int placed1,
          std::vector<Move> history = {},
-         std::unordered_set<std::uint64_t> seen = {});
+         std::unordered_set<std::uint64_t> seen = {},
+         MoveStyle style = kDefaultMoveStyle);
 
     // ── AbsGame::Game overrides ──────────────────────────────────────────────
     int currentPlayer() const override { return current_; }
@@ -110,6 +144,7 @@ public:
     int columns() const { return columns_; }
     int squareCount() const { return squares_; }
     Phase phase() const { return phase_; }
+    MoveStyle moveStyle() const { return moveStyle_; }
     Cell cellAt(int square) const { return board_[static_cast<std::size_t>(square)]; }
     int ownerAt(int square) const;  // -1 if empty, else the owning player (0 or 1)
     int perSide() const { return perSide_; }
@@ -127,7 +162,7 @@ public:
     // ── Move encoding (so the GUI can build a MoveId from board clicks) ───────
     // Placement: the MoveId is just the target square.
     AbsGame::MoveId placementMove(int square) const { return square; }
-    // Movement: packs an optional captive removal with the from->to step.
+    // Movement: packs an optional captive removal with the from->to move.
     AbsGame::MoveId movementMove(int from, int to, int removeSquare = -1) const;
     void decodeMovement(AbsGame::MoveId mv, int& removeSquare, int& from, int& to) const;
 
@@ -136,6 +171,7 @@ private:
     int columns_;
     int perSide_;
     int squares_;
+    MoveStyle moveStyle_ = kDefaultMoveStyle;
     std::vector<Cell> board_;
     int current_ = 0;
     Phase phase_ = Phase::Placement;
@@ -170,12 +206,16 @@ private:
     void moveAndCapture(std::vector<Cell>& b, int from, int to, int me) const;
     void applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
                                    int from, int to, int me) const;
-    // Empty squares reachable from `from` on board b: orthogonal single steps plus
-    // own-color multi-leaps (hop a single own-color disc to the empty square
-    // beyond, chaining over distinct discs in any directions).
+    // Empty squares reachable from `from` on board b, under whichever MoveStyle this
+    // game plays: for StepLeap, orthogonal single steps plus own-color multi-leaps; for
+    // Slide, every empty square along the four rays out of `from`. The two are
+    // alternatives, never a union -- see MoveStyle.
     std::vector<bool> reachableMask(const std::vector<Cell>& b, int from, int me) const;
     void collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
                       std::vector<bool>& reach, int me) const;
+    // Rook rays out of `from`: walk each orthogonal direction while the squares are
+    // empty and stop at the first occupied one (of either colour) or the board edge.
+    void collectSlides(const std::vector<Cell>& b, int from, std::vector<bool>& reach) const;
     // FNV-1a hash of the board arrangement (occupancy + bound flags), for super-ko.
     std::uint64_t hashBoard(const std::vector<Cell>& b) const;
     // True if moving from->to on the post-removal board `b` is legal: it neither

@@ -23,6 +23,16 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- Movement rule set: "Slide" = Kharebga rook-like movement, "StepLeap" = the older
+       Seneca step / own-colour leap. Optional because files written before the rule was
+       selectable have no such element; those are all StepLeap games. -->
+  <xs:simpleType name="movementRule">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Slide"/>
+      <xs:enumeration value="StepLeap"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="cellState">
     <xs:restriction base="xs:string">
       <xs:enumeration value="P0Free"/>
@@ -61,6 +71,12 @@
         <xs:element name="perSide">
           <xs:complexType>
             <xs:attribute name="val" type="xs:nonNegativeInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="movement" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="val" type="movementRule" use="required"/>
           </xs:complexType>
         </xs:element>
 

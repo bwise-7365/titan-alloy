@@ -179,9 +179,10 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     resize(1430, 970); // 1175x760 looks nice, 1380x992 shows 40 moves
     // 1430, 990
     // 2149, 1496
+    resize(835, 505);
 
-    const int perSide = gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns});
-    newGame(latgui::kStartRows, latgui::kStartColumns, perSide);
+    newGame(latgui::kStartRows, latgui::kStartColumns, latgui::kStartPerSide,
+            selectedMoveStyle());
 }
 
 void MainWindow::setBannerFont(const QString& family) {
@@ -228,8 +229,19 @@ void MainWindow::buildMenuBar() {
 
     perSideSpin_ = new QSpinBox(bmw);
     perSideSpin_->setRange(1, (gb::kMaxRowsCols * gb::kMaxRowsCols) / 2);
-    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns}));
+    perSideSpin_->setValue(latgui::kStartPerSide);
     form->addRow("Discs/side:", perSideSpin_);
+
+    // Movement rule set. Both entries are Dux-free and share every other rule, so the
+    // two can be compared run against run; see Latrunculi::MoveStyle for the sources.
+    movementCombo_ = new QComboBox(bmw);
+    movementCombo_->addItem("Kharebga (slide)",
+                            static_cast<int>(Latrunculi::MoveStyle::Slide));
+    movementCombo_->addItem("Seneca (step + leap)",
+                            static_cast<int>(Latrunculi::MoveStyle::StepLeap));
+    movementCombo_->setCurrentIndex(
+        movementCombo_->findData(static_cast<int>(Latrunculi::kDefaultMoveStyle)));
+    form->addRow("Movement:", movementCombo_);
 
     // When the board size changes, cap the per-side maximum to the area and reset the
     // count to the default fraction (kDefaultStoneFraction = 20/64) of the new area.
@@ -331,7 +343,11 @@ void MainWindow::buildMenuBar() {
 
 // ── Game control ──────────────────────────────────────────────────────────────
 
-void MainWindow::newGame(int rows, int columns, int perSide) {
+Latrunculi::MoveStyle MainWindow::selectedMoveStyle() const {
+    return static_cast<Latrunculi::MoveStyle>(movementCombo_->currentData().toInt());
+}
+
+void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style) {
     stopSeed();
     if (2 * perSide > rows * columns) {
         QMessageBox::warning(this, "Latrunculi",
@@ -342,7 +358,7 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     placementPolicy_.reset(AbsGame::makeSeed(0));  // a different opening per new board
     randomPlies_.clear();
     try {
-        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide);
+        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide, style);
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, "Latrunculi", ex.what());
         return;
@@ -352,6 +368,7 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
     tlRows_ = rows;
     tlCols_ = columns;
     tlPerSide_ = perSide;
+    tlStyle_ = style;
     timeline_.clear();
     rebuildMoveList();
     suggestedLog_->clear();
@@ -367,7 +384,8 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
 }
 
 void MainWindow::onNewGame() {
-    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
+    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
+            selectedMoveStyle());
 }
 
 // ── Placement seeding (analogous to IrrGo's stone setup) ──────────────────────
@@ -390,7 +408,8 @@ void MainWindow::onSeedSelected(QAction* action) {
     const int pct = action->data().toInt();
     // Start a fresh game at the current board settings, then seed it. newGame()
     // calls stopSeed(), so any in-progress seeding is cancelled first.
-    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
+    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
+            selectedMoveStyle());
     if (!game_) {
         return;  // invalid board size; newGame already reported it
     }
@@ -730,7 +749,7 @@ void MainWindow::rebuildToPly(int ply) {
     if (tlRows_ <= 0) {
         return;
     }
-    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_);
+    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_, tlStyle_);
     const int k = std::min(ply, static_cast<int>(timeline_.size()));
     for (int i = 0; i < k; ++i) {
         const Latrunculi::Move& m = timeline_[static_cast<std::size_t>(i)];
