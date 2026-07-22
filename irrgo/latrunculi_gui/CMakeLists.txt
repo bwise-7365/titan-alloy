@@ -54,8 +54,14 @@ if(WIN32)
     target_sources(latrunculi_gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc")
 endif()
 
-# Comment this out to get a console window for the qWarning/stderr output.
-#set_target_properties(latrunculi_gui PROPERTIES WIN32_EXECUTABLE TRUE)
+# Build as a Windows GUI subsystem app, so launching it from Explorer does not also open
+# a console window. Ignored on non-Windows platforms, so this stays portable; Qt supplies
+# the WinMain entry point via Qt6::EntryPoint, which Qt6::Core links in automatically.
+#
+# The cost: qWarning/qDebug and anything written to stderr have nowhere to go when the
+# program is started from Explorer. Comment this line out to get the console back while
+# debugging. (Launched from an existing terminal, output still appears there.)
+set_target_properties(latrunculi_gui PROPERTIES WIN32_EXECUTABLE TRUE)
 
 target_link_libraries(latrunculi_gui PRIVATE
     Qt6::Widgets
