@@ -39,10 +39,8 @@ private slots:
     void onNewGame();
     void onMoveRequested(AbsGame::MoveId mv);
     void onPlayNegamaxGo();
-    void onPlayMctsGo();
     void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSuggestNegamaxGo();
-    void onSuggestMctsGo();
     void onPickColorA();
     void onPickColorB();
     void onPickBackground();
@@ -117,13 +115,10 @@ private:
     // Play / Suggest menu controls.
     QAction*   manualAction_        = nullptr;
     // NegaMax is time-budgeted (iterative deepening), so these are time combos, not
-    // depth spinboxes -- the same choices the MCTS menu offers.
+    // depth spinboxes.
     QComboBox* playNegamaxSecCombo_    = nullptr;
     QComboBox* suggestNegamaxSecCombo_ = nullptr;
     QSpinBox*  playTurnsSpin_       = nullptr;
-    QComboBox* playMctsSecCombo_    = nullptr;
-    QSpinBox*  playMctsTurnsSpin_   = nullptr;
-    QComboBox* suggestMctsSecCombo_ = nullptr;
     // Human-vs-computer controls: NegaMax think time and which side the human plays.
     QComboBox* playComputerSecCombo_  = nullptr;
     QComboBox* playComputerSideCombo_ = nullptr;

@@ -70,8 +70,8 @@ by clicking the underlying square.
 
 ## Suggested moves
 
-The **Suggest** menu runs a search (NegaMax or MCTS, with a time budget you
-choose) on the current position **without playing anything**. When it
+The **Suggest** menu runs a NegaMax search (with a time budget you choose) on
+the current position **without playing anything**. When it
 finishes, the suggested move appears both as text in the "Suggested:" box and
 as a green ring on the board. It stays there — even across further clicks on
 your own board — until you make a move, ask for a new suggestion, or press
@@ -81,9 +81,9 @@ your own board — until you make a move, ask for a new suggestion, or press
 
 The **Play** menu switches out of manual (both-sides-by-mouse) mode:
 
-- **NegaMax** / **MCTS** — the engine plays *both* sides for a chosen number
-  of turns at a chosen time budget per move ("auto-play"); useful for watching
-  the engine play itself or for fast-forwarding an opening.
+- **NegaMax** — the engine plays *both* sides for a chosen number of turns at
+  a chosen time budget per move ("auto-play"); useful for watching the engine
+  play itself or for fast-forwarding an opening.
 - **Computer** — you take one side (A or B) and the engine answers every move
   you make on the other side, at its own time budget. If the computer holds
   the opening move, it moves as soon as you press Go!.

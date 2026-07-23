@@ -46,7 +46,7 @@ namespace gb = games::board;
 // every depth completes, which cannot happen on a real board.
 static constexpr int kMaxNegamaxDepth = 64;
 
-static const guicommon::TimeOption kMctsOptions[] = {
+static const guicommon::TimeOption kTimeOptions[] = {
     {  5, "5 sec"  },
     {  10, "10 sec"  },{ 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
@@ -322,24 +322,17 @@ void MainWindow::buildMenuBar() {
         search().cancelSearch();
     });
     {
-        // NegaMax is iterative-deepening, so it is budgeted by time exactly like MCTS
-        // and offers the same choices; kMaxNegamaxDepth is only the ceiling the clock
-        // almost never lets it reach.
-        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        // NegaMax is iterative-deepening and budgeted by time; kMaxNegamaxDepth is only
+        // the ceiling the clock almost never lets it reach.
+        guicommon::TimeMenuConfig nm{kTimeOptions, std::size(kTimeOptions), true, 1, 200, 4};
         auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
                                                       playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
     {
-        guicommon::MctsMenuConfig mc{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
-        auto* goBtn = guicommon::buildMctsMenu(this, playMenu, playGroup, mc,
-                                               playMctsSecCombo_, playMctsTurnsSpin_);
-        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
-    }
-    {
         // Human vs computer: the same NegaMax time choices, plus which side (A/B) the
         // human takes; the computer plays the other and answers every turn.
-        guicommon::ComputerMenuConfig cc{kMctsOptions, std::size(kMctsOptions), "A", "B", 0};
+        guicommon::ComputerMenuConfig cc{kTimeOptions, std::size(kTimeOptions), "A", "B", 0};
         auto* goBtn = guicommon::buildComputerMenu(this, playMenu, playGroup, cc,
                                                    playComputerSecCombo_, playComputerSideCombo_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayComputerGo);
@@ -350,20 +343,12 @@ void MainWindow::buildMenuBar() {
     auto* suggestGroup = new QActionGroup(this);
     suggestGroup->setExclusive(true);
     {
-        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
+        guicommon::TimeMenuConfig nm{kTimeOptions, std::size(kTimeOptions)};
         nm.withTurns = false;
         QSpinBox* unusedTurns = nullptr;
         auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
                                                       suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
-    }
-    {
-        guicommon::MctsMenuConfig mc{kMctsOptions, std::size(kMctsOptions)};
-        mc.withTurns = false;
-        QSpinBox* unusedTurns = nullptr;
-        auto* goBtn = guicommon::buildMctsMenu(this, suggestMenu, suggestGroup, mc,
-                                               suggestMctsSecCombo_, unusedTurns);
-        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
     // Keep the Play and Suggest NegaMax time combos in sync.
@@ -589,14 +574,6 @@ void MainWindow::onPlayNegamaxGo() {
     startPlay(p, playTurnsSpin_->value());
 }
 
-void MainWindow::onPlayMctsGo() {
-    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = playMctsSecCombo_->currentData().toInt();
-    startPlay(p, playMctsTurnsSpin_->value());
-}
-
 // Enter human-vs-computer mode: the human takes the side chosen in the Computer submenu and
 // the computer answers each of its turns with a NegaMax search at the chosen think time.
 void MainWindow::onPlayComputerGo() {
@@ -621,23 +598,6 @@ void MainWindow::onSuggestNegamaxGo() {
     p.depth         = kMaxNegamaxDepth;
     p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
     p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
-    search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
-        if (mv < 0) {
-            suggestedLog_->setText("(no move)");
-            return;
-        }
-        suggestedLog_->setText(describeMoveId(mv));
-        boardWidget_->setSuggestion(mv);
-    });
-}
-
-void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching() || seeding()) {
-        return;
-    }
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = suggestMctsSecCombo_->currentData().toInt();
     search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
         if (mv < 0) {
             suggestedLog_->setText("(no move)");
