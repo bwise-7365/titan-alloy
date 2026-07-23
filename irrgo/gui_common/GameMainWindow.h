@@ -45,6 +45,22 @@ protected:
     // from autoPlayMoveOverride(): count the turn and either continue or end the run.
     void continuePlay(SearchController::Params params, int turns);
 
+    // ── Human vs computer ────────────────────────────────────────────────────
+    // Enter "play against the computer" mode: the human plays side `humanSide` (0 or 1)
+    // and the computer answers with a search using `params` whenever it is to move. Call
+    // from a derived window's Computer "Go!" slot; it cancels any in-flight search/auto-
+    // play run first, then lets the computer open if it is the side to move.
+    void beginVersus(SearchController::Params params, int humanSide);
+    // Leave human-vs-computer mode (on Manual, an auto-play run, or a New Game). Safe to
+    // call when not in it; does not touch the board or any in-flight search.
+    void endVersus() { versusActive_ = false; versusHumanSide_ = -1; }
+    bool versusActive() const { return versusActive_; }
+    // After the derived window applies ANY move (a human board move or a computer move),
+    // call this: in versus mode, if it is now the computer's turn, it searches and plays,
+    // chaining through any further computer plies (e.g. Mancala's extra turns). No-op
+    // unless versus mode is on and it is the computer to move.
+    void maybeComputerMove();
+
     // ── Playback / review (opt-in) ───────────────────────────────────────────
     // A game that supports Load-replay creates a PlaybackBar + MoveListWidget,
     // registers them here, fills the list via the widget, and overrides the two
@@ -63,6 +79,12 @@ private:
     PlaybackBar*      playbackBar_  = nullptr;
     MoveListWidget*   moveListView_ = nullptr;
     int               reviewCursor_ = 0;
+
+    // Human-vs-computer state. versusHumanSide_ is the player index the human controls;
+    // -1 (and versusActive_ false) means the mode is off.
+    SearchController::Params versusParams_;
+    int  versusHumanSide_ = -1;
+    bool versusActive_    = false;
 };
 
 }  // namespace guicommon

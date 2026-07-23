@@ -38,6 +38,7 @@ private slots:
     void onSuggestMctsGo();
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSave();
     void onSaveAs();
     void onLoad();
@@ -97,6 +98,9 @@ private:
     QSpinBox* playTurnsSpin_     = nullptr;
     QComboBox* playMctsSecCombo_ = nullptr;
     QSpinBox*  playMctsTurnsSpin_ = nullptr;
+    // Human-vs-computer controls: NegaMax think time and which side (Black/White) the human plays.
+    QComboBox* playComputerSecCombo_  = nullptr;
+    QComboBox* playComputerSideCombo_ = nullptr;
 
     // Suggest menu
     QComboBox* suggestNegamaxSecCombo_ = nullptr;

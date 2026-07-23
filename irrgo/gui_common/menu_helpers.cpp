@@ -34,39 +34,30 @@ QProgressBar* makeStatusBar(QWidget* parent, int heightPx) {
 
 namespace {
 
-// Shared body of the time-budgeted submenus. The MCTS and NegaMax menus are the same
-// widget set (Time [+ Turns] + Go!) and differ only in their title, so they share one
-// implementation rather than a copy each.
-QPushButton* buildTimeMenu(const char* title, QWidget* owner, QMenu* parent,
-                           QActionGroup* group, const TimeMenuConfig& cfg,
-                           QComboBox*& secOut, QSpinBox*& turnsOut) {
+// The widget scaffolding every submenu shares: a checkable action in the exclusive group
+// carrying a pop-out QMenu whose single widget holds a form (the caller fills its rows), a
+// horizontal rule, and a Go! button. Returns the form to populate and the Go! button to
+// wire; `widget` parents any controls the caller adds to the form.
+struct MenuShell {
+    QFormLayout* form   = nullptr;
+    QPushButton* goBtn  = nullptr;
+    QWidget*     widget = nullptr;
+};
+
+MenuShell buildMenuShell(const char* title, QWidget* owner, QMenu* parent,
+                         QActionGroup* group) {
     auto* action = new QAction(title, owner);
     action->setCheckable(true);
     group->addAction(action);
     parent->addAction(action);
 
     auto* budgetMenu = new QMenu(owner);
-    auto* widget   = new QWidget;
-    auto* vbox     = new QVBoxLayout(widget);
+    auto* widget = new QWidget;
+    auto* vbox   = new QVBoxLayout(widget);
     vbox->setContentsMargins(8, 6, 8, 6);
-    auto* form     = new QFormLayout;
+    auto* form   = new QFormLayout;
     form->setSpacing(6);
-    vbox->addLayout(form);
-
-    secOut = new QComboBox(widget);
-    for (std::size_t i = 0; i < cfg.optionCount; ++i) {
-        secOut->addItem(cfg.options[i].label, cfg.options[i].secs);
-    }
-    form->addRow("Time:", secOut);
-
-    if (cfg.withTurns) {
-        turnsOut = new QSpinBox(widget);
-        turnsOut->setRange(cfg.turnsMin, cfg.turnsMax);
-        turnsOut->setValue(cfg.turnsDefault);
-        form->addRow("Turns:", turnsOut);
-    } else {
-        turnsOut = nullptr;
-    }
+    vbox->addLayout(form);  // the form keeps its slot above the rule/Go! as rows are added
 
     auto* sep = new QFrame(widget);
     sep->setFrameShape(QFrame::HLine);
@@ -84,7 +75,32 @@ QPushButton* buildTimeMenu(const char* title, QWidget* owner, QMenu* parent,
     QObject::connect(budgetMenu, &QMenu::aboutToShow, action, [action]() {
         action->setChecked(true);
     });
-    return goBtn;
+    return {form, goBtn, widget};
+}
+
+// Shared body of the time-budgeted submenus. The MCTS and NegaMax menus are the same
+// widget set (Time [+ Turns] + Go!) and differ only in their title, so they share one
+// implementation rather than a copy each.
+QPushButton* buildTimeMenu(const char* title, QWidget* owner, QMenu* parent,
+                           QActionGroup* group, const TimeMenuConfig& cfg,
+                           QComboBox*& secOut, QSpinBox*& turnsOut) {
+    MenuShell shell = buildMenuShell(title, owner, parent, group);
+
+    secOut = new QComboBox(shell.widget);
+    for (std::size_t i = 0; i < cfg.optionCount; ++i) {
+        secOut->addItem(cfg.options[i].label, cfg.options[i].secs);
+    }
+    shell.form->addRow("Time:", secOut);
+
+    if (cfg.withTurns) {
+        turnsOut = new QSpinBox(shell.widget);
+        turnsOut->setRange(cfg.turnsMin, cfg.turnsMax);
+        turnsOut->setValue(cfg.turnsDefault);
+        shell.form->addRow("Turns:", turnsOut);
+    } else {
+        turnsOut = nullptr;
+    }
+    return shell.goBtn;
 }
 
 }  // anonymous namespace
@@ -99,6 +115,28 @@ QPushButton* buildNegaMaxTimeMenu(QWidget* owner, QMenu* parent, QActionGroup* g
                                   const TimeMenuConfig& cfg,
                                   QComboBox*& secOut, QSpinBox*& turnsOut) {
     return buildTimeMenu("NegaMax", owner, parent, group, cfg, secOut, turnsOut);
+}
+
+QPushButton* buildComputerMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
+                               const ComputerMenuConfig& cfg,
+                               QComboBox*& secOut, QComboBox*& sideOut) {
+    MenuShell shell = buildMenuShell("Computer", owner, parent, group);
+
+    secOut = new QComboBox(shell.widget);
+    for (std::size_t i = 0; i < cfg.optionCount; ++i) {
+        secOut->addItem(cfg.options[i].label, cfg.options[i].secs);
+    }
+    shell.form->addRow("Think:", secOut);
+
+    // The human's side. Combo data is the player index the human plays; the computer takes
+    // the other one.
+    sideOut = new QComboBox(shell.widget);
+    sideOut->addItem(cfg.side0Label, 0);
+    sideOut->addItem(cfg.side1Label, 1);
+    sideOut->setCurrentIndex((cfg.defaultHumanSide == 1) ? 1 : 0);
+    shell.form->addRow("You play:", sideOut);
+
+    return shell.goBtn;
 }
 
 }  // namespace guicommon

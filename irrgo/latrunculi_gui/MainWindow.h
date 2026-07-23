@@ -40,6 +40,7 @@ private slots:
     void onMoveRequested(AbsGame::MoveId mv);
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSuggestNegamaxGo();
     void onSuggestMctsGo();
     void onPickColorA();
@@ -52,6 +53,9 @@ private slots:
 
 private:
     void buildMenuBar();
+    // Renders a bundled Qt-resource markdown file (":/doc/...") in a read-only popup
+    // dialog titled `title`.
+    void showMarkdownResource(const QString& title, const QString& resourcePath);
     void updateControls() override;
     AbsGame::Game* currentGame() override;
     void applyComputedMove(AbsGame::MoveId mv) override;
@@ -120,6 +124,9 @@ private:
     QComboBox* playMctsSecCombo_    = nullptr;
     QSpinBox*  playMctsTurnsSpin_   = nullptr;
     QComboBox* suggestMctsSecCombo_ = nullptr;
+    // Human-vs-computer controls: NegaMax think time and which side the human plays.
+    QComboBox* playComputerSecCombo_  = nullptr;
+    QComboBox* playComputerSideCombo_ = nullptr;
 
     std::unique_ptr<Latrunculi::Game> game_;
     QString currentFilePath_;

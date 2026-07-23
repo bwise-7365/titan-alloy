@@ -291,6 +291,7 @@ bool MainWindow::loadFromFile(const QString& path) {
 
     stopSeed();
     search().cancelSearch();
+    endVersus();  // a loaded game leaves any human-vs-computer game
     // The loaded move list becomes the replay timeline; positions are rebuilt from a
     // fresh game, so Load opens at ply 0 (empty board) ready to step forward.
     timeline_.assign(game_->history().begin(), game_->history().end());

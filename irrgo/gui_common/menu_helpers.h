@@ -55,5 +55,24 @@ QPushButton* buildNegaMaxTimeMenu(QWidget* owner, QMenu* parent, QActionGroup* g
                                   const TimeMenuConfig& cfg,
                                   QComboBox*& secOut, QSpinBox*& turnsOut);
 
+// Config for the "Computer" (human-vs-computer) submenu: a NegaMax think-time budget plus
+// a choice of which side the human plays. The two side labels name the players the way the
+// game does (A/B, Black/White, P0/P1); the combo data is the player index (0 or 1).
+struct ComputerMenuConfig {
+    const TimeOption* options = nullptr;
+    std::size_t optionCount = 0;
+    const char* side0Label = "First";   // player index 0
+    const char* side1Label = "Second";  // player index 1
+    int defaultHumanSide = 0;           // side the human plays by default (0 or 1)
+};
+
+// Build a checkable "Computer" submenu (Think + You play + Go!) under `parent`, added to the
+// exclusive `group`; `owner` parents the created QObjects. secOut receives the think-time
+// combo (item data = seconds); sideOut receives the side combo (item data = the player index
+// the human plays). Returns the Go! button so the caller can connect it to a slot.
+QPushButton* buildComputerMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
+                               const ComputerMenuConfig& cfg,
+                               QComboBox*& secOut, QComboBox*& sideOut);
+
 }  // namespace guicommon
 // Copyright Ben Paul Wise. All Rights Reserved.

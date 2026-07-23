@@ -11,6 +11,8 @@
 #include <QActionGroup>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDialog>
+#include <QFile>
 #include <QFont>
 #include <QFontMetrics>
 #include <QFormLayout>
@@ -25,6 +27,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QStringList>
+#include <QTextBrowser>
 #include <QTextEdit>
 #include <QTimer>
 //#include <QVBoxLayout>
@@ -119,7 +122,11 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     statusHBox->addWidget(statusLabel_, 1);
     statusHBox->addWidget(stopBtn_);
     pv->addWidget(statusRow);
-    connect(stopBtn_, &QPushButton::clicked, this, [this]() { search().cancelSearch(); });
+    connect(stopBtn_, &QPushButton::clicked, this, [this]() {
+        search().cancelSearch();
+        endVersus();                     // Stop drops a versus game back to manual play
+        manualAction_->setChecked(true);  // reflect it in the Play menu
+    });
 
     // Per-side tallies, each led by a color swatch (~ the size of a capital "A")
     // that identifies the side; the counts sit two em-spaces to the right of it.
@@ -308,6 +315,12 @@ void MainWindow::buildMenuBar() {
     manualAction_->setCheckable(true);
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
+    // Selecting Manual takes both sides back under the mouse: leave any versus game and
+    // stop the computer.
+    connect(manualAction_, &QAction::triggered, this, [this]() {
+        endVersus();
+        search().cancelSearch();
+    });
     {
         // NegaMax is iterative-deepening, so it is budgeted by time exactly like MCTS
         // and offers the same choices; kMaxNegamaxDepth is only the ceiling the clock
@@ -322,6 +335,14 @@ void MainWindow::buildMenuBar() {
         auto* goBtn = guicommon::buildMctsMenu(this, playMenu, playGroup, mc,
                                                playMctsSecCombo_, playMctsTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
+    }
+    {
+        // Human vs computer: the same NegaMax time choices, plus which side (A/B) the
+        // human takes; the computer plays the other and answers every turn.
+        guicommon::ComputerMenuConfig cc{kMctsOptions, std::size(kMctsOptions), "A", "B", 0};
+        auto* goBtn = guicommon::buildComputerMenu(this, playMenu, playGroup, cc,
+                                                   playComputerSecCombo_, playComputerSideCombo_);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayComputerGo);
     }
 
     // Suggest.
@@ -350,6 +371,40 @@ void MainWindow::buildMenuBar() {
             suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
     connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
             playNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+
+    // About.
+    auto* aboutMenu = menuBar()->addMenu("About");
+    connect(aboutMenu->addAction("Rules"), &QAction::triggered, this, [this]() {
+        showMarkdownResource("Ludus Latrunculorum -- Rules", ":/doc/rules.md");
+    });
+    connect(aboutMenu->addAction("Usage"), &QAction::triggered, this, [this]() {
+        showMarkdownResource("Ludus Latrunculorum -- Usage", ":/doc/usage.md");
+    });
+}
+
+// Loads a bundled markdown resource and renders it (headings, emphasis, block quotes,
+// etc.) in a read-only popup dialog; the dialog is modeless and self-deletes on close.
+void MainWindow::showMarkdownResource(const QString& title, const QString& resourcePath) {
+    QFile file(resourcePath);
+    QString text;
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        text = QString::fromUtf8(file.readAll());
+    } else {
+        // A missing bundled resource is a build/packaging bug, not user-facing bad
+        // input -- surface it rather than silently showing a blank dialog.
+        text = QString("(Could not load bundled resource \"%1\".)").arg(resourcePath);
+    }
+
+    auto* dialog = new QDialog(this);
+    dialog->setWindowTitle(title);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->resize(700, 800);
+    auto* layout = new QVBoxLayout(dialog);
+    auto* browser = new QTextBrowser(dialog);
+    browser->setOpenExternalLinks(true);
+    browser->setMarkdown(text);
+    layout->addWidget(browser);
+    dialog->show();
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
@@ -381,6 +436,7 @@ void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveSty
         return;
     }
     search().cancelSearch();
+    endVersus();  // a fresh board leaves any human-vs-computer game
     currentFilePath_.clear();
     tlRows_ = rows;
     tlCols_ = columns;
@@ -475,6 +531,7 @@ void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
     }
     game_->applyMove(mv);
     afterMoveApplied();
+    maybeComputerMove();  // in Computer mode, let the computer answer this move
 }
 
 // ── GameMainWindow hooks ──────────────────────────────────────────────────────
@@ -517,6 +574,7 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 // ── AI play / suggest ─────────────────────────────────────────────────────────
 
 void MainWindow::onPlayNegamaxGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
     p.algo          = guicommon::SearchController::Algorithm::NegaMax;
     p.depth         = kMaxNegamaxDepth;
@@ -528,10 +586,26 @@ void MainWindow::onPlayNegamaxGo() {
 }
 
 void MainWindow::onPlayMctsGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
     p.algo    = guicommon::SearchController::Algorithm::Mcts;
     p.seconds = playMctsSecCombo_->currentData().toInt();
     startPlay(p, playMctsTurnsSpin_->value());
+}
+
+// Enter human-vs-computer mode: the human takes the side chosen in the Computer submenu and
+// the computer answers each of its turns with a NegaMax search at the chosen think time.
+void MainWindow::onPlayComputerGo() {
+    if (!game_ || game_->isTerminal() || seeding()) {
+        return;
+    }
+    guicommon::SearchController::Params p;
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;
+    const int humanSide = playComputerSideCombo_->currentData().toInt();
+    beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
