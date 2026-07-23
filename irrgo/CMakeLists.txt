@@ -28,12 +28,16 @@ else()
     message(STATUS "IPO/LTO unavailable, skipping: ${_ipoError}")
 endif()
 
-# Extra Release flags layered on top of CMake's defaults (/O2 for MSVC, -O3 for
-# GCC/Clang). Applies to every target declared below.
-add_compile_options(
-    "$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2;/Ob3>"
-    "$<$<AND:$<CONFIG:Release>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O3>"
-)
+# CMake's Release defaults already give maximum optimization (-O3 for GCC/Clang;
+# /O2 /Ob2 for MSVC). Bump MSVC's inlining from /Ob2 to the more aggressive /Ob3
+# in place, rather than appending it via add_compile_options: appending would leave
+# both /Ob2 and /Ob3 on the command line, and MSVC warns (D9025) about the override.
+# /Gw pairs with /GL above, letting the linker fold/strip unused global data as well
+# as unused functions. Applies to every target declared below.
+if(MSVC)
+    string(REPLACE "/Ob2" "/Ob3" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    add_compile_options("$<$<CONFIG:Release>:/Gw>")
+endif()
 
 # Opt-in: tune for the build machine's CPU. OFF by default because it produces
 # binaries that may not run on other CPUs (violates "build and run on both").
@@ -49,6 +53,13 @@ endif()
 if(WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
     set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
 endif()
+
+# Qt6Gui's CMake package optionally looks for WrapVulkanHeaders to expose a
+# Vulkan-based QRhi backend; without the Vulkan SDK installed, that search just
+# reports "Could NOT find" and Qt falls back to its other backends (no Vulkan
+# rendering is used anywhere in this project). Skip the search outright so it
+# stops printing noise at configure time.
+set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
 
 add_subdirectory(palette_core)
 add_subdirectory(palette_widgets)

@@ -53,6 +53,7 @@ if(WIN32)
                    "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc" @ONLY)
     target_sources(latrunculi_gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc")
 endif()
+irrgo_add_version_resource(latrunculi_gui "Latrunculi")
 
 # Build as a Windows GUI subsystem app, so launching it from Explorer does not also open
 # a console window. Ignored on non-Windows platforms, so this stays portable; Qt supplies

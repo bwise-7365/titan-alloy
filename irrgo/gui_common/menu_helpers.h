@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 #include <cstddef>
+#include <QString>
 
 class QActionGroup;
 class QComboBox;
@@ -73,6 +74,10 @@ struct ComputerMenuConfig {
 QPushButton* buildComputerMenu(QWidget* owner, QMenu* parent, QActionGroup* group,
                                const ComputerMenuConfig& cfg,
                                QComboBox*& secOut, QComboBox*& sideOut);
+
+// Shows the "About <appName>" dialog carrying the project's copyright notice. Shared
+// across the game GUIs so that notice lives in one place instead of three.
+void showAboutDialog(QWidget* owner, const QString& appName);
 
 }  // namespace guicommon
 // Copyright Ben Paul Wise. All Rights Reserved.

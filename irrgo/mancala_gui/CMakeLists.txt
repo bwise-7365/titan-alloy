@@ -13,6 +13,7 @@ qt_add_executable(mancala_gui
     MancalaWidget.h
     MancalaWidget.cpp
 )
+irrgo_add_version_resource(mancala_gui "Mancala")
 
 # Build as a Windows GUI subsystem app, so launching it from Explorer does not also open
 # a console window. Ignored on non-Windows platforms, so this stays portable; Qt supplies

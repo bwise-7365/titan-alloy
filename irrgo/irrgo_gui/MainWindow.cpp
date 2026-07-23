@@ -447,6 +447,12 @@ void MainWindow::buildMenuBar() {
     auto* twa = new QWidgetAction(themeMenu);
     twa->setDefaultWidget(tmw);
     themeMenu->addAction(twa);
+
+    // ── About ─────────────────────────────────────────────────────────────────
+    auto* aboutMenu = menuBar()->addMenu("About");
+    connect(aboutMenu->addAction("About IrrGo"), &QAction::triggered, this, [this]() {
+        guicommon::showAboutDialog(this, "IrrGo");
+    });
 }
 
 // ── Board generation ──────────────────────────────────────────────────────────

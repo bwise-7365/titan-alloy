@@ -43,6 +43,7 @@ qt_add_resources(irrgo_gui "textures_res"
 if(WIN32)
     target_sources(irrgo_gui PRIVATE irrgo.rc)
 endif()
+irrgo_add_version_resource(irrgo_gui "IrrGo")
 
 
 # Build as a Windows GUI subsystem app, so launching it from Explorer does not also open

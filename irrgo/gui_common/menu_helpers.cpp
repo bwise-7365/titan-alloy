@@ -7,6 +7,7 @@
 #include <QFormLayout>
 #include <QFrame>
 #include <QMenu>
+#include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSpinBox>
@@ -137,6 +138,13 @@ QPushButton* buildComputerMenu(QWidget* owner, QMenu* parent, QActionGroup* grou
     shell.form->addRow("You play:", sideOut);
 
     return shell.goBtn;
+}
+
+void showAboutDialog(QWidget* owner, const QString& appName) {
+    QMessageBox::about(owner, "About " + appName,
+                       QString("<h3>%1</h3><p>Copyright Ben Paul Wise. "
+                               "All Rights Reserved.</p>")
+                           .arg(appName));
 }
 
 }  // namespace guicommon

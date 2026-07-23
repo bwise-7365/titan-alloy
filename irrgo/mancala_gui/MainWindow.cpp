@@ -240,6 +240,12 @@ void MainWindow::buildMenuBar() {
             suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
     connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
             playNegamaxSecCombo_,    &QComboBox::setCurrentIndex);
+
+    // ── About ─────────────────────────────────────────────────────────────────
+    auto* aboutMenu = menuBar()->addMenu("About");
+    connect(aboutMenu->addAction("About Mancala"), &QAction::triggered, this, [this]() {
+        guicommon::showAboutDialog(this, "Mancala");
+    });
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────

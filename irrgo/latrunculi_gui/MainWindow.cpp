@@ -380,6 +380,10 @@ void MainWindow::buildMenuBar() {
     connect(aboutMenu->addAction("Usage"), &QAction::triggered, this, [this]() {
         showMarkdownResource("Ludus Latrunculorum -- Usage", ":/doc/usage.md");
     });
+    aboutMenu->addSeparator();
+    connect(aboutMenu->addAction("About Latrunculi"), &QAction::triggered, this, [this]() {
+        guicommon::showAboutDialog(this, "Latrunculi");
+    });
 }
 
 // Loads a bundled markdown resource and renders it (headings, emphasis, block quotes,
