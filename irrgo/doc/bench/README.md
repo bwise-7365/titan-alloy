@@ -6,6 +6,63 @@ Raw output from `latrunculi_bench`, kept so later runs have something to be comp
 against. One file per batch; the filename records date, rule set, game count and time
 budget. Metric definitions are in `latrunculi_game/GameStats.h`.
 
+Not every experiment leaves its raw files here; the placement experiment below was
+summarised and its ten 10-game data files discarded, since it is unlikely to be rerun.
+The command line and seeds are recorded so it can be regenerated if that changes.
+
+## 2026-07-22 (evening) — does searched placement create the first-player bias?
+
+The 2x2 below left player A winning above chance in every cell, unrelated to any change
+made that day. This experiment isolates the cause. `latrunculi_bench` gained a
+`placement=policy|random` option: `policy` is the shared PlacementPolicy (each side plays
+one random opening placement, then runs of searched ones); `random` makes every placement
+random for both sides, so neither gains anything from SEARCHING the opening. If the bias
+comes from player 0 optimising its first placements onto a nearly empty board, it should
+vanish under `random`; if it is inherent first-move tempo, it should survive.
+
+50 games per condition (five 10-game runs, seeds 777001 + 10*i so the two conditions are
+paired game-for-game), 8x10x20, slide + convex, **komi 1.5**, 1000 ms/ply.
+
+| | policy (searched opening) | random opening |
+|---|---|---|
+| overall A/B | **33 / 17** | **25 / 25** |
+| decisive (reduction) | 20 (40%) | 13 (26%) |
+| — A/B among decisive | 17 / 3 | 9 / 4 |
+| quiet game | 30 (60%) | 37 (74%) |
+| — A/B among quiet | 16 / 14 | 16 / 21 |
+| mean captures | 29.6 | 23.7 |
+| games with a lead change | 18 / 50 | 25 / 50 |
+
+Findings:
+
+- **The first-player advantage is created by searching the opening, not by moving first.**
+  Searched placement gives A 33/17 (two-sided binomial p ~ 0.02); random placement gives
+  25/25, dead even. Player 0's edge is that it optimises its opening structure on an
+  emptier board, and it disappears when neither side searches the opening.
+- **Random placement fixes fairness by removing what makes the game good.** Decisive
+  finishes fall 40% -> 26% and captures 30 -> 24: the searched opening builds the
+  structure later captures feed on. Fair opening OR lively opening, not both for free.
+- **Komi 1.5 is well-sized for the quiet-game tiebreak.** Combined across both conditions,
+  quiet games are 32/35 -- near even. The direction flips by condition (policy 16/14,
+  random 16/21), both within noise. No reason to change it. This is the first confirmation
+  from live play, rather than replayed records, that 1.5 does what it was chosen to do.
+
+Caveats: the decisive subset still leans A under random placement (9/4), hinting at a
+small residual first-move edge, but that is 13 games (p ~ 0.16) -- indistinguishable from
+noise here. And random openings produce MORE lead changes (25 vs 18) despite fewer
+decisive games, so activity and drama again diverge, as they did at 300 ms.
+
+Design read (not acted on): do NOT switch to random placement to chase fairness -- it
+costs exactly the game quality the slide bought. The searched-placement edge (66% for A)
+is within the range komi is meant to cover for material-decided games; it cannot touch
+decisive games, and no scalar can. If the decisive tilt matters later, the lever is the
+placement phase itself -- mirror player 1's opening search, or give player 1 a small
+structural compensation -- not komi and not random openings.
+
+Regenerate with, for i in 0..4 and both placement values:
+
+    latrunculi_bench games=10 ms=1000 seed=$((777001+10*i)) style=slide payoff=convex komi=1.5 placement=policy
+
 Every batch prints its base seed, and game `g` uses `base + g`, so any single row can be
 reproduced on its own:
 
