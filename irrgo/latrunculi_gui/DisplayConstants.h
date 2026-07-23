@@ -9,9 +9,9 @@
 namespace latgui {
 
 // ── Default colors (the user can recolor at runtime via the Board menu) ───────────
-inline const QColor kDefaultSideA{0x1F, 0x20, 0x14};      // dark olive
-inline const QColor kDefaultSideB{0x85, 0x25, 0x32};      // brick red
-inline const QColor kDefaultBackground{0xF5, 0xE8, 0xC7}; // warm cream
+inline const QColor kDefaultSideA{0x00, 0x00, 0x00};      // dark olive: {0x1F, 0x20, 0x14}
+inline const QColor kDefaultSideB{0x80, 0xC0, 0xA0};      // brick red: {0x85, 0x25, 0x32}
+inline const QColor kDefaultBackground{0xF5, 0xE8, 0xC7}; // warm cream: {0xF5, 0xE8, 0xC7}
 
 // ── Board overlay colors ──────────────────────────────────────────────────────────
 inline const QColor kBoardSurround{"#33332f"};   // dark border painted behind the board
