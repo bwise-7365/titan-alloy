@@ -181,6 +181,23 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         ringAt(suggestion_, latgui::kSuggestionRing, latgui::kThinPenPx);
     }
 
+    // Mandatory removal cue: while a captive must be removed but none is chosen yet, ring
+    // every enemy Bound disc so it is clear the first click has to land on one of them (an
+    // own-disc click is ignored until then). Once one is picked, only that one stays ringed.
+    if (!isSearching() && !game_->isOver()
+        && game_->phase() == Latrunculi::Phase::Movement
+        && currentHasCaptives() && pendingRemove_ < 0) {
+        const int cur = game_->currentPlayer();
+        const Latrunculi::Cell enemyBound =
+            (cur == 0) ? Latrunculi::Cell::P1Bound : Latrunculi::Cell::P0Bound;
+        const int squares = game_->rows() * game_->columns();
+        for (int sq = 0; sq < squares; ++sq) {
+            if (game_->cellAt(sq) == enemyBound) {
+                ringAt(sq, latgui::kCaptiveRing, latgui::kThickPenPx);
+            }
+        }
+    }
+
     // Interactive selection.
     if (pendingRemove_ >= 0) {
         ringAt(pendingRemove_, latgui::kCaptiveRing, latgui::kThickPenPx);  // captive to remove

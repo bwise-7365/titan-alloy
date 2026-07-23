@@ -11,6 +11,8 @@
 #include <QActionGroup>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDialog>
+#include <QFile>
 #include <QFont>
 #include <QFontMetrics>
 #include <QFormLayout>
@@ -25,6 +27,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QStringList>
+#include <QTextBrowser>
 #include <QTextEdit>
 #include <QTimer>
 //#include <QVBoxLayout>
@@ -38,8 +41,14 @@ namespace gb = games::board;
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
-static const guicommon::MctsOption kMctsOptions[] = {
-    {  5, "5 sec"  }, { 15, "15 sec" },
+// Ceiling for iterative deepening. The wall-clock budget from the NegaMax menu is what
+// actually stops the search; this only bounds the loop if a position is so shallow that
+// every depth completes, which cannot happen on a real board.
+static constexpr int kMaxNegamaxDepth = 64;
+
+static const guicommon::TimeOption kMctsOptions[] = {
+    {  5, "5 sec"  },
+    {  10, "10 sec"  },{ 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
     { 90, "90 sec" }, { 120, "2 min" },
     { 240, "4 min" }, { 480, "8 min" },
@@ -113,7 +122,11 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     statusHBox->addWidget(statusLabel_, 1);
     statusHBox->addWidget(stopBtn_);
     pv->addWidget(statusRow);
-    connect(stopBtn_, &QPushButton::clicked, this, [this]() { search().cancelSearch(); });
+    connect(stopBtn_, &QPushButton::clicked, this, [this]() {
+        search().cancelSearch();
+        endVersus();                     // Stop drops a versus game back to manual play
+        manualAction_->setChecked(true);  // reflect it in the Play menu
+    });
 
     // Per-side tallies, each led by a color swatch (~ the size of a capital "A")
     // that identifies the side; the counts sit two em-spaces to the right of it.
@@ -173,9 +186,10 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     resize(1430, 970); // 1175x760 looks nice, 1380x992 shows 40 moves
     // 1430, 990
     // 2149, 1496
+    resize(835, 505);
 
-    const int perSide = gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns});
-    newGame(latgui::kStartRows, latgui::kStartColumns, perSide);
+    newGame(latgui::kStartRows, latgui::kStartColumns, latgui::kStartPerSide,
+            selectedMoveStyle(), selectedKomi());
 }
 
 void MainWindow::setBannerFont(const QString& family) {
@@ -222,8 +236,30 @@ void MainWindow::buildMenuBar() {
 
     perSideSpin_ = new QSpinBox(bmw);
     perSideSpin_->setRange(1, (gb::kMaxRowsCols * gb::kMaxRowsCols) / 2);
-    perSideSpin_->setValue(gb::stones_per_side(gb::BoardParams{latgui::kStartRows, latgui::kStartColumns}));
+    perSideSpin_->setValue(latgui::kStartPerSide);
     form->addRow("Discs/side:", perSideSpin_);
+
+    // Movement rule set. Both entries are Dux-free and share every other rule, so the
+    // two can be compared run against run; see Latrunculi::MoveStyle for the sources.
+    movementCombo_ = new QComboBox(bmw);
+    movementCombo_->addItem("Kharebga (slide)",
+                            static_cast<int>(Latrunculi::MoveStyle::Slide));
+    movementCombo_->addItem("Seneca (step + leap)",
+                            static_cast<int>(Latrunculi::MoveStyle::StepLeap));
+    movementCombo_->setCurrentIndex(
+        movementCombo_->findData(static_cast<int>(Latrunculi::kDefaultMoveStyle)));
+    form->addRow("Movement:", movementCombo_);
+
+    // Komi credited to side B. Half-integers only: an integral komi would allow an exact
+    // tie, which this engine has no draw to report (Latrunculi::validateKomi rejects it).
+    // A combo rather than a spinbox so a whole number cannot be entered at all.
+    komiCombo_ = new QComboBox(bmw);
+    for (int whole = 0; whole < 6; ++whole) {
+        const double k = whole + 0.5;
+        komiCombo_->addItem(QString::number(k, 'f', 1), k);
+    }
+    komiCombo_->setCurrentIndex(komiCombo_->findData(Latrunculi::kDefaultKomi));
+    form->addRow("Komi (B):", komiCombo_);
 
     // When the board size changes, cap the per-side maximum to the area and reset the
     // count to the default fraction (kDefaultStoneFraction = 20/64) of the new area.
@@ -279,10 +315,19 @@ void MainWindow::buildMenuBar() {
     manualAction_->setCheckable(true);
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
+    // Selecting Manual takes both sides back under the mouse: leave any versus game and
+    // stop the computer.
+    connect(manualAction_, &QAction::triggered, this, [this]() {
+        endVersus();
+        search().cancelSearch();
+    });
     {
-        guicommon::NegaMaxMenuConfig nm{1, 8, 4, true, 1, 200, 4};
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, playMenu, playGroup, nm,
-                                                  playDepthSpin_, playTurnsSpin_);
+        // NegaMax is iterative-deepening, so it is budgeted by time exactly like MCTS
+        // and offers the same choices; kMaxNegamaxDepth is only the ceiling the clock
+        // almost never lets it reach.
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
     {
@@ -291,17 +336,25 @@ void MainWindow::buildMenuBar() {
                                                playMctsSecCombo_, playMctsTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
     }
+    {
+        // Human vs computer: the same NegaMax time choices, plus which side (A/B) the
+        // human takes; the computer plays the other and answers every turn.
+        guicommon::ComputerMenuConfig cc{kMctsOptions, std::size(kMctsOptions), "A", "B", 0};
+        auto* goBtn = guicommon::buildComputerMenu(this, playMenu, playGroup, cc,
+                                                   playComputerSecCombo_, playComputerSideCombo_);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayComputerGo);
+    }
 
     // Suggest.
     auto* suggestMenu  = menuBar()->addMenu("Suggest");
     auto* suggestGroup = new QActionGroup(this);
     suggestGroup->setExclusive(true);
     {
-        guicommon::NegaMaxMenuConfig nm{1, 8, 4};
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
         nm.withTurns = false;
         QSpinBox* unusedTurns = nullptr;
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, suggestMenu, suggestGroup, nm,
-                                                  suggestDepthSpin_, unusedTurns);
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
     }
     {
@@ -313,14 +366,59 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
-    // Keep the Play and Suggest depth spinboxes in sync.
-    connect(playDepthSpin_,    &QSpinBox::valueChanged, suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged, playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the Play and Suggest NegaMax time combos in sync.
+    connect(playNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+
+    // About.
+    auto* aboutMenu = menuBar()->addMenu("About");
+    connect(aboutMenu->addAction("Rules"), &QAction::triggered, this, [this]() {
+        showMarkdownResource("Ludus Latrunculorum -- Rules", ":/doc/rules.md");
+    });
+    connect(aboutMenu->addAction("Usage"), &QAction::triggered, this, [this]() {
+        showMarkdownResource("Ludus Latrunculorum -- Usage", ":/doc/usage.md");
+    });
+}
+
+// Loads a bundled markdown resource and renders it (headings, emphasis, block quotes,
+// etc.) in a read-only popup dialog; the dialog is modeless and self-deletes on close.
+void MainWindow::showMarkdownResource(const QString& title, const QString& resourcePath) {
+    QFile file(resourcePath);
+    QString text;
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        text = QString::fromUtf8(file.readAll());
+    } else {
+        // A missing bundled resource is a build/packaging bug, not user-facing bad
+        // input -- surface it rather than silently showing a blank dialog.
+        text = QString("(Could not load bundled resource \"%1\".)").arg(resourcePath);
+    }
+
+    auto* dialog = new QDialog(this);
+    dialog->setWindowTitle(title);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->resize(700, 800);
+    auto* layout = new QVBoxLayout(dialog);
+    auto* browser = new QTextBrowser(dialog);
+    browser->setOpenExternalLinks(true);
+    browser->setMarkdown(text);
+    layout->addWidget(browser);
+    dialog->show();
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
 
-void MainWindow::newGame(int rows, int columns, int perSide) {
+Latrunculi::MoveStyle MainWindow::selectedMoveStyle() const {
+    return static_cast<Latrunculi::MoveStyle>(movementCombo_->currentData().toInt());
+}
+
+double MainWindow::selectedKomi() const {
+    return komiCombo_->currentData().toDouble();
+}
+
+void MainWindow::newGame(int rows, int columns, int perSide, Latrunculi::MoveStyle style,
+                         double komi) {
     stopSeed();
     if (2 * perSide > rows * columns) {
         QMessageBox::warning(this, "Latrunculi",
@@ -328,17 +426,23 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
                 .arg(perSide).arg(rows).arg(columns));
         return;
     }
+    placementPolicy_.reset(AbsGame::makeSeed(0));  // a different opening per new board
+    randomPlies_.clear();
     try {
-        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide);
+        game_ = std::make_unique<Latrunculi::Game>(rows, columns, perSide, style,
+                                                   Latrunculi::kDefaultPayoffStyle, komi);
     } catch (const std::exception& ex) {
         QMessageBox::warning(this, "Latrunculi", ex.what());
         return;
     }
     search().cancelSearch();
+    endVersus();  // a fresh board leaves any human-vs-computer game
     currentFilePath_.clear();
     tlRows_ = rows;
     tlCols_ = columns;
     tlPerSide_ = perSide;
+    tlStyle_ = style;
+    tlKomi_ = komi;
     timeline_.clear();
     rebuildMoveList();
     suggestedLog_->clear();
@@ -354,7 +458,8 @@ void MainWindow::newGame(int rows, int columns, int perSide) {
 }
 
 void MainWindow::onNewGame() {
-    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
+    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
+            selectedMoveStyle(), selectedKomi());
 }
 
 // ── Placement seeding (analogous to IrrGo's stone setup) ──────────────────────
@@ -377,7 +482,8 @@ void MainWindow::onSeedSelected(QAction* action) {
     const int pct = action->data().toInt();
     // Start a fresh game at the current board settings, then seed it. newGame()
     // calls stopSeed(), so any in-progress seeding is cancelled first.
-    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value());
+    newGame(rowsSpin_->value(), colsSpin_->value(), perSideSpin_->value(),
+            selectedMoveStyle(), selectedKomi());
     if (!game_) {
         return;  // invalid board size; newGame already reported it
     }
@@ -425,12 +531,36 @@ void MainWindow::onMoveRequested(AbsGame::MoveId mv) {
     }
     game_->applyMove(mv);
     afterMoveApplied();
+    maybeComputerMove();  // in Computer mode, let the computer answer this move
 }
 
 // ── GameMainWindow hooks ──────────────────────────────────────────────────────
 
 AbsGame::Game* MainWindow::currentGame() {
     return game_.get();
+}
+
+// Opening variety for auto-play: the placement phase alternates between one random
+// placement and a run of searched ones (see Latrunculi::PlacementPolicy). Returning true
+// hands the move straight to startPlay, skipping the search for this ply only. Movement
+// plies always fall through and are searched.
+bool MainWindow::autoPlayMoveOverride(AbsGame::MoveId& mv) {
+    if (!game_ || game_->phase() != Latrunculi::Phase::Placement) {
+        return false;
+    }
+    if (!placementPolicy_.nextIsRandom(game_->currentPlayer())) {
+        return false;
+    }
+    const std::vector<AbsGame::MoveId> moves = game_->getLegalMoves();
+    if (moves.empty()) {
+        return false;  // no legal placement; let the normal path surface it
+    }
+    mv = placementPolicy_.pickRandomPlacement(*game_, moves);
+    // Record the ply this will become (Move::turn is 1-based) so the move list can tag
+    // it. The caller applies `mv` immediately, and it came from getLegalMoves, so the
+    // entry cannot go stale.
+    randomPlies_.insert(static_cast<int>(game_->history().size()) + 1);
+    return true;
 }
 
 void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
@@ -444,17 +574,38 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 // ── AI play / suggest ─────────────────────────────────────────────────────────
 
 void MainWindow::onPlayNegamaxGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = playDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
+    // The clock bounds this search, not kMaxNegamaxDepth, so the search bar can show the
+    // real elapsed fraction instead of sweeping.
+    p.negamaxTimeBudgeted = true;
     startPlay(p, playTurnsSpin_->value());
 }
 
 void MainWindow::onPlayMctsGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
     p.algo    = guicommon::SearchController::Algorithm::Mcts;
     p.seconds = playMctsSecCombo_->currentData().toInt();
     startPlay(p, playMctsTurnsSpin_->value());
+}
+
+// Enter human-vs-computer mode: the human takes the side chosen in the Computer submenu and
+// the computer answers each of its turns with a NegaMax search at the chosen think time.
+void MainWindow::onPlayComputerGo() {
+    if (!game_ || game_->isTerminal() || seeding()) {
+        return;
+    }
+    guicommon::SearchController::Params p;
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;
+    const int humanSide = playComputerSideCombo_->currentData().toInt();
+    beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
@@ -462,8 +613,10 @@ void MainWindow::onSuggestNegamaxGo() {
         return;
     }
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = suggestDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
     search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
         if (mv < 0) {
             suggestedLog_->setText("(no move)");
@@ -631,7 +784,11 @@ void MainWindow::rebuildMoveList() {
     QStringList rows;
     rows.reserve(static_cast<int>(timeline_.size()) + 1);
     for (const Latrunculi::Move& m : timeline_) {
-        rows << moveDescription(m);
+        // Tag the placements the opening policy chose at random rather than searched,
+        // matching the self-play move log. Provenance is GUI-side only and is not
+        // saved, so a loaded game shows no tags.
+        const bool wasRandom = randomPlies_.count(m.turn) > 0;
+        rows << (wasRandom ? moveDescription(m) + "  [random]" : moveDescription(m));
     }
     // A final, non-ply row announcing the result. Playback stays correct: gotoPly
     // clamps to the move count and setCurrentPly never highlights this extra row.
@@ -688,7 +845,8 @@ void MainWindow::rebuildToPly(int ply) {
     if (tlRows_ <= 0) {
         return;
     }
-    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_);
+    auto g = std::make_unique<Latrunculi::Game>(tlRows_, tlCols_, tlPerSide_, tlStyle_,
+                                                Latrunculi::kDefaultPayoffStyle, tlKomi_);
     const int k = std::min(ply, static_cast<int>(timeline_.size()));
     for (int i = 0; i < k; ++i) {
         const Latrunculi::Move& m = timeline_[static_cast<std::size_t>(i)];

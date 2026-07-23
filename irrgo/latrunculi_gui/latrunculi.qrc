@@ -10,4 +10,8 @@
         <file alias="latrunculi48.ico">../images/latrunculi48.ico</file>
         <file alias="latrunculi256.ico">../images/latrunculi256.ico</file>
     </qresource>
+    <qresource prefix="/doc">
+        <file alias="rules.md">../doc/latrunculi-rules-for-beginners.md</file>
+        <file alias="usage.md">../doc/latrunculi-usage.md</file>
+    </qresource>
 </RCC>

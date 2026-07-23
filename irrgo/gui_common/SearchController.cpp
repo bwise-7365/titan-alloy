@@ -9,6 +9,20 @@
 
 namespace guicommon {
 
+namespace {
+
+// The wall clock the search will actually run out, in milliseconds, or 0 when it has none
+// and the bar can only sweep. MCTS always spends its whole budget; NegaMax does so only
+// when the clock is what bounds it rather than the depth (see Params::negamaxTimeBudgeted).
+int searchBudgetMsOf(const SearchController::Params& p) {
+    if (p.algo == SearchController::Algorithm::Mcts) {
+        return p.seconds * 1000;
+    }
+    return p.negamaxTimeBudgeted ? p.negamaxTimeMs : 0;
+}
+
+}  // namespace
+
 SearchController::SearchController(QObject* parent) : QObject(parent) {
     searchBarTimer_ = new QTimer(this);
     connect(searchBarTimer_, &QTimer::timeout, this, [this]() {
@@ -27,13 +41,16 @@ void SearchController::setProgressBars(QProgressBar* search, QProgressBar* turn)
     turnProgress_   = turn;
 }
 
-void SearchController::startSearchIndicator(int budgetSeconds) {
-    searchBudgetMs_ = budgetSeconds * 1000;
+void SearchController::startSearchIndicator(int budgetMs) {
+    searchBudgetMs_ = budgetMs;
     searchProgress_->setValue(0);
     searchProgress_->show();
     if (searchBudgetMs_ > 0) {
         searchElapsed_.start();
-        searchBarTimer_->setInterval(250);
+        // Aim for about a hundred steps across the whole budget, so a short search still
+        // animates instead of jumping in quarters, and a long one does not wake the UI
+        // thread more often than the bar has pixels to show for it.
+        searchBarTimer_->setInterval(qBound(30, searchBudgetMs_ / 100, 250));
     } else {
         searchBarTimer_->setInterval(30);
     }
@@ -63,7 +80,7 @@ void SearchController::launch(std::unique_ptr<AbsGame::Game> clone, Params param
                               std::function<void(AbsGame::MoveId, unsigned)> onComplete) {
     isSearching_ = true;
     emit searchingChanged(true);
-    startSearchIndicator(params.algo == Algorithm::Mcts ? params.seconds : 0);
+    startSearchIndicator(searchBudgetMsOf(params));
 
     unsigned gen = searchGen_;
     // shared_ptr so the (copyable) thread lambda can own the cloned game.

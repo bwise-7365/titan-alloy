@@ -21,6 +21,10 @@
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
+// Iterative-deepening ceiling for NegaMax. The clock is what actually stops the search;
+// this only has to be past any depth the budget could reach, so it never binds.
+static constexpr int kMaxNegamaxDepth = 64;
+
 static const guicommon::MctsOption kMctsOptions[] = {
     {  1, "1 sec" }, {  2, "2 sec" }, {  5, "5 sec" },
     {  10, "10 sec" }, {  30, "30 sec" }, {  60, "60 sec" },
@@ -79,7 +83,11 @@ MainWindow::MainWindow(QWidget* parent)
     statusHBox->addWidget(statusLabel_, 1);
     statusHBox->addWidget(stopBtn_);
     pv->addWidget(statusRow);
-    connect(stopBtn_, &QPushButton::clicked, this, [this]() { search().cancelSearch(); });
+    connect(stopBtn_, &QPushButton::clicked, this, [this]() {
+        search().cancelSearch();
+        endVersus();                     // Stop drops a versus game back to manual play
+        manualAction_->setChecked(true);  // reflect it in the Play menu
+    });
 
     pv->addSpacing(8);
 
@@ -169,12 +177,18 @@ void MainWindow::buildMenuBar() {
     manualAction_->setCheckable(true);
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
+    // Selecting Manual returns both sides to the mouse: leave any versus game.
+    connect(manualAction_, &QAction::triggered, this, [this]() {
+        endVersus();
+        search().cancelSearch();
+    });
 
     // NegaMax submenu
     {
-        guicommon::NegaMaxMenuConfig nm{1, 12, 6, true, 1, 200, 4};
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, playMenu, playGroup, nm,
-                                                  playDepthSpin_, playTurnsSpin_);
+        // Same time choices as MCTS: both are wall-clock budgets now.
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
     }
 
@@ -186,6 +200,16 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
     }
 
+    // Computer submenu (human vs computer)
+    {
+        // The same NegaMax time choices, plus which side (P0/P1) the human takes; the
+        // computer plays the other and answers every turn.
+        guicommon::ComputerMenuConfig cc{kMctsOptions, std::size(kMctsOptions), "P0", "P1", 0};
+        auto* goBtn = guicommon::buildComputerMenu(this, playMenu, playGroup, cc,
+                                                   playComputerSecCombo_, playComputerSideCombo_);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayComputerGo);
+    }
+
     // ── Suggest menu ───────────────────────────────────────────────────────────
     auto* suggestMenu  = menuBar()->addMenu("Suggest");
     auto* suggestGroup = new QActionGroup(this);
@@ -193,11 +217,11 @@ void MainWindow::buildMenuBar() {
 
     // NegaMax suggest
     {
-        guicommon::NegaMaxMenuConfig nm{1, 12, 6};
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
         nm.withTurns = false;
         QSpinBox* unusedTurns = nullptr;
-        auto* goBtn = guicommon::buildNegaMaxMenu(this, suggestMenu, suggestGroup, nm,
-                                                  suggestDepthSpin_, unusedTurns);
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
     }
 
@@ -211,17 +235,18 @@ void MainWindow::buildMenuBar() {
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
     }
 
-    // Keep depth spinboxes in sync.
-    connect(playDepthSpin_,    &QSpinBox::valueChanged,
-            suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged,
-            playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the NegaMax time combos in sync.
+    connect(playNegamaxSecCombo_,    &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_,    &QComboBox::setCurrentIndex);
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
 
 void MainWindow::onNewGame() {
     search().cancelSearch();
+    endVersus();  // a fresh board leaves any human-vs-computer game
     suggestedLog_->clear();
     boardWidget_->clearSuggestion();
     moveLog_->clear();
@@ -250,6 +275,7 @@ void MainWindow::onMoveRequested(int pitIndex) {
     boardWidget_->update();
     logMove(pitIndex, player);
     updateControls();
+    maybeComputerMove();  // in Computer mode, let the computer answer this move
 }
 
 // ── AI play ───────────────────────────────────────────────────────────────────
@@ -273,17 +299,37 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 }
 
 void MainWindow::onPlayNegamaxGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = playDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
+    // The clock bounds this search, so the search bar shows the elapsed fraction.
+    p.negamaxTimeBudgeted = true;
     startPlay(p, playTurnsSpin_->value());
 }
 
 void MainWindow::onPlayMctsGo() {
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
     guicommon::SearchController::Params p;
     p.algo    = guicommon::SearchController::Algorithm::Mcts;
     p.seconds = playMctsSecCombo_->currentData().toInt();
     startPlay(p, playMctsTurnsSpin_->value());
+}
+
+// Enter human-vs-computer mode: the human takes the side chosen in the Computer submenu and
+// the computer answers each of its turns with a NegaMax search at the chosen think time.
+void MainWindow::onPlayComputerGo() {
+    if (!game_ || game_->isTerminal()) {
+        return;
+    }
+    guicommon::SearchController::Params p;
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;
+    const int humanSide = playComputerSideCombo_->currentData().toInt();
+    beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
@@ -293,8 +339,10 @@ void MainWindow::onSuggestNegamaxGo() {
     int numPits = game_->numPits();
 
     guicommon::SearchController::Params p;
-    p.algo  = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth = suggestDepthSpin_->value();
+    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
+    p.depth         = kMaxNegamaxDepth;
+    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
+    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
     search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
         if (mv >= 0) {
             int pitNum = (cp == 0) ? mv + 1 : mv - numPits;

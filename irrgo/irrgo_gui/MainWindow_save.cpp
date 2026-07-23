@@ -304,6 +304,7 @@ void MainWindow::onLoad() {
     }
 
     search().cancelSearch();
+    endVersus();  // a loaded game leaves any human-vs-computer game
     stopStoneSetup();
     clearSuggestion();
 

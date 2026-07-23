@@ -38,6 +38,7 @@ private slots:
     void onSuggestMctsGo();
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSave();
     void onSaveAs();
     void onLoad();
@@ -90,15 +91,19 @@ private:
     // Stones menu
     QActionGroup* stonesGroup_;
 
-    // Play menu
+    // Play menu. NegaMax runs iterative deepening bounded by a wall clock, so it is
+    // budgeted by time like MCTS and its control is a time combo, not a depth spinbox.
     QAction*  manualAction_      = nullptr;
-    QSpinBox* playDepthSpin_     = nullptr;
+    QComboBox* playNegamaxSecCombo_ = nullptr;
     QSpinBox* playTurnsSpin_     = nullptr;
     QComboBox* playMctsSecCombo_ = nullptr;
     QSpinBox*  playMctsTurnsSpin_ = nullptr;
+    // Human-vs-computer controls: NegaMax think time and which side (Black/White) the human plays.
+    QComboBox* playComputerSecCombo_  = nullptr;
+    QComboBox* playComputerSideCombo_ = nullptr;
 
     // Suggest menu
-    QSpinBox*  suggestDepthSpin_    = nullptr;
+    QComboBox* suggestNegamaxSecCombo_ = nullptr;
     QSpinBox*  suggestTurnsSpin_    = nullptr;
     QComboBox* suggestMctsSecCombo_ = nullptr;
 

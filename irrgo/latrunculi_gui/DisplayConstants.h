@@ -44,8 +44,13 @@ inline constexpr int kBoardHintW = 850, kBoardHintH = 680;  // BoardWidget sizeH
 inline constexpr int kBoardMinW  = 360, kBoardMinH  = 360;  // BoardWidget minimumSizeHint
 
 // ── Starting board (the Board-menu spinbox defaults) ────────────────────────────────
-inline constexpr int kStartRows    = 6;
-inline constexpr int kStartColumns = 8;
+inline constexpr int kStartRows    = 8;
+inline constexpr int kStartColumns = 10;
+// Discs per side at startup. Set explicitly rather than taken from
+// games::board::stones_per_side (which returns a fixed fraction of the board area, 25 on
+// this board): 20 a side is the intended Latrunculi setup. Changing the size spinboxes
+// still recomputes the count from the area -- only the startup value is pinned here.
+inline constexpr int kStartPerSide = 20;
 
 }  // namespace latgui
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -30,6 +30,16 @@ public:
         int depth = 1;              // NegaMax search depth
         int seconds = 0;            // MCTS time budget
         int negamaxTimeMs = 10000;  // NegaMax wall-clock cap (matches the old code)
+        // Which of the two NegaMax budgets actually bounds the search, and therefore
+        // what the progress bar can honestly show. A depth-budgeted search (irrgo,
+        // mancala) finishes when it finishes: negamaxTimeMs is only a backstop, and
+        // drawing a fraction of it would be a progress bar that lies. A time-budgeted
+        // one (latrunculi, whose depth is just an iterative-deepening ceiling) runs the
+        // clock out every time, so elapsed/budget is exactly its progress.
+        //
+        // The caller has to say which it is: `depth` and `negamaxTimeMs` are both always
+        // set to something, so there is nothing here to infer it from.
+        bool negamaxTimeBudgeted = false;
     };
 
     explicit SearchController(QObject* parent = nullptr);
@@ -38,9 +48,13 @@ public:
     // caller (they live in the window's board-area layout). `turn` may be null.
     void setProgressBars(QProgressBar* search, QProgressBar* turn);
 
-    // budgetSeconds == 0  -> indeterminate sweep animation (NegaMax)
-    // budgetSeconds  > 0  -> elapsed-time fraction updated every 250 ms (MCTS)
-    void startSearchIndicator(int budgetSeconds = 0);
+    // budgetMs == 0 -> indeterminate sweep animation, for a search whose duration is not
+    //                  known in advance (a depth-budgeted NegaMax).
+    // budgetMs  > 0 -> the true elapsed fraction, refreshed every 250 ms, for a search
+    //                  that runs a wall clock out (MCTS, and time-budgeted NegaMax).
+    // Milliseconds rather than seconds because NegaMax's budget is in milliseconds;
+    // taking seconds here would have truncated any budget under a second to a sweep.
+    void startSearchIndicator(int budgetMs = 0);
     void stopSearchIndicator();
 
     // Invalidate any in-flight search (bumps the generation), clear the auto-play

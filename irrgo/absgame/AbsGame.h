@@ -63,6 +63,13 @@ public:
     virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal,
                                      std::mt19937_64& rng) const;
 
+    // Move-ordering hint for the alpha-beta searcher (negamax.cpp): a higher score is
+    // searched earlier. Alpha-beta prunes far more when the strongest move is tried
+    // first, so a game that can cheaply recognise a capture should rank it high here.
+    // The default scores every move 0 and the searcher's sort is stable, so a game that
+    // does not override this keeps getLegalMoves() order exactly. See
+    // Latrunculi::Game::moveOrderScore.
+    virtual int moveOrderScore(MoveId) const { return 0; }
 };
 
 } // namespace AbsGame

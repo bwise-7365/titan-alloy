@@ -21,15 +21,69 @@ void GameMainWindow::startPlay(SearchController::Params params, int turns) {
         return;
     }
     search().beginTurnRun(turns);
+
+    // A derived window may supply this ply itself rather than have it searched (see
+    // autoPlayMoveOverride). Latrunculi's placement policy plays a random placement now
+    // and then, and at most two of those can fall back to back, so recursing straight
+    // into the next ply here cannot run away.
+    AbsGame::MoveId preset = AbsGame::kPass;
+    if (autoPlayMoveOverride(preset)) {
+        applyComputedMove(preset);
+        continuePlay(params, turns);
+        return;
+    }
+
     search().launch(currentGame()->clone(), params,
                     [this, params, turns](AbsGame::MoveId mv, unsigned) {
         applyComputedMove(mv);
-        search().advanceTurn();
-        if (currentGame() && !currentGame()->isTerminal() && search().turnRunActive()) {
-            startPlay(params, turns);
-        } else {
-            search().endTurnRun();
-        }
+        continuePlay(params, turns);
+    });
+}
+
+void GameMainWindow::continuePlay(SearchController::Params params, int turns) {
+    search().advanceTurn();
+    if (currentGame() && !currentGame()->isTerminal() && search().turnRunActive()) {
+        startPlay(params, turns);
+    } else {
+        search().endTurnRun();
+    }
+}
+
+// ── Human vs computer ───────────────────────────────────────────────────────────
+
+void GameMainWindow::beginVersus(SearchController::Params params, int humanSide) {
+    search().cancelSearch();   // abandon any in-flight search / auto-play turn run
+    versusParams_    = params;
+    versusHumanSide_ = humanSide;
+    versusActive_    = true;
+    maybeComputerMove();       // if the computer holds the move, let it open
+}
+
+void GameMainWindow::maybeComputerMove() {
+    if (!versusActive_) {
+        return;
+    }
+    AbsGame::Game* game = currentGame();
+    if (!game || game->isTerminal() || search().isSearching() || extraSearchBlock()) {
+        return;
+    }
+    if (game->currentPlayer() == versusHumanSide_) {
+        return;  // the human's turn: wait for a board move
+    }
+    // The computer is to move. A derived window may supply this ply itself rather than
+    // search it (e.g. Latrunculi's random placements); if so, play it and chase the next.
+    // Placement alternates sides, so at most one such ply lands before control returns
+    // here, and this recursion cannot run away.
+    AbsGame::MoveId preset = AbsGame::kPass;
+    if (autoPlayMoveOverride(preset)) {
+        applyComputedMove(preset);
+        maybeComputerMove();
+        return;
+    }
+    search().launch(game->clone(), versusParams_,
+                    [this](AbsGame::MoveId mv, unsigned) {
+        applyComputedMove(mv);
+        maybeComputerMove();  // handles extra-turn games where the computer moves again
     });
 }
 

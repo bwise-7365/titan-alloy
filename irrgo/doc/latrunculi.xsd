@@ -23,6 +23,23 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- Movement rule set: "Slide" = Kharebga rook-like movement, "StepLeap" = the older
+       Seneca step / own-colour leap. Optional because files written before the rule was
+       selectable have no such element; those are all StepLeap games. -->
+  <xs:simpleType name="movementRule">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Slide"/>
+      <xs:enumeration value="StepLeap"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- A positive half-integer, e.g. 0.5, 1.5, 12.5. -->
+  <xs:simpleType name="halfInteger">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+\.5"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="cellState">
     <xs:restriction base="xs:string">
       <xs:enumeration value="P0Free"/>
@@ -61,6 +78,21 @@
         <xs:element name="perSide">
           <xs:complexType>
             <xs:attribute name="val" type="xs:nonNegativeInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="movement" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="val" type="movementRule" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Komi credited to side B. A half-integer: an integral komi would allow an
+             exact tie, which the engine has no draw to report. Optional because files
+             written before komi was selectable have none; those all used 0.5. -->
+        <xs:element name="komi" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="val" type="halfInteger" use="required"/>
           </xs:complexType>
         </xs:element>
 
