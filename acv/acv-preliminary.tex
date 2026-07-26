@@ -10,13 +10,43 @@
 
 \input{../../visolver/doc/report/prolog.tex}
 
+
+% The report class numbers sections as chapter.section.  This document uses
+% no chapters, so the chapter counter stays at zero and the sections come
+% out as 0.1, 0.2 and so on.  Numbering them by section alone gives 1, 2, 3.
+% Equations follow, since prolog.tex sets \numberwithin{equation}{section}.
+\renewcommand{\thesection}{\arabic{section}}
+
+\def\myversion{v01a}
+
+%\rhead{Basic VI-NCP} % default is section
+%\lhead{B. P. Wise} % default is subsection
+
+\lfoot{\color{myDarkRed}\bf{DRAFT \myversion}}
+\cfoot{{\thepage} of {\pageref*{LastPage}}} % asterix suppressed hyperlink
+%\rfoot{\today}
+\rfoot{\copyright \  Ben P. Wise}
+
+\begin{document}
+
+\begin{titlepage}
 \title{Recovering a Sparse Matrix from Paired Observations\\
        A Preliminary Problem Statement}
 \author{Ben Paul Wise}
 \date{\today}
 
-\begin{document}
 \maketitle
+
+\begin{abstract}
+summary goes here
+\end{abstract}
+
+\end{titlepage}
+
+\clearpage
+
+
+\raggedright
 
 \section{Purpose}
 
@@ -33,14 +63,26 @@ entries to be zero, and we do not know beforehand which ones.
 
 \section{Bayes's theorem and the estimate we shall use}
 
-Let $A$ denote a proposition and $B$ a body of evidence. Bayes's theorem states
+Let $A$ denote a proposition and $B$ a body of evidence. Bayes's theorem starts
+with the basic definition of conditional probability
 
 \begin{equation}
-P(A \mid B) \;=\; \frac{P(B \mid A)\, P(A)}{P(B)},
-\qquad
-P(B) \;=\; \int P(B \mid a)\, P(a)\, da ,
-\label{eq:bayes}
+\tcboxmath{ \begin{array}[t]{c}
+P(A \mid B)  P(B) \;=\;  P(A,B)  \;=\; P(B \mid A)\, P(A)
+\end{array}}
 \end{equation}
+
+and derives the formula for updating beliefs given new evidence: 
+
+\begin{eqnarray}
+P(A \mid B) &=& \frac{P(B \mid A)\, P(A)}{P(B)}
+\label{eq:bayes_A}
+\\
+P(B) &=& \int P(B \mid a)\, P(a)\, da
+\label{eq:bayes_B}
+\end{eqnarray}
+
+
 
 where the integral runs over every proposition $a$ that might have produced the
 evidence, and becomes a sum when that set is countable.
@@ -51,7 +93,7 @@ candidate $A$ that makes $P(A \mid B)$ as large as possible, we may work with th
 numerator alone and never evaluate $P(B)$ at all:
 
 \begin{equation}
-\arg\max_{A} P(A \mid B) \;=\; \arg\max_{A} \; P(B \mid A)\, P(A).
+\arg\max_{A} P(A \mid B) \;=\; \arg\max_{A} \; P(B \mid A)\, P(A)
 \label{eq:mple}
 \end{equation}
 
@@ -86,6 +128,7 @@ $R(A)$ & the residual sum of squares \\
 \end{center}
 
 \section{The space of matrices}
+\label{sec:matrixspace}
 
 The unknown $A$ is a square array of $N$ rows and $N$ columns. Each cell holds a real
 number, positive or negative, or else holds nothing at all, which we write as zero.
@@ -103,7 +146,7 @@ with the same probability $p$ of being occupied. A pattern with $M$ occupied cel
 then has probability
 
 \begin{equation}
-P(\mathcal{S} \mid p) \;=\; p^{M} \, (1-p)^{\,q-M}.
+P(\mathcal{S} \mid p) \;=\; p^{M} \, (1-p)^{\,q-M}
 \label{eq:patternprior}
 \end{equation}
 
@@ -115,18 +158,21 @@ We do not know $p$. The hyper-prior over it is taken to be a Beta distribution w
 parameters $\alpha$ and $\beta$,
 
 \begin{equation}
-P(p) \;=\; \frac{p^{\alpha-1} (1-p)^{\beta-1}}{B(\alpha,\beta)},
-\qquad 0 \le p \le 1,
+P(p) \;=\; \frac{p^{\alpha-1} (1-p)^{\beta-1}}{B(\alpha,\beta)}
 \label{eq:pprior}
 \end{equation}
 
-whose mean is $\alpha/(\alpha+\beta)$. Setting $\alpha = \beta = 1$ gives the uniform
+where $0 \le p \le 1$. The mean of this distribution is
+$\alpha/(\alpha+\beta)$. Setting $\alpha = \beta = 1$ gives the uniform
 distribution on $[0,1]$, which is the statement that nothing is known about $p$
 beyond its range. Choosing $\alpha/(\alpha+\beta)$ below one half states an
 expectation that the matrix is sparse without excluding a dense one, and the sum
 $\alpha + \beta$ governs how firmly that expectation is held. The general form is
 carried through the algebra below; Section~\ref{sec:patterncost} examines what
 influence it can have.
+
+All algebra and integrals in this paper were derived and verified using the open-source symbolic
+mathematics package Maxima version 5.49.0.
 
 \subsection{The magnitudes of the occupied cells}
 \label{sec:magnitudes}
@@ -140,14 +186,16 @@ density in $a$, that statement is proportional to $1/|a|$.
 Taken over the whole real line, $1/|a|$ is not a probability density. Its integral
 diverges at zero and again at infinity,
 
-\begin{equation}
-\int_{\varepsilon}^{1} \frac{da}{a} \;=\; -\log \varepsilon
-\;\xrightarrow[\varepsilon \to 0]{}\; \infty,
-\qquad
-\int_{1}^{K} \frac{da}{a} \;=\; \log K
-\;\xrightarrow[K \to \infty]{}\; \infty ,
-\label{eq:diverge}
-\end{equation}
+\begin{eqnarray}
+\int_{\varepsilon}^{1} \frac{da}{a} &=& -\log \varepsilon
+\;\xrightarrow[\varepsilon \to 0]{}\; \infty
+\label{eq:diverge_A}
+\\ \nonumber
+\\
+\int_{1}^{K} \frac{da}{a} &=& \log K
+\;\xrightarrow[K \to \infty]{}\; \infty
+\label{eq:diverge_B}
+\end{eqnarray}
 
 so it has no normalising constant. Densities of this kind are used, and are
 sometimes harmless, but here they fail in two separate ways.
@@ -188,19 +236,19 @@ largest coefficient magnitudes worth entertaining. Call them $a_{\min}$ and
 $a_{\max}$, and write
 
 \begin{equation}
-L_{A} \;=\; \log \frac{a_{\max}}{a_{\min}} .
+L_{A} \;=\; \log \frac{a_{\max}}{a_{\min}}
 \label{eq:LA}
 \end{equation}
 
 The prior for one occupied cell is then
 
 \begin{equation}
-P(A_{ij}) \;=\; \frac{1}{2 L_{A} \, |A_{ij}|},
-\qquad a_{\min} \le |A_{ij}| \le a_{\max},
+P(A_{ij}) \;=\; \frac{1}{2 L_{A} \, |A_{ij}|}
 \label{eq:coefprior}
 \end{equation}
 
-the factor two accounting for the two signs. This integrates to unity. Both
+where $a_{\min} \le |A_{ij}| \le a_{\max}$, the factor two accounting for the two
+signs. This integrates to unity. Both
 difficulties disappear: $\log|A_{ij}|$ is bounded below by $\log a_{\min}$, and the
 normalising constant is determined, so patterns of different size may be compared.
 
@@ -215,7 +263,7 @@ matrix, given $p$, is
 
 \begin{equation}
 P(A \mid p) \;=\; p^{M} (1-p)^{\,q-M} \, (2 L_{A})^{-M}
-\prod_{(i,j) \in \mathcal{S}} \frac{1}{|A_{ij}|} .
+\prod_{(i,j) \in \mathcal{S}} \frac{1}{|A_{ij}|}
 \label{eq:Aprior}
 \end{equation}
 
@@ -226,7 +274,7 @@ The data $B$ consist of $T$ pairs of $N$-dimensional real vectors. The inputs $X
 taken to be exact. All error is in the outputs. The matrix predicts
 
 \begin{equation}
-Z_{it} \;=\; \sum_{j=1}^{N} A_{ij} X_{jt},
+Z_{it} \;=\; \sum_{j=1}^{N} A_{ij} X_{jt}
 \label{eq:Z}
 \end{equation}
 
@@ -238,7 +286,7 @@ Then
 P(B \mid A, \sigma) \;=\; \prod_{i=1}^{N} \prod_{t=1}^{T}
 \frac{1}{\sigma \sqrt{2\pi}}
 \exp\!\left( -\frac{(Z_{it} - Y_{it})^{2}}{2\sigma^{2}} \right)
-\;=\; (2\pi)^{-n/2} \, \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right),
+\;=\; (2\pi)^{-n/2} \, \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right)
 \label{eq:likelihood}
 \end{equation}
 
@@ -267,7 +315,7 @@ integral to be performed is
 
 \begin{equation}
 \int_{0}^{\infty} \sigma^{-(n+1)}
-\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma .
+\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
 \label{eq:sigmanaive}
 \end{equation}
 
@@ -277,7 +325,7 @@ to zero as $\sigma$ decreases. The reach of that suppression is governed by $R$.
 integrand rises to a single maximum at
 
 \begin{equation}
-\sigma^{2} \;=\; \frac{R}{n+1},
+\sigma^{2} \;=\; \frac{R}{n+1}
 \label{eq:peak}
 \end{equation}
 
@@ -291,7 +339,7 @@ integral,
 \int_{0}^{\infty} \sigma^{-(n+1)}
 \exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
 \;=\; \tfrac{1}{2}\, \Gamma\!\left( \tfrac{n}{2} \right)
-\left( \frac{2}{R} \right)^{n/2} ,
+\left( \frac{2}{R} \right)^{n/2}
 \label{eq:sigmaunbounded}
 \end{equation}
 
@@ -337,13 +385,18 @@ the range of credible coefficient magnitudes can equally state the range of cred
 noise levels: $s_{0}$, below which the instrument cannot measure, and $s_{1}$, above
 which the data would be worthless. Writing
 
-\begin{equation}
-L_{\sigma} \;=\; \log \frac{s_{1}}{s_{0}},
-\qquad
-P(\sigma) \;=\; \frac{1}{L_{\sigma}\, \sigma},
-\qquad s_{0} \le \sigma \le s_{1},
-\label{eq:sigmaprior}
-\end{equation}
+\begin{eqnarray}
+L_{\sigma} &=& \log \frac{s_{1}}{s_{0}}
+\label{eq:sigmaprior_A}
+\\
+P(\sigma) &=& \frac{1}{L_{\sigma}\, \sigma}
+\label{eq:sigmaprior_B}
+\\
+s_{0} &\le& \sigma \le s_{1}
+\label{eq:sigmaprior_C}
+\end{eqnarray}
+
+
 
 gives a proper density, and, as Section~\ref{sec:sigmaint} shows, a finite result at
 $R = 0$. The statement $\sigma \ge s_{0}$ is a statement about the apparatus, not a
@@ -361,7 +414,7 @@ P(A, p, \sigma \mid B) \;\propto\;
 p^{M} (1-p)^{\,q-M}
 \cdot \frac{(2L_{A})^{-M}}{\prod_{\mathcal{S}} |A_{ij}|}
 \cdot \frac{1}{L_{\sigma}\,\sigma}
-\cdot \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right).
+\cdot \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right)
 \label{eq:joint}
 \end{equation}
 
@@ -377,7 +430,7 @@ Only the first factor of \eqref{eq:joint} involves $p$. With the hyper-prior
 \begin{equation}
 \frac{1}{B(\alpha,\beta)} \int_{0}^{1}
 p^{\,M+\alpha-1} (1-p)^{\,q-M+\beta-1} \, dp
-\;=\; \frac{B(M+\alpha,\; q-M+\beta)}{B(\alpha,\beta)} .
+\;=\; \frac{B(M+\alpha,\; q-M+\beta)}{B(\alpha,\beta)}
 \label{eq:pint}
 \end{equation}
 
@@ -385,7 +438,7 @@ At $\alpha = \beta = 1$ this reduces to
 
 \begin{equation}
 B(M+1,\; q-M+1) \;=\; \frac{M!\,(q-M)!}{(q+1)!}
-\;=\; \frac{1}{(q+1) \binom{q}{M}} ,
+\;=\; \frac{1}{(q+1) \binom{q}{M}}
 \label{eq:pintuniform}
 \end{equation}
 
@@ -412,14 +465,14 @@ ratio of successive values of the Beta function is
 
 \begin{equation}
 \frac{B(M+\alpha,\; q-M+\beta)}{B(M+1+\alpha,\; q-M-1+\beta)}
-\;=\; \frac{q-M-1+\beta}{M+\alpha},
+\;=\; \frac{q-M-1+\beta}{M+\alpha}
 \label{eq:ratio}
 \end{equation}
 
 so that
 
 \begin{equation}
-\Pi(M+1) - \Pi(M) \;=\; \log \frac{q-M-1+\beta}{M+\alpha} .
+\Pi(M+1) - \Pi(M) \;=\; \log \frac{q-M-1+\beta}{M+\alpha}
 \label{eq:increment}
 \end{equation}
 
@@ -452,7 +505,7 @@ The remaining factors involving $\sigma$ give
 \begin{equation}
 I(R) \;=\; \frac{1}{L_{\sigma}}
 \int_{s_{0}}^{s_{1}} \sigma^{-(n+1)}
-\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma .
+\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
 \label{eq:sigmaintdef}
 \end{equation}
 
@@ -463,7 +516,7 @@ With $\Gamma(m,x) = \int_{x}^{\infty} u^{m-1} e^{-u}\, du$ and $m = n/2$,
 I(R) \;=\; \frac{1}{2 L_{\sigma}}
 \left( \frac{2}{R} \right)^{n/2}
 \left[ \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{1}^{2}} \right)
-     - \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right) \right].
+     - \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right) \right]
 \label{eq:sigmaint}
 \end{equation}
 
@@ -473,7 +526,7 @@ close to $\Gamma(n/2)$, so
 
 \begin{equation}
 I(R) \;\approx\; \frac{\Gamma(n/2)}{2 L_{\sigma}}
-\left( \frac{2}{R} \right)^{n/2} ,
+\left( \frac{2}{R} \right)^{n/2}
 \label{eq:sigmaordinary}
 \end{equation}
 
@@ -484,7 +537,7 @@ cancelled exactly by the behaviour of the bracket, and
 
 \begin{equation}
 \lim_{R \to 0} I(R) \;=\; \frac{1}{n L_{\sigma}}
-\left( s_{0}^{-n} - s_{1}^{-n} \right),
+\left( s_{0}^{-n} - s_{1}^{-n} \right)
 \label{eq:sigmalimit}
 \end{equation}
 
@@ -501,7 +554,7 @@ for the matrix alone is proportional to
 P(A \mid B) \;\propto\;
 e^{-\Pi(M)}
 \cdot \frac{(2L_{A})^{-M}}{\prod_{\mathcal{S}} |A_{ij}|}
-\cdot I\!\left( R(A) \right).
+\cdot I\!\left( R(A) \right)
 \label{eq:posteriorA}
 \end{equation}
 
@@ -509,14 +562,14 @@ It is convenient to work with the negative logarithm, which is to be made as sma
 possible. Discarding terms that do not involve $A$,
 
 \begin{equation}
-\boxed{\;
+\tcboxmath{ \begin{array}[t]{c}
 F(A) \;=\;
 \frac{n}{2} \log R(A)
 \;+\; \sum_{(i,j) \in \mathcal{S}} \log |A_{ij}|
 \;+\; M \log (2 L_{A})
 \;+\; \Pi(M)
 \;-\; \log \Delta(R)
-\;}
+\end{array}}
 \label{eq:criterion}
 \end{equation}
 
@@ -525,7 +578,7 @@ where
 \begin{equation}
 \Delta(R) \;=\;
 \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{1}^{2}} \right)
-- \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right).
+- \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right)
 \label{eq:Delta}
 \end{equation}
 
@@ -545,7 +598,7 @@ F(A) \;=\;
 \frac{n}{2} \log R(A)
 \;+\; \sum_{(i,j) \in \mathcal{S}} \log |A_{ij}|
 \;+\; M \log (2 L_{A})
-\;+\; \Pi(M) .
+\;+\; \Pi(M)
 \label{eq:workingcriterion}
 \end{equation}
 
@@ -563,7 +616,7 @@ Suppose the pattern $\mathcal{S}$ is fixed. The terms in
 the values in the occupied cells. Write
 
 \begin{equation}
-e_{ij} \;=\; \sum_{t=1}^{T} \left( Y_{it} - Z_{it} \right) X_{jt},
+e_{ij} \;=\; \sum_{t=1}^{T} \left( Y_{it} - Z_{it} \right) X_{jt}
 \label{eq:eij}
 \end{equation}
 
@@ -572,7 +625,7 @@ $\partial R / \partial A_{ij} = -2 e_{ij}$. Setting the derivative of
 \eqref{eq:workingcriterion} to zero gives, for every occupied cell,
 
 \begin{equation}
-e_{ij} \;=\; \frac{R(A)}{n \, A_{ij}} .
+e_{ij} \;=\; \frac{R(A)}{n \, A_{ij}}
 \label{eq:stationary}
 \end{equation}
 
@@ -613,7 +666,7 @@ Fix the pattern $\mathcal{S}$ and let $\hat{A}$ be the least-squares point withi
 $\hat{R}$ the residual sum of squares there. The residual is quadratic, so
 
 \begin{equation}
-R(A) \;=\; \hat{R} \;+\; d^{\,\prime} G \, d ,
+R(A) \;=\; \hat{R} \;+\; d^{\,\prime} G \, d
 \label{eq:quadratic}
 \end{equation}
 
@@ -627,7 +680,7 @@ The remaining integral is Gaussian, and gives
 \int \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right) dA
 \;=\; \exp\!\left( -\frac{\hat{R}}{2\sigma^{2}} \right)
 \left( 2\pi\sigma^{2} \right)^{M/2}
-\prod_{i=1}^{N} \left| G_{i} \right|^{-1/2} .
+\prod_{i=1}^{N} \left| G_{i} \right|^{-1/2}
 \label{eq:laplace}
 \end{equation}
 
@@ -653,7 +706,7 @@ and repeating the substitution $u = 1/\sigma^{2}$,
 \exp\!\left( -\frac{\hat{R}}{2\sigma^{2}} \right) d\sigma
 \;=\; \frac{1}{2} \left( \frac{2}{\hat{R}} \right)^{\nu}
 \left[ \Gamma\!\left( \nu, \frac{\hat{R}}{2 s_{1}^{2}} \right)
-     - \Gamma\!\left( \nu, \frac{\hat{R}}{2 s_{0}^{2}} \right) \right].
+     - \Gamma\!\left( \nu, \frac{\hat{R}}{2 s_{0}^{2}} \right) \right]
 \label{eq:sigmaintM}
 \end{equation}
 
@@ -664,8 +717,10 @@ Setting $M = 0$ recovers \eqref{eq:sigmaint} exactly.
 Collecting the factors and taking the negative logarithm, the pattern is chosen by
 minimising
 
+
+
 \begin{equation}
-\boxed{\;
+\tcboxmath{ \begin{array}[t]{c}
 \Phi(\mathcal{S}) \;=\;
 \nu \log \hat{R}
 \;+\; \sum_{(i,j) \in \mathcal{S}} \log |\hat{A}_{ij}|
@@ -673,9 +728,10 @@ minimising
 \;-\; \frac{M}{2} \log 2\pi
 \;+\; M \log (2 L_{A})
 \;+\; \Pi(M)
-\;}
+\end{array}}
 \label{eq:patterncriterion}
 \end{equation}
+
 
 away from the extreme of a near-exact fit, where the bracket in \eqref{eq:sigmaintM}
 must be retained in place of $\Gamma(\nu)$.
@@ -765,19 +821,59 @@ fits and keeps every $G_{i}$ of Section~\ref{sec:compare} non-singular.
 
 \subsection{The search}
 
-For each row and each admissible number of occupied cells, every subset of columns of
-that size is fitted by least squares, and the best is retained. The quantity $\Phi$
-does not separate by row, but holding $\sigma$ fixed makes it separable, so dynamic
-programming over the nine rows gives the best pattern for every total $M$ at each
-$\sigma$ on a grid. Those patterns form the candidate set, and $\Phi$ is evaluated on
-each. The coefficient values are then moved from least squares to the stationary point
-of \eqref{eq:stationary}.
+Section~\ref{sec:matrixspace} observed that a matrix of order $N$ admits $2^{N^{2}}$
+patterns of occupied cells. For $N = 9$ that is $2^{81}$, or about
+$2.4 \times 10^{24}$, so the patterns cannot be examined one by one and some
+procedure is needed. This section states the one used.
 
-The candidate set is not provably the whole space of patterns, so the search may
-overlook a pattern with lower $\Phi$. That limitation cannot account for the
-behaviour reported below: a more complete search would return a still lower $\Phi$,
-and every departure from the truth reported here is in the direction of a lower
-$\Phi$ than the truth itself attains.
+Three properties of the problem make it tractable. The first is the restriction of
+Section~\ref{sec:examples}.1 to at most $T-1 = 5$ occupied cells in a row, which is
+required in any case for the residual to retain any degrees of freedom and for the
+matrices $G_{i}$ of Section~\ref{sec:compare} to be non-singular. A row then admits
+
+\begin{equation}
+\sum_{k=0}^{5} \binom{9}{k} \;=\; 382
+\label{eq:rowsubsets}
+\end{equation}
+
+subsets of columns rather than $2^{9} = 512$. The second is that the rows are fitted
+separately, so the fit of a row depends on that row alone. Enumerating every
+admissible subset of every row therefore takes $9 \times 382 = 3438$ least-squares
+fits, and this is done once. For each row and each size $k$ the subset of that size
+with the lowest cost is retained, which leaves six numbers per row.
+
+The third property requires more care, because $\Phi$ does not separate across rows.
+It couples them twice: through $\log \hat{R}$, which involves the sum of the residuals
+of all nine rows, and through $\Pi(M)$, which involves the total count of occupied
+cells. Holding $\sigma$ fixed removes the first coupling, since the joint posterior of
+$(A,\sigma)$ contains $\hat{R}/2\sigma^{2}$ rather than its logarithm, and a sum
+inside a logarithm becomes a sum of separate terms. What remains is a problem of
+allocating a total of $M$ occupied cells among nine rows so as to minimise a sum of
+per-row costs, and that is solved exactly by dynamic programming across the rows,
+indexed by the number of cells allocated so far. One pass yields the best allocation
+for every total $M$ at once.
+
+The procedure is therefore: fix $\sigma$ at each of 240 values spaced logarithmically
+across $[s_{0}, s_{1}]$; for each, run the dynamic programme and record the pattern it
+gives for every $M$; discard duplicates; evaluate $\Phi$ exactly on every distinct
+pattern that survives; and take the lowest. In the trial reported below this examined
+862 distinct patterns in the block case and 790 in the scattered case. The coefficient
+values of the winner are then moved from least squares to the stationary point of
+\eqref{eq:stationary}.
+
+What this does and does not guarantee should be stated plainly. For any fixed
+$\sigma$ the dynamic programme returns the exact minimiser of the separable form, so
+nothing is lost within a given $\sigma$. Across $\sigma$ the grid is finite, and
+$\Phi$ itself is minimised only over the patterns the grid happens to produce. Some
+$1.7 \times 10^{23}$ patterns satisfy the per-row restriction, of which a few hundred
+are examined, so the procedure is a heuristic and not an exhaustive search.
+
+That limitation cannot account for the behaviour reported below. A more complete
+search would return a pattern of still lower $\Phi$, never a higher one, and every
+departure from the truth reported here is a pattern whose $\Phi$ is already lower than
+the truth attains. Searching harder would widen that gap rather than close it. The
+over-fitting described in Section~\ref{sec:examples}.6 is thus a property of the
+criterion and not an artefact of the procedure that minimises it.
 
 \subsection{What can be compared with least squares, and what cannot}
 
@@ -785,7 +881,7 @@ For $Y = AX$ with $Y$ and $X$ of shape $N \times T$, minimising the sum of squar
 residuals gives the normal equations $Y X^{\prime} = A X X^{\prime}$, hence
 
 \begin{equation}
-A \;=\; \left( Y X^{\prime} \right) \left( X X^{\prime} \right)^{-1} .
+A \;=\; \left( Y X^{\prime} \right) \left( X X^{\prime} \right)^{-1}
 \label{eq:leastsquares}
 \end{equation}
 
@@ -802,11 +898,19 @@ comparison against it is possible.
 
 What can be shown is the minimum-norm solution obtained from the pseudo-inverse. That
 is a different estimate: among the matrices reproducing the data exactly it selects
-the one of smallest Frobenius norm. For the block case it occupies all 81 cells,
+the one of smallest Frobenius norm. 
+Figure \ref{fig:LLSE_Matrix} show the linear least squares estimate of the matrix,
+using the block structured matrix and data as given in section \ref{app:numbers}.
+For the block case it occupies all 81 cells,
 leaves a residual of $2 \times 10^{-28}$, and stands at Frobenius distance $4.02$ from
-the truth:
+the true matrix.
 
+\begin{figure}[ht]
 \input{examples/tab_pinv}
+\protect\caption{Linear Least Squares Estimated Matrix}
+\label{fig:LLSE_Matrix}
+\end{figure}
+
 
 A comparison against \eqref{eq:leastsquares} itself requires a separate run with
 $T \ge N$, which is not attempted here.
@@ -814,10 +918,16 @@ $T \ge N$, which is not attempted here.
 \subsection{One realisation}
 
 The trial shown is the first of the forty, chosen before any results were seen. The
-true block matrix and the matrix recovered from it are
+true block matrix and the matrix recovered from it are Figures
+\ref{fig:True_Block_Matrix} and \ref{fig:Recovered_Block_Matrix}
 
+
+\begin{figure}[ht]
 \input{examples/tab_block_true}
-\input{examples/tab_block_hat}
+\protect\caption{True Block Matrix}
+\label{fig:True_Block_Matrix}
+\end{figure}
+
 
 All 27 occupied cells are found, one further cell is occupied that should not be, and
 the estimated error is $0.0798$ against a true $0.10$. The Frobenius distance from the
@@ -826,10 +936,25 @@ truth is $0.373$, against $4.02$ for the minimum-norm solution.
 The blocks are visible in the recovered matrix, and nothing in the calculation was
 told to look for them.
 
-For the scattered case the true and recovered matrices are
+\begin{figure}[ht]
+\input{examples/tab_block_hat}
+\protect\caption{Recovered Block Matrix}
+\label{fig:Recovered_Block_Matrix}
+\end{figure}
 
+
+For the scattered case the true and recovered matrices are in Figures
+\ref{fig:True_Scattered_Matrix}
+and
+\ref{fig:Recovered_Scattered_Matrix}
+
+\begin{figure}[ht]
 \input{examples/tab_scatter_true}
-\input{examples/tab_scatter_hat}
+\caption{True Scattered Matrix}
+\label{fig:True_Scattered_Matrix}
+\end{figure}
+
+
 
 Here the recovery is exact: all 27 cells found, none added, none missed, with an
 estimated error of $0.0826$.
@@ -838,6 +963,12 @@ One number deserves attention. In the block case $\Phi$ at the recovered pattern
 $53.674$, while $\Phi$ at the true pattern is $55.919$. The criterion prefers the
 pattern with one spurious cell to the truth, by more than two natural units. The
 search did not fail; the criterion selected what it was asked to select.
+
+\begin{figure}[ht]
+\input{examples/tab_scatter_hat}
+\protect\caption{Recovered Scattered Matrix}
+\label{fig:Recovered_Scattered_Matrix}
+\end{figure}
 
 \subsection{Forty realisations}
 
@@ -914,8 +1045,9 @@ Every algebraic step above was checked with Maxima. The script is
 \texttt{maxima/acv\_prelim.mac} in this directory, and it verifies:
 
 \begin{enumerate}
-\item the divergence of $\int da/|a|$ at both ends, equation \eqref{eq:diverge};
-\item that the bounded densities \eqref{eq:coefprior} and \eqref{eq:sigmaprior}
+\item the divergence of $\int da/|a|$ at both ends, equations
+      \eqref{eq:diverge_A} and \eqref{eq:diverge_B};
+\item that the bounded densities \eqref{eq:coefprior} and \eqref{eq:sigmaprior_B}
       integrate to unity;
 \item that $L_{A}$ is unchanged by a change of units;
 \item the integral over $p$, equation \eqref{eq:pint}, for general $\alpha$ and
@@ -949,5 +1081,99 @@ against, and it is what exposed an error in the first: it collected candidate
 patterns under a key that recorded only how many cells each row received, so that
 only the first value of $\sigma$ producing a given allocation contributed a pattern,
 and part of the candidate set went unexamined.
+
+\appendix
+% The report class attaches \appendix to chapters.  This document numbers by
+% section, so the section counter is reset and lettered here instead.
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+
+\pagebreak{}
+
+
+\section{Numerical Examples}
+\label{app:numbers}
+
+Every number needed to repeat the calculations of Section~\ref{sec:examples} is
+printed here: the two matrices to be recovered, the inputs, and the outputs of both
+cases. A reader who works from these tables alone reaches the same results, and
+needs neither our programs nor the generator that produced the figures.
+
+The arrays were nonetheless produced from a single stream of pseudo-random numbers,
+started at seed $20260726$ and drawn in the order given below, using the default
+generator of the \texttt{numpy} library, version 2.5. The script
+\texttt{examples/final.py} carries out all of it. That recipe is recorded for anyone
+wishing to extend the example to other draws; it is not needed to check the one
+reported.
+
+\begin{enumerate}
+\item Twenty-seven magnitudes are drawn, each with $\log$ uniform on
+      $[\log 0.40,\; \log 3.00]$.
+\item Twenty-seven signs are drawn, positive and negative equally likely.
+\item Each magnitude is multiplied by its sign and rounded to two decimal places.
+      These twenty-seven values are the occupied cells of both matrices.
+\item The values are placed row by row into three blocks of size three along the
+      diagonal, giving the first matrix.
+\item For the second matrix, each row keeps its own three values and moves them to
+      three columns drawn without replacement from the nine. A row that happens to
+      draw its own block columns causes the whole arrangement to be drawn again.
+\item The nine by six array of inputs $X$ is drawn from the standard normal.
+\item A nine by six array of measurement errors is drawn from the standard normal
+      and multiplied by $\sigma = 0.10$.
+\end{enumerate}
+
+The outputs are then $Y = AX + E$, formed separately for each of the two matrices from
+the same $X$ and the same $E$.
+
+\subsection{The block matrix}
+
+The occupied cells lie in three blocks of size three along the diagonal. Empty cells
+are shown as a dot.
+
+\input{examples/tab_block_true}
+
+\subsection{The scattered matrix}
+
+The same twenty-seven values, each row keeping its own three, moved to columns drawn
+at random.
+
+\input{examples/tab_scatter_true}
+
+\subsection{The inputs}
+
+The nine by six array $X$. Both cases use it unchanged, so it is given once. The row
+index $j$ runs over the components of the input vector and the column index $t$ over
+the six observations.
+
+\input{examples/tab_X}
+
+\subsection{The outputs}
+
+The nine by six array $Y$ for the block case, formed as $Y = AX + E$ with $A$ the
+matrix of Section~\ref{app:numbers}.1 and $E$ the measurement errors. The row index
+$i$ runs over the components of the output vector.
+
+\input{examples/tab_Y_block}
+
+The same for the scattered case, using the matrix of
+Section~\ref{app:numbers}.2 and the same $E$:
+
+\input{examples/tab_Y_scatter}
+
+The errors themselves are not printed. They are the difference between these outputs
+and $AX$, and nothing in the calculation uses them: the method sees only $X$ and $Y$.
+
+\subsection{The precision of the printed values}
+
+The coefficients of $A$ are exact as printed, since the generator rounds them to two
+decimal places. The entries of $X$ and $Y$ are given to six decimal places, so a
+reader recomputing from them works with slightly different numbers from those used
+above.
+
+That rounding does not affect the result. Repeating the whole calculation on the
+rounded arrays recovers the same set of occupied cells in both cases, and the
+estimated coefficients differ from those reported by less than $10^{-6}$. Six decimal
+places are therefore sufficient, and the check is carried out by
+\texttt{examples/final.py} rather than asserted.
 
 \end{document}

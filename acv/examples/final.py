@@ -39,16 +39,68 @@ N, T, q, n = S.N, S.T, S.q, S.n
 # ------------------------------------------------------------ helpers
 
 
+def framed(body, caption):
+    """Wrap a tabular in \\fbox inside a centred, \\footnotesize block.
+
+    The frame is house style for the numeric tables: it separates the
+    figures from the surrounding prose so that the pattern of occupied
+    cells is easier to read.  It is produced here rather than added to
+    the files by hand, so that regenerating them does not remove it.
+    """
+    return ("\\begin{center}\n\\footnotesize\n\\fbox{\n"
+            + body + "\n}\n\\end{center}\n"
+            + f"% {caption}\n\n")
+
+
 def mat_tex(A, caption):
     rows = []
     for i in range(N):
         cells = ["$\\cdot$" if A[i, j] == 0.0 else f"${A[i, j]:.2f}$"
                  for j in range(N)]
         rows.append("  " + " & ".join(cells) + " \\\\")
-    return ("\\begin{center}\n\\footnotesize\n\\begin{tabular}{"
-            + "r" * N + "}\n" + "\n".join(rows)
-            + "\n\\end{tabular}\n\\end{center}\n"
-            + f"% {caption}\n\n")
+    body = ("\\begin{tabular}{" + "r" * N + "}\n"
+            + "\n".join(rows) + "\n\\end{tabular}")
+    return framed(body, caption)
+
+
+DIGITS = 6                            # decimal places printed for X and Y
+
+
+def arr_tex(A, rowlab, caption, digits=DIGITS):
+    """A plain numeric array, rows labelled, columns indexed by t."""
+    ncol = A.shape[1]
+    head = " & ".join([""] + [f"$t={t+1}$" for t in range(ncol)]) + " \\\\"
+    rows = []
+    for i in range(A.shape[0]):
+        cells = [f"${rowlab}={i+1}$"] + [f"${A[i, j]:.{digits}f}$"
+                                         for j in range(ncol)]
+        rows.append("  " + " & ".join(cells) + " \\\\")
+    body = ("\\begin{tabular}{r|" + "r" * ncol + "}\n  " + head
+            + "\n\\hline\n" + "\n".join(rows) + "\n\\end{tabular}")
+    return framed(body, caption)
+
+
+def round_trip(seed, digits=DIGITS):
+    """Do the printed values alone reproduce the recovered patterns?
+
+    The appendix prints X and Y to a fixed number of decimal places.  A
+    reader working from those figures has slightly different numbers from
+    the ones the generator produced.  This repeats the whole calculation
+    on the rounded values and reports whether the recovered pattern is
+    the same set of cells.
+    """
+    A_block, A_scatter, X, E = S.build(seed)
+    Xr = np.round(X, digits)
+    report = []
+    for name, A_true in (("block", A_block), ("scatter", A_scatter)):
+        Y = A_true @ X + E
+        Yr = np.round(Y, digits)
+        full = S.refine(X, Y, S.search(X, Y, S.logdets(X))[1])
+        rnd = S.refine(Xr, Yr, S.search(Xr, Yr, S.logdets(Xr))[1])
+        same = bool(np.array_equal(full != 0.0, rnd != 0.0))
+        gap = float(np.max(np.abs(full - rnd)))
+        report.append((name, same, gap))
+    return report
 
 
 def run_seed(seed):
@@ -105,6 +157,18 @@ if __name__ == "__main__":
         tex.append(mat_tex(d["A_true"], f"true A, {name}"))
         tex.append(mat_tex(d["A_hat"], f"recovered A, {name}"))
 
+    # the arrays the appendix prints, so that a reader need not run this
+    A_block, A_scatter, Xg, Eg = S.build(SEED)
+    tex.append(arr_tex(Xg, "j", "inputs X, shared by both cases"))
+    tex.append(arr_tex(A_block @ Xg + Eg, "i", "outputs Y, block case"))
+    tex.append(arr_tex(A_scatter @ Xg + Eg, "i", "outputs Y, scattered case"))
+
+    lines.append(f"\n--- reproduction from the printed values "
+                 f"({DIGITS} decimal places) ---")
+    for name, same, gap in round_trip(SEED):
+        lines.append(f"  {name:<8} same pattern recovered: {same}"
+                     f"   largest change in a coefficient: {gap:.2e}")
+
     # least squares contrast, on the block case
     X, Y = r["block"]["X"], r["block"]["Y"]
     G = X @ X.T
@@ -154,8 +218,10 @@ if __name__ == "__main__":
                "case & correct of 27 & false & missed & exact & "
                "median $\\hat\\sigma$ \\\\\n\\hline\n"
                + "\n".join(rowtex) + "\n\\end{tabular}\n\\end{center}\n")
-    tex.append(f"% paired: block worse {worse}, better {better}, "
-               f"equal {NSEEDS-worse-better}\n")
+    # Note on the same entry as the table it belongs to, so that the list
+    # of table bodies stays one-to-one with the list of file names below.
+    tex[-1] += (f"% paired: block worse {worse}, better {better}, "
+                f"equal {NSEEDS-worse-better}\n")
 
     # ---- the two claims of Section 10.6 about the coefficient floor ----
     #
@@ -194,7 +260,8 @@ if __name__ == "__main__":
     open("final.txt", "w").write(text + "\n")
     # One file per table, each \input by acv-preliminary.tex.
     names = ["tab_block_true", "tab_block_hat", "tab_scatter_true",
-             "tab_scatter_hat", "tab_pinv", "tab_sweep"]
+             "tab_scatter_hat", "tab_X", "tab_Y_block", "tab_Y_scatter",
+             "tab_pinv", "tab_sweep"]
     assert len(names) == len(tex), (len(names), len(tex))
     for nm, body in zip(names, tex):
         open(nm + ".tex", "w").write(body)
