@@ -1,0 +1,35 @@
+N=9 T=6 q=81 n=54
+amin=0.2 amax=5.0 L_A=3.2189
+s0=0.02 s1=10.0 L_sigma=6.2146
+true magnitudes log-uniform on [0.4, 3.0]
+sigma_true=0.1  alpha=1.0 beta=1.0
+per-row limit = 5   seed shown = 20260726
+
+--- block, seed 20260726 ---
+M=28  correct=27  false=1  missed=0
+Phi(recovered)=53.674   Phi(true pattern)=55.919
+sigma=0.0798 (true 0.1)   Frobenius error=0.3725
+
+--- scatter, seed 20260726 ---
+M=27  correct=27  false=0  missed=0
+Phi(recovered)=52.446   Phi(true pattern)=52.463
+sigma=0.0826 (true 0.1)   Frobenius error=0.2173
+
+--- unrestricted least squares, block case ---
+X is 9 by 6; X X' is 9 by 9 of rank 6
+smallest three singular values: 1.68e-15, 9.75e-16, 3.16e-16
+minimum-norm solution: 81 of 81 cells non-zero, residual 2.17e-28
+Frobenius error against the truth: 4.0192
+
+--- 40 realisations ---
+  block    correct 26.20/27  false  1.57  missed  0.80  exact 14/40  median sigma 0.091
+  scatter  correct 26.40/27  false  1.40  missed  0.60  exact 17/40  median sigma 0.089
+  paired within seed: block worse 17, block better 11, equal 12
+
+--- the coefficient floor, over the same 40 seeds ---
+  floor 0.20:  falsely occupied cells per matrix 1.49
+    correctly occupied: 2104 cells, median |A| 1.164, fraction below 0.10 0.00
+    falsely   occupied:  119 cells, median |A| 0.315, fraction below 0.10 0.00
+  floor 0.05:  falsely occupied cells per matrix 5.90
+    correctly occupied: 2073 cells, median |A| 1.171, fraction below 0.10 0.00
+    falsely   occupied:  472 cells, median |A| 0.138, fraction below 0.10 0.35
