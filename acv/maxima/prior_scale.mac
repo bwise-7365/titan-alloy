@@ -1,0 +1,36 @@
+/* prior_scale.mac
+   The scale-free prior 1/|a| and its bounded replacement.
+
+   Part 1 shows that 1/|a| has infinite total mass at both ends,
+   so it is not a probability density.
+
+   Part 2 shows that restricting |a| to [amin, amax] and dividing by
+   2*L, with L = log(amax/amin), gives total mass 1.
+
+   Part 3 shows that L is unchanged when the units of a are changed.
+*/
+
+assume(amin > 0, amax > amin, eps > 0, eps < 1, big > 1, k > 0);
+
+/* ---- 1. Divergence at zero and at infinity ---- */
+lower : integrate(1/a, a, eps, 1);
+print("mass of 1/a on [eps, 1] =", lower)$
+print("  limit as eps -> 0 :", limit(lower, eps, 0))$
+
+upper : integrate(1/a, a, 1, big);
+print("mass of 1/a on [1, big] =", upper)$
+print("  limit as big -> inf :", limit(upper, big, inf))$
+
+/* ---- 2. The bounded version normalizes ---- */
+L : log(amax/amin);
+mass : 2 * integrate(1/(2*L*a), a, amin, amax);
+print("total mass of 1/(2 L |a|) over both signs =", radcan(logcontract(mass)))$
+
+/* ---- 3. L does not change with the units of a ---- */
+/* Replacing a by k*a moves both endpoints by the same factor k. */
+Lscaled : log((k*amax)/(k*amin));
+print("L after rescaling by k, minus L =", ratsimp(Lscaled - L))$
+
+/* ---- 4. The log density is bounded above on the restricted range ---- */
+/* -log|a| is largest at |a| = amin, where it equals -log(amin). */
+print("sup of -log|a| on [amin, amax] =", -log(amin))$

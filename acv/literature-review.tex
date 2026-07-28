@@ -1,0 +1,889 @@
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
+% process with TeXworks as pdfLaTeX
+%
+% Survey of prior work bearing on acv-preliminary.tex, with a numerical
+% comparison against the lasso and stochastic search variable selection.
+% Numbers produced by examples/compete.py and examples/ssvs_sensitivity.py
+
+\documentclass[english, 11pt]{report}
+
+\input{../../visolver/doc/report/prolog.tex}
+
+% The report class numbers sections as chapter.section.  This document uses
+% no chapters, so the chapter counter stays at zero and the sections come
+% out as 0.1, 0.2 and so on.  Numbering them by section alone gives 1, 2, 3.
+\renewcommand{\thesection}{\arabic{section}}
+
+\def\myversion{v01a}
+
+\lfoot{\color{myDarkRed}\bf{DRAFT \myversion}}
+\cfoot{{\thepage} of {\pageref*{LastPage}}}
+\rfoot{\copyright \  Ben P. Wise}
+
+\begin{document}
+
+\begin{titlepage}
+\title{Prior Work Bearing on the Recovery of a Sparse Matrix\\
+       A Survey of the Open Literature, with a Numerical Comparison}
+\author{Ben Paul Wise}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+This document reports a survey of the published literature bearing on the
+companion paper \emph{Recovering a Sparse Matrix from Paired Observations}. Its
+purpose is to establish which of the results in that paper are already known, so
+that none of them is presented as new by mistake. The survey finds that the great
+majority of the technical content is standard material carefully assembled, that
+two of the findings restate results available in the standard references, and that
+the recovery of a block arrangement from data is the subject of an active
+literature. Four items were not found in print. The two methods a reader is most
+likely to name as alternatives, the lasso and stochastic search variable selection,
+are described at enough length to orient a reader who has not used them, and both
+are run on the two illustrations of the paper. Every reference carries a link that
+was checked and resolved.
+\end{abstract}
+
+\end{titlepage}
+
+\clearpage
+
+\raggedright
+
+\section{Purpose and method of the survey}
+
+The companion paper contains several results that appear interesting. Before any of
+them is shown to colleagues, it is necessary to know which are already published,
+including obscurely, so that no mistaken claim of novelty is made in front of an
+audience.
+
+The paper was decomposed into ten technical elements, and each was searched
+separately rather than searching for the paper as a whole. The elements are the
+model, the two bounded priors, the pattern prior, the hyper-prior on the occupancy
+rate, the integrated criterion, the search procedure, the underdetermined regime,
+the recovery of block arrangement, and the AutoClass framing. Searching for them
+together returns nothing, because no single publication contains the same
+combination. Searching for them separately returns a great deal.
+
+Every reference given below was retrieved and resolved at the time of writing.
+Where a publisher blocks automated access, an open copy or a stable repository
+record is given instead.
+
+\section{Verdict at a glance}
+
+\begin{center}
+\footnotesize
+\fbox{
+\begin{tabular}{lll}
+Element in the paper & Status & Nearest prior work \\
+\hline
+The model, with the pattern unknown & well established & \cite{gsn2008}, \cite{basu2015} \\
+Each row a separate subset problem & well established & \cite{silander2006} \\
+Bounded log-uniform prior on $|A_{ij}|$ & known, different name & \cite{feroz2011} \\
+Failure of the improper coefficient prior & textbook & \cite{llorente2022}, \cite{kass1995} \\
+Failure of the improper prior on $\sigma$ & same result again & \cite{llorente2022} \\
+Bernoulli pattern prior with Beta hyper-prior & well established & \cite{scott2010} \\
+The increment growing only as $\log \beta$ & consistent with theory & \cite{scott2010} \\
+Exponent $(n-M)/2$ and the Occam term & textbook & \cite{schwarz1978}, \cite{mackay1992} \\
+Maximising within, integrating across & common practice & \cite{kass1995} \\
+Fixed-$\sigma$ dynamic programming over rows & not found in this form & \cite{silander2006} \\
+Block arrangement recovered from data & actively published & \cite{gudmundsson2021} and four others \\
+AutoClass as the parent formalism & not found & \cite{cheeseman1996} \\
+Attribution of over-fitting to the truncation & not found & --- \\
+\end{tabular}
+}
+\end{center}
+
+\section{The parts that are already well known}
+
+These should be stated as received results. Presenting any of them as new will draw
+a correction.
+
+\subsection{The model and the estimation problem}
+
+With $X$ known and $A$ unknown, the $i$th row of $A$ is an ordinary linear
+regression of the $i$th row of $Y$ on the rows of $X$, with $T$ observations and
+$N$ candidate coefficients. The whole problem is $N$ separate subset-selection
+problems sharing one scale. This is among the most heavily worked problems in
+modern statistics.
+
+The Bayesian treatment by indicator variables goes back to George and McCulloch,
+and was carried to vector autoregressions by George, Sun and Ni
+\cite{gsn2008}, which is the closest published antecedent to the present
+formulation. That paper places a two-component normal prior on each coefficient, a
+Bernoulli prior on each indicator, and searches by Markov chain Monte Carlo. The
+differences from the present work are the shape of the coefficient prior, the use
+of a maximum rather than a sample, and the search. The structure of the argument is
+the same. Section \ref{sec:ssvs} below describes the method at length, and
+Section \ref{sec:results} reports what it does on the illustrations of the paper.
+
+The regularised treatment of the same problem is due to Basu and Michailidis
+\cite{basu2015}, with structured extensions in \cite{nicholson2015}. The same
+problem is standard in signal processing, where $X$ is called a dictionary and the
+several columns are called multiple measurement vectors; the Bayesian treatment
+there is called sparse Bayesian learning \cite{zhang2011}, \cite{ament2021}.
+
+\subsection{Why the improper priors fail}
+
+Section 4.2 of the paper shows that $1 / |a|$ over $(0,\infty)$ leaves the
+posterior without a maximum, and Section 5.1 shows that $1 / \sigma$ over
+$(0,\infty)$ makes an exact fit infinitely good. Both are instances of one known
+result: an improper prior on a parameter that appears in some candidate models and
+not in others leaves the comparison undefined, because the missing normalising
+constant does not cancel. This is the Bartlett--Lindley paradox, and it appears in
+every treatment of Bayesian model selection \cite{llorente2022}, \cite{kass1995},
+\cite{lambert2019}.
+
+The derivations in the paper are correct and are worth keeping for the reader, but
+they should be introduced as instances of a known difficulty rather than as
+discoveries.
+
+\subsection{The bounded log-uniform prior}
+
+Truncating $1 / |a|$ to $[a_{\min}, a_{\max}]$ and dividing by
+$\log (a_{\max} / a_{\min})$ is a known construction. In the astronomical
+literature it is called the modified Jeffreys prior and is used for exactly the
+reason given in Section 4.2 of the paper: the scale-free form is the right shape
+but is not a density, and a model comparison needs a density \cite{feroz2011}. The
+observation that $L_{A}$ is unchanged by a rescaling of units is the standard
+motivation. The more common remedy in statistics is a mixture of $g$-priors
+\cite{liang2008}.
+
+One qualification. Although the device is standard, the criterion that follows from
+it, carrying a term $\sum \log |A_{ij}|$ that grows as the coefficients grow, is
+rarely written out, because most authors use a normal or a double-exponential
+prior, whose corresponding term shrinks as the coefficients grow. The criterion was
+not found displayed in the form of equation (7.1) anywhere. That is a point about
+exposition and not about method, and it should be claimed no more strongly.
+
+\subsection{The Beta hyper-prior and multiplicity}
+
+This is the closest match in the entire survey, and it is a close one. Scott and
+Berger \cite{scott2010} is the standard reference for placing a Beta prior on the
+occupancy rate of a Bernoulli pattern prior and studying what that does to the
+number of coefficients selected. The result in Section 6.2 of the paper, that the
+cost of one more occupied cell is
+
+\begin{equation}
+\Delta \;=\; \log \frac{q - M - 1 + \beta}{M + \alpha}
+\label{eq:increment}
+\end{equation}
+
+and that this grows only as $\log \beta$, is the log-odds increment of the
+beta-binomial distribution. It is correct, it is worth displaying, and it is
+consistent with the published theory rather than contrary to it.
+
+The claim to avoid is that the hyper-prior was found to be unable to control
+over-fitting. What Scott and Berger establish is the complementary and more precise
+statement: the Beta prior supplies multiplicity correction, which is a different
+thing from the Occam penalty that comes from integrating over the coefficients, and
+neither substitutes for the other. The paper reaches the same conclusion by a
+direct calculation. The right course is to cite them and say so.
+
+\subsection{The integrated criterion}
+
+Section 9 of the paper integrates the coefficients out by a Laplace approximation,
+obtains the volume term, and finds the residual exponent falling from $n/2$ to
+$(n-M)/2$. Both are textbook. The exponent $(n-M)/2$ is the ordinary residual
+degrees of freedom of a normal linear model with the scale integrated out, and the
+determinant term is the Occam factor \cite{schwarz1978}, \cite{mackay1992},
+\cite{kass1995}. Retaining the constant terms rather than dropping them, as the
+Schwarz criterion does, is the only departure, and it is a departure toward the
+exact calculation rather than away from it.
+
+The related account in which $\sum \log |A_{ij}|$ and the Occam term appear as code
+lengths is the minimum description length literature \cite{wallace2005},
+\cite{dhillon2011}. It is worth one sentence in the paper, because a listener from
+that tradition will recognise the criterion.
+
+\subsection{The search}
+
+Enumerating subsets row by row, then combining rows, exploits the fact that the
+score is a sum of per-row terms once the shared parameters are fixed. That property
+is called decomposability, and it is the same property that makes exact structure
+learning of Bayesian networks possible by dynamic programming \cite{silander2006}.
+Deterministic Bayesian subset selection of other kinds appears in
+\cite{hybrid2020} and \cite{kowal2022}.
+
+The specific device in Section 10.2 of the paper, conditioning on a grid of
+$\sigma$ values so that a criterion which is not separable becomes separable,
+running the dynamic programme at each grid point, and scoring the resulting
+candidates exactly, was not found published. It is a small idea and a natural one,
+so absence from the search is weak evidence. It should be described, not claimed.
+
+\section{The two methods a reader will name}
+
+Two alternatives will come up whenever this problem is described, and a reader who
+has not used them needs enough of each to judge the comparison in
+Section \ref{sec:results}. Both are given here in the notation of the paper, so
+that one row of the matrix is a regression of the $T$-vector $y$ on the $T$ by $N$
+matrix $Z = X'$ with the $N$-vector $a$ to be found.
+
+\subsection{The lasso}
+\label{sec:lasso}
+
+The lasso \cite{tibshirani1996} replaces least squares by least squares with a
+penalty proportional to the sum of the absolute values of the coefficients
+
+\begin{equation}
+\hat{a}(\lambda) \;=\; \arg\min_{a} \; \tfrac{1}{2} \| y - Z a \|^{2}
+\;+\; \lambda \sum_{j=1}^{N} |a_{j}|
+\label{eq:lasso}
+\end{equation}
+
+Two facts account for its position. The first is that the absolute value has a
+corner at the origin, and a penalty with a corner drives coefficients to exactly
+zero rather than merely close to it. Selection and estimation are therefore done in
+one step, and no search over patterns is required at all. The second is that the
+problem is convex, so it is solved reliably and quickly at sizes far beyond
+anything in the paper. Together these make it the default tool for the regime in
+which the paper works, and the reason a colleague will ask about it.
+
+Its relation to the present work is closer than it looks. The minimiser of
+\eqref{eq:lasso} is the maximum-posterior estimate under a double-exponential prior
+on each coefficient, with $\lambda$ playing the part of the rate
+\cite{park2008}. It is therefore an estimate of exactly the kind the paper uses,
+differing in the prior rather than in the principle. The differences are that the
+double-exponential is peaked at zero rather than bounded away from it, and that
+there is no separate indicator for occupancy: a cell is empty when the penalty
+happens to drive it to zero, not because a discrete choice was made about it.
+
+Three properties matter for the comparison. The first is that the penalty must be
+supplied. Cross-validation is the usual answer, but cross-validation is aimed at
+prediction rather than at recovering the pattern, and it is known to select too
+many cells; with six observations in a row there is also very little to
+cross-validate upon. The second is that the surviving coefficients are pulled
+toward zero, so their values are biased, and refitting by least squares on the
+selected pattern is normal practice. The third is that the lasso recovers the
+correct pattern only when the columns of $Z$ satisfy a condition relating the
+occupied columns to the empty ones \cite{zhao2006}, and that condition cannot be
+checked without knowing the answer.
+
+The adaptive lasso \cite{zou2006} addresses the third point by penalising each
+coefficient in inverse proportion to a first-pass estimate of its size, so that
+large coefficients are penalised little and small ones a great deal. It recovers
+the correct pattern under weaker conditions, and it is the strongest variant that
+can fairly be asked for here.
+
+\subsection{Stochastic search variable selection}
+\label{sec:ssvs}
+
+Stochastic search variable selection, due to George and McCulloch and carried to
+vector autoregressions in \cite{gsn2008}, attaches an indicator $\gamma_{ij}$ to
+each cell and makes the prior on the coefficient depend upon it
+
+\begin{eqnarray}
+A_{ij} \mid \gamma_{ij} = 0 &\sim& N(0, \tau_{0}^{2})
+\label{eq:ssvs_A}
+\\
+A_{ij} \mid \gamma_{ij} = 1 &\sim& N(0, \tau_{1}^{2})
+\label{eq:ssvs_B}
+\\
+\gamma_{ij} &\sim& \mathrm{Bernoulli}(p)
+\label{eq:ssvs_C}
+\end{eqnarray}
+
+with $\tau_{0}$ small and $\tau_{1}$ large. The essential device is that neither
+component is exactly zero. Because every coefficient always has a value, every
+conditional distribution in the model is a standard one, and the whole posterior
+can be explored by drawing in turn the coefficients, the indicators, the occupancy
+rate $p$ and the error variance. No move that changes the number of parameters is
+ever needed, which is what makes the sampler simple enough to be practical.
+
+The output is not a single pattern but a sample of them. The proportion of draws in
+which a cell is occupied is its posterior inclusion probability, and the usual
+summary is the median probability model, which takes every cell whose probability
+is at least one half. That choice is not arbitrary; it is optimal for prediction
+under stated conditions \cite{barbieri2004}.
+
+The resemblance to the paper is very close. The pattern prior is the same Bernoulli
+form, the hyper-prior on $p$ is the same Beta, one error scale serves the whole
+matrix, and the hierarchy is arranged in the same order. Three things differ. The
+coefficient prior is a pair of normal densities rather than a bounded log-uniform.
+The pattern is sampled rather than maximised, so the answer is a set of
+probabilities rather than one matrix. And no integral is performed in closed form;
+everything is done by Monte Carlo.
+
+The two widths $\tau_{0}$ and $\tau_{1}$ play exactly the part played by
+$a_{\min}$ and $a_{\max}$ in the paper. They are not determined by the data, the
+analyst must supply them, and the answer moves when they move.
+Section \ref{sec:sens} measures by how much.
+
+\subsection{What size of problem this method has been applied to}
+\label{sec:ssvsscale}
+
+This question was asked because the sampler failed to converge at $N = 200$, and it
+matters a great deal whether that is a defect of the implementation used here or a
+property of the method at that size. The published record is clear on one point: no
+application of stochastic search variable selection at anything approaching forty
+thousand coefficients was found. Every figure below was read out of the paper itself
+and not out of an abstract.
+
+\begin{center}
+\footnotesize
+\fbox{
+\begin{tabular}{llll}
+study & model & coefficients & draws \\
+\hline
+\cite{gsn2008}, application & 7 variables, 12 lags & $595$ & $20000$ after $10000$ \\
+\cite{gsn2008}, simulations & 4 variables, 2 lags & about $36$ & $50000$ after $10000$ \\
+\cite{korobilis2013} & 3 equations, 168 regressors each & $504$ & $150000$ after $50000$ \\
+\cite{chan2020} & 20 variables, quarterly & --- & --- \\
+\end{tabular}
+}
+\end{center}
+
+Two things stand out. George, Sun and Ni describe $595$ coefficients as a large
+number of parameters, and give that as the reason for the number of cycles they ran.
+The problem of Section 12 of the companion paper carries forty thousand, which is
+sixty-seven times as many. And the number of sweeps for each coefficient differs by
+two or three orders of magnitude: about $34$ in \cite{gsn2008}, about $298$ in
+\cite{korobilis2013}, against $0.2$ at eight thousand sweeps and $0.5$ at twenty
+thousand in the runs reported here.
+
+\subsection{Whether slow mixing is to be expected}
+
+It is, and there is theory saying so. Yang, Wainwright and Jordan \cite{yang2016}
+prove that posterior concentration, which is the statistical property that makes the
+spike-and-slab posterior correct, does not imply rapid mixing of the algorithm used
+to explore it. They obtain a mixing time linear in the number of covariates, up to a
+logarithmic factor, only after introducing a truncated sparsity prior and analysing a
+particular Metropolis--Hastings algorithm, and they distinguish explicitly between
+rapid mixing, where the time grows polynomially, and slow mixing, where it grows
+exponentially.
+
+The plain Gibbs sampler of George and McCulloch is not the algorithm for which rapid
+mixing has been proved, and a correct posterior is no guarantee that it can be
+reached. There is also a body of work that exists because the plain sampler does not
+scale: Biswas, Mackey and Meng \cite{biswas2022} reduce the cost of an iteration from
+order $n^{2} p$; and in genomics, where the counts of predictors are far larger, the
+field moved to variational methods because sampling was too slow for the size of
+modern arrays.
+
+\subsection{What this means for the comparison}
+
+The implementation used here is the textbook one. Nothing found suggests it is
+wrong, it reproduced the nine-variable results to the last bit after the change of
+matrix inverse, and at nine variables it tied the method of the paper exactly. It is
+nevertheless the plain sampler, and the published applications are sixty to eighty
+times smaller while using a hundred to a thousand times more sweeps for each
+coefficient.
+
+The claim that stochastic search variable selection fails at two hundred variables is
+therefore not defensible. The defensible claim is narrower: the plain Gibbs sampler,
+run for as many sweeps as were affordable, has not converged at that size, which is
+consistent both with published practice and with the theory. A blocked sampler, the
+scalable variant of \cite{biswas2022}, or the truncated-prior scheme of
+\cite{yang2016} might do very much better, and none has been tried.
+
+\section{The comparison on the illustrations of the paper}
+\label{sec:results}
+
+Both methods were run on the two illustrations of the paper, over the same forty
+seeds, with the same matrices, the same inputs and the same measurement errors. The
+comparison is therefore paired at the level of the seed and at the level of the
+case, giving eighty paired comparisons in all. The script is
+\texttt{examples/compete.py}
+
+Four variants of the lasso were run, because a single variant would not settle the
+matter. The first chooses the penalty by leave-one-out cross-validation, which is
+what an analyst without an estimate of the noise would do. The second chooses it by
+the Schwarz criterion, given the true error scale, which no analyst would have. The
+third is the adaptive lasso, reweighted from the second. The fourth chooses the
+penalty, row by row, by counting the pattern errors against the truth and taking the
+penalty that makes them fewest; this requires the answer and is therefore not a
+method but a bound on what any choice of penalty could achieve. All four have their
+coefficients refitted by least squares on the pattern they select, so that they are
+charged for the pattern rather than for the shrinkage.
+
+Stochastic search variable selection was run with $\tau_{0} = 0.02$ and
+$\tau_{1} = 1.5$, twenty thousand draws of which the first five thousand were
+discarded. Those widths bear the same relation to the true magnitudes, drawn
+log-uniformly on $[0.40, 3.00]$, that the bounds $[0.20, 5.0]$ of the paper do, so
+neither method is given better information than the other.
+
+\subsection{What the forty realisations show}
+
+\begin{center}
+\footnotesize
+\fbox{
+\begin{tabular}{llccccc}
+case & method & correct of 27 & false & missed & exact & median $\hat\sigma$ \\
+\hline
+block   & mple       & $26.20$ & $1.57$ & $0.80$ & $14$ of $40$ & $0.091$ \\
+block   & lasso-cv   & $20.85$ & $18.43$ & $6.15$ & $0$ of $40$ & $0.614$ \\
+block   & lasso-bic  & $23.70$ & $18.27$ & $3.30$ & $0$ of $40$ & $0.065$ \\
+block   & alasso-bic & $23.32$ & $8.28$ & $3.67$ & $0$ of $40$ & $0.092$ \\
+block   & lasso-best & $19.27$ & $1.68$ & $7.72$ & $0$ of $40$ & $0.746$ \\
+block   & ssvs       & $26.32$ & $1.50$ & $0.68$ & $10$ of $40$ & $0.092$ \\
+\hline
+scatter & mple       & $26.40$ & $1.40$ & $0.60$ & $17$ of $40$ & $0.089$ \\
+scatter & lasso-cv   & $21.73$ & $19.30$ & $5.28$ & $0$ of $40$ & $0.430$ \\
+scatter & lasso-bic  & $23.98$ & $17.00$ & $3.02$ & $0$ of $40$ & $0.065$ \\
+scatter & alasso-bic & $23.57$ & $7.85$ & $3.42$ & $2$ of $40$ & $0.096$ \\
+scatter & lasso-best & $19.68$ & $2.35$ & $7.33$ & $0$ of $40$ & $0.696$ \\
+scatter & ssvs       & $26.00$ & $1.12$ & $1.00$ & $17$ of $40$ & $0.094$ \\
+\end{tabular}
+}
+\end{center}
+
+The first line of each half reproduces the table of Section 10.5 of the paper
+exactly, which confirms that the procedure compared against is the procedure the
+paper describes.
+
+Counting a pattern error as a cell wrongly occupied or wrongly empty, the eighty
+paired comparisons fall out as follows
+
+\begin{center}
+\footnotesize
+\fbox{
+\begin{tabular}{lccc}
+method & worse than mple & better & two-sided sign test \\
+\hline
+lasso-cv   & $80$ & $0$ & $p = 2 \times 10^{-24}$ \\
+lasso-bic  & $80$ & $0$ & $p = 2 \times 10^{-24}$ \\
+alasso-bic & $77$ & $2$ & $p = 1 \times 10^{-20}$ \\
+lasso-best & $79$ & $0$ & $p = 3 \times 10^{-24}$ \\
+ssvs       & $24$ & $24$ & $p = 1.00$ \\
+\end{tabular}
+}
+\end{center}
+
+\subsection{The lasso is not competitive here}
+
+No variant of the lasso comes close, and the variant given the answer does not come
+close either. The best of them, the adaptive lasso, occupies more than eight cells
+that should be empty and misses nearly four that should be occupied, against a
+little over two errors in total for the procedure of the paper. Averaged over the
+eighty comparisons the total number of pattern errors is $11.61$ for the adaptive
+lasso and $9.54$ for the oracle variant, against $2.19$ for the paper.
+
+The reason is not obscure. With six observations and nine candidates in each row,
+the condition under which the lasso recovers the correct pattern
+\cite{zhao2006} is unlikely to hold, and a single continuous penalty must serve two
+purposes at once: it must be large enough to empty six cells and small enough to
+retain three. The oracle variant shows that no choice of penalty does both, since
+even with the answer in hand it must trade nearly eight missed cells for its low
+false count. Cross-validation, which is aimed at prediction, fails in the opposite
+direction and occupies about nineteen cells too many.
+
+This settles the objection that the paper compares itself only against the
+minimum-norm pseudo-inverse. It does not, now, and the comparison is not close.
+
+\subsection{Stochastic search variable selection is a dead heat}
+
+This is the more important result, and it must be reported plainly. Against
+stochastic search variable selection the paper's procedure wins twenty-four of the
+eighty comparisons, loses twenty-four, and ties thirty-two. The sign test gives
+$p = 1.00$, which is as even a result as the arithmetic permits. The average number
+of pattern errors is $2.19$ for the paper and $2.15$ for the sampler. Exact
+recoveries number thirty-one of eighty against twenty-seven, and a test of that
+difference on the twelve discordant cases gives $p = 0.388$. The estimated error
+scale is $0.0900$ against $0.0925$, with the truth at $0.1000$.
+
+The honest summary is that the criterion developed in the paper attains the accuracy
+of the established method at this size, and does not exceed it.
+
+Two differences are real and are worth stating. The first is the worst case. The
+sampler goes wrong less often, exceeding five pattern errors in six of the eighty
+comparisons against eleven for the paper's procedure, but when it does go wrong it
+goes further: its worst trial misplaces twenty-one cells against a worst of ten. The
+second is that
+the paper's procedure is deterministic: it evaluates a closed-form criterion on
+candidates produced by a dynamic programme, and it returns the same answer every
+time it is run, whereas the sampler returns a distribution and can differ between
+chains on the same data.
+
+\subsection{Both methods depend on widths the analyst supplies}
+\label{sec:sens}
+
+The most natural objection to the paper is that the bounds $a_{\min}$ and
+$a_{\max}$ are not determined by the data. The same objection applies with at least
+equal force to the alternative. The two widths of the two-component prior were
+varied over four settings, with two chains at each, on seed $20260726$
+
+\begin{center}
+\footnotesize
+\fbox{
+\begin{tabular}{lccll}
+$\tau_{0}$ & $\tau_{1}$ & ratio & block & scatter \\
+\hline
+$0.005$ & $3.00$ & $600$ & $M = 2$, 25 missed & $M = 7$ or $27$, chain-dependent \\
+$0.020$ & $1.50$ & $75$ & 27 correct, 0 or 1 false & exact \\
+$0.050$ & $1.00$ & $20$ & exact & exact \\
+$0.100$ & $0.60$ & $6$ & $M = 81$, every cell & $M = 81$, every cell \\
+\end{tabular}
+}
+\end{center}
+
+Outside a fairly narrow band the method fails, and it fails in both directions. When
+the wide component is made wider the model collapses to nearly empty, which is the
+Bartlett--Lindley effect described in Section 3.2 acting inside the sampler itself:
+spreading the prior over a larger range lowers the marginal likelihood of every
+occupied cell. When the narrow component is made wider it ceases to represent an
+empty cell at all, and every cell is occupied.
+
+This does not excuse the paper. It does establish that the requirement is not
+peculiar to the formulation of the paper but is a property of the problem, and that
+the two bounds of the paper have an advantage of form: they are stated in the units
+of the coefficients, as the smallest and largest magnitude worth calling non-zero,
+which is a quantity an analyst can be asked about. A pair of prior standard
+deviations whose effect is not monotone is harder to elicit.
+
+\section{Block arrangement recovered from data}
+
+This is the part of the work most exposed to correction, and it deserves care.
+
+The premise is that the global vector autoregression of the economics literature
+fixes a block arrangement in advance, so that recovering one from the data would be
+of interest. The premise is sound, and it is also the premise of a live and growing
+literature. Several groups have published methods that infer group or block
+membership from the data instead of assuming it, and they do so with consistency
+proofs and at cross-sections far larger than nine
+\cite{gudmundsson2021}, \cite{brownlees2017}, \cite{billio2019},
+\cite{biclustered2012}, \cite{kim2026}.
+
+Plainly stated: the ability to recover a block arrangement from data, without
+imposing it, is neither new nor rare. A claim of novelty on that ground will be
+corrected, probably by whoever in the audience follows the econometrics literature.
+
+There is, however, a real and defensible distinction, and it is worth making
+precisely. Every method just cited contains machinery for grouping, whether a block
+model, a clustering prior or a spectral step. Each is built to find groups. The
+method in the paper contains no such machinery at all. It treats every cell alike
+and fits each row separately, and the block arrangement, when there is one, emerges
+as a by-product of selecting cells one at a time.
+
+The paper already says the honest thing about this, in Section 10.6 and in the
+forty-trial comparison: block and scattered arrangements are recovered equally
+well, the sign test gives $p = 0.345$, and no difference should be expected, since
+the prior treats all cells alike. That result is the right thing to present. It is
+evidence that no block assumption is needed for this kind of recovery, which is a
+statement about the block assumption rather than a claim of a new capability.
+Framed that way it is defensible. Framed as the recovery of block structure it is
+not.
+
+One suggestion. The methods cited are aimed at a different regime, with many series
+and long samples, where the object is to summarise a large system by a few groups.
+The method of the paper is aimed at the regime in which the sample is shorter than
+the cross-section and the ordinary estimate does not exist at all. Saying which
+regime is addressed will forestall most of the objection.
+
+\section{The AutoClass framing}
+
+Cheeseman and Stutz \cite{cheeseman1996} applied the same hierarchical
+construction, a discrete structural choice, parameters within the structure, and an
+approximated marginal likelihood to choose among structures, to the problem of
+classification. The paper carries that construction to the selection of a sparsity
+pattern in a linear model. No publication was found that makes this extension or
+that cites AutoClass in a sparse-regression setting.
+
+The lineage is a matter of presentation rather than of method, and the underlying
+approximation is the ordinary Laplace one, so the framing is legitimate but should
+be offered as a way of organising the argument rather than as a technical
+contribution.
+
+\section{What appears to be new}
+
+Four items survived the search. None is a new method. Each is small, checkable, and
+safe to state.
+
+The first is the explicit criterion. Equations (7.1) and (9.4) of the paper, with
+the constants retained and with the term $\sum \log |A_{ij}|$ that follows from a
+bounded log-uniform prior, are not displayed in this form in anything found. The
+ingredients are all standard; the assembled and normalised criterion is not in
+print.
+
+The second is the diagnosis of the residual over-fitting. Section 10.6 attributes
+the surviving falsely occupied cells to the Laplace step, on the evidence that they
+cluster at small magnitudes, which is where the approximation ignores the
+truncation at $a_{\min}$ and treats the product of reciprocals as constant. No
+comparable attribution was found in the literature. It is a modest, verifiable and
+genuinely useful observation, and it is the strongest thing in the paper to present
+as new.
+
+The third is the deterministic treatment throughout. Nearly all of the Bayesian
+work cited above samples. This work maximises and integrates in closed form, with a
+deterministic search. Deterministic Bayesian subset selection exists, but not, so
+far as the search shows, with this criterion or in this regime.
+
+The fourth is the fixed-$\sigma$ dynamic programme, as discussed above. It is weak
+evidence, but it was not found.
+
+To these should be added something that is not a result but is worth stating. The
+paper is self-contained. Every constant is normalised, every integral is verified
+in Maxima, and every number a reader needs in order to reproduce the illustrations
+is printed in the appendix. Very little of the cited literature can be reproduced
+from the paper alone. That is a real service to a reader and it is safe to say so.
+
+\section{What a colleague is most likely to raise}
+
+Anticipating these will be worth more than any of the above.
+
+The first objection was that the paper compares itself only against the minimum-norm
+pseudo-inverse, which recovers all eighty-one cells and is not a serious competitor.
+That objection is now answered by Section \ref{sec:results}, and answered
+comfortably. It should be answered in the paper as well, by a table, and not left to
+be raised from the floor.
+
+The second is that the criterion attains but does not exceed the accuracy of
+stochastic search variable selection. Somebody will ask what the paper buys. The
+answer is not that it is more accurate, because it is not. The answer is that it is
+deterministic, that its worst case over eighty trials was less than half as bad, and
+that it produces a criterion that can be examined term by term, so that the source
+of a failure can be identified. Section 10.6 of the paper does exactly that, and no
+sampler yields such an account. Saying this plainly is much stronger than claiming
+an advantage the numbers do not support.
+
+The third is that the bounds must be supplied by the analyst, and that Section 10.6
+shows the answer moving when $a_{\min}$ moves from $0.20$ to $0.05$. This is a
+genuine sensitivity, and the paper is candid about it. It is now known that the
+alternative is at least as sensitive to its own two widths, and fails in both
+directions outside a narrow band, which makes the objection one about the problem
+rather than about the paper.
+
+The fourth is the scale of the illustration. Nine by nine, with six observations,
+against a literature that works at hundreds of series. Saying at the outset that
+this is the smallest problem exhibiting the phenomenon, and that the size is chosen
+so a reader can check every number, will keep the point from being pressed. It
+should be added that the search of Section 10.2 enumerates subsets, and that nothing
+in the paper establishes how the method behaves when $q$ is forty thousand.
+
+The fifth is that the Laplace step is an approximation, and that Section 10.6 shows
+it is the one that costs something. This is already acknowledged.
+
+\section{Summary judgement}
+
+Nothing in the paper duplicates a specific published result outright, and nothing
+in it is a mistaken statement of what is known. But the great majority of its
+technical content is standard material assembled carefully, and two of its
+findings, the failure of the improper priors and the behaviour of the Beta
+hyper-prior, restate results that are in the standard references.
+
+Presented as an exposition of how a maximum-posterior criterion for a sparsity
+pattern is built from first principles, with everything normalised and verified,
+the work is sound and useful and will draw no correction. Presented as a new method
+for recovering sparse or block-structured matrices, it will.
+
+The numerical comparison sharpens this. Against the lasso, in four variants, two of
+which are given information no analyst would have, the method of the paper wins
+seventy-nine or eighty of eighty paired trials. Against stochastic search variable
+selection it wins twenty-four, loses twenty-four and ties thirty-two. The first
+result is worth presenting and closes the most likely objection. The second is worth
+presenting because it is true, and because presenting it removes any suggestion that
+the comparison was arranged to flatter.
+
+Three things are worth putting forward. The diagnosis of where the residual
+over-fitting comes from, which was not found in the literature. The demonstration
+that no grouping mechanism is required in order to recover a grouped arrangement.
+And the observation that a deterministic criterion, evaluated in closed form,
+matches a Markov chain method at this size with a smaller worst case. All three are
+modest, all three are supported by the numbers in hand, and all three will hold up.
+
+\begin{thebibliography}{99}
+
+\bibitem{ament2021}
+S. Ament and C. Gomes,
+\emph{Sparse Bayesian learning via stepwise regression},
+Proceedings of Machine Learning Research 139, 2021.
+\url{https://proceedings.mlr.press/v139/ament21a/ament21a.pdf}
+
+\bibitem{biswas2022}
+N. Biswas, L. Mackey and X.-L. Meng,
+\emph{Scalable spike-and-slab}, 2022.
+\url{https://arxiv.org/abs/2204.01668}
+
+\bibitem{chan2020}
+J. C. C. Chan,
+\emph{Large Bayesian vector autoregressions}.
+\url{https://www.joshuachan.org/papers/large_BVAR.pdf}
+
+\bibitem{korobilis2013}
+D. Korobilis,
+\emph{VAR forecasting using Bayesian variable selection},
+Journal of Applied Econometrics 28(2), 204--230, 2013.
+\url{https://mpra.ub.uni-muenchen.de/21122/1/ssvs.pdf}
+
+\bibitem{yang2016}
+Y. Yang, M. J. Wainwright and M. I. Jordan,
+\emph{On the computational complexity of high-dimensional Bayesian variable
+selection},
+Annals of Statistics 44(6), 2497--2532, 2016.
+\url{https://projecteuclid.org/journals/annals-of-statistics/volume-44/issue-6/On-the-computational-complexity-of-high-dimensional-Bayesian-variable-selection/10.1214/15-AOS1417.pdf}
+
+\bibitem{barbieri2004}
+M. M. Barbieri and J. O. Berger,
+\emph{Optimal predictive model selection},
+Annals of Statistics 32(3), 870--897, 2004.
+\url{https://projecteuclid.org/journals/annals-of-statistics/volume-32/issue-3/Optimal-predictive-model-selection/10.1214/009053604000000238.full}
+
+\bibitem{basu2015}
+S. Basu and G. Michailidis,
+\emph{Regularized estimation in sparse high-dimensional time series models},
+Annals of Statistics 43(4), 1535--1567, 2015.
+\url{https://projecteuclid.org/euclid.aos/1434546214}
+
+\bibitem{billio2019}
+M. Billio, R. Casarin and L. Rossini,
+\emph{Bayesian nonparametric sparse VAR models},
+Journal of Econometrics 212(1), 97--115, 2019.
+\url{https://arxiv.org/abs/1608.02740}
+
+\bibitem{biclustered2012}
+T.-Y. Chiang and others,
+\emph{Learning bi-clustered vector autoregressive models},
+ECML PKDD 2012, Lecture Notes in Computer Science 7524.
+\url{https://link.springer.com/chapter/10.1007/978-3-642-33486-3_47}
+
+\bibitem{brownlees2017}
+C. T. Brownlees, G. S. Gudmundsson and G. Lugosi,
+\emph{Sparse estimation of huge networks with a block-wise structure},
+Econometrics Journal 20(3), S61--S85, 2017.
+\url{https://ideas.repec.org/a/wly/emjrnl/v20y2017i3ps61-s85.html}
+
+\bibitem{cheeseman1996}
+P. Cheeseman and J. Stutz,
+\emph{Bayesian classification (AutoClass): theory and results},
+in Advances in Knowledge Discovery and Data Mining, 1996.
+\url{https://ntrs.nasa.gov/citations/19920075544}
+
+\bibitem{dhillon2011}
+P. S. Dhillon, D. Foster and L. Ungar,
+\emph{Minimum description length penalization for group and multi-task sparse
+learning},
+Journal of Machine Learning Research 12, 2011.
+\url{https://jmlr.csail.mit.edu/papers/v12/dhillon11a.html}
+
+\bibitem{feroz2011}
+F. Feroz, S. T. Balan and M. P. Hobson,
+\emph{Detecting extrasolar planets from stellar radial velocities using Bayesian
+evidence}, 2011. Sets out the modified Jeffreys prior and the reason for it.
+\url{https://arxiv.org/abs/1012.5129}
+
+\bibitem{gsn2008}
+E. I. George, D. Sun and S. Ni,
+\emph{Bayesian stochastic search for VAR model restrictions},
+Journal of Econometrics 142(1), 553--580, 2008.
+\url{https://faculty.wharton.upenn.edu/wp-content/uploads/2012/04/GeorgeSunNi-JE2008.pdf}
+
+\bibitem{gudmundsson2021}
+G. S. Gudmundsson and C. T. Brownlees,
+\emph{Detecting groups in large vector autoregressions},
+Journal of Econometrics 225(1), 2--26, 2021.
+\url{https://bse.eu/research/publications/detecting-groups-large-vector-autoregressions}
+
+\bibitem{hybrid2020}
+\emph{Bayesian selection of best subsets via hybrid search},
+Computational Statistics, 2020.
+\url{https://link.springer.com/article/10.1007/s00180-020-00996-y}
+
+\bibitem{kass1995}
+R. E. Kass and A. E. Raftery,
+\emph{Bayes factors},
+Journal of the American Statistical Association 90(430), 773--795, 1995.
+\url{https://www.stat.washington.edu/raftery/Research/PDF/kass1995.pdf}
+
+\bibitem{kim2026}
+Y. Kim and C. Baek,
+\emph{Latent community paths in VAR-type models via dynamic directed spectral
+co-clustering}, 2026.
+\url{https://arxiv.org/abs/2604.12563}
+
+\bibitem{kowal2022}
+D. R. Kowal,
+\emph{Bayesian subset selection and variable importance for interpretable
+prediction and classification},
+Journal of Machine Learning Research 23, 2022.
+\url{https://www.jmlr.org/papers/volume23/21-0403/21-0403.pdf}
+
+\bibitem{lambert2019}
+\emph{A parsimonious tour of Bayesian model uncertainty}. Surveys the
+Bartlett--Lindley paradox and the standard remedies.
+\url{https://arxiv.org/abs/1902.05539}
+
+\bibitem{liang2008}
+F. Liang, R. Paulo, G. Molina, M. A. Clyde and J. O. Berger,
+\emph{Mixtures of g-priors for Bayesian variable selection},
+Journal of the American Statistical Association 103(481), 410--423, 2008.
+\url{https://www2.stat.duke.edu/~berger/papers/g-priors.pdf}
+
+\bibitem{llorente2022}
+F. Llorente, L. Martino, D. Delgado and J. L\'{o}pez-Santiago,
+\emph{On the safe use of prior densities for Bayesian model selection}, 2022.
+\url{https://arxiv.org/abs/2206.05210}
+
+\bibitem{mackay1992}
+D. J. C. MacKay,
+\emph{Bayesian interpolation},
+Neural Computation 4(3), 415--447, 1992.
+\url{https://authors.library.caltech.edu/records/r7qgh-q6g10}
+
+\bibitem{nicholson2015}
+W. B. Nicholson, J. Bien and D. S. Matteson,
+\emph{VARX-L: structured regularization for large vector autoregressions with
+exogenous variables}, 2015.
+\url{https://arxiv.org/abs/1508.07497}
+
+\bibitem{park2008}
+T. Park and G. Casella,
+\emph{The Bayesian lasso},
+Journal of the American Statistical Association 103(482), 681--686, 2008.
+\url{https://people.eecs.berkeley.edu/~jordan/courses/260-spring09/other-readings/park-casella.pdf}
+
+\bibitem{schwarz1978}
+G. Schwarz,
+\emph{Estimating the dimension of a model},
+Annals of Statistics 6(2), 461--464, 1978.
+\url{https://projecteuclid.org/journals/annals-of-statistics/volume-6/issue-2/Estimating-the-Dimension-of-a-Model/10.1214/aos/1176344136.full}
+
+\bibitem{scott2010}
+J. G. Scott and J. O. Berger,
+\emph{Bayes and empirical-Bayes multiplicity adjustment in the variable-selection
+problem},
+Annals of Statistics 38(5), 2587--2619, 2010.
+\url{https://arxiv.org/abs/1011.2333}
+
+\bibitem{silander2006}
+T. Silander and P. Myllym\"{a}ki,
+\emph{A simple approach for finding the globally optimal Bayesian network
+structure},
+Proceedings of the Twenty-Second Conference on Uncertainty in Artificial
+Intelligence, 2006.
+\url{https://arxiv.org/abs/1206.6875}
+
+\bibitem{tibshirani1996}
+R. Tibshirani,
+\emph{Regression shrinkage and selection via the lasso},
+Journal of the Royal Statistical Society Series B 58(1), 267--288, 1996.
+\url{https://webdoc.agsci.colostate.edu/koontz/arec-econ535/papers/Tibshirani%20%28JRSS-B%201996%29.pdf}
+
+\bibitem{wallace2005}
+C. S. Wallace,
+\emph{Statistical and Inductive Inference by Minimum Message Length},
+Springer, 2005.
+\url{https://link.springer.com/book/10.1007/0-387-27656-4}
+
+\bibitem{zhang2011}
+Z. Zhang and B. D. Rao,
+\emph{Sparse signal recovery with temporally correlated source vectors using
+sparse Bayesian learning}, 2011.
+\url{https://arxiv.org/abs/1102.3949}
+
+\bibitem{zhao2006}
+P. Zhao and B. Yu,
+\emph{On model selection consistency of lasso},
+Journal of Machine Learning Research 7, 2541--2563, 2006.
+\url{https://www.jmlr.org/papers/volume7/zhao06a/zhao06a.pdf}
+
+\bibitem{zou2006}
+H. Zou,
+\emph{The adaptive lasso and its oracle properties},
+Journal of the American Statistical Association 101(476), 1418--1429, 2006.
+\url{https://pages.stat.wisc.edu/~shao/stat992/zou2006.pdf}
+
+\end{thebibliography}
+
+\end{document}

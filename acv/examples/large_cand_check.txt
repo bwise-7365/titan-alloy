@@ -1,0 +1,7 @@
+seed 20260726, case block, rows 200
+
+true subset is the greedy subset of its own size : 194
+true subset is visited by the plain lasso path   : 19
+true subset available from either source         : 194
+true subset passes the coefficient-range test    : 200
+true subset survives the cut to 6 candidates      : 200

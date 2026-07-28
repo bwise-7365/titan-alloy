@@ -1,0 +1,53 @@
+N=200 T=80 q=40000 n=16000 KMAX=25 sigma_true=0.1 alpha=2.0 beta=27.0
+ssvs tau0=0.02 tau1=1.5 draws=8000 burn=2000
+lasso nlam=60 folds=5
+
+      seed case     method          M  corr  false  miss   sigma     frob
+  20262726 block    mple         2568  2562      6    19  0.2724     3.93
+  20262726 block    lasso-cv    11238  2581   8657     0  0.0504     2.17
+  20262726 block    lasso-bic    5253  2581   2672     0  0.0849     1.46
+  20262726 block    alasso-bic   2581  2581      0     0  0.1005     0.63
+  20262726 block    lasso-best   2661  2315    346   266  0.6983    11.62
+  20262726 block    ssvs         4402  2208   2194   373  0.2261    46.78
+  20262726 scatter  mple         2569  2560      9    21  0.1937     3.20
+  20262726 scatter  lasso-cv    11578  2581   8997     0  0.0472     2.26
+  20262726 scatter  lasso-bic    5323  2581   2742     0  0.0842     1.54
+  20262726 scatter  alasso-bic   2581  2581      0     0  0.1004     0.64
+  20262726 scatter  lasso-best   2665  2298    367   283  0.7747    13.78
+  20262726 scatter  ssvs         4067  2285   1782   296  0.1869    41.45
+  20263726 block    mple         2551  2521     30    57  0.3706     6.65
+  20263726 block    lasso-cv    11436  2578   8858     0  0.0478     2.20
+  20263726 block    lasso-bic    5281  2578   2703     0  0.0838     1.43
+  20263726 block    alasso-bic   2578  2578      0     0  0.0991     0.63
+  20263726 block    lasso-best   2526  2214    312   364  1.0022    17.01
+  20263726 block    ssvs         3898  2299   1599   279  0.1729    43.80
+  20263726 scatter  mple         2554  2538     16    40  0.3418     5.81
+  20263726 scatter  lasso-cv    11503  2578   8925     0  0.0472     2.19
+  20263726 scatter  lasso-bic    5359  2578   2781     0  0.0833     1.48
+  20263726 scatter  alasso-bic   2578  2578      0     0  0.0993     0.62
+  20263726 scatter  lasso-best   2618  2268    350   310  0.8801    15.30
+  20263726 scatter  ssvs         4262  2255   2007   323  0.1845    46.46
+  20264726 block    mple         2551  2546      5    16  0.2009     3.41
+  20264726 block    lasso-cv    11573  2562   9011     0  0.0483     2.21
+  20264726 block    lasso-bic    5451  2562   2889     0  0.0846     1.54
+  20264726 block    alasso-bic   2562  2562      0     0  0.1018     0.62
+  20264726 block    lasso-best   2579  2243    336   319  0.8841    14.63
+  20264726 block    ssvs         4143  2263   1880   299  0.1626    43.24
+  20264726 scatter  mple         2554  2548      6    14  0.1713     2.75
+  20264726 scatter  lasso-cv    11446  2562   8884     0  0.0509     2.24
+  20264726 scatter  lasso-bic    5463  2562   2901     0  0.0852     1.58
+  20264726 scatter  alasso-bic   2562  2562      0     0  0.1017     0.63
+  20264726 scatter  lasso-best   2495  2173    322   389  0.9845    16.88
+  20264726 scatter  ssvs         3968  2291   1677   271  0.1707    42.39
+  20265726 block    mple         2548  2539      9    36  0.2804     4.53
+  20265726 block    lasso-cv    11484  2575   8909     0  0.0480     2.27
+  20265726 block    lasso-bic    5396  2575   2821     0  0.0839     1.54
+  20265726 block    alasso-bic   2575  2575      0     0  0.1000     0.64
+  20265726 block    lasso-best   2561  2229    332   346  0.8533    14.84
+  20265726 block    ssvs         3792  2316   1476   259  0.1675    39.09
+  20265726 scatter  mple         2555  2545     10    30  0.2245     3.80
+  20265726 scatter  lasso-cv    11374  2575   8799     0  0.0480     2.28
+  20265726 scatter  lasso-bic    5325  2575   2750     0  0.0840     1.52
+  20265726 scatter  alasso-bic   2575  2575      0     0  0.1004     0.62
+  20265726 scatter  lasso-best   2609  2277    332   298  0.7449    13.09
+  20265726 scatter  ssvs         3852  2320   1532   255  0.1720    39.29

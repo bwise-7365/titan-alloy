@@ -1,0 +1,7 @@
+seed 20260726, case block
+
+true pattern, least squares  M= 2573  R=    136.82  Phi=      -6354.85  
+true pattern, true values    M= 2573  R=    163.31  Phi=      -5166.97  
+recovered pattern            M= 2555  R=    767.36  Phi=       5093.31  
+
+The criterion prefers the truth by 11448.15 natural units, which the search failed to reach.

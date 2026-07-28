@@ -1,0 +1,199 @@
+/* acv_prelim.mac
+   ---------------------------------------------------------------
+   Verification of every algebraic step in the preliminary document
+   for the acv problem.
+
+   Notation, matching the LaTeX:
+     N     : dimension of the vectors; A is N by N
+     T     : number of observation pairs
+     n     : N*T, the number of scalar observations
+     q     : N^2, the number of cells in A
+     M     : number of non-zero cells in A
+     R     : residual sum of squares
+     amin, amax, LL : bounds on |A_ij| and LL = log(amax/amin)
+     s0, s1, LS     : bounds on sigma and LS = log(s1/s0)
+     m     : n/2, written as a single symbol to keep exponents simple
+   ---------------------------------------------------------------
+*/
+
+declare(m, noninteger)$
+assume(M > -1, M >= 0, q > M, q - M + 1 > 0, q - M > 0,
+       R > 0, m > 0,
+       amin > 0, amax > amin,
+       s0 > 0, s1 > s0,
+       eps > 0, eps < 1, big > 1, k > 0)$
+
+print("=== 1.  The unbounded scale-free prior 1/|a| has no total mass ===")$
+lo : integrate(1/a, a, eps, 1)$
+print("   mass on [eps,1] =", lo, "   limit as eps -> 0 :", limit(lo, eps, 0))$
+hi : integrate(1/a, a, 1, big)$
+print("   mass on [1,big] =", hi, "   limit as big -> inf :", limit(hi, big, inf))$
+
+print("=== 2.  The bounded log-uniform prior does have total mass 1 ===")$
+LL : log(amax) - log(amin)$
+massA : 2 * integrate(1/(2*LL*a), a, amin, amax)$
+print("   total mass over both signs =", radcan(massA))$
+LS : log(s1) - log(s0)$
+massS : integrate(1/(LS*sigma), sigma, s0, s1)$
+print("   total mass of the sigma prior =", radcan(massS))$
+
+print("=== 3.  LL is unchanged by a change of units ===")$
+print("   L(k*amax, k*amin) - L(amax,amin) =",
+      radcan(logcontract(log(k*amax) - log(k*amin) - LL)))$
+
+print("=== 4.  Integral over p, Bernoulli pattern prior, U[0,1] hyper-prior ===")$
+Ip : integrate(p^M * (1-p)^(q-M), p, 0, 1)$
+print("   integral =", Ip)$
+print("   minus beta(M+1,q-M+1) =", ratsimp(Ip - beta(M+1, q-M+1)))$
+/* beta(M+1,q-M+1) = M! (q-M)! / (q+1)! = 1 / ((q+1) binomial(q,M)) */
+chk4 : ratsimp(minfactorial(makefact(
+          beta(M+1,q-M+1) - 1/((q+1)*binomial(q,M)) )))$
+print("   minus 1/((q+1) binomial(q,M)) =", chk4)$
+/* and numerically, for a few (q,M) pairs */
+b4(qv,Mv) := float( beta(Mv+1,qv-Mv+1) - 1/((qv+1)*binomial(qv,Mv)) )$
+print("   numeric differences (q,M) = (12,5),(40,3),(100,50) :",
+      [b4(12,5), b4(40,3), b4(100,50)])$
+
+print("=== 5.  Integral over sigma on [s0,s1], substituting u = 1/sigma^2 ===")$
+/* The substituted integrand is (1/2) u^(m-1) exp(-R u / 2), taken from
+   u = 1/s1^2 up to u = 1/s0^2.  Using
+       integrate(u^(m-1) exp(-b u), u, c, inf) = b^(-m) gamma_incomplete(m, b c)
+   with b = R/2 gives the closed form below.                          */
+Isig : (1/2) * (2/R)^m * ( gamma_incomplete(m, R/(2*s1^2))
+                         - gamma_incomplete(m, R/(2*s0^2)) )$
+print("   closed form =", Isig)$
+
+/* Numerical check against direct quadrature of the original sigma integral. */
+nchk(mv, Rv, s0v, s1v) := block([f, num, cls],
+  f : lambda([sg], sg^(-(2*mv+1)) * exp(-Rv/(2*sg^2))),
+  num : quad_qags(f(sg), sg, s0v, s1v)[1],
+  cls : (1/2) * (2/Rv)^mv * ( gamma_incomplete(mv, Rv/(2*s1v^2))
+                            - gamma_incomplete(mv, Rv/(2*s0v^2)) ),
+  [num, float(cls), float(num - cls)] )$
+
+print("   [quadrature, closed form, difference]")$
+print("   m=3,  R=2.0,  s0=0.1, s1=10 :", nchk(3,   2.0, 0.1, 10))$
+print("   m=7,  R=0.5,  s0=0.01,s1=5  :", nchk(7,   0.5, 0.01, 5))$
+print("   m=2.5,R=11.0, s0=0.2, s1=3  :", nchk(2.5, 11.0, 0.2, 3))$
+
+print("=== 6.  The bound s0 removes the divergence at a perfect fit ===")$
+/* As R -> 0, gamma_incomplete(m,x) -> gamma(m) - x^m/m, so the bracket
+   behaves as (R/(2 s0^2))^m/m - (R/(2 s1^2))^m/m and the factor (2/R)^m
+   cancels the R^m, leaving a finite limit.                            */
+limIsig : limit( (1/2)*(2/R)^m *
+                 ( (R/(2*s0^2))^m/m - (R/(2*s1^2))^m/m ), R, 0 )$
+print("   limit of the closed form as R -> 0 =", radcan(limIsig))$
+print("   which equals (s0^(-2m) - s1^(-2m))/(2 m) :",
+      radcan(limIsig - (s0^(-2*m) - s1^(-2*m))/(2*m)))$
+
+print("=== 7.  Without the bound the integral diverges as R -> 0 ===")$
+/* Taking s0 -> 0 and s1 -> inf recovers (1/2) gamma(m) (2/R)^m. */
+Iunb : (1/2)*gamma(m)*(2/R)^m$
+print("   unbounded form =", Iunb, "   limit as R -> 0 :", limit(Iunb, R, 0))$
+
+print("=== 8.  Stationarity condition for the coefficient values ===")$
+/* Minimise  F = m*log(R) + sum log|A_ij| + terms free of A_ij.
+   Write e for the residual inner product  sum_t (Y_it - Z_it) X_jt,
+   so that  dR/dA_ij = -2 e.                                          */
+F : m*log(R) + log(abs(aij))$
+dF : diff(F, R)*(-2*e) + diff(F, aij)$
+print("   dF/dA_ij =", dF)$
+sol : solve(dF = 0, e)$
+print("   stationary when e =", sol)$
+/* Expected:  e = R/(2 m aij) = R/(n aij).                            */
+print("   minus R/(2*m*aij) =", ratsimp(rhs(sol[1]) - R/(2*m*aij)))$
+
+print("=== 9.  The criterion in the ordinary regime ===")$
+/* When R is well above 2*s0^2, gamma_incomplete(m, R/(2 s0^2)) is
+   negligible and gamma_incomplete(m, R/(2 s1^2)) is close to gamma(m),
+   so -log of the sigma integral reduces, up to constants, to m*log(R). */
+Fcrit : m*log(R) + M*log(2*LL) + log(binomial(q,M))$
+print("   F =", Fcrit)$
+
+print("=== 10.  Where the divergence at R -> 0 comes from ===")$
+/* The integrand is sigma^(-(n+1)) exp(-R/(2 sigma^2)), with n = 2m.
+   Its logarithm is -(n+1) log(sigma) - R/(2 sigma^2).                */
+lg : -(2*m+1)*log(sg) - R/(2*sg^2)$
+dlg : ratsimp(diff(lg, sg))$
+print("   d/dsigma of log integrand =", dlg)$
+pk : solve(dlg = 0, sg)$
+print("   stationary points =", pk)$
+print("   peak at sigma^2 = R/(n+1) :",
+      ratsimp( rhs(pk[2])^2 - R/(2*m+1) ))$
+
+/* Height of the integrand at that peak, as R -> 0. */
+sgpk : sqrt(R/(2*m+1))$
+hpk  : ratsimp( sgpk^(-(2*m+1)) * exp(-R/(2*sgpk^2)) )$
+print("   integrand at the peak =", hpk)$
+print("   its limit as R -> 0 :", limit(hpk, R, 0))$
+
+/* Numerical values of the full integral over (0, inf) as R shrinks.
+   Quadrature on (0,inf) against the closed form (1/2) gamma(m) (2/R)^m. */
+uchk(mv, Rv) := block([f, num, cls],
+  f : lambda([sg], sg^(-(2*mv+1)) * exp(-Rv/(2*sg^2))),
+  num : quad_qagi(f(sg), sg, 0, inf)[1],
+  cls : (1/2)*gamma(mv)*(2/Rv)^mv,
+  [Rv, num, float(cls)] )$
+print("   [R, quadrature, closed form] at m = 3 :")$
+print("     ", uchk(3, 1.0))$
+print("     ", uchk(3, 0.1))$
+print("     ", uchk(3, 0.01))$
+print("     ", uchk(3, 0.001))$
+
+print("=== 11.  General Beta(al,be) hyper-prior on p ===")$
+assume(al > 0, be > 0, M + al > 0, q - M + be > 0, q - M - 1 + be > 0)$
+
+/* Prior on the pattern, with p ~ Beta(al,be):
+     P(S|p) = p^M (1-p)^(q-M),   P(p) = p^(al-1) (1-p)^(be-1) / beta(al,be)  */
+Ipab : integrate(p^(M+al-1) * (1-p)^(q-M+be-1), p, 0, 1) / beta(al,be)$
+print("   integral over p =", Ipab)$
+print("   minus beta(M+al, q-M+be)/beta(al,be) :",
+      ratsimp(Ipab - beta(M+al, q-M+be)/beta(al,be)))$
+
+/* al = be = 1 must recover the uniform case of section 4. */
+chk11 : ratsimp(minfactorial(makefact(
+           subst([al=1, be=1], Ipab) - 1/((q+1)*binomial(q,M)) )))$
+print("   at al=be=1, minus 1/((q+1) binomial(q,M)) =", chk11)$
+
+/* The increase in -log(pattern term) when one more cell is occupied. */
+ratio : minfactorial(makefact( beta(M+al, q-M+be) / beta(M+1+al, q-M-1+be) ))$
+print("   ratio of successive pattern terms =", ratsimp(ratio))$
+print("   minus (q-M-1+be)/(M+al) :",
+      ratsimp(ratio - (q-M-1+be)/(M+al)))$
+print("   so the increment is log of that ratio")$
+
+/* Posterior mean of p given M. */
+pm : integrate(p^(M+al) * (1-p)^(q-M+be-1), p, 0, 1)
+     / integrate(p^(M+al-1) * (1-p)^(q-M+be-1), p, 0, 1)$
+pm : minfactorial(makefact(pm))$
+print("   posterior mean of p =", ratsimp(pm))$
+print("   minus (M+al)/(q+al+be) :", ratsimp(pm - (M+al)/(q+al+be)))$
+
+print("=== 12.  Integrating over the coefficients within a pattern ===")$
+/* The residual sum of squares is quadratic about its least-squares
+   point:  R(A) = Rhat + d' G d, where d is the departure of the M
+   coefficients from that point and G is the block-diagonal matrix with
+   blocks G_i = X_{S_i} X_{S_i}^T.  One scalar direction gives          */
+assume(g > 0, sg > 0)$
+gauss1 : integrate(exp(-g*d^2/(2*sg^2)), d, minf, inf)$
+print("   one direction =", gauss1)$
+print("   minus sqrt(2 pi sg^2 / g) :", ratsimp(gauss1 - sqrt(2*%pi*sg^2/g)))$
+/* Over M directions this gives (2 pi sg^2)^(M/2) det(G)^(-1/2). */
+
+print("   the sigma integral then carries exponent M-n-1 :")$
+/* integrate(sigma^(M-n-1) exp(-R/(2 sigma^2)), sigma, s0, s1).
+   Substituting u = 1/sigma^2 as in section 5, with nu = (n-M)/2,
+   gives (1/2)(2/R)^nu [gamma_incomplete(nu,R/(2 s1^2))
+                       - gamma_incomplete(nu,R/(2 s0^2))].            */
+vchk(nuv, Rv, s0v, s1v) := block([f, num, cls],
+  f : lambda([sg], sg^(-2*nuv-1) * exp(-Rv/(2*sg^2))),
+  num : quad_qags(f(sg), sg, s0v, s1v)[1],
+  cls : (1/2) * (2/Rv)^nuv * ( gamma_incomplete(nuv, Rv/(2*s1v^2))
+                             - gamma_incomplete(nuv, Rv/(2*s0v^2)) ),
+  [num, float(cls), float(num - cls)] )$
+print("   nu=13.5, R=0.24, s0=0.02, s1=10 :", vchk(13.5, 0.24, 0.02, 10))$
+print("   nu=7.0,  R=0.05, s0=0.02, s1=10 :", vchk(7.0,  0.05, 0.02, 10))$
+print("   nu=1.0,  R=0.01, s0=0.02, s1=10 :", vchk(1.0,  0.01, 0.02, 10))$
+/* At M = 0 we have nu = n/2 = 27, and this is exactly section 5. */
+print("   at M=0, nu=27, difference from section 5 :",
+      vchk(27, 2.0, 0.1, 10) - nchk(27, 2.0, 0.1, 10))$

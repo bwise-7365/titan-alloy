@@ -1,0 +1,6 @@
+seed 20260726, case block, true cells 2573
+
+  draws   burn  chain      M   corr  false   miss     frob
+  60000  15000     11   3647   2348   1299    225    40.22
+  60000  15000     22   3602   2342   1260    231    36.50
+        chains differ on 2721 cells of 40000; largest gap in inclusion probability 0.999

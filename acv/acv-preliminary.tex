@@ -1,0 +1,1722 @@
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
+% process with TeXworks as pdfLaTeX
+%
+% Preliminary problem statement for the acv hierarchical Bayesian work.
+% Algebra verified in maxima/acv_prelim.mac
+
+\documentclass[english, 11pt]{report}
+
+\input{../../visolver/doc/report/prolog.tex}
+
+
+% The report class numbers sections as chapter.section.  This document uses
+% no chapters, so the chapter counter stays at zero and the sections come
+% out as 0.1, 0.2 and so on.  Numbering them by section alone gives 1, 2, 3.
+% Equations follow, since prolog.tex sets \numberwithin{equation}{section}.
+\renewcommand{\thesection}{\arabic{section}}
+
+\def\myversion{v01a}
+
+%\rhead{Basic VI-NCP} % default is section
+%\lhead{B. P. Wise} % default is subsection
+
+\lfoot{\color{myDarkRed}\bf{DRAFT \myversion}}
+\cfoot{{\thepage} of {\pageref*{LastPage}}} % asterix suppressed hyperlink
+%\rfoot{\today}
+\rfoot{\copyright \  Ben P. Wise}
+
+\begin{document}
+
+\begin{titlepage}
+\title{Recovering a Sparse Matrix from Paired Observations\\
+       A Preliminary Problem Statement}
+\author{Ben Paul Wise}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+summary goes here
+\end{abstract}
+
+\end{titlepage}
+
+
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+
+\raggedright
+
+\section{Purpose}
+
+This document states one small problem completely, and solves it as far as algebra
+will carry it. The problem is the first step toward a larger programme: inference of
+vector time-series models in which the structure of the model is determined by the
+data rather than assumed beforehand. Nothing about that larger programme appears
+here. Later documents will add one element at a time.
+
+The problem treated here is the following. We observe pairs of vectors, an input and
+an output, and we believe the output is a fixed linear function of the input, plus
+measurement error. We want the matrix of that linear function. We expect most of its
+entries to be zero, and we do not know beforehand which ones.
+
+\section{Bayes's theorem and the estimate we shall use}
+
+Let $A$ denote a proposition and $B$ a body of evidence. Bayes's theorem starts
+with the basic definition of conditional probability
+
+\begin{equation}
+\tcboxmath{ \begin{array}[t]{c}
+P(A \mid B)  P(B) \;=\;  P(A,B)  \;=\; P(B \mid A)\, P(A)
+\end{array}}
+\end{equation}
+
+and derives the formula for updating beliefs given new evidence: 
+
+\begin{eqnarray}
+P(A \mid B) &=& \frac{P(B \mid A)\, P(A)}{P(B)}
+\label{eq:bayes_A}
+\\
+P(B) &=& \int P(B \mid a)\, P(a)\, da
+\label{eq:bayes_B}
+\end{eqnarray}
+
+
+
+where the integral runs over every proposition $a$ that might have produced the
+evidence, and becomes a sum when that set is countable.
+
+The denominator $P(B)$ does not involve $A$. It is the same number for every
+candidate $A$ under consideration. Consequently, if our purpose is to find the
+candidate $A$ that makes $P(A \mid B)$ as large as possible, we may work with the
+numerator alone and never evaluate $P(B)$ at all:
+
+\begin{equation}
+\arg\max_{A} P(A \mid B) \;=\; \arg\max_{A} \; P(B \mid A)\, P(A)
+\label{eq:mple}
+\end{equation}
+
+This is maximum posterior likelihood estimation, and it is what this document does.
+The saving is not incidental. The integral defining $P(B)$ runs over every matrix
+that might have produced the data, and we have no way to evaluate it.
+
+Two warnings apply to \eqref{eq:mple} and are taken up in
+Sections~\ref{sec:magnitudes} and~\ref{sec:noise}. First, the largest value of a
+probability density is not always attained; a density can increase without bound.
+Second, the position of the largest value depends on how the parameters are written,
+since a density is defined relative to a measure. Both matter here, and both are
+resolved by stating what we know rather than by mathematical device.
+
+\section{Notation}
+
+\begin{center}
+\begin{tabular}{ll}
+$N$ & the dimension of the vectors; $A$ is $N \times N$ \\
+$T$ & the number of observation pairs \\
+$n$ & $NT$, the number of scalar measurements \\
+$q$ & $N^2$, the number of cells in $A$ \\
+$X_{jt}$ & component $j$ of the input vector at observation $t$ \\
+$Y_{it}$ & component $i$ of the output vector at observation $t$ \\
+$Z_{it}$ & the value of $Y_{it}$ the matrix predicts \\
+$\mathcal{S}$ & the set of cells $(i,j)$ at which $A_{ij} \neq 0$ \\
+$M$ & the number of cells in $\mathcal{S}$ \\
+$p$ & the probability that any one cell is non-zero \\
+$\sigma$ & the standard deviation of the measurement error \\
+$R(A)$ & the residual sum of squares \\
+\end{tabular}
+\end{center}
+
+\section{The space of matrices}
+\label{sec:matrixspace}
+
+The unknown $A$ is a square array of $N$ rows and $N$ columns. Each cell holds a real
+number, positive or negative, or else holds nothing at all, which we write as zero.
+A candidate is therefore two things taken together: a choice of which cells are
+occupied, and a choice of value for each occupied cell.
+
+The first choice is discrete. There are $2^{q}$ possible patterns, where $q = N^2$.
+The second is continuous, and once the pattern is fixed it involves $M$ real numbers.
+Any prior over $A$ must give both.
+
+\subsection{The pattern of occupied cells}
+
+We suppose that each of the $q$ cells is occupied or not independently of the others,
+with the same probability $p$ of being occupied. A pattern with $M$ occupied cells
+then has probability
+
+\begin{equation}
+P(\mathcal{S} \mid p) \;=\; p^{M} \, (1-p)^{\,q-M}
+\label{eq:patternprior}
+\end{equation}
+
+The second factor is necessary. Without it the expression does not sum to unity over
+the $2^{q}$ patterns, and the comparison between a sparse matrix and a dense one is
+not a comparison between probabilities.
+
+We do not know $p$. The hyper-prior over it is taken to be a Beta distribution with
+parameters $\alpha$ and $\beta$,
+
+\begin{equation}
+P(p) \;=\; \frac{p^{\alpha-1} (1-p)^{\beta-1}}{B(\alpha,\beta)}
+\label{eq:pprior}
+\end{equation}
+
+where $0 \le p \le 1$. The mean of this distribution is
+$\alpha/(\alpha+\beta)$. Setting $\alpha = \beta = 1$ gives the uniform
+distribution on $[0,1]$, which is the statement that nothing is known about $p$
+beyond its range. Choosing $\alpha/(\alpha+\beta)$ below one half states an
+expectation that the matrix is sparse without excluding a dense one, and the sum
+$\alpha + \beta$ governs how firmly that expectation is held. The general form is
+carried through the algebra below; Section~\ref{sec:patterncost} examines what
+influence it can have.
+
+All algebra and integrals in this paper were derived and verified using the open-source symbolic
+mathematics package Maxima version 5.49.0.
+
+\subsection{The magnitudes of the occupied cells}
+\label{sec:magnitudes}
+
+For the value in an occupied cell we should like a statement that does not depend on
+the units in which $X$ and $Y$ are measured. The usual such statement is that the
+magnitude is equally likely to fall in any interval of fixed width on a logarithmic
+scale: as likely between $0.01$ and $0.1$ as between $10$ and $100$. Written as a
+density in $a$, that statement is proportional to $1/|a|$.
+
+Taken over the whole real line, $1/|a|$ is not a probability density. Its integral
+diverges at zero and again at infinity,
+
+\begin{eqnarray}
+\int_{\varepsilon}^{1} \frac{da}{a} &=& -\log \varepsilon
+\;\xrightarrow[\varepsilon \to 0]{}\; \infty
+\label{eq:diverge_A}
+\\ \nonumber
+\\
+\int_{1}^{K} \frac{da}{a} &=& \log K
+\;\xrightarrow[K \to \infty]{}\; \infty
+\label{eq:diverge_B}
+\end{eqnarray}
+
+so it has no normalising constant. Densities of this kind are used, and are
+sometimes harmless, but here they fail in two separate ways.
+
+\paragraph{The posterior would have no maximum.}
+Hold the pattern fixed. As will be shown in Section~\ref{sec:criterion}, the quantity
+to be minimised contains the term $\sum \log|A_{ij}|$, summed over occupied cells.
+Let one coefficient approach zero while the others are held fixed. The residual sum
+of squares is a continuous quadratic function of the coefficients, so it approaches
+the finite value it takes when that coefficient equals zero. The term $\log|A_{ij}|$,
+by contrast, decreases without bound. The quantity to be minimised therefore has no
+lower bound, and no maximising matrix exists.
+
+The infimum is approached as the coefficient tends to zero, and at zero the candidate
+is no longer a member of the set being searched: a coefficient equal to zero means
+the cell is unoccupied, which is a different pattern with $M$ smaller by one. More
+data does not repair this. Increasing $n$ enlarges the term measuring fit relative to
+the others, but $\log|A_{ij}|$ still diverges.
+
+\paragraph{Patterns of different size could not be compared.}
+Suppose we avoided the first difficulty by integrating over the coefficient values
+instead of maximising over them. A density without a normalising constant is
+determined only up to an arbitrary positive factor $c$: the density $c/|a|$ expresses
+the same ignorance for every $c$. A pattern with $M$ occupied cells then contributes
+$c^{M}$, and the comparison of a pattern of size $M$ with one of size $M+1$ is
+multiplied by $c$. Since $c$ has no determined value, any conclusion whatever about
+the sparsity of $A$ can be produced by choosing $c$ suitably.
+
+The general rule is this. A density without a normalising constant may be used when
+the number of factors it contributes is the same for every candidate, since the
+unknown constant then cancels from every comparison. For the coefficients of $A$ that
+number is $M$, and $M$ varies from candidate to candidate.
+
+\paragraph{The remedy.}
+We keep the logarithmic statement but confine it to a stated range of magnitudes.
+The analyst using this method knows, for the problem at hand, the smallest and the
+largest coefficient magnitudes worth entertaining. Call them $a_{\min}$ and
+$a_{\max}$, and write
+
+\begin{equation}
+L_{A} \;=\; \log \frac{a_{\max}}{a_{\min}}
+\label{eq:LA}
+\end{equation}
+
+The prior for one occupied cell is then
+
+\begin{equation}
+P(A_{ij}) \;=\; \frac{1}{2 L_{A} \, |A_{ij}|}
+\label{eq:coefprior}
+\end{equation}
+
+where $a_{\min} \le |A_{ij}| \le a_{\max}$, the factor two accounting for the two
+signs. This integrates to unity. Both
+difficulties disappear: $\log|A_{ij}|$ is bounded below by $\log a_{\min}$, and the
+normalising constant is determined, so patterns of different size may be compared.
+
+The invariance that recommended $1/|a|$ in the first place survives. A change in the
+units of the coefficients multiplies $a_{\min}$ and $a_{\max}$ by the same factor and
+leaves $L_{A}$ unchanged. The quantity $L_{A}$ has a plain reading: it is the width of
+the admissible range of magnitudes, measured in natural logarithms. A range of ten
+powers of ten gives $L_{A} \approx 23$.
+
+Collecting \eqref{eq:patternprior} and \eqref{eq:coefprior}, the prior over the whole
+matrix, given $p$, is
+
+\begin{equation}
+P(A \mid p) \;=\; p^{M} (1-p)^{\,q-M} \, (2 L_{A})^{-M}
+\prod_{(i,j) \in \mathcal{S}} \frac{1}{|A_{ij}|}
+\label{eq:Aprior}
+\end{equation}
+
+\section{The data and the measurement error}
+\label{sec:noise}
+
+The data $B$ consist of $T$ pairs of $N$-dimensional real vectors. The inputs $X$ are
+taken to be exact. All error is in the outputs. The matrix predicts
+
+\begin{equation}
+Z_{it} \;=\; \sum_{j=1}^{N} A_{ij} X_{jt}
+\label{eq:Z}
+\end{equation}
+
+and we suppose the discrepancies $Y_{it} - Z_{it}$ to be independent of one another,
+each drawn from a normal distribution of mean zero and standard deviation $\sigma$.
+Then
+
+\begin{equation}
+P(B \mid A, \sigma) \;=\; \prod_{i=1}^{N} \prod_{t=1}^{T}
+\frac{1}{\sigma \sqrt{2\pi}}
+\exp\!\left( -\frac{(Z_{it} - Y_{it})^{2}}{2\sigma^{2}} \right)
+\;=\; (2\pi)^{-n/2} \, \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right)
+\label{eq:likelihood}
+\end{equation}
+
+where
+
+\begin{equation}
+R(A) \;=\; \sum_{i=1}^{N} \sum_{t=1}^{T} \left( Y_{it} - Z_{it} \right)^{2}
+\label{eq:R}
+\end{equation}
+
+and $n = NT$. The factors of $\sqrt{2\pi}$ contribute $(2\pi)^{-n/2}$, which does not
+involve $A$, $p$ or $\sigma$. It is the same number for every candidate and may be
+dropped throughout without affecting which candidate is best.
+
+\subsection{The scale of the error}
+
+We do not know $\sigma$. The natural statement of ignorance about a scale is again
+the logarithmic one, proportional to $1/\sigma$, and again it has no total mass.
+
+Here the consequence differs from the one in Section~\ref{sec:magnitudes}. Every
+candidate matrix carries exactly one factor of the prior for $\sigma$, so the
+arbitrary constant does cancel. The difficulty lies elsewhere, and it is clearest in
+the integrand itself. Combining the prior $1/\sigma$ with the likelihood
+\eqref{eq:likelihood}, and setting aside factors that do not involve $\sigma$, the
+integral to be performed is
+
+\begin{equation}
+\int_{0}^{\infty} \sigma^{-(n+1)}
+\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
+\label{eq:sigmanaive}
+\end{equation}
+
+The factor $\sigma^{-(n+1)}$ is by itself not integrable at the origin. What makes
+\eqref{eq:sigmanaive} converge there is the exponential, which drives the integrand
+to zero as $\sigma$ decreases. The reach of that suppression is governed by $R$. The
+integrand rises to a single maximum at
+
+\begin{equation}
+\sigma^{2} \;=\; \frac{R}{n+1}
+\label{eq:peak}
+\end{equation}
+
+and falls away on both sides. As $R$ decreases, the maximum moves toward the origin
+and its height, proportional to $R^{-(n+1)/2}$, grows without limit. The suppression
+that made the integral finite is confined to an ever smaller neighbourhood of zero,
+exposing more and more of the singularity in $\sigma^{-(n+1)}$. Performing the
+integral,
+
+\begin{equation}
+\int_{0}^{\infty} \sigma^{-(n+1)}
+\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
+\;=\; \tfrac{1}{2}\, \Gamma\!\left( \tfrac{n}{2} \right)
+\left( \frac{2}{R} \right)^{n/2}
+\label{eq:sigmaunbounded}
+\end{equation}
+
+which increases without bound as $R$ approaches zero. The divergence occurs at
+$\sigma = 0$, and it appears in the answer as the factor $R^{-n/2}$. Stated in words:
+as the fit improves, an ever wider range of very small error scales becomes
+consistent with the data, and the accumulated weight of those scales has no upper
+limit.
+
+The divergence is not a defect of the algebra. It is the formulation reporting that
+nothing has been said about how small the error can be. With $1/\sigma$ taken over
+$(0,\infty)$, a residual of $10^{-12}$ is admitted as evidence of an instrument
+accurate to $10^{-12}$, and no part of the model contradicts that reading. Stating
+$s_{0}$ contradicts it.
+
+Whenever the data can be fitted exactly, therefore, the exact fit dominates every
+other candidate however large its pattern.
+
+Whether an exact fit is available depends on $N$ and $T$. Row $i$ of $A$ is
+constrained only by row $i$ of $Y$, which supplies $T$ equations, and it contains as
+many free coefficients as that row has occupied cells. Two regimes are worth
+recording:
+
+\begin{center}
+\begin{tabular}{lccl}
+ & $N=10,\ T=20$ & $N=200,\ T=10$ & \\
+\hline
+cells in $A$      & $100$  & $40{,}000$ & \\
+measurements $n$  & $200$  & $2{,}000$  & \\
+equations per row & $20$   & $10$       & \\
+coefficients available per row & $10$ & $200$ & \\
+exact fit possible & no & yes, easily & \\
+\end{tabular}
+\end{center}
+
+In the first regime every row is over-determined and no exact fit exists. In the
+second, a pattern with ten occupied cells in each row reproduces the data exactly,
+and there are a great many such patterns. The second regime is the one we must be
+able to handle, so the difficulty cannot be set aside.
+
+The remedy is the one already applied to the coefficients. The analyst who can state
+the range of credible coefficient magnitudes can equally state the range of credible
+noise levels: $s_{0}$, below which the instrument cannot measure, and $s_{1}$, above
+which the data would be worthless. Writing
+
+\begin{eqnarray}
+L_{\sigma} &=& \log \frac{s_{1}}{s_{0}}
+\label{eq:sigmaprior_A}
+\\
+P(\sigma) &=& \frac{1}{L_{\sigma}\, \sigma}
+\label{eq:sigmaprior_B}
+\\
+s_{0} &\le& \sigma \le s_{1}
+\label{eq:sigmaprior_C}
+\end{eqnarray}
+
+
+
+gives a proper density, and, as Section~\ref{sec:sigmaint} shows, a finite result at
+$R = 0$. The statement $\sigma \ge s_{0}$ is a statement about the apparatus, not a
+mathematical convenience: it says that the measurements are not exact, and how
+inexact they are known to be.
+
+\section{The posterior for $A$, $p$ and $\sigma$}
+
+Multiplying the prior \eqref{eq:Aprior}, the hyper-priors on $p$ and $\sigma$, and
+the likelihood \eqref{eq:likelihood}, and discarding the constant $(2\pi)^{-n/2}$,
+the posterior for the three unknowns together is proportional to
+
+\begin{equation}
+P(A, p, \sigma \mid B) \;\propto\;
+p^{M} (1-p)^{\,q-M}
+\cdot \frac{(2L_{A})^{-M}}{\prod_{\mathcal{S}} |A_{ij}|}
+\cdot \frac{1}{L_{\sigma}\,\sigma}
+\cdot \sigma^{-n} \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right)
+\label{eq:joint}
+\end{equation}
+
+The quantities $p$ and $\sigma$ are not of interest in themselves. We remove them by
+integration, which is the step that makes the estimate of $A$ depend on the data
+alone and not on values we should otherwise have to guess.
+
+\subsection{Removing $p$}
+
+Only the first factor of \eqref{eq:joint} involves $p$. With the hyper-prior
+\eqref{eq:pprior},
+
+\begin{equation}
+\frac{1}{B(\alpha,\beta)} \int_{0}^{1}
+p^{\,M+\alpha-1} (1-p)^{\,q-M+\beta-1} \, dp
+\;=\; \frac{B(M+\alpha,\; q-M+\beta)}{B(\alpha,\beta)}
+\label{eq:pint}
+\end{equation}
+
+At $\alpha = \beta = 1$ this reduces to
+
+\begin{equation}
+B(M+1,\; q-M+1) \;=\; \frac{M!\,(q-M)!}{(q+1)!}
+\;=\; \frac{1}{(q+1) \binom{q}{M}}
+\label{eq:pintuniform}
+\end{equation}
+
+whose negative logarithm is $\log \binom{q}{M} + \log(q+1)$. The first term is the
+number of natural units of information required to say which $M$ of the $q$ cells are
+occupied. This is Occam's razor in a form that can be computed: a pattern must reduce
+the residual by enough to account for the information needed to describe it.
+
+In either case the result depends on the pattern only through its size. Write
+
+\begin{equation}
+\Pi(M) \;=\; -\log \frac{B(M+\alpha,\; q-M+\beta)}{B(\alpha,\beta)}
+\label{eq:Pi}
+\end{equation}
+
+for the contribution of the pattern to the quantity to be minimised.
+
+\subsection{How much the pattern term can do}
+\label{sec:patterncost}
+
+Since $\Pi$ depends only on $M$, its whole effect is contained in the amount by which
+it grows when one more cell is occupied. That increment has a simple closed form. The
+ratio of successive values of the Beta function is
+
+\begin{equation}
+\frac{B(M+\alpha,\; q-M+\beta)}{B(M+1+\alpha,\; q-M-1+\beta)}
+\;=\; \frac{q-M-1+\beta}{M+\alpha}
+\label{eq:ratio}
+\end{equation}
+
+so that
+
+\begin{equation}
+\Pi(M+1) - \Pi(M) \;=\; \log \frac{q-M-1+\beta}{M+\alpha}
+\label{eq:increment}
+\end{equation}
+
+Two consequences follow, and both matter for what a Beta hyper-prior can accomplish.
+
+First, the increment depends on $\beta$ only through its logarithm. To raise the
+charge for one more occupied cell by $D$ natural units above its value under the
+uniform hyper-prior requires $\beta$ to grow by a factor of about $e^{D}$. A
+hyper-prior that is merely sceptical of dense matrices therefore changes the
+increment very little. With $q = 81$ and $M = 27$, the increment is $0.657$ at
+$\alpha = \beta = 1$, and $1.281$ at $\alpha = 1,\ \beta = 50$, a hyper-prior whose
+mean is $1/51$. Supplying a further six natural units would require $\beta$ of order
+$10^{4}$, which asserts that the expected number of occupied cells in the whole
+matrix is less than one hundredth.
+
+Second, the increment falls as $M$ rises, so the pattern term resists the first few
+occupied cells more than the last. Its total contribution across the whole matrix is
+bounded by $q \log q$, of order four hundred natural units for $q = 81$, whereas the
+term measuring fit varies over hundreds of units for a single pattern. The
+hyper-prior on $p$ is therefore a refinement, not a control. Anything that must be
+prevented has to be prevented elsewhere.
+
+The posterior mean of $p$, should it be wanted, is $(M+\alpha)/(q+\alpha+\beta)$.
+
+\subsection{Removing $\sigma$}
+\label{sec:sigmaint}
+
+The remaining factors involving $\sigma$ give
+
+\begin{equation}
+I(R) \;=\; \frac{1}{L_{\sigma}}
+\int_{s_{0}}^{s_{1}} \sigma^{-(n+1)}
+\exp\!\left( -\frac{R}{2\sigma^{2}} \right) d\sigma
+\label{eq:sigmaintdef}
+\end{equation}
+
+The substitution $u = 1/\sigma^{2}$ turns this into an incomplete gamma integral.
+With $\Gamma(m,x) = \int_{x}^{\infty} u^{m-1} e^{-u}\, du$ and $m = n/2$,
+
+\begin{equation}
+I(R) \;=\; \frac{1}{2 L_{\sigma}}
+\left( \frac{2}{R} \right)^{n/2}
+\left[ \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{1}^{2}} \right)
+     - \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right) \right]
+\label{eq:sigmaint}
+\end{equation}
+
+Two limits show what the bounds accomplish. If $R$ is comfortably larger than
+$2 s_{0}^{2}$, the second incomplete gamma function is negligible and the first is
+close to $\Gamma(n/2)$, so
+
+\begin{equation}
+I(R) \;\approx\; \frac{\Gamma(n/2)}{2 L_{\sigma}}
+\left( \frac{2}{R} \right)^{n/2}
+\label{eq:sigmaordinary}
+\end{equation}
+
+which is \eqref{eq:sigmaunbounded}, the result obtained from the unbounded prior
+divided by $L_{\sigma}$. The bounds cost nothing when
+the fit is ordinary. If instead $R$ approaches zero, the factor $R^{-n/2}$ is
+cancelled exactly by the behaviour of the bracket, and
+
+\begin{equation}
+\lim_{R \to 0} I(R) \;=\; \frac{1}{n L_{\sigma}}
+\left( s_{0}^{-n} - s_{1}^{-n} \right)
+\label{eq:sigmalimit}
+\end{equation}
+
+a finite number. A perfect fit is now merely very good, not infinitely good, and it
+must still account for the size of its pattern.
+
+\section{The criterion for the matrix}
+\label{sec:criterion}
+
+Collecting \eqref{eq:joint}, \eqref{eq:pint} and \eqref{eq:sigmaint}, the posterior
+for the matrix alone is proportional to
+
+\begin{equation}
+P(A \mid B) \;\propto\;
+e^{-\Pi(M)}
+\cdot \frac{(2L_{A})^{-M}}{\prod_{\mathcal{S}} |A_{ij}|}
+\cdot I\!\left( R(A) \right)
+\label{eq:posteriorA}
+\end{equation}
+
+It is convenient to work with the negative logarithm, which is to be made as small as
+possible. Discarding terms that do not involve $A$,
+
+\begin{equation}
+\tcboxmath{ \begin{array}[t]{c}
+F(A) \;=\;
+\frac{n}{2} \log R(A)
+\;+\; \sum_{(i,j) \in \mathcal{S}} \log |A_{ij}|
+\;+\; M \log (2 L_{A})
+\;+\; \Pi(M)
+\;-\; \log \Delta(R)
+\end{array}}
+\label{eq:criterion}
+\end{equation}
+
+where
+
+\begin{equation}
+\Delta(R) \;=\;
+\Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{1}^{2}} \right)
+- \Gamma\!\left( \frac{n}{2}, \frac{R}{2 s_{0}^{2}} \right)
+\label{eq:Delta}
+\end{equation}
+
+The five terms have plain meanings. The first measures how badly the matrix fits the
+data. The second and third concern the occupied coefficients: how large they are, and
+how many. The fourth, given by \eqref{eq:Pi}, is the information required to specify which
+cells are occupied.
+The fifth is nearly constant over the ordinary range of $R$, by
+\eqref{eq:sigmaordinary}, and takes effect only when the fit becomes so good as to be
+implausible given the stated precision of the measurements.
+
+Away from that extreme, $\Delta(R)$ may be replaced by $\Gamma(n/2)$ and dropped, so
+that the working criterion is
+
+\begin{equation}
+F(A) \;=\;
+\frac{n}{2} \log R(A)
+\;+\; \sum_{(i,j) \in \mathcal{S}} \log |A_{ij}|
+\;+\; M \log (2 L_{A})
+\;+\; \Pi(M)
+\label{eq:workingcriterion}
+\end{equation}
+
+One restriction on the use of \eqref{eq:criterion} must be stated at once. It is a
+sound guide to the coefficient values within a pattern that has been fixed in
+advance, and Section~\ref{sec:coefficients} uses it for that. It is not a sound guide
+to the choice between patterns of different size, and Section~\ref{sec:compare}
+explains why and gives the quantity that is.
+
+\section{The coefficients for a given pattern}
+\label{sec:coefficients}
+
+Suppose the pattern $\mathcal{S}$ is fixed. The terms in
+\eqref{eq:workingcriterion} that involve $M$ are then constant, and we minimise over
+the values in the occupied cells. Write
+
+\begin{equation}
+e_{ij} \;=\; \sum_{t=1}^{T} \left( Y_{it} - Z_{it} \right) X_{jt}
+\label{eq:eij}
+\end{equation}
+
+the inner product of the residuals in row $i$ with the $j$th input series, so that
+$\partial R / \partial A_{ij} = -2 e_{ij}$. Setting the derivative of
+\eqref{eq:workingcriterion} to zero gives, for every occupied cell,
+
+\begin{equation}
+e_{ij} \;=\; \frac{R(A)}{n \, A_{ij}}
+\label{eq:stationary}
+\end{equation}
+
+Ordinary least squares would give $e_{ij} = 0$. The estimate here departs from least
+squares by a quantity of order $R/n$, which is small when the measurements are many.
+The direction of the departure is toward smaller coefficients, since the density
+\eqref{eq:coefprior} places more of its value at small magnitudes.
+
+That shrinkage deserves a word of caution. It is a consequence of maximising a
+density rather than integrating one, and its size depends on the fact that we chose
+to write the prior as a density in $A_{ij}$ rather than in $\log|A_{ij}|$. It is not
+a statement about the data. Since it is of order $R/n$, it is negligible in the cases
+of interest, and \eqref{eq:stationary} is retained as the estimate of the
+coefficients throughout.
+
+\section{Comparing patterns of different size}
+\label{sec:compare}
+
+Equation \eqref{eq:criterion} is not adequate for choosing between patterns, and the
+reason is arithmetical. Occupying one more cell increases $\Pi$ by
+\eqref{eq:increment}, which is under one natural unit in the middle of the range, and
+increases $M \log(2 L_{A})$ by $\log (2 L_{A})$, which is about two. Against that,
+one more coefficient reduces $R$, and the first term of \eqref{eq:criterion} carries
+the factor $n/2$. When $T$ is small the reduction is substantial and the two charges
+above do not approach it. Taken as a guide to the size of the pattern,
+\eqref{eq:criterion} occupies as many cells as it is permitted to.
+
+What is missing is any account of the freedom that the extra coefficient uses up.
+Maximising over the coefficients records the height of the posterior at its best
+point and disregards how wide the region of good fit is. A pattern with more
+coefficients reaches a higher point, but over a region so much narrower that its
+total weight may be smaller. The comparison must therefore be made between
+integrals, not between heights.
+
+\subsection{The integral over the coefficients}
+
+Fix the pattern $\mathcal{S}$ and let $\hat{A}$ be the least-squares point within it,
+$\hat{R}$ the residual sum of squares there. The residual is quadratic, so
+
+\begin{equation}
+R(A) \;=\; \hat{R} \;+\; d^{\,\prime} G \, d
+\label{eq:quadratic}
+\end{equation}
+
+where $d$ collects the departures of the $M$ coefficients from $\hat{A}$ and $G$ is
+block diagonal with blocks $G_{i} = X_{\mathcal{S}_{i}} X_{\mathcal{S}_{i}}^{\prime}$,
+one for each row. The factor $\prod 1/|A_{ij}|$ varies slowly across the region where
+the exponential is appreciable, so it may be evaluated at $\hat{A}$ and taken outside.
+The remaining integral is Gaussian, and gives
+
+\begin{equation}
+\int \exp\!\left( -\frac{R(A)}{2\sigma^{2}} \right) dA
+\;=\; \exp\!\left( -\frac{\hat{R}}{2\sigma^{2}} \right)
+\left( 2\pi\sigma^{2} \right)^{M/2}
+\prod_{i=1}^{N} \left| G_{i} \right|^{-1/2}
+\label{eq:laplace}
+\end{equation}
+
+This requires each $G_{i}$ to be non-singular, which holds when no row has more than
+$T$ occupied cells. A row with more than $T$ occupied cells reproduces its own data
+exactly and leaves directions in which the residual does not change at all; such
+patterns are excluded here.
+
+\subsection{The integral over $\sigma$, once more}
+
+The factor $\sigma^{M}$ from \eqref{eq:laplace} multiplies the $\sigma^{-(n+1)}$ of
+Section~\ref{sec:sigmaint}, so the exponent becomes $M - n - 1$. Writing
+
+\begin{equation}
+\nu \;=\; \frac{n-M}{2}
+\label{eq:nu}
+\end{equation}
+
+and repeating the substitution $u = 1/\sigma^{2}$,
+
+\begin{equation}
+\int_{s_{0}}^{s_{1}} \sigma^{\,M-n-1}
+\exp\!\left( -\frac{\hat{R}}{2\sigma^{2}} \right) d\sigma
+\;=\; \frac{1}{2} \left( \frac{2}{\hat{R}} \right)^{\nu}
+\left[ \Gamma\!\left( \nu, \frac{\hat{R}}{2 s_{1}^{2}} \right)
+     - \Gamma\!\left( \nu, \frac{\hat{R}}{2 s_{0}^{2}} \right) \right]
+\label{eq:sigmaintM}
+\end{equation}
+
+Setting $M = 0$ recovers \eqref{eq:sigmaint} exactly.
+
+\subsection{The criterion for the pattern}
+
+Collecting the factors and taking the negative logarithm, the pattern is chosen by
+minimising
+
+
+
+\begin{equation}
+\tcboxmath{ \begin{array}[t]{c}
+\Phi(\mathcal{S}) \;=\;
+\nu \log \hat{R}
+\;+\; \sum_{(i,j) \in \mathcal{S}} \log |\hat{A}_{ij}|
+\;+\; \tfrac{1}{2} \sum_{i=1}^{N} \log \left| G_{i} \right|
+\;-\; \frac{M}{2} \log 2\pi
+\;+\; M \log (2 L_{A})
+\;+\; \Pi(M)
+\end{array}}
+\label{eq:patterncriterion}
+\end{equation}
+
+
+away from the extreme of a near-exact fit, where the bracket in \eqref{eq:sigmaintM}
+must be retained in place of $\Gamma(\nu)$.
+
+Two differences from \eqref{eq:workingcriterion} carry the whole effect. The factor
+on $\log \hat{R}$ has fallen from $n/2$ to $(n-M)/2$, which is the count of
+measurements less the count of quantities fitted to them. And two new terms appear,
+$\tfrac{1}{2}\sum \log|G_{i}|$ and $-\tfrac{1}{2} M \log 2\pi$, which together measure
+how narrow the region of good fit has become. A coefficient that the data determine
+sharply makes $|G_{i}|$ large and raises $\Phi$; a coefficient that the data barely
+constrain adds little. That is the accounting for freedom which \eqref{eq:criterion}
+omits.
+
+\subsection{A note on maximising against integrating}
+\label{sec:integratenote}
+
+The step taken in this section is narrow. Within a fixed pattern the coefficients are
+still estimated by maximising, through \eqref{eq:stationary}; only the comparison
+between patterns of different size is made by integration. It is worth recording that
+the wider step may repay the effort.
+
+The maximum of a density is a fragile quantity in two respects. It is not preserved
+under a change of variable: writing the same distribution as a density in $\log|a|$
+rather than in $a$ moves the maximum, while the integral over any region is
+unaffected. And for a density that decreases monotonically, the maximum sits at an
+endpoint whatever the parameters may be. The exponential density
+$\lambda e^{-\lambda x}$ on $x \ge 0$ attains its maximum at $x = 0$ for every
+$\lambda$, so the location of the maximum carries no information about $\lambda$ at
+all. The prior \eqref{eq:coefprior} is of exactly this character, which is why
+Section~\ref{sec:magnitudes} had to bound it and why \eqref{eq:stationary} shrinks the
+coefficients slightly.
+
+Wherever a conclusion rests on comparing regions of the parameter space rather than
+on locating one point in it, the integral is the quantity with a stable meaning. The
+present document integrates over $p$, over $\sigma$, and now over the coefficients
+when patterns are compared. As the model is enlarged in later documents, results that
+appear anomalous should be tested by integrating rather than maximising before any
+other explanation is sought.
+
+\section{Two numerical illustrations}
+\label{sec:examples}
+
+The algebra above says how a matrix is to be scored. Whether the score selects the
+right matrix is a separate question, and this section answers it on manufactured data
+where the truth is known.
+
+Two matrices are used. In the first, the occupied cells form three blocks of size
+three along the diagonal. In the second, the same coefficient values are moved to
+three columns of each row chosen at random, so that no arrangement remains. Both
+matrices therefore have the same number of occupied cells, the same values, and the
+same count of three per row. They differ only in where those cells sit. The two cases
+of a given trial share the same inputs and the same measurement errors, so the
+comparison between them is paired.
+
+Nothing in the prior refers to blocks. All $q = 81$ cells are treated alike, and the
+rows are fitted separately. If the block structure is recovered, it is recovered from
+the data.
+
+\subsection{Construction}
+
+\begin{center}
+\begin{tabular}{ll}
+dimension and observations & $N = 9$, \quad $T = 6$, \quad $q = 81$, \quad $n = 54$ \\
+occupied cells & three per row, so $M = 27$ \\
+coefficient magnitudes & drawn log-uniformly on $[0.40,\, 3.00]$, signs equally
+likely \\
+stated coefficient range & $a_{\min} = 0.20$, \quad $a_{\max} = 5.0$, \quad
+$L_{A} = 3.219$ \\
+measurement error & $\sigma = 0.10$ \\
+stated error range & $s_{0} = 0.02$, \quad $s_{1} = 10$, \quad
+$L_{\sigma} = 6.215$ \\
+hyper-prior on $p$ & $\alpha = \beta = 1$, the uniform case \\
+inputs & $X_{jt}$ drawn independently from the standard normal \\
+\end{tabular}
+\end{center}
+
+The stated range $[a_{\min}, a_{\max}]$ lies strictly outside the range from which the
+true coefficients are drawn. That separation matters. A floor placed at the edge of
+the truth rejects those coefficients that the measurement error happens to push below
+it, and the method then misses cells it would otherwise find.
+
+The proportions of $N$ and $T$ are the point of the exercise. Each row supplies six
+equations for nine candidate coefficients, so no row can be estimated without first
+deciding which cells it occupies. Occupying three of them leaves three degrees of
+freedom. Rows are restricted to at most $T-1 = 5$ occupied cells, which excludes exact
+fits and keeps every $G_{i}$ of Section~\ref{sec:compare} non-singular.
+
+\subsection{The search}
+
+Section~\ref{sec:matrixspace} observed that a matrix of order $N$ admits $2^{N^{2}}$
+patterns of occupied cells. For $N = 9$ that is $2^{81}$, or about
+$2.4 \times 10^{24}$, so the patterns cannot be examined one by one and some
+procedure is needed. This section states the one used.
+
+Three properties of the problem make it tractable. The first is the restriction of
+Section~\ref{sec:examples}.1 to at most $T-1 = 5$ occupied cells in a row, which is
+required in any case for the residual to retain any degrees of freedom and for the
+matrices $G_{i}$ of Section~\ref{sec:compare} to be non-singular. A row then admits
+
+\begin{equation}
+\sum_{k=0}^{5} \binom{9}{k} \;=\; 382
+\label{eq:rowsubsets}
+\end{equation}
+
+subsets of columns rather than $2^{9} = 512$. The second is that the rows are fitted
+separately, so the fit of a row depends on that row alone. Enumerating every
+admissible subset of every row therefore takes $9 \times 382 = 3438$ least-squares
+fits, and this is done once. For each row and each size $k$ the subset of that size
+with the lowest cost is retained, which leaves six numbers per row.
+
+The third property requires more care, because $\Phi$ does not separate across rows.
+It couples them twice: through $\log \hat{R}$, which involves the sum of the residuals
+of all nine rows, and through $\Pi(M)$, which involves the total count of occupied
+cells. Holding $\sigma$ fixed removes the first coupling, since the joint posterior of
+$(A,\sigma)$ contains $\hat{R}/2\sigma^{2}$ rather than its logarithm, and a sum
+inside a logarithm becomes a sum of separate terms. What remains is a problem of
+allocating a total of $M$ occupied cells among nine rows so as to minimise a sum of
+per-row costs, and that is solved exactly by dynamic programming across the rows,
+indexed by the number of cells allocated so far. One pass yields the best allocation
+for every total $M$ at once.
+
+The procedure is therefore: fix $\sigma$ at each of 240 values spaced logarithmically
+across $[s_{0}, s_{1}]$; for each, run the dynamic programme and record the pattern it
+gives for every $M$; discard duplicates; evaluate $\Phi$ exactly on every distinct
+pattern that survives; and take the lowest. In the trial reported below this examined
+862 distinct patterns in the block case and 790 in the scattered case. The coefficient
+values of the winner are then moved from least squares to the stationary point of
+\eqref{eq:stationary}.
+
+What this does and does not guarantee should be stated plainly. For any fixed
+$\sigma$ the dynamic programme returns the exact minimiser of the separable form, so
+nothing is lost within a given $\sigma$. Across $\sigma$ the grid is finite, and
+$\Phi$ itself is minimised only over the patterns the grid happens to produce. Some
+$1.7 \times 10^{23}$ patterns satisfy the per-row restriction, of which a few hundred
+are examined, so the procedure is a heuristic and not an exhaustive search.
+
+That limitation cannot account for the behaviour reported below. A more complete
+search would return a pattern of still lower $\Phi$, never a higher one, and every
+departure from the truth reported here is a pattern whose $\Phi$ is already lower than
+the truth attains. Searching harder would widen that gap rather than close it. The
+over-fitting described in Section~\ref{sec:examples}.6 is thus a property of the
+criterion and not an artefact of the procedure that minimises it.
+
+\subsection{What can be compared with least squares, and what cannot}
+
+For $Y = AX$ with $Y$ and $X$ of shape $N \times T$, minimising the sum of squared
+residuals gives the normal equations $Y X^{\prime} = A X X^{\prime}$, hence
+
+\begin{equation}
+A \;=\; \left( Y X^{\prime} \right) \left( X X^{\prime} \right)^{-1}
+\label{eq:leastsquares}
+\end{equation}
+
+Only one of the two possible comparisons can be made here. Since
+$X X^{\prime} = \sum_{t} x_{t} x_{t}^{\prime}$ is a sum of $T$ matrices of rank one,
+its rank is at most $T$ whatever the values in $X$. When $T \ge N$ and $X$ has full
+row rank the inverse exists and \eqref{eq:leastsquares} is the estimate; a comparison
+against it would then be meaningful. These illustrations use $N = 9$ and $T = 6$, so
+the rank is at most six out of nine and the matrix is singular for every $X$, not
+merely for unlucky ones. In the run reported below its three smallest singular values
+are $1.7 \times 10^{-15}$, $9.8 \times 10^{-16}$ and $3.2 \times 10^{-16}$, which are
+zeros carrying rounding error. The least-squares estimate does not exist, and no
+comparison against it is possible.
+
+What can be shown is the minimum-norm solution obtained from the pseudo-inverse. That
+is a different estimate: among the matrices reproducing the data exactly it selects
+the one of smallest Frobenius norm. 
+Figure \ref{fig:LLSE_Matrix} show the linear least squares estimate of the matrix,
+using the block structured matrix and data as given in section \ref{app:numbers}.
+For the block case it occupies all 81 cells,
+leaves a residual of $2 \times 10^{-28}$, and stands at Frobenius distance $4.02$ from
+the true matrix.
+
+\begin{figure}[ht]
+\input{examples/tab_pinv}
+\protect\caption{Linear Least Squares Estimated Matrix}
+\label{fig:LLSE_Matrix}
+\end{figure}
+
+
+A comparison against \eqref{eq:leastsquares} itself requires a separate run with
+$T \ge N$, which is not attempted here.
+
+\subsection{One realisation}
+
+The trial shown is the first of the forty, chosen before any results were seen. The
+true block matrix and the matrix recovered from it are Figures
+\ref{fig:True_Block_Matrix} and \ref{fig:Recovered_Block_Matrix}
+
+
+\begin{figure}[ht]
+\input{examples/tab_block_true}
+\protect\caption{True Block Matrix}
+\label{fig:True_Block_Matrix}
+\end{figure}
+
+
+All 27 occupied cells are found, one further cell is occupied that should not be, and
+the estimated error is $0.0798$ against a true $0.10$. The Frobenius distance from the
+truth is $0.373$, against $4.02$ for the minimum-norm solution.
+
+The blocks are visible in the recovered matrix, and nothing in the calculation was
+told to look for them.
+
+\begin{figure}[ht]
+\input{examples/tab_block_hat}
+\protect\caption{Recovered Block Matrix}
+\label{fig:Recovered_Block_Matrix}
+\end{figure}
+
+
+For the scattered case the true and recovered matrices are in Figures
+\ref{fig:True_Scattered_Matrix}
+and
+\ref{fig:Recovered_Scattered_Matrix}
+
+\begin{figure}[ht]
+\input{examples/tab_scatter_true}
+\caption{True Scattered Matrix}
+\label{fig:True_Scattered_Matrix}
+\end{figure}
+
+
+
+Here the recovery is exact: all 27 cells found, none added, none missed, with an
+estimated error of $0.0826$.
+
+One number deserves attention. In the block case $\Phi$ at the recovered pattern is
+$53.674$, while $\Phi$ at the true pattern is $55.919$. The criterion prefers the
+pattern with one spurious cell to the truth, by more than two natural units. The
+search did not fail; the criterion selected what it was asked to select.
+
+\begin{figure}[ht]
+\input{examples/tab_scatter_hat}
+\protect\caption{Recovered Scattered Matrix}
+\label{fig:Recovered_Scattered_Matrix}
+\end{figure}
+
+\subsection{Forty realisations}
+
+One trial cannot distinguish a property of block structure from an accident of one
+draw. The whole construction was therefore repeated over forty seeds, with the
+coefficient values, the inputs, the errors and the scattered pattern all redrawn each
+time.
+
+\input{examples/tab_sweep}
+
+The two cases perform alike. Compared within each seed, the block case was the worse
+of the two seventeen times, the better eleven times, and equal twelve times; a sign
+test on the twenty-eight untied pairs gives $p = 0.35$, so the difference is within
+what chance produces.
+
+That result is what the construction requires. The prior treats all cells alike and
+the rows are fitted separately, so no information can pass from the arrangement of the
+cells to the estimate. The method is indifferent to structure, which is what declining
+to impose structure means. It also follows that the method does not exploit block
+structure; it recovers such a matrix neither better nor worse than any other.
+
+\subsection{What the illustrations show}
+
+Three conclusions may be drawn, and a fourth qualification attaches to them.
+
+The method recovers most of the correct cells. Across the forty trials it finds about
+$26.3$ of the 27 occupied cells and misses fewer than one, in a setting where the
+unrestricted estimate does not exist at all.
+
+It recovers the whole matrix exactly in about two cases in five, and otherwise
+occupies between one and two cells that should be empty. The estimated error is
+consistently a little below the truth, near $0.09$ against $0.10$, which is the mark
+of those extra cells absorbing part of the measurement error.
+
+The residue is not distributed evenly. Repeating the forty trials with the floor
+lowered to $a_{\min} = 0.05$ raises the number of falsely occupied cells from $1.49$
+to $5.90$ per matrix, and the additional cells sit at small magnitudes. Their median
+magnitude is $0.138$, against $1.171$ for the correctly occupied cells, and a third of
+them fall below $0.10$, against fewer than one in two hundred of the correctly
+occupied cells. Raising the floor to a value an analyst would assert removes most of
+them and brings the estimated error back to $0.10$.
+
+The qualification is that this concentration points at the approximation of
+Section~\ref{sec:compare}. Equation \eqref{eq:laplace} treats
+$\prod 1/|A_{ij}|$ as constant across the region of good fit and takes no account of
+the truncation at $a_{\min}$. Both are least accurate for coefficients close to the
+floor, and both err in the direction of overstating the integral there, which is
+exactly where the spurious cells appear. Handling the truncation properly, rather than
+by the Gaussian approximation, is the first improvement to attempt.
+
+\section{Comparison with two established methods}
+\label{sec:compete}
+
+Section~\ref{sec:examples} compares the method with unrestricted least squares, which
+does not exist at this size, and with the minimum-norm solution that stands in for
+it. That solution occupies all eighty-one cells and is not a serious competitor. Two
+methods that were designed for this regime are, and both were run on the same
+illustrations. Full references for both are given in \texttt{literature-review.tex}
+in this directory.
+
+\subsection{The two methods}
+
+The lasso, due to Tibshirani, adds to the residual sum of squares a penalty
+proportional to the sum of the absolute values of the coefficients
+
+\begin{equation}
+\hat{a}(\lambda) \;=\; \arg\min_{a} \; \tfrac{1}{2} \| y - Z a \|^{2}
+\;+\; \lambda \sum_{j=1}^{N} |a_{j}|
+\label{eq:lasso}
+\end{equation}
+
+where $y$ is one row of $Y$ and $Z = X'$ is the $T$ by $N$ matrix of inputs. The
+absolute value has a corner at the origin, and a penalty with a corner drives
+coefficients to exactly zero rather than merely close to it, so that selection and
+estimation are performed together and no search over patterns is required. The
+minimiser of \eqref{eq:lasso} is the maximum posterior estimate under a
+double-exponential prior on each coefficient, with $\lambda$ in the place of the
+rate. It is therefore an estimate of the kind used here, differing in the prior
+rather than in the principle. Two further differences matter. The prior is peaked at
+the origin rather than bounded away from it, and there is no indicator of occupancy:
+a cell is empty when the penalty happens to drive it to zero, and not because a
+choice was made about it. The penalty itself is not supplied by the model and must be
+chosen by other means.
+
+Stochastic search variable selection, due to George and McCulloch and carried to
+vector autoregressions by George, Sun and Ni, attaches an indicator $\gamma_{ij}$ to
+each cell and makes the prior on the coefficient depend upon it
+
+\begin{eqnarray}
+A_{ij} \mid \gamma_{ij} = 0 &\sim& N(0, \tau_{0}^{2})
+\label{eq:ssvs_A}
+\\
+A_{ij} \mid \gamma_{ij} = 1 &\sim& N(0, \tau_{1}^{2})
+\label{eq:ssvs_B}
+\\
+\gamma_{ij} &\sim& \mathrm{Bernoulli}(p)
+\label{eq:ssvs_C}
+\end{eqnarray}
+
+with $\tau_{0}$ small and $\tau_{1}$ large. Neither component is exactly zero, so
+every coefficient always has a value, every conditional distribution in the model is
+a standard one, and the posterior can be explored by drawing in turn the
+coefficients, the indicators, the rate $p$ and the error variance. No move that
+changes the number of parameters is ever required, which is what makes the sampler
+practical. The output is a sample of patterns rather than a single pattern, and the
+summary taken here is the set of cells occupied in at least half the draws.
+
+The resemblance to the present work is close. The pattern prior is the same Bernoulli
+form of Section~\ref{sec:patterncost}, the hyper-prior on $p$ is the same Beta, one
+error scale serves the whole matrix, and the hierarchy is arranged in the same order.
+Two things differ. The coefficient prior is a pair of normal densities rather than
+the bounded log-uniform of Section~\ref{sec:magnitudes}, and the pattern is sampled
+rather than maximised.
+
+\subsection{What was compared}
+
+Both methods were run on the two illustrations over the same forty seeds, with the
+same matrices, the same inputs and the same measurement errors, so that the
+comparison is paired at the level of the seed and at the level of the case. That
+gives eighty paired comparisons. The script is \texttt{examples/compete.py}.
+
+Four variants of the lasso were run, because one variant would not settle the matter.
+The first chooses the penalty by leave-one-out cross-validation, which is what an
+analyst without an estimate of the noise would do. The second chooses it by the
+Schwarz criterion, given the true error scale, which no analyst would have. The third
+is the adaptive lasso of Zou, reweighted from the second, which penalises each cell
+in inverse proportion to its magnitude in that fit. The fourth chooses the penalty,
+row by row, by counting the pattern errors against the truth and taking the penalty
+that makes them fewest; this requires the answer and is therefore not a method but a
+bound on what any choice of penalty could achieve. All four have their coefficients
+refitted by least squares on the pattern they select, so that they are charged for
+the pattern rather than for the shrinkage.
+
+Stochastic search variable selection was run with $\tau_{0} = 0.02$ and
+$\tau_{1} = 1.50$, twenty thousand draws of which the first five thousand were
+discarded. Those widths stand in the same relation to the true magnitudes, drawn
+log-uniformly on $[0.40, 3.00]$, as the bounds $[0.20, 5.0]$ used here, so that
+neither method is given the better information.
+
+\subsection{Forty realisations, six procedures}
+
+\input{examples/tab_compete}
+
+The first line of each half reproduces the forty-realisation table of
+Section~\ref{sec:examples} exactly, which confirms that the procedure compared
+against is the one described in this document.
+
+Counting a pattern error as a cell wrongly occupied or a cell wrongly empty, the
+eighty paired comparisons fall out as follows.
+
+\input{examples/tab_compete_paired}
+
+\subsection{What the comparison shows}
+
+No variant of the lasso is competitive here, and the variant given the answer is not
+competitive either. The best of the four occupies more than eight cells that should
+be empty and misses nearly four that should be occupied, against a little over two
+errors in total for the method of this document.
+
+The reason is not obscure. With six observations and nine candidates in each row, a
+single continuous penalty must serve two purposes at once: it must be large enough to
+empty six cells and small enough to retain three. The fourth variant shows that no
+choice of penalty does both, since even with the answer in hand it must accept nearly
+eight missed cells in order to hold its false count down. Cross-validation, which is
+aimed at prediction rather than at recovering the pattern, fails in the opposite
+direction and occupies about nineteen cells too many.
+
+Against stochastic search variable selection the result is even. The method of this
+document wins twenty-four of the eighty comparisons, loses twenty-four, and ties
+thirty-two, and the sign test gives $p = 1.00$. The average number of pattern errors
+is $2.19$ here against $2.15$ for the sampler. The estimate of the error scale is
+$0.090$ against $0.093$, with the truth at $0.100$. The criterion developed here
+attains the accuracy of the established method at this size, and does not exceed it.
+
+Two differences are nevertheless real. The first is the worst case. The sampler goes
+wrong less often, exceeding five pattern errors in six of the eighty comparisons
+against eleven here, but when it does go wrong it goes further: its worst trial
+misplaces twenty-one cells, and the worst trial here misplaces ten. The second is
+that the procedure here
+is deterministic. It evaluates a criterion in closed form on candidates produced by a
+dynamic programme, returns the same answer whenever it is run, and can be read term
+by term. That last property is what made the account in Section~\ref{sec:examples} of
+where the residue comes from possible at all, and a sample of patterns yields no such
+account.
+
+One further point should be recorded, since it bears on the objection that
+$a_{\min}$ and $a_{\max}$ are not determined by the data. The two widths
+$\tau_{0}$ and $\tau_{1}$ are not determined by the data either, and the sampler is
+at least as sensitive to them. Repeating the first illustration at four settings,
+with two chains at each, the pair $(0.05, 1.00)$ and the pair $(0.02, 1.50)$ recover
+the matrix, while $(0.005, 3.00)$ leaves two cells occupied out of twenty-seven and
+$(0.10, 0.60)$ occupies all eighty-one. The failures run in both directions, and the
+first of them is the divergence of Section~\ref{sec:magnitudes} appearing inside the
+sampler: spreading the prior over a wider range lowers the marginal likelihood of
+every occupied cell. The script is \texttt{examples/ssvs\_sensitivity.py}.
+
+This does not dispose of the objection. It establishes that the requirement is a
+property of the problem rather than of the formulation adopted here, and that the two
+bounds have an advantage of form, being stated in the units of the coefficients as
+the smallest and largest magnitude worth calling non-zero, which is a quantity an
+analyst can be asked to supply.
+
+\section{The search at two hundred variables}
+\label{sec:large}
+
+Section~\ref{sec:examples} used nine variables and enumerated every admissible
+subset of the columns for every row. This section reports what happens at the problem size
+which  an economist might encounter. We imagine a hypothetical
+data set for twenty countries of ten variables each,
+so that $A$ is $200$ by $200$ with twenty ten-by-ten diagonal blocks.
+For sizing, we assumed that each country is connected by two variables
+to every other country (a different pair from each influencing country,
+which is its connection to the other nineteen). We assumed
+twenty years of quarterly data.
+The complete matrix would forty thousand cells, of which we expect about $2500-2800$ to be non-zero.
+Again, we have a prior on how many are non-zero, but (as noted earlier) the methodology
+does not even have a way to represent block structure, much less require it.
+The matrix is to be estimated from eighty quarters of data. Each quarter is
+represented simply by a $200$-vector at the end of the quarter which is estimated
+from the $200$-vector at the start of the quarter. As noted earlier, we do not use the time-structure in any way.
+Enumeration is not merely slow at that size; it would require more than
+the age of the universe. The section says why, describes what replaced it,
+and reports the result.
+
+\subsection{Why enumeration cannot be used}
+
+The search of Section~\ref{sec:examples} lists every subset of the columns of size
+at most $T-1$, that limit being what keeps $G_{i}$ non-singular. At $N = 200$ and
+$T = 80$ the number of such subsets is about $3 \times 10^{57}$ for each row, so the
+list is never built and the procedure never reaches the data.
+
+Lowering the limit does not help, because the limit has to be at least as large as
+the number of cells a row actually holds. Here that number is about thirteen, and
+the count of subsets of size at most thirteen drawn from two hundred columns is
+$9.5 \times 10^{19}$. Fitting all of them for all two hundred rows is
+$2 \times 10^{22}$ least-squares problems. At the measured cost of $28$
+microseconds each that is $5 \times 10^{17}$ seconds, or seventeen billion
+years, which is longer than the age of the universe.
+
+The limits that are affordable are far too small. A limit of two admits twenty
+thousand subsets for each row and runs in under a minute. A limit of three admits
+$1.3 \times 10^{6}$, which would run in about forty minutes but needs some thirty
+gigabytes to hold the coefficients of every subset for every row. A limit of four is
+out of reach on both counts. Three cells to a row is less than a quarter of what the
+matrix carries.
+
+It is worth being clear about which part of the procedure fails. The dynamic
+programme is not the difficulty. With the limit set at twenty-five, its arrays are
+of length $M_{\max} = 5000$ and it costs a few seconds over the whole grid of
+$\sigma$. Evaluating $\Phi$, refining the coefficients and forming the residuals are
+all matters of seconds. The obstacle is the list of subsets that the dynamic
+programme selects from, and that list alone.
+
+\subsection{Forward selection}
+
+The dynamic programme needs one thing from each row: for every size $k$, a subset of
+that size, with its residual sum of squares, its sum of $\log |A_{ij}|$ and its
+$\log |G_{i}|$. Enumeration supplies the best subset of each size. Forward selection
+supplies a subset of each size at a cost that grows as $N$ rather than as
+$\binom{N}{k}$.
+
+The rule is the ordinary one. Beginning with no cells, admit at each step the column
+that reduces the residual sum of squares by the most, and stop at $K$ cells. Holding
+an orthonormal basis $Q$ of the columns already admitted makes the reduction
+available for every candidate at once. Writing $r$ for the current residual and
+$Z_{j}$ for a candidate column, the reduction obtained by admitting $j$ is
+
+\begin{equation}
+\Delta_{j} \;=\; \frac{( Z_{j}' r )^{2}}
+                      {\| Z_{j} \|^{2} - \| Q' Z_{j} \|^{2}}
+\label{eq:forward}
+\end{equation}
+
+so that one matrix product settles the whole step. This is the exact forward step
+and not an approximation to it. The work for a row is $K$ such steps, and the whole
+matrix of two hundred rows is prepared in about one second.
+
+What is given up should be stated plainly. The subset of size $k$ is now the one
+that forward selection reaches, not the best subset of size $k$. The criterion is
+therefore minimised over a chain of $K$ nested subsets for each row rather than over
+all subsets, and the answer is a lower bound on how well $\Phi$ could be made to do.
+Given those candidate subsets the dynamic programme is exact, as before, so the
+approximation is confined to one place and can be named.
+
+Two remarks temper the loss. The enumeration of Section~\ref{sec:examples} was
+already limited to subsets of size at most $T-1$, so it was never a search over all
+patterns either. And forward selection is not an arbitrary choice: it is the
+standard method for this problem, and the coefficients here are well separated from
+zero, which is the case in which it does well.
+
+\subsection{Two further changes forced by the size}
+
+The integral over $\sigma$ is now taken in the closed form \eqref{eq:sigmaint}
+rather than by quadrature. The integrand of \eqref{eq:sigmaintdef}, written in
+$u = \log \sigma$, is concentrated about its peak in a range of width
+$1 / \sqrt{2(n-M)}$. At $n = 54$ that width is about $0.14$, and the grid used in
+Section~\ref{sec:examples} put some forty points across it. At $n = 16000$ the width
+is about $0.006$ and the same grid puts four. The closed form has no such
+difficulty, costs less, and was verified in Maxima along with everything else.
+
+The criterion is also accumulated through the dynamic programme instead of being
+recomputed on patterns that have been built. Inspection of
+\eqref{eq:workingcriterion} shows that $\Phi$ depends on a pattern only through $M$
+and three quantities that are sums over the rows: the residual sum of squares, the
+sum of $\log |A_{ij}|$ and the sum of $\log |G_{i}|$. Carrying those three sums
+alongside the cost lets $\Phi$ be evaluated for every pair of $\sigma$ and $M$
+without any pattern being formed, and only the winner is turned into a matrix. At
+this size the alternative would be to build and store some $1.2$ million patterns of
+two hundred entries each.
+
+\subsection{The problem}
+
+Each of the twenty countries is a solid block of ten by ten coefficients, which is
+two thousand cells. Each ordered pair of countries is joined by one or two cells
+drawn at random from the hundred that connect them, which adds about five hundred
+and seventy. The matrix therefore holds about $2570$ occupied cells out of forty
+thousand, or one cell in fifteen, and a row holds about thirteen. The occupied
+fraction is close to $2/29$, so the hyper-prior of Section~\ref{sec:patterncost} is
+taken as $\alpha = 2$ and $\beta = 27$, whose mean is $2/29$ and whose density is
+proportional to $p (1-p)^{26}$. As noted earlier, the prior does not force a specific answer
+and the actual number estimated is determined by the quality of the fit and amount of
+data, using the Occam criterion.
+
+Everything else is as in Section~\ref{sec:examples}. The magnitudes are drawn
+log-uniformly on $[0.40, 3.00]$, the bounds are $[0.20, 5.0]$, the error scale is
+$0.10$, and $K$ is set at twenty-five. A scattered control is generated by keeping
+the number of cells in each row and placing them at random columns, so that the two
+matrices differ in arrangement alone: one is $200 \times 200$ with twenty ten-by-ten diagonal
+blocks, and the other is  $200 \times 200$ with no block structure at all. We will show
+that the MPLE method works equally well on both.
+
+One point deserves emphasis before the numbers. Per row this problem is easier than
+the illustration of Section~\ref{sec:examples}, not harder: eighty observations
+carry about thirteen coefficients, a ratio of six, against six observations carrying
+three, a ratio of two. The difficulty at this size lies wholly in the search.
+
+\subsection{Results}
+
+The procedure of this document was run over ten seeds, in both arrangements. Each
+matrix holds about $2569$ occupied cells.
+
+\input{examples/tab_large_mple}
+
+It recovers about $99$ per cent of the occupied cells. The two arrangements are
+again alike: compared within the seed the block case was the worse of the two seven
+times and the better three times, which a sign test does not distinguish from
+chance. That is the result of Section~\ref{sec:examples} once more, and for the same
+reason. Nothing in the criterion or in the search can see the arrangement.
+
+\subsection{Where the missing cells go}
+\label{sec:whymissed}
+
+The cells that are not recovered are worth following, because they turn out to be
+the price of the substitution made in this section and not a fault of the criterion.
+
+The first fact is that the criterion is not the difficulty. Evaluating
+\eqref{eq:workingcriterion} at the true pattern, with the coefficients fitted by
+least squares, gives $\Phi = -6355$, while the pattern the procedure returns gives
+$\Phi = 5093$. The criterion prefers the truth by more than eleven thousand natural
+units, an enormous margin, and almost all of it comes through the residual sum of
+squares, which is $137$ at the true pattern and $767$ at the recovered one. Whatever
+went wrong, the criterion would have rejected it had it been offered the alternative.
+
+The second fact is that forward selection is very nearly good enough. For $194$ of
+the $200$ rows the subset it reaches at that row's own size is exactly the true
+subset of that row. The limit $K$ is not binding either, the fullest row of the truth
+holding eighteen cells against a limit of twenty-five.
+
+The third fact explains the first two. In the six rows where forward selection admits
+a wrong column, the least-squares coefficient of that column is small, and it falls
+below $a_{\min}$. Section~\ref{sec:magnitudes} places no density below $a_{\min}$, so
+the subset containing it is not merely poor but inadmissible, and the dynamic
+programme cannot use that size for that row at all. It must fall back on a smaller
+size, which discards good cells along with the bad one. Six rows truncated in this
+way carry about six hundred of the excess residual, which is the whole of the
+difference between $137$ and $767$, and through
+Section~\ref{sec:sigmaint} that excess is what raises $\hat\sigma$ from $0.10$ to
+about $0.25$.
+
+The mechanism is therefore a single ordering error in a few rows, turned into a large
+loss by the rule that rejects a subset outright when one of its coefficients falls
+outside the range of the prior. Note that the true subset of a row is not what is
+rejected: it passes the test in all two hundred rows. What is rejected is the subset
+forward selection offers in place of it.
+
+That is a defect of the procedure adopted here, and it is repaired by a better search
+and not by any change to the criterion. Section~\ref{sec:candidates} repairs it.
+
+\subsection{The comparison at this size}
+\label{sec:largecompare}
+
+The six procedures of Section~\ref{sec:compete} were run again at this size, on the
+same data, with the settings there except that the cross-validation is in five folds
+rather than one for each observation, which at $T = 80$ is the usual practice.
+
+\input{examples/tab_large}
+
+The result is the reverse of Section~\ref{sec:compete} and it must be reported as
+such. The adaptive lasso recovers the matrix exactly. In every trial, in both
+arrangements, it occupies precisely the cells that are occupied in the truth, misses
+none, adds none, and returns $\hat\sigma = 0.10$ against a truth of $0.10$. The
+procedure of this document recovers about $99$ per cent of the cells and misses two
+dozen. At nine variables no variant of the lasso was competitive; at two hundred, one
+of them is exact and this criterion is not.
+
+Two things should be said about that before it is read as a verdict on the criterion.
+
+The first is that it is not one. Section~\ref{sec:whymissed} shows that
+$\Phi$ at the true pattern is smaller than $\Phi$ at the pattern recovered here by
+more than eleven thousand natural units. The criterion ranks the answer the adaptive
+lasso found far above the answer this search found. What the comparison establishes
+is that the adaptive lasso is the better search at this size, not that it is the
+better criterion. The natural thing to try next is to use the lasso path as the
+source of candidate patterns and $\Phi$ to choose among them, which is not done here.
+
+The second is a qualification that has been tested and does not hold. The two lasso
+variants scored by the Schwarz criterion were given the true error scale, which no
+analyst would have, and it was natural to suspect that the exactness was bought with
+that. It was not. Estimating the error scale by the ordinary plug-in iteration --
+choosing the penalty of the plain lasso by cross-validation to obtain a first value,
+then alternating between choosing the pattern at the current value and re-estimating
+the value from the residuals of the chosen pattern -- reaches the same answer.
+
+\input{examples/tab_alasso_sigma}
+
+The iteration begins about four times too dense, at some eleven thousand cells with
+an error scale less than half the truth, and one pass carries it to the exact
+pattern. Started instead from a deliberately large value of unity it arrives at the
+same place in two. The fixed point does not depend on where the iteration begins, and
+it is the truth. Whatever else is to be said about this comparison, the adaptive
+lasso is not being flattered by information an analyst would lack.
+
+The plain lasso behaves as it did at the smaller size, in one respect. Every variant
+of it finds all the occupied cells; what none of them does, except the adaptive one,
+is stop. Cross-validation occupies some eleven and a half thousand cells against a
+truth of about two and a half thousand, and the Schwarz criterion about five
+thousand. The variant given the answer, which chooses the penalty row by row to make
+the fewest errors, is markedly worse than the adaptive variant, which shows that the
+advantage lies in the reweighting rather than in any information about the truth.
+
+Stochastic search variable selection cannot be assessed from this table. The figures
+shown are what the sampler reached in eight thousand sweeps, and
+Section~\ref{sec:mixing} shows that at this size it is nowhere near its own answer at
+that length or at twenty thousand. They are a statement about a fixed amount of
+computing and not about the method.
+
+\subsection{Whether the sampler was run long enough}
+\label{sec:mixing}
+
+It was not. The sampler was run at four lengths on the first trial, twice at each
+from different random numbers.
+
+\input{examples/tab_mixing}
+
+Every quantity is still moving toward the truth as the run lengthens, and the two
+chains still disagree about several thousand of the forty thousand cells, with
+individual inclusion probabilities differing by almost one. That is not a sampler
+settled about an answer; it is one still travelling toward it.
+
+Worse, it is slowing down. Counting the falsely occupied cells in excess of the
+truth, each doubling of the run removes about $450$ of them between four and eight
+thousand sweeps, about $280$ between eight and twenty thousand, and about $210$
+between twenty and sixty thousand. Fitting a power of the run length to those four
+points gives an exponent near $-0.27$, on which the excess would fall to a few dozen
+cells only after some thousands of millions of sweeps. That extrapolation should not
+be taken literally, since four points are a thin basis for judging the convergence of
+a Markov chain, but the direction of it is not in doubt. At sixty thousand sweeps,
+three times the length of the longest published application of this method and on a
+problem sixty-seven times larger, the sampler still occupies about $1280$ cells that
+should be empty.
+
+The comparison in Section~\ref{sec:compete} at nine variables gave this method and
+the sampler an exact tie. At two hundred variables the sampler cannot be run long
+enough, within any time that was available here, to say what it would conclude. That
+is a real difference between a criterion evaluated in closed form and a distribution
+explored by sampling, and it is the sharpest form of the point made in
+Section~\ref{sec:compete}. It should not, however, be read as a defect of stochastic
+search variable selection as a method. The largest published application of it that
+could be found carries $595$ coefficients, and the sampler used here is the plain
+one; blocked and scalable variants exist and none was tried.
+
+\subsection{Where the candidates come from}
+\label{sec:candidates}
+
+Section~\ref{sec:whymissed} places the difficulty in the search and not in the
+criterion, and Section~\ref{sec:largecompare} shows that the adaptive lasso finds the
+pattern this search does not. That suggests keeping $\Phi$ as the judge and changing
+only the list of patterns it is asked to judge. It was tried, and it answers the
+question.
+
+The dynamic programme requires, for each row and each size, a subset with its
+residual sum of squares, its sum of $\log |A_{ij}|$ and its $\log |G_{i}|$. Forward
+selection supplies one such subset for each size. A penalty path supplies others: it
+is indexed by penalty rather than by size, so it visits some sizes several times and
+others not at all, but every support it visits is a candidate. Nothing prevents the
+two lists being merged, and since $\Phi$ decides among them, a longer list cannot
+give a worse answer. The programme was therefore given several candidates of each
+size and takes at each $\sigma$ whichever the row cost prefers, which is what the
+enumeration of Section~\ref{sec:examples} did at nine variables.
+
+\input{examples/tab_lasso_phi}
+
+The plain path adds almost nothing. The reason is that it seldom passes through the
+right subset: over the two hundred rows of the first trial it visits the true subset
+of a row nineteen times, against one hundred and ninety-four for forward selection.
+
+The adaptive path recovers the matrix exactly. In all six trials, in both
+arrangements, every occupied cell is found, no empty cell is occupied, and
+$\hat\sigma$ returns to $0.10$. The value of $\Phi$ falls from about $5100$ to about
+$-6400$, and that second figure is the value of $\Phi$ at the true pattern reported
+in Section~\ref{sec:whymissed}. The criterion has not merely improved; it has found
+the pattern it said all along that it preferred.
+
+One point of construction decides whether this works. The weights of the adaptive
+path must come from a fit that is too dense, not from one that is too sparse.
+Weighting by the answer $\Phi$ has just given fails completely, because a cell that
+answer leaves empty receives the largest weight the rule allows and can never be
+recovered. Weighting instead by a cross-validated fit, which occupies some eleven
+thousand cells and therefore contains every cell that ought to be occupied, gives
+each true cell a small weight and each false one a large weight. Cross-validation
+requires no estimate of the error scale, and it is used here only to weight and never
+to select, so no quantity enters that an analyst would lack. Every selection is made
+by $\Phi$.
+
+The cost is the one drawback. Forward selection prepares a matrix in about a second
+and the whole procedure runs in sixteen; the cross-validated weighting takes some
+forty minutes, being five penalty paths for each of two hundred rows. That is worth
+reducing and there is no obstacle of principle to reducing it, but it is the present
+position.
+
+\subsection{The direction of the error}
+
+The error has changed direction with the size of the problem. In
+Section~\ref{sec:examples}, with $q = 81$ and $M$ near $27$, the procedure occupied
+one or two cells more than it should. Here, with $q = 40000$ and $M$ near $2570$, it
+leaves about twenty-six fewer than it should.
+
+Part of this is arithmetic that would hold whatever search were used. The cost of one
+more occupied cell is $\log \left[ (q-M-1+\beta) / (M+\alpha) \right]$, which is
+$0.64$ natural units at the smaller size and $2.68$ at the larger. Adding
+$\log 2 L_{A} = 1.86$, a cell must return about $4.5$ natural units before it is
+worth occupying here, against about $2.5$ before, so the criterion is more demanding
+in a large matrix than in a small one.
+
+That is not, however, what produced the omissions reported above. Section
+\ref{sec:whymissed} shows that the criterion prefers the true pattern by a very wide
+margin and would have taken it. The omissions here are the work of the search. The
+two effects should not be confused: the toll per cell does rise with $q$, and the
+cells missed in this study were nevertheless missed for a different reason.
+
+What is not available is a proof. Nothing in this document establishes whether the
+criterion occupies more cells than the truth or fewer, on average, nor under what
+conditions the one turns into the other. Two sizes have been examined and they fall
+on opposite sides, and an arithmetic account has been given of why the toll per cell
+rises with $q$; that account is consistent with the observations but it is not a
+theorem, and it says nothing about the size of the discrepancy. Whether
+$E[\hat{M}] - M$ is positive, negative or zero in general, how it behaves as $T$
+grows with $q$ fixed, and whether the pattern is recovered in the limit, are all
+open. They are the natural questions to take up next, and they are questions about
+the criterion rather than about the search.
+
+\subsection{The severity of the test}
+
+The count used throughout is a strict one, and the numbers should be read with that
+in mind. A cell is scored wrong if it is occupied and should be empty, or empty and
+should be occupied, and no allowance is made for magnitude. Missing a coefficient of
+$0.4$ counts exactly as much as missing one of $3.0$. No credit is given for
+recovering the arrangement, for placing the twenty blocks correctly, or for coming
+close. The test asks for the exact set of forty thousand decisions and records every
+departure.
+
+By that measure the block case is charged with thirty-eight errors in a matrix of
+$2569$ occupied cells. By almost any other measure the same result would be
+described differently. The distance between the estimate and the truth has a median
+of $3.96$ over the whole matrix, which is about $0.078$ for each occupied cell
+against a typical magnitude of $1.1$. Most of that distance is the missed cells
+themselves: twenty-six omitted coefficients of median magnitude $0.625$ account for
+some three units of the four, so the coefficients that were retained are estimated
+very closely indeed. A user interested in forecasting, or in which countries
+influence which, would find little of the error visible.
+
+The strict count is nevertheless the right one to report, because the question this
+document asks is which cells are occupied, and a test of that question should not
+be softened by allowing partial credit for nearly answering it. But it is a severe
+test, and it is not the test by which such models are usually judged.
+
+\section{What is not settled here}
+
+Three matters are deliberately left open.
+
+The search over patterns is not addressed. There are $2^{q}$ of them, and $q$ may be
+forty thousand. Equation \eqref{eq:workingcriterion} says how to score a pattern; it
+does not say how to find a good one. Note that, before $p$ and $\sigma$ are removed,
+the $N$ rows of $A$ are separate problems, each involving only its own row of $Y$.
+The rows are connected solely through the two shared quantities. That separation is
+the natural starting point for a search procedure, and it is the whole of the
+hierarchical structure in the present model.
+
+The second point is that one $p$ and one $\sigma$ serve the entire matrix. In the
+AutoClass formalism, parameters are shared within classes rather than across
+everything. Allowing $p$ and $\sigma$ to vary by row, or by group of rows, is the
+natural next step and will be taken up separately.
+
+Third, the inputs are taken to be exact. Error in $X$ as well as $Y$ is a different
+and harder problem and is not considered.
+
+\section{Verification}
+
+Every algebraic step above was checked with Maxima. The script is
+\texttt{maxima/acv\_prelim.mac} in this directory, and it verifies:
+
+\begin{enumerate}
+\item the divergence of $\int da/|a|$ at both ends, equations
+      \eqref{eq:diverge_A} and \eqref{eq:diverge_B};
+\item that the bounded densities \eqref{eq:coefprior} and \eqref{eq:sigmaprior_B}
+      integrate to unity;
+\item that $L_{A}$ is unchanged by a change of units;
+\item the integral over $p$, equation \eqref{eq:pint}, for general $\alpha$ and
+      $\beta$; its reduction \eqref{eq:pintuniform} at $\alpha = \beta = 1$, in all
+      three of the forms written there, symbolically and at particular values of $q$
+      and $M$; the ratio \eqref{eq:ratio} and hence the increment
+      \eqref{eq:increment}; and the posterior mean of $p$;
+\item the closed form \eqref{eq:sigmaint} for the integral over $\sigma$, checked
+      against numerical quadrature at three sets of values;
+\item the finite limit \eqref{eq:sigmalimit} as $R \to 0$, and the divergence of the
+      corresponding unbounded expression;
+\item the location \eqref{eq:peak} of the maximum of the integrand in
+      \eqref{eq:sigmanaive}, the unbounded growth of its height as $R \to 0$, and the
+      closed form \eqref{eq:sigmaunbounded}, the last checked against numerical
+      quadrature over $(0,\infty)$ at $R = 1,\ 0.1,\ 0.01,\ 0.001$;
+\item the stationarity condition \eqref{eq:stationary};
+\item the Gaussian integral behind \eqref{eq:laplace}, and the closed form
+      \eqref{eq:sigmaintM} for the integral over $\sigma$ with the exponent
+      $M-n-1$, checked against numerical quadrature at three values of $\nu$ and
+      confirmed to reduce to \eqref{eq:sigmaint} at $M = 0$.
+\end{enumerate}
+
+The illustrations of Section~\ref{sec:examples} are produced by the scripts in the
+\texttt{examples} directory. \texttt{recover.py} carries the first trial together
+with the comparison between the criterion of Section~\ref{sec:criterion} and that of
+Section~\ref{sec:compare}; \texttt{sweep.py} repeats the construction over many
+seeds; \texttt{final.py} produces the numbers and the tables printed above. The
+search is implemented twice, independently, and the two implementations agree on the
+scattered case of the first seed. That agreement is the check each was written
+against, and it is what exposed an error in the first: it collected candidate
+patterns under a key that recorded only how many cells each row received, so that
+only the first value of $\sigma$ producing a given allocation contributed a pattern,
+and part of the candidate set went unexamined.
+
+\appendix
+% The report class attaches \appendix to chapters.  This document numbers by
+% section, so the section counter is reset and lettered here instead.
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+
+\pagebreak{}
+
+
+\section{Numerical Examples}
+\label{app:numbers}
+
+Every number needed to repeat the calculations of Section~\ref{sec:examples} is
+printed here: the two matrices to be recovered, the inputs, and the outputs of both
+cases. A reader who works from these tables alone reaches the same results, and
+needs neither our programs nor the generator that produced the figures.
+
+The arrays were nonetheless produced from a single stream of pseudo-random numbers,
+started at seed $20260726$ and drawn in the order given below, using the default
+generator of the \texttt{numpy} library, version 2.5. The script
+\texttt{examples/final.py} carries out all of it. That recipe is recorded for anyone
+wishing to extend the example to other draws; it is not needed to check the one
+reported.
+
+\begin{enumerate}
+\item Twenty-seven magnitudes are drawn, each with $\log$ uniform on
+      $[\log 0.40,\; \log 3.00]$.
+\item Twenty-seven signs are drawn, positive and negative equally likely.
+\item Each magnitude is multiplied by its sign and rounded to two decimal places.
+      These twenty-seven values are the occupied cells of both matrices.
+\item The values are placed row by row into three blocks of size three along the
+      diagonal, giving the first matrix.
+\item For the second matrix, each row keeps its own three values and moves them to
+      three columns drawn without replacement from the nine. A row that happens to
+      draw its own block columns causes the whole arrangement to be drawn again.
+\item The nine by six array of inputs $X$ is drawn from the standard normal.
+\item A nine by six array of measurement errors is drawn from the standard normal
+      and multiplied by $\sigma = 0.10$.
+\end{enumerate}
+
+The outputs are then $Y = AX + E$, formed separately for each of the two matrices from
+the same $X$ and the same $E$.
+
+\subsection{The block matrix}
+
+The occupied cells lie in three blocks of size three along the diagonal. Empty cells
+are shown as a dot.
+
+\input{examples/tab_block_true}
+
+\subsection{The scattered matrix}
+
+The same twenty-seven values, each row keeping its own three, moved to columns drawn
+at random.
+
+\input{examples/tab_scatter_true}
+
+\subsection{The inputs}
+
+The nine by six array $X$. Both cases use it unchanged, so it is given once. The row
+index $j$ runs over the components of the input vector and the column index $t$ over
+the six observations.
+
+\input{examples/tab_X}
+
+\subsection{The outputs}
+
+The nine by six array $Y$ for the block case, formed as $Y = AX + E$ with $A$ the
+matrix of Section~\ref{app:numbers}.1 and $E$ the measurement errors. The row index
+$i$ runs over the components of the output vector.
+
+\input{examples/tab_Y_block}
+
+The same for the scattered case, using the matrix of
+Section~\ref{app:numbers}.2 and the same $E$:
+
+\input{examples/tab_Y_scatter}
+
+The errors themselves are not printed. They are the difference between these outputs
+and $AX$, and nothing in the calculation uses them: the method sees only $X$ and $Y$.
+
+\subsection{The precision of the printed values}
+
+The coefficients of $A$ are exact as printed, since the generator rounds them to two
+decimal places. The entries of $X$ and $Y$ are given to six decimal places, so a
+reader recomputing from them works with slightly different numbers from those used
+above.
+
+That rounding does not affect the result. Repeating the whole calculation on the
+rounded arrays recovers the same set of occupied cells in both cases, and the
+estimated coefficients differ from those reported by less than $10^{-6}$. Six decimal
+places are therefore sufficient, and the check is carried out by
+\texttt{examples/final.py} rather than asserted.
+
+\end{document}
