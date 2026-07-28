@@ -43,6 +43,13 @@ summary goes here
 
 \end{titlepage}
 
+
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
 \clearpage
 
 
@@ -1018,6 +1025,527 @@ the truncation at $a_{\min}$. Both are least accurate for coefficients close to 
 floor, and both err in the direction of overstating the integral there, which is
 exactly where the spurious cells appear. Handling the truncation properly, rather than
 by the Gaussian approximation, is the first improvement to attempt.
+
+\section{Comparison with two established methods}
+\label{sec:compete}
+
+Section~\ref{sec:examples} compares the method with unrestricted least squares, which
+does not exist at this size, and with the minimum-norm solution that stands in for
+it. That solution occupies all eighty-one cells and is not a serious competitor. Two
+methods that were designed for this regime are, and both were run on the same
+illustrations. Full references for both are given in \texttt{literature-review.tex}
+in this directory.
+
+\subsection{The two methods}
+
+The lasso, due to Tibshirani, adds to the residual sum of squares a penalty
+proportional to the sum of the absolute values of the coefficients
+
+\begin{equation}
+\hat{a}(\lambda) \;=\; \arg\min_{a} \; \tfrac{1}{2} \| y - Z a \|^{2}
+\;+\; \lambda \sum_{j=1}^{N} |a_{j}|
+\label{eq:lasso}
+\end{equation}
+
+where $y$ is one row of $Y$ and $Z = X'$ is the $T$ by $N$ matrix of inputs. The
+absolute value has a corner at the origin, and a penalty with a corner drives
+coefficients to exactly zero rather than merely close to it, so that selection and
+estimation are performed together and no search over patterns is required. The
+minimiser of \eqref{eq:lasso} is the maximum posterior estimate under a
+double-exponential prior on each coefficient, with $\lambda$ in the place of the
+rate. It is therefore an estimate of the kind used here, differing in the prior
+rather than in the principle. Two further differences matter. The prior is peaked at
+the origin rather than bounded away from it, and there is no indicator of occupancy:
+a cell is empty when the penalty happens to drive it to zero, and not because a
+choice was made about it. The penalty itself is not supplied by the model and must be
+chosen by other means.
+
+Stochastic search variable selection, due to George and McCulloch and carried to
+vector autoregressions by George, Sun and Ni, attaches an indicator $\gamma_{ij}$ to
+each cell and makes the prior on the coefficient depend upon it
+
+\begin{eqnarray}
+A_{ij} \mid \gamma_{ij} = 0 &\sim& N(0, \tau_{0}^{2})
+\label{eq:ssvs_A}
+\\
+A_{ij} \mid \gamma_{ij} = 1 &\sim& N(0, \tau_{1}^{2})
+\label{eq:ssvs_B}
+\\
+\gamma_{ij} &\sim& \mathrm{Bernoulli}(p)
+\label{eq:ssvs_C}
+\end{eqnarray}
+
+with $\tau_{0}$ small and $\tau_{1}$ large. Neither component is exactly zero, so
+every coefficient always has a value, every conditional distribution in the model is
+a standard one, and the posterior can be explored by drawing in turn the
+coefficients, the indicators, the rate $p$ and the error variance. No move that
+changes the number of parameters is ever required, which is what makes the sampler
+practical. The output is a sample of patterns rather than a single pattern, and the
+summary taken here is the set of cells occupied in at least half the draws.
+
+The resemblance to the present work is close. The pattern prior is the same Bernoulli
+form of Section~\ref{sec:patterncost}, the hyper-prior on $p$ is the same Beta, one
+error scale serves the whole matrix, and the hierarchy is arranged in the same order.
+Two things differ. The coefficient prior is a pair of normal densities rather than
+the bounded log-uniform of Section~\ref{sec:magnitudes}, and the pattern is sampled
+rather than maximised.
+
+\subsection{What was compared}
+
+Both methods were run on the two illustrations over the same forty seeds, with the
+same matrices, the same inputs and the same measurement errors, so that the
+comparison is paired at the level of the seed and at the level of the case. That
+gives eighty paired comparisons. The script is \texttt{examples/compete.py}.
+
+Four variants of the lasso were run, because one variant would not settle the matter.
+The first chooses the penalty by leave-one-out cross-validation, which is what an
+analyst without an estimate of the noise would do. The second chooses it by the
+Schwarz criterion, given the true error scale, which no analyst would have. The third
+is the adaptive lasso of Zou, reweighted from the second, which penalises each cell
+in inverse proportion to its magnitude in that fit. The fourth chooses the penalty,
+row by row, by counting the pattern errors against the truth and taking the penalty
+that makes them fewest; this requires the answer and is therefore not a method but a
+bound on what any choice of penalty could achieve. All four have their coefficients
+refitted by least squares on the pattern they select, so that they are charged for
+the pattern rather than for the shrinkage.
+
+Stochastic search variable selection was run with $\tau_{0} = 0.02$ and
+$\tau_{1} = 1.50$, twenty thousand draws of which the first five thousand were
+discarded. Those widths stand in the same relation to the true magnitudes, drawn
+log-uniformly on $[0.40, 3.00]$, as the bounds $[0.20, 5.0]$ used here, so that
+neither method is given the better information.
+
+\subsection{Forty realisations, six procedures}
+
+\input{examples/tab_compete}
+
+The first line of each half reproduces the forty-realisation table of
+Section~\ref{sec:examples} exactly, which confirms that the procedure compared
+against is the one described in this document.
+
+Counting a pattern error as a cell wrongly occupied or a cell wrongly empty, the
+eighty paired comparisons fall out as follows.
+
+\input{examples/tab_compete_paired}
+
+\subsection{What the comparison shows}
+
+No variant of the lasso is competitive here, and the variant given the answer is not
+competitive either. The best of the four occupies more than eight cells that should
+be empty and misses nearly four that should be occupied, against a little over two
+errors in total for the method of this document.
+
+The reason is not obscure. With six observations and nine candidates in each row, a
+single continuous penalty must serve two purposes at once: it must be large enough to
+empty six cells and small enough to retain three. The fourth variant shows that no
+choice of penalty does both, since even with the answer in hand it must accept nearly
+eight missed cells in order to hold its false count down. Cross-validation, which is
+aimed at prediction rather than at recovering the pattern, fails in the opposite
+direction and occupies about nineteen cells too many.
+
+Against stochastic search variable selection the result is even. The method of this
+document wins twenty-four of the eighty comparisons, loses twenty-four, and ties
+thirty-two, and the sign test gives $p = 1.00$. The average number of pattern errors
+is $2.19$ here against $2.15$ for the sampler. The estimate of the error scale is
+$0.090$ against $0.093$, with the truth at $0.100$. The criterion developed here
+attains the accuracy of the established method at this size, and does not exceed it.
+
+Two differences are nevertheless real. The first is the worst case. The sampler goes
+wrong less often, exceeding five pattern errors in six of the eighty comparisons
+against eleven here, but when it does go wrong it goes further: its worst trial
+misplaces twenty-one cells, and the worst trial here misplaces ten. The second is
+that the procedure here
+is deterministic. It evaluates a criterion in closed form on candidates produced by a
+dynamic programme, returns the same answer whenever it is run, and can be read term
+by term. That last property is what made the account in Section~\ref{sec:examples} of
+where the residue comes from possible at all, and a sample of patterns yields no such
+account.
+
+One further point should be recorded, since it bears on the objection that
+$a_{\min}$ and $a_{\max}$ are not determined by the data. The two widths
+$\tau_{0}$ and $\tau_{1}$ are not determined by the data either, and the sampler is
+at least as sensitive to them. Repeating the first illustration at four settings,
+with two chains at each, the pair $(0.05, 1.00)$ and the pair $(0.02, 1.50)$ recover
+the matrix, while $(0.005, 3.00)$ leaves two cells occupied out of twenty-seven and
+$(0.10, 0.60)$ occupies all eighty-one. The failures run in both directions, and the
+first of them is the divergence of Section~\ref{sec:magnitudes} appearing inside the
+sampler: spreading the prior over a wider range lowers the marginal likelihood of
+every occupied cell. The script is \texttt{examples/ssvs\_sensitivity.py}.
+
+This does not dispose of the objection. It establishes that the requirement is a
+property of the problem rather than of the formulation adopted here, and that the two
+bounds have an advantage of form, being stated in the units of the coefficients as
+the smallest and largest magnitude worth calling non-zero, which is a quantity an
+analyst can be asked to supply.
+
+\section{The search at two hundred variables}
+\label{sec:large}
+
+Section~\ref{sec:examples} used nine variables and enumerated every admissible
+subset of the columns for every row. This section reports what happens at the size
+of a problem an economist actually brings: twenty countries of ten variables each,
+so that $A$ is $200$ by $200$ and holds forty thousand cells, with eighty quarters
+of data. Enumeration is not merely slow at that size; it is impossible by a margin
+that no amount of patience closes. The section says why, describes what replaced it,
+and reports the result.
+
+\subsection{Why enumeration cannot be used}
+
+The search of Section~\ref{sec:examples} lists every subset of the columns of size
+at most $T-1$, that limit being what keeps $G_{i}$ non-singular. At $N = 200$ and
+$T = 80$ the number of such subsets is about $3 \times 10^{57}$ for each row, so the
+list is never built and the procedure never reaches the data.
+
+Lowering the limit does not help, because the limit has to be at least as large as
+the number of cells a row actually holds. Here that number is about thirteen, and
+the count of subsets of size at most thirteen drawn from two hundred columns is
+$9.5 \times 10^{19}$. Fitting all of them for all two hundred rows is
+$2 \times 10^{22}$ least-squares problems. At the measured cost of $28$
+microseconds each that is $5 \times 10^{17}$ seconds, or seventeen thousand million
+years, which is longer than the age of the universe.
+
+The limits that are affordable are far too small. A limit of two admits twenty
+thousand subsets for each row and runs in under a minute. A limit of three admits
+$1.3 \times 10^{6}$, which would run in about forty minutes but needs some thirty
+gigabytes to hold the coefficients of every subset for every row. A limit of four is
+out of reach on both counts. Three cells to a row is less than a quarter of what the
+matrix carries.
+
+It is worth being clear about which part of the procedure fails. The dynamic
+programme is not the difficulty. With the limit set at twenty-five, its arrays are
+of length $M_{\max} = 5000$ and it costs a few seconds over the whole grid of
+$\sigma$. Evaluating $\Phi$, refining the coefficients and forming the residuals are
+all matters of seconds. The obstacle is the list of subsets that the dynamic
+programme selects from, and that list alone.
+
+\subsection{Forward selection}
+
+The dynamic programme needs one thing from each row: for every size $k$, a subset of
+that size, with its residual sum of squares, its sum of $\log |A_{ij}|$ and its
+$\log |G_{i}|$. Enumeration supplies the best subset of each size. Forward selection
+supplies a subset of each size at a cost that grows as $N$ rather than as
+$\binom{N}{k}$.
+
+The rule is the ordinary one. Beginning with no cells, admit at each step the column
+that reduces the residual sum of squares by the most, and stop at $K$ cells. Holding
+an orthonormal basis $Q$ of the columns already admitted makes the reduction
+available for every candidate at once. Writing $r$ for the current residual and
+$Z_{j}$ for a candidate column, the reduction obtained by admitting $j$ is
+
+\begin{equation}
+\Delta_{j} \;=\; \frac{( Z_{j}' r )^{2}}
+                      {\| Z_{j} \|^{2} - \| Q' Z_{j} \|^{2}}
+\label{eq:forward}
+\end{equation}
+
+so that one matrix product settles the whole step. This is the exact forward step
+and not an approximation to it. The work for a row is $K$ such steps, and the whole
+matrix of two hundred rows is prepared in about one second.
+
+What is given up should be stated plainly. The subset of size $k$ is now the one
+that forward selection reaches, not the best subset of size $k$. The criterion is
+therefore minimised over a chain of $K$ nested subsets for each row rather than over
+all subsets, and the answer is a lower bound on how well $\Phi$ could be made to do.
+Given those candidate subsets the dynamic programme is exact, as before, so the
+approximation is confined to one place and can be named.
+
+Two remarks temper the loss. The enumeration of Section~\ref{sec:examples} was
+already limited to subsets of size at most $T-1$, so it was never a search over all
+patterns either. And forward selection is not an arbitrary choice: it is the
+standard method for this problem, and the coefficients here are well separated from
+zero, which is the case in which it does well.
+
+\subsection{Two further changes forced by the size}
+
+The integral over $\sigma$ is now taken in the closed form \eqref{eq:sigmaint}
+rather than by quadrature. The integrand of \eqref{eq:sigmaintdef}, written in
+$u = \log \sigma$, is concentrated about its peak in a range of width
+$1 / \sqrt{2(n-M)}$. At $n = 54$ that width is about $0.14$, and the grid used in
+Section~\ref{sec:examples} put some forty points across it. At $n = 16000$ the width
+is about $0.006$ and the same grid puts four. The closed form has no such
+difficulty, costs less, and was verified in Maxima along with everything else.
+
+The criterion is also accumulated through the dynamic programme instead of being
+recomputed on patterns that have been built. Inspection of
+\eqref{eq:workingcriterion} shows that $\Phi$ depends on a pattern only through $M$
+and three quantities that are sums over the rows: the residual sum of squares, the
+sum of $\log |A_{ij}|$ and the sum of $\log |G_{i}|$. Carrying those three sums
+alongside the cost lets $\Phi$ be evaluated for every pair of $\sigma$ and $M$
+without any pattern being formed, and only the winner is turned into a matrix. At
+this size the alternative would be to build and store some $1.2$ million patterns of
+two hundred entries each.
+
+\subsection{The problem}
+
+Each of the twenty countries is a solid block of ten by ten coefficients, which is
+two thousand cells. Each ordered pair of countries is joined by one or two cells
+drawn at random from the hundred that connect them, which adds about five hundred
+and seventy. The matrix therefore holds about $2570$ occupied cells out of forty
+thousand, or one cell in fifteen, and a row holds about thirteen. The occupied
+fraction is close to $2/29$, so the hyper-prior of Section~\ref{sec:patterncost} is
+taken as $\alpha = 2$ and $\beta = 27$, whose mean is $2/29$ and whose density is
+proportional to $p (1-p)^{26}$.
+
+Everything else is as in Section~\ref{sec:examples}. The magnitudes are drawn
+log-uniformly on $[0.40, 3.00]$, the bounds are $[0.20, 5.0]$, the error scale is
+$0.10$, and $K$ is set at twenty-five. A scattered control is generated by keeping
+the number of cells in each row and placing them at random columns, so that the two
+matrices differ in arrangement alone.
+
+One point deserves emphasis before the numbers. Per row this problem is easier than
+the illustration of Section~\ref{sec:examples}, not harder: eighty observations
+carry about thirteen coefficients, a ratio of six, against six observations carrying
+three, a ratio of two. The difficulty at this size lies wholly in the search.
+
+\subsection{Results}
+
+The procedure of this document was run over ten seeds, in both arrangements. Each
+matrix holds about $2569$ occupied cells.
+
+\input{examples/tab_large_mple}
+
+It recovers about $99$ per cent of the occupied cells. The two arrangements are
+again alike: compared within the seed the block case was the worse of the two seven
+times and the better three times, which a sign test does not distinguish from
+chance. That is the result of Section~\ref{sec:examples} once more, and for the same
+reason. Nothing in the criterion or in the search can see the arrangement.
+
+\subsection{Where the missing cells go}
+\label{sec:whymissed}
+
+The cells that are not recovered are worth following, because they turn out to be
+the price of the substitution made in this section and not a fault of the criterion.
+
+The first fact is that the criterion is not the difficulty. Evaluating
+\eqref{eq:workingcriterion} at the true pattern, with the coefficients fitted by
+least squares, gives $\Phi = -6355$, while the pattern the procedure returns gives
+$\Phi = 5093$. The criterion prefers the truth by more than eleven thousand natural
+units, an enormous margin, and almost all of it comes through the residual sum of
+squares, which is $137$ at the true pattern and $767$ at the recovered one. Whatever
+went wrong, the criterion would have rejected it had it been offered the alternative.
+
+The second fact is that forward selection is very nearly good enough. For $194$ of
+the $200$ rows the subset it reaches at that row's own size is exactly the true
+subset of that row. The limit $K$ is not binding either, the fullest row of the truth
+holding eighteen cells against a limit of twenty-five.
+
+The third fact explains the first two. In the six rows where forward selection admits
+a wrong column, the least-squares coefficient of that column is small, and it falls
+below $a_{\min}$. Section~\ref{sec:magnitudes} places no density below $a_{\min}$, so
+the subset containing it is not merely poor but inadmissible, and the dynamic
+programme cannot use that size for that row at all. It must fall back on a smaller
+size, which discards good cells along with the bad one. Six rows truncated in this
+way carry about six hundred of the excess residual, which is the whole of the
+difference between $137$ and $767$, and through
+Section~\ref{sec:sigmaint} that excess is what raises $\hat\sigma$ from $0.10$ to
+about $0.25$.
+
+The mechanism is therefore a single ordering error in a few rows, turned into a large
+loss by the rule that rejects a subset outright when one of its coefficients falls
+outside the range of the prior. Note that the true subset of a row is not what is
+rejected: it passes the test in all two hundred rows. What is rejected is the subset
+forward selection offers in place of it.
+
+That is a defect of the procedure adopted here, and it is repaired by a better search
+and not by any change to the criterion. Section~\ref{sec:candidates} repairs it.
+
+\subsection{The comparison at this size}
+\label{sec:largecompare}
+
+The six procedures of Section~\ref{sec:compete} were run again at this size, on the
+same data, with the settings there except that the cross-validation is in five folds
+rather than one for each observation, which at $T = 80$ is the usual practice.
+
+\input{examples/tab_large}
+
+The result is the reverse of Section~\ref{sec:compete} and it must be reported as
+such. The adaptive lasso recovers the matrix exactly. In every trial, in both
+arrangements, it occupies precisely the cells that are occupied in the truth, misses
+none, adds none, and returns $\hat\sigma = 0.10$ against a truth of $0.10$. The
+procedure of this document recovers about $99$ per cent of the cells and misses two
+dozen. At nine variables no variant of the lasso was competitive; at two hundred, one
+of them is exact and this criterion is not.
+
+Two things should be said about that before it is read as a verdict on the criterion.
+
+The first is that it is not one. Section~\ref{sec:whymissed} shows that
+$\Phi$ at the true pattern is smaller than $\Phi$ at the pattern recovered here by
+more than eleven thousand natural units. The criterion ranks the answer the adaptive
+lasso found far above the answer this search found. What the comparison establishes
+is that the adaptive lasso is the better search at this size, not that it is the
+better criterion. The natural thing to try next is to use the lasso path as the
+source of candidate patterns and $\Phi$ to choose among them, which is not done here.
+
+The second is a qualification that has been tested and does not hold. The two lasso
+variants scored by the Schwarz criterion were given the true error scale, which no
+analyst would have, and it was natural to suspect that the exactness was bought with
+that. It was not. Estimating the error scale by the ordinary plug-in iteration --
+choosing the penalty of the plain lasso by cross-validation to obtain a first value,
+then alternating between choosing the pattern at the current value and re-estimating
+the value from the residuals of the chosen pattern -- reaches the same answer.
+
+\input{examples/tab_alasso_sigma}
+
+The iteration begins about four times too dense, at some eleven thousand cells with
+an error scale less than half the truth, and one pass carries it to the exact
+pattern. Started instead from a deliberately large value of unity it arrives at the
+same place in two. The fixed point does not depend on where the iteration begins, and
+it is the truth. Whatever else is to be said about this comparison, the adaptive
+lasso is not being flattered by information an analyst would lack.
+
+The plain lasso behaves as it did at the smaller size, in one respect. Every variant
+of it finds all the occupied cells; what none of them does, except the adaptive one,
+is stop. Cross-validation occupies some eleven and a half thousand cells against a
+truth of about two and a half thousand, and the Schwarz criterion about five
+thousand. The variant given the answer, which chooses the penalty row by row to make
+the fewest errors, is markedly worse than the adaptive variant, which shows that the
+advantage lies in the reweighting rather than in any information about the truth.
+
+Stochastic search variable selection cannot be assessed from this table. The figures
+shown are what the sampler reached in eight thousand sweeps, and
+Section~\ref{sec:mixing} shows that at this size it is nowhere near its own answer at
+that length or at twenty thousand. They are a statement about a fixed amount of
+computing and not about the method.
+
+\subsection{Whether the sampler was run long enough}
+\label{sec:mixing}
+
+It was not. The sampler was run at four lengths on the first trial, twice at each
+from different random numbers.
+
+\input{examples/tab_mixing}
+
+Every quantity is still moving toward the truth as the run lengthens, and the two
+chains still disagree about several thousand of the forty thousand cells, with
+individual inclusion probabilities differing by almost one. That is not a sampler
+settled about an answer; it is one still travelling toward it.
+
+Worse, it is slowing down. Counting the falsely occupied cells in excess of the
+truth, each doubling of the run removes about $450$ of them between four and eight
+thousand sweeps, about $280$ between eight and twenty thousand, and about $210$
+between twenty and sixty thousand. Fitting a power of the run length to those four
+points gives an exponent near $-0.27$, on which the excess would fall to a few dozen
+cells only after some thousands of millions of sweeps. That extrapolation should not
+be taken literally, since four points are a thin basis for judging the convergence of
+a Markov chain, but the direction of it is not in doubt. At sixty thousand sweeps,
+three times the length of the longest published application of this method and on a
+problem sixty-seven times larger, the sampler still occupies about $1280$ cells that
+should be empty.
+
+The comparison in Section~\ref{sec:compete} at nine variables gave this method and
+the sampler an exact tie. At two hundred variables the sampler cannot be run long
+enough, within any time that was available here, to say what it would conclude. That
+is a real difference between a criterion evaluated in closed form and a distribution
+explored by sampling, and it is the sharpest form of the point made in
+Section~\ref{sec:compete}. It should not, however, be read as a defect of stochastic
+search variable selection as a method. The largest published application of it that
+could be found carries $595$ coefficients, and the sampler used here is the plain
+one; blocked and scalable variants exist and none was tried.
+
+\subsection{Where the candidates come from}
+\label{sec:candidates}
+
+Section~\ref{sec:whymissed} places the difficulty in the search and not in the
+criterion, and Section~\ref{sec:largecompare} shows that the adaptive lasso finds the
+pattern this search does not. That suggests keeping $\Phi$ as the judge and changing
+only the list of patterns it is asked to judge. It was tried, and it answers the
+question.
+
+The dynamic programme requires, for each row and each size, a subset with its
+residual sum of squares, its sum of $\log |A_{ij}|$ and its $\log |G_{i}|$. Forward
+selection supplies one such subset for each size. A penalty path supplies others: it
+is indexed by penalty rather than by size, so it visits some sizes several times and
+others not at all, but every support it visits is a candidate. Nothing prevents the
+two lists being merged, and since $\Phi$ decides among them, a longer list cannot
+give a worse answer. The programme was therefore given several candidates of each
+size and takes at each $\sigma$ whichever the row cost prefers, which is what the
+enumeration of Section~\ref{sec:examples} did at nine variables.
+
+\input{examples/tab_lasso_phi}
+
+The plain path adds almost nothing. The reason is that it seldom passes through the
+right subset: over the two hundred rows of the first trial it visits the true subset
+of a row nineteen times, against one hundred and ninety-four for forward selection.
+
+The adaptive path recovers the matrix exactly. In all six trials, in both
+arrangements, every occupied cell is found, no empty cell is occupied, and
+$\hat\sigma$ returns to $0.10$. The value of $\Phi$ falls from about $5100$ to about
+$-6400$, and that second figure is the value of $\Phi$ at the true pattern reported
+in Section~\ref{sec:whymissed}. The criterion has not merely improved; it has found
+the pattern it said all along that it preferred.
+
+One point of construction decides whether this works. The weights of the adaptive
+path must come from a fit that is too dense, not from one that is too sparse.
+Weighting by the answer $\Phi$ has just given fails completely, because a cell that
+answer leaves empty receives the largest weight the rule allows and can never be
+recovered. Weighting instead by a cross-validated fit, which occupies some eleven
+thousand cells and therefore contains every cell that ought to be occupied, gives
+each true cell a small weight and each false one a large weight. Cross-validation
+requires no estimate of the error scale, and it is used here only to weight and never
+to select, so no quantity enters that an analyst would lack. Every selection is made
+by $\Phi$.
+
+The cost is the one drawback. Forward selection prepares a matrix in about a second
+and the whole procedure runs in sixteen; the cross-validated weighting takes some
+forty minutes, being five penalty paths for each of two hundred rows. That is worth
+reducing and there is no obstacle of principle to reducing it, but it is the present
+position.
+
+\subsection{The direction of the error}
+
+The error has changed direction with the size of the problem. In
+Section~\ref{sec:examples}, with $q = 81$ and $M$ near $27$, the procedure occupied
+one or two cells more than it should. Here, with $q = 40000$ and $M$ near $2570$, it
+leaves about twenty-six fewer than it should.
+
+Part of this is arithmetic that would hold whatever search were used. The cost of one
+more occupied cell is $\log \left[ (q-M-1+\beta) / (M+\alpha) \right]$, which is
+$0.64$ natural units at the smaller size and $2.68$ at the larger. Adding
+$\log 2 L_{A} = 1.86$, a cell must return about $4.5$ natural units before it is
+worth occupying here, against about $2.5$ before, so the criterion is more demanding
+in a large matrix than in a small one.
+
+That is not, however, what produced the omissions reported above. Section
+\ref{sec:whymissed} shows that the criterion prefers the true pattern by a very wide
+margin and would have taken it. The omissions here are the work of the search. The
+two effects should not be confused: the toll per cell does rise with $q$, and the
+cells missed in this study were nevertheless missed for a different reason.
+
+What is not available is a proof. Nothing in this document establishes whether the
+criterion occupies more cells than the truth or fewer, on average, nor under what
+conditions the one turns into the other. Two sizes have been examined and they fall
+on opposite sides, and an arithmetic account has been given of why the toll per cell
+rises with $q$; that account is consistent with the observations but it is not a
+theorem, and it says nothing about the size of the discrepancy. Whether
+$E[\hat{M}] - M$ is positive, negative or zero in general, how it behaves as $T$
+grows with $q$ fixed, and whether the pattern is recovered in the limit, are all
+open. They are the natural questions to take up next, and they are questions about
+the criterion rather than about the search.
+
+\subsection{The severity of the test}
+
+The count used throughout is a strict one, and the numbers should be read with that
+in mind. A cell is scored wrong if it is occupied and should be empty, or empty and
+should be occupied, and no allowance is made for magnitude. Missing a coefficient of
+$0.4$ counts exactly as much as missing one of $3.0$. No credit is given for
+recovering the arrangement, for placing the twenty blocks correctly, or for coming
+close. The test asks for the exact set of forty thousand decisions and records every
+departure.
+
+By that measure the block case is charged with thirty-eight errors in a matrix of
+$2569$ occupied cells. By almost any other measure the same result would be
+described differently. The distance between the estimate and the truth has a median
+of $3.96$ over the whole matrix, which is about $0.078$ for each occupied cell
+against a typical magnitude of $1.1$. Most of that distance is the missed cells
+themselves: twenty-six omitted coefficients of median magnitude $0.625$ account for
+some three units of the four, so the coefficients that were retained are estimated
+very closely indeed. A user interested in forecasting, or in which countries
+influence which, would find little of the error visible.
+
+The strict count is nevertheless the right one to report, because the question this
+document asks is which cells are occupied, and a test of that question should not
+be softened by allowing partial credit for nearly answering it. But it is a severe
+test, and it is not the test by which such models are usually judged.
 
 \section{What is not settled here}
 

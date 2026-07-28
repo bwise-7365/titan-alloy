@@ -1,0 +1,25 @@
+N=200 T=80 q=40000 n=16000 KMAX=25 sigma_true=0.1 alpha=2.0 beta=27.0
+ssvs tau0=0.02 tau1=1.5 draws=8000 burn=2000
+lasso nlam=60 folds=5
+
+      seed case     method          M  corr  false  miss   sigma     frob
+  20260726 block    mple         2555  2549      6    24  0.2389     3.59
+  20260726 scatter  mple         2551  2545      6    28  0.2835     4.24
+  20261726 block    mple         2539  2530      9    23  0.2263     3.64
+  20261726 scatter  mple         2537  2530      7    23  0.2696     4.13
+  20262726 block    mple         2568  2562      6    19  0.2724     3.93
+  20262726 scatter  mple         2569  2560      9    21  0.1937     3.20
+  20263726 block    mple         2551  2521     30    57  0.3706     6.65
+  20263726 scatter  mple         2554  2538     16    40  0.3418     5.81
+  20264726 block    mple         2551  2546      5    16  0.2009     3.41
+  20264726 scatter  mple         2554  2548      6    14  0.1713     2.75
+  20265726 block    mple         2548  2539      9    36  0.2804     4.53
+  20265726 scatter  mple         2555  2545     10    30  0.2245     3.80
+  20266726 block    mple         2556  2550      6    13  0.1619     2.83
+  20266726 scatter  mple         2540  2532      8    31  0.3149     5.00
+  20267726 block    mple         2544  2531     13    36  0.2933     4.78
+  20267726 scatter  mple         2549  2542      7    25  0.2394     4.03
+  20268726 block    mple         2544  2536      8    27  0.2797     4.22
+  20268726 scatter  mple         2554  2547      7    16  0.1882     2.79
+  20269726 block    mple         2557  2547     10    27  0.2531     3.98
+  20269726 scatter  mple         2558  2552      6    22  0.2110     3.38

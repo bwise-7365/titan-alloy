@@ -12,3 +12,6 @@
 # Python
 __pycache__/
 *.pyc
+
+# PDFs are regenerated from the TeX sources
+*.pdf

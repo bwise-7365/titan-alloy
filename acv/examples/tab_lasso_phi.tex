@@ -1,0 +1,16 @@
+\begin{center}
+\footnotesize
+\begin{tabular}{llccccccc}
+case & candidates from & trials & occupied & correct of & false & missed & median $\hat\sigma$ & median $\Phi$ \\
+\hline
+block & forward selection & $3$ & $2554$ & $2547$ of $2569$ & $7$ & $22$ & $0.239$ & --- \\
+block & and the plain path & $3$ & $2555$ & $2547$ of $2569$ & $8$ & $22$ & $0.239$ & $5095$ \\
+block & and the adaptive path & $3$ & $2569$ & $2569$ of $2569$ & $0$ & $0$ & $0.101$ & $-6398$ \\
+\hline
+scatter & forward selection & $3$ & $2552$ & $2545$ of $2569$ & $7$ & $24$ & $0.270$ & --- \\
+scatter & and the plain path & $3$ & $2553$ & $2546$ of $2569$ & $7$ & $23$ & $0.269$ & $6642$ \\
+scatter & and the adaptive path & $3$ & $2569$ & $2569$ of $2569$ & $0$ & $0$ & $0.100$ & $-6431$ \\
+\end{tabular}
+\end{center}
+% three seeds, both arrangements; from examples/large_lasso_phi.txt
+% no falsely occupied and no missed cell in any of the six adaptive runs

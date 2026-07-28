@@ -1,0 +1,32 @@
+N=200 T=80 n=16000 q=40000  candidates from the penalty path, Phi as judge
+
+seed 20260726, block, true cells 2573
+  greedy    M= 2555 correct  2549 false    6 missed   24 sigma 0.2389 error   3.59                 [16s]
+  path      M= 2555 correct  2549 false    6 missed   24 sigma 0.2389 error   3.59 Phi     5094.9  [257s]
+  adaptive  M= 2573 correct  2573 false    0 missed    0 sigma 0.1009 error   0.63 Phi    -6354.8  [2862s]
+
+seed 20260726, scatter, true cells 2573
+  greedy    M= 2551 correct  2545 false    6 missed   28 sigma 0.2835 error   4.24                 [13s]
+  path      M= 2553 correct  2547 false    6 missed   26 sigma 0.2766 error   4.22 Phi     7055.0  [221s]
+  adaptive  M= 2573 correct  2573 false    0 missed    0 sigma 0.1010 error   0.63 Phi    -6341.4  [2317s]
+
+seed 20261726, block, true cells 2553
+  greedy    M= 2539 correct  2530 false    9 missed   23 sigma 0.2263 error   3.64                 [15s]
+  path      M= 2541 correct  2531 false   10 missed   22 sigma 0.2141 error   3.54 Phi     3561.2  [232s]
+  adaptive  M= 2553 correct  2553 false    0 missed    0 sigma 0.0996 error   0.64 Phi    -6642.4  [2163s]
+
+seed 20261726, scatter, true cells 2553
+  greedy    M= 2537 correct  2530 false    7 missed   23 sigma 0.2696 error   4.13                 [13s]
+  path      M= 2538 correct  2531 false    7 missed   22 sigma 0.2694 error   4.17 Phi     6641.6  [241s]
+  adaptive  M= 2553 correct  2553 false    0 missed    0 sigma 0.0998 error   0.63 Phi    -6606.6  [2699s]
+
+seed 20262726, block, true cells 2581
+  greedy    M= 2568 correct  2562 false    6 missed   19 sigma 0.2724 error   3.93                 [13s]
+  path      M= 2569 correct  2562 false    7 missed   19 sigma 0.2696 error   3.98 Phi     6753.2  [235s]
+  adaptive  M= 2581 correct  2581 false    0 missed    0 sigma 0.1005 error   0.63 Phi    -6398.3  [7539s]
+
+seed 20262726, scatter, true cells 2581
+  greedy    M= 2569 correct  2560 false    9 missed   21 sigma 0.1937 error   3.20                 [15s]
+  path      M= 2569 correct  2560 false    9 missed   21 sigma 0.1937 error   3.20 Phi     2298.2  [262s]
+  adaptive  M= 2581 correct  2581 false    0 missed    0 sigma 0.1004 error   0.64 Phi    -6431.2  [2795s]
+
