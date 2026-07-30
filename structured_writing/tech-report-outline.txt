@@ -1,0 +1,22 @@
+Main sections of a technical report
+
+Section	Description
+Title Page	Includes the report title, author(s), affiliation, and date of submission.
+
+Abstract	A concise summary of the report, highlighting objectives, methodology, key findings, and conclusions.
+
+Table of Contents	Lists all major sections and sub-sections with corresponding page numbers for easy navigation.
+
+Introduction	Provides background information, states the report's purpose, and outlines the problem being addressed.
+
+Methodology	Describes the research or analysis methods used, including data collection and experimental procedures.
+
+Results	Presents the findings of the research, often with tables, graphs, and figures for clarity.
+
+Discussion	Interprets the results, discussing their implications and how they relate to the research question.
+
+Conclusions	Summarizes the main findings and their significance, often including recommendations.
+
+References	Lists all sources cited in the report, ensuring proper attribution of information.
+
+Appendices	Contains supplementary material that supports the report but is not essential for casual readers, such as raw data or detailed calculations.
