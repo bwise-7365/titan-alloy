@@ -15,9 +15,18 @@ namespace AbsGame {
 //
 // Filled per call and owned by the caller, never stored in the Searcher: two searches may
 // run at once on different threads, and a shared counter would race.
+// The fields are per algorithm and disjoint; each search fills only its own and leaves
+// the rest at zero.
 struct SearchStats {
+    // mcts
     long long rollouts = 0;          // playouts run
     long long terminalRollouts = 0;  // of those, how many reached a true terminal
+
+    // bestMove. The deepest iterative-deepening iteration that COMPLETED, which is the
+    // depth the returned move was actually chosen at -- an iteration cut off by the
+    // deadline is discarded whole, so it contributed nothing (see bestMove below). 0
+    // means not even depth 1 finished in the time allowed.
+    int completedDepth = 0;
 };
 
 class Searcher {
@@ -27,7 +36,10 @@ public:
     // an iteration that COMPLETES is allowed to change the answer, so a deadline that
     // fires mid-iteration falls back to the last fully-searched depth rather than to a
     // partially-scored move list. Returns kPass only when there are no legal moves.
-    static MoveId bestMove(const Game& game, int depth, int timeLimitMs = 5000);
+    // When `stats` is non-null it receives this search's completedDepth; nullptr costs
+    // nothing.
+    static MoveId bestMove(const Game& game, int depth, int timeLimitMs = 5000,
+                           SearchStats* stats = nullptr);
 
     // Returns the best move via MCTS-UCT (time-budget variant).
     // Runs growTree iterations for the given number of seconds, then returns

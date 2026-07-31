@@ -19,6 +19,7 @@
 //
 //     games      number of games to play                     (default 10)
 //     ms         search budget per searched ply, in ms        (default 200)
+//     secs       the same budget in whole seconds; last one given wins
 //     seed       base RNG seed; 0 means clock-derived         (default 0)
 //     style      slide | stepleap                             (default slide)
 //     payoff     convex | gradient                            (default convex)
@@ -40,9 +41,25 @@
 //                   always compiled in, so no rebuild is needed to use it; run with
 //                   `help` for the level descriptions. Default: no tracking.
 //
-// Game g uses seed base+g, so a run is reproducible from the printed base seed. That
-// holds at any thread count: the seed follows the game index, not the worker, so
+// Game g uses seed base+g, and the seed follows the game index rather than the worker, so
 // threads= changes only how fast the run finishes and the order the rows appear in.
+//
+// Unlike irrgo_bench, this driver IS reproducible: NegaMax uses no random numbers, and
+// the only randomness in a game is the placement policy, which takes that seed. The one
+// caveat is the clock -- the search is time-budgeted, so a slower or busier machine
+// reaches a shallower depth and can therefore choose a different move.
+//
+// DEPTH AND SRCHD: how deep iterative deepening actually got, averaged over the opening.
+// A move is chosen at the deepest iteration that COMPLETED -- one cut off by the deadline
+// is discarded whole -- so this is the depth the played moves were really selected at,
+// not the depth attempted. `srchd` is the divisor: how many plies inside the window were
+// searched rather than played at random by the placement policy.
+//
+// The window is the whole placement phase plus an equal number of movement plies: with C
+// stones between the two sides, placement takes exactly C plies and the window is 2C. At
+// 20 a side that is 40 placements and the first 40 movement plies. Measuring past that
+// would let a long endgame tail, where few pieces leave few options and the same budget
+// reaches much deeper, report a depth the real part of the game never saw.
 //
 // THREADS AND MEMORY TRACKING TOGETHER: MB2 takes one global mutex per allocation on its
 // tracked path, so at --mb level 1 or above the workers serialise on it and threads> 1
@@ -74,6 +91,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <locale>
 #include <mutex>
 #include <sstream>
 #include <stdexcept>
@@ -114,6 +132,7 @@ std::string usage() {
         "Usage: latrunculi_bench [key=value ...] [--mb <level> <fsmb>]\n"
         "    games      number of games to play                     (default 10)\n"
         "    ms         search budget per searched ply, in ms       (default 200)\n"
+        "    secs       the same budget in whole seconds; last one given wins\n"
         "    seed       base RNG seed; 0 means clock-derived        (default 0)\n"
         "    style      slide | stepleap                            (default slide)\n"
         "    payoff     convex | gradient                           (default convex)\n"
@@ -219,6 +238,9 @@ Options parseArgs(int argc, char** argv) {
 
         if (key == "games")          { opt.games = positiveIntOf(key, value); }
         else if (key == "ms")        { opt.msPerPly = positiveIntOf(key, value); }
+        // Two spellings of one budget, so this driver can be given a per-move time the
+        // same way irrgo_bench is. Whichever appears last on the command line wins.
+        else if (key == "secs")      { opt.msPerPly = 1000 * positiveIntOf(key, value); }
         else if (key == "seed")      { opt.seed = wholeOf(key, value); }
         else if (key == "rows")      { opt.rows = positiveIntOf(key, value); }
         else if (key == "columns")   { opt.columns = positiveIntOf(key, value); }
@@ -267,12 +289,39 @@ void saveGameXml(const Latrunculi::Game& game, const std::string& dir, int gameI
     }
 }
 
+// How deep NegaMax actually saw over a game's OPENING, which is the only part of a game
+// where the depth reached compares across positions.
+//
+// The search is iterative deepening under a clock, so the depth it reaches is a measure
+// of how much of the tree the budget bought at that position. Late in a Latrunculi game
+// the board is nearly empty of options and the same budget reaches far deeper for reasons
+// that say nothing about the search -- so a whole-game average would report a healthy
+// number earned entirely in a long boring tail.
+//
+// The window is the whole placement phase plus an equal number of movement plies: with C
+// stones on the board between the two sides, placement takes exactly C plies, and the
+// window is 2C. At 20 a side that is 40 placements and the first 40 movement plies.
+//
+// Only SEARCHED plies count toward the average. The placement policy plays some openings
+// at random, and a random placement has no lookahead to report; folding it in as depth
+// zero would quietly drag the figure down. `searched` is printed so the divisor is never
+// a guess.
+struct WindowStats {
+    long long searched = 0;  // searched plies inside the window, the divisor
+    long long depthSum = 0;  // their completed depths, summed
+};
+
 // Plays one complete game and returns it. Placement follows the shared PlacementPolicy
 // (a random opening placement, then runs of searched ones); movement is always searched.
-Latrunculi::Game playGame(const Options& opt, std::uint64_t seed) {
+Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& window) {
     using namespace Latrunculi;
     Game game(opt.rows, opt.columns, opt.perSide, opt.style, opt.payoff, opt.komi);
     PlacementPolicy placement(seed);
+
+    // C = stones on the board between both sides; the window is 2C plies.
+    const int totalStones = 2 * opt.perSide;
+    const int windowPlies = 2 * totalStones;
+    int ply = 0;
 
     while (!game.isTerminal()) {
         const std::vector<AbsGame::MoveId> moves = game.getLegalMoves();
@@ -293,18 +342,57 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed) {
             }
         }
         if (searched) {
-            const AbsGame::MoveId best =
-                AbsGame::Searcher::bestMove(game, kMaxDepth, opt.msPerPly);
+            // The depth is only collected inside the window; past it the search runs
+            // exactly as before and the out-parameter is not asked for.
+            const bool inWindow = (ply < windowPlies);
+            AbsGame::SearchStats searchStats;
+            const AbsGame::MoveId best = AbsGame::Searcher::bestMove(
+                game, kMaxDepth, opt.msPerPly, inWindow ? &searchStats : nullptr);
             if (best == AbsGame::kPass || !game.isLegalMove(best)) {
                 throw std::runtime_error("bench: search returned no usable move");
+            }
+            if (inWindow) {
+                window.searched += 1;
+                window.depthSum += searchStats.completedDepth;
             }
             mv = best;
         }
         if (!game.applyMove(mv)) {
             throw std::runtime_error("bench: a chosen move was rejected");
         }
+        ++ply;
     }
     return game;
+}
+
+// A ratio, or "-" when there is nothing to divide by. A window with no searched ply is
+// not an average depth of zero, and printing it as one would read as "the search saw
+// nothing" when the truth is that nothing was measured.
+std::string ratioOr(double numerator, double denominator, int places) {
+    if (denominator <= 0.0) {
+        return "-";
+    }
+    std::ostringstream out;
+    out.imbue(std::locale::classic());
+    out << std::fixed << std::setprecision(places) << (numerator / denominator);
+    return out.str();
+}
+
+// Appended to the library's stats row rather than added to GameStats: that struct is the
+// game-quality measure, and how deep the search got is a property of the search.
+std::string depthColumns(const WindowStats& window) {
+    std::ostringstream out;
+    out.imbue(std::locale::classic());
+    out << std::setw(9) << ratioOr(static_cast<double>(window.depthSum),
+                                   static_cast<double>(window.searched), 2)
+        << std::setw(9) << window.searched;
+    return out.str();
+}
+
+std::string depthHeader() {
+    std::ostringstream out;
+    out << std::setw(9) << "depth" << std::setw(9) << "srchd";
+    return out.str();
 }
 
 // Plays games [0, opt.games) across opt.threads workers, filling stats[g] for each.
@@ -320,7 +408,9 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed) {
 // Two things do need guarding, and are: std::cout (interleaved << chains from several
 // threads would garble the table) and the first exception out of any worker, which is
 // re-thrown on the calling thread rather than left to terminate the process.
-void runGames(const Options& opt, std::uint64_t base, std::vector<Latrunculi::GameStats>& stats) {
+void runGames(const Options& opt, std::uint64_t base,
+              std::vector<Latrunculi::GameStats>& stats,
+              std::vector<WindowStats>& windows) {
     std::atomic<int> nextGame{0};
     std::mutex consoleMtx;
     std::mutex errorMtx;
@@ -333,14 +423,17 @@ void runGames(const Options& opt, std::uint64_t base, std::vector<Latrunculi::Ga
                 return;
             }
             try {
+                WindowStats window;
                 const Latrunculi::Game finished =
-                    playGame(opt, base + static_cast<std::uint64_t>(g));
+                    playGame(opt, base + static_cast<std::uint64_t>(g), window);
                 if (opt.saveXml) {
                     saveGameXml(finished, opt.xmlDir, g);
                 }
                 stats[static_cast<std::size_t>(g)] = Latrunculi::analyseGame(finished);
+                windows[static_cast<std::size_t>(g)] = window;
                 const std::string row =
-                    Latrunculi::formatStatsRow(stats[static_cast<std::size_t>(g)], g);
+                    Latrunculi::formatStatsRow(stats[static_cast<std::size_t>(g)], g) +
+                    depthColumns(window);
                 const std::lock_guard<std::mutex> lock(consoleMtx);
                 std::cout << row << std::endl;
             } catch (...) {
@@ -412,7 +505,7 @@ int main(int argc, char** argv) {
         if (opt.fsmb > 0) {
             std::cout << ", first suspect block " << opt.fsmb;
         }
-        std::cout << "\n\n" << statsHeader() << '\n';
+        std::cout << "\n\n" << statsHeader() << depthHeader() << '\n';
 
         AbsGame::MemTrack::start(opt.mbLevel, opt.fsmb);
 
@@ -421,13 +514,27 @@ int main(int argc, char** argv) {
         {
             const auto started = std::chrono::steady_clock::now();
             std::vector<GameStats> all(static_cast<std::size_t>(opt.games));
-            runGames(opt, base, all);
+            std::vector<WindowStats> windows(static_cast<std::size_t>(opt.games));
+            runGames(opt, base, all, windows);
             const auto elapsed = std::chrono::steady_clock::now() - started;
             const double seconds =
                 std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count()
                 / 1000.0;
 
+            // Pooled rather than averaged over per-game means: every searched ply in the
+            // run then carries the same weight, so a game whose opening was mostly random
+            // placements cannot swing the figure.
+            WindowStats runWindow;
+            for (const WindowStats& w : windows) {
+                runWindow.searched += w.searched;
+                runWindow.depthSum += w.depthSum;
+            }
+
             std::cout << '\n' << formatStatsSummary(all)
+                      << "mean depth           "
+                      << ratioOr(static_cast<double>(runWindow.depthSum),
+                                 static_cast<double>(runWindow.searched), 2)
+                      << "   (over " << runWindow.searched << " searched opening plies)\n"
                       << "wall clock           " << seconds << " s\n";
         }
 

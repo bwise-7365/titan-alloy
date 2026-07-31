@@ -77,11 +77,17 @@ double Searcher::negaMax(const Game& game, int depth, double alpha, double beta,
     return value;
 }
 
-MoveId Searcher::bestMove(const Game& game, int depth, int timeLimitMs) {
+MoveId Searcher::bestMove(const Game& game, int depth, int timeLimitMs,
+                          SearchStats* stats) {
     const TimePoint deadline = Clock::now() + std::chrono::milliseconds(timeLimitMs);
+
+    // Counted locally and handed back at the end, so nothing is shared between two
+    // searches running at once on different threads.
+    SearchStats local;
 
     std::vector<MoveId> rootMoves = orderedMoves(game);
     if (rootMoves.empty()) {
+        if (stats) { *stats = local; }
         return kPass;
     }
 
@@ -123,12 +129,17 @@ MoveId Searcher::bestMove(const Game& game, int depth, int timeLimitMs) {
         }
 
         best = iterationBest;
+        // This iteration finished, so `best` is now a depth-d answer. Recorded after the
+        // abort check above, which is what makes it the depth actually achieved rather
+        // than the depth attempted.
+        local.completedDepth = d;
         const auto it = std::find(rootMoves.begin(), rootMoves.end(), best);
         if (it != rootMoves.end()) {
             std::rotate(rootMoves.begin(), it, it + 1);
         }
     }
 
+    if (stats) { *stats = local; }
     return best;
 }
 
