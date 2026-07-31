@@ -21,6 +21,13 @@ uint64_t makeSeed(uint64_t s);
 using MoveId = int;
 static constexpr MoveId kPass = -1;
 
+// Ply ceiling for one MCTS playout in a game that does not say otherwise (see
+// Game::maxPlayoutDepth). Playouts must be bounded because a random walk is not
+// guaranteed to terminate, but a ceiling below the length of a real game is not a safety
+// net -- it is a silent change of what a playout measures, since a capped playout scores
+// staticEval() on an unfinished position instead of a true outcome.
+inline constexpr int kDefaultMaxPlayoutDepth = 200;
+
 // Abstract interface for a two-person, zero-sum, perfect-information game.
 // Player 0 moves first (convention: Black), player 1 moves second (White).
 class Game {
@@ -62,6 +69,14 @@ public:
     // and the supporting literature.
     virtual MoveId chooseRolloutMove(const std::vector<MoveId>& legal,
                                      std::mt19937_64& rng) const;
+
+    // The most plies one MCTS playout from this position may run before the searcher
+    // gives up and scores it with staticEval(). A game whose length grows with its board
+    // must override this: a fixed ceiling that a full game exceeds makes EVERY playout
+    // end early, so the search never sees a real outcome and any count of terminal
+    // positions reached measures the ceiling rather than the search. See
+    // IrrGo::Game::maxPlayoutDepth. Must return a positive number.
+    virtual int maxPlayoutDepth() const { return kDefaultMaxPlayoutDepth; }
 
     // Move-ordering hint for the alpha-beta searcher (negamax.cpp): a higher score is
     // searched earlier. Alpha-beta prunes far more when the strongest move is tried

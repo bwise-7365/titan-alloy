@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "DVR.h"
 #include "EyeEval.h"
+#include <cstddef>
 #include <limits>
 #include <queue>
 #include <random>
@@ -241,6 +242,55 @@ std::pair<int, int> Game::countStones() const {
         else if (c == Color::White) { ++white; }
     }
     return {black, white};
+}
+
+AbsGame::MoveId Game::chooseRolloutMove(const std::vector<AbsGame::MoveId>& legal,
+                                        std::mt19937_64& rng) const {
+    const Color mine = (current_ == Player::Black) ? Color::Black : Color::White;
+
+    // Benson needs the whole position to answer for any point, so it is computed once
+    // here into bensonScratch_, whose buffers survive from ply to ply; the cheap rule
+    // answers per point from a handful of neighbour reads and needs no table at all.
+    // `if constexpr` keeps the unused branch out of the binary entirely.
+    const std::vector<char>* bensonTerritory = nullptr;
+    if constexpr (kUseBensonEyeRule) {
+        bensonTerritory = &bensonPassAliveTerritory(*this, mine, bensonScratch_);
+    }
+    const auto fillsOwnEye = [&](AbsGame::MoveId mv) -> bool {
+        if constexpr (kUseBensonEyeRule) {
+            return (*bensonTerritory)[static_cast<std::size_t>(mv)] != 0;
+        } else {
+            return isSinglePointEye(*this, mv, mine);
+        }
+    };
+
+    // Reservoir sampling: one uniform pick over the allowed points in a single pass, with
+    // no list to build and no allocation on the cheap path -- this runs once per playout
+    // ply, which is the hottest loop in the search.
+    //
+    // kPass is NOT one of the sampled candidates, though the base class's uniform policy
+    // does sample it. A playout must not pass while a non-eye-filling point is available:
+    // a pass in mid-game is not a plausible line of play, and sampling one contaminates
+    // the game the playout reports with a move no player would make. Passing only once
+    // nothing but eye-filling remains is what produces a non-eye-filling endgame, and it
+    // is where a real game ends too.
+    AbsGame::MoveId chosen = AbsGame::kPass;
+    int allowedSeen = 0;
+    for (AbsGame::MoveId mv : legal) {
+        if (mv == AbsGame::kPass) {
+            continue;
+        }
+        if (fillsOwnEye(mv)) {
+            continue;
+        }
+        ++allowedSeen;
+        // Keep move k with probability 1/k, which leaves every candidate equally likely.
+        std::uniform_int_distribution<int> pick(1, allowedSeen);
+        if (pick(rng) == 1) {
+            chosen = mv;
+        }
+    }
+    return chosen;  // kPass when every legal point would have filled our own eye
 }
 
 double Game::staticEval() const {

@@ -46,6 +46,11 @@ if(IRRGO_NATIVE_ARCH AND NOT MSVC)
     add_compile_options("$<$<CONFIG:Release>:-march=native>")
 endif()
 
+# The MB2 memory tracker (panj/abzar/libsrc/mb2) is linked into the two headless bench
+# drivers and selected at RUN time with their --mb flag, so checking for a leak never
+# means reconfiguring. Wiring, and the MB2_ROOT path, are in absgame/CMakeLists.txt; the
+# reason the Qt GUIs are excluded from it is in absgame/MemTrack.h.
+
 # Convenience default for a standard Windows Qt install, applied once for the whole
 # tree. Only used on Windows AND only when the user has not already pointed CMake at
 # Qt (via -DQt6_DIR or -DCMAKE_PREFIX_PATH). Linux/macOS resolve Qt through the normal

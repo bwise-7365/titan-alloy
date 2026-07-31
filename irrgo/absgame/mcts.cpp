@@ -13,7 +13,6 @@ namespace {
 using AbsGame::MoveId;
 
  constexpr double kUctExpFactor    = 1.0;
- constexpr int    kMaxRolloutDepth = 200;
  // c^2 in the UCB1 exploration term: sqrt(kUctExplorationC2 * ln(N)/n) equals
  // c * sqrt(ln(N)/n) with the classical c = sqrt(2). kUctExpFactor scales it.
  constexpr double kUctExplorationC2 = 2.0;
@@ -94,10 +93,19 @@ MctsNode* treePolicy(MctsNode& node, double expFactor,
 }
 
 // Random playout from node's game state; returns reward from root player's view.
-double rollout(const MctsNode& node, int rootPlayer, std::mt19937_64& rng) {
+// Counts itself in `stats`, and separately records whether it reached a true terminal:
+// a playout stopped by the depth ceiling is scored by staticEval() on an unfinished
+// position, which is a different kind of evidence (see AbsGame::SearchStats).
+double rollout(const MctsNode& node, int rootPlayer, std::mt19937_64& rng,
+               AbsGame::SearchStats& stats) {
     auto game = node.game->clone();
-    for (int d = 0; d < kMaxRolloutDepth; ++d) {
+    // Hoisted out of the loop condition: it is a virtual call whose answer cannot change
+    // during a playout, and this loop is the hottest in the search.
+    const int maxDepth = game->maxPlayoutDepth();
+    ++stats.rollouts;
+    for (int d = 0; d < maxDepth; ++d) {
         if (game->isTerminal()) {
+            ++stats.terminalRollouts;
             break;
         }
         auto moves = game->getLegalMoves();
@@ -133,9 +141,10 @@ MctsNode* robustChild(const MctsNode& node) {
     return best;
 }
 
-void growTree(MctsNode& root, double expFactor, int rootPlayer, std::mt19937_64& rng) {
+void growTree(MctsNode& root, double expFactor, int rootPlayer, std::mt19937_64& rng,
+              AbsGame::SearchStats& stats) {
     MctsNode* selected = treePolicy(root, expFactor, rootPlayer, rng);
-    double    reward   = rollout(*selected, rootPlayer, rng);
+    double    reward   = rollout(*selected, rootPlayer, rng, stats);
     backup(selected, reward);
 }
 
@@ -144,19 +153,28 @@ void growTree(MctsNode& root, double expFactor, int rootPlayer, std::mt19937_64&
 // ── Searcher::mcts ────────────────────────────────────────────────────────────
 namespace AbsGame {
 
-MoveId Searcher::mcts(const Game& game, int seconds) {
+MoveId Searcher::mcts(const Game& game, int seconds, SearchStats* stats) {
     using Clock = std::chrono::steady_clock;
     const auto deadline = Clock::now() + std::chrono::seconds(seconds);
 
     int             rootPlayer = game.currentPlayer();
     std::mt19937_64 rng(std::random_device{}());
 
+    // Counted locally and handed back at the end, so nothing is shared between two
+    // searches running at once on different threads.
+    SearchStats local;
+
     auto root = std::make_unique<MctsNode>(game.clone(), kPass, nullptr);
     ensureMoves(*root);
-    if (root->moves.empty()) return kPass;
+    if (root->moves.empty()) {
+        if (stats) { *stats = local; }
+        return kPass;
+    }
 
     while (Clock::now() < deadline)
-        growTree(*root, kUctExpFactor, rootPlayer, rng);
+        growTree(*root, kUctExpFactor, rootPlayer, rng, local);
+
+    if (stats) { *stats = local; }
 
     MctsNode* rc = robustChild(*root);
     return rc ? rc->incomingMove : kPass;
