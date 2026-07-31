@@ -309,13 +309,11 @@ void Game::moveAndCapture(std::vector<Cell>& b, int from, int to, int me,
     // Custodial capture: each enemy Free disc adjacent to the moved disc that is
     // now pinned by my Free discs flips to Bound (immobilised, not removed).
     const int opp = 1 - me;
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int tr = to / columns_;
     const int tc = to % columns_;
     for (int k = 0; k < 4; ++k) {
-        const int nr = tr + dr[k];
-        const int nc = tc + dc[k];
+        const int nr = tr + kDRow[k];
+        const int nc = tc + kDColumn[k];
         if (!inBounds(nr, nc)) {
             continue;
         }
@@ -339,35 +337,31 @@ void Game::applyRemoveMoveCapturesTo(std::vector<Cell>& b, int removeSquare,
 
 void Game::collectSlides(const std::vector<Cell>& b, int from,
                          std::vector<bool>& reach) const {
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int fr = from / columns_;
     const int fc = from % columns_;
     for (int k = 0; k < 4; ++k) {
-        int r = fr + dr[k];
-        int c = fc + dc[k];
+        int r = fr + kDRow[k];
+        int c = fc + kDColumn[k];
         // Stop at the first occupied square: a disc of EITHER colour blocks the ray, and
         // is not itself a destination -- there is no capture by displacement in this
         // rule set, only custodial capture resolved after the move lands.
         while (inBounds(r, c) && b[static_cast<std::size_t>(idx(r, c))] == Cell::Empty) {
             reach[static_cast<std::size_t>(idx(r, c))] = true;
-            r += dr[k];
-            c += dc[k];
+            r += kDRow[k];
+            c += kDColumn[k];
         }
     }
 }
 
 void Game::collectLeaps(const std::vector<Cell>& b, int pos, std::vector<bool>& leapt,
                         std::vector<bool>& reach, int me) const {
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int pr = pos / columns_;
     const int pc = pos % columns_;
     for (int k = 0; k < 4; ++k) {
-        const int mr = pr + dr[k];
-        const int mc = pc + dc[k];      // disc to leap over
-        const int lr = pr + 2 * dr[k];
-        const int lc = pc + 2 * dc[k];  // landing square
+        const int mr = pr + kDRow[k];
+        const int mc = pc + kDColumn[k];      // disc to leap over
+        const int lr = pr + 2 * kDRow[k];
+        const int lc = pc + 2 * kDColumn[k];  // landing square
         if (!inBounds(mr, mc) || !inBounds(lr, lc)) {
             continue;
         }
@@ -390,13 +384,11 @@ std::vector<bool> Game::reachableMask(const std::vector<Cell>& b, int from, int 
         collectSlides(b, from, reach);
         return reach;  // the slide subsumes the step; leaps do not exist in this rule set
     }
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int fr = from / columns_;
     const int fc = from % columns_;
     for (int k = 0; k < 4; ++k) {  // single orthogonal step onto an empty square
-        const int nr = fr + dr[k];
-        const int nc = fc + dc[k];
+        const int nr = fr + kDRow[k];
+        const int nc = fc + kDColumn[k];
         if (inBounds(nr, nc) && b[static_cast<std::size_t>(idx(nr, nc))] == Cell::Empty) {
             reach[static_cast<std::size_t>(idx(nr, nc))] = true;
         }
@@ -435,15 +427,13 @@ bool Game::findLeapPath(const std::vector<Cell>& b, int pos, int to,
     if (pos == to) {
         return true;
     }
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int pr = pos / columns_;
     const int pc = pos % columns_;
     for (int k = 0; k < 4; ++k) {
-        const int mr = pr + dr[k];
-        const int mc = pc + dc[k];
-        const int lr = pr + 2 * dr[k];
-        const int lc = pc + 2 * dc[k];
+        const int mr = pr + kDRow[k];
+        const int mc = pc + kDColumn[k];
+        const int lr = pr + 2 * kDRow[k];
+        const int lc = pc + 2 * kDColumn[k];
         if (!inBounds(mr, mc) || !inBounds(lr, lc)) {
             continue;
         }
@@ -550,13 +540,11 @@ bool Game::isLegalPlacement(int square) const {
         return false;
     }
     // (b) Capturing an enemy: any adjacent enemy Free disc the placement would pin.
-    const int dr[4] = {-1, 1, 0, 0};
-    const int dc[4] = {0, 0, -1, 1};
     const int r = square / columns_;
     const int c = square % columns_;
     for (int k = 0; k < 4; ++k) {
-        const int nr = r + dr[k];
-        const int nc = c + dc[k];
+        const int nr = r + kDRow[k];
+        const int nc = c + kDColumn[k];
         if (!inBounds(nr, nc)) {
             continue;
         }

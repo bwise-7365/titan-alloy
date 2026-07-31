@@ -15,9 +15,13 @@ GameMainWindow::GameMainWindow(QWidget* parent) : QMainWindow(parent) {
     });
 }
 
+bool GameMainWindow::canStartSearch() {
+    const AbsGame::Game* game = currentGame();
+    return game && !game->isTerminal() && !search().isSearching() && !extraSearchBlock();
+}
+
 void GameMainWindow::startPlay(SearchController::Params params, int turns) {
-    if (!currentGame() || currentGame()->isTerminal()
-        || search().isSearching() || extraSearchBlock()) {
+    if (!canStartSearch()) {
         return;
     }
     search().beginTurnRun(turns);
@@ -63,10 +67,10 @@ void GameMainWindow::maybeComputerMove() {
     if (!versusActive_) {
         return;
     }
-    AbsGame::Game* game = currentGame();
-    if (!game || game->isTerminal() || search().isSearching() || extraSearchBlock()) {
+    if (!canStartSearch()) {
         return;
     }
+    AbsGame::Game* game = currentGame();
     if (game->currentPlayer() == versusHumanSide_) {
         return;  // the human's turn: wait for a board move
     }

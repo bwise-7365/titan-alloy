@@ -36,19 +36,9 @@ Srgb valueForLuminance(double hueDeg, double sat, double targetL) {
 
 } // namespace
 
-double clampUnit(double v) {
-    if (v < 0.0) {
-        return 0.0;
-    }
-    if (v > 1.0) {
-        return 1.0;
-    }
-    return v;
-}
-
 Srgb realizeAtLuminance(double hueDeg, double targetL, double maxSat) {
-    const double target = clampUnit(targetL);
-    const double cap = clampUnit(maxSat);
+    const double target = std::clamp(targetL, 0.0, 1.0);
+    const double cap = std::clamp(maxSat, 0.0, 1.0);
     constexpr int kSatSteps = 24;
 
     // Scan saturation from the cap downward; the highest saturation whose full
@@ -96,10 +86,10 @@ Palette completeFromPieces(const Srgb& p1, const Srgb& p2, Harmony t,
         const double shiftedHi = std::max(l1, l2) + 0.05; // lighter piece
         if (targetBgL <= 0.0) {
             // Lightest dark-side background still at the floor (binds darker piece).
-            targetBgL = clampUnit(shiftedLo / floor - 0.05);
+            targetBgL = std::clamp(shiftedLo / floor - 0.05, 0.0, 1.0);
         } else if (targetBgL >= 1.0) {
             // Darkest light-side background still at the floor (binds lighter piece).
-            targetBgL = clampUnit(floor * shiftedHi - 0.05);
+            targetBgL = std::clamp(floor * shiftedHi - 0.05, 0.0, 1.0);
         }
     }
 

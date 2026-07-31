@@ -22,16 +22,6 @@ void requireUnit(double v, const char* what) {
     }
 }
 
-double clampUnit(double v) {
-    if (v < 0.0) {
-        return 0.0;
-    }
-    if (v > 1.0) {
-        return 1.0;
-    }
-    return v;
-}
-
 struct Vec3 {
     double x;
     double y;
@@ -105,7 +95,8 @@ Srgb rybToSrgb(const Ryb& v) {
     requireUnit(v.r, "Ryb.r outside [0,1]");
     requireUnit(v.y, "Ryb.y outside [0,1]");
     requireUnit(v.b, "Ryb.b outside [0,1]");
-    const Vec3 c = forwardCube(clampUnit(v.r), clampUnit(v.y), clampUnit(v.b));
+    const Vec3 c = forwardCube(std::clamp(v.r, 0.0, 1.0), std::clamp(v.y, 0.0, 1.0),
+                               std::clamp(v.b, 0.0, 1.0));
     return Srgb{c.x, c.y, c.z};
 }
 
@@ -113,9 +104,9 @@ Ryb srgbToRyb(const Srgb& c) {
     requireUnit(c.r, "Srgb.r outside [0,1]");
     requireUnit(c.g, "Srgb.g outside [0,1]");
     requireUnit(c.b, "Srgb.b outside [0,1]");
-    const double tx = clampUnit(c.r);
-    const double ty = clampUnit(c.g);
-    const double tz = clampUnit(c.b);
+    const double tx = std::clamp(c.r, 0.0, 1.0);
+    const double ty = std::clamp(c.g, 0.0, 1.0);
+    const double tz = std::clamp(c.b, 0.0, 1.0);
 
     // Levenberg-Marquardt inversion of the forward trilinear cube: find the RYB
     // in [0,1]^3 whose forward map best matches the target sRGB. For colors in
@@ -183,9 +174,9 @@ Ryb srgbToRyb(const Srgb& c) {
         if (!solve3x3(a, g, d)) {
             break;
         }
-        const double nr = clampUnit(r - d[0]);
-        const double ny = clampUnit(y - d[1]);
-        const double nb = clampUnit(b - d[2]);
+        const double nr = std::clamp(r - d[0], 0.0, 1.0);
+        const double ny = std::clamp(y - d[1], 0.0, 1.0);
+        const double nb = std::clamp(b - d[2], 0.0, 1.0);
         const double nc = cost(nr, ny, nb);
         if (nc < curCost) {
             r = nr;
@@ -204,8 +195,8 @@ Ryb srgbToRyb(const Srgb& c) {
 Ryb hsvRybToRyb(const HsvRyb& h) {
     requireUnit(h.sat, "HsvRyb.sat outside [0,1]");
     requireUnit(h.val, "HsvRyb.val outside [0,1]");
-    const double sat = clampUnit(h.sat);
-    const double val = clampUnit(h.val);
+    const double sat = std::clamp(h.sat, 0.0, 1.0);
+    const double val = std::clamp(h.val, 0.0, 1.0);
 
     double hue = std::fmod(h.hueDeg, kFullCircleDeg);
     if (hue < 0.0) {
@@ -245,9 +236,9 @@ HsvRyb rybToHsvRyb(const Ryb& v) {
     requireUnit(v.r, "Ryb.r outside [0,1]");
     requireUnit(v.y, "Ryb.y outside [0,1]");
     requireUnit(v.b, "Ryb.b outside [0,1]");
-    const double r = clampUnit(v.r);
-    const double y = clampUnit(v.y);
-    const double b = clampUnit(v.b);
+    const double r = std::clamp(v.r, 0.0, 1.0);
+    const double y = std::clamp(v.y, 0.0, 1.0);
+    const double b = std::clamp(v.b, 0.0, 1.0);
 
     const double mx = std::max(std::max(r, y), b);
     const double mn = std::min(std::min(r, y), b);

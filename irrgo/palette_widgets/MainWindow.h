@@ -39,6 +39,12 @@ private:
     void updateInputVisibility();
     void setSwatch(QLabel* swatch, const QColor& color);
 
+    // Shared body of the three input-colour pickers, which differ only in which member
+    // they write, which swatch they tint and which controller setter they feed. Prompts
+    // with `title`; on a valid choice, updates all three and recomputes the palette.
+    void pickInputColor(QColor& target, QLabel* swatch, const QString& title,
+                        void (PaletteController::*setter)(const palette::Srgb&));
+
     PaletteController* controller_ = nullptr;
 
     QRadioButton* modeBackground_ = nullptr;

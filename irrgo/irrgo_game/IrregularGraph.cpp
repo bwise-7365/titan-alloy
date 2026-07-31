@@ -89,7 +89,7 @@ bool IrregularGraph::canAddEdge(int a, int b) const {
 }
 
 IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
-    : m_(m), n_(n), maxDegree_(maxDegree),
+    : maxDegree_(maxDegree),
       baseRows_(expandGrid(m)), baseCols_(expandGrid(n))
 {
     seed_ = seed;

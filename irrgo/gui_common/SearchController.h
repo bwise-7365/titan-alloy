@@ -25,21 +25,23 @@ class SearchController : public QObject {
 public:
     enum class Algorithm { NegaMax, Mcts };
 
+    // The iterative-deepening ceiling handed to Searcher::bestMove. High enough that no
+    // search reaches it before its clock runs out, so it bounds recursion rather than
+    // effort. One definition, rather than one per game window.
+    static constexpr int kNegamaxDepthCeiling = 64;
+
     struct Params {
         Algorithm algo = Algorithm::NegaMax;
         int depth = 1;              // NegaMax search depth
         int seconds = 0;            // MCTS time budget
         int negamaxTimeMs = 10000;  // NegaMax wall-clock cap (matches the old code)
-        // Which of the two NegaMax budgets actually bounds the search, and therefore
-        // what the progress bar can honestly show. A depth-budgeted search (irrgo,
-        // mancala) finishes when it finishes: negamaxTimeMs is only a backstop, and
-        // drawing a fraction of it would be a progress bar that lies. A time-budgeted
-        // one (latrunculi, whose depth is just an iterative-deepening ceiling) runs the
-        // clock out every time, so elapsed/budget is exactly its progress.
-        //
-        // The caller has to say which it is: `depth` and `negamaxTimeMs` are both always
-        // set to something, so there is nothing here to infer it from.
-        bool negamaxTimeBudgeted = false;
+
+        // The two searches the GUIs actually launch. Both are bounded by a wall clock --
+        // NegaMax deepens until the clock stops it, MCTS spends its whole budget -- so
+        // the search bar can always show a true elapsed fraction rather than a sweep.
+        // Building Params field by field meant restating that at all fourteen call sites.
+        static Params negamaxTimed(int seconds);
+        static Params mctsTimed(int seconds);
     };
 
     explicit SearchController(QObject* parent = nullptr);

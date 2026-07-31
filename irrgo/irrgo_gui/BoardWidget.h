@@ -46,6 +46,10 @@ protected:
 private:
     void updateTransform();
 
+    // Refill neighborhoodSizes_ from the graph. Called only when the graph or the
+    // radius changes -- the counts are a property of the board, not of a repaint.
+    void refreshNeighborhoodSizes();
+
     // Shared helper: draws a stone-sized disc with a colored border.
     // nodeId is used to select the texture variant; -1 → variant 0.
     void paintStoneBordered(QPainter& p, QPointF pt,
@@ -68,6 +72,10 @@ private:
     bool    showNeighborhoodSize_ = false;
     bool    showLabels_           = false;
     QTimer* confirmTimer_    = nullptr;
+
+    // Node-id-indexed neighbourhood counts for the current graph at dvrRadius_.
+    // Empty when there is no game.
+    std::vector<int> neighborhoodSizes_;
 
     // Texture stone images: source (full-res) and scaled to current stoneR_
     bool useTexture_ = false;

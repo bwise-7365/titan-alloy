@@ -220,37 +220,31 @@ void MainWindow::onModeChanged() {
     controller_->recompute();
 }
 
-void MainWindow::onPickBackground() {
-    const QColor c = QColorDialog::getColor(backgroundColor_, this, "Background color");
+void MainWindow::pickInputColor(QColor& target, QLabel* swatch, const QString& title,
+                                void (PaletteController::*setter)(const palette::Srgb&)) {
+    const QColor c = QColorDialog::getColor(target, this, title);
     if (!c.isValid()) {
         return;
     }
-    backgroundColor_ = c;
-    setSwatch(inputBackground_, c);
-    controller_->setBackgroundColor(toSrgb(c));
+    target = c;
+    setSwatch(swatch, c);
+    (controller_->*setter)(toSrgb(c));
     controller_->recompute();
+}
+
+void MainWindow::onPickBackground() {
+    pickInputColor(backgroundColor_, inputBackground_, "Background color",
+                   &PaletteController::setBackgroundColor);
 }
 
 void MainWindow::onPickPiece1() {
-    const QColor c = QColorDialog::getColor(piece1Color_, this, "Piece 1 color");
-    if (!c.isValid()) {
-        return;
-    }
-    piece1Color_ = c;
-    setSwatch(inputPiece1_, c);
-    controller_->setPiece1Color(toSrgb(c));
-    controller_->recompute();
+    pickInputColor(piece1Color_, inputPiece1_, "Piece 1 color",
+                   &PaletteController::setPiece1Color);
 }
 
 void MainWindow::onPickPiece2() {
-    const QColor c = QColorDialog::getColor(piece2Color_, this, "Piece 2 color");
-    if (!c.isValid()) {
-        return;
-    }
-    piece2Color_ = c;
-    setSwatch(inputPiece2_, c);
-    controller_->setPiece2Color(toSrgb(c));
-    controller_->recompute();
+    pickInputColor(piece2Color_, inputPiece2_, "Piece 2 color",
+                   &PaletteController::setPiece2Color);
 }
 
 void MainWindow::onHarmonyChanged(int index) {

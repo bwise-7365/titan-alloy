@@ -21,10 +21,6 @@
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
-// Iterative-deepening ceiling for NegaMax. The clock is what actually stops the search;
-// this only has to be past any depth the budget could reach, so it never binds.
-static constexpr int kMaxNegamaxDepth = 64;
-
 static const guicommon::MctsOption kMctsOptions[] = {
     {  1, "1 sec" }, {  2, "2 sec" }, {  5, "5 sec" },
     {  10, "10 sec" }, {  30, "30 sec" }, {  60, "60 sec" },
@@ -306,20 +302,15 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
-    // The clock bounds this search, so the search bar shows the elapsed fraction.
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playNegamaxSecCombo_->currentData().toInt());
     startPlay(p, playTurnsSpin_->value());
 }
 
 void MainWindow::onPlayMctsGo() {
     endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = playMctsSecCombo_->currentData().toInt();
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        playMctsSecCombo_->currentData().toInt());
     startPlay(p, playMctsTurnsSpin_->value());
 }
 
@@ -329,26 +320,20 @@ void MainWindow::onPlayComputerGo() {
     if (!game_ || game_->isTerminal()) {
         return;
     }
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playComputerSecCombo_->currentData().toInt());
     const int humanSide = playComputerSideCombo_->currentData().toInt();
     beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching()) return;
+    if (!canStartSearch()) return;
 
     int cp      = game_->currentPlayer();
     int numPits = game_->numPits();
 
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        suggestNegamaxSecCombo_->currentData().toInt());
     search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
         if (mv >= 0) {
             int pitNum = (cp == 0) ? mv + 1 : mv - numPits;
@@ -361,14 +346,13 @@ void MainWindow::onSuggestNegamaxGo() {
 }
 
 void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching()) return;
+    if (!canStartSearch()) return;
 
     int cp      = game_->currentPlayer();
     int numPits = game_->numPits();
 
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = suggestMctsSecCombo_->currentData().toInt();
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        suggestMctsSecCombo_->currentData().toInt());
     search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
         if (mv >= 0) {
             int pitNum = (cp == 0) ? mv + 1 : mv - numPits;

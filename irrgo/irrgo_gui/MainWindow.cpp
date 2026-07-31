@@ -60,10 +60,6 @@ static const struct { QColor color; const char* label; } kBgColors[] = {
 static const int kMaxEdges[]       = { 3, 4, 5, 6 };
 static constexpr int kDefaultMaxEdgesIdx = 1; // value 4
 
-// Iterative-deepening ceiling for NegaMax. The clock is what actually stops the search;
-// this only has to be past any depth the budget could reach, so it never binds.
-static constexpr int kMaxNegamaxDepth = 64;
-
 static const guicommon::MctsOption kMctsOptions[] = {
     {  10, "10 sec"   },
     {  30, "30 sec"   },
@@ -609,19 +605,15 @@ void MainWindow::onWhitePass() {
 // ── NegaMax suggestion ────────────────────────────────────────────────────────
 
 void MainWindow::onSuggestGo() {
-    if (!game_ || game_->isGameOver() || search().isSearching() || stoneTimer_->isActive()) {
+    if (!canStartSearch()) {
         return;
     }
 
     bool isBlack = (game_->toMove() == Player::Black);
     int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
 
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
-    // The clock bounds this search, so the search bar shows the elapsed fraction.
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        suggestNegamaxSecCombo_->currentData().toInt());
     search().launch(game_->clone(), p, [this, isBlack, turn](AbsGame::MoveId mv, unsigned) {
         QString text;
         if (mv == AbsGame::kPass) {
@@ -639,16 +631,15 @@ void MainWindow::onSuggestGo() {
 }
 
 void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isGameOver() || search().isSearching()) {
+    if (!canStartSearch()) {
         return;
     }
 
     bool isBlack = (game_->toMove() == Player::Black);
     int  turn    = static_cast<int>(game_->moveHistory().size()) + 1;
 
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = suggestMctsSecCombo_->currentData().toInt();
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        suggestMctsSecCombo_->currentData().toInt());
     search().launch(game_->clone(), p, [this, isBlack, turn](AbsGame::MoveId mv, unsigned) {
         QString text;
         if (mv == AbsGame::kPass) {
@@ -680,19 +671,15 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;  // as in onSuggestGo: the clock bounds this search
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playNegamaxSecCombo_->currentData().toInt());
     startPlay(p, playTurnsSpin_->value());
 }
 
 void MainWindow::onPlayMctsGo() {
     endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo    = guicommon::SearchController::Algorithm::Mcts;
-    p.seconds = playMctsSecCombo_->currentData().toInt();
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        playMctsSecCombo_->currentData().toInt());
     startPlay(p, playMctsTurnsSpin_->value());
 }
 
@@ -702,11 +689,8 @@ void MainWindow::onPlayComputerGo() {
     if (!game_ || game_->isGameOver() || stoneTimer_->isActive()) {
         return;
     }
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playComputerSecCombo_->currentData().toInt());
     const int humanSide = playComputerSideCombo_->currentData().toInt();
     beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }

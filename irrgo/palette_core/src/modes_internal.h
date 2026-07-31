@@ -10,9 +10,6 @@
 namespace palette {
 namespace detail {
 
-// Clamp a value into [0,1].
-double clampUnit(double v);
-
 // Realize an sRGB color at hue `hueDeg` whose relative luminance is as close as
 // possible to `targetL`, using the MOST chroma that still reaches that
 // luminance but never exceeding `maxSat`. Drops chroma toward neutral when the

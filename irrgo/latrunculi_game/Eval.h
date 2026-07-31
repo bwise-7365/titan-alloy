@@ -43,6 +43,19 @@ inline Cell boundCell(int player) {
     return (player == 0) ? Cell::P0Bound : Cell::P1Bound;
 }
 
+// ── Orthogonal neighbour offsets (shared by Game.cpp and Eval.cpp) ───────────
+
+// The four orthogonal directions, in one fixed order. Custodial capture, movement,
+// reachability and every neighbour scan index this table; a local copy that reordered
+// or extended it would disagree with the others without saying so.
+inline constexpr int kDRow[4] = {-1, 1, 0, 0};
+inline constexpr int kDColumn[4] = {0, 0, -1, 1};
+
+// One representative direction per orthogonal AXIS, for scans that must visit each axis
+// once rather than each direction twice (a pin is a property of an axis, not a direction).
+inline constexpr int kAxisDRow[2] = {1, 0};
+inline constexpr int kAxisDColumn[2] = {0, 1};
+
 // ── Positional features ──────────────────────────────────────────────────────
 
 // Positional features of one side, counted over a board arrangement. All four are

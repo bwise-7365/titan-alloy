@@ -32,6 +32,13 @@ protected:
     // An extra reason a search must not start (e.g. an ongoing setup animation).
     virtual bool extraSearchBlock() const { return false; }
 
+    // The single "may a search start right now" test: there is a game, it is not over,
+    // no search is already running, and the game reports no extra block. Every slot that
+    // launches a search -- Play, human-vs-computer, Suggest -- asks this rather than
+    // restating the four terms, so a new blocking condition is added in one place
+    // (extraSearchBlock) instead of being threaded through every slot in every game.
+    bool canStartSearch();
+
     // Lets a derived window supply one auto-play ply itself instead of searching for it:
     // return true and set `mv`, and startPlay() plays that move and carries on with the
     // turn run exactly as if a search had produced it. Latrunculi uses this for the

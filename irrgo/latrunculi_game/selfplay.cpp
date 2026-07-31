@@ -72,26 +72,22 @@ void write_position_png(const Latrunculi::Game& game, const gb::BoardSpec& look,
     render_svg_to_png(gb::generate_position_svg(look, pieces, config, style), frame_name(frame));
 }
 
-// Chess-like notation matching the SVG edge labels: column letter 'A'+col, row
-// number with 1 at the bottom. (Mirrors games::board::square_to_notation.)
-std::string notate(int square, int rows, int columns) {
-    const int column = square % columns;
-    const int row = square / columns;
-    std::string out(1, static_cast<char>('A' + column));
-    out += std::to_string(rows - row);
-    return out;
-}
-
 std::string format_move(const Latrunculi::Move& m, int rows, int columns) {
+    // Chess-like notation matching the SVG edge labels comes from the grid library
+    // itself (gb::square_to_notation), so the move log and the rendered board can
+    // never disagree about what a square is called.
+    const auto notate = [rows, columns](int square) {
+        return gb::square_to_notation(square, rows, columns);
+    };
     const char side = (m.player == 0) ? 'A' : 'B';  // A = side_a (player 0), B = side_b
     std::string out = std::to_string(m.turn) + ". " + side + ": ";
     if (m.from < 0) {
-        out += "place " + notate(m.to, rows, columns);
+        out += "place " + notate(m.to);
     } else {
         // from -> landing -> ... -> to (a slide is two squares; a multi-leap lists
         // each landing so the leapt-over squares are implied between them).
         if (m.path.empty()) {
-            out += notate(m.from, rows, columns) + " -> " + notate(m.to, rows, columns);
+            out += notate(m.from) + " -> " + notate(m.to);
         } else {
             bool first = true;
             for (int sq : m.path) {
@@ -99,11 +95,11 @@ std::string format_move(const Latrunculi::Move& m, int rows, int columns) {
                     out += " -> ";
                 }
                 first = false;
-                out += notate(sq, rows, columns);
+                out += notate(sq);
             }
         }
         if (m.removed >= 0) {
-            out += "  (remove " + notate(m.removed, rows, columns) + ")";
+            out += "  (remove " + notate(m.removed) + ")";
         }
     }
     return out;

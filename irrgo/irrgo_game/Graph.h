@@ -22,6 +22,14 @@ public:
     const std::vector<Node>& nodes() const { return nodes_; }
     uint64_t seed() const { return seed_; }
 
+    // For each node, in node-id order, the number of nodes (itself included) lying
+    // within Manhattan distance `radius` on the base grid. A pure function of the
+    // graph's shape and the radius -- it does not read game state -- so a caller that
+    // redraws repeatedly computes it once and keeps the result until the graph or the
+    // radius changes. Throws std::invalid_argument if radius is negative, rather than
+    // returning a board's worth of zeroes.
+    std::vector<int> neighborhoodSizes(int radius) const;
+
     virtual std::string asciiRepresentation() const = 0;
 
 protected:

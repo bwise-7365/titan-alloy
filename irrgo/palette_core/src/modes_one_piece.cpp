@@ -1,6 +1,8 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
 
+#include <algorithm>
+
 #include "palette/modes.h"
 #include "modes_internal.h"
 #include "palette/conversion.h"
@@ -21,9 +23,9 @@ Palette fromOnePiece(const Srgb& piece1, Harmony t, const Constraints& c) {
     double target2 = l1;
     if (c.allowPieceLuminanceSpread) {
         if (l1 <= 0.5) {
-            target2 = detail::clampUnit(l1 + 0.20);
+            target2 = std::clamp(l1 + 0.20, 0.0, 1.0);
         } else {
-            target2 = detail::clampUnit(l1 - 0.20);
+            target2 = std::clamp(l1 - 0.20, 0.0, 1.0);
         }
     }
 

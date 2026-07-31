@@ -101,18 +101,16 @@ bool canOccupy(const std::vector<Cell>& cells, int rows, int columns, int square
     const int row = square / columns;
     const int column = square % columns;
     const Cell mine = freeCell(player);
-    const int dRow[4] = {-1, 1, 0, 0};
-    const int dColumn[4] = {0, 0, -1, 1};
     for (int k = 0; k < 4; ++k) {
-        int nRow = row + dRow[k];
-        int nColumn = column + dColumn[k];
+        int nRow = row + kDRow[k];
+        int nColumn = column + kDColumn[k];
         if (style == MoveStyle::Slide) {
             // Walk to the first occupied square on this ray: only that disc could slide
             // in, and only if it is mine.
             while (inBounds(nRow, nColumn, rows, columns) &&
                    cells[index(nRow, nColumn, columns)] == Cell::Empty) {
-                nRow += dRow[k];
-                nColumn += dColumn[k];
+                nRow += kDRow[k];
+                nColumn += kDColumn[k];
             }
         }
         if (!inBounds(nRow, nColumn, rows, columns)) {
@@ -130,11 +128,9 @@ bool canOccupy(const std::vector<Cell>& cells, int rows, int columns, int square
 bool isThreatened(const std::vector<Cell>& cells, int rows, int columns,
                   int row, int column, int player, MoveStyle style) {
     const Cell flanker = freeCell(player);
-    const int dRow[2] = {1, 0};
-    const int dColumn[2] = {0, 1};
     for (int k = 0; k < 2; ++k) {
         const int completion = halfPinCompletion(cells, rows, columns, row, column,
-                                                 dRow[k], dColumn[k], flanker);
+                                                 kAxisDRow[k], kAxisDColumn[k], flanker);
         if (completion >= 0 &&
             canOccupy(cells, rows, columns, completion, player, style)) {
             return true;
@@ -145,12 +141,10 @@ bool isThreatened(const std::vector<Cell>& cells, int rows, int columns,
 
 int emptyNeighbours(const std::vector<Cell>& cells, int rows, int columns,
                     int row, int column) {
-    const int dRow[4] = {-1, 1, 0, 0};
-    const int dColumn[4] = {0, 0, -1, 1};
     int count = 0;
     for (int k = 0; k < 4; ++k) {
-        const int nRow = row + dRow[k];
-        const int nColumn = column + dColumn[k];
+        const int nRow = row + kDRow[k];
+        const int nColumn = column + kDColumn[k];
         if (!inBounds(nRow, nColumn, rows, columns)) {
             continue;
         }
@@ -166,17 +160,15 @@ int emptyNeighbours(const std::vector<Cell>& cells, int rows, int columns,
 // Game::collectSlides -- if that blocking rule changes, this must change with it.
 int slideDestinations(const std::vector<Cell>& cells, int rows, int columns,
                       int row, int column) {
-    const int dRow[4] = {-1, 1, 0, 0};
-    const int dColumn[4] = {0, 0, -1, 1};
     int count = 0;
     for (int k = 0; k < 4; ++k) {
-        int nRow = row + dRow[k];
-        int nColumn = column + dColumn[k];
+        int nRow = row + kDRow[k];
+        int nColumn = column + kDColumn[k];
         while (inBounds(nRow, nColumn, rows, columns) &&
                cells[index(nRow, nColumn, columns)] == Cell::Empty) {
             ++count;
-            nRow += dRow[k];
-            nColumn += dColumn[k];
+            nRow += kDRow[k];
+            nColumn += kDColumn[k];
         }
     }
     return count;

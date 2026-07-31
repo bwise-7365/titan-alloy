@@ -41,11 +41,6 @@ namespace gb = games::board;
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
-// Ceiling for iterative deepening. The wall-clock budget from the NegaMax menu is what
-// actually stops the search; this only bounds the loop if a position is so shallow that
-// every depth completes, which cannot happen on a real board.
-static constexpr int kMaxNegamaxDepth = 64;
-
 static const guicommon::TimeOption kTimeOptions[] = {
     {  5, "5 sec"  },
     {  10, "10 sec"  },{ 15, "15 sec" },
@@ -183,9 +178,8 @@ MainWindow::MainWindow(QWidget* parent) : guicommon::GameMainWindow(parent) {
     registerPlayback(playback_, moveList_);
 
     buildMenuBar();
-    resize(1430, 970); // 1175x760 looks nice, 1380x992 shows 40 moves
-    // 1430, 990
-    // 2149, 1496
+    // Other sizes tried: 1175x760 reads nicely, 1380x992 shows 40 moves at once,
+    // 1430x970 and 2149x1496 for large displays.
     resize(835, 505);
 
     newGame(latgui::kStartRows, latgui::kStartColumns, latgui::kStartPerSide,
@@ -322,8 +316,8 @@ void MainWindow::buildMenuBar() {
         search().cancelSearch();
     });
     {
-        // NegaMax is iterative-deepening and budgeted by time; kMaxNegamaxDepth is only
-        // the ceiling the clock almost never lets it reach.
+        // NegaMax is iterative-deepening and budgeted by time; the depth ceiling
+        // (SearchController::kNegamaxDepthCeiling) is one the clock never lets it reach.
         guicommon::TimeMenuConfig nm{kTimeOptions, std::size(kTimeOptions), true, 1, 200, 4};
         auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
                                                       playNegamaxSecCombo_, playTurnsSpin_);
@@ -564,13 +558,8 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 
 void MainWindow::onPlayNegamaxGo() {
     endVersus();  // auto-play drives both sides; drop any human-vs-computer game
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playNegamaxSecCombo_->currentData().toInt() * 1000;
-    // The clock bounds this search, not kMaxNegamaxDepth, so the search bar can show the
-    // real elapsed fraction instead of sweeping.
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playNegamaxSecCombo_->currentData().toInt());
     startPlay(p, playTurnsSpin_->value());
 }
 
@@ -580,24 +569,18 @@ void MainWindow::onPlayComputerGo() {
     if (!game_ || game_->isTerminal() || seeding()) {
         return;
     }
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = playComputerSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playComputerSecCombo_->currentData().toInt());
     const int humanSide = playComputerSideCombo_->currentData().toInt();
     beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
-    if (!game_ || game_->isTerminal() || search().isSearching() || seeding()) {
+    if (!canStartSearch()) {
         return;
     }
-    guicommon::SearchController::Params p;
-    p.algo          = guicommon::SearchController::Algorithm::NegaMax;
-    p.depth         = kMaxNegamaxDepth;
-    p.negamaxTimeMs = suggestNegamaxSecCombo_->currentData().toInt() * 1000;
-    p.negamaxTimeBudgeted = true;  // as in onPlayNegamaxGo: the clock bounds this search
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        suggestNegamaxSecCombo_->currentData().toInt());
     search().launch(game_->clone(), p, [this](AbsGame::MoveId mv, unsigned) {
         if (mv < 0) {
             suggestedLog_->setText("(no move)");
@@ -608,22 +591,23 @@ void MainWindow::onSuggestNegamaxGo() {
     });
 }
 
-void MainWindow::onPickColorA() {
-    const QColor c = QColorDialog::getColor(colorA_, this, "Side A color");
+// The two side-colour slots differ only in which member they write, so they share this.
+// The background picker does not: it drives a different board setter and no swatch.
+void MainWindow::pickSideColor(QColor& target, const QString& title) {
+    const QColor c = QColorDialog::getColor(target, this, title);
     if (c.isValid()) {
-        colorA_ = c;
+        target = c;
         boardWidget_->setSideColors(colorA_, colorB_);
         updateSwatches();
     }
 }
 
+void MainWindow::onPickColorA() {
+    pickSideColor(colorA_, "Side A color");
+}
+
 void MainWindow::onPickColorB() {
-    const QColor c = QColorDialog::getColor(colorB_, this, "Side B color");
-    if (c.isValid()) {
-        colorB_ = c;
-        boardWidget_->setSideColors(colorA_, colorB_);
-        updateSwatches();
-    }
+    pickSideColor(colorB_, "Side B color");
 }
 
 void MainWindow::onPickBackground() {

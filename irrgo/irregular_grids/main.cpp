@@ -67,6 +67,10 @@ int main() {
         };
         apply_draw_defaults(board);  // disc, outline, outer box, X-mark
 
+        // The seeds are reported here rather than by the generator: the library performs
+        // no I/O, and the caller is the one that chose them and can reproduce a run.
+        std::cerr << "Render seed: " << render_seed
+                  << ", Board seed: " << board_seed << '\n';
         write_file("board.svg", generate_board_svg(board, config, style));
 
         // An EXPLICIT position (what a game renders from its own state): pieces at

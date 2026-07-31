@@ -6,6 +6,7 @@
 #include "AbsGame.h"
 #include "utils.h"
 
+#include <bit>
 #include <chrono>
 #include <cstdint>
 
@@ -19,7 +20,7 @@ uint64_t msRandom() {
     const microseconds ms =
         duration_cast<microseconds>(system_clock::now().time_since_epoch());
     uint64_t s2 = static_cast<uint64_t>(ms.count());  // microseconds since the Unix epoch
-    s2 = rotr(s2, 3);  // roll some low-order bits up to the top
+    s2 = std::rotr(s2, 3);  // roll some low-order bits up to the top
     return qTrans(s2);
 }
 

@@ -113,7 +113,16 @@ void BoardWidget::setGame(const IrrGo::Game* game) {
     showLabels_           = false;
     confirmTimer_->stop();
     updateTransform();
+    refreshNeighborhoodSizes();
     update();
+}
+
+void BoardWidget::refreshNeighborhoodSizes() {
+    if (!game_) {
+        neighborhoodSizes_.clear();
+        return;
+    }
+    neighborhoodSizes_ = game_->graph().neighborhoodSizes(dvrRadius_);
 }
 
 void BoardWidget::setSuggestion(int nodeId, bool isBlack) {
@@ -144,6 +153,7 @@ void BoardWidget::setShowWhiteDvr(bool show) {
 
 void BoardWidget::setDvrRadius(int r) {
     dvrRadius_ = r;
+    refreshNeighborhoodSizes();
     update();
 }
 
@@ -378,23 +388,24 @@ void BoardWidget::paintEvent(QPaintEvent*) {
             p.drawText(textRect, Qt::AlignCenter, QString::fromStdString(nd.label));
         }
     } else if (showNeighborhoodSize_) {
-        // For each node, count neighbours within Manhattan distance <= dvrRadius_
-        int radius = dvrRadius_;
+        // Counts come from IrrGo::Graph::neighborhoodSizes(), computed once per graph
+        // or radius change (see refreshNeighborhoodSizes) rather than per repaint. The
+        // size check catches a graph swapped in without going through setGame: refill
+        // rather than index a stale vector.
+        if (neighborhoodSizes_.size() != nodes.size()) {
+            refreshNeighborhoodSizes();
+        }
         QFont f = p.font();
         f.setPixelSize(qBound(8, qRound(stoneR_ * 0.95f), 18));
         f.setBold(true);
         p.setFont(f);
         p.setPen(Qt::white);
         for (const auto& nd : nodes) {
-            int count = 0;
-            for (const auto& other : nodes)
-                if (qAbs(other.row - nd.row) + qAbs(other.col - nd.col) <= radius) {
-                    ++count;
-                }
             QPointF pt = toWidget(nd.x, nd.y);
             QRectF textRect(pt.x() - stoneR_, pt.y() - stoneR_,
                             stoneR_ * 2.0f, stoneR_ * 2.0f);
-            p.drawText(textRect, Qt::AlignCenter, QString::number(count));
+            p.drawText(textRect, Qt::AlignCenter,
+                       QString::number(neighborhoodSizes_[nd.id]));
         }
     } else {
         // DVR overlay — drawn before stones so occupied intersections stay clean

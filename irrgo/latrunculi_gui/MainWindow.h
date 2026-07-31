@@ -71,6 +71,9 @@ private:
     double selectedKomi() const;
     void stopSeed();                     // halt any running seed animation
     bool seeding() const;                // true while the seed timer is active
+    // Shared body of the two side-colour pickers: prompt with `title`, and on a valid
+    // choice write it into `target` and push both side colours to the board.
+    void pickSideColor(QColor& target, const QString& title);
     void updateSwatches();               // recolor the side A/B tally squares
     void refreshBoard();                 // board update + controls + tallies
     void afterMoveApplied();             // common tail once a move is applied to game_

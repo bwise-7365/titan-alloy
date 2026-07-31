@@ -11,17 +11,33 @@ namespace guicommon {
 
 namespace {
 
-// The wall clock the search will actually run out, in milliseconds, or 0 when it has none
-// and the bar can only sweep. MCTS always spends its whole budget; NegaMax does so only
-// when the clock is what bounds it rather than the depth (see Params::negamaxTimeBudgeted).
+// The wall clock the search will actually run out, in milliseconds. Both algorithms have
+// one: MCTS spends its whole budget, and NegaMax deepens until the clock stops it (its
+// depth is only a ceiling, see Params::kNegamaxDepthCeiling). So the bar always has a
+// real fraction to draw.
 int searchBudgetMsOf(const SearchController::Params& p) {
     if (p.algo == SearchController::Algorithm::Mcts) {
         return p.seconds * 1000;
     }
-    return p.negamaxTimeBudgeted ? p.negamaxTimeMs : 0;
+    return p.negamaxTimeMs;
 }
 
 }  // namespace
+
+SearchController::Params SearchController::Params::negamaxTimed(int seconds) {
+    Params p;
+    p.algo          = Algorithm::NegaMax;
+    p.depth         = kNegamaxDepthCeiling;
+    p.negamaxTimeMs = seconds * 1000;
+    return p;
+}
+
+SearchController::Params SearchController::Params::mctsTimed(int seconds) {
+    Params p;
+    p.algo    = Algorithm::Mcts;
+    p.seconds = seconds;
+    return p;
+}
 
 SearchController::SearchController(QObject* parent) : QObject(parent) {
     searchBarTimer_ = new QTimer(this);

@@ -15,7 +15,7 @@ public:
     std::string asciiRepresentation() const override;
 
 private:
-    int m_, n_, maxDegree_;
+    int maxDegree_;
     int baseRows_, baseCols_;
     std::vector<std::pair<int,int>> edges_;
     static int expandGrid(int n);

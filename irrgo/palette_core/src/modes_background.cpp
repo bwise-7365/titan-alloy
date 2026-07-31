@@ -1,5 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 
+#include <algorithm>
+
 #include "palette/modes.h"
 #include "modes_internal.h"
 #include "palette/conversion.h"
@@ -33,13 +35,13 @@ Palette fromBackground(const Srgb& background, Harmony t, const Constraints& c) 
     double target1 = 0.0;
     double target2 = 0.0;
     if (canLighter && canDarker && spread) {
-        target1 = detail::clampUnit(lighterL); // one lighter
-        target2 = detail::clampUnit(darkerL);  // one darker
+        target1 = std::clamp(lighterL, 0.0, 1.0); // one lighter
+        target2 = std::clamp(darkerL, 0.0, 1.0);  // one darker
     } else if (canLighter) {
-        target1 = detail::clampUnit(lighterL);
+        target1 = std::clamp(lighterL, 0.0, 1.0);
         target2 = target1;
     } else if (canDarker) {
-        target1 = detail::clampUnit(darkerL);
+        target1 = std::clamp(darkerL, 0.0, 1.0);
         target2 = target1;
     } else {
         target1 = 1.0; // very high floor: best effort, pieces as light as possible

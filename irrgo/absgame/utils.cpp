@@ -22,23 +22,5 @@ namespace AbsGame {
         return (s + a) * ((n * s) + c);
     }
 
-    uint64_t rotl(const uint64_t x, unsigned int n) {
-        uint64_t z = x;
-        n = n % kWordLen;
-        if (0 != n) {
-            z = (x << n) | (x >> (kWordLen - n));
-        }
-        return z;
-    }
-
-    uint64_t rotr(const uint64_t x, unsigned int n) {
-        uint64_t z = x;
-        n = n % kWordLen;
-        if (0 != n) {
-            z = (x >> n) | (x << (kWordLen - n));
-        }
-        return z;
-    }
-
 } // namespace AbsGame
 // Copyright Ben Paul Wise. All Rights Reserved.

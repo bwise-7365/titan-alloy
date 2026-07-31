@@ -18,7 +18,7 @@ namespace {
 // move triggers) and the sort is stable, so a game that does not override the hook
 // scores every move 0 and keeps getLegalMoves() order untouched.
 std::vector<MoveId> orderedMoves(const Game& game) {
-    const std::vector<MoveId> legal = game.getLegalMoves();
+    std::vector<MoveId> legal = game.getLegalMoves();
 
     std::vector<std::pair<int, MoveId>> scored;
     scored.reserve(legal.size());
@@ -30,12 +30,12 @@ std::vector<MoveId> orderedMoves(const Game& game) {
                          return a.first > b.first;
                      });
 
-    std::vector<MoveId> ordered;
-    ordered.reserve(scored.size());
-    for (const std::pair<int, MoveId>& entry : scored) {
-        ordered.push_back(entry.second);
+    // Write the ranking back over `legal` rather than allocating a third vector:
+    // this runs once per negamax node.
+    for (std::size_t i = 0; i < scored.size(); ++i) {
+        legal[i] = scored[i].second;
     }
-    return ordered;
+    return legal;
 }
 
 } // anonymous namespace
@@ -78,7 +78,6 @@ double Searcher::negaMax(const Game& game, int depth, double alpha, double beta,
 }
 
 MoveId Searcher::bestMove(const Game& game, int depth, int timeLimitMs) {
-    terminalCount = 0;
     const TimePoint deadline = Clock::now() + std::chrono::milliseconds(timeLimitMs);
 
     std::vector<MoveId> rootMoves = orderedMoves(game);

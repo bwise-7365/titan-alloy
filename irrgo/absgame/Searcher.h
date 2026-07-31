@@ -14,18 +14,10 @@ public:
     // partially-scored move list. Returns kPass only when there are no legal moves.
     static MoveId bestMove(const Game& game, int depth, int timeLimitMs = 5000);
 
-    // Returns the best move via MCTS-UCT (node-budget variant).
-    // nodeMin: minimum iterations before convergence check.
-    // nodeMax: hard budget limit.
-    static MoveId mcts(const Game& game, int nodeMin, int nodeMax);
-
     // Returns the best move via MCTS-UCT (time-budget variant).
     // Runs growTree iterations for the given number of seconds, then returns
     // the robust child (most-visited).
     static MoveId mcts(const Game& game, int seconds);
-
-
-    static int terminalCount;
 
 private:
     // `aborted` is set true when the deadline fires. The returned score is then

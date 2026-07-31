@@ -14,7 +14,6 @@
 #include <string_view>
 #include <utility>
 
-#include <cstdio>  // printf seed diagnostic
 
 namespace games::board {
 
@@ -634,10 +633,8 @@ std::string generate_board_svg(const BoardSpec& board, const RenderConfig& confi
     // Two independent engines: the board engine (board.seed) fixes the layout --
     // which squares are occupied by which color -- while the render engine
     // (config.seed) drives all the hand-scratched noise (disc shapes, the X). The
-    // two seeds can be varied independently, both from main.cpp.
-    printf("Render seed: %llu, Board seed: %llu\n", // same order as main.cpp
-           static_cast<unsigned long long>(config.seed),
-           static_cast<unsigned long long>(board.seed));
+    // two seeds can be varied independently, both from main.cpp, which is also where
+    // they are reported: this library performs no I/O (see irregular_grid.h).
     std::mt19937_64 board_engine(board.seed);
     std::mt19937_64 render_engine(config.seed);
     const std::vector<int> squares = choose_squares(square_count, requested, board_engine);
