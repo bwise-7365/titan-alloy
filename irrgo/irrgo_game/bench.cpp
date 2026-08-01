@@ -103,6 +103,13 @@
 
 namespace {
 
+    // based on 85 runs of MCTS with 15-second lookahead
+    // (mean 12200 terminal positions reached per move)
+    // there were 49.4 +/- 5.3 % wins for W with 0.5 komi,
+    // and the same with zero komi,
+    // and 50.6 +/- 5.3 % wins for W with 1.5 komi.
+    // so 0.5 seems most reasonable: it is basically
+    // even to begin with, and a tie goes to W.
 struct Options {
     int games = 10;
     int secsPerMove = 10;
@@ -111,7 +118,7 @@ struct Options {
     int cols = 13;
     bool irregular = true;
     int maxDegree = 4;
-    double komi = 1.5;
+    double komi = 0.5;
     int maxPlies = 0;  // 0 = derive from the node count
     int threads = 1;
     unsigned mbLevel = 0;
@@ -130,7 +137,7 @@ std::string usage() {
         "    rows, cols board size                                     (default 9, 13)\n"
         "    irregular  y | n -- hand-scratched graph or square grid   (default y)\n"
         "    maxdeg     max edges per node, irregular boards only      (default 4)\n"
-        "    komi       points added to White                          (default 1.5)\n"
+        "    komi       points added to White                          (default 0.5)\n"
         "    maxplies   ply cap per game; exceeding it is an error     (default 0 = 8x nodes)\n"
         "    threads    games played in parallel, one game per thread  (default 1)\n"
         "    xml        y | n -- save each finished game as XML        (default n)\n"
@@ -298,7 +305,7 @@ void saveGameXml(const IrrGo::Game& game, const IrrGo::Graph& graph,
 //
 // Measured over the first nodeCount/2 plies rather than the whole game, because the two
 // ends of a game are not comparable: the opening has the most options and the fewest
-// finished playouts, while an endgame with three legal moves left terminates almost every
+// finished playouts, while an endgame with only a few legal moves left terminates every
 // playout. Averaging over a long endgame tail would report a healthy number for a search
 // that saw nothing during the part of the game that decides it.
 struct WindowStats {
