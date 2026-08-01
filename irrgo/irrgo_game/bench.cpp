@@ -105,7 +105,7 @@ namespace {
 
 struct Options {
     int games = 10;
-    int secsPerMove = 5;
+    int secsPerMove = 10;
     std::uint64_t seed = 0;
     int rows = 9;
     int cols = 13;
@@ -125,7 +125,7 @@ std::string usage() {
     return
         "Usage: irrgo_bench [key=value ...] [--mb <level> <fsmb>]\n"
         "    games      number of games to play                       (default 10)\n"
-        "    secs       MCTS budget per move, in seconds               (default 5)\n"
+        "    secs       MCTS budget per move, in seconds               (default 10)\n"
         "    seed       base RNG seed; 0 means clock-derived           (default 0)\n"
         "    rows, cols board size                                     (default 9, 13)\n"
         "    irregular  y | n -- hand-scratched graph or square grid   (default y)\n"
