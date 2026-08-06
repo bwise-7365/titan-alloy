@@ -363,6 +363,35 @@ order $n^{2} p$; and in genomics, where the counts of predictors are far larger,
 field moved to variational methods because sampling was too slow for the size of
 modern arrays.
 
+\subsection{What happened when it was run at two hundred variables}
+\label{sec:mixingevidence}
+
+The companion work ran the plain George and McCulloch sampler on a problem of two
+hundred variables, forty thousand cells of which $2573$ are occupied, and eighty
+quarters of data. It was run at four lengths, twice at each from different random
+numbers.
+
+\input{examples/tab_mixing}
+
+It has not converged at any of these lengths. Every quantity is still moving toward
+the truth as the run lengthens, and two chains begun from different random numbers
+still disagree about several thousand cells, with individual inclusion probabilities
+differing by almost one. That is not a sampler settled about an answer; it is one
+still travelling toward it.
+
+It is also slowing down. Counting the falsely occupied cells in excess of the truth,
+each doubling of the run removes about $450$ of them between four and eight thousand
+sweeps, about $280$ between eight and twenty thousand, and about $210$ between twenty
+and sixty thousand. Fitting a power of the run length to those four points gives an
+exponent near $-0.27$, on which the excess would fall to a few dozen cells only after
+some thousands of millions of sweeps. Four points are a thin basis for judging the
+convergence of a Markov chain and the figure should not be taken literally, but the
+direction of it is not in doubt.
+
+At sixty thousand sweeps, three times the length of the longest published application
+of the method and on a problem sixty-seven times larger, the sampler still occupies
+about $1280$ cells that should be empty.
+
 \subsection{What this means for the comparison}
 
 The implementation used here is the textbook one. Nothing found suggests it is

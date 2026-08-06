@@ -336,7 +336,44 @@ order $n^2p$; and in genomics, where the predictor counts are far larger, the fi
 moved to variational Bayes and evolutionary stochastic search because MCMC was too
 slow for the size of modern SNP chips.
 
-### 4.5 What this means for the comparison
+### 4.5 What happened when it was run at two hundred variables
+
+The companion work ran the plain George–McCulloch sampler on a 200 × 200 problem with
+40,000 cells, of which 2573 are occupied, and 80 quarters of data. It was run at four
+lengths, twice at each from different random numbers
+(`examples/large_ssvs_mix.py`, `examples/large_ssvs_mix.txt`):
+
+| draws | burn | chain | M | correct | false | missed | chains disagree on |
+|---|---|---|---|---|---|---|---|
+| 4,000 | 1,000 | 1 | 4820 | 2135 | 2685 | 438 | |
+| 4,000 | 1,000 | 2 | 4725 | 2159 | 2566 | 414 | 5503 cells |
+| 8,000 | 2,000 | 1 | 4481 | 2193 | 2288 | 380 | |
+| 8,000 | 2,000 | 2 | 4165 | 2250 | 1915 | 323 | 4424 cells |
+| 20,000 | 5,000 | 1 | 4019 | 2274 | 1745 | 299 | |
+| 20,000 | 5,000 | 2 | 3891 | 2290 | 1601 | 283 | 3518 cells |
+| 60,000 | 15,000 | 1 | 3647 | 2348 | 1299 | 225 | |
+| 60,000 | 15,000 | 2 | 3602 | 2342 | 1260 | 231 | 2721 cells |
+
+**It has not converged at any of these lengths.** Every quantity is still moving
+toward the truth as the run lengthens, and two chains started from different random
+numbers still disagree about several thousand cells, with individual inclusion
+probabilities differing by almost one. That is not a sampler settled around an answer;
+it is one still travelling toward it.
+
+It is also decelerating. Counting the falsely occupied cells in excess of the truth,
+each doubling of the run removes about 450 of them between four and eight thousand
+sweeps, about 280 between eight and twenty thousand, and about 210 between twenty and
+sixty thousand. Fitting a power of the run length to the four points gives an exponent
+near −0.27, on which the excess would fall to a few dozen cells only after some
+thousands of millions of sweeps. Four points are a thin basis for judging the
+convergence of a Markov chain and that figure should not be taken literally, but the
+direction is not in doubt.
+
+At 60,000 sweeps — three times the length of the longest published application, on a
+problem 67 times larger — the sampler still occupies about 1280 cells that should be
+empty.
+
+### 4.6 What this means for the comparison
 
 Stated fairly:
 

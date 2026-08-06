@@ -137,20 +137,27 @@ does; it works at realistic scale; it equals the best competitor; it is a criter
 and not a rule of thumb; and the failures it did show were failures of search, which
 have been repaired.
 
-## One judgement to confirm
+## Where the sampler material went — settled
 
 The failure of stochastic search variable selection to converge at two hundred
-variables has been left out of the arc above. It was a large part of the work — four
-run lengths, two chains at each, and a literature search establishing that the largest
-published application of the method carries 595 coefficients against forty thousand
-here — but it says more about the state of that literature than about this criterion,
-and carrying it in the results is part of what buries the verdict.
+variables is deliberately absent from the arc above. It was a large part of the work —
+four run lengths, two chains at each, and a literature search establishing that the
+largest published application of the method carries 595 coefficients against forty
+thousand here — but it says more about the state of that literature than about this
+criterion, and carrying it in the results is part of what buries the verdict.
 
-Three places it could go, in order of preference:
+**It now lives in `literature-review.md` and `literature-review.tex`**, alongside the
+published problem sizes and the theory on mixing, which is where a reader who wants it
+will look for it. The successor document should refer to it in one sentence and no
+more, along these lines:
 
-1. Section 5, as a short statement that the obvious Bayesian competitor could not be
-   assessed at this size within any affordable computation, and that this is a
-   statement about a fixed amount of computing rather than about the method.
-2. The literature review, which already carries the published sizes and the theory on
-   mixing, leaving the paper to cite it in one sentence.
-3. Dropped from the paper altogether.
+> The Bayesian method closest to this one could not be assessed at this size. The
+> sampler had not converged after sixty thousand sweeps, and the largest published
+> application of it carries 595 coefficients against forty thousand here; the evidence
+> is set out in the accompanying review.
+
+That sentence belongs in Section 4, immediately after key 24 records the exact tie at
+nine variables, so that the reader learns why the comparison stops there and is not
+left wondering. It is a statement about a fixed amount of computing and not about the
+method, and it should be worded so that nobody can read it as a claim that the method
+fails.
