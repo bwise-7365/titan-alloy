@@ -94,10 +94,17 @@ void EditSiteEntry::onResetClicked() {
         m_userIdEdit->setText(m_entry->UserID);
         m_passwordEdit->setText(m_entry->Password);
         m_commentEdit->setText(m_entry->Comment);
+
+        m_titleEdit->home(false);
+        m_siteEdit->home(false);
+        m_userIdEdit->home(false);
+        m_passwordEdit->home(false);
+        m_commentEdit->home(false);
     }
 }
 
 void EditSiteEntry::onSuggestClicked() {
     m_passwordEdit->setText(PasswordGenerator::generate(m_suggestedLength, m_pwMode));
+    m_passwordEdit->home(false);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

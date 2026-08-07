@@ -42,16 +42,19 @@ private slots:
     void onSortSites();
     void onPreferences();
     void onChangeMasterPassphrase();
+    void onToggleTheme();
     // Help
     void onAbout();
     void onUsage();
     // list / find
+    void onFindTextChanged(const QString& text);
     void onFindReturnPressed();
     void onItemDoubleClicked();
     void onCopyPassword();
     void onListContextMenu(const QPoint& pos);
-    // security
+    // security & timers
     void onIdleTimeout();
+    void onClipTimerTick();
 
 private:
     void setupMenus();
@@ -75,13 +78,17 @@ private:
     QLineEdit* m_fileLineEdit = nullptr;
     QLabel* m_passphraseTile = nullptr;
     QLabel* m_changesTile = nullptr;
+    QLabel* m_clipboardTile = nullptr;
     QTimer* m_idleTimer = nullptr;
+    QTimer* m_clipTimer = nullptr;
 
     SiteDatabase m_db;
     Preferences m_prefs;
 
     QString m_lastSearch;
     int m_lastFoundRow = -1;
+    int m_clipRemainingSecs = 0;
+    bool m_darkMode = false;
     bool m_idleQuitting = false;
 };
 

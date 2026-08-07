@@ -4,7 +4,9 @@
 #include <vector>
 
 #include <QByteArray>
+#include <QFile>
 #include <QString>
+#include <QTemporaryDir>
 
 #include "PasswordStore.h"
 #include "PasswordGenerator.h"
@@ -99,5 +101,38 @@ TEST(Store, GeneratorLengthAndAlphabet) {
     const QString set = PasswordGenerator::alphabet(PasswordGenerator::Mode::UcLcDds);
     for (const QChar ch : pw)
         EXPECT_TRUE(set.contains(ch));
+}
+
+TEST(Store, SaveFileCreatesBackupAndAtomicFile) {
+    QTemporaryDir tempDir;
+    ASSERT_TRUE(tempDir.isValid());
+
+    const QString path = tempDir.filePath("test_db.sbc");
+    const QString bakPath = path + ".bak";
+    const auto entries1 = sampleEntries();
+
+    // First save: file created, no .bak yet
+    saveFile(path, "pass1", entries1);
+    EXPECT_TRUE(QFile::exists(path));
+    EXPECT_FALSE(QFile::exists(bakPath));
+
+    const auto loaded1 = openFile(path, "pass1");
+    ASSERT_EQ(loaded1.size(), entries1.size());
+
+    // Second save: update database and verify .bak is created holding pass1 data
+    std::vector<SiteEntry> entries2 = entries1;
+    entries2.push_back(makeEntry("GitHub", "https://github.com", "user", "secret", "note"));
+    saveFile(path, "pass2", entries2);
+
+    EXPECT_TRUE(QFile::exists(path));
+    EXPECT_TRUE(QFile::exists(bakPath));
+
+    // Verify main file has pass2 / entries2
+    const auto loaded2 = openFile(path, "pass2");
+    ASSERT_EQ(loaded2.size(), entries2.size());
+
+    // Verify backup file has pass1 / entries1
+    const auto loadedBak = openFile(bakPath, "pass1");
+    ASSERT_EQ(loadedBak.size(), entries1.size());
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

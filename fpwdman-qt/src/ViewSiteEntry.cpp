@@ -28,6 +28,8 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
     auto createReadOnlyField = [&](const QString& label, const QString& value) {
         auto* lineEdit = new QLineEdit(value, this);
         lineEdit->setReadOnly(true);
+        lineEdit->setFocusPolicy(Qt::StrongFocus);
+        lineEdit->home(false);
         formLayout->addRow(label + ":", lineEdit);
         return lineEdit;
     };

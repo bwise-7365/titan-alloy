@@ -39,9 +39,16 @@ MainWindow::MainWindow(const QString& initialPath, QWidget* parent) : QMainWindo
     resize(280, 380);
 
     loadPreferences();
+    qApp->setStyleSheet(ui::Theme::styleSheet(m_darkMode));
+
     setupMenus();
     setupCentralWidget();
     updateStatusTiles();
+
+    // Clipboard countdown timer
+    m_clipTimer = new QTimer(this);
+    m_clipTimer->setSingleShot(true);
+    connect(m_clipTimer, &QTimer::timeout, this, &MainWindow::onClipTimerTick);
 
     // Idle auto-close: reset on any user activity, fire once after the timeout.
     m_idleTimer = new QTimer(this);
@@ -95,9 +102,11 @@ void MainWindow::setupMenus() {
     QAction* sortAction = toolsMenu->addAction(tr("&Sort Sites"));
     QAction* prefsAction = toolsMenu->addAction(tr("&Preferences ..."));
     QAction* changeMpAction = toolsMenu->addAction(tr("&Change Master Passphrase ..."));
+    QAction* toggleThemeAction = toolsMenu->addAction(tr("Toggle Theme (Dark/Light)"));
     connect(sortAction, &QAction::triggered, this, &MainWindow::onSortSites);
     connect(prefsAction, &QAction::triggered, this, &MainWindow::onPreferences);
     connect(changeMpAction, &QAction::triggered, this, &MainWindow::onChangeMasterPassphrase);
+    connect(toggleThemeAction, &QAction::triggered, this, &MainWindow::onToggleTheme);
 
     QMenu* helpMenu = bar->addMenu(tr("&Help"));
     connect(helpMenu->addAction(tr("&About")), &QAction::triggered, this, &MainWindow::onAbout);
@@ -134,19 +143,22 @@ void MainWindow::setupCentralWidget() {
     grid->addWidget(new QLabel(tr("File"), this), 1, 0);
     grid->addWidget(m_fileLineEdit, 1, 1);
 
-    const int tileSize = 18;
     m_passphraseTile = new QLabel(this);
-    m_passphraseTile->setFixedSize(tileSize, tileSize);
-    m_passphraseTile->setToolTip(tr("Master passphrase set?"));
+    m_passphraseTile->setToolTip(tr("Master passphrase status"));
     m_changesTile = new QLabel(this);
-    m_changesTile->setFixedSize(tileSize, tileSize);
-    m_changesTile->setToolTip(tr("Changes saved?"));
+    m_changesTile->setToolTip(tr("Unsaved changes status"));
     grid->addWidget(m_passphraseTile, 0, 2, Qt::AlignCenter);
     grid->addWidget(m_changesTile, 1, 2, Qt::AlignCenter);
+
+    m_clipboardTile = new QLabel(this);
+    m_clipboardTile->setToolTip(tr("Clipboard auto-clear countdown"));
+    m_clipboardTile->setVisible(false);
+    grid->addWidget(m_clipboardTile, 2, 0, 1, 3, Qt::AlignRight);
 
     grid->setColumnStretch(1, 1);
     mainLayout->addLayout(grid, 0);
 
+    connect(m_findLineEdit, &QLineEdit::textChanged, this, &MainWindow::onFindTextChanged);
     connect(m_findLineEdit, &QLineEdit::returnPressed, this, &MainWindow::onFindReturnPressed);
 
     setCentralWidget(container);
@@ -160,25 +172,33 @@ void MainWindow::refreshList(int selectRow) {
     m_list->clear();
     for (const auto& e : m_db.entries)
         m_list->addItem(e.Title);
-    if (selectRow >= 0 && selectRow < m_list->count())
+    onFindTextChanged(m_findLineEdit->text());
+    if (selectRow >= 0 && selectRow < m_list->count() && !m_list->item(selectRow)->isHidden())
         m_list->setCurrentRow(selectRow);
 }
 
 void MainWindow::updateStatusTiles() {
-    auto setTile = [](QLabel* tile, const char* color) {
-        tile->setStyleSheet(QString("background-color: %1; border: 1px solid gray;").arg(color));
-    };
+    if (!m_db.passphraseSet()) {
+        m_passphraseTile->setText(tr(" MP: None "));
+        m_passphraseTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#E53935")));
+    } else if (m_db.unsavedMpChange) {
+        m_passphraseTile->setText(tr(" MP: Unsaved "));
+        m_passphraseTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#FB8C00")));
+    } else {
+        m_passphraseTile->setText(tr(" MP: Set "));
+        m_passphraseTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#1E88E5")));
+    }
 
-    if (!m_db.passphraseSet())
-        setTile(m_passphraseTile, "red");
-    else if (m_db.unsavedMpChange)
-        setTile(m_passphraseTile, "orange");
-    else
-        setTile(m_passphraseTile, "blue");
-
-    setTile(m_changesTile, (m_db.unsavedChanges || m_db.unsavedMpChange) ? "red" : "blue");
+    if (m_db.unsavedChanges || m_db.unsavedMpChange) {
+        m_changesTile->setText(tr(" Unsaved "));
+        m_changesTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#E53935")));
+    } else {
+        m_changesTile->setText(tr(" Saved "));
+        m_changesTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#43A047")));
+    }
 
     m_fileLineEdit->setText(m_db.filePath.isEmpty() ? tr("(unsaved)") : m_db.filePath);
+    m_fileLineEdit->home(false);
 }
 
 void MainWindow::markDirty() {
@@ -389,6 +409,7 @@ void MainWindow::loadPreferences() {
     m_prefs.minMasterLength = settings.value("minMasterLength", d.minMasterLength).toInt();
     m_prefs.clipboardClearSeconds =
         settings.value("clipboardClearSeconds", d.clipboardClearSeconds).toInt();
+    m_darkMode = settings.value("darkMode", false).toBool();
     settings.endGroup();
 }
 
@@ -401,6 +422,7 @@ void MainWindow::savePreferences() const {
     settings.setValue("suggestedSiteLength", m_prefs.suggestedSiteLength);
     settings.setValue("minMasterLength", m_prefs.minMasterLength);
     settings.setValue("clipboardClearSeconds", m_prefs.clipboardClearSeconds);
+    settings.setValue("darkMode", m_darkMode);
     settings.endGroup();
 }
 
@@ -431,7 +453,9 @@ void MainWindow::onChangeMasterPassphrase() {
 void MainWindow::onAbout() {
     QMessageBox::about(
         this, tr("About fpwdman-qt"),
-        tr("<b>fpwdman-qt</b><br>A Qt password manager.<br><br>"
+        tr("<b>fpwdman-qt</b><br>"
+           "Copyright &copy; Ben Paul Wise. All Rights Reserved.<br><br>"
+           "A Qt password manager.<br><br>"
            "Reads legacy SBC-encrypted (.sbc) files and writes a modern, salted, "
            "authenticated container. Each entry holds a title, site, user ID, "
            "password, and comments."));
@@ -451,6 +475,25 @@ void MainWindow::onUsage() {
 // ---------------------------------------------------------------------------
 // List / find / clipboard
 // ---------------------------------------------------------------------------
+
+void MainWindow::onFindTextChanged(const QString& text) {
+    const int total = static_cast<int>(m_db.entries.size());
+    for (int i = 0; i < total && i < m_list->count(); ++i) {
+        if (text.isEmpty()) {
+            m_list->item(i)->setHidden(false);
+        } else {
+            const SiteEntry& e = m_db.entries[i];
+            bool hit = e.Title.contains(text, Qt::CaseInsensitive);
+            if (!hit && m_prefs.searchFullEntry) {
+                hit = e.Site.contains(text, Qt::CaseInsensitive) ||
+                      e.UserID.contains(text, Qt::CaseInsensitive) ||
+                      e.Password.contains(text, Qt::CaseInsensitive) ||
+                      e.Comment.contains(text, Qt::CaseInsensitive);
+            }
+            m_list->item(i)->setHidden(!hit);
+        }
+    }
+}
 
 void MainWindow::onFindReturnPressed() {
     const QString term = m_findLineEdit->text();
@@ -499,6 +542,37 @@ void MainWindow::onCopyPassword() {
     if (!entry)
         return;
     cliputil::copySensitive(entry->Password, m_prefs.clipboardClearSeconds * 1000);
+    m_clipRemainingSecs = m_prefs.clipboardClearSeconds;
+    if (m_clipRemainingSecs > 0) {
+        m_clipboardTile->setText(tr(" Clipboard: %1s ").arg(m_clipRemainingSecs));
+        m_clipboardTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#8E24AA")));
+        m_clipboardTile->setVisible(true);
+        if (m_clipTimer)
+            m_clipTimer->start(1000);
+    }
+}
+
+void MainWindow::onClipTimerTick() {
+    m_clipRemainingSecs--;
+    if (m_clipRemainingSecs > 0) {
+        m_clipboardTile->setText(tr(" Clipboard: %1s ").arg(m_clipRemainingSecs));
+        if (m_clipTimer)
+            m_clipTimer->start(1000);
+    } else {
+        m_clipboardTile->setText(tr(" Clipboard Cleared "));
+        m_clipboardTile->setStyleSheet(ui::Theme::badgeStyle(QStringLiteral("#757575")));
+        QTimer::singleShot(2000, this, [this]() {
+            if (m_clipRemainingSecs <= 0 && m_clipboardTile)
+                m_clipboardTile->setVisible(false);
+        });
+    }
+}
+
+void MainWindow::onToggleTheme() {
+    m_darkMode = !m_darkMode;
+    qApp->setStyleSheet(ui::Theme::styleSheet(m_darkMode));
+    updateStatusTiles();
+    savePreferences();
 }
 
 void MainWindow::onListContextMenu(const QPoint& pos) {
