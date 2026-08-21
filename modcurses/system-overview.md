@@ -60,8 +60,8 @@ verified by attaching to a live console and reading its screen buffer back.
 `TerminalIO` is the narrowest interface the rest of the library could be built
 on: report the screen size, wait for an event with an optional timeout, draw a
 run of same-styled glyphs at a position, move or hide the cursor, flush,
-redefine a colour, beep. Nine functions. Everything above it is written against
-those and nothing else.
+redefine a colour, beep. Eight functions. Everything above it is written
+against those and nothing else.
 
 That narrowness is the firewall. `CursesTerminal` is the only translation unit
 in the project that includes a curses header, and it does so through a private
