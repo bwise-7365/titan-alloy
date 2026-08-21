@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QList>
 #include <QRandomGenerator>
+#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -369,15 +370,24 @@ std::vector<SiteEntry> openFile(const QString& path, const QString& passphrase) 
 
 void saveFile(const QString& path, const QString& passphrase,
               const std::vector<SiteEntry>& entries) {
-    const QByteArray out = encodeModern(passphrase, entries);
-    QFile f(path);
-    if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        throw IoError(f.errorString());
-    if (f.write(out) != out.size()) {
-        f.close();
-        throw IoError(f.errorString());
+    // If the file already exists, create/overwrite a .bak backup prior to saving.
+    if (QFile::exists(path)) {
+        const QString bakPath = path + ".bak";
+        if (QFile::exists(bakPath))
+            QFile::remove(bakPath);
+        QFile::copy(path, bakPath);
     }
-    f.close();
+
+    const QByteArray out = encodeModern(passphrase, entries);
+    QSaveFile saveFile(path);
+    if (!saveFile.open(QIODevice::WriteOnly))
+        throw IoError(saveFile.errorString());
+    if (saveFile.write(out) != out.size()) {
+        saveFile.cancelWriting();
+        throw IoError(saveFile.errorString());
+    }
+    if (!saveFile.commit())
+        throw IoError(saveFile.errorString());
 }
 
 } // namespace pwstore
