@@ -1,0 +1,20 @@
+{
+  "name": "modcurses",
+  "version-string": "0.1.0",
+  "description": "A compact C++20 TUI library over ncursesw and PDCurses",
+  "$comment": [
+    "builtin-baseline pins the port versions this project resolves against.",
+    "It is not optional: a git-clone vcpkg instance (the one bundled with",
+    "Visual Studio, for example) refuses to touch ports without it, so the",
+    "build would work against one vcpkg on the machine and fail against",
+    "another depending only on which one VCPKG_ROOT happened to name.",
+    "Bumping this line is how you take newer ports, deliberately."
+  ],
+  "builtin-baseline": "45f9f39362a4c52e2b1fbe57b7e649db7f3d96d4",
+  "dependencies": [
+    {
+      "name": "pdcurses",
+      "platform": "windows"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+notepad 0.1.0 - A tiny terminal editor
+
+Usage: notepad [options] [<file>]
+
+Arguments:
+  file                  file to open
+
+Options:
+  -r, --readonly        open read-only
+  -t, --tabwidth <int>  tab width (default: 4)
+  -h, --help            show this help and exit
+  -V, --version         show the version and exit
