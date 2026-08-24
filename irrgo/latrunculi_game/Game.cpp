@@ -3,6 +3,7 @@
 #include "Game.h"
 
 #include "Eval.h"
+#include "PlacementEval.h"
 
 #include <algorithm>
 #include <array>
@@ -81,6 +82,13 @@ constexpr int    kRolloutSampleCap = 12;
 constexpr int kOrderDecisive = 10000;  // reduces the opponent to a single disc: a win
 constexpr int kOrderRemoval  = 10;     // per enemy disc permanently removed
 constexpr int kOrderBind     = 5;      // per enemy Free disc newly immobilised
+
+// Placement ordering scales the (double) placement-score difference to an int with
+// 0.001-disc resolution. Moves closer than that are as good as equal and fall back to
+// the stable sort's tie-break, the scan order -- which is the intended behavior. The
+// scale shares no axis with the kOrder* movement weights above: a node's siblings are
+// all one phase, so a placement score is never sorted against a movement score.
+constexpr int kPlacementOrderScale = 1000;
 
 // ── Zobrist keys (super-ko hashing) ─────────────────────────────────────────
 // One random 64-bit key per (square, cell state), Empty included, so a square's
@@ -211,12 +219,22 @@ Game::Game(int rows, int columns, int perSide, std::vector<Cell> board,
 }
 
 void Game::initScanOrder() {
+    // Clock-derived seed: a fresh random scan order for each new game. clone()
+    // copies scanOrder_, so a search sees the same order as the live game. A caller
+    // that needs the order reproducible calls reseedScanOrder with its own seed.
+    reseedScanOrder(AbsGame::makeSeed(0));
+}
+
+void Game::reseedScanOrder(std::uint64_t seed) {
     scanOrder_.resize(static_cast<std::size_t>(squares_));
     std::iota(scanOrder_.begin(), scanOrder_.end(), 0);
-    // Clock-derived seed: a fresh random scan order for each new game. clone()
-    // copies scanOrder_, so a search sees the same order as the live game.
-    std::mt19937_64 rng(AbsGame::makeSeed(0));
+    std::mt19937_64 rng(seed);
     std::shuffle(scanOrder_.begin(), scanOrder_.end(), rng);
+}
+
+void Game::setEvalWeights(const EvalWeights& weights) {
+    validateEvalWeights(weights);
+    evalWeights_ = weights;
 }
 
 // ── Counting ─────────────────────────────────────────────────────────────────
@@ -822,9 +840,31 @@ double Game::staticEval() const {
     // compensation can never outweigh a real win.
     const double material = effectiveMaterial(me) - effectiveMaterial(opp);
     const double positional =
-        positionalScore(positionalTerms(board_, rows_, columns_, me, moveStyle_)) -
-        positionalScore(positionalTerms(board_, rows_, columns_, opp, moveStyle_));
-    return material + positional;
+        positionalScore(positionalTerms(board_, rows_, columns_, me, moveStyle_),
+                        evalWeights_) -
+        positionalScore(positionalTerms(board_, rows_, columns_, opp, moveStyle_),
+                        evalWeights_);
+
+    // During placement the positional terms above are still thin -- they were built
+    // for the movement game -- so the placement-specific terms carry the load there:
+    // structural safety, seam-ramped en-prise penalties, and attack shape. See
+    // PlacementEval.h and doc/2026-08-24-latrunculi-placement-heuristics.md. Same
+    // antisymmetric me-minus-opponent form; each side's seam ramp runs on its own
+    // placement progress. perSide_ == 0 means the phase has no plies and no terms to
+    // score -- a degenerate but legal construction, not an error.
+    double placement = 0.0;
+    if (phase_ == Phase::Placement && perSide_ > 0) {
+        const double progressMe =
+            static_cast<double>(placed_[me]) / static_cast<double>(perSide_);
+        const double progressOpp =
+            static_cast<double>(placed_[opp]) / static_cast<double>(perSide_);
+        placement =
+            placementScore(placementTerms(board_, rows_, columns_, me, moveStyle_),
+                           progressMe, perSide_, evalWeights_) -
+            placementScore(placementTerms(board_, rows_, columns_, opp, moveStyle_),
+                           progressOpp, perSide_, evalWeights_);
+    }
+    return material + positional + placement;
 }
 
 std::unique_ptr<AbsGame::Game> Game::clone() const {
@@ -881,10 +921,34 @@ AbsGame::MoveId Game::chooseRolloutMove(const std::vector<AbsGame::MoveId>& lega
 // material the move takes from the opponent: resolve the move on a scratch board and
 // compare the opponent's disc counts before and after.
 int Game::moveOrderScore(AbsGame::MoveId mv) const {
-    // Placement can never capture, so there is nothing to order on; every placement
-    // scores 0 and the searcher's stable sort leaves enumeration order untouched.
+    // Placement can never capture, so there is no material to order on. Order on the
+    // placement heuristics instead: score the position AFTER placing on this square
+    // (the pre-move score is one constant across all siblings, so subtracting it would
+    // change nothing about the order). This is what lets iterative deepening's
+    // alpha-beta prune the up-to-~140-wide placement nodes, and it makes the searcher's
+    // discarded-iteration fallback -- the best-ORDERED root move -- a heuristically
+    // sound placement instead of the first square in scan order.
     if (phase_ != Phase::Movement) {
-        return 0;
+        if (perSide_ < 1) {
+            // No placements exist in a perSide == 0 game; nothing reaches here, but a
+            // caller probing anyway gets a neutral order rather than a bogus score.
+            return 0;
+        }
+        const int me = current_;
+        const int opp = 1 - me;
+        std::vector<Cell> b = board_;
+        b[static_cast<std::size_t>(mv)] = freeCell(me);
+        // The mover's progress advances by this placement; the opponent's does not.
+        const double progressMe =
+            static_cast<double>(placed_[me] + 1) / static_cast<double>(perSide_);
+        const double progressOpp =
+            static_cast<double>(placed_[opp]) / static_cast<double>(perSide_);
+        const double score =
+            placementScore(placementTerms(b, rows_, columns_, me, moveStyle_),
+                           progressMe, perSide_, evalWeights_) -
+            placementScore(placementTerms(b, rows_, columns_, opp, moveStyle_),
+                           progressOpp, perSide_, evalWeights_);
+        return static_cast<int>(std::lround(score * kPlacementOrderScale));
     }
 
     const int me = current_;

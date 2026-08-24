@@ -2,6 +2,7 @@
 #pragma once
 
 #include "AbsGame.h"
+#include "EvalWeights.h"
 
 #include <cstdint>
 #include <memory>
@@ -206,6 +207,26 @@ public:
     int boundDiscs(int player) const;
     const std::vector<Move>& history() const { return moveHistory_; }
 
+    // ── Evaluation weights ───────────────────────────────────────────────────
+    // The weight set staticEval and moveOrderScore evaluate with; defaults to
+    // EvalWeights{} (the engine's standard values). Deliberately settable at ANY time,
+    // mid-game included -- an exception to this class's construction-time immutability,
+    // and a safe one: weights feed only the two evaluation hooks, never legality,
+    // hashing, super-ko, or terminal detection, so no invariant can break. The A-vs-B
+    // bench depends on flipping them every ply (each side searches with its own set;
+    // clone() copies them, so a search tree inherits the mover's weights).
+    const EvalWeights& evalWeights() const { return evalWeights_; }
+    // Validates (validateEvalWeights) then stores; throws on non-finite values.
+    void setEvalWeights(const EvalWeights& weights);
+
+    // Rebuild the move-generation scan order from `seed`, deterministically. The
+    // constructor seeds it from the clock (fine for varied play), which makes
+    // equal-score tie-breaks differ run to run; a caller that promises reproducibility
+    // for a given seed -- the bench -- must call this right after construction. Scan
+    // order affects only the order equally-legal moves are enumerated in, never
+    // legality, hashing, or the game state itself.
+    void reseedScanOrder(std::uint64_t seed);
+
     // ── Move encoding (so the GUI can build a MoveId from board clicks) ───────
     // Placement: the MoveId is just the target square.
     AbsGame::MoveId placementMove(int square) const { return square; }
@@ -229,6 +250,7 @@ private:
     bool gameOver_ = false;
     int winner_ = -1;
     WinReason winReason_ = WinReason::None;
+    EvalWeights evalWeights_{};  // see evalWeights(); copied by clone()
     std::vector<Move> moveHistory_;
     // Super-ko: hashes of every end-of-turn board position seen this game. A move
     // that would recreate one is illegal. The board only (not the side to move) is

@@ -10,6 +10,67 @@ Not every experiment leaves its raw files here; the placement experiment below w
 summarised and its ten 10-game data files discarded, since it is unlikely to be rerun.
 The command line and seeds are recorded so it can be regenerated if that changes.
 
+## 2026-08-24 — placement heuristics: before/after
+
+The engine gained a placement-phase evaluation (`PlacementEval.h`: seven terms derived
+in `doc/2026-08-24-latrunculi-placement-heuristics.md`) wired into `staticEval` and,
+for the first time, into `moveOrderScore` during placement — which previously returned
+0 for every placement, leaving alpha-beta nothing to prune on for the first 40 plies.
+This run measures that change and nothing else: same command, same seeds, before
+(HEAD) and after (working tree). Raw outputs are the two
+`2026-08-24-bench-placement-*.txt` files here.
+
+10 games, 8x10x20, slide + convex, komi 1.5, policy placement, 1000 ms/ply, seed
+777001, 8 threads.
+
+| | before | after |
+|---|---|---|
+| mean opening depth | 3.43 | **3.60** |
+| mean captures | 27.6 | 30.6 |
+| quiet game | 9 (90%) | 9 (90%) |
+| decisive (reduction) | 1 (10%) | 1 (10%) |
+| mean dead tail | 36.0 | 36.0 |
+| games with a lead change | 3/10 | 4/10 |
+| mean peak margin | 4.4 | 3.4 |
+| mean final margin | 3.7 | 2.3 |
+| won by A / B | 5/5 | 3/7 |
+| wall clock | 244 s | 308 s |
+
+Findings:
+
+- **Opening search got deeper, and the gain is robust.** 3.43 -> 3.60 over the same
+  678 searched opening plies, and a second, independent 'after' run agreed to a
+  hundredth (3.61). The gain comes despite each placement node getting more expensive
+  — placement ordering now scores every candidate square — so ordering paid for its
+  own cost. This settles the question the change was made for, and leaves no case for
+  the deferred search-width cap.
+- **Capture activity edges up** (27.6 -> 30.6, and 30.8 in the second after-run):
+  placements now build the structures captures feed on.
+- **The quiet-game share is untouched.** 9/10 both sides, dead tail 36.0 both sides.
+  The placement heuristics alone, at untuned first-guess weights, do not fix the
+  movement-phase stall — as expected; that is what the weight-tuning campaign is for.
+
+Caveats:
+
+- **A first 'after' run was invalid and briefly looked spectacular.** The machine
+  hibernated ~80 minutes mid-run; `steady_clock` advanced through it, so the plies in
+  flight had their budgets destroyed and completed at trivial depth. That run showed
+  6/10 reductions, dead tail 16.0, quiet share 40% — retracted in full once a clean
+  rerun reproduced the before-run's 9/10 quiet endings. The lesson is quantitative: a
+  handful of depth-1 plies flipped half the outcomes at n=10. Clock noise is the
+  dominant noise source in these benches, and n=10 outcome shares should never be
+  read as signal.
+- The margin and A/B rows differ between the columns, but at n=10 they are noise (see
+  above, forcefully).
+
+Regenerate: build at the respective revision, then
+
+    latrunculi_bench games=10 ms=1000 seed=777001 threads=8
+
+(the after-revision also reseeds the move-generation scan order from the game seed —
+`Game::reseedScanOrder` — so its runs are seed-reproducible in a way the before
+revision's were not; see the reproducibility note in bench.cpp).
+
 ## 2026-07-22 (evening) — does searched placement create the first-player bias?
 
 The 2x2 below left player A winning above chance in every cell, unrelated to any change

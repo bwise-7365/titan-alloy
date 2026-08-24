@@ -34,6 +34,22 @@
 //     xml        y | n -- save each finished game as XML      (default n)
 //     xmldir     directory for the XML files                  (default ".")
 //
+//   A-vs-B mode (weight tuning; see BenchAb.h and tools/latrunculi-sweep.ps1):
+//
+//     pairs      mirrored pairs to play; giving this key turns A-vs-B mode ON and the
+//                run plays 2*pairs games. Mutually exclusive with games=. Each pair is
+//                two games from the same seed with the colors swapped, so the residual
+//                first-mover advantage cancels out of the set comparison.
+//     wA.<f>, wB.<f>
+//                override one field of weight set A / B, e.g. wA.threat=0.5
+//                wA.spearheadPairs=0.3. Unspecified fields keep the EvalWeights
+//                defaults, so candidate-vs-incumbent needs no wB.* at all. Unknown
+//                field names and non-finite values throw. Requires pairs=.
+//     csv        append one machine-readable summary line to this file (header written
+//                when the file does not exist), for the sweep driver. Requires pairs=.
+//
+//   Example:  latrunculi_bench pairs=40 ms=200 seed=777001 wA.threat=0.5 csv=r1.csv
+//
 //     --mb <n> <m>  memory block tracking: level n, first suspect block m. Spelled and
 //                   behaved exactly as in abzar's demo.cpp, including taking both
 //                   values together -- an FSMB is meaningless without the level it
@@ -41,13 +57,17 @@
 //                   always compiled in, so no rebuild is needed to use it; run with
 //                   `help` for the level descriptions. Default: no tracking.
 //
-// Game g uses seed base+g, and the seed follows the game index rather than the worker, so
-// threads= changes only how fast the run finishes and the order the rows appear in.
+// Classic mode: game g uses seed base+g. A-vs-B mode: game g uses seed base+(g/2), and
+// g%2 says which color set A holds. Either way the seed follows the game index rather
+// than the worker, so threads= changes only how fast the run finishes and the order the
+// rows appear in.
 //
-// Unlike irrgo_bench, this driver IS reproducible: NegaMax uses no random numbers, and
-// the only randomness in a game is the placement policy, which takes that seed. The one
-// caveat is the clock -- the search is time-budgeted, so a slower or busier machine
-// reaches a shallower depth and can therefore choose a different move.
+// Unlike irrgo_bench, this driver IS reproducible: NegaMax uses no random numbers, the
+// placement policy takes the game's seed, and the move-generation scan order -- which
+// the Game constructor seeds from the clock -- is reseeded here from the same game seed
+// (Game::reseedScanOrder), so equal-scored tie-breaks are also a function of the seed.
+// The one caveat is the clock -- the search is time-budgeted, so a slower or busier
+// machine reaches a shallower depth and can therefore choose a different move.
 //
 // DEPTH AND SRCHD: how deep iterative deepening actually got, averaged over the opening.
 // A move is chosen at the deepest iteration that COMPLETED -- one cut off by the deadline
@@ -73,6 +93,7 @@
 // the same command twice with different game counts -- say games=1 and games=10 -- and
 // compare: a real leak scales with the number of games, the iostream floor does not.
 
+#include "BenchAb.h"
 #include "Game.h"
 #include "GameStats.h"
 #include "GameXml.h"
@@ -80,6 +101,7 @@
 #include "PlacementPolicy.h"
 #include "Searcher.h"
 
+#include <array>
 #include <atomic>
 #include <cerrno>
 #include <chrono>
@@ -125,6 +147,15 @@ struct Options {
     bool saveXml = false;
     std::string xmlDir = ".";
     bool showHelp = false;
+
+    // A-vs-B mode (0 = classic self-play). When pairs > 0 the run plays 2*pairs games
+    // and `games` is derived, never given.
+    int pairs = 0;
+    Latrunculi::EvalWeights weightsA{};
+    Latrunculi::EvalWeights weightsB{};
+    std::string csvPath;
+
+    bool abMode() const { return pairs > 0; }
 };
 
 std::string usage() {
@@ -142,6 +173,10 @@ std::string usage() {
         "    threads    games played in parallel, one game per thread (default 1)\n"
         "    xml        y | n -- save each finished game as XML     (default n)\n"
         "    xmldir     directory for the XML files                 (default \".\")\n"
+        "  A-vs-B weight matches (see the header comment in bench.cpp):\n"
+        "    pairs      mirrored pairs to play (turns A-vs-B on; excludes games=)\n"
+        "    wA.<f>=x, wB.<f>=x   override one weight field of set A / set B\n"
+        "    csv        append one summary line to this file (requires pairs=)\n"
         + AbsGame::MemTrack::levelHelp();
 }
 
@@ -196,6 +231,8 @@ double numberOf(const std::string& what, const std::string& value) {
 // somebody weeks later.
 Options parseArgs(int argc, char** argv) {
     Options opt;
+    bool gamesGiven = false;
+    bool weightKeyGiven = false;
 
     // Fetch the argument following the flag at argv[idx], advancing idx. Guards against
     // reading argv[argc], as abzar's demo.cpp does for the same flag.
@@ -236,7 +273,23 @@ Options parseArgs(int argc, char** argv) {
                                         b + "\", got \"" + value + "\"");
         };
 
-        if (key == "games")          { opt.games = positiveIntOf(key, value); }
+        // A-vs-B weight overrides: wA.<field> / wB.<field>. The field name is validated
+        // by applyWeightKey (unknown names throw with the valid list), the value by
+        // validateEvalWeights after the loop.
+        if (key.size() > 3 && (key.compare(0, 3, "wA.") == 0 ||
+                               key.compare(0, 3, "wB.") == 0)) {
+            Latrunculi::EvalWeights& weights =
+                (key[1] == 'A') ? opt.weightsA : opt.weightsB;
+            Latrunculi::Bench::applyWeightKey(weights, key.substr(3),
+                                              numberOf(key, value));
+            weightKeyGiven = true;
+            continue;
+        }
+
+        if (key == "games")          { opt.games = positiveIntOf(key, value);
+                                       gamesGiven = true; }
+        else if (key == "pairs")     { opt.pairs = positiveIntOf(key, value); }
+        else if (key == "csv")       { opt.csvPath = value; }
         else if (key == "ms")        { opt.msPerPly = positiveIntOf(key, value); }
         // Two spellings of one budget, so this driver can be given a per-move time the
         // same way irrgo_bench is. Whichever appears last on the command line wins.
@@ -262,6 +315,25 @@ Options parseArgs(int argc, char** argv) {
         else {
             throw std::invalid_argument("bench: unknown option \"" + key + "\"");
         }
+    }
+
+    // A-vs-B consistency. Each rule guards a way a run could silently measure something
+    // other than what was asked for.
+    if (opt.abMode() && gamesGiven) {
+        throw std::invalid_argument(
+            "bench: pairs= and games= are mutually exclusive (pairs plays 2*pairs games)");
+    }
+    if (!opt.abMode() && weightKeyGiven) {
+        throw std::invalid_argument(
+            "bench: wA./wB. weight overrides require pairs= (no silent single-set run)");
+    }
+    if (!opt.abMode() && !opt.csvPath.empty()) {
+        throw std::invalid_argument("bench: csv= requires pairs=");
+    }
+    if (opt.abMode()) {
+        Latrunculi::validateEvalWeights(opt.weightsA);
+        Latrunculi::validateEvalWeights(opt.weightsB);
+        opt.games = 2 * opt.pairs;
     }
     return opt;
 }
@@ -313,9 +385,18 @@ struct WindowStats {
 
 // Plays one complete game and returns it. Placement follows the shared PlacementPolicy
 // (a random opening placement, then runs of searched ones); movement is always searched.
-Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& window) {
+// `sideWeights[p]` is the weight set player p searches with, or nullptr for the
+// defaults; in A-vs-B mode the weights are set before every searched ply, so each
+// side's whole search tree -- its model of the opponent included -- evaluates with its
+// own set, which is what a real match between two engines would do.
+Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& window,
+                          const std::array<const Latrunculi::EvalWeights*, 2>& sideWeights) {
     using namespace Latrunculi;
     Game game(opt.rows, opt.columns, opt.perSide, opt.style, opt.payoff, opt.komi);
+    // The constructor seeds the move-generation scan order from the clock; this driver
+    // promises reproducibility from the seed, so reseed it deterministically. Both
+    // games of an A-vs-B pair get the same seed and therefore break ties identically.
+    game.reseedScanOrder(seed);
     PlacementPolicy placement(seed);
 
     // C = stones on the board between both sides; the window is 2C plies.
@@ -342,6 +423,10 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& w
             }
         }
         if (searched) {
+            const Latrunculi::EvalWeights* weights = sideWeights[game.currentPlayer()];
+            if (weights != nullptr) {
+                game.setEvalWeights(*weights);
+            }
             // The depth is only collected inside the window; past it the search runs
             // exactly as before and the out-parameter is not asked for.
             const bool inWindow = (ply < windowPlies);
@@ -424,16 +509,31 @@ void runGames(const Options& opt, std::uint64_t base,
             }
             try {
                 WindowStats window;
-                const Latrunculi::Game finished =
-                    playGame(opt, base + static_cast<std::uint64_t>(g), window);
+                // A-vs-B: both games of pair g/2 share a seed; g%2 says which color
+                // set A holds. Classic: one game per seed, default weights both sides.
+                const int flip = g % 2;
+                const std::uint64_t seed = opt.abMode()
+                    ? base + static_cast<std::uint64_t>(g / 2)
+                    : base + static_cast<std::uint64_t>(g);
+                std::array<const Latrunculi::EvalWeights*, 2> sideWeights{nullptr,
+                                                                          nullptr};
+                if (opt.abMode()) {
+                    sideWeights[0] = (flip == 0) ? &opt.weightsA : &opt.weightsB;
+                    sideWeights[1] = (flip == 0) ? &opt.weightsB : &opt.weightsA;
+                }
+                const Latrunculi::Game finished = playGame(opt, seed, window, sideWeights);
                 if (opt.saveXml) {
                     saveGameXml(finished, opt.xmlDir, g);
                 }
                 stats[static_cast<std::size_t>(g)] = Latrunculi::analyseGame(finished);
                 windows[static_cast<std::size_t>(g)] = window;
-                const std::string row =
+                std::string row =
                     Latrunculi::formatStatsRow(stats[static_cast<std::size_t>(g)], g) +
                     depthColumns(window);
+                if (opt.abMode()) {
+                    row += Latrunculi::Bench::abColumns(
+                        flip, stats[static_cast<std::size_t>(g)].winner);
+                }
                 const std::lock_guard<std::mutex> lock(consoleMtx);
                 std::cout << row << std::endl;
             } catch (...) {
@@ -490,8 +590,14 @@ int main(int argc, char** argv) {
         // The banner is printed BEFORE tracking starts on purpose: the first use of an
         // iostream allocates buffers that live until process exit, and counting those as
         // leaks would bury the per-game signal the run exists to find.
-        std::cout << "Latrunculi bench: " << opt.games << " games, "
-                  << opt.rows << "x" << opt.columns << ", " << opt.perSide << " per side, "
+        std::cout << "Latrunculi bench: ";
+        if (opt.abMode()) {
+            std::cout << opt.pairs << " mirrored A-vs-B pairs (" << opt.games
+                      << " games), ";
+        } else {
+            std::cout << opt.games << " games, ";
+        }
+        std::cout << opt.rows << "x" << opt.columns << ", " << opt.perSide << " per side, "
                   << (opt.style == MoveStyle::Slide ? "slide" : "step/leap") << ", "
                   << (opt.payoff == PayoffStyle::ConvexMargin ? "convex" : "gradient")
                   << " payoff, komi " << opt.komi << ", "
@@ -499,13 +605,17 @@ int main(int argc, char** argv) {
                   << " placement, "
                   << opt.msPerPly << " ms per searched ply, "
                   << opt.threads << (opt.threads == 1 ? " thread\n" : " threads\n")
-                  << "base seed: " << base << "  (game g uses seed base+g)\n"
+                  << "base seed: " << base
+                  << (opt.abMode()
+                          ? "  (pair p uses seed base+p; even game index = set A as P0)\n"
+                          : "  (game g uses seed base+g)\n")
                   << "XML: " << (opt.saveXml ? opt.xmlDir : std::string("not saved"))
                   << "   memory tracking level: " << opt.mbLevel;
         if (opt.fsmb > 0) {
             std::cout << ", first suspect block " << opt.fsmb;
         }
-        std::cout << "\n\n" << statsHeader() << depthHeader() << '\n';
+        std::cout << "\n\n" << statsHeader() << depthHeader()
+                  << (opt.abMode() ? Bench::abHeader() : std::string()) << '\n';
 
         AbsGame::MemTrack::start(opt.mbLevel, opt.fsmb);
 
@@ -536,6 +646,27 @@ int main(int argc, char** argv) {
                                  static_cast<double>(runWindow.searched), 2)
                       << "   (over " << runWindow.searched << " searched opening plies)\n"
                       << "wall clock           " << seconds << " s\n";
+
+            if (opt.abMode()) {
+                std::cout << '\n' << Bench::formatAbSummary(all);
+                if (!opt.csvPath.empty()) {
+                    Bench::AbRunInfo info;
+                    info.baseSeed = base;
+                    info.pairs = opt.pairs;
+                    info.msPerPly = opt.msPerPly;
+                    info.rows = opt.rows;
+                    info.columns = opt.columns;
+                    info.perSide = opt.perSide;
+                    info.style = opt.style;
+                    info.payoff = opt.payoff;
+                    info.komi = opt.komi;
+                    info.wallSeconds = seconds;
+                    info.weightsA = opt.weightsA;
+                    info.weightsB = opt.weightsB;
+                    Bench::appendAbCsv(opt.csvPath, info, all);
+                    std::cout << "csv line appended to " << opt.csvPath << '\n';
+                }
+            }
         }
 
         AbsGame::MemTrack::stop();
