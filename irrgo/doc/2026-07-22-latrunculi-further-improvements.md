@@ -111,12 +111,15 @@ to be exact, the check belongs in Game, not here.
 
 ## 3. Search
 
-### 3.1 Placement is searched without ordering
+### 3.1 Placement is searched without ordering — DONE (2026-08-24)
 
-`Latrunculi::Game::moveOrderScore` returns 0 during placement, so alpha-beta gets no
+~~`Latrunculi::Game::moveOrderScore` returns 0 during placement, so alpha-beta gets no
 ordering for the first 40 plies and iterative deepening reaches only two or three ply in a
-second. Ranking placements by their positional delta — the same `Eval` terms the leaf
-already computes — would deepen the opening search substantially for little work.
+second.~~ Placement ordering and placement-phase eval terms landed together
+(`PlacementEval.{h,cpp}`, derived in `doc/2026-08-24-latrunculi-placement-heuristics.md`)
+and were measured before/after: opening depth 3.43 -> 3.60 at 1000 ms on identical
+seeds, captures up, quiet share unchanged pending weight tuning. Full write-up in
+`doc/bench/README.md` (2026-08-24 entry).
 
 ### 3.2 Per-node cost is now the binding constraint  — PARTLY DONE (Stage 8)
 
@@ -147,6 +150,38 @@ The short version: the reward scale genuinely breaks UCB1 and blocks everything 
 the deeper problem is the domain. The Pacific rule makes a rollout a slow, noisy
 re-derivation of the material balance the rollout started from, so even a well-built MCTS
 would be fighting the rules. Expect it to stay weaker than negamax on this game.
+
+### 3.4 Transposition table, aimed at the placement permutation explosion — PENDING
+(added 2026-08-24)
+
+Depth is a losing race in this game: the measured effective branching factor is
+roughly 6-9 (depth 2.71 at 200 ms, 3.20 at 500 ms, 3.60 at 1000 ms — each extra ply
+costs ~7x budget), so an overnight run buys one more ply and a season buys two. The
+lever that attacks the branching factor structurally rather than buying depth with
+wall clock is a transposition table, and placement is where it would bite hardest:
+placing the same k stones in a different order reaches the identical position, so the
+placement tree is riddled with permutation transpositions the searcher currently
+re-expands from scratch.
+
+What already exists: the incremental Zobrist hash (`hash_`, maintained through
+`setCell` for super-ko) gives every search node its position hash for free.
+
+What a TT needs beyond that:
+
+- The stored hash covers the board only, per the super-ko rule. During placement that
+  is nearly sufficient (the board determines both placed counts, and the side to move
+  is the parity of discs on it), but in movement the side to move is NOT derivable
+  from the board and must be folded in — one extra Zobrist key XORed by `current_`,
+  or stored alongside the entry.
+- The table itself lives in the searcher, which is `abs_game` — a shared-library
+  change, to be proposed as such, not snuck in (depth-preferred replacement, bounded
+  size, entry = depth/flag/score/best-move).
+- The best-move-first benefit compounds with ordering: a TT hit's stored move is the
+  "perfect order" alpha-beta's sqrt(b) bound assumes, so this also closes some of the
+  gap between the measured EBF and the theoretical floor.
+
+Not urgent while the weight-tuning campaign is the open question; recorded so the
+next strength push starts here instead of at a bigger time budget.
 
 ## 4. Rules still on the table
 

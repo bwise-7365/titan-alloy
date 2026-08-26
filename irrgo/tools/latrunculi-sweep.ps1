@@ -118,6 +118,37 @@ function Invoke-Match($candidateWeights, $incumbentWeights, [int]$pairs, [string
 
 function Num($value) { return [double]::Parse($value, $inv) }
 
+# A finished match already in the CSV, matching this candidate/incumbent/size, or $null.
+# This is what makes an interrupted coarse sweep resumable: bench appends a CSV line
+# only when a match COMPLETES, so any matching row is a fully finished measurement and
+# rerunning it would spend ~13 minutes reproducing a number we already hold.
+function Find-CachedMatch([string]$csv, $candidateWeights, $incumbentWeights,
+                          [int]$pairs, [int]$rows, [int]$columns, [int]$perSide) {
+    if (-not (Test-Path $csv)) { return $null }
+    foreach ($row in @(Import-Csv -Path $csv)) {
+        if ([int]$row.pairs -ne $pairs) { continue }
+        if ([int]$row.ms -ne $Ms) { continue }
+        # Seed too: a deliberate replication at a fresh seed block (a guardrail
+        # tie-breaker) must run, not hit the cache of the run it is replicating.
+        if ([uint64]$row.seed -ne $Seed) { continue }
+        # Board size too: the robust stage runs three sizes at one pairs/ms, and a hit
+        # from the wrong size would silently answer the wrong question.
+        if (([int]$row.rows -ne $rows) -or ([int]$row.columns -ne $columns) -or
+            ([int]$row.perside -ne $perSide)) { continue }
+        $same = $true
+        foreach ($key in $candidateWeights.Keys) {
+            if ([math]::Abs((Num $row.("wA_$key")) - [double]$candidateWeights[$key]) -gt 1e-9) {
+                $same = $false; break
+            }
+            if ([math]::Abs((Num $row.("wB_$key")) - [double]$incumbentWeights[$key]) -gt 1e-9) {
+                $same = $false; break
+            }
+        }
+        if ($same) { return $row }
+    }
+    return $null
+}
+
 function Get-SignificanceThreshold([int]$games) {
     return [int][math]::Ceiling($games / 2.0 + 1.6449 * [math]::Sqrt($games / 4.0))
 }
@@ -170,7 +201,12 @@ switch ($Stage) {
                 $candidateWeights = Get-EffectiveWeights @{}
                 foreach ($k in $incumbentWeights.Keys) { $candidateWeights[$k] = $incumbentWeights[$k] }
                 $candidateWeights[$field] = [double]$incumbentWeights[$field] * $m
-                $row = Invoke-Match $candidateWeights $incumbentWeights 40 $csv 8 10 20 $Seed
+                $row = Find-CachedMatch $csv $candidateWeights $incumbentWeights 40 8 10 20
+                if ($null -ne $row) {
+                    Write-Host "cached  ${field} x${m}: reusing the finished match from coarse.csv"
+                } else {
+                    $row = Invoke-Match $candidateWeights $incumbentWeights 40 $csv 8 10 20 $Seed
+                }
                 $games = 2 * 40
                 $winRate = (Num $row.winsA) / $games
                 $quiet = Num $row.quietPct
@@ -199,7 +235,12 @@ switch ($Stage) {
         $baseCaptures = Num $baseline.meanCaptures
         $candidateWeights = Get-EffectiveWeights (Read-WeightOverrides $Candidate)
         $csv = Join-Path $OutDir 'confirm.csv'
-        $row = Invoke-Match $candidateWeights $incumbentWeights 310 $csv 8 10 20 $Seed
+        $row = Find-CachedMatch $csv $candidateWeights $incumbentWeights 310 8 10 20
+        if ($null -ne $row) {
+            Write-Host "cached: reusing the finished confirmation from confirm.csv"
+        } else {
+            $row = Invoke-Match $candidateWeights $incumbentWeights 310 $csv 8 10 20 $Seed
+        }
         $games = 2 * 310
         $threshold = Get-SignificanceThreshold $games
         $wins = [int](Num $row.winsA)
@@ -232,8 +273,15 @@ switch ($Stage) {
         $totalGames = 0
         $allAtLeastHalf = $true
         foreach ($size in $sizes) {
-            $row = Invoke-Match $candidateWeights $incumbentWeights 100 $csv `
-                $size.rows $size.columns $size.perSide $Seed
+            $row = Find-CachedMatch $csv $candidateWeights $incumbentWeights 100 `
+                $size.rows $size.columns $size.perSide
+            if ($null -ne $row) {
+                Write-Host ("cached  {0}x{1}/{2}: reusing the finished match" -f `
+                    $size.rows, $size.columns, $size.perSide)
+            } else {
+                $row = Invoke-Match $candidateWeights $incumbentWeights 100 $csv `
+                    $size.rows $size.columns $size.perSide $Seed
+            }
             $wins = [int](Num $row.winsA)
             $totalWins += $wins
             $totalGames += 200
