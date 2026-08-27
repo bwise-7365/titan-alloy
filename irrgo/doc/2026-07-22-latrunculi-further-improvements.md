@@ -109,6 +109,24 @@ Still not checked, and deliberately: whether the completing move would self-capt
 would repeat a position. Both need game state Eval does not hold. If the term ever needs
 to be exact, the check belongs in Game, not here.
 
+### 2.4 Centrality does not transfer across board sizes — PENDING (added 2026-08-27)
+
+Found by the 2026-08 weight-tuning campaign (bench README, "weight-tuning
+campaign" entry): `centre` x4 was the campaign's only confirmed improvement on the
+8x10 board (55% over 620 games, and 60.5% on 10x12), yet it failed the
+size-robustness gate because the gain is monotone in board size — 47.0% on 6x6/12.
+The mechanism is the term's shape, not the weight: `PositionalTerms::centrality`
+sums a per-square 0..1 value over all of a side's Free discs, so the term's
+magnitude scales with disc count, and the per-square value's useful range compresses
+as the board shrinks (on 6x6 a third of the squares touch the border). One weight
+therefore buys different amounts of centre-pull on different boards.
+
+Fix: normalize the summed centrality (per Free disc, or per perSide) so the term is
+scale-free, recalibrate the weight once to compensate on the reference 8x10, then
+rerun the centre sweep — the 0.2-equivalent value is expected to confirm cleanly
+once it means the same thing on every size. `openNeighbours` has the same disease
+(already documented in Eval.h as style- AND size-scaled) and the same medicine.
+
 ## 3. Search
 
 ### 3.1 Placement is searched without ordering — DONE (2026-08-24)
@@ -200,6 +218,10 @@ None of these are needed unless the games go dull again. In rough order of size:
   to even. Note the convex payoff appears to AMPLIFY the bias where the game cannot be
   decided on the board (step+convex was the worst cell at 42/50), so komi should be
   re-checked against whatever payoff is finally chosen, not tuned once and forgotten.
+  2026-08-27 addendum: it is board-size-dependent as well — in two 100-pair 6x6/12
+  matches at 500 ms the second player won ~73% of games regardless of eval weights
+  (details in the bench README's weight-tuning entry), so 1.5 overshoots badly on
+  small boards and any per-board-size play needs its own komi check.
 - **Immediate removal** — the other half of the Kharebga ruleset, deliberately not taken
   so that the slide could be evaluated alone. Adopting it deletes the Bound state, the
   mandatory remove-then-move, `immobilizationDiscount` and the X-mark rendering, and

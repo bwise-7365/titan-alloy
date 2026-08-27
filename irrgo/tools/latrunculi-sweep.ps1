@@ -200,7 +200,9 @@ switch ($Stage) {
                 }
                 $candidateWeights = Get-EffectiveWeights @{}
                 foreach ($k in $incumbentWeights.Keys) { $candidateWeights[$k] = $incumbentWeights[$k] }
-                $candidateWeights[$field] = [double]$incumbentWeights[$field] * $m
+                # Rounded so multiplier chains do not accrete float dust (0.03 * 1.4
+                # is 0.041999...9 in binary; nobody wants that in a weight file).
+                $candidateWeights[$field] = [math]::Round([double]$incumbentWeights[$field] * $m, 10)
                 $row = Find-CachedMatch $csv $candidateWeights $incumbentWeights 40 8 10 20
                 if ($null -ne $row) {
                     Write-Host "cached  ${field} x${m}: reusing the finished match from coarse.csv"
@@ -215,7 +217,19 @@ switch ($Stage) {
                 Write-Host ("{0}  {1} x{2} -> {3} = {4:P1} wins, quiet {5}%" -f `
                     $verdict, $field, $m, $candidateWeights[$field], $winRate, $quiet)
                 if ($kept) {
-                    $survivors += ('@{{ {0} = {1} }}' -f $field, ($candidateWeights[$field].ToString('R', $inv)))
+                    # The suggestion must be the candidate's FULL set of overrides
+                    # against the engine defaults -- the incumbent's own overrides
+                    # included -- because the confirm stage applies a .psd1 to the
+                    # defaults. Printing only the swept field silently confirmed a
+                    # different vector whenever the incumbent was not the defaults.
+                    $overrides = @()
+                    $defaults = Get-DefaultWeights
+                    foreach ($k in $candidateWeights.Keys) {
+                        if ([math]::Abs([double]$candidateWeights[$k] - [double]$defaults[$k]) -gt 1e-12) {
+                            $overrides += ('{0} = {1}' -f $k, ([double]$candidateWeights[$k]).ToString('R', $inv))
+                        }
+                    }
+                    $survivors += ('@{{ {0} }}' -f ($overrides -join '; '))
                 }
             }
         }

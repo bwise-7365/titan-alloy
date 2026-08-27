@@ -10,6 +10,76 @@ Not every experiment leaves its raw files here; the placement experiment below w
 summarised and its ten 10-game data files discarded, since it is unlikely to be rerun.
 The command line and seeds are recorded so it can be regenerated if that changes.
 
+## 2026-08-25..27 — weight-tuning campaign, rounds 1-2
+
+The first use of the A-vs-B machinery (`latrunculi_bench pairs=/wA./wB.` +
+`tools/latrunculi-sweep.ps1`): can self-play matches fit the eleven `EvalWeights`
+fields better than the hand-picked values? Protocol per the approved plan: a
+per-round incumbent-vs-incumbent baseline sets the noise floor; a lenient coarse
+filter (40 pairs per candidate, keep at >= 55% wins AND quiet share <= baseline + 5)
+nominates; a 310-pair confirmation (620 games; promote at >= 331 wins AND quiet <=
+baseline + 3 AND captures >= 0.9x baseline) decides. All matches 8x10x20, slide +
+convex, komi 1.5, 500 ms/ply, colors mirrored within each seed pair. Raw data:
+`sweeps/2026-08-24/` (round 1) and `sweeps/2026-08-26-round2/`.
+
+**Result: no change ships.** `centre` 0.05 -> 0.2 was the campaign's single
+confirmed promotion, and round 2 promoting nothing stopped the descent per
+protocol — but the final size-robustness gate then rejected it: pooled 6x6 wins
+198/400 against a pre-committed floor of 200. The defaults stand in full, now
+validated rather than guessed.
+
+| stage | candidates | outcome |
+|---|---|---|
+| round-1 coarse (x1/4..x4, 44) | 6 kept | best coarse figures did not survive |
+| round-1 confirm (5 distinct) | centre 0.2: **342/620**; spearheadPairs 0.6: 332/620 | 2 promoted, 3 rejected |
+| composed {centre, spearhead} | 384/620 + replication 389/620 | rejected: pooled quiet 77.5% > 75.5% |
+| round-2 coarse (x0.7/x1.4, 22) | 5 kept | all between 55% and 60% |
+| round-2 confirm (5) | best 329/620 | all rejected -> descent stops |
+| size robustness, centre 0.2 | 6x6: 94/200; 8x10: 110/200; 10x12: 121/200 | 6x6 cell fails the >=50% rule |
+| 6x6 tie-break replication | 104/200; pooled 198/400 vs floor 200 | **centre 0.2 rejected; 0.05 stands** |
+
+Findings:
+
+- **The liveliness guardrail is load-bearing, not decorative.** Three separate
+  candidates won overwhelmingly and were refused for dulling the game: `mobility`
+  0.005 (62.1% wins, quiet 81.5%), the composed centre+spearhead vector (62.3%
+  pooled over 1,240 games, quiet 77.5%), and implicitly the spearhead half of that
+  composition. In this rule set there is a standing exchange rate between win rate
+  and turtling, and an unguarded sweep would have bought strength with exactly the
+  dullness the last two months of rule work removed.
+- **The composed rejection needed a replication to be honest.** Its first
+  confirmation missed the quiet limit by 0.15 points against sampling noise of
+  +/-1.7; a pre-committed second 620-game run at a fresh seed block came in at
+  79.35%, settling it. One 100-minute replication converted a coin-flip verdict
+  into a clear one.
+- **Coarse figures regress hard.** `vulnerableAxes` nominated at 66.3% and 60.0% in
+  the two rounds and confirmed at 53.1% and 50.0%. Forty pairs nominate; only 620
+  games decide. No coarse number should ever be quoted as a result.
+- **The hand-picked weights largely survived.** `threat` = 0.25 is sharply optimal
+  (x2 -> 21% wins, x4 -> 1.3%); every placement-term default resisted all
+  perturbations tried at both granularities. The campaign's value was as much
+  validating those numbers as improving one.
+- Why `centre` x4 helps is not measured, only plausible: with capture geometry
+  priced by the other terms, a stronger centre pull concentrates discs where
+  flanks and denials actually form instead of along the safe but inert rim.
+
+- **The centre gain is monotone in board size, which is why it died.** 47.0% on
+  6x6/12, 55.0% on 8x10/20 (independently replicating the 55.2% confirmation),
+  60.5% on 10x12/30. The summed centrality term scales with disc count and board
+  geometry, so one weight cannot mean the same thing on every board — the
+  pre-written "suspect mobility/centre scaling" caveat, now with data. The
+  principled follow-up is a size-normalized centrality term, recorded in
+  `doc/2026-07-22-latrunculi-further-improvements.md` §2.4; re-tune centre only
+  after that lands.
+- **Komi 1.5 is board-size-dependent too.** In the two 6x6/12 robustness matches,
+  the second player won ~73% of games regardless of weight set (the candidate went
+  29/100 as P0 and 75/100 as P1 in the replication). Mirrored pairs cancelled it
+  from every verdict above, but any single-color measurement on a small board is
+  currently measuring komi as much as skill. Same lesson as the 2x2's komi
+  finding: re-check komi per configuration, never assume it transfers.
+
+The planned 1000 ms budget-sanity match was mooted by the rejection and not run.
+
 ## 2026-08-24 — placement heuristics: before/after
 
 The engine gained a placement-phase evaluation (`PlacementEval.h`: seven terms derived
