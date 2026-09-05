@@ -37,19 +37,19 @@ using namespace IrrGo;
 
 struct SizeEntry  { int rows, cols; const char* label; };
 static const SizeEntry kSizes[] = {
-    //{ 5,  5, "5 × 5"   }, // this size has low enough detail for ICO
-    { 7,  7, "7 × 7"   }, { 7,  9, "7 × 9"   },
-    { 9,  9, "9 × 9"   }, { 9, 13, "9 × 13"  },
-    {13, 13, "13 × 13"  }, {13, 17, "13 × 17"  },
-    {17, 19, "17 × 19"  },{17, 21, "17 × 21"  },
-    {19, 19, "19 × 19" },
-    {21, 21, "21 × 21" },
+    //{ 5,  5, "5x5"   }, // this size has low enough detail for ICO
+    { 7,  7, "7x7"   }, { 7,  9, "7x9"   },
+    { 9,  9, "9x9"   }, { 9, 13, "9x13"  },
+    {13, 13, "13x13"  }, {13, 17, "13x17"  },
+    {17, 17, "17x17"  }, {17, 19, "17x19"  },{17, 21, "17x21"  },
+    {19, 19, "19x19" },
+    {21, 21, "21x21" },
 };
 
 // I made it start at 17x21 because it is an interesting variant on 19x19.
 // It is a slightly smaller area, and I expect tactics on the long edge
 // to differ from those on the short edge.
-static constexpr int kDefaultSizeIdx = 3; // 9 × 13
+static constexpr int kDefaultSizeIdx = 3; // 9x13
 
 static const struct { QColor color; const char* label; } kBgColors[] = {
     { QColor("#F2B06D"), "Tan"  },
@@ -70,6 +70,8 @@ static const guicommon::MctsOption kMctsOptions[] = {
     { 300, "5 min"    },
     { 450, "7.5 min"  },
     { 600, "10 min"   },
+    { 900, "15 min"   },
+    { 1200, "20 min"   },
 };
 
 static const struct { double fraction; const char* label; } kStones[] = {
