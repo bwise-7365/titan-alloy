@@ -149,14 +149,13 @@ int main(int argc, char** argv) {
     // 9659779445541695208
     const std::uint64_t seedInput = 0;
     const std::uint64_t placementSeed = AbsGame::makeSeed(seedInput);
-    // Opening variety: one random placement, then a run of searched ones, per side.
+    // Opening variety: each side's first placement is random, all later ones searched.
     // Shared with the GUI so both drivers open the same way (see PlacementPolicy.h).
     PlacementPolicy placement(placementSeed);
     std::cout << "placement seed: " << placementSeed << '\n';
 
     std::cout << "-- placement phase (" << 2 * perSide << " placements, "
-              << "random then runs of " << PlacementPolicy::kRunMin << "-"
-              << PlacementPolicy::kRunMin + 1 << " searched) --\n";
+              << "first per side random, rest searched) --\n";
     while (!game.isTerminal()) {
         const std::vector<AbsGame::MoveId> moves = game.getLegalMoves();
         if (moves.empty()) {
@@ -176,9 +175,9 @@ int main(int argc, char** argv) {
         }
 
         // Decide whether this ply is searched or random. Movement is always searched;
-        // placement follows the alternating policy described above. Random placements
-        // range over every legal placement, adjacent enemies included -- the placement
-        // rule already forbids the only thing that must not happen, a placement that
+        // placement follows the policy described above. Random placements are legal
+        // placements chosen by PlacementPolicy's spacing ladder -- the placement rule
+        // already forbids the only thing that must not happen, a placement that
         // completes a custodial capture (Game::isLegalPlacement).
         AbsGame::MoveId mv = moves.front();
         bool randomPlacement = false;

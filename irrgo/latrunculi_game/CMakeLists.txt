@@ -24,7 +24,7 @@ target_link_libraries(latrunculi_selfplay PRIVATE
 # Instrumented batch self-play: plays N games, prints game-quality metrics and can write
 # each game as XML. No Qt and no per-ply rendering, so it can be run in bulk to compare
 # rule sets and eval weights, and so it can carry the MB2 memory tracker (MemTrack.h).
-add_executable(latrunculi_bench bench.cpp BenchAb.cpp)
+add_executable(latrunculi_bench bench.cpp BenchAb.cpp BenchBoundary.cpp)
 target_link_libraries(latrunculi_bench PRIVATE latrunculi_lib mem_track)
 
 # Copyright Ben Paul Wise. All Rights Reserved.

@@ -58,8 +58,8 @@ private:
     AbsGame::Game* currentGame() override;
     void applyComputedMove(AbsGame::MoveId mv) override;
     bool extraSearchBlock() const override;  // true while the seed animation runs
-    // Auto-play opening variety: plays some placements at random instead of searching
-    // them, per Latrunculi::PlacementPolicy. Movement plies are always searched.
+    // Auto-play opening variety: plays each side's first placement at random instead of
+    // searching it, per Latrunculi::PlacementPolicy. Movement plies are always searched.
     bool autoPlayMoveOverride(AbsGame::MoveId& mv) override;
     int  playbackPlyCount() const override;  // length of the move timeline (M)
     void rebuildToPly(int ply) override;     // reconstruct the game at ply (replay)

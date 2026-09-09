@@ -187,10 +187,12 @@ DONE:
   armies started separated; removed. Opposing discs may now be placed adjacent -- the placement
   rule already forbids the only thing that must not happen, a placement that completes a capture.
   New `latrunculi_game/PlacementPolicy.{h,cpp}`, shared by the self-play driver and the GUI: each
-  side plays its first placement at random, then has `kRunMin`(=2) or 3 placements searched, then
-  another random one, and so on, each side drawing its own run lengths from one seeded RNG.
-  Random placements prefer squares off the border and orthogonally clear of every existing disc,
-  falling back to off-the-border, then to any legal placement.
+  side plays its first placement at random and every later one searched. (Until 2026-09-09 the
+  policy re-randomised every third or fourth placement per side; that left about 30 per cent of
+  placements unsearched, so it was cut back to the first stone per side.) The random stone lands
+  off the border, on no row or column holding a disc, and not diagonally adjacent to one, so the
+  second seed is genuinely apart from the first; it falls back to off-the-border, then to any
+  legal placement.
 - GUI. `guicommon::GameMainWindow` gained `autoPlayMoveOverride(MoveId&)` (default false) so a
   derived window can supply an auto-play ply instead of searching it; the shared turn-run tail is
   factored into `continuePlay`. Latrunculi uses it for the random placements and tags them

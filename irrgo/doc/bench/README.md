@@ -10,6 +10,41 @@ Not every experiment leaves its raw files here; the placement experiment below w
 summarised and its ten 10-game data files discarded, since it is unlikely to be rerun.
 The command line and seeds are recorded so it can be regenerated if that changes.
 
+## 2026-09-09 — phase-boundary exposure, one random stone per side
+
+First measurement of the capture surplus at the start of movement
+(`doc/2026-09-03-latrunculi-placement-capture-surplus.md`, section 10.2), taken the
+same day the placement policy was cut back to one random stone per side, so every
+placement after the first two is searched. The bench gained `plies=` (stop each game
+after N plies; the game is left unfinished and gets no game-quality row) and the
+boundary columns/summary from `BenchBoundary.{h,cpp}`: per side at the flip, discs the
+enemy can capture in one move (`exp`), threats held (`thr`), and captures made over the
+first 20 movement plies (`cap`). Raw file:
+`2026-09-09-bench-boundary-100g-750ms-60plies.txt`.
+
+    latrunculi_bench games=100 ms=750 plies=60 threads=8 seed=909001
+
+100 games, 8x10x20, slide + convex, komi 1.5, 40 placements + 20 movement plies each,
+5800 searched plies at mean depth 3.65, wall clock 566 s.
+
+| measure at the flip / early window | P0 | P1 |
+|---|---|---|
+| discs capturable in one move | 3.65 +/- 0.23 | 3.44 +/- 0.22 |
+| threats held | 3.35 +/- 0.21 | 3.50 +/- 0.22 |
+| notch exposure | 0.59 +/- 0.08 | 0.48 +/- 0.08 |
+| vulnerable axes | 9.70 +/- 0.38 | 9.61 +/- 0.36 |
+| captures made, first 20 movement plies | 4.77 +/- 0.20 | 4.40 +/- 0.18 |
+
+Findings. Each army ends placement with about 3.5 discs the other side can take in
+one move, and the two sides are equal within error, as the analysis doc predicted
+(prediction: both sides about equal, 5-15 each; observed lower but symmetric). The
+first 20 movement plies then produce about 9.2 captures per game, roughly one every
+other ply; only 1 game of 100 had none, and only 11 (P0) / 8 (P1) games had a side
+with nothing capturable at the flip. The first mover captures slightly more (4.77 vs
+4.40), consistent with the tempo argument, though the gap is under two standard
+errors. With the random placements now confined to the first two stones, this surplus
+is produced by the searched placement itself, not by the policy's random stones.
+
 ## 2026-08-25..27 — weight-tuning campaign, rounds 1-2
 
 The first use of the A-vs-B machinery (`latrunculi_bench pairs=/wA./wB.` +
@@ -145,8 +180,9 @@ revision's were not; see the reproducibility note in bench.cpp).
 
 The 2x2 below left player A winning above chance in every cell, unrelated to any change
 made that day. This experiment isolates the cause. `latrunculi_bench` gained a
-`placement=policy|random` option: `policy` is the shared PlacementPolicy (each side plays
-one random opening placement, then runs of searched ones); `random` makes every placement
+`placement=policy|random` option: `policy` is the shared PlacementPolicy (at the time of
+this experiment, each side played one random opening placement, then runs of searched
+ones; since 2026-09-09 only each side's first placement is random); `random` makes every placement
 random for both sides, so neither gains anything from SEARCHING the opening. If the bias
 comes from player 0 optimising its first placements onto a nearly empty board, it should
 vanish under `random`; if it is inherent first-move tempo, it should survive.

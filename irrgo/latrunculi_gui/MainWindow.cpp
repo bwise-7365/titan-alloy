@@ -42,7 +42,7 @@ namespace gb = games::board;
 // ── Static data ───────────────────────────────────────────────────────────────
 
 static const guicommon::TimeOption kTimeOptions[] = {
-    {  5, "5 sec"  },
+    {  1, "1 sec"  },{  3, "3 sec"  },{  5, "5 sec"  },
     {  10, "10 sec"  },{ 15, "15 sec" },
     { 30, "30 sec" }, { 60, "60 sec" },
     { 90, "90 sec" }, { 120, "2 min" },
@@ -523,8 +523,8 @@ AbsGame::Game* MainWindow::currentGame() {
     return game_.get();
 }
 
-// Opening variety for auto-play: the placement phase alternates between one random
-// placement and a run of searched ones (see Latrunculi::PlacementPolicy). Returning true
+// Opening variety for auto-play: each side's first placement is random and the rest are
+// searched (see Latrunculi::PlacementPolicy). Returning true
 // hands the move straight to startPlay, skipping the search for this ply only. Movement
 // plies always fall through and are searched.
 bool MainWindow::autoPlayMoveOverride(AbsGame::MoveId& mv) {

@@ -25,11 +25,14 @@
 //     payoff     convex | gradient                            (default convex)
 //     komi       half-integer credited to player 1            (default kDefaultKomi)
 //     placement  policy | random                              (default policy)
-//                policy = the shared PlacementPolicy (one random placement, then runs of
-//                searched ones). random = every placement random, which removes any
+//                policy = the shared PlacementPolicy (each side's first placement
+//                random, the rest searched). random = every placement random, which removes any
 //                advantage either side gains from SEARCHING the opening and so isolates
 //                the first-move advantage proper.
 //     rows, columns, perside                                  (default 8, 10, 20)
+//     plies      stop each game after this many plies         (default 0 = play out)
+//                A capped game is unfinished, so it gets no game-quality row or
+//                summary -- only the depth and phase-boundary columns (BenchBoundary.h).
 //     threads    games played in parallel, one game per thread (default 1)
 //     xml        y | n -- save each finished game as XML      (default n)
 //     xmldir     directory for the XML files                  (default ".")
@@ -97,6 +100,7 @@
 #include "Game.h"
 #include "GameStats.h"
 #include "GameXml.h"
+#include "BenchBoundary.h"
 #include "MemTrack.h"
 #include "PlacementPolicy.h"
 #include "Searcher.h"
@@ -141,6 +145,7 @@ struct Options {
     int rows = Latrunculi::kDefaultRows;
     int columns = Latrunculi::kDefaultColumns;
     int perSide = Latrunculi::kDefaultPerSide;
+    int maxPlies = 0;  // 0 = play every game to its end
     int threads = 1;
     unsigned mbLevel = 0;
     std::uint64_t fsmb = 0;
@@ -170,6 +175,7 @@ std::string usage() {
         "    komi       half-integer credited to player 1           (default 0.5)\n"
         "    placement  policy | random                             (default policy)\n"
         "    rows, columns, perside                                 (default 8, 10, 20)\n"
+        "    plies      stop each game after this many plies         (default 0 = play out)\n"
         "    threads    games played in parallel, one game per thread (default 1)\n"
         "    xml        y | n -- save each finished game as XML     (default n)\n"
         "    xmldir     directory for the XML files                 (default \".\")\n"
@@ -298,6 +304,7 @@ Options parseArgs(int argc, char** argv) {
         else if (key == "rows")      { opt.rows = positiveIntOf(key, value); }
         else if (key == "columns")   { opt.columns = positiveIntOf(key, value); }
         else if (key == "perside")   { opt.perSide = positiveIntOf(key, value); }
+        else if (key == "plies")     { opt.maxPlies = positiveIntOf(key, value); }
         else if (key == "threads")   { opt.threads = positiveIntOf(key, value); }
         else if (key == "komi")      { opt.komi = numberOf(key, value);
                                        Latrunculi::validateKomi(opt.komi); }
@@ -329,6 +336,10 @@ Options parseArgs(int argc, char** argv) {
     }
     if (!opt.abMode() && !opt.csvPath.empty()) {
         throw std::invalid_argument("bench: csv= requires pairs=");
+    }
+    if (opt.abMode() && opt.maxPlies > 0) {
+        throw std::invalid_argument(
+            "bench: plies= cannot be used with pairs= (an A-vs-B match needs winners)");
     }
     if (opt.abMode()) {
         Latrunculi::validateEvalWeights(opt.weightsA);
@@ -384,7 +395,7 @@ struct WindowStats {
 };
 
 // Plays one complete game and returns it. Placement follows the shared PlacementPolicy
-// (a random opening placement, then runs of searched ones); movement is always searched.
+// (each side's first placement random, the rest searched); movement is always searched.
 // `sideWeights[p]` is the weight set player p searches with, or nullptr for the
 // defaults; in A-vs-B mode the weights are set before every searched ply, so each
 // side's whole search tree -- its model of the opponent included -- evaluates with its
@@ -404,7 +415,9 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& w
     const int windowPlies = 2 * totalStones;
     int ply = 0;
 
-    while (!game.isTerminal()) {
+    // plies= caps the game; the caller tells a capped game from a finished one by
+    // isOver(), so nothing here needs to record which it was.
+    while (!game.isTerminal() && (opt.maxPlies == 0 || ply < opt.maxPlies)) {
         const std::vector<AbsGame::MoveId> moves = game.getLegalMoves();
         if (moves.empty()) {
             throw std::runtime_error("bench: no legal moves in a non-terminal position");
@@ -480,7 +493,32 @@ std::string depthHeader() {
     return out.str();
 }
 
-// Plays games [0, opt.games) across opt.threads workers, filling stats[g] for each.
+// Everything measured about one game. `finished` is false for a game the plies= cap
+// stopped; its `stats` are then default-constructed and must not be read, since
+// analyseGame refuses an unfinished game and nothing here substitutes for it.
+struct GameResult {
+    bool finished = false;
+    Latrunculi::GameStats stats;
+    WindowStats window;
+    Latrunculi::Bench::BoundaryStats boundary;
+};
+
+// The row for a game the cap stopped: the index and ply count in their usual columns,
+// then a note padded to the stats header's width so the depth and boundary columns that
+// follow line up with the finished games' rows.
+std::string cappedRow(int gameIndex, int plies) {
+    std::ostringstream out;
+    out << std::left << std::setw(5) << gameIndex << std::right << std::setw(7) << plies
+        << "  capped (unfinished)";
+    std::string row = out.str();
+    const std::size_t width = Latrunculi::statsHeader().size();
+    if (row.size() < width) {
+        row.append(width - row.size(), ' ');
+    }
+    return row;
+}
+
+// Plays games [0, opt.games) across opt.threads workers, filling results[g] for each.
 //
 // This is safe because a game shares nothing with any other. Every Game, PlacementPolicy
 // and search is thread-local by construction, the engines hold no mutable global state,
@@ -493,9 +531,7 @@ std::string depthHeader() {
 // Two things do need guarding, and are: std::cout (interleaved << chains from several
 // threads would garble the table) and the first exception out of any worker, which is
 // re-thrown on the calling thread rather than left to terminate the process.
-void runGames(const Options& opt, std::uint64_t base,
-              std::vector<Latrunculi::GameStats>& stats,
-              std::vector<WindowStats>& windows) {
+void runGames(const Options& opt, std::uint64_t base, std::vector<GameResult>& results) {
     std::atomic<int> nextGame{0};
     std::mutex consoleMtx;
     std::mutex errorMtx;
@@ -521,18 +557,26 @@ void runGames(const Options& opt, std::uint64_t base,
                     sideWeights[0] = (flip == 0) ? &opt.weightsA : &opt.weightsB;
                     sideWeights[1] = (flip == 0) ? &opt.weightsB : &opt.weightsA;
                 }
-                const Latrunculi::Game finished = playGame(opt, seed, window, sideWeights);
+                const Latrunculi::Game played = playGame(opt, seed, window, sideWeights);
                 if (opt.saveXml) {
-                    saveGameXml(finished, opt.xmlDir, g);
+                    saveGameXml(played, opt.xmlDir, g);
                 }
-                stats[static_cast<std::size_t>(g)] = Latrunculi::analyseGame(finished);
-                windows[static_cast<std::size_t>(g)] = window;
-                std::string row =
-                    Latrunculi::formatStatsRow(stats[static_cast<std::size_t>(g)], g) +
-                    depthColumns(window);
+                GameResult& result = results[static_cast<std::size_t>(g)];
+                result.finished = played.isOver();
+                result.window = window;
+                result.boundary = Latrunculi::Bench::analyseBoundary(played);
+                std::string row;
+                if (result.finished) {
+                    result.stats = Latrunculi::analyseGame(played);
+                    row = Latrunculi::formatStatsRow(result.stats, g);
+                } else {
+                    row = cappedRow(g, static_cast<int>(played.history().size()));
+                }
+                row += depthColumns(window) +
+                       Latrunculi::Bench::boundaryColumns(result.boundary);
                 if (opt.abMode()) {
-                    row += Latrunculi::Bench::abColumns(
-                        flip, stats[static_cast<std::size_t>(g)].winner);
+                    // parseArgs forbids plies= with pairs=, so the game is finished.
+                    row += Latrunculi::Bench::abColumns(flip, result.stats.winner);
                 }
                 const std::lock_guard<std::mutex> lock(consoleMtx);
                 std::cout << row << std::endl;
@@ -604,7 +648,11 @@ int main(int argc, char** argv) {
                   << (opt.placement == PlacementMode::Policy ? "policy" : "random")
                   << " placement, "
                   << opt.msPerPly << " ms per searched ply, "
-                  << opt.threads << (opt.threads == 1 ? " thread\n" : " threads\n")
+                  << opt.threads << (opt.threads == 1 ? " thread" : " threads");
+        if (opt.maxPlies > 0) {
+            std::cout << ", games capped at " << opt.maxPlies << " plies";
+        }
+        std::cout << '\n'
                   << "base seed: " << base
                   << (opt.abMode()
                           ? "  (pair p uses seed base+p; even game index = set A as P0)\n"
@@ -614,7 +662,7 @@ int main(int argc, char** argv) {
         if (opt.fsmb > 0) {
             std::cout << ", first suspect block " << opt.fsmb;
         }
-        std::cout << "\n\n" << statsHeader() << depthHeader()
+        std::cout << "\n\n" << statsHeader() << depthHeader() << Bench::boundaryHeader()
                   << (opt.abMode() ? Bench::abHeader() : std::string()) << '\n';
 
         AbsGame::MemTrack::start(opt.mbLevel, opt.fsmb);
@@ -623,9 +671,8 @@ int main(int argc, char** argv) {
         // the tracker's report describes the engine and not the harness.
         {
             const auto started = std::chrono::steady_clock::now();
-            std::vector<GameStats> all(static_cast<std::size_t>(opt.games));
-            std::vector<WindowStats> windows(static_cast<std::size_t>(opt.games));
-            runGames(opt, base, all, windows);
+            std::vector<GameResult> results(static_cast<std::size_t>(opt.games));
+            runGames(opt, base, results);
             const auto elapsed = std::chrono::steady_clock::now() - started;
             const double seconds =
                 std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count()
@@ -635,17 +682,38 @@ int main(int argc, char** argv) {
             // run then carries the same weight, so a game whose opening was mostly random
             // placements cannot swing the figure.
             WindowStats runWindow;
-            for (const WindowStats& w : windows) {
-                runWindow.searched += w.searched;
-                runWindow.depthSum += w.depthSum;
+            std::vector<GameStats> all;
+            std::vector<Bench::BoundaryStats> boundaries;
+            all.reserve(results.size());
+            boundaries.reserve(results.size());
+            for (const GameResult& r : results) {
+                runWindow.searched += r.window.searched;
+                runWindow.depthSum += r.window.depthSum;
+                boundaries.push_back(r.boundary);
+                if (r.finished) {
+                    all.push_back(r.stats);
+                }
             }
 
-            std::cout << '\n' << formatStatsSummary(all)
-                      << "mean depth           "
+            // The game-quality summary describes finished games only. Under a cap it
+            // is either absent or, when a few games ended before the cap, explicitly
+            // partial -- never a summary of the capped games as if they had finished.
+            std::cout << '\n';
+            if (all.size() == results.size()) {
+                std::cout << formatStatsSummary(all);
+            } else {
+                std::cout << "game-quality summary: " << all.size() << " of "
+                          << results.size() << " games finished (the rest were capped)\n";
+                if (!all.empty()) {
+                    std::cout << formatStatsSummary(all);
+                }
+            }
+            std::cout << "mean depth           "
                       << ratioOr(static_cast<double>(runWindow.depthSum),
                                  static_cast<double>(runWindow.searched), 2)
                       << "   (over " << runWindow.searched << " searched opening plies)\n"
-                      << "wall clock           " << seconds << " s\n";
+                      << "wall clock           " << seconds << " s\n"
+                      << '\n' << Bench::formatBoundarySummary(boundaries);
 
             if (opt.abMode()) {
                 std::cout << '\n' << Bench::formatAbSummary(all);
