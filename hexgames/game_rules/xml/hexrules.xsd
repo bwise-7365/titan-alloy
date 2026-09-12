@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+hexrules 1.0 -- a small rule language for hex-and-counter wargames.
+
+Design
+  * Typed elements carry the data that recurs across games in the same shape:
+    sides, hex identifiers, hex and hexside terrain, link networks, region layers,
+    off-map spaces, unit types, the phase tree, stacking, zones of control,
+    movement modes, supply traces, combat resolvers and modifiers, retreat,
+    randomisers, weather and victory conditions.
+  * Two generic containers, list/item and table/col/row/cell, hold enumerations,
+    tie-break chains and charts (CRT, fire chart, attack chart).
+  * Everything else is a rule element: a normative sentence with an id, a
+    rulebook reference (ref), a topic, and optional scoping attributes.
+  * Every container ends with the same annex: any number of note, rule, list
+    and table elements, in any order.
+  * Leaf elements hold attributes for the machine and one sentence for the reader.
+
+Conventions
+  * id attributes are xs:ID: unique within the document, lower-case, hyphenated.
+    Attributes that name other elements (blocked-by, units, phase ...) are IDREFS.
+  * shift is counted in CRT columns in the DEFENDER's favour on terrain; on a
+    modifier the applies-to attribute says who benefits.
+  * move-cost on hex-terrain is the cost to enter; on hexside-terrain it is added
+    to the entry cost unless the text says it replaces it.
+  * turns selects game turns: "5", "1-10", "11+", "3,5,7,9".
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ================= simple types ================= -->
+
+  <xs:simpleType name="Turns">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d+(-\d+)?(,\d+(-\d+)?)*|\d+\+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MoveCost">
+    <xs:annotation><xs:documentation>A number of movement points, or: prohibited; entire (the whole allowance); other-terrain (use the other terrain in the hex); none.</xs:documentation></xs:annotation>
+    <xs:union>
+      <xs:simpleType><xs:restriction base="xs:decimal"/></xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="prohibited"/>
+          <xs:enumeration value="entire"/>
+          <xs:enumeration value="other-terrain"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="Extent">
+    <xs:annotation><xs:documentation>A hex count, or: unlimited; authored (the set is printed on the map, not computed).</xs:documentation></xs:annotation>
+    <xs:union>
+      <xs:simpleType><xs:restriction base="xs:nonNegativeInteger"/></xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="unlimited"/>
+          <xs:enumeration value="authored"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="Purpose">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="movement"/>
+      <xs:enumeration value="zoc"/>
+      <xs:enumeration value="supply"/>
+      <xs:enumeration value="retreat"/>
+      <xs:enumeration value="network"/>
+      <xs:enumeration value="control"/>
+      <xs:enumeration value="grouping"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Purposes">
+    <xs:list itemType="Purpose"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="Topic">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="sequence"/>
+      <xs:enumeration value="geometry"/>
+      <xs:enumeration value="counters"/>
+      <xs:enumeration value="stacking"/>
+      <xs:enumeration value="zoc"/>
+      <xs:enumeration value="control"/>
+      <xs:enumeration value="movement"/>
+      <xs:enumeration value="supply"/>
+      <xs:enumeration value="combat"/>
+      <xs:enumeration value="retreat"/>
+      <xs:enumeration value="reinforcement"/>
+      <xs:enumeration value="replacement"/>
+      <xs:enumeration value="weather"/>
+      <xs:enumeration value="cards"/>
+      <xs:enumeration value="politics"/>
+      <xs:enumeration value="naval"/>
+      <xs:enumeration value="leaders"/>
+      <xs:enumeration value="markers"/>
+      <xs:enumeration value="hidden"/>
+      <xs:enumeration value="victory"/>
+      <xs:enumeration value="other"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================= annex: note, rule, list, table ================= -->
+
+  <xs:complexType name="Note">
+    <xs:annotation><xs:documentation>Descriptive commentary with no rule force.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="ref" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Rule">
+    <xs:annotation><xs:documentation>One normative clause. ref cites the rulebook section. phase, sides, units and turns narrow its scope.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="ref" type="xs:string"/>
+        <xs:attribute name="topic" type="Topic"/>
+        <xs:attribute name="phase" type="xs:IDREFS"/>
+        <xs:attribute name="sides" type="xs:IDREFS"/>
+        <xs:attribute name="units" type="xs:IDREFS"/>
+        <xs:attribute name="turns" type="Turns"/>
+        <xs:attribute name="optional" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Item">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="code" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="List">
+    <xs:annotation><xs:documentation>An enumeration. ordered="true" makes it a priority chain, first item tried first.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="item" type="Item" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="ordered" type="xs:boolean" default="false"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Col">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="label" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Row">
+    <xs:sequence>
+      <xs:element name="cell" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Table">
+    <xs:annotation><xs:documentation>A two-way lookup. rows and cols name the two keys. One cell per col in each row.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="col" type="Col" maxOccurs="unbounded"/>
+      <xs:element name="row" type="Row" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="rows" type="xs:string" use="required"/>
+    <xs:attribute name="cols" type="xs:string" use="required"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:group name="Annex">
+    <xs:choice>
+      <xs:element name="note" type="Note"/>
+      <xs:element name="rule" type="Rule"/>
+      <xs:element name="list" type="List"/>
+      <xs:element name="table" type="Table"/>
+    </xs:choice>
+  </xs:group>
+
+  <!-- ================= sides ================= -->
+
+  <xs:complexType name="Side">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="control" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="human"/>
+              <xs:enumeration value="automaton"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="hostile-to" type="xs:IDREFS"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Sides">
+    <xs:sequence>
+      <xs:element name="side" type="Side" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================= map ================= -->
+
+  <xs:complexType name="HexIds">
+    <xs:annotation><xs:documentation>The printed hex identifier scheme. pattern is a regular expression; the text states the ordering the rules rely on.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="pattern" type="xs:string" use="required"/>
+        <xs:attribute name="example" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Terrain">
+    <xs:annotation><xs:documentation>Used for both hex-terrain and hexside-terrain. stop: entering forces a stop, except for the unit types in stop-except. enter-only: only these unit types may enter or cross. blocks: which purposes this terrain blocks entirely.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="move-cost" type="MoveCost"/>
+        <xs:attribute name="stop" type="xs:boolean" default="false"/>
+        <xs:attribute name="stop-except" type="xs:IDREFS"/>
+        <xs:attribute name="enter-only" type="xs:IDREFS"/>
+        <xs:attribute name="defence-multiplier" type="xs:decimal"/>
+        <xs:attribute name="shift" type="xs:integer"/>
+        <xs:attribute name="blocks" type="Purposes"/>
+        <xs:attribute name="ref" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Network">
+    <xs:annotation><xs:documentation>A centre-to-centre link graph drawn on the map (rail, road, connector lines). mutable: ownership of links changes during play.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="carries" type="Purposes" use="required"/>
+        <xs:attribute name="mutable" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Region">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="RegionLayer">
+    <xs:annotation><xs:documentation>One named labelling of hexes. partition: every hex in at most one region. bounded-by: the hexside terrain whose edges delimit the regions. mutable: region state changes during play. Listing the regions is optional.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="region" type="Region" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="partition" type="xs:boolean" use="required"/>
+    <xs:attribute name="bounded-by" type="xs:IDREF"/>
+    <xs:attribute name="mutable" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="Space">
+    <xs:annotation><xs:documentation>An off-map location with node identity. pool: drawn from at random; box: a holding area; track: an ordered set of spaces, often used as a numeric register; display: a state board. returns: counters placed here can come back into play.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="box"/>
+              <xs:enumeration value="pool"/>
+              <xs:enumeration value="track"/>
+              <xs:enumeration value="display"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+        <xs:attribute name="returns" type="xs:boolean"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Map">
+    <xs:sequence>
+      <xs:element name="hex-ids" type="HexIds"/>
+      <xs:element name="hex-terrain" type="Terrain" maxOccurs="unbounded"/>
+      <xs:element name="hexside-terrain" type="Terrain" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="network" type="Network" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="region-layer" type="RegionLayer" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="space" type="Space" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================= counters ================= -->
+
+  <xs:complexType name="UnitType">
+    <xs:annotation><xs:documentation>steps: printed step range, e.g. "1-4". zoc: how far this type projects its zone of control. stacking: stacking value, a number or "none". hidden: placed face down.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="ground"/>
+              <xs:enumeration value="air"/>
+              <xs:enumeration value="naval"/>
+              <xs:enumeration value="hq"/>
+              <xs:enumeration value="leader"/>
+              <xs:enumeration value="marker"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="steps" type="xs:string"/>
+        <xs:attribute name="zoc">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="full"/>
+              <xs:enumeration value="own-hex"/>
+              <xs:enumeration value="none"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="stacking" type="xs:string"/>
+        <xs:attribute name="hidden" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Counters">
+    <xs:sequence>
+      <xs:element name="unit-type" type="UnitType" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================= sequence of play ================= -->
+
+  <xs:complexType name="Phase">
+    <xs:annotation><xs:documentation>A phase, segment or impulse. Phases nest. side: the acting side(s). turns: the game turns on which the phase exists. condition: a textual condition such as "seasonal turns only".</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="phase" type="Phase" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="side" type="xs:IDREFS"/>
+    <xs:attribute name="turns" type="Turns"/>
+    <xs:attribute name="condition" type="xs:string"/>
+    <xs:attribute name="optional" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="Sequence">
+    <xs:sequence>
+      <xs:element name="phase" type="Phase" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="turns" type="xs:positiveInteger"/>
+  </xs:complexType>
+
+  <!-- ================= stacking ================= -->
+
+  <xs:complexType name="Stacking">
+    <xs:annotation><xs:documentation>units and steps are the per-hex limits. enforced says when the limit is checked; repair says what happens to violations. exempt lists unit types with no stacking value.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="units" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="steps" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="enforced" type="xs:string" use="required"/>
+    <xs:attribute name="repair" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="eliminate-excess"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="exempt" type="xs:IDREFS"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- ================= zones of control ================= -->
+
+  <xs:complexType name="Zoc">
+    <xs:annotation><xs:documentation>One projection relation. A game may have several (asymmetric sides). range: 1 for the six adjacent hexes, 0 for own hex only, authored for a printed set. projected-by: unit types that project it (default: all ground units of the side). blocked-by: hexside terrain it does not cross. blocks: what an enemy may not do through it.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="side" type="xs:IDREFS"/>
+    <xs:attribute name="range" type="Extent" use="required"/>
+    <xs:attribute name="projected-by" type="xs:IDREFS"/>
+    <xs:attribute name="blocked-by" type="xs:IDREFS"/>
+    <xs:attribute name="negated-by-friendly" type="xs:boolean" default="false"/>
+    <xs:attribute name="stops-movement" type="xs:boolean" default="false"/>
+    <xs:attribute name="zoc-to-zoc-forbidden" type="xs:boolean" default="false"/>
+    <xs:attribute name="mandatory-attack" type="xs:boolean" default="false"/>
+    <xs:attribute name="blocks" type="Purposes"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- ================= movement ================= -->
+
+  <xs:complexType name="Mode">
+    <xs:annotation><xs:documentation>One movement procedure. phase: where it may be used. network: the link graph it travels on. randomizer: if success is rolled or drawn for.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+        <xs:attribute name="units" type="xs:IDREFS"/>
+        <xs:attribute name="phase" type="xs:IDREFS"/>
+        <xs:attribute name="network" type="xs:IDREF"/>
+        <xs:attribute name="randomizer" type="xs:IDREF"/>
+        <xs:attribute name="ref" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Movement">
+    <xs:annotation><xs:documentation>budget: what a move spends -- actions (each buys a short move), hexes (every hex costs one), or points (real terrain costs).</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="mode" type="Mode" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="budget" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="actions"/>
+          <xs:enumeration value="hexes"/>
+          <xs:enumeration value="points"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <!-- ================= supply ================= -->
+
+  <xs:complexType name="Segment">
+    <xs:annotation><xs:documentation>One leg of a layered trace, in order. free: ordinary hex path; network: along a link graph; region-gated: across regions of a layer, each of which must satisfy a condition.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="order" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="free"/>
+              <xs:enumeration value="network"/>
+              <xs:enumeration value="region-gated"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="length" type="Extent"/>
+        <xs:attribute name="network" type="xs:IDREF"/>
+        <xs:attribute name="layer" type="xs:IDREF"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Trace">
+    <xs:annotation><xs:documentation>A blocked path search from a unit to a source set. threshold: how many distinct sources must be reached (default 1). fatal: units out of supply are eliminated. checked: when the test is made.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="segment" type="Segment" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="side" type="xs:IDREFS"/>
+    <xs:attribute name="sources" type="xs:string" use="required"/>
+    <xs:attribute name="max-length" type="Extent" use="required"/>
+    <xs:attribute name="blocked-by-zoc" type="xs:boolean" use="required"/>
+    <xs:attribute name="threshold" type="xs:positiveInteger" default="1"/>
+    <xs:attribute name="fatal" type="xs:boolean" use="required"/>
+    <xs:attribute name="checked" type="xs:string" use="required"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Supply">
+    <xs:sequence>
+      <xs:element name="trace" type="Trace" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================= combat ================= -->
+
+  <xs:complexType name="Resolver">
+    <xs:annotation><xs:documentation>One way of resolving a fight. odds-table: ratio into a CRT; band-table: strength comparison bands; fire-table: keyed on the target, no ratio; card-race: opposed card piles; automatic: no lookup. The chart itself goes in a table child.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="kind" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="odds-table"/>
+          <xs:enumeration value="band-table"/>
+          <xs:enumeration value="fire-table"/>
+          <xs:enumeration value="card-race"/>
+          <xs:enumeration value="automatic"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="randomizer" type="xs:IDREF"/>
+    <xs:attribute name="min-odds" type="xs:string"/>
+    <xs:attribute name="max-odds" type="xs:string"/>
+    <xs:attribute name="rounding">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="defender"/>
+          <xs:enumeration value="attacker"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Modifier">
+    <xs:annotation><xs:documentation>kind: shift (CRT columns), multiplier (strength), drm (die roll), hit-limit, other. value is in the favour of applies-to. cap is the saturation limit for the whole class.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="applies-to" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="attacker"/>
+              <xs:enumeration value="defender"/>
+              <xs:enumeration value="either"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="shift"/>
+              <xs:enumeration value="multiplier"/>
+              <xs:enumeration value="drm"/>
+              <xs:enumeration value="hit-limit"/>
+              <xs:enumeration value="other"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="value" type="xs:decimal"/>
+        <xs:attribute name="cap" type="xs:decimal"/>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+        <xs:attribute name="phase" type="xs:IDREFS"/>
+        <xs:attribute name="ref" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Combat">
+    <xs:annotation><xs:documentation>mandatory: units in an enemy ZOC must attack.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="resolver" type="Resolver" maxOccurs="unbounded"/>
+      <xs:element name="modifier" type="Modifier" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="mandatory" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <!-- ================= retreat ================= -->
+
+  <xs:complexType name="Retreat">
+    <xs:annotation><xs:documentation>routed-by: who chooses the path. distance: hexes, e.g. "1-2". monotone: each step must be strictly farther from the origin. unsatisfiable: what an impossible retreat becomes. blocked-by: hexside terrain that may not be crossed.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="routed-by" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="attacker"/>
+          <xs:enumeration value="owner"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="distance" type="xs:string" use="required"/>
+    <xs:attribute name="monotone" type="xs:boolean" default="false"/>
+    <xs:attribute name="advance-after-combat" type="xs:boolean" use="required"/>
+    <xs:attribute name="unsatisfiable" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="eliminate"/>
+          <xs:enumeration value="convert-to-step-loss"/>
+          <xs:enumeration value="not-applicable"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="blocked-by" type="xs:IDREFS"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- ================= randomisers ================= -->
+
+  <xs:complexType name="Randomizer">
+    <xs:annotation><xs:documentation>die: memoryless roll of size faces. deck: shuffled, drawn without replacement, reshuffled on a condition. hand: cards selected under constraints, not drawn. fields: the independent result sections on a card.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="die"/>
+              <xs:enumeration value="deck"/>
+              <xs:enumeration value="hand"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="size" type="xs:positiveInteger"/>
+        <xs:attribute name="side" type="xs:IDREFS"/>
+        <xs:attribute name="fields" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- ================= weather ================= -->
+
+  <xs:complexType name="Weather">
+    <xs:annotation><xs:documentation>source: none, rolled (with a randomizer), or printed on the turn track. layer: the region layer weather is applied to, if regional.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="source" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="none"/>
+          <xs:enumeration value="rolled"/>
+          <xs:enumeration value="printed"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="randomizer" type="xs:IDREF"/>
+    <xs:attribute name="layer" type="xs:IDREF"/>
+    <xs:attribute name="ref" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- ================= victory ================= -->
+
+  <xs:complexType name="Condition">
+    <xs:annotation><xs:documentation>immediate: checked at all times; scheduled: checked at the turns given; final: checked at game end.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="side" type="xs:IDREFS" use="required"/>
+        <xs:attribute name="kind" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="immediate"/>
+              <xs:enumeration value="scheduled"/>
+              <xs:enumeration value="final"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="turns" type="Turns"/>
+        <xs:attribute name="ref" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Victory">
+    <xs:sequence>
+      <xs:element name="condition" type="Condition" maxOccurs="unbounded"/>
+      <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================= root ================= -->
+
+  <xs:element name="game">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sides" type="Sides"/>
+        <xs:element name="map" type="Map"/>
+        <xs:element name="counters" type="Counters"/>
+        <xs:element name="sequence" type="Sequence"/>
+        <xs:element name="stacking" type="Stacking"/>
+        <xs:element name="zoc" type="Zoc" maxOccurs="unbounded"/>
+        <xs:element name="movement" type="Movement"/>
+        <xs:element name="supply" type="Supply"/>
+        <xs:element name="combat" type="Combat"/>
+        <xs:element name="retreat" type="Retreat" minOccurs="0"/>
+        <xs:element name="randomizer" type="Randomizer" maxOccurs="unbounded"/>
+        <xs:element name="weather" type="Weather" minOccurs="0"/>
+        <xs:element name="victory" type="Victory"/>
+        <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+      <xs:attribute name="title" type="xs:string" use="required"/>
+      <xs:attribute name="publisher" type="xs:string"/>
+      <xs:attribute name="year" type="xs:gYear"/>
+      <xs:attribute name="players" type="xs:positiveInteger" use="required"/>
+      <xs:attribute name="source" type="xs:string"/>
+      <xs:attribute name="hex-scale" type="xs:string"/>
+      <xs:attribute name="turn-scale" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

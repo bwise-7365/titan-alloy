@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+hexsheet 1.0 -- a small language for hex-wargame map sheets.
+
+One element per address kind from the map-graphics taxonomy:
+  hex      a hex as an area (terrain), closed path (ring) and centre (glyphs at slots)
+  side     a hex plus one of its six edges, with an implied facing (fire dots, arrows)
+  edge     a single hexside: a stroke, or a glyph centred on it and oriented across it
+  path     an ordered edge chain: rivers, borders, coastlines, zone boundaries
+  link     an ordered hex-centre chain: rail, road, connectors
+  region   a set of hexes with a tint and/or an outline; layers may overlap
+  label    text at a hex slot, at a point, or along a path
+  panel    off-map furniture: a rectangle, optionally rotated, holding text, boxes,
+           tracks and tables
+
+Conventions
+  * Hexes are addressed by their printed identifier. The grid element says how
+    printed identifiers are generated from column and row: id-format is a template
+    with {col}, {row}, {col:02}, {row:02}, {rowletter}, {colletter} and literal text.
+    Letters run A..Z then AA, BB, .. (doubled).
+  * A hexside is written HEX:DIR. Flat-topped hexes use n ne se s sw nw; pointy-topped
+    hexes use ne e se sw w nw.
+  * Every colour is a palette id, never a literal, so that a recolour keeps
+    colour-as-data (position colours, faction colours) mutually distinguishable.
+  * Symbols are a fixed vocabulary the renderer knows how to draw; the XSD
+    enumerates them.
+  * Coordinates are in output units (px). The grid's size is the circumradius.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ================= simple types ================= -->
+
+  <xs:simpleType name="Dir">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="n"/><xs:enumeration value="ne"/><xs:enumeration value="e"/>
+      <xs:enumeration value="se"/><xs:enumeration value="s"/><xs:enumeration value="sw"/>
+      <xs:enumeration value="w"/><xs:enumeration value="nw"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Slot">
+    <xs:annotation><xs:documentation>Named positions inside a hex: c is the centre; the rest are offsets toward that compass point.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="c"/>
+      <xs:enumeration value="n"/><xs:enumeration value="ne"/><xs:enumeration value="e"/>
+      <xs:enumeration value="se"/><xs:enumeration value="s"/><xs:enumeration value="sw"/>
+      <xs:enumeration value="w"/><xs:enumeration value="nw"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexRef">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Za-z0-9]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexList">
+    <xs:list itemType="HexRef"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="EdgeRef">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Za-z0-9]+:(n|ne|e|se|s|sw|w|nw)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EdgeList">
+    <xs:list itemType="EdgeRef"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="RGB">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[0-9a-fA-F]{6}|none"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Symbol">
+    <xs:annotation><xs:documentation>The renderer's symbol vocabulary. Colour comes from the color attribute; text-carrying symbols take text.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="position-badge"/>
+      <xs:enumeration value="fire-intense"/>
+      <xs:enumeration value="fire-steady"/>
+      <xs:enumeration value="fire-square"/>
+      <xs:enumeration value="lvt-wreck"/>
+      <xs:enumeration value="arrival-box"/>
+      <xs:enumeration value="artillery"/>
+      <xs:enumeration value="tank"/>
+      <xs:enumeration value="pier-head"/>
+      <xs:enumeration value="city-major"/>
+      <xs:enumeration value="city-minor"/>
+      <xs:enumeration value="city"/>
+      <xs:enumeration value="capital"/>
+      <xs:enumeration value="town"/>
+      <xs:enumeration value="port"/>
+      <xs:enumeration value="port-multi"/>
+      <xs:enumeration value="port-key"/>
+      <xs:enumeration value="oil"/>
+      <xs:enumeration value="range-dot"/>
+      <xs:enumeration value="stacking"/>
+      <xs:enumeration value="star"/>
+      <xs:enumeration value="aid"/>
+      <xs:enumeration value="ice"/>
+      <xs:enumeration value="strait"/>
+      <xs:enumeration value="strait-broken"/>
+      <xs:enumeration value="arrow"/>
+      <xs:enumeration value="junction"/>
+      <xs:enumeration value="dot"/>
+      <xs:enumeration value="text"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Pattern">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="none"/>
+      <xs:enumeration value="dots"/>
+      <xs:enumeration value="hatch"/>
+      <xs:enumeration value="mottle"/>
+      <xs:enumeration value="palms"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================= definitions ================= -->
+
+  <xs:complexType name="Grid">
+    <xs:annotation><xs:documentation>One numbered hex field. Dai Senso has two. size is the circumradius; ox, oy the centre of the hex at (col-start, row-start). offset says which columns (flat) or rows (pointy), counted from zero, are shifted by half a hex. terrain is the default terrain. id-side is the hexside the rotated identifier sits inside.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="orientation" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="flat"/>
+          <xs:enumeration value="pointy"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="offset" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="odd"/>
+          <xs:enumeration value="even"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="cols" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="rows" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="size" type="xs:decimal" use="required"/>
+    <xs:attribute name="ox" type="xs:decimal" use="required"/>
+    <xs:attribute name="oy" type="xs:decimal" use="required"/>
+    <xs:attribute name="id-format" type="xs:string" use="required"/>
+    <xs:attribute name="col-start" type="xs:integer" default="1"/>
+    <xs:attribute name="row-start" type="xs:integer" default="1"/>
+    <xs:attribute name="col-step" type="xs:integer" default="1">
+      <xs:annotation><xs:documentation>Printed column number = col-start + index * col-step; -1 numbers columns from east to west.</xs:documentation></xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="row-step" type="xs:integer" default="1">
+      <xs:annotation><xs:documentation>Printed row number = row-start + index * row-step; -1 numbers rows from south to north.</xs:documentation></xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="terrain" type="xs:IDREF" use="required"/>
+    <xs:attribute name="show-ids" type="xs:boolean" default="true"/>
+    <xs:attribute name="id-side" type="Dir" default="w"/>
+    <xs:attribute name="clip" type="xs:string">
+      <xs:annotation><xs:documentation>Optional list of hexes to omit, as ranges "A1-A9 B1-B3", for irregular sheet outlines.</xs:documentation></xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Color">
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="value" type="RGB" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Terrain">
+    <xs:annotation><xs:documentation>A terrain appearance. fill is the hex fill; stroke is the grid stroke over this terrain. pattern adds a texture.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="fill" type="xs:IDREF" use="required"/>
+    <xs:attribute name="stroke" type="xs:IDREF" use="required"/>
+    <xs:attribute name="pattern" type="Pattern" default="none"/>
+  </xs:complexType>
+
+  <xs:complexType name="Line">
+    <xs:annotation><xs:documentation>A stroke style for paths, links, edges and outlines. casing draws a wider stroke underneath; ticks adds railway cross-ticks.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="stroke" type="xs:IDREF" use="required"/>
+    <xs:attribute name="width" type="xs:decimal" use="required"/>
+    <xs:attribute name="dash" type="xs:string"/>
+    <xs:attribute name="casing" type="xs:IDREF"/>
+    <xs:attribute name="casing-width" type="xs:decimal"/>
+    <xs:attribute name="ticks" type="xs:boolean" default="false"/>
+    <xs:attribute name="opacity" type="xs:decimal"/>
+  </xs:complexType>
+
+  <!-- ================= map content ================= -->
+
+  <xs:complexType name="Hexes">
+    <xs:annotation><xs:documentation>Bulk terrain assignment.</xs:documentation></xs:annotation>
+    <xs:attribute name="terrain" type="xs:IDREF" use="required"/>
+    <xs:attribute name="ids" type="HexList" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Glyph">
+    <xs:annotation><xs:documentation>A symbol at a slot of its hex. dir orients arrow-like symbols. scale is relative to the hex.</xs:documentation></xs:annotation>
+    <xs:attribute name="symbol" type="Symbol" use="required"/>
+    <xs:attribute name="slot" type="Slot" default="c"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="text" type="xs:string"/>
+    <xs:attribute name="dir" type="Dir"/>
+    <xs:attribute name="scale" type="xs:decimal" default="1"/>
+  </xs:complexType>
+
+  <xs:complexType name="Side">
+    <xs:annotation><xs:documentation>A glyph belonging to this hex, placed on the midpoint of the edge in direction dir and facing into the hex.</xs:documentation></xs:annotation>
+    <xs:attribute name="dir" type="Dir" use="required"/>
+    <xs:attribute name="symbol" type="Symbol" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="Hex">
+    <xs:sequence>
+      <xs:element name="glyph" type="Glyph" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="side" type="Side" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="HexRef" use="required"/>
+    <xs:attribute name="terrain" type="xs:IDREF"/>
+    <xs:attribute name="ring" type="xs:IDREF"/>
+    <xs:attribute name="ring-width" type="xs:decimal"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Edge">
+    <xs:annotation><xs:documentation>One hexside, as a stroke (line) and/or a glyph centred on it and oriented across it (symbol), with an optional label beside it.</xs:documentation></xs:annotation>
+    <xs:attribute name="at" type="EdgeRef" use="required"/>
+    <xs:attribute name="line" type="xs:IDREF"/>
+    <xs:attribute name="symbol" type="Symbol"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="label" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Path">
+    <xs:annotation><xs:documentation>An ordered chain of hexsides. offset shifts the stroke into the named hex of each edge, so two chains can share a hexside.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID"/>
+    <xs:attribute name="kind" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="line" type="xs:IDREF" use="required"/>
+    <xs:attribute name="edges" type="EdgeList" use="required"/>
+    <xs:attribute name="offset" type="xs:decimal" default="0"/>
+  </xs:complexType>
+
+  <xs:complexType name="Link">
+    <xs:annotation><xs:documentation>An ordered chain of hex centres. owner is mutable play state, emitted as a data attribute.</xs:documentation></xs:annotation>
+    <xs:attribute name="kind" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="line" type="xs:IDREF" use="required"/>
+    <xs:attribute name="hexes" type="HexList" use="required"/>
+    <xs:attribute name="owner" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Region">
+    <xs:annotation><xs:documentation>A set of hexes. layer groups regions that form one labelling; layers may overlap. tint washes the hexes; outline strokes the boundary edges.</xs:documentation></xs:annotation>
+    <xs:attribute name="layer" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="hexes" type="HexList" use="required"/>
+    <xs:attribute name="tint" type="xs:IDREF"/>
+    <xs:attribute name="opacity" type="xs:decimal" default="0.35"/>
+    <xs:attribute name="outline" type="xs:IDREF"/>
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="label-at" type="HexRef"/>
+  </xs:complexType>
+
+  <xs:complexType name="Label">
+    <xs:annotation><xs:documentation>Text placed at a hex slot (at + slot), at a point (x, y), or along a path (path). angle rotates; spacing is letter-spacing; halo draws a light outline for legibility.</xs:documentation></xs:annotation>
+    <xs:attribute name="text" type="xs:string" use="required"/>
+    <xs:attribute name="at" type="HexRef"/>
+    <xs:attribute name="slot" type="Slot" default="c"/>
+    <xs:attribute name="x" type="xs:decimal"/>
+    <xs:attribute name="y" type="xs:decimal"/>
+    <xs:attribute name="path" type="xs:IDREF"/>
+    <xs:attribute name="angle" type="xs:decimal" default="0"/>
+    <xs:attribute name="size" type="xs:decimal" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="weight" default="normal">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="normal"/>
+          <xs:enumeration value="bold"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="italic" type="xs:boolean" default="false"/>
+    <xs:attribute name="spacing" type="xs:decimal" default="0"/>
+    <xs:attribute name="halo" type="xs:boolean" default="false"/>
+    <xs:attribute name="anchor" default="middle">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="start"/>
+          <xs:enumeration value="middle"/>
+          <xs:enumeration value="end"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <!-- ================= furniture ================= -->
+
+  <xs:complexType name="PanelText">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="x" type="xs:decimal" use="required"/>
+        <xs:attribute name="y" type="xs:decimal" use="required"/>
+        <xs:attribute name="size" type="xs:decimal" use="required"/>
+        <xs:attribute name="weight" type="xs:string"/>
+        <xs:attribute name="color" type="xs:IDREF"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Box">
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="w" type="xs:decimal" use="required"/>
+    <xs:attribute name="h" type="xs:decimal" use="required"/>
+    <xs:attribute name="fill" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="Track">
+    <xs:annotation><xs:documentation>An ordered strip of cells; cells is a whitespace-separated list of cell labels.</xs:documentation></xs:annotation>
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="cell-w" type="xs:decimal" use="required"/>
+    <xs:attribute name="cell-h" type="xs:decimal" use="required"/>
+    <xs:attribute name="cells" type="xs:string" use="required"/>
+    <xs:attribute name="direction" default="h">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="h"/>
+          <xs:enumeration value="v"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="wrap" type="xs:positiveInteger"/>
+    <xs:attribute name="fill" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="TableRow">
+    <xs:sequence>
+      <xs:element name="cell" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Table">
+    <xs:sequence>
+      <xs:element name="row" type="TableRow" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="cell-w" type="xs:decimal" use="required"/>
+    <xs:attribute name="cell-h" type="xs:decimal" use="required"/>
+    <xs:attribute name="size" type="xs:decimal"/>
+  </xs:complexType>
+
+  <xs:complexType name="Panel">
+    <xs:annotation><xs:documentation>Off-map furniture. Coordinates of children are relative to the panel's top-left corner; rotate turns the whole panel about that corner. Panels may sit over live hexes; the game model never sees them.</xs:documentation></xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="text" type="PanelText"/>
+      <xs:element name="box" type="Box"/>
+      <xs:element name="track" type="Track"/>
+      <xs:element name="table" type="Table"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="title" type="xs:string"/>
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="w" type="xs:decimal" use="required"/>
+    <xs:attribute name="h" type="xs:decimal" use="required"/>
+    <xs:attribute name="rotate" type="xs:decimal" default="0"/>
+    <xs:attribute name="fill" type="xs:IDREF"/>
+    <xs:attribute name="stroke" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <!-- ================= root ================= -->
+
+  <xs:element name="sheet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="grid" type="Grid" maxOccurs="unbounded"/>
+        <xs:element name="palette">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="color" type="Color" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="terrains">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="terrain" type="Terrain" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="lines" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="line" type="Line" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="hexes" type="Hexes"/>
+          <xs:element name="hex" type="Hex"/>
+          <xs:element name="edge" type="Edge"/>
+          <xs:element name="path" type="Path"/>
+          <xs:element name="link" type="Link"/>
+          <xs:element name="region" type="Region"/>
+          <xs:element name="label" type="Label"/>
+          <xs:element name="panel" type="Panel"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+      <xs:attribute name="title" type="xs:string" use="required"/>
+      <xs:attribute name="source" type="xs:string"/>
+      <xs:attribute name="width" type="xs:decimal" use="required"/>
+      <xs:attribute name="height" type="xs:decimal" use="required"/>
+      <xs:attribute name="background" type="xs:IDREF" use="required"/>
+      <xs:attribute name="font" type="xs:string" default="Arial, Helvetica, sans-serif"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

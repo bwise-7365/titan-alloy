@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="hexrules.xsd"
+      id="tarawa" title="D-Day at Tarawa" publisher="Decision Games" year="2014" players="1"
+      source="DDAT-Rules_V13.pdf with DDaTarawaAddenda111616.pdf applied; DDaT_Panel.pdf; DDaT_Flipbook_v1.3.pdf"
+      hex-scale="100 yards"
+      turn-scale="30 minutes on turns 1-10; 60 minutes on turns 11-30; turn 16 is one 11-hour night turn">
+
+  <!-- ================= sides ================= -->
+  <sides>
+    <side id="us" name="United States" control="human">Marine companies with tank, engineer, artillery and HQ elements assaulting Betio.</side>
+    <side id="japanese" name="Japanese" control="automaton">Run entirely by the rules through a 54-card deck and a printed action matrix. Units and depth markers sit face down until revealed.</side>
+    <note>The two sides share no unit model, no combat procedure and no notion of control.</note>
+  </sides>
+
+  <!-- ================= map ================= -->
+  <map>
+    <hex-ids pattern="\d{4}|R[123][A-Z]|G" example="2336">Four digits, two per axis; position A14 is hex 2336. Beach approach hexes carry labels R1A, R2B, R3D and G instead. Rules check positions "from west to east" and pick "the lowest numbered position", so the printed numbering must supply a total order. Which pair of digits is the north-south index is not established from the scans.</hex-ids>
+
+    <hex-terrain id="beach" name="Beach">Blocks Japanese communication paths (11.2).</hex-terrain>
+    <hex-terrain id="clear" name="Clear"/>
+    <hex-terrain id="airstrip" name="Airstrip"/>
+    <hex-terrain id="palm" name="Palm Trees">Halves the strength of US infantry firing through the hex at range.</hex-terrain>
+    <hex-terrain id="building" name="Building" defence-multiplier="2">Unit strength doubled; depth marker not doubled.</hex-terrain>
+    <hex-terrain id="fortified-building" name="Fortified Building" defence-multiplier="2">Unit and depth strength both doubled.</hex-terrain>
+    <hex-terrain id="rough" name="Rough / Crater" stop="true" stop-except="us-infantry us-heavy-infantry us-engineer us-hq" defence-multiplier="2">Non-infantry US units may enter but must stop. Unit strength doubled; depth not.</hex-terrain>
+    <hex-terrain id="water" name="Water">Entered only by wading units or LVTs. Water hexes are in play; about half the map is water.</hex-terrain>
+    <hex-terrain id="reef" name="Coral Reef">As water; LVTs cross the reef line, other transports cannot.</hex-terrain>
+
+    <hexside-terrain id="seawall" name="Seawall" defence-multiplier="2">Unit strength doubled, depth not, and only if every adjacent attacking US unit attacks across a seawall hexside.</hexside-terrain>
+    <hexside-terrain id="pier" name="Pier" ref="5.22">May not be crossed by wading units. Runs along a chain of hexsides into the lagoon to a pier head.</hexside-terrain>
+    <hexside-terrain id="reef-line" name="Coral Reef Line">The reef edge; LVTs cross it, other transports cannot.</hexside-terrain>
+    <hexside-terrain id="fire-arc-line" name="Fire Arc Line" ref="6.23">Bounds the water fire zones. One printed dot colours every water hex reachable without crossing such a line.</hexside-terrain>
+
+    <network id="connectors" name="Fire position connector lines" carries="grouping">Join position hexes into position groups; the connected components are the groups.</network>
+
+    <region-layer id="positions" name="Japanese positions" partition="true">
+      <note>Each position is one hex with an ID of zone letter A-F plus number 1-17 (E13, A14, F7), one of six colours as its activation key, a coastal or inland classification, an optional artillery class L, M or H, and an optional setup code C, I or armour symbol.</note>
+    </region-layer>
+    <region-layer id="zones" name="Zones" partition="true">
+      <region id="zone-a" name="A"/>
+      <region id="zone-b" name="B"/>
+      <region id="zone-c" name="C"/>
+      <region id="zone-d" name="D"/>
+      <region id="zone-e" name="E"/>
+      <region id="zone-f" name="F"/>
+      <note ref="12.33">A partition of the positions. Used by the turn 30 victory condition; coastal positions in zones A, B and C may not be reinforced.</note>
+    </region-layer>
+    <region-layer id="position-groups" name="Position groups" partition="true">
+      <note ref="6.21">Connected components of the connector network. A group is one position for firing, for the hit limit and for communication, but is attacked one hex at a time (8.32) and reinforced only into its lowest-numbered eligible hex (12.31).</note>
+    </region-layer>
+    <region-layer id="fields-of-fire" name="Fields of fire" partition="false">
+      <note ref="6.2">One authored region per position, printed as coloured dots graded intense or steady. Fields of the same colour never overlap; different colours may, so a hex holds zero or more dots. A dot is printed on the side of the hex nearest the projecting position (6.22).</note>
+    </region-layer>
+    <region-layer id="water-fire-zones" name="Water fire zones" partition="true" bounded-by="fire-arc-line">
+      <note ref="6.23">Arcs of water hexes; membership is a flood fill bounded by fire arc lines. A single square steady-fire dot stands for the whole arc.</note>
+    </region-layer>
+    <region-layer id="beach-regions" name="Beach regions" partition="false">
+      <region id="beachhead" name="US beachhead">Beach hexes adjacent to or west of position D6 and adjacent to or north of position F13. Target set for US communication.</region>
+      <region id="southern-beach" name="Southern beach">Used by the turn 15 victory condition.</region>
+      <region id="red-1" name="Beach Red 1 approach">Approach hexes; the landing run follows a hex spine in a zig-zag.</region>
+      <region id="red-2" name="Beach Red 2 approach">Approach hexes; the only beach where the PR drift result applies.</region>
+      <region id="red-3" name="Beach Red 3 approach"/>
+      <region id="green" name="Beach Green approach"/>
+    </region-layer>
+
+    <space id="jp-reserve" name="Japanese Reserve box" kind="pool" side="japanese" returns="true">Face-down units drawn by Reinforce, Muster, Infiltrate and Tunnels.</space>
+    <space id="depth-coastal" name="Coastal depth marker pool" kind="pool" side="japanese"/>
+    <space id="depth-inland" name="Inland depth marker pool" kind="pool" side="japanese">One pool falls back to the other when empty; both empty is a terminal state (9.23).</space>
+    <space id="depth-armour" name="Armour depth marker pool" kind="pool" side="japanese"/>
+    <space id="jp-eliminated" name="Japanese Eliminated Units box" kind="box" side="japanese" returns="false">Partially recycled to the reserve on the overnight turn (19.0).</space>
+    <space id="lvt-available" name="Available LVT box" kind="box" side="us"/>
+    <space id="us-infantry-loss" name="US Infantry Loss box" kind="box" side="us"/>
+    <space id="shibasaki" name="Admiral Shibasaki box" kind="box" side="japanese"/>
+    <space id="turn-track" name="Turn track" kind="track"/>
+    <space id="card-track" name="Card and phase track" kind="track"/>
+    <space id="actions-track" name="Japanese Allowed Actions track" kind="track" side="japanese">Five face-down action letters R, M, A, P, I; one revealed at the start of turns 3, 5, 7 and 9; I revealed on turn 11.</space>
+    <space id="cp-range-track" name="US Command Post Range track" kind="track" side="us">A register holding the command post range, one to five hexes.</space>
+
+    <note>Other hex-centred data: potential LVT wreck hexes; the Niminoa shipwreck hex 0230, which has no effect on LVT movement; beach approach hexes with a primary and sometimes a secondary facing arrow; the clamp hexes 0139 and 0120 that bound lateral drift.</note>
+    <note ref="8.11">Range is counted including the target hex but not the firing hex.</note>
+  </map>
+
+  <!-- ================= counters ================= -->
+  <counters>
+    <unit-type id="us-infantry" name="Infantry company" side="us" kind="ground" steps="1-4" zoc="full" stacking="1">Controls the six adjacent hexes only while it has two or more steps. A four-step unit uses two counters and swaps to a replacement counter after its second loss (2.21).</unit-type>
+    <unit-type id="us-heavy-infantry" name="Heavy infantry" side="us" kind="ground" steps="1-4" zoc="full" stacking="1"/>
+    <unit-type id="us-tank" name="Tank" side="us" kind="ground" zoc="full" stacking="1">Controls the six adjacent hexes at any step level. Range up to 7; ranged fire needs an HQ.</unit-type>
+    <unit-type id="us-engineer" name="Engineer" side="us" kind="ground" zoc="own-hex" stacking="1">From turn 11 generates one support marker per turn if it has SP, is in US communication and out of enemy fields of fire (17.0).</unit-type>
+    <unit-type id="us-artillery" name="Artillery" side="us" kind="ground" zoc="own-hex" stacking="1">Ranged fire needs an HQ.</unit-type>
+    <unit-type id="us-hq" name="HQ" side="us" kind="hq" zoc="own-hex" stacking="1">Grants free actions to every unit in its hex and adjacent hexes at the start of the Action Phase; counts as a radio; enables tank and artillery ranged fire. An HQ that has moved stops granting free actions for the rest of the phase (7.33).</unit-type>
+    <unit-type id="us-command-post" name="Command post" side="us" kind="hq" zoc="own-hex" stacking="none">An immobilised HQ, turn 11 onward. Command range grows one step per turn to five while the hex is out of every Japanese field of fire; range is counted through fields of fire but not through Japanese units (16.0, 16.31).</unit-type>
+    <unit-type id="us-hero" name="Hero marker" side="us" kind="leader" stacking="none">Assigned to a unit; grants a free action, a weapon wild card or +1 strength, and an extra close-combat card. Flips to Inspired when killed, keeping only the free action. Eight exist. Major Ryan grants free actions to his whole hex and may lend his wild card to any unit stacked with him (10.17).</unit-type>
+    <unit-type id="us-garrison" name="Garrison marker" side="us" kind="marker" zoc="own-hex" stacking="none">Makes a position hex count as US-occupied for victory and for Japanese action checks. Removed if alone when a Japanese unit acts into its field of fire or enters its hex.</unit-type>
+    <unit-type id="jp-unit" name="Japanese garrison unit" side="japanese" kind="ground" steps="1" hidden="true">Carries formation, elite flag, defence strength, a set of US weapon requirements, an optional coastal code C. The unrevealed back shows only the general type.</unit-type>
+    <unit-type id="jp-depth" name="Depth marker" side="japanese" kind="marker" hidden="true">Stacked beneath a Japanese unit; the pair is one force. Adds strength and further weapon requirements; revealed separately; never alone in a hex (9.2).</unit-type>
+    <unit-type id="jp-tank" name="Japanese tank" side="japanese" kind="ground">Carries a position colour; gains no terrain benefit (13.3); extends the field of fire by one ring; has its own action column. All three begin the game disrupted.</unit-type>
+
+    <list id="us-counter-fields" name="Fields printed on a US counter">
+      <item code="designation">Historical only.</item>
+      <item code="type">Infantry, heavy infantry, tank, engineer, artillery, HQ.</item>
+      <item code="steps">1-4; attack strength falls as steps are lost.</item>
+      <item code="range">Blank (adjacent only), 2, 3, up to 7 for tanks, or U for unlimited.</item>
+      <item code="target-symbol">Selector used by fire cards and events.</item>
+      <item code="weapons">From the US Weapons Chart at full strength; printed on the counter once reduced.</item>
+      <item code="arrival">Arrival turn and beach; or Rdc (replacement counter), E (event entry), D+2 (optional rule).</item>
+    </list>
+    <list id="weapons" name="Weapon requirement codes" ref="8.2">
+      <item code="BZ"/><item code="MG">Also satisfies BR.</item><item code="BR"/><item code="MO"/><item code="RD"/><item code="DE"/>
+      <item code="FT"/><item code="AR"/><item code="NA"/><item code="SP"/>
+      <item code="FL">Flanking; not a weapon, satisfied by attack geometry.</item>
+      <item code="CC">Close combat; never satisfied by an attacking unit.</item>
+    </list>
+    <list id="markers" name="Markers">
+      <item>turn</item><item>phase</item><item>disrupted, US, two shades for this-phase and prior-phase</item><item>disrupted, Japanese</item>
+      <item>hero</item><item>inspired</item><item>action taken</item><item>naval fire</item><item>support</item><item>garrison</item>
+      <item>command post range</item><item>smoke</item><item>artillery destroyed</item><item>Japanese action letters</item><item>no LVT communication</item>
+    </list>
+    <rule id="disruption" ref="7.6 6.4" topic="counters">Disruption is a binary status on either side. A disrupted US unit may perform no action except removing its marker. A disrupted Japanese unit does not fire and projects no field of fire, except for blocking US communication. Japanese disruption is removed at the end of the Fire Phase for every position whose colour appeared on the card.</rule>
+  </counters>
+
+  <!-- ================= sequence of play ================= -->
+  <sequence turns="30">
+    <phase id="t-basic" name="Game turn, basic game" turns="1-10">
+      <phase id="b-amphib" name="US Amphibious Operations Phase" side="us"><note>Assign LVTs, run landing checks, wade units ashore, recover LVTs, stage next turn's arrivals.</note></phase>
+      <phase id="b-event" name="Event Phase"><note>Draw one event card; apply the event listed for the current turn.</note></phase>
+      <phase id="b-fire" name="Japanese Fire Phase" side="japanese">
+        <phase id="b-fire-positions" name="Position fire and actions"><note>Draw one fire card. Every position whose colour appears fires or acts, colour by colour in the order printed on the card, and west to east within a colour (12.0).</note></phase>
+        <phase id="b-fire-artillery" name="Artillery fire"/>
+        <phase id="b-fire-recover" name="Remove Japanese disruption"/>
+      </phase>
+      <phase id="b-action" name="US Action Phase" side="us">
+        <phase id="b-actions" name="Actions"><note>Three actions plus unlimited free actions.</note></phase>
+        <phase id="b-close-combat" name="Resolve all close combats"/>
+      </phase>
+      <phase id="b-end" name="End of Turn"><note>Clear the card track, advance the turn marker, reshuffle if the discard pile visibly exceeds the draw deck.</note></phase>
+    </phase>
+    <phase id="t-extended" name="Game turn, extended game" turns="11-30">
+      <phase id="x-amphib" name="US Amphibious Operations Phase" side="us"/>
+      <phase id="x-event-1" name="First Event Phase"/>
+      <phase id="x-fire" name="Japanese Fire Phase" side="japanese"/>
+      <phase id="x-event-2" name="Second Event Phase"/>
+      <phase id="x-engineer" name="US Engineer and HQ Phase" side="us"><note>Collect support markers, spend them, convert HQs to command posts, advance command range.</note></phase>
+      <phase id="x-action" name="US Action Phase" side="us"/>
+      <phase id="x-end" name="End of Turn"/>
+    </phase>
+    <rule id="overnight-turn" ref="19.0" topic="sequence" turns="16">Turn 16 replaces the extended sequence with a reduced one: most phases are skipped, fields of fire shrink to one hex, eliminated Japanese units are partially recycled to the reserve, and the loss-of-contact step flips all revealed non-tank Japanese units and depth markers face down again.</rule>
+  </sequence>
+
+  <!-- ================= stacking ================= -->
+  <stacking units="2" enforced="end of the US Action Phase only" repair="eliminate-excess" exempt="us-hero us-command-post us-garrison" ref="7.5">
+    <rule id="stacking-free-elsewhere" ref="7.5" topic="stacking">Limits may be exceeded freely during the Action Phase and during every other phase.</rule>
+    <rule id="concentrated-target" ref="7.52 6.35" topic="stacking">There is no step limit, but a hex holding five or more US steps is a concentrated target: every unit in it matches the fire card's target symbol.</rule>
+  </stacking>
+
+  <!-- ================= control relations ================= -->
+  <zoc id="us-control" name="US control" side="us" range="1" projected-by="us-infantry us-heavy-infantry us-tank" blocks="supply" ref="11.1">
+    <note>Every US unit controls its own hex. Infantry with two or more steps, and tanks at any step, also control the six adjacent hexes, even when disrupted. Single-step infantry, engineers, artillery, HQs, command posts and garrisons control only their own hex. A US unit stacked with a Japanese unit exerts no control (11.11); a Japanese unit adjacent to a US unit negates that unit's control of the adjacent hex (11.21). Controlled hexes block Japanese communication.</note>
+  </zoc>
+  <zoc id="jp-field-of-fire" name="Japanese field of fire" side="japanese" range="authored" projected-by="jp-unit jp-tank" stops-movement="true" blocks="supply" ref="6.2">
+    <note>Authored per position; see the fields-of-fire layer. A US land move ends on entering an intense-fire hex of a non-disrupted position, or a hex adjacent to any Japanese unit (7.31). Fields of fire block US communication even from disrupted positions (11.31); an empty position projects nothing.</note>
+    <rule id="fof-machine-gun" ref="6.31" topic="zoc">A machine-gun action adds every hex adjacent to an intense-fire hex.</rule>
+    <rule id="fof-mortar" ref="12.4" topic="zoc">A mortar action treats every hex within four hexes as steady fire.</rule>
+    <rule id="fof-tank" ref="6.24 13.1" topic="zoc">A Japanese tank adds every hex adjacent to a hex already in the field.</rule>
+  </zoc>
+
+  <!-- ================= movement ================= -->
+  <movement budget="actions">
+    <mode id="land-move" name="Land move" side="us" phase="b-actions x-action" ref="7.3">One action moves a unit up to two hexes on land, three from turn 11 (15.31). There is no per-hex cost; the move ends on the stopping predicate given under the Japanese field of fire.</mode>
+    <mode id="water-move" name="Water move" side="us" phase="b-amphib x-amphib" ref="5.21">Units in water move two hexes automatically, three from turn 11, and must always move closer to a beach hex. Wading units may not cross a pier hexside (5.22).</mode>
+    <mode id="landing" name="Amphibious landing" side="us" phase="b-amphib x-amphib" randomizer="deck" ref="5.1">Two cards per LVT stack: a drift result, then a landing result that runs the stack along its facing until a predicate holds. See the landing lists and rules.</mode>
+    <mode id="jp-action-moves" name="Japanese action moves" side="japanese" phase="b-fire-positions" ref="12.0 13.2">Japanese units move only as lettered actions: Redeploy to an unoccupied position within three hexes and closer to the nearest US unit; Assault into the nearest US-occupied hex in the field of fire; tank advances.</mode>
+    <rule id="one-action-per-unit" ref="7.2 7.21" topic="movement" sides="us">A unit performs at most one action per turn, free or not. Two units in a stack may perform the same action for the cost of one.</rule>
+  </movement>
+
+  <!-- ================= communication ================= -->
+  <supply>
+    <trace id="jp-communication" name="Japanese communication" side="japanese" sources="other Japanese-occupied positions or position groups" max-length="unlimited" blocked-by-zoc="true" threshold="2" fatal="false" checked="frozen at the start of the Japanese Fire Phase (11.23); evaluated at the moment of resolution during a US attack or close combat" ref="11.2">
+      <note>The path may not pass through any hex occupied or controlled by US units, nor through a beach hex. A position group counts as a single position, so at least two distinct positions or groups must be reached.</note>
+    </trace>
+    <trace id="us-communication" name="US communication" side="us" sources="any beach hex in the US beachhead region" max-length="unlimited" blocked-by-zoc="true" fatal="false" checked="when needed: securing positions, generating support markers, command post growth, elite withdrawal" ref="11.3">
+      <note>The path may not pass through any hex occupied by, or in the field of fire of, a Japanese unit, even if a US unit occupies that hex (11.31). A disrupted occupied position still blocks; an empty one does not. The blocking set is therefore the union of all live fields of fire.</note>
+    </trace>
+  </supply>
+
+  <!-- ================= combat ================= -->
+  <combat mandatory="false">
+    <resolver id="attack-chart" name="US Attack Results Chart" kind="band-table" rounding="none" ref="8.3">
+      <note>Row group: whether the attacking force holds every weapon required by the revealed unit and depth marker. Row: the band of total US attack strength against total Japanese defence: less, equal, greater but not double, at least double. Column: unit alone, unit with unrevealed depth marker, unit with revealed depth marker. Results are qualitative; "reveal and consult again" re-enters the chart one column to the right with the new strength and requirements.</note>
+      <table id="attack-table" name="US Attack Results Chart, condensed" rows="weapons satisfied; strength comparison" cols="target disposition">
+        <col label="Unit alone"/>
+        <col label="Unit + unrevealed depth"/>
+        <col label="Unit + revealed depth"/>
+        <row label="No; less or equal"><cell>attackers disrupted, Japanese gain depth</cell><cell>attackers disrupted</cell><cell>attackers disrupted</cell></row>
+        <row label="No; greater, not double"><cell>Japanese gain depth</cell><cell>attackers disrupted</cell><cell>no effect</cell></row>
+        <row label="No; at least double"><cell>Japanese disrupted</cell><cell>Japanese disrupted</cell><cell>Japanese disrupted, optional attrition</cell></row>
+        <row label="Yes; less"><cell>Japanese gain depth</cell><cell>attackers disrupted</cell><cell>no effect</cell></row>
+        <row label="Yes; equal"><cell>Japanese disrupted</cell><cell>no effect</cell><cell>Japanese disrupted</cell></row>
+        <row label="Yes; greater, not double"><cell>Japanese defeated</cell><cell>reveal depth, consult column to the right</cell><cell>depth eliminated, unit disrupted</cell></row>
+        <row label="Yes; at least double"><cell>Japanese defeated</cell><cell>reveal depth, consult column to the right</cell><cell>turns 1-10: depth eliminated, unit disrupted; turns 11-30: depth eliminated, unit defeated</cell></row>
+      </table>
+      <list id="attack-results" name="Attack chart result codes">
+        <item code="defeated">Japanese defeated: the unit is removed. An elite unit in communication withdraws to the reserve box instead, turns 1-16 only (8.33).</item>
+        <item code="jp-disrupted">Japanese disrupted.</item>
+        <item code="gain-depth">Japanese gain depth: draw and place a depth marker.</item>
+        <item code="depth-eliminated">Depth marker eliminated.</item>
+        <item code="attackers-disrupted">Attackers disrupted.</item>
+        <item code="no-effect">No effect.</item>
+        <item code="reveal">Reveal the depth marker and consult again, one column to the right.</item>
+        <item code="optional-attrition">The attacker may remove a step from an adjacent attacking unit to eliminate the depth marker.</item>
+      </list>
+      <rule id="weapon-cover" ref="8.2" topic="combat">The lower half of the chart applies only if the union of the attackers' weapons covers the union of the defenders' requirements. MG also satisfies BR.</rule>
+      <rule id="weapon-fl" ref="8.22" topic="combat">FL is satisfied by attacking from at least two hexes adjacent to the target but not adjacent to each other. If both the unit and its depth marker require FL, three adjacent hexes are needed, and those may be mutually adjacent.</rule>
+      <rule id="weapon-cc" ref="8.23" topic="combat">CC cannot be satisfied by any attacking unit; a unit requiring CC is beaten only by entering its hex.</rule>
+      <rule id="weapon-wildcard" ref="8.24 17.5" topic="combat">A hero, or from turn 11 a spent support marker, stands in for any one requirement except FL and CC.</rule>
+      <rule id="terrain-once" topic="combat">Terrain effects on Japanese defence are not cumulative: a unit in a crater attacked across a seawall is doubled once. Japanese tanks gain no terrain benefit (13.3). A hexside benefit applies only if every adjacent attacking unit attacks across such a hexside.</rule>
+      <rule id="attack-groups-one-hex" ref="8.32" topic="combat">A position group is attacked one hex at a time.</rule>
+    </resolver>
+
+    <resolver id="fire-chart" name="Japanese Fire Chart" kind="fire-table" randomizer="deck" ref="6.3">
+      <note>Indexed by the fire-dot grade in the target hex crossed with the reveal state of the firing position. Fire from an unrevealed position additionally disrupts.</note>
+      <table id="fire-table" name="Japanese Fire Chart" rows="fire level in target hex" cols="state of firing position">
+        <col label="Fire by revealed position"/>
+        <col label="Fire by unrevealed position"/>
+        <col label="Ambush by unoccupied position"/>
+        <row label="Intense (priority 1)"><cell>any US unit, any target symbol, loses a step</cell><cell>any US unit loses a step and is disrupted</cell><cell>one US unit with the target symbol loses a step</cell></row>
+        <row label="Steady (priority 2, includes water)"><cell>non-armoured US units with the target symbol lose a step</cell><cell>same, and on land also disrupted</cell><cell>one US unit with the target symbol is disrupted</cell></row>
+        <row label="Machine gun (priority 3)"><cell>non-armoured US units with the target symbol are disrupted</cell><cell>same, but lose a step</cell><cell>not applicable</cell></row>
+      </table>
+      <list id="fire-hit-priority" name="Fire hit selection" ordered="true" ref="6.31">
+        <item>intense-fire hexes, then steady, then machine-gun hexes</item>
+        <item>most steps</item>
+        <item>closest to the firing position</item>
+        <item>player chooses</item>
+      </list>
+      <rule id="step-loss-limit" ref="6.34 15.2" topic="combat" sides="us">A US unit may lose at most one step per Japanese Fire Phase on turns 1-10; from turn 11, at most one step per firing position.</rule>
+      <rule id="fire-does-not-reveal" ref="6.0" topic="hidden">Firing does not reveal an unrevealed position; only a US attack or close combat does.</rule>
+      <rule id="one-action-per-jp-unit" ref="12.0" topic="combat" sides="japanese">Each Japanese unit performs at most one action per Fire Phase. From turn 11 several actions gain an additional fire component.</rule>
+    </resolver>
+
+    <resolver id="close-combat" name="Close combat" kind="card-race" randomizer="deck" ref="8.6">
+      <note>Each side builds a face-down pile. US: one card per step to a maximum of four, plus one for an engineer with a flamethrower, plus one for a hero. Japanese: one per unit and per depth marker, plus one if attacking, plus one if total strength is 4 or more, plus one per CC requirement listed, plus one if a tank or a night turn (one card, not two, if both). Cards are revealed alternately, Japanese first; a card showing the colour of the position is a hit. A Japanese hit removes a US step and discards a US card; a US hit removes a depth marker, or the unit if none, and discards a Japanese card. Combat ends by elimination or mutual exhaustion; survivors are disrupted and pushed back to an adjacent hex. Terrain has no effect. Undrawn cards return to the top of the deck (8.66).</note>
+      <list id="close-combat-events" name="Close-combat card events">
+        <item>Conscripts surrender</item><item>Heroism</item><item>Naval artillery blast</item><item>Reinforce</item><item>US withdrawal hit</item>
+      </list>
+      <rule id="cc-disrupted" ref="8.6" topic="combat">A disrupted side spends its reveal removing disruption instead of turning a card.</rule>
+      <rule id="cc-on-landing" ref="5.1" topic="combat">A landing that ends in a Japanese-occupied hex triggers close combat immediately.</rule>
+    </resolver>
+
+    <modifier id="terrain-doubling" name="Terrain doubling" applies-to="defender" kind="multiplier" value="2">Building, fortified building, rough and seawall; applied once, never compounded.</modifier>
+    <modifier id="palm-halving" name="Palm trees" applies-to="attacker" kind="multiplier" value="0.5">US infantry firing through a palm hex at range.</modifier>
+    <modifier id="reveal-shift" name="Depth marker revealed" applies-to="either" kind="shift" value="1" ref="8.3">The reveal result moves the lookup one column to the right and the chart is consulted again.</modifier>
+    <modifier id="hit-limit" name="Hit limit" applies-to="defender" kind="hit-limit" ref="6.31 15.2">A position may hit at most as many US units as it has non-disrupted units plus depth markers, plus one from turn 11.</modifier>
+    <modifier id="hero-strength" name="Hero strength" applies-to="attacker" kind="other" value="1" ref="10.1">A hero grants a weapon wild card or +1 strength, at the player's choice.</modifier>
+    <modifier id="concentrated-target-mod" name="Concentrated target" applies-to="defender" kind="other" ref="6.35">Five or more US steps in a hex: every unit there matches the card's target symbol.</modifier>
+    <rule id="barrage-revealed" ref="8.44" topic="hidden">Barrage against an inland position requires the position to be revealed.</rule>
+  </combat>
+
+  <!-- ================= retreat ================= -->
+  <retreat routed-by="none" distance="0" advance-after-combat="false" unsatisfiable="not-applicable" ref="8.34">
+    <note>No retreat and no advance after combat. A defeated Japanese unit is removed and the attackers stay. The only combat-caused movement is the withdrawal of close-combat survivors to an adjacent hex, preferring one in communication (8.62, 8.63), and the withdrawal of a defeated elite unit in communication to the reserve box (8.33).</note>
+  </retreat>
+
+  <!-- ================= randomiser ================= -->
+  <randomizer id="deck" name="Card deck" kind="deck" size="54" fields="landing result; event keyed by turn; fire: three colour entries with star, armour and letter flags, a target symbol, an optional artillery value">One draw reads exactly one field. Discards are reshuffled only when the discard pile visibly exceeds the draw deck, so draws are correlated and a card seen this turn will not reappear soon. There are no dice.</randomizer>
+
+  <!-- ================= victory ================= -->
+  <victory>
+    <condition id="secured-10" side="us" kind="scheduled" turns="10" ref="14.2">Ten secured positions at the end of turn 10.</condition>
+    <condition id="secured-15" side="us" kind="scheduled" turns="15" ref="14.2">Fifteen secured positions at the end of turn 15, at least one projecting fire onto the southern beach.</condition>
+    <condition id="secured-30" side="us" kind="final" turns="30" ref="14.2">A zone-coverage condition over zones A-F at the end of turn 30.</condition>
+    <condition id="catastrophic-loss" side="japanese" kind="immediate" turns="2+" ref="14.1">The game ends in US defeat if, at any time after turn 1, no infantry unit on the map has at least three steps.</condition>
+    <rule id="secured-definition" ref="14.2" topic="victory">A position is secured when its hex holds a US unit or garrison, every position projecting intense fire into it also holds a US unit or garrison, and US communication can be traced from it.</rule>
+  </victory>
+
+  <!-- ================= game-specific layer ================= -->
+
+  <note>Hidden information</note>
+  <rule id="hidden-placement" ref="6.0" topic="hidden">Japanese units and depth markers are placed face down. An unrevealed unit still projects its field of fire and still fires. It is revealed only by a US attack or close combat; its depth marker is revealed separately and later.</rule>
+  <rule id="hidden-value" ref="6.3 8.3" topic="hidden">Concealment has mechanical value: fire from an unrevealed position also disrupts, and the attack chart has separate columns by reveal state.</rule>
+  <rule id="hidden-restore" ref="19.0" topic="hidden" turns="16">Concealment is restored once: the overnight loss-of-contact step flips all revealed non-tank Japanese units and depth markers face down.</rule>
+
+  <note>Amphibious landing</note>
+  <list id="drift-results" name="Drift results" ref="5.1">
+    <item code="none">No drift.</item>
+    <item code="1L">Shift one hex left, retaining facing; clamped at boundary hex 0139 or 0120.</item>
+    <item code="1R">Shift one hex right, retaining facing; clamped likewise.</item>
+    <item code="PR">Pivot in place to face the next hexside to the right. Beach Red 2 only; no drift elsewhere.</item>
+  </list>
+  <list id="landing-locations" name="Landing result locations" ref="5.12">
+    <item code="Reef">Stay put.</item>
+    <item code="Water">Run along the facing until the first LVT-wreck hex.</item>
+    <item code="Beach">Run along the facing until the first beach hex.</item>
+    <item code="Inland 1">Run to one hex past the beach, disregarding intervening Japanese units.</item>
+    <item code="Inland 2">Run to two hexes past the beach, disregarding intervening Japanese units.</item>
+  </list>
+  <rule id="landing-facing" ref="5.1" topic="geometry">Units in a beach approach hex are oriented along the printed arrow; this is the only unit facing in the game. Each landing result also gives a step count for the carried units and one for the LVT.</rule>
+  <rule id="landing-ray" ref="5.12" topic="geometry">Each location result is a ray cast along the facing direction until its predicate is satisfied.</rule>
+  <rule id="landing-red-1-spine" ref="5.12" topic="geometry">The Beach Red 1 run follows a hex spine, first to the left then to the right in a zig-zag, rather than a straight hexrow.</rule>
+  <rule id="landing-birds-beak" ref="addenda" topic="geometry">Hexes 1138, 1237 and 1238 have hard-coded inland destinations 1338 and 1437.</rule>
+
+  <note>Japanese lettered actions</note>
+  <rule id="letters-unlocked" ref="12.0" topic="sequence">Five action markers R, M, A, P, I sit face down on the actions track; one is revealed at the start of turns 3, 5, 7 and 9, and I on turn 11. Once revealed, a fire card showing that letter beside a colour makes positions of that colour perform the action instead of firing.</rule>
+  <table id="lettered-actions" name="Japanese action matrix" rows="action letter" cols="position classification" ref="12.0">
+    <col label="Occupied, US in field of fire"/>
+    <col label="Occupied, no US in field of fire"/>
+    <col label="Unoccupied, in communication, within 2 hexes of a US unit"/>
+    <row label="R"><cell>Re-Supply: place a depth marker, or fire if all units already have one</cell><cell>Redeploy: move to an unoccupied position within 3 hexes and closer to the nearest US unit</cell><cell>Reinforce: place a reserve unit and a depth marker</cell></row>
+    <row label="M"><cell>Machine-gun fire: extend the field of fire to hexes adjacent to intense-fire hexes</cell><cell>Mortar fire: treat all hexes within 4 as steady fire</cell><cell>Muster: place a reserve unit</cell></row>
+    <row label="P"><cell>Patrol: disrupt every US unit in the field of fire, no fire</cell><cell>Patrol: disrupt one US unit within 4 hexes</cell><cell>none</cell></row>
+    <row label="A"><cell>Assault: move into the nearest US-occupied hex in the field of fire and conduct close combat</cell><cell>Artillery fire, if a coastal position with guns</cell><cell>Ambush: one step loss in the intense field, else one disruption in the steady field</cell></row>
+    <row label="I"><cell>none</cell><cell>none</cell><cell>Infiltrate: place a reserve unit in a position not in Japanese communication</cell></row>
+  </table>
+  <list id="armour-actions" name="Japanese armour actions" ref="13.2">
+    <item>Fire or Advance</item><item>Overrun</item><item>Multiple Fire</item><item>Advance and Fire</item><item>Double Advance or Fire</item>
+  </list>
+
+  <note>Deterministic tie-breaking; every Japanese choice is an ordered chain ending in player choice</note>
+  <list id="depth-placement" name="Depth-marker placement" ordered="true" ref="9.2">
+    <item>closest to a US unit</item><item>coastal before inland</item><item>lowest ID number</item><item>lowest ID letter</item>
+  </list>
+  <list id="artillery-target" name="Artillery target" ordered="true" ref="6.5">
+    <item>in a beach approach hex</item><item>in the water</item><item>in a beach hex</item><item>most steps</item><item>player chooses</item>
+  </list>
+  <list id="assault-target" name="Assault target" ordered="true" ref="12.8">
+    <item>nearest US-occupied hex in the field of fire</item><item>least US strength</item><item>player chooses</item>
+  </list>
+  <list id="tactical-reinforcement" name="Tactical reinforcement placement" ordered="true" ref="9.3">
+    <item>nearest unoccupied inland position</item><item>closest to a US unit</item><item>lowest number</item><item>lowest letter</item>
+  </list>
+
+  <note>Reinforcement and replacement</note>
+  <rule id="us-arrivals" ref="2.2" topic="reinforcement" sides="us">Each US unit is printed with an arrival turn and beach. During the Amphibious Operations Phase of turn n, units scheduled for turn n+1 are placed in beach approach hexes. Units marked E enter on an event; events may move units forward or back along the track (Expedited Arrival, Transport Delayed).</rule>
+  <rule id="jp-pool-draw" ref="9.2 9.23" topic="reinforcement" sides="japanese">Japanese reinforcement is a pool draw. Reinforce, Muster, Infiltrate and Tunnels draw a face-down unit from the reserve and place it by the placement priorities. Depth markers are drawn from the coastal or inland pool with a fallback when one empties.</rule>
+  <rule id="jp-no-reinforce-abc" ref="12.33" topic="reinforcement" sides="japanese">Coastal positions in zones A, B and C may not be reinforced.</rule>
+
+  <note>Leaders, support and garrisons</note>
+  <rule id="support-markers" ref="17.0" topic="markers" sides="us" turns="11+">One support marker per engineer with SP in US communication and out of enemy fields of fire. Spent for a garrison, a disruption removal, a free action, or a weapon wild card. Expire at end of turn.</rule>
+  <rule id="free-actions" ref="7.2 7.3" topic="movement" sides="us">Three actions per turn, plus free actions for units with a hero, inspired or disruption marker; for HQ units; for any unit in HQ command at the start of the phase; for any unit in command post range; and for any unit for which a support marker is spent.</rule>
+  <rule id="naval-fire" topic="markers" sides="us">Naval fire markers provide off-map fire support as directed by cards and events.</rule>
+</game>
