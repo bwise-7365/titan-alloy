@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<counters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexcounters.xsd"
+          id="tarawa" title="D-Day at Tarawa" size="15.875" corner="0.05"
+          source="Copy_of_D-Day_at_Tarawa_USMC_OOB_Chart_V1.1.pdf; 4-step_Companies.pdf; DDAT-Rules_V13.pdf 2.2-2.26">
+  <palette>
+    <color id="ink" value="#111111"/>
+    <color id="white" value="#ffffff"/>
+    <color id="usmc" value="#8a9a3a" name="US Marines"/>
+    <color id="cream" value="#f3ead2" name="Japanese"/>
+    <color id="jpred" value="#c8202a"/>
+    <color id="jpdark" value="#3a3a3a"/>
+    <color id="blue" value="#3a78c0"/>
+    <color id="orange" value="#f0a020"/>
+    <color id="green" value="#5a9a3a"/>
+    <color id="grey" value="#8a8a8a"/>
+    <color id="teal" value="#2aa198"/>
+    <color id="pos-red" value="#d23a3a" name="position colour"/>
+    <color id="pos-blue" value="#3b8ed0" name="position colour"/>
+    <color id="pos-green" value="#78b23c" name="position colour"/>
+    <color id="band-green" value="#2f5f1f" name="replacement counter band"/>
+  </palette>
+  <styles>
+    <style id="us" ground="usmc" text="white" box-stroke="ink"/>
+    <style id="jp-elite" ground="cream" text="jpred" box-stroke="jpred"/>
+    <style id="jp" ground="cream" text="jpred" box-stroke="white" box-fill="white"/>
+    <style id="mk-blue" ground="blue" text="white" box-stroke="white"/>
+    <style id="mk-orange" ground="orange" text="ink" box-stroke="ink"/>
+    <style id="mk-green" ground="green" text="white" box-stroke="white"/>
+    <style id="mk-grey" ground="grey" text="white" box-stroke="white"/>
+  </styles>
+  <counter id="us-i-3-2" family="unit" name="I/3/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">I/3/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R1</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-k-3-2" family="unit" name="K/3/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">K/3/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R1</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-3-a-1-18" family="unit" name="3/A/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/A/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-3-d-2-18" family="unit" name="3/D/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/D/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R1</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-e-2-2" family="unit" name="E/2/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">E/2/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R2</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-f-2-2" family="unit" name="F/2/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">F/2/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-2-a-1-18" family="unit" name="2/A/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/A/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-2-d-2-18" family="unit" name="2/D/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/D/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-e-2-8" family="unit" name="E/2/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">E/2/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R3</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-f-2-8" family="unit" name="F/2/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">F/2/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R3</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-2-c-1-18" family="unit" name="2/C/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/C/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R3</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-2-f-2-18" family="unit" name="2/F/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/F/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">1|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-l-3-2" family="unit" name="L/3/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">L/3/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-m-3-2" family="unit" name="M/3/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">M/3/2</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R1</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-g-2-2" family="unit" name="G/2/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">G/2/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-h-2-2" family="unit" name="H/2/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">H/2/2</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R2</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-g-2-8" family="unit" name="G/2/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">G/2/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-h-2-8" family="unit" name="H/2/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">H/2/8</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">2|R3</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-hall-8-2" family="leader" name="Hall 8/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">Hall 8/2</text>
+      <symbol icon="hq"/>
+      <text slot="MR" size="small">3|R2</text>
+      <value>Hero RD</value>
+    </front>
+    <back derived="reduced">
+      <value>RD</value>
+    </back>
+  </counter>
+  <counter id="us-shoup-2-2" family="leader" name="Shoup 2/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">Shoup 2/2</text>
+      <symbol icon="hq"/>
+      <text slot="MR" size="small">3|R2</text>
+      <value>Hero RD</value>
+    </front>
+    <back derived="reduced">
+      <value>RD</value>
+    </back>
+  </counter>
+  <counter id="us-3-a-2t" family="unit" name="3/A/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/A/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">4|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-2-a-2t" family="unit" name="2/A/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/A/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">4|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-2-c-2t" family="unit" name="2/C/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">2/C/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">4|R3</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-a-1-2" family="unit" name="A/1/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">A/1/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-b-1-2" family="unit" name="B/1/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">B/1/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-c-1-2" family="unit" name="C/1/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">C/1/2</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-d-1-2" family="unit" name="D/1/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">D/1/2</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-i-3-8" family="unit" name="I/3/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">I/3/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-k-3-8" family="unit" name="K/3/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">K/3/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-l-3-8" family="unit" name="L/3/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">L/3/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-m-3-8" family="unit" name="M/3/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">M/3/8</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-1-a-2t" family="unit" name="1/A/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/A/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-1-a-1-18" family="unit" name="1/A/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/A/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-1-d-2-18" family="unit" name="1/D/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/D/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R1</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-3-c-2t" family="unit" name="3/C/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/C/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-3-c-1-18" family="unit" name="3/C/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/C/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-3-f-2-18" family="unit" name="3/F/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">3/F/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">6|R3</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-a-1-8" family="unit" name="A/1/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">A/1/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-b-1-8" family="unit" name="B/1/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">B/1/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-c-1-8" family="unit" name="C/1/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">C/1/8</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-d-1-8" family="unit" name="D/1/8">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">D/1/8</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-1-c-2t" family="unit" name="1/C/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/C/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-1-c-1-18" family="unit" name="1/C/1/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/C/1/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">DE|FT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-1-f-2-18" family="unit" name="1/F/2/18">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/F/2/18</text>
+      <symbol icon="engineer"/>
+      <steps count="1" max="1" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">17|R2</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>2</value>
+      <text slot="LR" size="small">SP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-a-1-6" family="unit" name="A/1/6">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">A/1/6</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">28|G</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-b-1-6" family="unit" name="B/1/6">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">B/1/6</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">28|G</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-c-1-6" family="unit" name="C/1/6">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">C/1/6</text>
+      <symbol icon="infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">28|G</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>7-2</value>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>5-2</value>
+      <text slot="LR" size="small">BR|RD</text>
+    </back>
+  </counter>
+  <counter id="us-d-1-6" family="unit" name="D/1/6">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">D/1/6</text>
+      <symbol icon="heavy-infantry"/>
+      <steps count="4" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">28|G</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>8-3</value>
+      <text slot="LR" size="small">MG</text>
+    </front>
+    <back derived="reduced">
+      <steps count="3" max="4" slot="LCOL" color="white"/>
+      <value>6-3</value>
+      <text slot="LR" size="small">MG|MO</text>
+    </back>
+  </counter>
+  <counter id="us-1-b-2t" family="unit" name="1/B/2T">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/B/2T</text>
+      <silhouette kind="tank" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">28|G</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>4-7</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-7</value>
+    </back>
+  </counter>
+  <counter id="us-holmes-6-2" family="leader" name="Holmes 6/2">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">Holmes 6/2</text>
+      <symbol icon="hq"/>
+      <text slot="MR" size="small">28|G</text>
+      <value>Hero RD</value>
+    </front>
+    <back derived="reduced">
+      <value>RD</value>
+    </back>
+  </counter>
+  <counter id="us-a-1-10" family="unit" name="A/1/10">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">A/1/10</text>
+      <symbol icon="artillery"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">E|R2</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>4-U</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-U</value>
+    </back>
+  </counter>
+  <counter id="us-b-1-10" family="unit" name="B/1/10">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">B/1/10</text>
+      <symbol icon="artillery"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">E|R2</text>
+      <glyph kind="triangle" slot="LL" color="ink"/>
+      <value>4-U</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-U</value>
+    </back>
+  </counter>
+  <counter id="us-c-1-10" family="unit" name="C/1/10">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">C/1/10</text>
+      <symbol icon="artillery"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">E|R2</text>
+      <glyph kind="circle" slot="LL" color="ink"/>
+      <value>4-U</value>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="2" slot="LCOL" color="white"/>
+      <value>2-U</value>
+    </back>
+  </counter>
+  <!-- the second, replacement counter of a four-step company carries a dark band (rules 2.21) -->
+  <counter id="us-a-1-2-rdc" family="unit" name="A/1/2 replacement counter">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">A/1/2</text>
+      <symbol icon="infantry"/>
+      <steps count="2" max="4" slot="LCOL" color="white"/>
+      <text slot="MR" size="small">Rdc</text>
+      <glyph kind="diamond" slot="LL" color="ink"/>
+      <value>3-2</value>
+      <text slot="LR" size="small">BR</text>
+      <band color="band-green" height="6"/>
+    </front>
+    <back derived="reduced">
+      <steps count="1" max="4" slot="LCOL" color="white"/>
+      <value>1-2</value>
+      <text slot="LR" size="small">RD</text>
+    </back>
+  </counter>
+  <counter id="us-lvt" family="marker" name="LVT 1/A/2AT">
+    <front style="us">
+      <text slot="TC" size="medium" weight="bold">1/A/2AT</text>
+      <silhouette kind="lvt" color="ink"/>
+      <steps count="2" max="2" slot="LCOL" color="white"/>
+    </front>
+    <back derived="reduced"><steps count="1" max="2" slot="LCOL" color="white"/></back>
+  </counter>
+  <counter id="jp-1-a-1-7ssnl" family="unit" name="Japanese A/1/7SSNL">
+    <front style="jp-elite">
+      <text slot="TC" size="small" color="jpdark">A/1/7SSNL</text>
+      <symbol icon="infantry"/>
+      <text slot="LL" size="small" weight="bold">FL|RD</text>
+      <value anchor="end">2</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-2-b-1-7ssnl" family="unit" name="Japanese B/1/7SSNL">
+    <front style="jp-elite">
+      <text slot="TC" size="small" color="jpdark">B/1/7SSNL</text>
+      <symbol icon="infantry"/>
+      <text slot="LL" size="small" weight="bold">MG|FT</text>
+      <value anchor="end">2</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-3-3-111" family="unit" name="Japanese 3/111">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">3/111</text>
+      <symbol icon="infantry"/>
+      <text slot="LL" size="small" weight="bold">MG</text>
+      <value anchor="end">2</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-4-2-111" family="unit" name="Japanese 2/111">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">2/111</text>
+      <symbol icon="infantry"/>
+      <text slot="LL" size="small" weight="bold">BZ</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-5-eng-4" family="unit" name="Japanese Eng 4">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Eng 4</text>
+      <symbol icon="engineer"/>
+      <text slot="LL" size="small" weight="bold">FT</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-6-hq-3sb" family="unit" name="Japanese HQ 3SB">
+    <front style="jp-elite">
+      <text slot="TC" size="small" color="jpdark">HQ 3SB</text>
+      <symbol icon="hq"/>
+      <text slot="LL" size="small" weight="bold">RD</text>
+      <value anchor="end">2</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-7-at-1" family="unit" name="Japanese AT 1">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">AT 1</text>
+      <symbol icon="anti-tank"/>
+      <text slot="LL" size="small" weight="bold">AR</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-8-mg-2" family="unit" name="Japanese MG 2">
+    <front style="jp-elite">
+      <text slot="TC" size="small" color="jpdark">MG 2</text>
+      <symbol icon="machine-gun"/>
+      <text slot="LL" size="small" weight="bold">MG|FT</text>
+      <value anchor="end">2</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-9-tank" family="unit" name="Japanese Tank">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Tank</text>
+      <silhouette kind="tank" color="jpdark"/>
+      <glyph kind="disc" slot="UL" color="pos-red"/>
+      <text slot="LL" size="small" weight="bold">AR</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-10-tank" family="unit" name="Japanese Tank">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Tank</text>
+      <silhouette kind="tank" color="jpdark"/>
+      <glyph kind="disc" slot="UL" color="pos-blue"/>
+      <text slot="LL" size="small" weight="bold">AR</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-11-tank" family="unit" name="Japanese Tank">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Tank</text>
+      <silhouette kind="tank" color="jpdark"/>
+      <glyph kind="disc" slot="UL" color="pos-green"/>
+      <text slot="LL" size="small" weight="bold">AR</text>
+      <value anchor="end">1</value>
+    </front>
+    <back derived="concealed"/>
+  </counter>
+  <counter id="jp-depth-1" family="marker" name="Coastal Depth marker">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Coastal|Depth</text>
+      <text slot="LL" size="small" weight="bold">CC</text>
+      <value anchor="end">1</value>
+    </front>
+    <back style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Coastal|Depth</text></back>
+  </counter>
+  <counter id="jp-depth-2" family="marker" name="Coastal Depth marker">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Coastal|Depth</text>
+      <text slot="LL" size="small" weight="bold">MO</text>
+      <value anchor="end">1</value>
+    </front>
+    <back style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Coastal|Depth</text></back>
+  </counter>
+  <counter id="jp-depth-3" family="marker" name="Inland Depth marker">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Inland|Depth</text>
+      <text slot="LL" size="small" weight="bold">FL</text>
+      <value anchor="end">1</value>
+    </front>
+    <back style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Inland|Depth</text></back>
+  </counter>
+  <counter id="jp-depth-4" family="marker" name="Inland Depth marker">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Inland|Depth</text>
+      <text slot="LL" size="small" weight="bold">CC</text>
+      <value anchor="end">1</value>
+    </front>
+    <back style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Inland|Depth</text></back>
+  </counter>
+  <counter id="jp-depth-5" family="marker" name="Armor Depth marker">
+    <front style="jp">
+      <text slot="TC" size="small" color="jpdark">Armor|Depth</text>
+      <text slot="LL" size="small" weight="bold">AR</text>
+      <value anchor="end">1</value>
+    </front>
+    <back style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Armor|Depth</text></back>
+  </counter>
+  <counter id="mk-turn" family="marker" name="turn">
+    <front style="mk-blue"><text slot="CENTRE" size="large" weight="bold">Turn</text></front>
+    <back style="mk-blue"><text slot="CENTRE" size="large" weight="bold">Turn</text></back>
+  </counter>
+  <counter id="mk-phase" family="marker" name="phase">
+    <front style="mk-blue"><text slot="CENTRE" size="large" weight="bold">Phase</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-action-a" family="marker" name="action-a">
+    <front style="mk-orange"><text slot="CENTRE" size="large" weight="bold">A</text></front>
+    <back style="mk-orange"><text slot="CENTRE" size="medium">Japanese|Action</text></back>
+  </counter>
+  <counter id="mk-action-i" family="marker" name="action-i">
+    <front style="mk-orange"><text slot="CENTRE" size="large" weight="bold">I</text></front>
+    <back style="mk-orange"><text slot="CENTRE" size="medium">Japanese|Action</text></back>
+  </counter>
+  <counter id="mk-action-m" family="marker" name="action-m">
+    <front style="mk-orange"><text slot="CENTRE" size="large" weight="bold">M</text></front>
+    <back style="mk-orange"><text slot="CENTRE" size="medium">Japanese|Action</text></back>
+  </counter>
+  <counter id="mk-action-p" family="marker" name="action-p">
+    <front style="mk-orange"><text slot="CENTRE" size="large" weight="bold">P</text></front>
+    <back style="mk-orange"><text slot="CENTRE" size="medium">Japanese|Action</text></back>
+  </counter>
+  <counter id="mk-action-r" family="marker" name="action-r">
+    <front style="mk-orange"><text slot="CENTRE" size="large" weight="bold">R</text></front>
+    <back style="mk-orange"><text slot="CENTRE" size="medium">Japanese|Action</text></back>
+  </counter>
+  <counter id="mk-action-taken" family="marker" name="action-taken">
+    <front style="mk-green"><text slot="CENTRE" size="medium" weight="bold">US|Action|Taken</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-command-range" family="marker" name="command-range">
+    <front style="mk-green"><symbol icon="hq" stroke="white"/><text slot="TC" size="small">2/2</text><text slot="BOTTOM" size="medium" weight="bold">COMMAND RANGE</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-support" family="marker" name="support">
+    <front style="mk-green"><emblem kind="star" color="white" scale="0.8"/><text slot="BOTTOM" size="medium" weight="bold">SUPPORT</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-naval-gunfire" family="marker" name="naval-gunfire">
+    <front style="mk-blue"><text slot="TC" size="medium" weight="bold">Naval|Gunfire</text><value>9-U</value></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-no-lvt-comm" family="marker" name="no-lvt-comm">
+    <front style="mk-green"><text slot="CENTRE" size="medium" weight="bold">No|LVT|Comm</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-hero" family="marker" name="hero">
+    <front style="mk-grey"><emblem kind="star" color="white" scale="0.7"/><text slot="BOTTOM" size="medium" weight="bold">HERO</text></front>
+    <back style="mk-grey"><text slot="CENTRE" size="medium" weight="bold">Inspired</text></back>
+  </counter>
+  <counter id="mk-garrison" family="marker" name="garrison">
+    <front style="mk-grey"><text slot="CENTRE" size="medium" weight="bold">Garrison</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-disrupted-us" family="marker" name="disrupted-us">
+    <front style="mk-grey"><text slot="CENTRE" size="medium" weight="bold">Disrupted</text></front>
+    <back style="mk-grey"><text slot="CENTRE" size="medium" weight="bold">Disrupted|(prior)</text></back>
+  </counter>
+  <counter id="mk-disrupted-jp" family="marker" name="disrupted-jp">
+    <front style="jp"><text slot="CENTRE" size="medium" weight="bold" color="jpdark">Disrupted</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-smoke" family="marker" name="smoke">
+    <front style="mk-grey"><emblem kind="cloud" color="white" scale="0.8"/><text slot="BOTTOM" size="medium" weight="bold">Smoke</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-artillery-destroyed" family="marker" name="artillery-destroyed">
+    <front style="jp"><symbol icon="artillery" stroke="jpdark"/><text slot="BOTTOM" size="small" weight="bold" color="jpdark">DESTROYED</text></front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-shibasaki" family="marker" name="shibasaki">
+    <front style="jp"><text slot="TC" size="small" color="jpdark">Adm. Shibasaki</text><emblem kind="roundel" color="jpred" color2="white" scale="0.7"/><text slot="BOTTOM" size="medium" weight="bold" color="jpdark">In Command</text></front>
+    <back style="jp"><text slot="TC" size="small" color="jpdark">Adm. Shibasaki</text><text slot="CENTRE" size="large" weight="bold">Killed</text></back>
+  </counter>
+  <sheet id="sheet" title="D-Day at Tarawa counters" cols="10" rows="9" gutter="0.5" margin="8" mirror="horizontal">
+    <place counter="us-i-3-2"/>
+    <place counter="us-k-3-2"/>
+    <place counter="us-3-a-1-18"/>
+    <place counter="us-3-d-2-18"/>
+    <place counter="us-e-2-2"/>
+    <place counter="us-f-2-2"/>
+    <place counter="us-2-a-1-18"/>
+    <place counter="us-2-d-2-18"/>
+    <place counter="us-e-2-8"/>
+    <place counter="us-f-2-8"/>
+    <place counter="us-2-c-1-18"/>
+    <place counter="us-2-f-2-18"/>
+    <place counter="us-l-3-2"/>
+    <place counter="us-m-3-2"/>
+    <place counter="us-g-2-2"/>
+    <place counter="us-h-2-2"/>
+    <place counter="us-g-2-8"/>
+    <place counter="us-h-2-8"/>
+    <place counter="us-hall-8-2"/>
+    <place counter="us-shoup-2-2"/>
+    <place counter="us-3-a-2t"/>
+    <place counter="us-2-a-2t"/>
+    <place counter="us-2-c-2t"/>
+    <place counter="us-a-1-2"/>
+    <place counter="us-b-1-2"/>
+    <place counter="us-c-1-2"/>
+    <place counter="us-d-1-2"/>
+    <place counter="us-i-3-8"/>
+    <place counter="us-k-3-8"/>
+    <place counter="us-l-3-8"/>
+    <place counter="us-m-3-8"/>
+    <place counter="us-1-a-2t"/>
+    <place counter="us-1-a-1-18"/>
+    <place counter="us-1-d-2-18"/>
+    <place counter="us-3-c-2t"/>
+    <place counter="us-3-c-1-18"/>
+    <place counter="us-3-f-2-18"/>
+    <place counter="us-a-1-8"/>
+    <place counter="us-b-1-8"/>
+    <place counter="us-c-1-8"/>
+    <place counter="us-d-1-8"/>
+    <place counter="us-1-c-2t"/>
+    <place counter="us-1-c-1-18"/>
+    <place counter="us-1-f-2-18"/>
+    <place counter="us-a-1-6"/>
+    <place counter="us-b-1-6"/>
+    <place counter="us-c-1-6"/>
+    <place counter="us-d-1-6"/>
+    <place counter="us-1-b-2t"/>
+    <place counter="us-holmes-6-2"/>
+    <place counter="us-a-1-10"/>
+    <place counter="us-b-1-10"/>
+    <place counter="us-c-1-10"/>
+    <place counter="us-a-1-2-rdc"/>
+    <place counter="us-lvt"/>
+    <place counter="jp-1-a-1-7ssnl"/>
+    <place counter="jp-2-b-1-7ssnl"/>
+    <place counter="jp-3-3-111"/>
+    <place counter="jp-4-2-111"/>
+    <place counter="jp-5-eng-4"/>
+    <place counter="jp-6-hq-3sb"/>
+    <place counter="jp-7-at-1"/>
+    <place counter="jp-8-mg-2"/>
+    <place counter="jp-9-tank"/>
+    <place counter="jp-10-tank"/>
+    <place counter="jp-11-tank"/>
+    <place counter="jp-depth-1"/>
+    <place counter="jp-depth-2"/>
+    <place counter="jp-depth-3"/>
+    <place counter="jp-depth-4"/>
+    <place counter="jp-depth-5"/>
+    <place counter="mk-turn"/>
+    <place counter="mk-phase"/>
+    <place counter="mk-action-a"/>
+    <place counter="mk-action-i"/>
+    <place counter="mk-action-m"/>
+    <place counter="mk-action-p"/>
+    <place counter="mk-action-r"/>
+    <place counter="mk-action-taken"/>
+    <place counter="mk-command-range"/>
+    <place counter="mk-support"/>
+    <place counter="mk-naval-gunfire"/>
+    <place counter="mk-no-lvt-comm"/>
+    <place counter="mk-hero"/>
+    <place counter="mk-garrison"/>
+    <place counter="mk-disrupted-us"/>
+    <place counter="mk-disrupted-jp"/>
+    <place counter="mk-smoke"/>
+    <place counter="mk-artillery-destroyed"/>
+    <place counter="mk-shibasaki"/>
+  </sheet>
+</counters>

@@ -1,0 +1,2907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"
+       id="dai-senso" title="Axis Empires: Dai Senso!"
+       source="Dai Senso game map adjusted.png, 3990 x 3198; Decision Games 2011. West Map and East Map side by side."
+       width="3990" height="3198" background="paper" font="Georgia, Times New Roman, serif">
+  <grid id="west" orientation="pointy" offset="odd" cols="27" rows="53" size="40.95" ox="62.54" oy="-8.05"
+        id-format="w{row:02}{col:02}" col-start="1" row-start="61" row-step="-1" terrain="sea" id-side="w"/>
+  <grid id="east" orientation="pointy" offset="odd" cols="29" rows="53" size="40.95" ox="1977.63" oy="-8.05"
+        id-format="e{row:02}{col:02}" col-start="1" row-start="61" row-step="-1" terrain="sea" id-side="w"/>
+  <palette>
+    <color id="paper" value="#f3efe2" name="sheet background"/>
+    <color id="seablue" value="#69b9ec"/>
+    <color id="ochre" value="#ad8534"/>
+    <color id="tan" value="#eadebe"/>
+    <color id="sand" value="#ecd581"/>
+    <color id="teal" value="#698380"/>
+    <color id="greygreen" value="#b9c5b1"/>
+    <color id="grid" value="#8f8a78"/>
+    <color id="gridw" value="#4f93c4"/>
+    <color id="white" value="#ffffff"/>
+    <color id="brown" value="#7a4f1f"/>
+    <color id="borderorange" value="#e8842a"/>
+    <color id="ink" value="#111111"/>
+    <color id="gold" value="#f2c40f"/>
+    <color id="cyan" value="#29a8d8"/>
+    <color id="orange" value="#e8762a" name="Axis strategic hex"/>
+    <color id="green" value="#3aa04a" name="Western strategic hex"/>
+    <color id="red" value="#d8302a" name="Soviet strategic hex"/>
+    <color id="panel" value="#f7f4ea"/>
+    <color id="navy" value="#2b5f9e"/>
+    <color id="pinkpanel" value="#f2b9a3"/>
+    <color id="label" value="#6b6656"/>
+  </palette>
+  <terrains>
+    <terrain id="sea" name="All-Sea" fill="seablue" stroke="gridw"/>
+    <terrain id="hills" name="Rough (Hills)" fill="ochre" stroke="grid"/>
+    <terrain id="clear" name="Clear (Normal)" fill="tan" stroke="grid"/>
+    <terrain id="desert" name="Clear (Desert)" fill="sand" stroke="grid"/>
+    <terrain id="forest" name="Rough (Forest)" fill="teal" stroke="grid" pattern="mottle"/>
+    <terrain id="swamp" name="Rough (Swamp)" fill="greygreen" stroke="grid" pattern="dots"/>
+  </terrains>
+  <lines>
+    <line id="border" stroke="borderorange" width="5" dash="8 5"/>
+    <line id="zone" stroke="white" width="5" dash="10 8"/>
+    <line id="mountain" stroke="brown" width="7"/>
+    <line id="road" stroke="white" width="4" casing="grid" casing-width="6"/>
+  </lines>
+  <!-- West Map terrain, sampled from the scan -->
+<hexes terrain="sea" ids="w4001 w3801 w4202 w4102 w4002 w3902 w3802 w3702 w3602 w4403 w4303 w4203 w4103 w4003 w3903 w3703 w3603 w4404 w4304 w4204 w4104 w4004 w3904 w3604 w4405 w4305 w4205 w4105 w4005 w3905 w3805 w3705 w3605 w3405 w3205 w3005 w2805 w4306 w4206 w4106 w4006 w3906 w3806 w3706 w3606 w3506 w3406 w3306 w3206 w3106 w3006 w2906 w3907 w3807 w3707 w3607 w3507 w3407 w3307 w3207 w3107 w3007 w2907 w2807 w3508 w3408 w3308 w3208 w3108 w3008 w2908 w2808 w3609 w3509 w3409 w3309 w3209 w3109 w3009 w2909 w2809 w3810 w3710 w3610 w3410 w3310 w3210 w3110 w3010 w2910 w2810 w4011 w3911 w3811 w3711 w3611 w3511 w3411 w3311 w3211 w3111 w3011 w2911 w2811 w4112 w4012 w3912 w3812 w3712 w3612 w3512 w3412 w3312 w3212 w3112 w3012 w2912 w2812 w4113 w4013 w3913 w3813 w3713 w3613 w3513 w3413 w3313 w3213 w3013 w2913 w2813 w4114 w4014 w3914 w3814 w3714 w3614 w3514 w3414 w3314 w3214 w3114 w3014 w2914 w2814 w2714 w2614 w2514 w2414 w2314 w3915 w3815 w3715 w3615 w3515 w3415 w3315 w3215 w3115 w3015 w2915 w2815 w2715 w2615 w2515 w2415 w2315 w3916 w3716 w3516 w3416 w3116 w3016 w2916 w2816 w2716 w2616 w2516 w2416 w2316 w2216 w2016 w1816 w3717 w3617 w3317 w3217 w2917 w2817 w2717 w2617 w2517 w2417 w2317 w2217 w2117 w2017 w1917 w1817 w1717 w1117 w1017 w3618 w3518 w3418 w3318 w3118 w3018 w2718 w2618 w2518 w2418 w2318 w2218 w2118 w2018 w1918 w1818 w1718 w1218 w1118 w3619 w3519 w3419 w3319 w3219 w3119 w3019 w2919 w2719 w2619 w2419 w2319 w2219 w2119 w2019 w1919 w1819 w1719 w1219 w1119 w4220 w4120 w4020 w3820 w3720 w3620 w3520 w3420 w3320 w3220 w3120 w3020 w2920 w2820 w2620 w2520 w2420 w2320 w2220 w2120 w2020 w1920 w1820 w1720 w1620 w4321 w4021 w3921 w3621 w3521 w3421 w3321 w2921 w2821 w2621 w2521 w2421 w2321 w2221 w2121 w2021 w1921 w1821 w1721 w1621 w1521 w1421 w4322 w4122 w4022 w3922 w3822 w3722 w3622 w3522 w3422 w3322 w2922 w2822 w2622 w2522 w2422 w2322 w2222 w2122 w2022 w1922 w1722 w1622 w1522 w1422 w4223 w4123 w4023 w3923 w3823 w3723 w3623 w3523 w3423 w3223 w3123 w3023 w2923 w2823 w2723 w2623 w2523 w2423 w2323 w2223 w2123 w2023 w1523 w1323 w1223 w4324 w4224 w4124 w3924 w3724 w3624 w3524 w3424 w3324 w3224 w3124 w2724 w2624 w2524 w2424 w2324 w2224 w2124 w1224 w1124 w5125 w4925 w4825 w4625 w4525 w4425 w4225 w4125 w3925 w3825 w3725 w3625 w3525 w3425 w3325 w3225 w3125 w3025 w2925 w2825 w2725 w2525 w2425 w2325 w2225 w1325 w1225 w1125 w5026 w4926 w4826 w4526 w4426 w4326 w4226 w4126 w4026 w3926 w3826 w3726 w3626 w3326 w3226 w3026 w2926 w2826 w2726 w2626 w2526 w2426 w2326 w1326 w1226 w1126 w5127 w4927 w4827 w4527 w4327 w4227 w4127 w4027 w3927 w3827 w3727 w3627 w3527 w3427 w3327 w3227 w3127 w3027 w2827 w2727 w2627 w2527 w2427 w2327 w1427 w1327 w1227 w1127"/>
+<hexes terrain="hills" ids="w2002 w1802 w1602 w1402 w1202 w1002 w4605 w1605 w1405 w1205 w1005 w4706 w4606 w1406 w4807 w4707 w4007 w2007 w1807 w1607 w1407 w1207 w1007 w5008 w4908 w2008 w1808 w1608 w1408 w1208 w1008 w5009 w3909 w1809 w1609 w1409 w1209 w1009 w5210 w5110 w5010 w4910 w4810 w4110 w2010 w1810 w1610 w1410 w1210 w1010 w5211 w5111 w5011 w4911 w4811 w4711 w4611 w4111 w5412 w5312 w5012 w4912 w4812 w4712 w4612 w5513 w5413 w5313 w5013 w4913 w4813 w4713 w4613 w4513 w5614 w5414 w5314 w5014 w4914 w4814 w4714 w4614 w4514 w4214 w2014 w1814 w1614 w1414 w1214 w1014 w5715 w5315 w5015 w4915 w4815 w4615 w4515 w4415 w4315 w4115 w5716 w5616 w5316 w4916 w4816 w4716 w4616 w4516 w4416 w4216 w4016 w3816 w3216 w5817 w5717 w5617 w5517 w5417 w5017 w4917 w4817 w4717 w4617 w4517 w4417 w4217 w4117 w4017 w3817 w5918 w5818 w5718 w5618 w5018 w4918 w4818 w4718 w4618 w4518 w4318 w4218 w4118 w4018 w2918 w5919 w5819 w5719 w5619 w5019 w4919 w4819 w4619 w4519 w4419 w4319 w4119 w4019 w5920 w5820 w5720 w5620 w5020 w4320 w2720 w5721 w5221 w5121 w4921 w4821 w4621 w4221 w4121 w3821 w3221 w3121 w2721 w5722 w5222 w5122 w5022 w4922 w4722 w4522 w4422 w3222 w3122 w5823 w5723 w5323 w5223 w4923 w4723 w4523 w4423 w4323 w3323 w6024 w5924 w5824 w5424 w5324 w5224 w5124 w4524 w4424 w3024 w2924 w6025 w5925 w5825 w5725 w5625 w5525 w5325 w5025 w4725 w4325 w6026 w5926 w5826 w5726 w5226 w5126 w4726 w2226 w6027 w5927 w5827 w5727 w5627 w5227 w5027 w4627 w4427 w2227"/>
+<hexes terrain="clear" ids="w6001 w5701 w5201 w5101 w4701 w3001 w2601 w2201 w6002 w5902 w5702 w5402 w5202 w5102 w4702 w3002 w2602 w2202 w6003 w5903 w5703 w5403 w5203 w5103 w4703 w3003 w2603 w2203 w6004 w5904 w5704 w5404 w5204 w5104 w4704 w3004 w6005 w5905 w5705 w5405 w5205 w4505 w2505 w2405 w2205 w6006 w5906 w5706 w5406 w5206 w4506 w4406 w2506 w2206 w2006 w1806 w1606 w1206 w1006 w6007 w5907 w5707 w5407 w5207 w4607 w4507 w4407 w4307 w4207 w2207 w2107 w1907 w1707 w1507 w1307 w1107 w6008 w5908 w5808 w5708 w5408 w5208 w4808 w4708 w4608 w4508 w4408 w4308 w4208 w4108 w4008 w3908 w3808 w3708 w3608 w2208 w2108 w1908 w1708 w1508 w1308 w1108 w5809 w5709 w5609 w5509 w4709 w4609 w4509 w4209 w4109 w4009 w3809 w3709 w2109 w1909 w1709 w1509 w1309 w1109 w5810 w5710 w5610 w5510 w4710 w4610 w4510 w4410 w4210 w4010 w3910 w2110 w1910 w1710 w1510 w1310 w1110 w6011 w5811 w5611 w5411 w4511 w4411 w4211 w6012 w5912 w5812 w5712 w5612 w5512 w4512 w4412 w4312 w4212 w6013 w5913 w5813 w5713 w5613 w4413 w4313 w6014 w5914 w5814 w5714 w4414 w4314 w6015 w5915 w5815 w4215 w4015 w6016 w5016 w3316 w1616 w1216 w1116 w1016 w6017 w3917 w3517 w3417 w1617 w1317 w6018 w3918 w2818 w1618 w1318 w6019 w4719 w4219 w1619 w1319 w1019 w6020 w4520 w3920 w1220 w1120 w1020 w6021 w5921 w5821 w1221 w1121 w1021 w4822 w4622 w3022 w1222 w1122 w1022 w5423 w5123 w5023 w4623 w1123 w1023 w5724 w4724 w4624 w5425 w5225 w5626 w5526 w5426 w5326 w5527 w5427 w5327"/>
+<hexes terrain="desert" ids="w5212 w5112 w5213 w5113 w5514 w5214 w5114 w5615 w5515 w5215 w5115 w5516 w5416 w5216 w5116 w5317 w5217 w5117 w5518 w5418 w5318 w5218 w5118 w5519 w5419 w5319 w5219 w5119 w5520 w5420 w5320 w5220 w5120 w4820 w4620 w5621 w5521 w5421 w5321 w4721 w5622 w5522 w5422 w5322 w1822 w5623 w5523 w1923 w1823 w1723 w1623 w1423 w5624 w5524 w2024 w1924 w1824 w1724 w1624 w1524 w1424 w2125 w2025 w1925 w1825 w1725 w1625 w1525 w1425 w2126 w2026 w1926 w1826 w1726 w1626 w1526 w1426 w2127 w2027 w1927 w1827 w1727 w1627 w1527"/>
+<hexes terrain="forest" ids="w5901 w4909 w4809 w4409 w4309 w4310 w4311 w5916 w5816 w4316 w4116 w3616 w5917 w4317 w3117 w3017 w1217 w3818 w3718 w3919 w3819 w3719 w4420 w3021 w6022 w5922 w5822 w6023 w5923 w5024 w4024 w1324 w3526"/>
+<hexes terrain="swamp" ids="w2003 w1803 w1603 w1403 w1203 w1003 w3704 w2104 w2004 w1904 w1804 w1704 w1604 w1504 w1404 w1304 w1204 w1104 w1004 w2105 w2005 w1905 w1805 w1705 w1505 w1305 w1105 w2106 w1906 w1706 w1506 w1306 w1106 w3113 w5415 w4823 w4924 w4824 w3824"/>
+<hexes terrain="clear" ids="w5801 w5601 w5501 w5401 w5301 w5001 w4901 w4801 w4601 w4501 w4401 w4301 w4201 w4101 w3901 w3701 w3601 w3501 w3101 w2901 w2801 w2701 w2501 w2401 w2301 w2101 w2001 w1901 w1801 w1701 w1601 w1501 w1401 w1301 w1201 w1101 w1001 w5802 w5602 w5502 w5302 w5002 w4902 w4802 w4602 w4502 w4402 w4302 w3502 w3102 w2902 w2802 w2702 w2502 w2402 w2302 w5803 w5603 w5503 w5303 w5003 w4903 w4803 w4603 w4503 w3503 w3103 w2903 w2803 w2703 w2503 w2403 w2303 w5804 w5604 w5504 w5304 w5004 w4904 w4804 w4604 w4504 w3504 w3104 w2904 w2804 w2704 w2604 w2504 w2404 w2304 w2204 w5805 w5605 w5505 w5305 w5105 w5005 w4905 w4805 w4705 w3505 w3305 w3105 w2905 w2705 w2605 w5806 w5606 w5506 w5306 w5106 w5006 w4906 w4806 w2706 w2606 w2406 w5807 w5607 w5507 w5307 w5107 w5007 w4907 w2707 w2607 w2507 w2407 w2307 w5608 w5508 w5308 w5108 w2708 w2608 w2508 w2408 w2308 w6009 w5909 w5409 w5309 w5209 w5109 w2709 w2609 w2509 w2409 w2309 w2209 w6010 w5910 w5410 w5310 w2710 w2610 w2510 w2410 w2310 w2210 w5911 w5711 w5511 w5311 w2711 w2611 w2511 w2411 w2311 w2211 w2712 w2612 w2512 w2412 w2312 w2212 w2713 w2613 w2513 w2413 w2313 w2213 w2214 w4715 w2215 w2015 w1815 w1615 w1415 w1215 w1015 w2116 w1916 w1716 w1516 w1416 w1316 w1517 w1417 w4418 w1518 w1418 w1519 w1419 w4720 w1520 w1420 w1320 w4521 w4421 w1321 w1322 w1024 w1025 w1026 w1027"/>
+<hexes terrain="sea" ids="w4107 w3510 w2111 w2011 w1911 w1811 w1711 w1611 w1511 w1411 w1311 w1211 w1111 w1011 w2112 w2012 w1912 w1812 w1712 w1612 w1512 w1412 w1312 w1212 w1112 w1012 w4213 w2113 w2013 w1913 w1813 w1713 w1613 w1513 w1413 w1313 w1213 w1113 w1013 w3218 w4222"/>
+<hexes terrain="sea" ids="w3401 w3301 w3201 w3402 w3302 w3202 w2102 w1902 w1702 w1502 w1302 w1102 w3403 w3303 w3203 w2103 w1903 w1703 w1503 w1303 w1103 w3404 w3304 w3204 w2305 w2806 w2306 w2114 w1914 w1714 w1514 w1314 w1114 w2115 w1915 w1715 w1515 w1315 w1115 w2819 w2519 w2722 w2824 w4025 w2625 w3426 w3126 w2927"/>
+<hexes terrain="clear" ids="w1018 w4920 w5021"/>
+<hexes terrain="sea" ids="w3803 w3804 w2009 w3721 w4626 w4727"/>
+<!-- 1377 hexes classified -->
+  <!-- East Map terrain -->
+<hexes terrain="sea" ids="e5201 e5001 e4901 e4701 e4601 e4501 e4401 e4301 e4201 e4101 e4001 e3801 e3701 e3601 e3501 e3401 e3301 e3201 e3101 e2901 e2801 e2701 e2601 e2501 e1401 e1201 e1101 e5202 e5102 e5002 e4902 e4802 e4602 e4502 e4402 e4302 e4202 e4102 e4002 e3802 e3702 e3602 e3502 e3302 e3202 e3102 e3002 e2802 e2702 e2602 e2502 e1402 e1202 e1102 e5403 e5303 e5203 e5003 e4803 e4703 e4503 e4403 e4303 e4203 e4103 e4003 e3903 e3803 e3703 e3603 e3503 e3403 e3303 e3203 e3103 e3003 e2803 e2703 e2603 e2503 e2403 e1303 e1203 e1103 e6004 e5404 e5304 e5204 e5104 e4804 e4704 e4504 e4404 e4304 e4204 e4104 e4004 e3904 e3804 e3704 e3504 e3404 e3304 e3204 e3104 e3004 e2604 e2504 e2404 e2304 e2204 e1304 e1104 e6005 e5905 e5605 e5505 e5405 e5305 e5105 e4805 e4705 e4505 e4405 e4205 e4105 e4005 e3905 e3805 e3705 e3605 e3505 e3405 e3205 e3105 e3005 e2605 e2505 e2305 e1105 e6006 e5906 e5806 e5606 e5406 e5206 e5106 e5006 e4906 e4806 e4706 e4606 e4506 e4406 e4306 e4206 e4106 e4006 e3906 e3706 e3606 e3506 e3406 e3206 e3106 e3006 e2906 e2506 e2406 e2206 e1106 e5907 e5807 e5707 e5607 e5507 e5307 e5207 e5107 e5007 e4907 e4807 e4707 e4607 e4507 e4407 e4307 e4207 e4107 e4007 e3807 e3707 e3607 e3507 e3407 e3307 e3207 e3107 e3007 e2907 e2807 e2607 e2507 e2407 e2307 e2207 e2107 e5808 e5708 e5608 e5508 e5408 e5308 e5208 e5108 e5008 e4908 e4808 e4708 e4608 e4508 e4408 e4308 e4208 e4108 e4008 e3908 e3808 e3708 e3608 e3508 e3308 e3208 e3108 e3008 e2908 e2708 e2608 e2508 e2408 e2308 e2208 e2108 e2008 e1208 e1108 e6009 e5909 e5809 e5709 e5509 e5409 e5309 e5209 e5109 e5009 e4909 e4809 e4709 e4609 e4509 e4409 e4309 e4209 e4109 e4009 e3909 e3809 e3709 e3609 e3509 e3409 e3309 e3209 e3109 e3009 e2909 e2809 e2709 e2609 e2509 e2309 e2209 e2109 e2009 e1909 e1809 e1509 e1409 e1309 e1209 e1109 e5710 e5610 e5510 e5410 e5310 e5210 e5110 e5010 e4910 e4810 e4710 e4510 e4410 e4310 e4210 e4110 e4010 e3910 e3710 e3610 e3510 e3410 e3310 e3210 e3110 e3010 e2910 e2810 e2710 e2610 e2510 e2210 e2110 e2010 e1910 e1810 e1710 e1610 e1510 e1410 e1310 e1210 e1110 e5811 e5711 e5611 e5511 e5411 e5311 e5211 e5111 e5011 e4911 e4811 e4711 e4611 e4511 e4411 e4311 e4211 e4111 e4011 e3911 e3811 e3711 e3611 e3511 e3311 e3211 e3111 e3011 e2911 e2811 e2711 e2511 e2411 e2311 e2211 e2111 e2011 e1911 e1811 e1711 e1611 e1511 e1411 e1311 e1211 e1111 e5912 e5812 e5712 e5612 e5512 e5412 e5312 e5212 e5112 e5012 e4912 e4812 e4712 e4612 e4512 e4412 e4312 e4212 e4112 e4012 e3912 e3812 e3712 e3512 e3412 e3312 e3212 e3112 e3012 e2912 e2812 e2712 e2612 e2512 e2412 e2312 e2212 e2112 e2012 e1912 e1812 e1712 e1612 e1312 e1212 e1112 e5913 e5813 e5713 e5613 e5513 e5413 e5313 e5213 e5113 e5013 e4913 e4813 e4713 e4613 e4513 e4413 e4313 e4213 e4113 e4013 e3913 e3813 e3713 e3613 e3513 e3413 e3313 e3213 e3113 e3013 e2913 e2813 e2713 e2613 e2513 e2413 e2313 e2213 e2113 e2013 e1913 e1813 e1713 e1613 e1413 e1313 e1213 e1113 e5714 e5614 e5514 e5414 e5314 e5214 e5114 e5014 e4914 e4814 e4714 e4614 e4514 e4414 e4314 e4214 e4014 e3914 e3814 e3714 e3614 e3414 e3314 e3214 e3114 e3014 e2914 e2814 e2714 e2614 e2514 e2414 e2214 e2114 e2014 e1814 e1714 e1614 e1514 e1414 e1314 e1214 e1114 e5615 e5515 e5415 e5315 e5215 e5115 e5015 e4915 e4815 e4715 e4615 e4515 e4415 e4315 e4215 e4115 e4015 e3915 e3815 e3715 e3615 e3515 e3415 e3315 e3215 e3115 e3015 e2915 e2815 e2715 e2615 e2515 e2415 e2315 e2215 e2115 e2015 e1915 e1815 e1715 e1615 e1515 e1415 e1315 e1215 e1115 e5716 e5616 e5516 e5416 e5316 e5216 e5116 e5016 e4916 e4816 e4716 e4616 e4416 e4316 e4216 e4116 e4016 e3916 e3816 e3716 e3616 e3416 e3316 e3216 e3116 e3016 e2916 e2816 e2716 e2616 e2516 e2416 e2316 e2216 e2116 e2016 e1916 e1816 e1716 e1616 e1516 e1416 e1316 e1216 e1116 e5617 e5517 e5317 e5217 e5117 e5017 e4917 e4817 e4717 e4617 e4417 e4317 e4217 e4117 e4017 e3917 e3817 e3717 e3617 e3517 e3417 e3317 e3217 e3017 e2917 e2817 e2717 e2617 e2517 e2317 e2217 e2117 e2017 e1917 e1717 e1617 e1417 e1317 e1217 e1117 e5618 e5518 e5418 e5318 e5218 e5118 e5018 e4918 e4818 e4718 e4618 e4518 e4418 e4318 e4218 e4118 e4018 e3918 e3818 e3718 e3618 e3518 e3318 e3218 e3118 e3018 e2918 e2818 e2718 e2518 e2218 e2018 e1918 e1718 e1618 e1518 e1218 e1118 e5619 e5519 e5419 e5319 e5219 e5119 e5019 e4919 e4819 e4719 e4619 e4519 e4419 e4319 e4219 e4119 e4019 e3919 e3819 e3719 e3619 e3519 e3319 e3219 e3119 e3019 e2919 e2819 e2719 e2619 e2519 e2419 e2319 e2219 e2119 e2019 e1919 e1819 e1719 e1619 e1519 e1419 e1319 e1219 e1119 e5720 e5620 e5520 e5420 e5320 e5220 e5120 e5020 e4920 e4820 e4720 e4620 e4420 e4320 e4220 e4120 e4020 e3920 e3820 e3720 e3620 e3520 e3420 e3320 e3220 e3120 e3020 e2920 e2820 e2720 e2620 e2520 e2420 e2320 e2220 e2120 e2020 e1920 e1820 e1720 e1620 e1520 e5621 e5521 e5421 e5321 e5221 e5121 e5021 e4921 e4721 e4621 e4521 e4421 e4321 e4221 e4121 e4021 e3921 e3821 e3721 e3621 e3521 e3421 e3321 e3221 e3121 e3021 e2921 e2821 e2721 e2621 e2521 e2421 e2321 e2121 e2021 e1921 e1821 e1721 e5722 e5622 e5522 e5422 e5322 e5222 e5122 e5022 e4922 e4722 e4622 e4522 e4422 e4322 e4222 e4122 e4022 e3922 e3822 e3722 e3622 e3522 e3422 e3322 e3222 e3122 e3022 e5723 e5623 e5523 e5423 e5323 e5223 e5123 e5023 e4923 e4823 e4723 e4623 e4523 e4423 e4323 e4223 e4123 e4023 e3823 e3723 e3623 e3523 e3423 e3323 e3223 e3123 e5724 e5624 e5524 e5424 e5324 e5124 e4924 e4824 e4724 e4624 e4524 e4424 e4324 e4224 e4124 e4024 e3924 e3824 e3724 e3624 e3524 e3424 e3324 e4825 e4725 e4625 e4525 e4425 e4325 e4225 e4125 e4025 e3925 e3725 e3625 e3525 e4826 e4726 e4526 e4426 e4326 e4126 e4026 e3926 e3726 e3626 e3526 e3426 e4827 e4727 e4627 e4527 e4427 e4327 e4227 e4127 e4027 e3927 e3827 e3727 e3627 e3527 e3427 e4828 e4728 e4628 e4528 e4428 e4328 e4228 e4128 e4028 e3928 e3828 e3728 e3628 e3528 e3428"/>
+<hexes terrain="hills" ids="e6001 e5901 e5801 e5301 e2301 e2201 e1801 e6002 e5902 e5802 e5402 e5302 e3902 e3402 e2902 e1802 e1702 e6003 e5903 e5803 e5503 e5103 e2903 e1803 e1703 e5904 e5804 e5704 e5504 e5004 e2904 e2804 e5705 e2905 e2805 e5706 e5506 e5306 e3306 e2806 e2706 e3907 e2007 e1407 e1207 e5908 e3408 e1908 e1608 e1508 e5609 e1709 e6010 e5910 e4610 e3810 e6011 e5911 e3612 e3516 e1418 e1225 e5926"/>
+<hexes terrain="clear" ids="e5501 e5101 e3001 e1501 e4702 e5603 e4903 e5604 e4904 e1204 e5005 e2707 e5810 e6014 e6015 e5915 e5916 e5917 e5918 e5919 e5920 e5921 e1621 e1521 e1421 e1321 e6022 e5922 e1822 e1722 e1622 e1522 e1422 e1322 e6023 e5923 e5823 e2823 e2723 e2623 e2323 e2223 e2123 e2023 e1823 e1723 e1623 e1523 e1423 e1323 e6024 e5924 e5824 e2824 e2724 e2624 e2424 e2324 e2224 e2124 e2024 e1924 e1824 e1724 e1624 e1524 e1424 e1324 e6025 e5825 e2825 e2725 e2625 e2425 e2325 e2225 e2125 e2025 e1925 e1825 e1725 e1625 e1525 e1425 e1325 e6026 e5826 e5726 e5526 e2826 e2726 e2626 e2326 e2226 e2126 e2026 e1926 e1826 e1726 e1626 e1526 e1426 e1326 e6027 e5827 e5727 e5527 e2827 e2727 e2627 e2327 e2227 e2127 e2027 e1927 e1827 e1727 e1627 e1527 e1427 e1327 e6028 e5928 e5828 e5728 e5528 e2828 e2728 e2628 e2428 e2328 e2228 e2128 e2028 e1928 e1828 e1728 e1628 e1528 e1428 e1328"/>
+<hexes terrain="desert" ids="e2401 e2101 e2001 e1901 e1701 e1601 e2302 e2202 e2102 e2002 e1902 e1602 e1502 e2303 e2203 e2103 e2003 e1903 e1603 e1503 e1403 e2104 e2004 e1904 e1804 e1704 e1604 e1504 e1404 e2205 e2105 e2005 e1905 e1805 e1705 e1605 e1505 e1405 e1305 e1205 e2106 e2006 e1906 e1806 e1706 e1606 e1506 e1406 e1306 e1206 e1907 e1807 e1707 e1607 e1507 e1307 e1808 e1708 e1408 e1308"/>
+<hexes terrain="forest" ids="e5701 e5601 e5401 e5502 e2402 e2704 e4905 e2405 e2306 e5925"/>
+<hexes terrain="swamp" ids="e5702 e5602 e5703 e2705 e2310 e1412 e4114 e2318 e6019 e6020 e4520 e5721 e4626 e4226"/>
+<hexes terrain="clear" ids="e1001 e1002 e1003 e1004 e5805 e1005 e1006 e1007 e1008 e1009 e1010 e1011 e6012 e1012 e6013 e1013 e5914 e5814 e1014 e5815 e1015 e6016 e5816 e1016 e5817 e5717 e1017 e5818 e5718 e1018 e5819 e5719 e1019 e5820 e1420 e1320 e1120 e1020 e6021 e5821 e1021 e5822 e2822 e2722 e2622 e2522 e2422 e2322 e2222 e2122 e2022 e1922 e1022 e3023 e2923 e2523 e2423 e1923 e1023 e5224 e5024 e3124 e2924 e2524 e1024 e5725 e5625 e5525 e5425 e5325 e4925 e3325 e2925 e2525 e1125 e1025 e5626 e5426 e5326 e4926 e3326 e2526 e2426 e1226 e1126 e1026 e5927 e5627 e5427 e5327 e4927 e3327 e2527 e2427 e1227 e1127 e1027 e5628 e5428 e5328 e4928 e3328 e3228 e3028 e2928 e2528 e1228 e1128 e1028 e5929 e5729 e5529 e5329 e5129 e4929 e4729 e4529 e4329 e4129 e3929 e3729 e3529 e3329 e3129 e2929 e2729 e2529 e2329 e2129 e1929 e1729 e1529 e1329 e1129"/>
+<hexes terrain="sea" ids="e1107 e1609 e1517"/>
+<hexes terrain="sea" ids="e4801 e3604 e5205 e4305 e3806 e2606 e5407 e2808 e3411 e2611 e3514 e2314 e1914 e5715 e6017 e3117 e6018 e2618 e2118 e1318 e1220 e2221 e1221 e1121 e2922 e1222 e1122 e3923 e1223 e1123 e3224 e3024 e1224 e1124 e5225 e5125 e5025 e3425 e3225 e3125 e3025 e5226 e5126 e5026 e3226 e3126 e3026 e2926 e5227 e5127 e5027 e3227 e3127 e3027 e2927 e5228 e5128 e5028 e3128"/>
+<hexes terrain="sea" ids="e3901 e1301 e1302 e4603 e4604 e4605 e3305 e6007 e6008 e2409 e2410 e1512 e1513 e4516 e5417 e4517 e2417 e1817 e3418 e2418 e1818 e3419 e4821 e4822 e3825 e3826"/>
+<!-- 1453 hexes classified -->
+  <!-- hexside features: country / dependent borders, naval zone borders, mountain hexsides -->
+<edge at="w5901:se" line="zone"/>
+<edge at="w5801:se" line="zone"/>
+<edge at="w5801:sw" line="zone"/>
+<edge at="w5801:ne" line="zone"/>
+<edge at="w5701:se" line="zone"/>
+<edge at="w5601:e" line="zone"/>
+<edge at="w5601:ne" line="zone"/>
+<edge at="w5501:e" line="zone"/>
+<edge at="w5101:e" line="zone"/>
+<edge at="w5001:e" line="mountain"/>
+<edge at="w5001:se" line="mountain"/>
+<edge at="w5001:sw" line="mountain"/>
+<edge at="w5001:ne" line="mountain"/>
+<edge at="w4901:e" line="zone"/>
+<edge at="w4901:se" line="zone"/>
+<edge at="w4801:e" line="zone"/>
+<edge at="w4801:ne" line="zone"/>
+<edge at="w4701:se" line="zone"/>
+<edge at="w4601:e" line="zone"/>
+<edge at="w4601:se" line="zone"/>
+<edge at="w4601:sw" line="zone"/>
+<edge at="w4601:ne" line="zone"/>
+<edge at="w4501:e" line="zone"/>
+<edge at="w3101:e" line="zone"/>
+<edge at="w3001:e" line="zone"/>
+<edge at="w3001:sw" line="zone"/>
+<edge at="w2901:e" line="zone"/>
+<edge at="w2801:se" line="zone"/>
+<edge at="w2801:sw" line="zone"/>
+<edge at="w2701:e" line="zone"/>
+<edge at="w2701:se" line="zone"/>
+<edge at="w2601:ne" line="zone"/>
+<edge at="w2501:e" line="zone"/>
+<edge at="w2501:se" line="zone"/>
+<edge at="w2401:e" line="zone"/>
+<edge at="w2401:se" line="zone"/>
+<edge at="w2401:sw" line="zone"/>
+<edge at="w2201:ne" line="zone"/>
+<edge at="w2001:e" line="mountain"/>
+<edge at="w1801:e" line="mountain"/>
+<edge at="w1001:sw" line="zone"/>
+<edge at="w6002:sw" line="zone"/>
+<edge at="w5902:se" line="zone"/>
+<edge at="w5802:se" line="zone"/>
+<edge at="w5802:sw" line="zone"/>
+<edge at="w5802:ne" line="zone"/>
+<edge at="w5702:se" line="zone"/>
+<edge at="w5602:e" line="zone"/>
+<edge at="w5602:ne" line="zone"/>
+<edge at="w5502:e" line="zone"/>
+<edge at="w5402:e" line="zone"/>
+<edge at="w5402:se" line="zone"/>
+<edge at="w5402:sw" line="zone"/>
+<edge at="w5302:e" line="zone"/>
+<edge at="w5202:e" line="mountain"/>
+<edge at="w5102:e" line="zone"/>
+<edge at="w5002:e" line="zone"/>
+<edge at="w5002:se" line="mountain"/>
+<edge at="w5002:sw" line="zone"/>
+<edge at="w4902:e" line="zone"/>
+<edge at="w4902:se" line="zone"/>
+<edge at="w4802:e" line="zone"/>
+<edge at="w4802:ne" line="zone"/>
+<edge at="w4702:se" line="zone"/>
+<edge at="w4602:e" line="zone"/>
+<edge at="w4602:se" line="zone"/>
+<edge at="w4602:sw" line="zone"/>
+<edge at="w4602:ne" line="zone"/>
+<edge at="w4502:e" line="zone"/>
+<edge at="w3102:e" line="zone"/>
+<edge at="w3002:e" line="zone"/>
+<edge at="w2902:e" line="zone"/>
+<edge at="w2802:e" line="zone"/>
+<edge at="w2802:se" line="zone"/>
+<edge at="w2802:sw" line="zone"/>
+<edge at="w2702:e" line="zone"/>
+<edge at="w2702:se" line="zone"/>
+<edge at="w2602:ne" line="zone"/>
+<edge at="w2502:e" line="zone"/>
+<edge at="w2502:se" line="zone"/>
+<edge at="w2402:e" line="zone"/>
+<edge at="w2402:se" line="zone"/>
+<edge at="w2402:sw" line="zone"/>
+<edge at="w2402:ne" line="zone"/>
+<edge at="w2302:e" line="zone"/>
+<edge at="w2302:se" line="zone"/>
+<edge at="w2202:ne" line="zone"/>
+<edge at="w5903:se" line="zone"/>
+<edge at="w5803:se" line="zone"/>
+<edge at="w5803:ne" line="zone"/>
+<edge at="w5703:se" line="zone"/>
+<edge at="w5603:e" line="zone"/>
+<edge at="w5603:ne" line="zone"/>
+<edge at="w5503:e" line="zone"/>
+<edge at="w5403:se" line="zone"/>
+<edge at="w5403:sw" line="zone"/>
+<edge at="w5103:e" line="zone"/>
+<edge at="w5003:e" line="zone"/>
+<edge at="w5003:se" line="zone"/>
+<edge at="w5003:sw" line="zone"/>
+<edge at="w4903:e" line="zone"/>
+<edge at="w4903:se" line="zone"/>
+<edge at="w4803:e" line="zone"/>
+<edge at="w4803:ne" line="zone"/>
+<edge at="w4703:se" line="zone"/>
+<edge at="w4603:e" line="zone"/>
+<edge at="w4603:se" line="zone"/>
+<edge at="w4603:sw" line="zone"/>
+<edge at="w4603:ne" line="zone"/>
+<edge at="w4503:e" line="zone"/>
+<edge at="w4503:se" line="zone"/>
+<edge at="w3103:e" line="zone"/>
+<edge at="w3003:e" line="zone"/>
+<edge at="w3003:se" line="zone"/>
+<edge at="w2903:se" line="mountain"/>
+<edge at="w2803:e" line="zone"/>
+<edge at="w2803:se" line="zone"/>
+<edge at="w2803:sw" line="zone"/>
+<edge at="w2803:ne" line="mountain"/>
+<edge at="w2703:e" line="zone"/>
+<edge at="w2703:se" line="zone"/>
+<edge at="w2603:ne" line="zone"/>
+<edge at="w2503:e" line="zone"/>
+<edge at="w2503:se" line="zone"/>
+<edge at="w2403:e" line="zone"/>
+<edge at="w2403:se" line="zone"/>
+<edge at="w2403:sw" line="zone"/>
+<edge at="w2403:ne" line="zone"/>
+<edge at="w2303:e" line="zone"/>
+<edge at="w2303:se" line="zone"/>
+<edge at="w2203:ne" line="zone"/>
+<edge at="w2003:se" line="mountain"/>
+<edge at="w2003:sw" line="mountain"/>
+<edge at="w2003:ne" line="mountain"/>
+<edge at="w1803:se" line="mountain"/>
+<edge at="w1803:sw" line="mountain"/>
+<edge at="w1803:ne" line="mountain"/>
+<edge at="w1603:se" line="mountain"/>
+<edge at="w1603:sw" line="mountain"/>
+<edge at="w1603:ne" line="mountain"/>
+<edge at="w1503:e" line="mountain"/>
+<edge at="w1403:se" line="mountain"/>
+<edge at="w1403:sw" line="mountain"/>
+<edge at="w1403:ne" line="mountain"/>
+<edge at="w1203:se" line="mountain"/>
+<edge at="w1203:sw" line="mountain"/>
+<edge at="w1203:ne" line="mountain"/>
+<edge at="w1003:se" line="mountain"/>
+<edge at="w1003:sw" line="mountain"/>
+<edge at="w6004:se" line="zone"/>
+<edge at="w5904:se" line="zone"/>
+<edge at="w5804:se" line="zone"/>
+<edge at="w5804:sw" line="zone"/>
+<edge at="w5804:ne" line="zone"/>
+<edge at="w5704:se" line="zone"/>
+<edge at="w5604:e" line="zone"/>
+<edge at="w5604:ne" line="zone"/>
+<edge at="w5404:se" line="zone"/>
+<edge at="w5404:sw" line="zone"/>
+<edge at="w5004:sw" line="zone"/>
+<edge at="w4904:se" line="zone"/>
+<edge at="w4704:se" line="zone"/>
+<edge at="w4604:sw" line="zone"/>
+<edge at="w4504:e" line="zone"/>
+<edge at="w4504:se" line="zone"/>
+<edge at="w3404:e" line="zone"/>
+<edge at="w3204:e" line="zone"/>
+<edge at="w3204:sw" line="zone"/>
+<edge at="w3004:e" line="zone"/>
+<edge at="w3004:se" line="mountain"/>
+<edge at="w3004:sw" line="zone"/>
+<edge at="w2904:e" line="mountain"/>
+<edge at="w2904:se" line="zone"/>
+<edge at="w2804:e" line="mountain"/>
+<edge at="w2804:se" line="zone"/>
+<edge at="w2804:sw" line="zone"/>
+<edge at="w2804:ne" line="mountain"/>
+<edge at="w2704:e" line="zone"/>
+<edge at="w2704:se" line="zone"/>
+<edge at="w2604:e" line="mountain"/>
+<edge at="w2604:ne" line="border"/>
+<edge at="w2504:e" line="zone"/>
+<edge at="w2504:se" line="zone"/>
+<edge at="w2404:se" line="zone"/>
+<edge at="w2404:sw" line="zone"/>
+<edge at="w2304:e" line="mountain"/>
+<edge at="w2304:se" line="zone"/>
+<edge at="w2104:e" line="mountain"/>
+<edge at="w2004:e" line="mountain"/>
+<edge at="w2004:se" line="mountain"/>
+<edge at="w1904:e" line="mountain"/>
+<edge at="w1804:e" line="mountain"/>
+<edge at="w1804:se" line="mountain"/>
+<edge at="w1804:sw" line="mountain"/>
+<edge at="w1704:e" line="mountain"/>
+<edge at="w1604:e" line="mountain"/>
+<edge at="w1604:se" line="mountain"/>
+<edge at="w1604:sw" line="mountain"/>
+<edge at="w1504:e" line="mountain"/>
+<edge at="w1404:e" line="mountain"/>
+<edge at="w1404:se" line="mountain"/>
+<edge at="w1404:sw" line="mountain"/>
+<edge at="w1304:e" line="mountain"/>
+<edge at="w1204:e" line="zone"/>
+<edge at="w1204:se" line="mountain"/>
+<edge at="w1104:e" line="mountain"/>
+<edge at="w1004:e" line="zone"/>
+<edge at="w1004:se" line="mountain"/>
+<edge at="w6005:sw" line="zone"/>
+<edge at="w5905:e" line="zone"/>
+<edge at="w5905:se" line="zone"/>
+<edge at="w5805:ne" line="zone"/>
+<edge at="w5705:se" line="zone"/>
+<edge at="w5605:e" line="zone"/>
+<edge at="w5605:ne" line="zone"/>
+<edge at="w5405:e" line="zone"/>
+<edge at="w5305:e" line="zone"/>
+<edge at="w5105:se" line="mountain"/>
+<edge at="w5005:ne" line="mountain"/>
+<edge at="w3405:sw" line="zone"/>
+<edge at="w3305:e" line="zone"/>
+<edge at="w3305:se" line="zone"/>
+<edge at="w2805:sw" line="zone"/>
+<edge at="w2605:sw" line="zone"/>
+<edge at="w2005:e" line="mountain"/>
+<edge at="w2005:se" line="mountain"/>
+<edge at="w2005:sw" line="mountain"/>
+<edge at="w1805:e" line="zone"/>
+<edge at="w1805:se" line="mountain"/>
+<edge at="w1605:e" line="zone"/>
+<edge at="w1405:e" line="zone"/>
+<edge at="w1405:se" line="mountain"/>
+<edge at="w1205:e" line="zone"/>
+<edge at="w1205:se" line="mountain"/>
+<edge at="w1005:e" line="zone"/>
+<edge at="w1005:se" line="mountain"/>
+<edge at="w1005:sw" line="mountain"/>
+<edge at="w6006:sw" line="zone"/>
+<edge at="w5806:se" line="zone"/>
+<edge at="w5706:se" line="zone"/>
+<edge at="w5606:e" line="zone"/>
+<edge at="w5606:ne" line="zone"/>
+<edge at="w5506:e" line="zone"/>
+<edge at="w5406:se" line="zone"/>
+<edge at="w5306:e" line="zone"/>
+<edge at="w5006:ne" line="mountain"/>
+<edge at="w4206:se" line="mountain"/>
+<edge at="w4106:e" line="mountain"/>
+<edge at="w4006:ne" line="mountain"/>
+<edge at="w2606:se" line="zone"/>
+<edge at="w2506:e" line="zone"/>
+<edge at="w2306:e" line="zone"/>
+<edge at="w2006:e" line="mountain"/>
+<edge at="w2006:se" line="mountain"/>
+<edge at="w2006:sw" line="mountain"/>
+<edge at="w2006:ne" line="mountain"/>
+<edge at="w1906:e" line="mountain"/>
+<edge at="w1806:e" line="zone"/>
+<edge at="w1806:se" line="mountain"/>
+<edge at="w1806:sw" line="mountain"/>
+<edge at="w1706:e" line="mountain"/>
+<edge at="w1606:e" line="zone"/>
+<edge at="w1506:e" line="mountain"/>
+<edge at="w1406:e" line="zone"/>
+<edge at="w1406:se" line="mountain"/>
+<edge at="w1406:ne" line="zone"/>
+<edge at="w1306:e" line="mountain"/>
+<edge at="w1206:e" line="zone"/>
+<edge at="w1006:e" line="zone"/>
+<edge at="w1006:se" line="mountain"/>
+<edge at="w5807:se" line="zone"/>
+<edge at="w5807:sw" line="zone"/>
+<edge at="w5707:se" line="zone"/>
+<edge at="w5607:e" line="zone"/>
+<edge at="w5607:ne" line="zone"/>
+<edge at="w5507:e" line="zone"/>
+<edge at="w5407:se" line="zone"/>
+<edge at="w5407:sw" line="zone"/>
+<edge at="w5307:e" line="zone"/>
+<edge at="w5107:se" line="mountain"/>
+<edge at="w4207:sw" line="mountain"/>
+<edge at="w3807:e" line="zone"/>
+<edge at="w2607:se" line="zone"/>
+<edge at="w2507:e" line="zone"/>
+<edge at="w2407:e" line="zone"/>
+<edge at="w2407:ne" line="zone"/>
+<edge at="w2107:e" line="mountain"/>
+<edge at="w2007:e" line="mountain"/>
+<edge at="w1907:e" line="mountain"/>
+<edge at="w1707:e" line="mountain"/>
+<edge at="w1507:e" line="mountain"/>
+<edge at="w1307:e" line="mountain"/>
+<edge at="w1107:e" line="mountain"/>
+<edge at="w6008:sw" line="zone"/>
+<edge at="w6008:ne" line="zone"/>
+<edge at="w5808:e" line="mountain"/>
+<edge at="w5808:sw" line="zone"/>
+<edge at="w5708:se" line="zone"/>
+<edge at="w5608:e" line="mountain"/>
+<edge at="w5508:e" line="zone"/>
+<edge at="w5308:e" line="zone"/>
+<edge at="w5008:se" line="zone"/>
+<edge at="w4908:e" line="zone"/>
+<edge at="w4308:e" line="zone"/>
+<edge at="w3808:ne" line="zone"/>
+<edge at="w3508:e" line="mountain"/>
+<edge at="w3408:ne" line="mountain"/>
+<edge at="w2608:se" line="zone"/>
+<edge at="w2608:sw" line="zone"/>
+<edge at="w2608:ne" line="mountain"/>
+<edge at="w2508:se" line="zone"/>
+<edge at="w2408:ne" line="zone"/>
+<edge at="w2208:se" line="mountain"/>
+<edge at="w2008:e" line="mountain"/>
+<edge at="w1508:se" line="mountain"/>
+<edge at="w1408:e" line="mountain"/>
+<edge at="w5009:sw" line="zone"/>
+<edge at="w4909:e" line="zone"/>
+<edge at="w4909:se" line="zone"/>
+<edge at="w4809:e" line="zone"/>
+<edge at="w4809:ne" line="zone"/>
+<edge at="w3609:sw" line="mountain"/>
+<edge at="w2709:se" line="mountain"/>
+<edge at="w2609:se" line="zone"/>
+<edge at="w2609:sw" line="zone"/>
+<edge at="w2509:e" line="zone"/>
+<edge at="w2409:e" line="zone"/>
+<edge at="w2409:ne" line="zone"/>
+<edge at="w2309:e" line="zone"/>
+<edge at="w2209:se" line="mountain"/>
+<edge at="w2209:sw" line="mountain"/>
+<edge at="w2009:e" line="mountain"/>
+<edge at="w2009:se" line="mountain"/>
+<edge at="w2009:sw" line="mountain"/>
+<edge at="w1809:e" line="mountain"/>
+<edge at="w1809:se" line="mountain"/>
+<edge at="w1809:sw" line="mountain"/>
+<edge at="w1609:e" line="mountain"/>
+<edge at="w1609:se" line="mountain"/>
+<edge at="w1609:sw" line="mountain"/>
+<edge at="w1409:e" line="mountain"/>
+<edge at="w1409:se" line="mountain"/>
+<edge at="w1409:sw" line="mountain"/>
+<edge at="w1209:e" line="mountain"/>
+<edge at="w1209:se" line="mountain"/>
+<edge at="w1009:se" line="mountain"/>
+<edge at="w5810:e" line="zone"/>
+<edge at="w5610:e" line="zone"/>
+<edge at="w5410:e" line="mountain"/>
+<edge at="w5110:se" line="mountain"/>
+<edge at="w5010:e" line="mountain"/>
+<edge at="w5010:se" line="mountain"/>
+<edge at="w5010:ne" line="mountain"/>
+<edge at="w4910:e" line="mountain"/>
+<edge at="w4810:e" line="mountain"/>
+<edge at="w4810:ne" line="mountain"/>
+<edge at="w4210:e" line="mountain"/>
+<edge at="w3610:sw" line="zone"/>
+<edge at="w3510:e" line="zone"/>
+<edge at="w3510:se" line="zone"/>
+<edge at="w2610:se" line="zone"/>
+<edge at="w2610:sw" line="zone"/>
+<edge at="w2510:e" line="zone"/>
+<edge at="w2510:se" line="zone"/>
+<edge at="w2410:e" line="zone"/>
+<edge at="w2410:se" line="zone"/>
+<edge at="w2410:ne" line="zone"/>
+<edge at="w2310:e" line="zone"/>
+<edge at="w2210:se" line="mountain"/>
+<edge at="w2210:sw" line="mountain"/>
+<edge at="w2010:e" line="mountain"/>
+<edge at="w2010:se" line="mountain"/>
+<edge at="w2010:sw" line="mountain"/>
+<edge at="w1810:e" line="border"/>
+<edge at="w1810:se" line="mountain"/>
+<edge at="w1810:sw" line="mountain"/>
+<edge at="w1610:e" line="border"/>
+<edge at="w1610:se" line="mountain"/>
+<edge at="w1610:sw" line="mountain"/>
+<edge at="w1510:se" line="mountain"/>
+<edge at="w1410:e" line="border"/>
+<edge at="w1410:se" line="mountain"/>
+<edge at="w1410:sw" line="mountain"/>
+<edge at="w1210:se" line="mountain"/>
+<edge at="w1210:sw" line="mountain"/>
+<edge at="w1010:e" line="border"/>
+<edge at="w1010:se" line="mountain"/>
+<edge at="w1010:sw" line="mountain"/>
+<edge at="w6011:e" line="border"/>
+<edge at="w6011:sw" line="mountain"/>
+<edge at="w5911:e" line="mountain"/>
+<edge at="w5911:se" line="mountain"/>
+<edge at="w5811:se" line="mountain"/>
+<edge at="w5811:sw" line="mountain"/>
+<edge at="w5711:e" line="zone"/>
+<edge at="w5711:se" line="zone"/>
+<edge at="w5611:sw" line="mountain"/>
+<edge at="w5511:e" line="mountain"/>
+<edge at="w5411:e" line="zone"/>
+<edge at="w5411:se" line="zone"/>
+<edge at="w5411:sw" line="mountain"/>
+<edge at="w5211:ne" line="border"/>
+<edge at="w5011:se" line="mountain"/>
+<edge at="w5011:sw" line="mountain"/>
+<edge at="w4811:sw" line="mountain"/>
+<edge at="w4711:se" line="mountain"/>
+<edge at="w4611:se" line="mountain"/>
+<edge at="w4611:sw" line="mountain"/>
+<edge at="w4611:ne" line="mountain"/>
+<edge at="w4111:e" line="zone"/>
+<edge at="w4111:se" line="zone"/>
+<edge at="w2611:e" line="mountain"/>
+<edge at="w2611:se" line="zone"/>
+<edge at="w2611:sw" line="zone"/>
+<edge at="w2511:e" line="zone"/>
+<edge at="w2511:se" line="zone"/>
+<edge at="w2411:e" line="zone"/>
+<edge at="w2411:se" line="zone"/>
+<edge at="w2411:sw" line="zone"/>
+<edge at="w2411:ne" line="zone"/>
+<edge at="w2311:e" line="zone"/>
+<edge at="w2311:se" line="mountain"/>
+<edge at="w2211:se" line="mountain"/>
+<edge at="w2211:sw" line="mountain"/>
+<edge at="w2211:ne" line="mountain"/>
+<edge at="w2011:e" line="mountain"/>
+<edge at="w2011:se" line="mountain"/>
+<edge at="w2011:sw" line="mountain"/>
+<edge at="w2011:ne" line="mountain"/>
+<edge at="w1811:e" line="border"/>
+<edge at="w1611:e" line="border"/>
+<edge at="w1411:e" line="border"/>
+<edge at="w1211:e" line="border"/>
+<edge at="w1011:e" line="border"/>
+<edge at="w6112:se" line="border"/>
+<edge at="w6012:sw" line="border"/>
+<edge at="w6012:ne" line="zone"/>
+<edge at="w5412:e" line="mountain"/>
+<edge at="w5412:se" line="border"/>
+<edge at="w5312:e" line="border"/>
+<edge at="w5012:se" line="mountain"/>
+<edge at="w5012:sw" line="mountain"/>
+<edge at="w4712:e" line="mountain"/>
+<edge at="w4712:se" line="mountain"/>
+<edge at="w4612:sw" line="mountain"/>
+<edge at="w4612:ne" line="mountain"/>
+<edge at="w4412:ne" line="mountain"/>
+<edge at="w3212:e" line="mountain"/>
+<edge at="w2612:e" line="mountain"/>
+<edge at="w2612:se" line="zone"/>
+<edge at="w2612:sw" line="zone"/>
+<edge at="w2512:e" line="zone"/>
+<edge at="w2512:se" line="zone"/>
+<edge at="w2412:e" line="zone"/>
+<edge at="w2412:se" line="zone"/>
+<edge at="w2412:sw" line="zone"/>
+<edge at="w2412:ne" line="zone"/>
+<edge at="w2312:e" line="zone"/>
+<edge at="w2312:se" line="mountain"/>
+<edge at="w2212:se" line="mountain"/>
+<edge at="w2212:sw" line="mountain"/>
+<edge at="w2212:ne" line="mountain"/>
+<edge at="w2012:e" line="mountain"/>
+<edge at="w1812:e" line="border"/>
+<edge at="w1612:e" line="border"/>
+<edge at="w1412:e" line="border"/>
+<edge at="w1212:e" line="border"/>
+<edge at="w1012:e" line="border"/>
+<edge at="w6113:se" line="zone"/>
+<edge at="w5513:se" line="mountain"/>
+<edge at="w5413:se" line="mountain"/>
+<edge at="w5413:sw" line="mountain"/>
+<edge at="w5013:se" line="mountain"/>
+<edge at="w5013:sw" line="mountain"/>
+<edge at="w4813:sw" line="zone"/>
+<edge at="w4613:se" line="mountain"/>
+<edge at="w4613:sw" line="mountain"/>
+<edge at="w4413:ne" line="mountain"/>
+<edge at="w4213:se" line="mountain"/>
+<edge at="w4213:sw" line="mountain"/>
+<edge at="w4213:ne" line="zone"/>
+<edge at="w2613:sw" line="mountain"/>
+<edge at="w2513:e" line="zone"/>
+<edge at="w2413:sw" line="mountain"/>
+<edge at="w2213:sw" line="mountain"/>
+<edge at="w2013:e" line="mountain"/>
+<edge at="w6114:se" line="zone"/>
+<edge at="w6014:e" line="mountain"/>
+<edge at="w5414:e" line="border"/>
+<edge at="w5014:se" line="mountain"/>
+<edge at="w5014:sw" line="mountain"/>
+<edge at="w4714:se" line="mountain"/>
+<edge at="w4614:se" line="mountain"/>
+<edge at="w4614:sw" line="mountain"/>
+<edge at="w4614:ne" line="mountain"/>
+<edge at="w4514:e" line="mountain"/>
+<edge at="w4514:se" line="mountain"/>
+<edge at="w4314:e" line="zone"/>
+<edge at="w4314:se" line="zone"/>
+<edge at="w4014:e" line="mountain"/>
+<edge at="w2014:e" line="mountain"/>
+<edge at="w2014:se" line="mountain"/>
+<edge at="w2014:sw" line="mountain"/>
+<edge at="w1814:e" line="mountain"/>
+<edge at="w1814:se" line="mountain"/>
+<edge at="w1814:sw" line="mountain"/>
+<edge at="w1614:e" line="mountain"/>
+<edge at="w1614:se" line="mountain"/>
+<edge at="w1614:sw" line="mountain"/>
+<edge at="w1514:e" line="mountain"/>
+<edge at="w1414:se" line="mountain"/>
+<edge at="w1414:sw" line="mountain"/>
+<edge at="w6115:se" line="border"/>
+<edge at="w6015:se" line="zone"/>
+<edge at="w6015:sw" line="border"/>
+<edge at="w6015:ne" line="border"/>
+<edge at="w5615:e" line="border"/>
+<edge at="w5515:se" line="border"/>
+<edge at="w5415:e" line="border"/>
+<edge at="w5415:se" line="border"/>
+<edge at="w5415:sw" line="mountain"/>
+<edge at="w5315:e" line="border"/>
+<edge at="w5015:se" line="mountain"/>
+<edge at="w5015:sw" line="mountain"/>
+<edge at="w4915:e" line="mountain"/>
+<edge at="w4815:e" line="mountain"/>
+<edge at="w4815:se" line="border"/>
+<edge at="w4815:ne" line="mountain"/>
+<edge at="w4715:se" line="mountain"/>
+<edge at="w4615:se" line="mountain"/>
+<edge at="w4615:sw" line="mountain"/>
+<edge at="w4615:ne" line="mountain"/>
+<edge at="w4515:se" line="zone"/>
+<edge at="w4415:e" line="mountain"/>
+<edge at="w4415:se" line="zone"/>
+<edge at="w4415:ne" line="zone"/>
+<edge at="w4315:e" line="zone"/>
+<edge at="w4215:e" line="zone"/>
+<edge at="w4215:se" line="zone"/>
+<edge at="w4215:sw" line="zone"/>
+<edge at="w4215:ne" line="zone"/>
+<edge at="w4115:e" line="zone"/>
+<edge at="w4015:e" line="zone"/>
+<edge at="w4015:se" line="zone"/>
+<edge at="w4015:sw" line="mountain"/>
+<edge at="w3415:se" line="border"/>
+<edge at="w3415:sw" line="border"/>
+<edge at="w3315:e" line="border"/>
+<edge at="w2015:e" line="zone"/>
+<edge at="w1815:e" line="zone"/>
+<edge at="w1615:se" line="zone"/>
+<edge at="w1415:sw" line="mountain"/>
+<edge at="w1415:ne" line="zone"/>
+<edge at="w1215:se" line="zone"/>
+<edge at="w1215:sw" line="mountain"/>
+<edge at="w1015:sw" line="mountain"/>
+<edge at="w1015:ne" line="zone"/>
+<edge at="w6116:se" line="zone"/>
+<edge at="w5816:e" line="zone"/>
+<edge at="w5816:se" line="zone"/>
+<edge at="w5816:sw" line="zone"/>
+<edge at="w5716:e" line="border"/>
+<edge at="w5716:se" line="border"/>
+<edge at="w5616:e" line="mountain"/>
+<edge at="w5616:sw" line="border"/>
+<edge at="w5516:e" line="border"/>
+<edge at="w5416:ne" line="border"/>
+<edge at="w5216:se" line="border"/>
+<edge at="w5016:e" line="mountain"/>
+<edge at="w5016:se" line="mountain"/>
+<edge at="w5016:sw" line="mountain"/>
+<edge at="w4916:e" line="mountain"/>
+<edge at="w4816:e" line="mountain"/>
+<edge at="w4816:sw" line="mountain"/>
+<edge at="w4816:ne" line="mountain"/>
+<edge at="w4716:e" line="mountain"/>
+<edge at="w4716:se" line="mountain"/>
+<edge at="w4616:e" line="mountain"/>
+<edge at="w4616:se" line="mountain"/>
+<edge at="w4616:ne" line="mountain"/>
+<edge at="w4516:e" line="border"/>
+<edge at="w4416:e" line="mountain"/>
+<edge at="w4416:se" line="zone"/>
+<edge at="w4416:sw" line="zone"/>
+<edge at="w4316:se" line="zone"/>
+<edge at="w4216:e" line="zone"/>
+<edge at="w4216:sw" line="zone"/>
+<edge at="w4216:ne" line="zone"/>
+<edge at="w4116:e" line="mountain"/>
+<edge at="w4116:se" line="mountain"/>
+<edge at="w4016:e" line="zone"/>
+<edge at="w3816:e" line="zone"/>
+<edge at="w3816:sw" line="zone"/>
+<edge at="w3416:ne" line="border"/>
+<edge at="w3216:se" line="zone"/>
+<edge at="w3116:e" line="zone"/>
+<edge at="w3016:e" line="mountain"/>
+<edge at="w3016:ne" line="mountain"/>
+<edge at="w1616:sw" line="zone"/>
+<edge at="w1616:ne" line="zone"/>
+<edge at="w1516:se" line="zone"/>
+<edge at="w1416:e" line="zone"/>
+<edge at="w1416:se" line="zone"/>
+<edge at="w1416:sw" line="zone"/>
+<edge at="w1416:ne" line="mountain"/>
+<edge at="w1216:e" line="border"/>
+<edge at="w1216:se" line="border"/>
+<edge at="w6117:se" line="zone"/>
+<edge at="w5917:e" line="zone"/>
+<edge at="w5917:se" line="zone"/>
+<edge at="w5817:e" line="zone"/>
+<edge at="w5817:se" line="mountain"/>
+<edge at="w5817:sw" line="border"/>
+<edge at="w5817:ne" line="border"/>
+<edge at="w5717:se" line="mountain"/>
+<edge at="w5617:ne" line="mountain"/>
+<edge at="w5417:se" line="border"/>
+<edge at="w5417:sw" line="border"/>
+<edge at="w5317:e" line="border"/>
+<edge at="w5017:se" line="mountain"/>
+<edge at="w5017:sw" line="mountain"/>
+<edge at="w4917:e" line="mountain"/>
+<edge at="w4817:e" line="mountain"/>
+<edge at="w4817:sw" line="mountain"/>
+<edge at="w4817:ne" line="mountain"/>
+<edge at="w4717:e" line="mountain"/>
+<edge at="w4617:e" line="mountain"/>
+<edge at="w4617:sw" line="mountain"/>
+<edge at="w4617:ne" line="mountain"/>
+<edge at="w4517:e" line="mountain"/>
+<edge at="w4417:se" line="mountain"/>
+<edge at="w4417:sw" line="mountain"/>
+<edge at="w4417:ne" line="mountain"/>
+<edge at="w4317:e" line="zone"/>
+<edge at="w4317:se" line="zone"/>
+<edge at="w4217:e" line="mountain"/>
+<edge at="w4217:se" line="mountain"/>
+<edge at="w4217:sw" line="zone"/>
+<edge at="w4217:ne" line="mountain"/>
+<edge at="w4117:e" line="zone"/>
+<edge at="w4117:se" line="zone"/>
+<edge at="w3817:e" line="zone"/>
+<edge at="w3017:se" line="mountain"/>
+<edge at="w3017:sw" line="mountain"/>
+<edge at="w1617:se" line="zone"/>
+<edge at="w1617:ne" line="zone"/>
+<edge at="w1517:e" line="zone"/>
+<edge at="w1517:se" line="zone"/>
+<edge at="w1417:e" line="zone"/>
+<edge at="w1417:se" line="zone"/>
+<edge at="w1417:sw" line="zone"/>
+<edge at="w1417:ne" line="zone"/>
+<edge at="w1317:se" line="mountain"/>
+<edge at="w1217:sw" line="border"/>
+<edge at="w1217:ne" line="mountain"/>
+<edge at="w6118:se" line="zone"/>
+<edge at="w5918:se" line="zone"/>
+<edge at="w5818:e" line="zone"/>
+<edge at="w5818:se" line="mountain"/>
+<edge at="w5818:ne" line="zone"/>
+<edge at="w5718:se" line="mountain"/>
+<edge at="w5618:ne" line="mountain"/>
+<edge at="w5418:sw" line="border"/>
+<edge at="w5318:e" line="border"/>
+<edge at="w5218:ne" line="border"/>
+<edge at="w5018:se" line="mountain"/>
+<edge at="w5018:sw" line="mountain"/>
+<edge at="w4918:se" line="border"/>
+<edge at="w4818:se" line="mountain"/>
+<edge at="w4818:sw" line="mountain"/>
+<edge at="w4818:ne" line="border"/>
+<edge at="w4718:e" line="mountain"/>
+<edge at="w4618:e" line="mountain"/>
+<edge at="w4618:sw" line="mountain"/>
+<edge at="w4618:ne" line="mountain"/>
+<edge at="w4518:e" line="mountain"/>
+<edge at="w4418:ne" line="mountain"/>
+<edge at="w4318:e" line="mountain"/>
+<edge at="w4318:se" line="mountain"/>
+<edge at="w4218:sw" line="mountain"/>
+<edge at="w4218:ne" line="mountain"/>
+<edge at="w4118:e" line="mountain"/>
+<edge at="w4018:se" line="zone"/>
+<edge at="w3818:e" line="zone"/>
+<edge at="w3818:ne" line="zone"/>
+<edge at="w3718:se" line="zone"/>
+<edge at="w3618:e" line="mountain"/>
+<edge at="w3618:ne" line="zone"/>
+<edge at="w3218:e" line="zone"/>
+<edge at="w3218:se" line="zone"/>
+<edge at="w3018:sw" line="mountain"/>
+<edge at="w2918:e" line="mountain"/>
+<edge at="w2818:e" line="border"/>
+<edge at="w1618:se" line="zone"/>
+<edge at="w1618:sw" line="zone"/>
+<edge at="w1618:ne" line="zone"/>
+<edge at="w1518:e" line="zone"/>
+<edge at="w1518:se" line="zone"/>
+<edge at="w1418:e" line="zone"/>
+<edge at="w1418:se" line="zone"/>
+<edge at="w1418:sw" line="zone"/>
+<edge at="w1418:ne" line="zone"/>
+<edge at="w1118:se" line="mountain"/>
+<edge at="w6119:se" line="zone"/>
+<edge at="w5919:se" line="border"/>
+<edge at="w5819:e" line="mountain"/>
+<edge at="w5819:sw" line="mountain"/>
+<edge at="w5819:ne" line="mountain"/>
+<edge at="w5719:e" line="border"/>
+<edge at="w5619:ne" line="mountain"/>
+<edge at="w5319:se" line="border"/>
+<edge at="w5219:ne" line="border"/>
+<edge at="w5019:e" line="border"/>
+<edge at="w5019:se" line="border"/>
+<edge at="w5019:sw" line="mountain"/>
+<edge at="w4919:e" line="border"/>
+<edge at="w4919:se" line="border"/>
+<edge at="w4819:e" line="zone"/>
+<edge at="w4819:se" line="mountain"/>
+<edge at="w4819:sw" line="mountain"/>
+<edge at="w4819:ne" line="zone"/>
+<edge at="w4619:se" line="mountain"/>
+<edge at="w4619:sw" line="mountain"/>
+<edge at="w4419:e" line="border"/>
+<edge at="w4419:sw" line="zone"/>
+<edge at="w4319:e" line="mountain"/>
+<edge at="w4319:se" line="mountain"/>
+<edge at="w4219:ne" line="mountain"/>
+<edge at="w4019:se" line="zone"/>
+<edge at="w4019:sw" line="zone"/>
+<edge at="w3919:e" line="zone"/>
+<edge at="w3819:sw" line="zone"/>
+<edge at="w3819:ne" line="zone"/>
+<edge at="w3719:e" line="zone"/>
+<edge at="w3619:ne" line="mountain"/>
+<edge at="w2919:se" line="border"/>
+<edge at="w2819:e" line="border"/>
+<edge at="w2819:sw" line="border"/>
+<edge at="w2819:ne" line="border"/>
+<edge at="w1619:e" line="zone"/>
+<edge at="w1619:sw" line="zone"/>
+<edge at="w1519:e" line="zone"/>
+<edge at="w1519:se" line="zone"/>
+<edge at="w1419:sw" line="zone"/>
+<edge at="w1219:e" line="border"/>
+<edge at="w1019:e" line="border"/>
+<edge at="w6120:se" line="zone"/>
+<edge at="w5820:se" line="mountain"/>
+<edge at="w5820:sw" line="mountain"/>
+<edge at="w5720:se" line="mountain"/>
+<edge at="w5620:e" line="mountain"/>
+<edge at="w5620:ne" line="border"/>
+<edge at="w5320:se" line="border"/>
+<edge at="w5220:ne" line="border"/>
+<edge at="w5020:e" line="border"/>
+<edge at="w5020:se" line="border"/>
+<edge at="w5020:sw" line="zone"/>
+<edge at="w4920:e" line="border"/>
+<edge at="w4920:se" line="zone"/>
+<edge at="w4820:e" line="zone"/>
+<edge at="w4820:se" line="mountain"/>
+<edge at="w4820:sw" line="mountain"/>
+<edge at="w4820:ne" line="zone"/>
+<edge at="w4720:se" line="mountain"/>
+<edge at="w4620:e" line="zone"/>
+<edge at="w4620:se" line="mountain"/>
+<edge at="w4620:sw" line="mountain"/>
+<edge at="w4620:ne" line="mountain"/>
+<edge at="w4520:e" line="border"/>
+<edge at="w4420:se" line="zone"/>
+<edge at="w4420:sw" line="zone"/>
+<edge at="w4320:e" line="zone"/>
+<edge at="w4320:se" line="zone"/>
+<edge at="w4220:e" line="zone"/>
+<edge at="w4220:ne" line="zone"/>
+<edge at="w3920:se" line="zone"/>
+<edge at="w3220:se" line="zone"/>
+<edge at="w3220:sw" line="zone"/>
+<edge at="w3020:ne" line="zone"/>
+<edge at="w1320:se" line="mountain"/>
+<edge at="w1220:sw" line="mountain"/>
+<edge at="w6121:se" line="zone"/>
+<edge at="w5921:se" line="border"/>
+<edge at="w5821:e" line="border"/>
+<edge at="w5821:se" line="border"/>
+<edge at="w5821:ne" line="border"/>
+<edge at="w5721:se" line="border"/>
+<edge at="w5621:e" line="border"/>
+<edge at="w5621:se" line="border"/>
+<edge at="w5621:sw" line="border"/>
+<edge at="w5621:ne" line="border"/>
+<edge at="w5221:sw" line="border"/>
+<edge at="w5121:e" line="border"/>
+<edge at="w5121:se" line="border"/>
+<edge at="w5021:e" line="zone"/>
+<edge at="w5021:se" line="zone"/>
+<edge at="w5021:sw" line="zone"/>
+<edge at="w5021:ne" line="zone"/>
+<edge at="w4921:e" line="zone"/>
+<edge at="w4921:se" line="zone"/>
+<edge at="w4821:e" line="border"/>
+<edge at="w4821:se" line="mountain"/>
+<edge at="w4821:sw" line="mountain"/>
+<edge at="w4821:ne" line="zone"/>
+<edge at="w4721:e" line="mountain"/>
+<edge at="w4621:se" line="zone"/>
+<edge at="w4421:se" line="zone"/>
+<edge at="w4321:e" line="zone"/>
+<edge at="w4321:se" line="zone"/>
+<edge at="w4221:e" line="mountain"/>
+<edge at="w4221:sw" line="zone"/>
+<edge at="w4221:ne" line="zone"/>
+<edge at="w3221:e" line="mountain"/>
+<edge at="w3221:se" line="mountain"/>
+<edge at="w3221:sw" line="border"/>
+<edge at="w3221:ne" line="zone"/>
+<edge at="w3121:e" line="mountain"/>
+<edge at="w3121:se" line="zone"/>
+<edge at="w3021:ne" line="zone"/>
+<edge at="w2621:ne" line="zone"/>
+<edge at="w1221:se" line="mountain"/>
+<edge at="w6122:se" line="zone"/>
+<edge at="w5222:e" line="mountain"/>
+<edge at="w5122:se" line="zone"/>
+<edge at="w5022:se" line="zone"/>
+<edge at="w5022:sw" line="zone"/>
+<edge at="w4922:e" line="border"/>
+<edge at="w4922:se" line="border"/>
+<edge at="w4722:e" line="zone"/>
+<edge at="w4522:e" line="zone"/>
+<edge at="w4422:e" line="zone"/>
+<edge at="w4422:se" line="zone"/>
+<edge at="w4422:sw" line="zone"/>
+<edge at="w4422:ne" line="zone"/>
+<edge at="w4322:e" line="zone"/>
+<edge at="w4322:se" line="mountain"/>
+<edge at="w4222:e" line="mountain"/>
+<edge at="w4222:sw" line="mountain"/>
+<edge at="w4222:ne" line="mountain"/>
+<edge at="w3822:sw" line="mountain"/>
+<edge at="w3422:e" line="zone"/>
+<edge at="w3422:se" line="mountain"/>
+<edge at="w3322:e" line="mountain"/>
+<edge at="w3322:se" line="mountain"/>
+<edge at="w3222:e" line="zone"/>
+<edge at="w3222:ne" line="mountain"/>
+<edge at="w3022:sw" line="mountain"/>
+<edge at="w3022:ne" line="mountain"/>
+<edge at="w2922:e" line="border"/>
+<edge at="w1722:se" line="border"/>
+<edge at="w1222:e" line="zone"/>
+<edge at="w6123:se" line="zone"/>
+<edge at="w6023:e" line="zone"/>
+<edge at="w6023:se" line="zone"/>
+<edge at="w6023:ne" line="zone"/>
+<edge at="w5823:e" line="border"/>
+<edge at="w5323:se" line="mountain"/>
+<edge at="w5223:e" line="zone"/>
+<edge at="w5223:se" line="mountain"/>
+<edge at="w5223:sw" line="mountain"/>
+<edge at="w5223:ne" line="zone"/>
+<edge at="w4923:e" line="zone"/>
+<edge at="w4923:se" line="zone"/>
+<edge at="w4823:sw" line="zone"/>
+<edge at="w4423:e" line="zone"/>
+<edge at="w4423:sw" line="zone"/>
+<edge at="w4323:e" line="zone"/>
+<edge at="w3823:e" line="border"/>
+<edge at="w3423:sw" line="zone"/>
+<edge at="w3023:e" line="mountain"/>
+<edge at="w3023:se" line="mountain"/>
+<edge at="w1423:se" line="border"/>
+<edge at="w1423:sw" line="zone"/>
+<edge at="w1123:e" line="zone"/>
+<edge at="w6124:se" line="zone"/>
+<edge at="w5924:se" line="border"/>
+<edge at="w5824:e" line="zone"/>
+<edge at="w5824:se" line="zone"/>
+<edge at="w5824:sw" line="border"/>
+<edge at="w5824:ne" line="zone"/>
+<edge at="w5424:e" line="border"/>
+<edge at="w5424:se" line="border"/>
+<edge at="w5424:ne" line="border"/>
+<edge at="w5324:e" line="border"/>
+<edge at="w5324:se" line="zone"/>
+<edge at="w5224:se" line="zone"/>
+<edge at="w5224:sw" line="zone"/>
+<edge at="w5224:ne" line="zone"/>
+<edge at="w5124:se" line="zone"/>
+<edge at="w5024:e" line="zone"/>
+<edge at="w5024:sw" line="border"/>
+<edge at="w4824:e" line="zone"/>
+<edge at="w4724:e" line="mountain"/>
+<edge at="w4624:ne" line="mountain"/>
+<edge at="w4524:se" line="zone"/>
+<edge at="w4424:se" line="border"/>
+<edge at="w4424:sw" line="zone"/>
+<edge at="w4324:e" line="border"/>
+<edge at="w4224:ne" line="border"/>
+<edge at="w4024:e" line="zone"/>
+<edge at="w3924:se" line="border"/>
+<edge at="w3824:e" line="border"/>
+<edge at="w3824:se" line="border"/>
+<edge at="w3824:sw" line="border"/>
+<edge at="w3824:ne" line="border"/>
+<edge at="w3124:se" line="zone"/>
+<edge at="w3024:sw" line="mountain"/>
+<edge at="w2824:e" line="zone"/>
+<edge at="w2824:se" line="zone"/>
+<edge at="w2824:sw" line="zone"/>
+<edge at="w2724:e" line="zone"/>
+<edge at="w1324:e" line="zone"/>
+<edge at="w6125:se" line="zone"/>
+<edge at="w5825:e" line="zone"/>
+<edge at="w5825:se" line="border"/>
+<edge at="w5825:sw" line="zone"/>
+<edge at="w5725:e" line="border"/>
+<edge at="w5725:se" line="zone"/>
+<edge at="w5625:sw" line="border"/>
+<edge at="w5525:e" line="border"/>
+<edge at="w5525:se" line="border"/>
+<edge at="w5225:se" line="border"/>
+<edge at="w5125:e" line="border"/>
+<edge at="w5025:ne" line="border"/>
+<edge at="w4825:se" line="border"/>
+<edge at="w4725:e" line="mountain"/>
+<edge at="w4625:sw" line="zone"/>
+<edge at="w4625:ne" line="border"/>
+<edge at="w4425:sw" line="border"/>
+<edge at="w4325:e" line="zone"/>
+<edge at="w4325:se" line="zone"/>
+<edge at="w3425:e" line="mountain"/>
+<edge at="w2625:e" line="zone"/>
+<edge at="w6126:se" line="zone"/>
+<edge at="w6026:ne" line="zone"/>
+<edge at="w5926:se" line="zone"/>
+<edge at="w5826:e" line="border"/>
+<edge at="w5826:ne" line="border"/>
+<edge at="w5726:e" line="zone"/>
+<edge at="w5426:e" line="border"/>
+<edge at="w5226:e" line="zone"/>
+<edge at="w5226:se" line="zone"/>
+<edge at="w5226:sw" line="border"/>
+<edge at="w5126:e" line="border"/>
+<edge at="w5126:se" line="border"/>
+<edge at="w5026:e" line="border"/>
+<edge at="w4826:sw" line="border"/>
+<edge at="w4726:e" line="border"/>
+<edge at="w4726:se" line="border"/>
+<edge at="w4626:e" line="mountain"/>
+<edge at="w4426:e" line="border"/>
+<edge at="w3426:e" line="mountain"/>
+<edge at="w3426:sw" line="mountain"/>
+<edge at="w3426:ne" line="mountain"/>
+<edge at="w2326:e" line="border"/>
+<edge at="w6127:se" line="zone"/>
+<edge at="w5927:se" line="zone"/>
+<edge at="w5827:sw" line="zone"/>
+<edge at="w5727:se" line="zone"/>
+<edge at="w5427:sw" line="border"/>
+<edge at="w5127:se" line="border"/>
+<edge at="w5027:sw" line="border"/>
+<edge at="w4727:se" line="mountain"/>
+<edge at="w4527:se" line="border"/>
+<edge at="w4427:sw" line="border"/>
+<!-- 965 edges -->
+<edge at="e6101:se" line="zone"/>
+<edge at="e6001:ne" line="zone"/>
+<edge at="e5801:se" line="zone"/>
+<edge at="e5701:se" line="border"/>
+<edge at="e5601:e" line="zone"/>
+<edge at="e5601:ne" line="border"/>
+<edge at="e5401:e" line="border"/>
+<edge at="e5401:se" line="border"/>
+<edge at="e5401:sw" line="zone"/>
+<edge at="e5401:ne" line="zone"/>
+<edge at="e5301:e" line="border"/>
+<edge at="e5301:se" line="zone"/>
+<edge at="e5201:ne" line="border"/>
+<edge at="e5001:se" line="border"/>
+<edge at="e5001:sw" line="zone"/>
+<edge at="e4901:e" line="border"/>
+<edge at="e4901:se" line="border"/>
+<edge at="e4801:e" line="border"/>
+<edge at="e4801:se" line="border"/>
+<edge at="e4801:sw" line="border"/>
+<edge at="e4801:ne" line="border"/>
+<edge at="e3801:e" line="mountain"/>
+<edge at="e3801:ne" line="border"/>
+<edge at="e3401:e" line="border"/>
+<edge at="e3001:e" line="zone"/>
+<edge at="e3001:se" line="zone"/>
+<edge at="e2301:se" line="border"/>
+<edge at="e1301:se" line="border"/>
+<edge at="e6002:ne" line="zone"/>
+<edge at="e5802:se" line="zone"/>
+<edge at="e5802:sw" line="zone"/>
+<edge at="e5602:se" line="border"/>
+<edge at="e5602:sw" line="zone"/>
+<edge at="e5502:e" line="zone"/>
+<edge at="e5502:se" line="zone"/>
+<edge at="e5402:sw" line="zone"/>
+<edge at="e5302:e" line="border"/>
+<edge at="e5202:ne" line="mountain"/>
+<edge at="e5002:se" line="border"/>
+<edge at="e5002:sw" line="border"/>
+<edge at="e4902:e" line="border"/>
+<edge at="e4802:e" line="border"/>
+<edge at="e4802:ne" line="border"/>
+<edge at="e3902:e" line="mountain"/>
+<edge at="e3902:se" line="mountain"/>
+<edge at="e3602:e" line="border"/>
+<edge at="e3502:se" line="border"/>
+<edge at="e3402:e" line="zone"/>
+<edge at="e3402:se" line="zone"/>
+<edge at="e3402:sw" line="border"/>
+<edge at="e3402:ne" line="border"/>
+<edge at="e2702:e" line="mountain"/>
+<edge at="e6103:se" line="zone"/>
+<edge at="e6003:ne" line="zone"/>
+<edge at="e5803:se" line="zone"/>
+<edge at="e5803:sw" line="zone"/>
+<edge at="e5403:sw" line="zone"/>
+<edge at="e5403:ne" line="zone"/>
+<edge at="e5003:se" line="border"/>
+<edge at="e5003:sw" line="border"/>
+<edge at="e4903:e" line="border"/>
+<edge at="e4903:se" line="border"/>
+<edge at="e4803:e" line="border"/>
+<edge at="e4803:se" line="border"/>
+<edge at="e4803:sw" line="border"/>
+<edge at="e4803:ne" line="border"/>
+<edge at="e3603:ne" line="border"/>
+<edge at="e2903:e" line="mountain"/>
+<edge at="e2903:se" line="zone"/>
+<edge at="e2803:e" line="mountain"/>
+<edge at="e2803:ne" line="mountain"/>
+<edge at="e6004:ne" line="zone"/>
+<edge at="e5904:se" line="zone"/>
+<edge at="e5404:se" line="border"/>
+<edge at="e5304:e" line="border"/>
+<edge at="e5204:ne" line="border"/>
+<edge at="e5004:e" line="border"/>
+<edge at="e5004:se" line="border"/>
+<edge at="e5004:sw" line="border"/>
+<edge at="e4904:e" line="border"/>
+<edge at="e4904:se" line="border"/>
+<edge at="e4804:ne" line="border"/>
+<edge at="e4604:se" line="mountain"/>
+<edge at="e4604:sw" line="border"/>
+<edge at="e4504:e" line="mountain"/>
+<edge at="e4404:se" line="border"/>
+<edge at="e4304:e" line="border"/>
+<edge at="e4204:ne" line="border"/>
+<edge at="e3604:e" line="border"/>
+<edge at="e3004:se" line="border"/>
+<edge at="e3004:sw" line="zone"/>
+<edge at="e2904:se" line="mountain"/>
+<edge at="e2804:e" line="mountain"/>
+<edge at="e2804:sw" line="mountain"/>
+<edge at="e2804:ne" line="mountain"/>
+<edge at="e2704:e" line="border"/>
+<edge at="e2704:se" line="zone"/>
+<edge at="e2604:ne" line="border"/>
+<edge at="e6005:ne" line="zone"/>
+<edge at="e5805:e" line="border"/>
+<edge at="e5705:e" line="zone"/>
+<edge at="e5605:e" line="border"/>
+<edge at="e5605:se" line="border"/>
+<edge at="e5505:e" line="zone"/>
+<edge at="e5405:sw" line="border"/>
+<edge at="e5405:ne" line="border"/>
+<edge at="e5305:e" line="border"/>
+<edge at="e5305:se" line="border"/>
+<edge at="e5105:e" line="zone"/>
+<edge at="e5105:se" line="zone"/>
+<edge at="e5005:e" line="border"/>
+<edge at="e5005:se" line="border"/>
+<edge at="e5005:sw" line="border"/>
+<edge at="e5005:ne" line="border"/>
+<edge at="e4905:e" line="border"/>
+<edge at="e4905:se" line="border"/>
+<edge at="e4405:sw" line="border"/>
+<edge at="e4305:e" line="border"/>
+<edge at="e4305:se" line="border"/>
+<edge at="e3205:e" line="mountain"/>
+<edge at="e3205:ne" line="border"/>
+<edge at="e2905:se" line="mountain"/>
+<edge at="e2805:e" line="mountain"/>
+<edge at="e2805:se" line="mountain"/>
+<edge at="e2805:sw" line="mountain"/>
+<edge at="e2805:ne" line="mountain"/>
+<edge at="e1105:e" line="zone"/>
+<edge at="e6006:ne" line="zone"/>
+<edge at="e5906:se" line="border"/>
+<edge at="e5806:e" line="border"/>
+<edge at="e5806:se" line="border"/>
+<edge at="e5806:sw" line="border"/>
+<edge at="e5806:ne" line="border"/>
+<edge at="e5706:se" line="border"/>
+<edge at="e5606:sw" line="border"/>
+<edge at="e5506:e" line="border"/>
+<edge at="e5506:se" line="border"/>
+<edge at="e5406:e" line="border"/>
+<edge at="e5306:e" line="zone"/>
+<edge at="e4006:se" line="border"/>
+<edge at="e3906:e" line="border"/>
+<edge at="e3806:ne" line="border"/>
+<edge at="e3306:se" line="mountain"/>
+<edge at="e2806:se" line="zone"/>
+<edge at="e2806:sw" line="mountain"/>
+<edge at="e2706:e" line="mountain"/>
+<edge at="e2706:se" line="mountain"/>
+<edge at="e2606:e" line="mountain"/>
+<edge at="e2606:ne" line="mountain"/>
+<edge at="e2206:se" line="mountain"/>
+<edge at="e2106:e" line="mountain"/>
+<edge at="e2006:ne" line="mountain"/>
+<edge at="e6007:se" line="mountain"/>
+<edge at="e6007:ne" line="zone"/>
+<edge at="e5507:se" line="zone"/>
+<edge at="e5407:e" line="border"/>
+<edge at="e5407:se" line="border"/>
+<edge at="e5407:sw" line="border"/>
+<edge at="e5407:ne" line="border"/>
+<edge at="e4007:sw" line="border"/>
+<edge at="e3907:e" line="border"/>
+<edge at="e3907:se" line="border"/>
+<edge at="e3407:e" line="border"/>
+<edge at="e2607:se" line="border"/>
+<edge at="e2207:sw" line="mountain"/>
+<edge at="e1407:ne" line="border"/>
+<edge at="e6008:sw" line="mountain"/>
+<edge at="e6008:ne" line="zone"/>
+<edge at="e5608:e" line="zone"/>
+<edge at="e3508:se" line="border"/>
+<edge at="e3408:e" line="border"/>
+<edge at="e3408:se" line="border"/>
+<edge at="e3408:sw" line="border"/>
+<edge at="e3408:ne" line="border"/>
+<edge at="e3208:ne" line="border"/>
+<edge at="e2908:se" line="mountain"/>
+<edge at="e2808:se" line="mountain"/>
+<edge at="e2808:sw" line="mountain"/>
+<edge at="e2808:ne" line="mountain"/>
+<edge at="e1308:e" line="mountain"/>
+<edge at="e1308:se" line="zone"/>
+<edge at="e6009:ne" line="zone"/>
+<edge at="e5809:e" line="border"/>
+<edge at="e5809:se" line="border"/>
+<edge at="e5709:se" line="zone"/>
+<edge at="e5609:e" line="border"/>
+<edge at="e5609:se" line="border"/>
+<edge at="e5609:sw" line="border"/>
+<edge at="e5609:ne" line="border"/>
+<edge at="e1609:e" line="zone"/>
+<edge at="e1609:se" line="zone"/>
+<edge at="e1409:sw" line="mountain"/>
+<edge at="e6110:se" line="zone"/>
+<edge at="e6010:ne" line="zone"/>
+<edge at="e5810:e" line="mountain"/>
+<edge at="e5810:se" line="mountain"/>
+<edge at="e5810:sw" line="border"/>
+<edge at="e5810:ne" line="border"/>
+<edge at="e4610:e" line="mountain"/>
+<edge at="e4610:se" line="mountain"/>
+<edge at="e3210:ne" line="border"/>
+<edge at="e6111:se" line="border"/>
+<edge at="e6011:sw" line="border"/>
+<edge at="e6011:ne" line="zone"/>
+<edge at="e3611:e" line="border"/>
+<edge at="e3411:ne" line="border"/>
+<edge at="e3311:se" line="border"/>
+<edge at="e3111:e" line="border"/>
+<edge at="e3712:se" line="border"/>
+<edge at="e3612:e" line="border"/>
+<edge at="e3612:se" line="border"/>
+<edge at="e3612:sw" line="border"/>
+<edge at="e3612:ne" line="border"/>
+<edge at="e3412:ne" line="border"/>
+<edge at="e6013:e" line="mountain"/>
+<edge at="e5913:e" line="zone"/>
+<edge at="e5813:ne" line="zone"/>
+<edge at="e4213:se" line="zone"/>
+<edge at="e4113:e" line="zone"/>
+<edge at="e4013:ne" line="zone"/>
+<edge at="e3713:se" line="border"/>
+<edge at="e5914:e" line="zone"/>
+<edge at="e4114:se" line="zone"/>
+<edge at="e3614:e" line="border"/>
+<edge at="e3114:se" line="border"/>
+<edge at="e3515:e" line="zone"/>
+<edge at="e3415:ne" line="zone"/>
+<edge at="e3215:se" line="border"/>
+<edge at="e6016:e" line="zone"/>
+<edge at="e4416:ne" line="zone"/>
+<edge at="e3616:sw" line="border"/>
+<edge at="e3216:se" line="border"/>
+<edge at="e3116:e" line="zone"/>
+<edge at="e1616:se" line="mountain"/>
+<edge at="e1516:e" line="mountain"/>
+<edge at="e1416:ne" line="zone"/>
+<edge at="e1216:e" line="zone"/>
+<edge at="e1216:se" line="border"/>
+<edge at="e1216:ne" line="border"/>
+<edge at="e1116:e" line="border"/>
+<edge at="e3117:e" line="border"/>
+<edge at="e1817:se" line="border"/>
+<edge at="e1817:sw" line="border"/>
+<edge at="e1617:sw" line="mountain"/>
+<edge at="e1517:e" line="mountain"/>
+<edge at="e1517:se" line="zone"/>
+<edge at="e1417:e" line="zone"/>
+<edge at="e1317:e" line="zone"/>
+<edge at="e1317:se" line="zone"/>
+<edge at="e1217:ne" line="zone"/>
+<edge at="e1318:e" line="zone"/>
+<edge at="e1318:se" line="zone"/>
+<edge at="e4619:se" line="mountain"/>
+<edge at="e3419:sw" line="border"/>
+<edge at="e1219:e" line="zone"/>
+<edge at="e1119:e" line="zone"/>
+<edge at="e6120:se" line="zone"/>
+<edge at="e6020:ne" line="zone"/>
+<edge at="e5720:e" line="zone"/>
+<edge at="e5620:ne" line="mountain"/>
+<edge at="e2220:e" line="mountain"/>
+<edge at="e1620:e" line="zone"/>
+<edge at="e1520:e" line="zone"/>
+<edge at="e1420:ne" line="zone"/>
+<edge at="e1220:ne" line="zone"/>
+<edge at="e5821:sw" line="mountain"/>
+<edge at="e2321:se" line="mountain"/>
+<edge at="e2221:e" line="mountain"/>
+<edge at="e2221:se" line="mountain"/>
+<edge at="e2221:ne" line="mountain"/>
+<edge at="e1821:e" line="zone"/>
+<edge at="e1721:e" line="zone"/>
+<edge at="e1621:sw" line="zone"/>
+<edge at="e1621:ne" line="zone"/>
+<edge at="e1321:e" line="zone"/>
+<edge at="e1321:se" line="zone"/>
+<edge at="e6022:se" line="zone"/>
+<edge at="e6022:sw" line="zone"/>
+<edge at="e5922:e" line="zone"/>
+<edge at="e5822:e" line="zone"/>
+<edge at="e5822:sw" line="zone"/>
+<edge at="e1822:sw" line="zone"/>
+<edge at="e1322:se" line="mountain"/>
+<edge at="e1222:ne" line="mountain"/>
+<edge at="e6023:se" line="zone"/>
+<edge at="e6023:sw" line="zone"/>
+<edge at="e5923:e" line="zone"/>
+<edge at="e5823:e" line="zone"/>
+<edge at="e5823:sw" line="zone"/>
+<edge at="e5223:e" line="zone"/>
+<edge at="e5023:e" line="zone"/>
+<edge at="e3223:e" line="zone"/>
+<edge at="e2723:se" line="zone"/>
+<edge at="e2623:e" line="zone"/>
+<edge at="e2623:ne" line="zone"/>
+<edge at="e2523:e" line="zone"/>
+<edge at="e2423:se" line="zone"/>
+<edge at="e2423:sw" line="zone"/>
+<edge at="e2123:e" line="mountain"/>
+<edge at="e1423:e" line="mountain"/>
+<edge at="e1423:ne" line="mountain"/>
+<edge at="e1323:e" line="zone"/>
+<edge at="e1323:se" line="zone"/>
+<edge at="e1223:ne" line="zone"/>
+<edge at="e5924:e" line="zone"/>
+<edge at="e5824:e" line="zone"/>
+<edge at="e5824:sw" line="zone"/>
+<edge at="e5324:se" line="zone"/>
+<edge at="e5224:sw" line="zone"/>
+<edge at="e5124:e" line="zone"/>
+<edge at="e5124:se" line="zone"/>
+<edge at="e5024:sw" line="zone"/>
+<edge at="e3124:se" line="mountain"/>
+<edge at="e3024:sw" line="mountain"/>
+<edge at="e2824:ne" line="zone"/>
+<edge at="e2724:e" line="zone"/>
+<edge at="e2724:se" line="zone"/>
+<edge at="e2624:e" line="zone"/>
+<edge at="e2624:ne" line="zone"/>
+<edge at="e2524:e" line="zone"/>
+<edge at="e2424:se" line="zone"/>
+<edge at="e2424:sw" line="zone"/>
+<edge at="e1424:e" line="border"/>
+<edge at="e1324:e" line="zone"/>
+<edge at="e1224:e" line="zone"/>
+<edge at="e1224:ne" line="zone"/>
+<edge at="e1124:e" line="mountain"/>
+<edge at="e1124:se" line="zone"/>
+<edge at="e6025:e" line="mountain"/>
+<edge at="e6025:se" line="border"/>
+<edge at="e5825:e" line="zone"/>
+<edge at="e5425:e" line="mountain"/>
+<edge at="e4225:e" line="zone"/>
+<edge at="e3825:e" line="border"/>
+<edge at="e3825:se" line="border"/>
+<edge at="e3325:se" line="mountain"/>
+<edge at="e3225:e" line="mountain"/>
+<edge at="e3225:ne" line="mountain"/>
+<edge at="e2925:se" line="zone"/>
+<edge at="e2825:ne" line="zone"/>
+<edge at="e2725:se" line="zone"/>
+<edge at="e2625:e" line="zone"/>
+<edge at="e2625:ne" line="zone"/>
+<edge at="e2525:e" line="zone"/>
+<edge at="e2525:se" line="zone"/>
+<edge at="e2425:se" line="zone"/>
+<edge at="e2425:sw" line="zone"/>
+<edge at="e2425:ne" line="zone"/>
+<edge at="e1925:se" line="mountain"/>
+<edge at="e1825:sw" line="mountain"/>
+<edge at="e1625:ne" line="zone"/>
+<edge at="e1525:se" line="border"/>
+<edge at="e1425:sw" line="border"/>
+<edge at="e1325:e" line="zone"/>
+<edge at="e1325:se" line="zone"/>
+<edge at="e1225:e" line="zone"/>
+<edge at="e1225:ne" line="zone"/>
+<edge at="e6026:se" line="mountain"/>
+<edge at="e5826:e" line="zone"/>
+<edge at="e5626:e" line="zone"/>
+<edge at="e5626:se" line="zone"/>
+<edge at="e5626:sw" line="zone"/>
+<edge at="e5426:se" line="mountain"/>
+<edge at="e5426:sw" line="mountain"/>
+<edge at="e5026:e" line="mountain"/>
+<edge at="e4326:se" line="zone"/>
+<edge at="e4226:sw" line="zone"/>
+<edge at="e3826:sw" line="zone"/>
+<edge at="e2926:se" line="zone"/>
+<edge at="e2826:ne" line="zone"/>
+<edge at="e2726:se" line="zone"/>
+<edge at="e2626:e" line="zone"/>
+<edge at="e2626:ne" line="zone"/>
+<edge at="e2526:e" line="zone"/>
+<edge at="e2526:se" line="zone"/>
+<edge at="e2426:e" line="zone"/>
+<edge at="e2426:se" line="zone"/>
+<edge at="e2426:sw" line="zone"/>
+<edge at="e2426:ne" line="zone"/>
+<edge at="e1526:e" line="zone"/>
+<edge at="e1326:e" line="zone"/>
+<edge at="e1326:se" line="zone"/>
+<edge at="e1226:e" line="zone"/>
+<edge at="e1226:ne" line="zone"/>
+<edge at="e6027:sw" line="zone"/>
+<edge at="e5927:e" line="mountain"/>
+<edge at="e5827:e" line="zone"/>
+<edge at="e5627:se" line="zone"/>
+<edge at="e5427:se" line="mountain"/>
+<edge at="e3027:e" line="zone"/>
+<edge at="e2927:se" line="zone"/>
+<edge at="e2827:ne" line="zone"/>
+<edge at="e2527:e" line="zone"/>
+<edge at="e2427:e" line="zone"/>
+<edge at="e2427:se" line="zone"/>
+<edge at="e2427:sw" line="zone"/>
+<edge at="e1627:ne" line="zone"/>
+<edge at="e1327:e" line="zone"/>
+<edge at="e1327:se" line="zone"/>
+<edge at="e1227:e" line="zone"/>
+<edge at="e1227:ne" line="zone"/>
+<edge at="e6028:e" line="zone"/>
+<edge at="e6028:se" line="border"/>
+<edge at="e6028:sw" line="zone"/>
+<edge at="e5928:e" line="zone"/>
+<edge at="e5828:e" line="zone"/>
+<edge at="e5628:e" line="mountain"/>
+<edge at="e5428:sw" line="mountain"/>
+<edge at="e5228:e" line="zone"/>
+<edge at="e5028:e" line="zone"/>
+<edge at="e4828:e" line="zone"/>
+<edge at="e4628:e" line="zone"/>
+<edge at="e4428:e" line="zone"/>
+<edge at="e4228:e" line="zone"/>
+<edge at="e4028:e" line="zone"/>
+<edge at="e3828:e" line="zone"/>
+<edge at="e3628:e" line="zone"/>
+<edge at="e3428:e" line="zone"/>
+<edge at="e3228:e" line="zone"/>
+<edge at="e3028:e" line="zone"/>
+<edge at="e2928:se" line="zone"/>
+<edge at="e2828:e" line="zone"/>
+<edge at="e2728:se" line="zone"/>
+<edge at="e2528:e" line="zone"/>
+<edge at="e2528:se" line="zone"/>
+<edge at="e2428:e" line="zone"/>
+<edge at="e2428:sw" line="zone"/>
+<edge at="e2228:e" line="zone"/>
+<edge at="e2028:e" line="zone"/>
+<edge at="e1828:sw" line="zone"/>
+<edge at="e1628:e" line="zone"/>
+<edge at="e1428:e" line="zone"/>
+<edge at="e1328:se" line="zone"/>
+<edge at="e1228:e" line="zone"/>
+<!-- 434 edges -->
+  <!-- roads and rails, centre to centre (the scan does not let the tracer tell the two apart) -->
+<link kind="road" line="road" hexes="w6101 w6001"/>
+<link kind="road" line="road" hexes="w6001 w6102"/>
+<link kind="road" line="road" hexes="w5901 w5902"/>
+<link kind="road" line="road" hexes="w5801 w5802"/>
+<link kind="road" line="road" hexes="w5801 w5701"/>
+<link kind="road" line="road" hexes="w5601 w5502"/>
+<link kind="road" line="road" hexes="w5601 w5501"/>
+<link kind="road" line="road" hexes="w5101 w5102"/>
+<link kind="road" line="road" hexes="w4901 w4902"/>
+<link kind="road" line="road" hexes="w4901 w4801"/>
+<link kind="road" line="road" hexes="w4801 w4902"/>
+<link kind="road" line="road" hexes="w4701 w4601"/>
+<link kind="road" line="road" hexes="w4601 w4602"/>
+<link kind="road" line="road" hexes="w4601 w4502"/>
+<link kind="road" line="road" hexes="w4601 w4501"/>
+<link kind="road" line="road" hexes="w4601 w4702"/>
+<link kind="road" line="road" hexes="w3001 w2901"/>
+<link kind="road" line="road" hexes="w2901 w2902"/>
+<link kind="road" line="road" hexes="w2801 w2702"/>
+<link kind="road" line="road" hexes="w2801 w2701"/>
+<link kind="road" line="road" hexes="w2701 w2702"/>
+<link kind="road" line="road" hexes="w2701 w2601"/>
+<link kind="road" line="road" hexes="w2601 w2702"/>
+<link kind="road" line="road" hexes="w2501 w2502"/>
+<link kind="road" line="road" hexes="w2501 w2401"/>
+<link kind="road" line="road" hexes="w2401 w2402"/>
+<link kind="road" line="road" hexes="w2401 w2302"/>
+<link kind="road" line="road" hexes="w2401 w2301"/>
+<link kind="road" line="road" hexes="w6102 w6002"/>
+<link kind="road" line="road" hexes="w6002 w6103"/>
+<link kind="road" line="road" hexes="w5802 w5803"/>
+<link kind="road" line="road" hexes="w5802 w5703"/>
+<link kind="road" line="road" hexes="w5802 w5702"/>
+<link kind="road" line="road" hexes="w5602 w5503"/>
+<link kind="road" line="road" hexes="w5602 w5502"/>
+<link kind="road" line="road" hexes="w5402 w5403"/>
+<link kind="road" line="road" hexes="w5102 w5103"/>
+<link kind="road" line="road" hexes="w5002 w5003"/>
+<link kind="road" line="road" hexes="w5002 w4902"/>
+<link kind="road" line="road" hexes="w4902 w4903"/>
+<link kind="road" line="road" hexes="w4902 w4802"/>
+<link kind="road" line="road" hexes="w4802 w4903"/>
+<link kind="road" line="road" hexes="w4702 w4602"/>
+<link kind="road" line="road" hexes="w4602 w4603"/>
+<link kind="road" line="road" hexes="w4602 w4503"/>
+<link kind="road" line="road" hexes="w4602 w4502"/>
+<link kind="road" line="road" hexes="w4602 w4703"/>
+<link kind="road" line="road" hexes="w3002 w2902"/>
+<link kind="road" line="road" hexes="w2902 w2903"/>
+<link kind="road" line="road" hexes="w2802 w2703"/>
+<link kind="road" line="road" hexes="w2802 w2702"/>
+<link kind="road" line="road" hexes="w2702 w2703"/>
+<link kind="road" line="road" hexes="w2702 w2602"/>
+<link kind="road" line="road" hexes="w2602 w2703"/>
+<link kind="road" line="road" hexes="w2502 w2402"/>
+<link kind="road" line="road" hexes="w2402 w2403"/>
+<link kind="road" line="road" hexes="w2402 w2303"/>
+<link kind="road" line="road" hexes="w2402 w2302"/>
+<link kind="road" line="road" hexes="w2402 w2503"/>
+<link kind="road" line="road" hexes="w2302 w2303"/>
+<link kind="road" line="road" hexes="w6103 w6003"/>
+<link kind="road" line="road" hexes="w6003 w6104"/>
+<link kind="road" line="road" hexes="w5903 w5904"/>
+<link kind="road" line="road" hexes="w5803 w5804"/>
+<link kind="road" line="road" hexes="w5603 w5504"/>
+<link kind="road" line="road" hexes="w5603 w5503"/>
+<link kind="road" line="road" hexes="w5403 w5404"/>
+<link kind="road" line="road" hexes="w5103 w5104"/>
+<link kind="road" line="road" hexes="w5003 w5004"/>
+<link kind="road" line="road" hexes="w5003 w4904"/>
+<link kind="road" line="road" hexes="w5003 w4903"/>
+<link kind="road" line="road" hexes="w4903 w4904"/>
+<link kind="road" line="road" hexes="w4903 w4803"/>
+<link kind="road" line="road" hexes="w4803 w4904"/>
+<link kind="road" line="road" hexes="w4703 w4603"/>
+<link kind="road" line="road" hexes="w4603 w4604"/>
+<link kind="road" line="road" hexes="w4603 w4504"/>
+<link kind="road" line="road" hexes="w4603 w4503"/>
+<link kind="road" line="road" hexes="w4603 w4704"/>
+<link kind="road" line="road" hexes="w4503 w4403"/>
+<link kind="road" line="road" hexes="w4403 w4504"/>
+<link kind="road" line="road" hexes="w3003 w2904"/>
+<link kind="road" line="road" hexes="w2903 w2904"/>
+<link kind="road" line="road" hexes="w2803 w2804"/>
+<link kind="road" line="road" hexes="w2803 w2704"/>
+<link kind="road" line="road" hexes="w2803 w2703"/>
+<link kind="road" line="road" hexes="w2703 w2704"/>
+<link kind="road" line="road" hexes="w2703 w2603"/>
+<link kind="road" line="road" hexes="w2603 w2704"/>
+<link kind="road" line="road" hexes="w2503 w2504"/>
+<link kind="road" line="road" hexes="w2503 w2403"/>
+<link kind="road" line="road" hexes="w2403 w2404"/>
+<link kind="road" line="road" hexes="w2403 w2304"/>
+<link kind="road" line="road" hexes="w2403 w2303"/>
+<link kind="road" line="road" hexes="w2403 w2504"/>
+<link kind="road" line="road" hexes="w2303 w2304"/>
+<link kind="road" line="road" hexes="w2203 w2304"/>
+<link kind="road" line="road" hexes="w6104 w6004"/>
+<link kind="road" line="road" hexes="w6004 w6105"/>
+<link kind="road" line="road" hexes="w5804 w5805"/>
+<link kind="road" line="road" hexes="w5604 w5505"/>
+<link kind="road" line="road" hexes="w5604 w5504"/>
+<link kind="road" line="road" hexes="w5404 w5405"/>
+<link kind="road" line="road" hexes="w4604 w4504"/>
+<link kind="road" line="road" hexes="w4504 w4404"/>
+<link kind="road" line="road" hexes="w3404 w3405"/>
+<link kind="road" line="road" hexes="w3004 w3005"/>
+<link kind="road" line="road" hexes="w3004 w2904"/>
+<link kind="road" line="road" hexes="w2904 w2804"/>
+<link kind="road" line="road" hexes="w2804 w2705"/>
+<link kind="road" line="road" hexes="w2804 w2704"/>
+<link kind="road" line="road" hexes="w2704 w2705"/>
+<link kind="road" line="road" hexes="w2704 w2604"/>
+<link kind="road" line="road" hexes="w2504 w2505"/>
+<link kind="road" line="road" hexes="w2504 w2404"/>
+<link kind="road" line="road" hexes="w2404 w2405"/>
+<link kind="road" line="road" hexes="w2404 w2305"/>
+<link kind="road" line="road" hexes="w2404 w2304"/>
+<link kind="road" line="road" hexes="w2304 w2305"/>
+<link kind="road" line="road" hexes="w2304 w2204"/>
+<link kind="road" line="road" hexes="w6105 w6005"/>
+<link kind="road" line="road" hexes="w6005 w6106"/>
+<link kind="road" line="road" hexes="w5905 w5906"/>
+<link kind="road" line="road" hexes="w5605 w5506"/>
+<link kind="road" line="road" hexes="w5605 w5505"/>
+<link kind="road" line="road" hexes="w5405 w5406"/>
+<link kind="road" line="road" hexes="w3405 w3305"/>
+<link kind="road" line="road" hexes="w3305 w3306"/>
+<link kind="road" line="road" hexes="w3305 w3205"/>
+<link kind="road" line="road" hexes="w2805 w2705"/>
+<link kind="road" line="road" hexes="w2605 w2505"/>
+<link kind="road" line="road" hexes="w1805 w1806"/>
+<link kind="road" line="road" hexes="w1605 w1606"/>
+<link kind="road" line="road" hexes="w6106 w6006"/>
+<link kind="road" line="road" hexes="w6006 w6107"/>
+<link kind="road" line="road" hexes="w5606 w5507"/>
+<link kind="road" line="road" hexes="w5606 w5506"/>
+<link kind="road" line="road" hexes="w1806 w1807"/>
+<link kind="road" line="road" hexes="w1606 w1607"/>
+<link kind="road" line="road" hexes="w1406 w1407"/>
+<link kind="road" line="road" hexes="w1406 w1507"/>
+<link kind="road" line="road" hexes="w6107 w6007"/>
+<link kind="road" line="road" hexes="w6007 w6108"/>
+<link kind="road" line="road" hexes="w5607 w5508"/>
+<link kind="road" line="road" hexes="w5607 w5507"/>
+<link kind="road" line="road" hexes="w3807 w3808"/>
+<link kind="road" line="road" hexes="w2607 w2508"/>
+<link kind="road" line="road" hexes="w2407 w2408"/>
+<link kind="road" line="road" hexes="w2407 w2508"/>
+<link kind="road" line="road" hexes="w6108 w6008"/>
+<link kind="road" line="road" hexes="w6008 w6109"/>
+<link kind="road" line="road" hexes="w5708 w5608"/>
+<link kind="road" line="road" hexes="w5608 w5509"/>
+<link kind="road" line="road" hexes="w5608 w5508"/>
+<link kind="road" line="road" hexes="w5608 w5709"/>
+<link kind="road" line="road" hexes="w5008 w4909"/>
+<link kind="road" line="road" hexes="w4308 w4309"/>
+<link kind="road" line="road" hexes="w3808 w3909"/>
+<link kind="road" line="road" hexes="w2608 w2609"/>
+<link kind="road" line="road" hexes="w2608 w2509"/>
+<link kind="road" line="road" hexes="w2608 w2508"/>
+<link kind="road" line="road" hexes="w2508 w2408"/>
+<link kind="road" line="road" hexes="w2408 w2509"/>
+<link kind="road" line="road" hexes="w5009 w4909"/>
+<link kind="road" line="road" hexes="w4809 w4810"/>
+<link kind="road" line="road" hexes="w4809 w4910"/>
+<link kind="road" line="road" hexes="w2609 w2509"/>
+<link kind="road" line="road" hexes="w2509 w2409"/>
+<link kind="road" line="road" hexes="w2409 w2410"/>
+<link kind="road" line="road" hexes="w2610 w2511"/>
+<link kind="road" line="road" hexes="w2510 w2511"/>
+<link kind="road" line="road" hexes="w2510 w2410"/>
+<link kind="road" line="road" hexes="w2410 w2411"/>
+<link kind="road" line="road" hexes="w2410 w2311"/>
+<link kind="road" line="road" hexes="w2410 w2511"/>
+<link kind="road" line="road" hexes="w2310 w2311"/>
+<link kind="road" line="road" hexes="w6111 w6011"/>
+<link kind="road" line="road" hexes="w6011 w6112"/>
+<link kind="road" line="road" hexes="w5711 w5712"/>
+<link kind="road" line="road" hexes="w5411 w5412"/>
+<link kind="road" line="road" hexes="w5411 w5312"/>
+<link kind="road" line="road" hexes="w4111 w4112"/>
+<link kind="road" line="road" hexes="w2611 w2512"/>
+<link kind="road" line="road" hexes="w2511 w2512"/>
+<link kind="road" line="road" hexes="w2511 w2411"/>
+<link kind="road" line="road" hexes="w2411 w2412"/>
+<link kind="road" line="road" hexes="w2411 w2311"/>
+<link kind="road" line="road" hexes="w2411 w2512"/>
+<link kind="road" line="road" hexes="w2311 w2312"/>
+<link kind="road" line="road" hexes="w1811 w1812"/>
+<link kind="road" line="road" hexes="w1611 w1612"/>
+<link kind="road" line="road" hexes="w6112 w6012"/>
+<link kind="road" line="road" hexes="w6012 w6113"/>
+<link kind="road" line="road" hexes="w2612 w2513"/>
+<link kind="road" line="road" hexes="w2612 w2512"/>
+<link kind="road" line="road" hexes="w2512 w2513"/>
+<link kind="road" line="road" hexes="w2512 w2412"/>
+<link kind="road" line="road" hexes="w2412 w2413"/>
+<link kind="road" line="road" hexes="w2412 w2313"/>
+<link kind="road" line="road" hexes="w2412 w2312"/>
+<link kind="road" line="road" hexes="w2412 w2513"/>
+<link kind="road" line="road" hexes="w2312 w2313"/>
+<link kind="road" line="road" hexes="w1812 w1813"/>
+<link kind="road" line="road" hexes="w1612 w1613"/>
+<link kind="road" line="road" hexes="w6113 w6013"/>
+<link kind="road" line="road" hexes="w6013 w6114"/>
+<link kind="road" line="road" hexes="w6114 w6014"/>
+<link kind="road" line="road" hexes="w6014 w6115"/>
+<link kind="road" line="road" hexes="w4314 w4315"/>
+<link kind="road" line="road" hexes="w4314 w4214"/>
+<link kind="road" line="road" hexes="w4214 w4215"/>
+<link kind="road" line="road" hexes="w6115 w6015"/>
+<link kind="road" line="road" hexes="w6015 w5916"/>
+<link kind="road" line="road" hexes="w6015 w6116"/>
+<link kind="road" line="road" hexes="w4515 w4415"/>
+<link kind="road" line="road" hexes="w4215 w4116"/>
+<link kind="road" line="road" hexes="w4215 w4115"/>
+<link kind="road" line="road" hexes="w4215 w4316"/>
+<link kind="road" line="road" hexes="w4115 w4015"/>
+<link kind="road" line="road" hexes="w4015 w4016"/>
+<link kind="road" line="road" hexes="w4015 w3916"/>
+<link kind="road" line="road" hexes="w4015 w3915"/>
+<link kind="road" line="road" hexes="w4015 w4116"/>
+<link kind="road" line="road" hexes="w2015 w2016"/>
+<link kind="road" line="road" hexes="w1815 w1816"/>
+<link kind="road" line="road" hexes="w1615 w1516"/>
+<link kind="road" line="road" hexes="w1415 w1416"/>
+<link kind="road" line="road" hexes="w1415 w1516"/>
+<link kind="road" line="road" hexes="w1215 w1116"/>
+<link kind="road" line="road" hexes="w1015 w1116"/>
+<link kind="road" line="road" hexes="w6116 w6016"/>
+<link kind="road" line="road" hexes="w6016 w6117"/>
+<link kind="road" line="road" hexes="w5816 w5817"/>
+<link kind="road" line="road" hexes="w5816 w5716"/>
+<link kind="road" line="road" hexes="w4416 w4316"/>
+<link kind="road" line="road" hexes="w3816 w3716"/>
+<link kind="road" line="road" hexes="w3616 w3516"/>
+<link kind="road" line="road" hexes="w3116 w3117"/>
+<link kind="road" line="road" hexes="w1616 w1516"/>
+<link kind="road" line="road" hexes="w1616 w1717"/>
+<link kind="road" line="road" hexes="w1516 w1416"/>
+<link kind="road" line="road" hexes="w1416 w1417"/>
+<link kind="road" line="road" hexes="w1416 w1317"/>
+<link kind="road" line="road" hexes="w1416 w1316"/>
+<link kind="road" line="road" hexes="w6117 w6017"/>
+<link kind="road" line="road" hexes="w6017 w6118"/>
+<link kind="road" line="road" hexes="w5917 w5918"/>
+<link kind="road" line="road" hexes="w5917 w5817"/>
+<link kind="road" line="road" hexes="w5817 w5818"/>
+<link kind="road" line="road" hexes="w4217 w4117"/>
+<link kind="road" line="road" hexes="w3817 w3818"/>
+<link kind="road" line="road" hexes="w1617 w1518"/>
+<link kind="road" line="road" hexes="w1617 w1718"/>
+<link kind="road" line="road" hexes="w1517 w1518"/>
+<link kind="road" line="road" hexes="w1517 w1417"/>
+<link kind="road" line="road" hexes="w1417 w1418"/>
+<link kind="road" line="road" hexes="w1417 w1317"/>
+<link kind="road" line="road" hexes="w1417 w1518"/>
+<link kind="road" line="road" hexes="w6118 w6018"/>
+<link kind="road" line="road" hexes="w6018 w6119"/>
+<link kind="road" line="road" hexes="w5918 w5818"/>
+<link kind="road" line="road" hexes="w5818 w5919"/>
+<link kind="road" line="road" hexes="w3718 w3618"/>
+<link kind="road" line="road" hexes="w1618 w1519"/>
+<link kind="road" line="road" hexes="w1618 w1518"/>
+<link kind="road" line="road" hexes="w1618 w1719"/>
+<link kind="road" line="road" hexes="w1518 w1519"/>
+<link kind="road" line="road" hexes="w1518 w1418"/>
+<link kind="road" line="road" hexes="w1418 w1419"/>
+<link kind="road" line="road" hexes="w1418 w1319"/>
+<link kind="road" line="road" hexes="w1418 w1318"/>
+<link kind="road" line="road" hexes="w1418 w1519"/>
+<link kind="road" line="road" hexes="w6119 w6019"/>
+<link kind="road" line="road" hexes="w6019 w6120"/>
+<link kind="road" line="road" hexes="w4819 w4820"/>
+<link kind="road" line="road" hexes="w4619 w4620"/>
+<link kind="road" line="road" hexes="w4019 w3920"/>
+<link kind="road" line="road" hexes="w3919 w3920"/>
+<link kind="road" line="road" hexes="w3819 w3920"/>
+<link kind="road" line="road" hexes="w3719 w3720"/>
+<link kind="road" line="road" hexes="w1619 w1519"/>
+<link kind="road" line="road" hexes="w1619 w1720"/>
+<link kind="road" line="road" hexes="w1519 w1520"/>
+<link kind="road" line="road" hexes="w1519 w1419"/>
+<link kind="road" line="road" hexes="w1419 w1319"/>
+<link kind="road" line="road" hexes="w6120 w6020"/>
+<link kind="road" line="road" hexes="w6020 w6121"/>
+<link kind="road" line="road" hexes="w4820 w4821"/>
+<link kind="road" line="road" hexes="w4320 w4220"/>
+<link kind="road" line="road" hexes="w4220 w4221"/>
+<link kind="road" line="road" hexes="w4220 w4321"/>
+<link kind="road" line="road" hexes="w3920 w3820"/>
+<link kind="road" line="road" hexes="w3220 w3121"/>
+<link kind="road" line="road" hexes="w3220 w3120"/>
+<link kind="road" line="road" hexes="w3020 w3121"/>
+<link kind="road" line="road" hexes="w6121 w6021"/>
+<link kind="road" line="road" hexes="w6021 w6122"/>
+<link kind="road" line="road" hexes="w5021 w5022"/>
+<link kind="road" line="road" hexes="w4921 w4922"/>
+<link kind="road" line="road" hexes="w4921 w4821"/>
+<link kind="road" line="road" hexes="w4821 w4922"/>
+<link kind="road" line="road" hexes="w4621 w4522"/>
+<link kind="road" line="road" hexes="w4421 w4522"/>
+<link kind="road" line="road" hexes="w4321 w4322"/>
+<link kind="road" line="road" hexes="w4221 w4121"/>
+<link kind="road" line="road" hexes="w3221 w3322"/>
+<link kind="road" line="road" hexes="w3121 w3021"/>
+<link kind="road" line="road" hexes="w3021 w3122"/>
+<link kind="road" line="road" hexes="w6122 w6022"/>
+<link kind="road" line="road" hexes="w6022 w6123"/>
+<link kind="road" line="road" hexes="w5022 w4923"/>
+<link kind="road" line="road" hexes="w5022 w4922"/>
+<link kind="road" line="road" hexes="w4922 w4923"/>
+<link kind="road" line="road" hexes="w4722 w4723"/>
+<link kind="road" line="road" hexes="w4522 w4523"/>
+<link kind="road" line="road" hexes="w4322 w4323"/>
+<link kind="road" line="road" hexes="w3422 w3423"/>
+<link kind="road" line="road" hexes="w3222 w3223"/>
+<link kind="road" line="road" hexes="w1722 w1622"/>
+<link kind="road" line="road" hexes="w1222 w1223"/>
+<link kind="road" line="road" hexes="w1222 w1323"/>
+<link kind="road" line="road" hexes="w6123 w6023"/>
+<link kind="road" line="road" hexes="w6023 w6024"/>
+<link kind="road" line="road" hexes="w6023 w6124"/>
+<link kind="road" line="road" hexes="w5223 w5124"/>
+<link kind="road" line="road" hexes="w5223 w5324"/>
+<link kind="road" line="road" hexes="w4423 w4424"/>
+<link kind="road" line="road" hexes="w1423 w1323"/>
+<link kind="road" line="road" hexes="w1223 w1123"/>
+<link kind="road" line="road" hexes="w1123 w1124"/>
+<link kind="road" line="road" hexes="w1023 w1124"/>
+<link kind="road" line="road" hexes="w6124 w6024"/>
+<link kind="road" line="road" hexes="w6024 w6125"/>
+<link kind="road" line="road" hexes="w5824 w5825"/>
+<link kind="road" line="road" hexes="w5824 w5925"/>
+<link kind="road" line="road" hexes="w5324 w5224"/>
+<link kind="road" line="road" hexes="w5224 w5125"/>
+<link kind="road" line="road" hexes="w5224 w5124"/>
+<link kind="road" line="road" hexes="w5224 w5325"/>
+<link kind="road" line="road" hexes="w4024 w4025"/>
+<link kind="road" line="road" hexes="w4024 w3924"/>
+<link kind="road" line="road" hexes="w3124 w3024"/>
+<link kind="road" line="road" hexes="w3024 w3025"/>
+<link kind="road" line="road" hexes="w2824 w2825"/>
+<link kind="road" line="road" hexes="w6125 w6025"/>
+<link kind="road" line="road" hexes="w6025 w6126"/>
+<link kind="road" line="road" hexes="w5025 w5126"/>
+<link kind="road" line="road" hexes="w4625 w4525"/>
+<link kind="road" line="road" hexes="w6126 w6026"/>
+<link kind="road" line="road" hexes="w6026 w6127"/>
+<link kind="road" line="road" hexes="w5926 w5826"/>
+<link kind="road" line="road" hexes="w5226 w5227"/>
+<link kind="road" line="road" hexes="w5226 w5127"/>
+<link kind="road" line="road" hexes="w2326 w2327"/>
+<link kind="road" line="road" hexes="w6127 w6027"/>
+<link kind="road" line="road" hexes="w5827 w5727"/>
+<link kind="road" line="road" hexes="w5127 w5027"/>
+<link kind="road" line="road" hexes="w5027 w4927"/>
+<!-- 358 links -->
+<link kind="road" line="road" hexes="e6101 e6001"/>
+<link kind="road" line="road" hexes="e6001 e6102"/>
+<link kind="road" line="road" hexes="e5001 e4901"/>
+<link kind="road" line="road" hexes="e3001 e3002"/>
+<link kind="road" line="road" hexes="e3001 e2902"/>
+<link kind="road" line="road" hexes="e1301 e1201"/>
+<link kind="road" line="road" hexes="e6102 e6002"/>
+<link kind="road" line="road" hexes="e6002 e6103"/>
+<link kind="road" line="road" hexes="e4902 e4802"/>
+<link kind="road" line="road" hexes="e6103 e6003"/>
+<link kind="road" line="road" hexes="e6003 e6104"/>
+<link kind="road" line="road" hexes="e5403 e5303"/>
+<link kind="road" line="road" hexes="e5003 e4904"/>
+<link kind="road" line="road" hexes="e6104 e6004"/>
+<link kind="road" line="road" hexes="e6004 e6105"/>
+<link kind="road" line="road" hexes="e5904 e5804"/>
+<link kind="road" line="road" hexes="e5004 e5005"/>
+<link kind="road" line="road" hexes="e4904 e4905"/>
+<link kind="road" line="road" hexes="e3004 e2904"/>
+<link kind="road" line="road" hexes="e6105 e6005"/>
+<link kind="road" line="road" hexes="e6005 e6106"/>
+<link kind="road" line="road" hexes="e5705 e5706"/>
+<link kind="road" line="road" hexes="e5105 e5106"/>
+<link kind="road" line="road" hexes="e5105 e5005"/>
+<link kind="road" line="road" hexes="e5005 e4905"/>
+<link kind="road" line="road" hexes="e1105 e1106"/>
+<link kind="road" line="road" hexes="e6106 e6006"/>
+<link kind="road" line="road" hexes="e6006 e6107"/>
+<link kind="road" line="road" hexes="e5306 e5307"/>
+<link kind="road" line="road" hexes="e2806 e2707"/>
+<link kind="road" line="road" hexes="e6107 e6007"/>
+<link kind="road" line="road" hexes="e6007 e6108"/>
+<link kind="road" line="road" hexes="e6108 e6008"/>
+<link kind="road" line="road" hexes="e6008 e6109"/>
+<link kind="road" line="road" hexes="e6109 e6009"/>
+<link kind="road" line="road" hexes="e6009 e6110"/>
+<link kind="road" line="road" hexes="e6110 e6010"/>
+<link kind="road" line="road" hexes="e6010 e6111"/>
+<link kind="road" line="road" hexes="e2710 e2711"/>
+<link kind="road" line="road" hexes="e6111 e6011"/>
+<link kind="road" line="road" hexes="e6011 e6112"/>
+<link kind="road" line="road" hexes="e3111 e3112"/>
+<link kind="road" line="road" hexes="e5913 e5914"/>
+<link kind="road" line="road" hexes="e5813 e5914"/>
+<link kind="road" line="road" hexes="e5914 e5915"/>
+<link kind="road" line="road" hexes="e6116 e6016"/>
+<link kind="road" line="road" hexes="e6016 e6117"/>
+<link kind="road" line="road" hexes="e4416 e4517"/>
+<link kind="road" line="road" hexes="e1216 e1217"/>
+<link kind="road" line="road" hexes="e1817 e1717"/>
+<link kind="road" line="road" hexes="e1317 e1217"/>
+<link kind="road" line="road" hexes="e3419 e3319"/>
+<link kind="road" line="road" hexes="e1419 e1420"/>
+<link kind="road" line="road" hexes="e1219 e1120"/>
+<link kind="road" line="road" hexes="e1119 e1120"/>
+<link kind="road" line="road" hexes="e6120 e6020"/>
+<link kind="road" line="road" hexes="e6020 e6121"/>
+<link kind="road" line="road" hexes="e1620 e1621"/>
+<link kind="road" line="road" hexes="e1620 e1521"/>
+<link kind="road" line="road" hexes="e1520 e1521"/>
+<link kind="road" line="road" hexes="e1520 e1420"/>
+<link kind="road" line="road" hexes="e1220 e1321"/>
+<link kind="road" line="road" hexes="e1821 e1822"/>
+<link kind="road" line="road" hexes="e1821 e1722"/>
+<link kind="road" line="road" hexes="e1721 e1722"/>
+<link kind="road" line="road" hexes="e1721 e1621"/>
+<link kind="road" line="road" hexes="e1321 e1221"/>
+<link kind="road" line="road" hexes="e6022 e5922"/>
+<link kind="road" line="road" hexes="e5922 e5923"/>
+<link kind="road" line="road" hexes="e5822 e5723"/>
+<link kind="road" line="road" hexes="e5822 e5722"/>
+<link kind="road" line="road" hexes="e6023 e5924"/>
+<link kind="road" line="road" hexes="e5923 e5924"/>
+<link kind="road" line="road" hexes="e5823 e5724"/>
+<link kind="road" line="road" hexes="e5823 e5723"/>
+<link kind="road" line="road" hexes="e5223 e5224"/>
+<link kind="road" line="road" hexes="e5023 e5024"/>
+<link kind="road" line="road" hexes="e2723 e2623"/>
+<link kind="road" line="road" hexes="e2623 e2624"/>
+<link kind="road" line="road" hexes="e2523 e2423"/>
+<link kind="road" line="road" hexes="e2423 e2524"/>
+<link kind="road" line="road" hexes="e1323 e1223"/>
+<link kind="road" line="road" hexes="e1223 e1324"/>
+<link kind="road" line="road" hexes="e5824 e5724"/>
+<link kind="road" line="road" hexes="e5324 e5224"/>
+<link kind="road" line="road" hexes="e5224 e5124"/>
+<link kind="road" line="road" hexes="e5124 e5024"/>
+<link kind="road" line="road" hexes="e5024 e4924"/>
+<link kind="road" line="road" hexes="e2824 e2925"/>
+<link kind="road" line="road" hexes="e2624 e2625"/>
+<link kind="road" line="road" hexes="e2524 e2424"/>
+<link kind="road" line="road" hexes="e2424 e2325"/>
+<link kind="road" line="road" hexes="e2424 e2525"/>
+<link kind="road" line="road" hexes="e1324 e1224"/>
+<link kind="road" line="road" hexes="e1224 e1225"/>
+<link kind="road" line="road" hexes="e1224 e1325"/>
+<link kind="road" line="road" hexes="e2925 e2825"/>
+<link kind="road" line="road" hexes="e2825 e2926"/>
+<link kind="road" line="road" hexes="e2625 e2626"/>
+<link kind="road" line="road" hexes="e2625 e2726"/>
+<link kind="road" line="road" hexes="e2525 e2425"/>
+<link kind="road" line="road" hexes="e2425 e2326"/>
+<link kind="road" line="road" hexes="e2425 e2325"/>
+<link kind="road" line="road" hexes="e2425 e2526"/>
+<link kind="road" line="road" hexes="e1325 e1225"/>
+<link kind="road" line="road" hexes="e1225 e1226"/>
+<link kind="road" line="road" hexes="e1225 e1326"/>
+<link kind="road" line="road" hexes="e5626 e5527"/>
+<link kind="road" line="road" hexes="e5626 e5526"/>
+<link kind="road" line="road" hexes="e4826 e4927"/>
+<link kind="road" line="road" hexes="e2826 e2927"/>
+<link kind="road" line="road" hexes="e2726 e2626"/>
+<link kind="road" line="road" hexes="e2626 e2627"/>
+<link kind="road" line="road" hexes="e2526 e2426"/>
+<link kind="road" line="road" hexes="e2426 e2427"/>
+<link kind="road" line="road" hexes="e2426 e2327"/>
+<link kind="road" line="road" hexes="e2426 e2527"/>
+<link kind="road" line="road" hexes="e1526 e1527"/>
+<link kind="road" line="road" hexes="e1326 e1226"/>
+<link kind="road" line="road" hexes="e1226 e1227"/>
+<link kind="road" line="road" hexes="e1226 e1327"/>
+<link kind="road" line="road" hexes="e4927 e4827"/>
+<link kind="road" line="road" hexes="e2927 e2827"/>
+<link kind="road" line="road" hexes="e2827 e2928"/>
+<link kind="road" line="road" hexes="e2627 e2628"/>
+<link kind="road" line="road" hexes="e2527 e2427"/>
+<link kind="road" line="road" hexes="e2427 e2428"/>
+<link kind="road" line="road" hexes="e2427 e2528"/>
+<link kind="road" line="road" hexes="e1627 e1728"/>
+<link kind="road" line="road" hexes="e1327 e1227"/>
+<link kind="road" line="road" hexes="e1227 e1228"/>
+<link kind="road" line="road" hexes="e1227 e1328"/>
+<link kind="road" line="road" hexes="e6028 e6029"/>
+<link kind="road" line="road" hexes="e6028 e5928"/>
+<link kind="road" line="road" hexes="e5828 e5829"/>
+<link kind="road" line="road" hexes="e5228 e5229"/>
+<link kind="road" line="road" hexes="e5028 e5029"/>
+<link kind="road" line="road" hexes="e4828 e4829"/>
+<link kind="road" line="road" hexes="e4628 e4629"/>
+<link kind="road" line="road" hexes="e4428 e4429"/>
+<link kind="road" line="road" hexes="e4228 e4229"/>
+<link kind="road" line="road" hexes="e4028 e4029"/>
+<link kind="road" line="road" hexes="e3828 e3829"/>
+<link kind="road" line="road" hexes="e3628 e3629"/>
+<link kind="road" line="road" hexes="e3428 e3429"/>
+<link kind="road" line="road" hexes="e3228 e3229"/>
+<link kind="road" line="road" hexes="e3028 e3029"/>
+<link kind="road" line="road" hexes="e2928 e2828"/>
+<link kind="road" line="road" hexes="e2828 e2829"/>
+<link kind="road" line="road" hexes="e2528 e2428"/>
+<link kind="road" line="road" hexes="e2428 e2429"/>
+<link kind="road" line="road" hexes="e2428 e2328"/>
+<link kind="road" line="road" hexes="e2228 e2229"/>
+<link kind="road" line="road" hexes="e2028 e2029"/>
+<link kind="road" line="road" hexes="e1828 e1728"/>
+<link kind="road" line="road" hexes="e1628 e1629"/>
+<link kind="road" line="road" hexes="e1428 e1429"/>
+<link kind="road" line="road" hexes="e1328 e1228"/>
+<link kind="road" line="road" hexes="e1228 e1229"/>
+<!-- 159 links -->
+  <!-- strategic hex rings in faction colours -->
+<hex id="w5901" ring="green"/>
+<hex id="w5501" ring="green"/>
+<hex id="w1201" ring="orange"/>
+<hex id="w1001" ring="orange"/>
+<hex id="w1802" ring="green"/>
+<hex id="w1602" ring="green"/>
+<hex id="w1402" ring="green"/>
+<hex id="w1202" ring="green"/>
+<hex id="w1002" ring="green"/>
+<hex id="w2705" ring="orange"/>
+<hex id="w1605" ring="orange"/>
+<hex id="w1405" ring="orange"/>
+<hex id="w1205" ring="orange"/>
+<hex id="w1005" ring="orange"/>
+<hex id="w1806" ring="orange"/>
+<hex id="w1606" ring="orange"/>
+<hex id="w1406" ring="orange"/>
+<hex id="w1206" ring="orange"/>
+<hex id="w1006" ring="orange"/>
+<hex id="w4107" ring="green"/>
+<hex id="w4007" ring="green"/>
+<hex id="w2007" ring="orange"/>
+<hex id="w1807" ring="orange"/>
+<hex id="w1607" ring="orange"/>
+<hex id="w1407" ring="orange"/>
+<hex id="w1207" ring="orange"/>
+<hex id="w1007" ring="orange"/>
+<hex id="w2008" ring="orange"/>
+<hex id="w1808" ring="orange"/>
+<hex id="w1608" ring="orange"/>
+<hex id="w1408" ring="orange"/>
+<hex id="w1208" ring="orange"/>
+<hex id="w1008" ring="orange"/>
+<hex id="w2209" ring="green"/>
+<hex id="w2009" ring="orange"/>
+<hex id="w1809" ring="orange"/>
+<hex id="w1609" ring="orange"/>
+<hex id="w1409" ring="orange"/>
+<hex id="w1209" ring="orange"/>
+<hex id="w1009" ring="orange"/>
+<hex id="w2010" ring="orange"/>
+<hex id="w1810" ring="orange"/>
+<hex id="w1610" ring="orange"/>
+<hex id="w1410" ring="orange"/>
+<hex id="w1210" ring="orange"/>
+<hex id="w1010" ring="orange"/>
+<hex id="w1811" ring="orange"/>
+<hex id="w1611" ring="orange"/>
+<hex id="w1411" ring="orange"/>
+<hex id="w1211" ring="orange"/>
+<hex id="w1011" ring="orange"/>
+<hex id="w6012" ring="orange"/>
+<hex id="w1812" ring="orange"/>
+<hex id="w1612" ring="orange"/>
+<hex id="w1412" ring="orange"/>
+<hex id="w1212" ring="orange"/>
+<hex id="w1012" ring="orange"/>
+<hex id="w1813" ring="orange"/>
+<hex id="w1613" ring="orange"/>
+<hex id="w1413" ring="orange"/>
+<hex id="w1213" ring="orange"/>
+<hex id="w1013" ring="orange"/>
+<hex id="w4314" ring="green"/>
+<hex id="w4214" ring="green"/>
+<hex id="w1614" ring="green"/>
+<hex id="w1414" ring="green"/>
+<hex id="w1214" ring="green"/>
+<hex id="w1014" ring="green"/>
+<hex id="w4115" ring="green"/>
+<hex id="w4015" ring="green"/>
+<hex id="w4516" ring="orange"/>
+<hex id="w3916" ring="orange"/>
+<hex id="w3816" ring="green"/>
+<hex id="w1217" ring="green"/>
+<hex id="w5818" ring="orange"/>
+<hex id="w4418" ring="green"/>
+<hex id="w3318" ring="green"/>
+<hex id="w1318" ring="green"/>
+<hex id="w1018" ring="green"/>
+<hex id="w5019" ring="orange"/>
+<hex id="w4620" ring="green"/>
+<hex id="w4420" ring="orange"/>
+<hex id="w3920" ring="green"/>
+<hex id="w2720" ring="green"/>
+<hex id="w5121" ring="orange"/>
+<hex id="w4921" ring="orange"/>
+<hex id="w4821" ring="orange"/>
+<hex id="w4621" ring="green"/>
+<hex id="w4521" ring="orange"/>
+<hex id="w4421" ring="green"/>
+<hex id="w4221" ring="green"/>
+<hex id="w4121" ring="green"/>
+<hex id="w3821" ring="green"/>
+<hex id="w3221" ring="green"/>
+<hex id="w2721" ring="green"/>
+<hex id="w5122" ring="orange"/>
+<hex id="w5022" ring="orange"/>
+<hex id="w4922" ring="orange"/>
+<hex id="w4722" ring="orange"/>
+<hex id="w4522" ring="orange"/>
+<hex id="w4422" ring="orange"/>
+<hex id="w4222" ring="green"/>
+<hex id="w3022" ring="green"/>
+<hex id="w1622" ring="orange"/>
+<hex id="w5823" ring="green"/>
+<hex id="w5323" ring="orange"/>
+<hex id="w5223" ring="orange"/>
+<hex id="w4923" ring="orange"/>
+<hex id="w4723" ring="orange"/>
+<hex id="w4323" ring="orange"/>
+<hex id="w3123" ring="orange"/>
+<hex id="w5224" ring="orange"/>
+<hex id="w5124" ring="orange"/>
+<hex id="w4424" ring="orange"/>
+<hex id="w4324" ring="orange"/>
+<hex id="w3124" ring="green"/>
+<hex id="w3024" ring="green"/>
+<hex id="w2924" ring="green"/>
+<hex id="w5625" ring="orange"/>
+<hex id="w5525" ring="orange"/>
+<hex id="w5025" ring="green"/>
+<hex id="w4725" ring="green"/>
+<hex id="w4325" ring="orange"/>
+<hex id="w1325" ring="orange"/>
+<hex id="w5226" ring="orange"/>
+<hex id="w5126" ring="green"/>
+<hex id="w4726" ring="green"/>
+<hex id="w5627" ring="orange"/>
+<hex id="w5127" ring="orange"/>
+<hex id="w5027" ring="orange"/>
+<hex id="w4427" ring="green"/>
+<hex id="w2327" ring="orange"/>
+<!-- 132 rings -->
+<hex id="e5301" ring="orange"/>
+<hex id="e4901" ring="orange"/>
+<hex id="e4801" ring="orange"/>
+<hex id="e3001" ring="green"/>
+<hex id="e2301" ring="green"/>
+<hex id="e4902" ring="orange"/>
+<hex id="e4802" ring="orange"/>
+<hex id="e3402" ring="orange"/>
+<hex id="e2902" ring="green"/>
+<hex id="e5403" ring="orange"/>
+<hex id="e5103" ring="green"/>
+<hex id="e4903" ring="orange"/>
+<hex id="e4803" ring="orange"/>
+<hex id="e2903" ring="green"/>
+<hex id="e5904" ring="green"/>
+<hex id="e5804" ring="green"/>
+<hex id="e5004" ring="orange"/>
+<hex id="e4904" ring="orange"/>
+<hex id="e4804" ring="orange"/>
+<hex id="e2204" ring="orange"/>
+<hex id="e1304" ring="orange"/>
+<hex id="e5705" ring="green"/>
+<hex id="e5605" ring="orange"/>
+<hex id="e5405" ring="orange"/>
+<hex id="e5005" ring="green"/>
+<hex id="e4905" ring="orange"/>
+<hex id="e2905" ring="green"/>
+<hex id="e2305" ring="green"/>
+<hex id="e5706" ring="green"/>
+<hex id="e5606" ring="orange"/>
+<hex id="e5506" ring="orange"/>
+<hex id="e5306" ring="green"/>
+<hex id="e1106" ring="orange"/>
+<hex id="e3907" ring="green"/>
+<hex id="e3307" ring="green"/>
+<hex id="e2107" ring="green"/>
+<hex id="e2007" ring="green"/>
+<hex id="e3408" ring="orange"/>
+<hex id="e2808" ring="green"/>
+<hex id="e5609" ring="orange"/>
+<hex id="e1709" ring="green"/>
+<hex id="e1509" ring="orange"/>
+<hex id="e5710" ring="orange"/>
+<hex id="e4610" ring="green"/>
+<hex id="e3810" ring="green"/>
+<hex id="e6011" ring="orange"/>
+<hex id="e5911" ring="orange"/>
+<hex id="e3612" ring="orange"/>
+<hex id="e3516" ring="green"/>
+<hex id="e1517" ring="green"/>
+<hex id="e1417" ring="green"/>
+<hex id="e1117" ring="orange"/>
+<hex id="e4520" ring="green"/>
+<hex id="e5422" ring="green"/>
+<hex id="e5925" ring="orange"/>
+<hex id="e1825" ring="green"/>
+<hex id="e1225" ring="orange"/>
+<hex id="e5926" ring="orange"/>
+<hex id="e1226" ring="orange"/>
+<hex id="e1228" ring="orange"/>
+<!-- 60 rings -->
+  <!-- cities and capitals -->
+<hex id="w4501"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1001"><glyph symbol="city" color="gold"/></hex>
+<hex id="w4702"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4502"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4503"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4504"><glyph symbol="capital" color="red"/></hex>
+<hex id="w3004"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2804"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2404"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2004"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1804"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1604"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1404"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1204"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1004"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2705"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2505"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2005"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1805"><glyph symbol="city" color="gold"/></hex>
+<hex id="w1605"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2006"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1806"><glyph symbol="city" color="gold"/></hex>
+<hex id="w1606"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2007"><glyph symbol="city" color="gold"/></hex>
+<hex id="w4308"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2608"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2408"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5709"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5509"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4509"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2011"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1811"><glyph symbol="city" color="gold"/></hex>
+<hex id="w1611"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2512"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2312"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2012"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1812"><glyph symbol="city" color="gold"/></hex>
+<hex id="w1612"><glyph symbol="city" color="gold"/></hex>
+<hex id="w2013"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1813"><glyph symbol="city" color="gold"/></hex>
+<hex id="w1613"><glyph symbol="city" color="gold"/></hex>
+<hex id="w4314"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4215"><glyph symbol="city" color="gold"/></hex>
+<hex id="w4015"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5118"><glyph symbol="city" color="gold"/></hex>
+<hex id="w3619"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2819"><glyph symbol="capital" color="red"/></hex>
+<hex id="w1120"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5121"><glyph symbol="city" color="gold"/></hex>
+<hex id="w5222"><glyph symbol="capital" color="red"/></hex>
+<hex id="w4722"><glyph symbol="capital" color="red"/></hex>
+<hex id="w3722"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5323"><glyph symbol="capital" color="red"/></hex>
+<hex id="w5224"><glyph symbol="capital" color="red"/></hex>
+<hex id="w2824"><glyph symbol="city" color="gold"/></hex>
+<hex id="w5627"><glyph symbol="capital" color="red"/></hex>
+<!-- 56 centres -->
+<hex id="e5301"><glyph symbol="capital" color="red"/></hex>
+<hex id="e5103"><glyph symbol="capital" color="red"/></hex>
+<hex id="e2707"><glyph symbol="city" color="gold"/></hex>
+<hex id="e5908"><glyph symbol="capital" color="red"/></hex>
+<hex id="e3810"><glyph symbol="capital" color="red"/></hex>
+<hex id="e5911"><glyph symbol="city" color="gold"/></hex>
+<hex id="e6015"><glyph symbol="capital" color="red"/></hex>
+<hex id="e5916"><glyph symbol="capital" color="red"/></hex>
+<hex id="e2824"><glyph symbol="capital" color="red"/></hex>
+<hex id="e2825"><glyph symbol="capital" color="red"/></hex>
+<hex id="e2826"><glyph symbol="capital" color="red"/></hex>
+<hex id="e1227"><glyph symbol="city" color="gold"/></hex>
+<hex id="e3228"><glyph symbol="capital" color="red"/></hex>
+<hex id="e2928"><glyph symbol="capital" color="red"/></hex>
+<hex id="e1228"><glyph symbol="city" color="gold"/></hex>
+<!-- 15 centres -->
+  <!-- port anchors, offset toward the water; kept only on land hexes -->
+<hex id="w5901"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5701"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5101"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3001"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w2601"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w2201"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5902"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5702"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5402"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5202"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w5102"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3002"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2602"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w2202"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2002"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1802"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1602"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1402"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1202"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1002"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5903"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5703"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5403"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5203"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5103"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w2603"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w2203"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w6004"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5904"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5704"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5404"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5204"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w3704"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w2104"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1004"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5905"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5405"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w2505"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2205"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2105"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1905"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1805"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1605"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1505"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1405"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1305"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1205"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1005"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5706"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2206"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2006"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1806"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1606"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1406"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1206"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1006"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5907"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w4307"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w4207"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w4007"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w2207"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2107"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w2007"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1907"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1807"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1707"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1607"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1407"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1207"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1107"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1007"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4708"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w3808"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3708"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w3608"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2208"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2108"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w2008"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1908"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1808"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1608"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1508"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1308"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1208"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1008"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5809"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5709"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5609"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w4209"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3809"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w3709"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w1809"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1609"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1509"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1409"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w1309"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1209"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1109"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1009"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4210"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w4010"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w3910"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w2010"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1810"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1710"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1610"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1510"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1410"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1310"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1210"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1110"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1010"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5411"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w4211"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w6012"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5512"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5012"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w4212"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5713"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5513"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w4313"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w3113"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5714"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w4314"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w4214"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w2014"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1814"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1614"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1414"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1214"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1014"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w6015"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5415"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w4115"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w4015"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5916"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w4516"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w3816"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w3616"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3316"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w3216"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1616"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1216"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1016"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w3517"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3417"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1617"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1317"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1217"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w5818"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3918"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2818"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w1618"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1318"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w1018"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5019"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w4219"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w4019"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1019"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w4820"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w4420"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3920"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2720"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1120"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w1020"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w5121"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w4121"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3821"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w3221"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2721"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1021"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5722"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5222"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5122"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5022"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w4922"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4722"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w4522"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3022"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="w1822"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5323"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w5223"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w4923"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4723"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3323"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w1923"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1423"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5224"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5124"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5024"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4724"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w4424"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="w4024"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w3824"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w3024"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2924"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w2024"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1324"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w5225"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w5025"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4725"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w4325"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w2125"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5226"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w5126"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w3526"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="w1426"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="w5627"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="w5527"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="w5027"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="w4627"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="w4427"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e5501"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5101"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e3001"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2401"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e2301"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1501"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e5302"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e4702"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e3902"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e3402"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2902"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e2402"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1502"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e6003"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5103"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e4903"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2303"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1403"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e5904"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e5804"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5604"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5004"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e4904"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2704"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e1204"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e5705"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5005"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e4905"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e2905"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2405"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5706"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e5506"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e3306"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2806"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2306"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1206"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e3907"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e2707"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2007"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e5908"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e3408"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1908"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1808"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e1408"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5609"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e1709"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e4610"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2310"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e6011"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e5911"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e3612"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1412"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e4114"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e6015"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5915"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e5916"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e3516"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e5917"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e5918"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e2318"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1418"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5919"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e6020"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e5920"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e4520"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e5921"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e5721"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e1421"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e1522"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1422"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e2723"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2323"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2223"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2123"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e1423"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e6024"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e5824"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2824"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2624"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2324"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e2224"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2124"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2024"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1924"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1624"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e1524"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2825"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2325"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e2125"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e1925"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1825"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e1525"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1225"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5926"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e5726"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e5526"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e4626"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e4226"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e2826"><glyph symbol="port" slot="e" color="cyan"/></hex>
+<hex id="e2326"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e2126"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e2026"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1926"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e5727"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="e2627"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e2127"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e1927"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1727"><glyph symbol="port" slot="se" color="cyan"/></hex>
+<hex id="e1627"><glyph symbol="port" slot="n" color="cyan"/></hex>
+<hex id="e1527"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e5828"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+<hex id="e5728"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e2828"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e2628"><glyph symbol="port" slot="s" color="cyan"/></hex>
+<hex id="e2128"><glyph symbol="port" slot="sw" color="cyan"/></hex>
+<hex id="e1928"><glyph symbol="port" slot="ne" color="cyan"/></hex>
+<hex id="e1828"><glyph symbol="port" slot="w" color="cyan"/></hex>
+<hex id="e1428"><glyph symbol="port" slot="nw" color="cyan"/></hex>
+  <!-- place names -->
+  <label text="TOKYO" at="e4906" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Osaka" at="e4804" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Sapporo" at="e5207" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="PEKING" at="w5224" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Nanking" at="w4726" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="SHANGHAI" at="w4727" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Hong Kong" at="w4325" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Canton" at="w4424" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="CHUNGKING" at="w4722" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Hanoi" at="w4222" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Saigon" at="w3923" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="BANGKOK" at="w3920" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Rangoon" at="w4117" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="CALCUTTA" at="w4313" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="DELHI" at="w4711" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Bombay" at="w4209" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Colombo" at="w3711" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="SINGAPORE" at="w3620" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Batavia" at="w3121" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="MANILA" at="w4027" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Darwin" at="w2527" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Sydney" at="e1408" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Perth" at="w1725" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Rabaul" at="e3307" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Port Moresby" at="e2905" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="VLADIVOSTOK" at="e5403" slot="s" size="22" weight="bold" color="ink" halo="true"/>
+  <label text="Harbin" at="e5602" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Mukden" at="e5301" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Keijo" at="e5101" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Honolulu" at="e4225" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Auckland" at="e1516" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Guam" at="e4008" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Truk" at="e3610" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Kwajalein" at="e3814" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="Midway" at="e4618" slot="s" size="17" weight="normal" color="ink" halo="true"/>
+  <label text="JAPAN" x="2332" y="798" size="30" angle="70" spacing="6" italic="false" color="label" halo="true"/>
+  <label text="CHINA" x="1596" y="798" size="44" angle="0" spacing="8" italic="false" color="label" halo="true"/>
+  <label text="RUSSIA" x="848" y="175" size="36" angle="0" spacing="7" italic="false" color="label" halo="true"/>
+  <label text="MANCHUKUO" x="1945" y="349" size="20" angle="0" spacing="4" italic="false" color="label" halo="true"/>
+  <label text="MONGOLIA" x="1596" y="411" size="20" angle="0" spacing="4" italic="false" color="label" halo="true"/>
+  <label text="SINKIANG" x="1047" y="586" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="TIBET" x="948" y="798" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="INDIA" x="748" y="1147" size="34" angle="0" spacing="6" italic="false" color="label" halo="true"/>
+  <label text="BURMA" x="1160" y="1097" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="SIAM" x="1359" y="1247" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="INDOCHINA" x="1546" y="1172" size="16" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="PHILIPPINES" x="1945" y="1396" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="NETHERLANDS EAST INDIES" x="1596" y="1895" size="22" angle="0" spacing="4" italic="false" color="label" halo="true"/>
+  <label text="NEW GUINEA" x="2194" y="1945" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="AUSTRALIA" x="2070" y="2519" size="50" angle="0" spacing="10" italic="false" color="label" halo="true"/>
+  <label text="NEW ZEALAND" x="3017" y="2918" size="18" angle="0" spacing="3" italic="false" color="label" halo="true"/>
+  <label text="Sea of Japan" x="2219" y="549" size="16" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Yellow Sea" x="1945" y="698" size="14" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="South China Sea" x="1721" y="1396" size="16" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Philippine Sea" x="2194" y="1172" size="16" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Coral Sea" x="2569" y="1995" size="16" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Bay of Bengal" x="1047" y="1396" size="16" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Indian Ocean" x="998" y="1995" size="20" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Central Pacific" x="3242" y="748" size="18" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Sea of Okhotsk" x="2519" y="224" size="14" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Tasman Sea" x="2793" y="2743" size="14" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Gulf of Alaska" x="3616" y="324" size="14" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <!-- naval zone boxes, printed over live sea hexes, rotated to fit -->
+  <panel id="nz-0" x="187" y="1421" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">West Indian Ocean</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-1" x="823" y="1796" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Bay of Bengal</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-2" x="1247" y="2494" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Southeast Indian Ocean</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-3" x="1471" y="1396" w="170" h="92" rotate="40" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">South China Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-4" x="1995" y="1372" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Philippine Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-5" x="1895" y="848" w="170" h="92" rotate="40" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Yellow Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-6" x="2132" y="873" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Sea of Japan</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-7" x="2469" y="50" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Sea of Okhotsk</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-8" x="2718" y="324" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Northwest Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-9" x="3067" y="399" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">North Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-10" x="3466" y="374" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Gulf of Alaska</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-11" x="3317" y="798" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Central Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-12" x="2594" y="885" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">The Bonins</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-13" x="2145" y="923" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Japanese Coast</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-14" x="2594" y="1396" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Micronesia</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-15" x="2868" y="1521" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Marshall Islands</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-16" x="2244" y="1721" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Bismarck Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-17" x="2519" y="2244" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Coral Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-18" x="3192" y="1496" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Southeast Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-19" x="2843" y="2519" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Tasman Sea</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-20" x="3067" y="2793" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">South Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-21" x="1945" y="2992" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Great Australian Bight</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-22" x="3117" y="2294" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Polynesia</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-23" x="3741" y="873" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Northeast Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-24" x="3741" y="1396" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Eastern Pacific</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <panel id="nz-25" x="1372" y="2519" w="170" h="92" rotate="0" fill="navy" stroke="ink">
+    <text x="6" y="16" size="12" weight="bold" color="white">Southeast Indian</text>
+    <box label="On Station" x="6" y="24" w="50" h="60" fill="seablue"/>
+    <box label="Convoys" x="60" y="24" w="50" h="60" fill="panel"/>
+    <box label="Used" x="114" y="24" w="50" h="60" fill="panel"/>
+  </panel>
+  <!-- off-map furniture -->
+  <panel id="delay-drms" x="20" y="20" w="600" h="560" fill="panel" stroke="red" title="Delay DRMs">
+    <text x="12" y="44" size="14" weight="bold">Axis Delay DRMs</text>
+    <text x="12" y="64" size="10">-? for the number of VPs in the box containing the Rising Sun VP marker, if Total War is in effect.</text>
+    <text x="12" y="80" size="10">-1 if the Axis War Production marker is in the Strategic Warfare Box.</text>
+    <text x="12" y="200" size="14" weight="bold">Western Delay DRMs</text>
+    <text x="12" y="360" size="14" weight="bold">Soviet Delay DRMs</text>
+  </panel>
+  <panel id="strategic-warfare" x="20" y="600" w="300" h="130" fill="panel" stroke="red" title="Strategic Warfare Box"/>
+  <panel id="west-map-label" x="340" y="640" w="260" h="60" fill="paper" stroke="paper">
+    <text x="0" y="40" size="40" weight="bold">West Map</text>
+  </panel>
+  <panel id="eastern-europe" x="640" y="120" w="60" h="480" rotate="0" fill="pinkpanel" stroke="red">
+    <text x="8" y="240" size="14" weight="bold">Eastern Europe Box</text>
+  </panel>
+  <panel id="europe-africa" x="20" y="1590" w="330" h="300" fill="panel" stroke="green" title="Europe/Africa Box">
+    <text x="10" y="40" size="10">Use the Port-to-Port procedure to move to/from a port in the West Indian Ocean Naval Zone.</text>
+    <text x="10" y="58" size="10">Use the Off-Map Box to Off-Map Box procedure to move to/from the Panama Canal Box.</text>
+    <text x="10" y="76" size="10">Replacement Location for British non-colonial and Afr colonial units.</text>
+  </panel>
+  <panel id="delay-box" x="20" y="1900" w="330" h="260" fill="panel" stroke="red" title="Delay Box"/>
+  <panel id="naval-delay" x="20" y="2170" w="330" h="150" fill="panel" stroke="red" title="Naval Warfare Delay Box"/>
+  <panel id="vp-track" x="360" y="2090" w="640" h="240" fill="panel" stroke="red" title="VP Track">
+    <track x="120" y="40" cell-w="80" cell-h="50" cells="+1_to_+2 +3_to_+5 +6_to_+8 +9_to_+11 +12_to_+14 +15" fill="pinkpanel"/>
+    <track x="120" y="100" cell-w="80" cell-h="50" cells="0 1_VP 2_VP 3_VP 4_VP Automatic" fill="white"/>
+    <track x="120" y="160" cell-w="80" cell-h="50" cells="+2_to_+1 0_to_-5 -6_to_-10 -11_to_-13 -14_to_-16 -17" fill="seablue"/>
+  </panel>
+  <panel id="turn-track" x="20" y="2420" w="1080" h="760" fill="panel" stroke="red" title="Turn Track">
+    <track x="20" y="40" cell-w="120" cell-h="110" wrap="9" fill="white"
+           cells="1937/1943 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec 1938/1944 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec 1939/1945 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec 1940/1946 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec 1941/1947 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec 1942/1948 Jan-Feb Mar-Apr Apr-May May-June June-July July-Aug Aug-Sept Sept-Oct Nov-Dec"/>
+  </panel>
+  <panel id="ceded-lands" x="1120" y="2830" w="320" h="180" fill="panel" stroke="red" title="Ceded Lands Box"/>
+  <panel id="weather-areas" x="1120" y="3020" w="440" h="160" fill="panel" stroke="ink" title="Weather Areas">
+    <text x="10" y="40" size="10">North: Aleutian Islands, Japan, Korea, Manchukuo, Russia</text>
+    <text x="10" y="56" size="10">Desert: Sinkiang, Mongolia, Tibet   Central: Formosa, Hong Kong, Kiangsu, Kwangtung, Yunnan</text>
+    <text x="10" y="72" size="10">North Monsoon: Burma, Ceylon, India, Indochina, Malaya, Nepal, Philippines, Siam</text>
+    <text x="10" y="88" size="10">South Monsoon: Netherlands East Indies, New Guinea   South: Australia, New Zealand</text>
+  </panel>
+  <panel id="uscl" x="2900" y="20" w="520" h="120" fill="panel" stroke="red" title="USCL Track">
+    <track x="140" y="30" cell-w="70" cell-h="70" cells="USCL_0 USCL_1 USCL_2 USCL_3 USCL_4" fill="white"/>
+  </panel>
+  <panel id="posture" x="3460" y="20" w="510" h="130" fill="panel" stroke="red" title="Posture Display">
+    <track x="10" y="30" cell-w="80" cell-h="80" cells="U.S._and_Western_Minors Britain Nationalist_China Communist_China Russia Soviet_Minors" fill="white"/>
+  </panel>
+  <panel id="war-state" x="3700" y="200" w="270" h="140" fill="panel" stroke="red" title="War State Display">
+    <track x="10" y="40" cell-w="80" cell-h="80" cells="Pre-War Limited_War Total_War" fill="white"/>
+  </panel>
+  <panel id="east-map-label" x="3680" y="410" w="260" h="60" fill="paper" stroke="paper">
+    <text x="0" y="40" size="40" weight="bold">East Map</text>
+  </panel>
+  <panel id="western-us" x="3680" y="480" w="290" h="250" fill="panel" stroke="green" title="Western US Box"/>
+  <panel id="panama" x="3680" y="1760" w="290" h="230" fill="panel" stroke="green" title="Panama Canal Box"/>
+  <panel id="tec" x="3480" y="2020" w="490" h="600" fill="panel" stroke="red" title="Terrain Effects Chart">
+    <table x="10" y="30" cell-w="150" cell-h="24" size="10">
+      <row><cell>Hex Terrain Type</cell><cell>MP Cost</cell><cell>CRT Column Shift</cell></row>
+      <row><cell>Clear (including Desert)</cell><cell>1 MP</cell><cell>No effect</cell></row>
+      <row><cell>City or Capital</cell><cell>1 MP</cell><cell>1 left</cell></row>
+      <row><cell>Port</cell><cell>1 MP</cell><cell>No effect</cell></row>
+      <row><cell>Town</cell><cell>Other</cell><cell>No effect</cell></row>
+      <row><cell>Rough (Hills, Forest, Swamp)</cell><cell>2 MP</cell><cell>1 left</cell></row>
+      <row><cell>All-Sea</cell><cell>Prohibited</cell><cell>Prohibited</cell></row>
+      <row><cell>Hexside Terrain Type</cell><cell>MP Cost</cell><cell>CRT Column Shift</cell></row>
+      <row><cell>Mountain</cell><cell>+2 MP</cell><cell>2 left</cell></row>
+      <row><cell>River</cell><cell>+1 MP</cell><cell>1 left</cell></row>
+      <row><cell>Road or Rail (one-step unit)</cell><cell>1/2 MP</cell><cell>No effect</cell></row>
+      <row><cell>Road or Rail (multi-step unit)</cell><cell>1 MP</cell><cell>No effect</cell></row>
+      <row><cell>Strait (connected)</cell><cell>As Road or Rail</cell><cell>2 left</cell></row>
+      <row><cell>Strait (not connected)</cell><cell>Entire MA</cell><cell>2 left</cell></row>
+      <row><cell>Beachhead 2 / 1 / SNLF</cell><cell>Entire MA</cell><cell>2 / 1 / 0 left</cell></row>
+      <row><cell>All-Sea or Lake</cell><cell>Entire MA</cell><cell>Marine only (+2 left)</cell></row>
+    </table>
+  </panel>
+  <panel id="terrain-key" x="3480" y="2640" w="490" h="300" fill="panel" stroke="red" title="Terrain Key">
+    <box label="Clear (Normal)" x="10" y="30" w="110" h="60" fill="tan"/>
+    <box label="Clear (Desert)" x="130" y="30" w="110" h="60" fill="sand"/>
+    <box label="Rough (Hills)" x="250" y="30" w="110" h="60" fill="ochre"/>
+    <box label="Rough (Forest)" x="370" y="30" w="110" h="60" fill="teal"/>
+    <box label="Rough (Swamp)" x="10" y="100" w="110" h="60" fill="greygreen"/>
+    <box label="All-Sea" x="130" y="100" w="110" h="60" fill="seablue"/>
+    <box label="Strategic Hex" x="250" y="100" w="110" h="60"/>
+    <box label="Port / City / Capital" x="370" y="100" w="110" h="60"/>
+    <box label="Country border" x="10" y="170" w="110" h="60" fill="borderorange"/>
+    <box label="Naval Zone border" x="130" y="170" w="110" h="60" fill="white"/>
+    <box label="Mountain hexside" x="250" y="170" w="110" h="60" fill="brown"/>
+    <box label="Strait" x="370" y="170" w="110" h="60"/>
+  </panel>
+  <panel id="french-polynesia" x="3340" y="2960" w="380" h="200" fill="panel" stroke="green" title="French Polynesia Box"/>
+  <panel id="title" x="3740" y="2960" w="230" h="200" fill="paper" stroke="paper">
+    <text x="10" y="60" size="44" weight="bold" color="red">Dai Senso!</text>
+    <text x="10" y="100" size="24" weight="bold">Axis Empires</text>
+    <text x="10" y="130" size="12">(c) 2011 Decision Games</text>
+  </panel>
+</sheet>

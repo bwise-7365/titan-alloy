@@ -1,8 +1,10 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 
+#include "EvalWeights.h"
 #include "Game.h"
 
+#include <cstddef>
 #include <vector>
 
 // Pure positional evaluation for Latrunculi. Every function here reads a board array and
@@ -56,6 +58,41 @@ inline constexpr int kDColumn[4] = {0, 0, -1, 1};
 inline constexpr int kAxisDRow[2] = {1, 0};
 inline constexpr int kAxisDColumn[2] = {0, 1};
 
+// ── Board addressing (shared by Eval.cpp and PlacementEval.cpp) ──────────────
+
+inline std::size_t cellIndex(int row, int column, int columns) {
+    return static_cast<std::size_t>(row) * static_cast<std::size_t>(columns) +
+           static_cast<std::size_t>(column);
+}
+
+inline bool onBoard(int row, int column, int rows, int columns) {
+    return row >= 0 && row < rows && column >= 0 && column < columns;
+}
+
+// ── Shared flanking predicates ───────────────────────────────────────────────
+// One definition each, used by both the movement terms here and the placement terms in
+// PlacementEval.cpp. The improvements doc flags duplicated ray walks as a defect; these
+// were file-local in Eval.cpp until the placement evaluation needed them too.
+
+// If the disc at (row, column) is half-pinned along the axis (dRow, dColumn) by
+// `flanker` -- one end of the axis holds a flanker disc and the other end is on the board
+// and empty -- returns the index of that empty square, the one whose occupation completes
+// the custodial capture. Returns -1 if the disc is not half-pinned on this axis.
+int halfPinCompletion(const std::vector<Cell>& cells, int rows, int columns,
+                      int row, int column, int dRow, int dColumn, Cell flanker);
+
+// True if `player` has a Free disc that can move onto the empty square `square` in one
+// move under `style`. This is what separates a threat from a shape that merely looks
+// like one; see the definition in Eval.cpp for what is and is not checked.
+bool canOccupy(const std::vector<Cell>& cells, int rows, int columns, int square,
+               int player, MoveStyle style);
+
+// True if the disc at (row, column) -- an enemy disc from `player`'s point of view -- is
+// one completable move from being custodially captured by `player`, on either axis.
+// Does NOT consider the corner-trap rule; PlacementEval.cpp layers that on separately.
+bool isThreatened(const std::vector<Cell>& cells, int rows, int columns,
+                  int row, int column, int player, MoveStyle style);
+
 // ── Positional features ──────────────────────────────────────────────────────
 
 // Positional features of one side, counted over a board arrangement. All four are
@@ -99,8 +136,10 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
                                 int player, MoveStyle style);
 
 // The positional terms combined into one score in "disc units", where 1.0 is worth one
-// Free disc of material. Weights are declared and justified in Eval.cpp.
-double positionalScore(const PositionalTerms& terms);
+// Free disc of material. The defaulted weights reproduce the engine's standard
+// behavior; the bench injects swept candidates.
+double positionalScore(const PositionalTerms& terms,
+                       const EvalWeights& weights = EvalWeights{});
 
 }  // namespace Latrunculi
 // Copyright Ben Paul Wise. All Rights Reserved.

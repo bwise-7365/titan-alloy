@@ -1,0 +1,941 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"
+       id="trc" title="The Russian Campaign, Deluxe Fifth Edition"
+       source="TRC map v1 adjusted.png, 1224 x 1483; Consim Press / GMT 2022"
+       width="1224" height="1483" background="frame" font="Georgia, Times New Roman, serif">
+  <grid id="main" orientation="pointy" offset="odd" cols="33" rows="43" size="20.65" ox="22.27" oy="155.40"
+        id-format="{rowletter}{col}" col-start="33" col-step="-1" row-start="1" terrain="clear" id-side="w"/>
+  <palette>
+    <color id="frame" value="#8c8c8c" name="sheet frame"/>
+    <color id="steppe" value="#d5d59b"/>
+    <color id="leaf" value="#6f9a4f"/>
+    <color id="rock" value="#97915b"/>
+    <color id="marsh" value="#b6c495"/>
+    <color id="deep" value="#206f93"/>
+    <color id="grid" value="#8f8f6a"/>
+    <color id="gridw" value="#5f93b0"/>
+    <color id="riverblue" value="#3f7fb3"/>
+    <color id="railgrey" value="#6a6a6a"/>
+    <color id="ink" value="#111111"/>
+    <color id="cream" value="#f3edc0"/>
+    <color id="citygrey" value="#8a8a8a"/>
+    <color id="white" value="#ffffff"/>
+    <color id="panel" value="#f4efd6"/>
+    <color id="paneldark" value="#2d4a63"/>
+    <color id="red" value="#b0201f"/>
+    <color id="label" value="#333322"/>
+  </palette>
+  <terrains>
+    <terrain id="clear" name="Clear" fill="steppe" stroke="grid"/>
+    <terrain id="woods" name="Woods" fill="leaf" stroke="grid" pattern="mottle"/>
+    <terrain id="mountain" name="Mountain" fill="rock" stroke="grid" pattern="mottle"/>
+    <terrain id="swamp" name="Swamp" fill="marsh" stroke="grid" pattern="dots"/>
+    <terrain id="sea" name="Sea" fill="deep" stroke="gridw"/>
+    <terrain id="lake" name="Lake" fill="deep" stroke="gridw"/>
+  </terrains>
+  <lines>
+    <line id="river" stroke="riverblue" width="3.2"/>
+    <line id="rail" stroke="railgrey" width="1.6" dash="4 3"/>
+    <line id="border" stroke="ink" width="2.4"/>
+    <line id="district" stroke="railgrey" width="1.2" dash="6 2 1 2"/>
+    <line id="blocked" stroke="white" width="2.2" dash="1 3"/>
+    <line id="coast" stroke="ink" width="1.4"/>
+  </lines>
+  <!-- terrain, sampled from the scan; hexes under printed panels take the terrain around them -->
+<hexes terrain="clear" ids="A33 B33 C33 D33 E33 F33 G33 H33 I33 R33 S33 T33 U33 V33 AA33 BB33 CC33 DD33 EE33 FF33 GG33 HH33 A32 B32 C32 D32 E32 F32 G32 H32 I32 R32 S32 T32 U32 V32 AA32 BB32 CC32 DD32 EE32 GG32 HH32 A31 B31 C31 D31 E31 F31 G31 H31 I31 J31 N31 R31 S31 T31 U31 V31 AA31 BB31 CC31 DD31 II31 A30 B30 C30 D30 E30 F30 G30 H30 I30 J30 K30 L30 M30 N30 R30 S30 T30 U30 V30 W30 AA30 BB30 CC30 DD30 EE30 C29 E29 F29 G29 H29 I29 J29 K29 L29 S29 T29 U29 V29 W29 CC29 DD29 EE29 FF29 GG29 C28 D28 E28 F28 G28 H28 I28 J28 K28 L28 M28 N28 O28 P28 CC28 DD28 EE28 FF28 GG28 KK28 E27 F27 G27 H27 I27 J27 K27 L27 M27 N27 O27 P27 Q27 R27 BB27 CC27 DD27 EE27 FF27 E26 F26 G26 H26 I26 J26 K26 L26 M26 N26 O26 P26 Q26 R26 S26 T26 X26 Z26 AA26 BB26 CC26 DD26 EE26 G25 H25 I25 J25 K25 L25 M25 N25 O25 P25 Q25 R25 S25 U25 V25 W25 X25 Y25 Z25 AA25 BB25 CC25 DD25 EE25 G24 H24 I24 K24 L24 M24 N24 O24 P24 Q24 R24 S24 V24 W24 X24 Y24 Z24 AA24 BB24 CC24 DD24 G23 H23 I23 J23 K23 M23 N23 O23 Q23 U23 V23 W23 X23 Y23 Z23 AA23 BB23 CC23 DD23 FF23 HH23 H22 I22 J22 K22 L22 M22 N22 U22 V22 W22 X22 Y22 Z22 AA22 BB22 CC22 DD22 EE22 FF22 HH22 II22 G21 H21 I21 J21 K21 L21 M21 N21 V21 W21 X21 Y21 Z21 AA21 BB21 CC21 DD21 EE21 FF21 GG21 HH21 II21 JJ21 F20 G20 H20 I20 J20 K20 L20 P20 U20 V20 W20 X20 Y20 Z20 AA20 BB20 CC20 DD20 EE20 FF20 II20 KK20 E19 F19 G19 H19 I19 J19 K19 L19 O19 W19 X19 Y19 Z19 AA19 BB19 CC19 DD19 EE19 FF19 GG19 HH19 KK19 LL19 E18 F18 G18 H18 I18 J18 K18 L18 M18 N18 O18 V18 X18 Y18 Z18 AA18 BB18 CC18 DD18 EE18 FF18 GG18 HH18 LL18 G17 H17 I17 J17 K17 L17 M17 N17 R17 T17 U17 V17 W17 X17 Y17 Z17 AA17 BB17 CC17 DD17 EE17 FF17 GG17 HH17 JJ17 LL17 MM17 D16 F16 G16 H16 I16 J16 K16 L16 M16 N16 O16 P16 Q16 R16 S16 T16 U16 V16 W16 X16 Y16 Z16 AA16 BB16 CC16 DD16 EE16 FF16 GG16 HH16 JJ16 KK16 LL16 MM16 NN16 A15 B15 C15 D15 E15 F15 G15 H15 I15 J15 K15 L15 M15 N15 O15 P15 Q15 R15 S15 T15 U15 V15 W15 X15 Y15 Z15 AA15 BB15 CC15 DD15 EE15 FF15 GG15 HH15 JJ15 KK15 LL15 MM15 NN15 A14 D14 E14 H14 I14 J14 K14 L14 M14 N14 O14 P14 Q14 U14 V14 W14 X14 Y14 Z14 AA14 BB14 CC14 DD14 EE14 FF14 GG14 HH14 JJ14 KK14 LL14 MM14 NN14 OO14 PP14 A13 B13 E13 F13 G13 H13 I13 J13 K13 L13 M13 N13 O13 P13 Q13 R13 T13 U13 V13 W13 X13 Y13 Z13 AA13 BB13 CC13 DD13 EE13 FF13 GG13 HH13 II13 JJ13 KK13 LL13 MM13 NN13 OO13 QQ13 A12 B12 E12 G12 M12 N12 O12 P12 Q12 R12 S12 T12 U12 V12 W12 X12 Y12 Z12 AA12 BB12 CC12 DD12 EE12 FF12 GG12 HH12 II12 JJ12 KK12 LL12 MM12 NN12 OO12 A11 B11 E11 M11 N11 O11 P11 S11 T11 U11 V11 W11 X11 Y11 Z11 AA11 BB11 CC11 DD11 EE11 FF11 GG11 HH11 II11 JJ11 KK11 LL11 MM11 NN11 OO11 PP11 B10 C10 D10 M10 N10 O10 P10 R10 S10 T10 U10 V10 W10 X10 Y10 Z10 AA10 BB10 CC10 DD10 EE10 FF10 GG10 HH10 II10 JJ10 KK10 LL10 MM10 NN10 OO10 PP10 QQ10 B9 J9 L9 M9 N9 O9 Q9 S9 T9 U9 V9 W9 X9 Y9 Z9 BB9 CC9 DD9 EE9 FF9 GG9 HH9 II9 JJ9 KK9 LL9 MM9 NN9 OO9 PP9 QQ9 A8 B8 I8 J8 K8 L8 M8 N8 O8 P8 Q8 R8 S8 T8 U8 V8 W8 X8 Y8 Z8 AA8 BB8 CC8 DD8 EE8 FF8 GG8 HH8 II8 JJ8 KK8 LL8 MM8 NN8 OO8 PP8 QQ8 A7 B7 C7 D7 E7 I7 K7 L7 M7 N7 O7 P7 Q7 R7 S7 T7 U7 V7 W7 X7 Y7 Z7 AA7 BB7 CC7 DD7 EE7 FF7 GG7 HH7 II7 JJ7 KK7 LL7 MM7 NN7 OO7 PP7 QQ7 C6 D6 E6 F6 G6 H6 M6 N6 O6 P6 Q6 R6 S6 T6 U6 V6 W6 X6 Y6 Z6 AA6 BB6 CC6 DD6 EE6 FF6 GG6 HH6 II6 JJ6 KK6 LL6 MM6 NN6 OO6 PP6 QQ6 C5 E5 F5 G5 J5 K5 L5 N5 O5 P5 Q5 R5 S5 T5 U5 V5 W5 X5 Y5 AA5 BB5 CC5 DD5 EE5 FF5 GG5 HH5 II5 JJ5 KK5 LL5 MM5 NN5 OO5 QQ5 A4 B4 D4 F4 G4 I4 J4 K4 L4 M4 N4 O4 P4 Q4 R4 S4 T4 U4 V4 W4 X4 BB4 CC4 DD4 EE4 FF4 GG4 HH4 II4 JJ4 KK4 LL4 MM4 NN4 OO4 PP4 C3 E3 F3 G3 H3 I3 J3 K3 L3 M3 N3 O3 P3 Q3 R3 S3 T3 U3 V3 W3 BB3 CC3 DD3 EE3 FF3 GG3 HH3 II3 JJ3 KK3 LL3 MM3 NN3 OO3 PP3 G2 H2 I2 J2 K2 L2 M2 N2 O2 P2 Q2 R2 S2 T2 U2 V2 W2 Z2 AA2 BB2 CC2 DD2 EE2 FF2 GG2 HH2 II2 JJ2 KK2 LL2 MM2 NN2 OO2 PP2 H1 I1 J1 K1 L1 M1 N1 O1 P1 Q1 R1 S1 T1 U1 V1 W1 X1 Z1 AA1 BB1 CC1 DD1 EE1 FF1 GG1 HH1 II1 JJ1 KK1 LL1 MM1 NN1 OO1 PP1 I0 K0 M0 O0 Q0 S0 U0 W0 AA0 CC0 EE0 GG0 II0 KK0 MM0 OO0"/>
+<hexes terrain="woods" ids="J24 L23 P23 O22 O21 M20 O20 M19 N19 R14 S14 L12 R11 Q10 P9"/>
+<hexes terrain="mountain" ids="J33 P33 Q33 W33 X33 Y33 Z33 II33 JJ33 J32 L32 M32 N32 O32 P32 Q32 W32 X32 Z32 FF32 II32 JJ32 K31 L31 M31 O31 P31 Q31 W31 X31 Z31 EE31 FF31 GG31 JJ31 QQ31 O30 P30 Q30 X30 Y30 Z30 FF30 GG30 JJ30 M29 N29 O29 P29 Q29 R29 X29 Z29 AA29 BB29 B28 Q28 S28 T28 U28 V28 W28 X28 Y28 Z28 AA28 BB28 QQ28 S27 T27 U27 V27 W27 X27 Y27 Z27 AA27 U26 V26 W26 Y26 T25 T24 U24 JJ22 N20 B18 NN18 NN17 OO17 PP17 OO16 PP16 QQ16 OO15 PP15 QQ15 T14 QQ14 S13 PP13 PP12 QQ12 J11 K11 L11 Q11 QQ11 J10 K10 L10 K9 Z5 Y4 Z4 AA4 X3 Y3 Z3 AA3 X2 Y2 Y1 Y0"/>
+<hexes terrain="swamp" ids="K33 L33 M33 N33 O33 K32 Y32 Y31 Y29 R28 R23 S23 T23 JJ23 P22 Q22 R22 S22 T22 P21 Q21 R21 S21 T21 U21 Q20 R20 S20 T20 P19 Q19 R19 S19 T19 U19 V19 P18 Q18 R18 S18 T18 U18 W18 MM18 O17 P17 Q17 S17 II14 F12 H12 I12 J12 K12 F11 G11 H11 E10 F10 G10 H10 I10 F9 G9 H9 I9 R9 AA9 F8 G8 H8 F7 G7 H7 J7 A6 B6 I6 J6 K6 L6 A5 H5 I5 PP5 B3 D3 C2 D2 E2 F2 B1 C1 D1 E1 F1 G1 C0 E0 G0"/>
+<hexes terrain="sea" ids="HH31 HH30 II30 A29 B29 HH29 II29 JJ29 KK29 HH28 II28 JJ28 LL28 C27 D27 GG27 HH27 II27 JJ27 KK27 LL27 MM27 C26 D26 FF26 GG26 HH26 II26 JJ26 KK26 LL26 MM26 C25 D25 E25 F25 FF25 GG25 HH25 II25 JJ25 KK25 LL25 MM25 C24 D24 E24 F24 EE24 FF24 GG24 HH24 II24 JJ24 KK24 LL24 MM24 C23 D23 E23 F23 EE23 GG23 II23 KK23 LL23 MM23 C22 D22 E22 F22 G22 GG22 KK22 LL22 MM22 NN22 OO22 C21 D21 E21 F21 KK21 LL21 MM21 NN21 B20 C20 D20 E20 GG20 HH20 JJ20 LL20 MM20 NN20 OO20 C19 D19 II19 JJ19 MM19 NN19 OO19 C18 D18 II18 JJ18 KK18 OO18 PP18 QQ18 A17 B17 C17 D17 E17 F17 II17 QQ17 A16 B16 C16 E16 II16 II15 B14 C14 F14 G14 C13 D13 C12 D12 C11 D11 I11 C9 D9 E9 C8 D8 E8 B5 D5 M5 E4 H4 QQ4 A3 QQ3 A2 B2 QQ2 A1 QQ1 A0 QQ0"/>
+<hexes terrain="lake" ids="D29 KK17 A10 A9 C4"/>
+<hexes terrain="clear" ids="KK33 LL33 MM33 OO33 PP33 KK32 LL32 MM32 OO32 PP32 KK31 LL31 MM31 OO31 PP31 KK30 LL30 MM30 OO30 PP30 LL29 MM29 NN29 OO29 PP29 MM28 NN28 OO28 PP28 NN27 OO27 NN26 OO26 PP26 NN25 OO25 PP25 NN24 OO24 PP24 A23 B23 NN23 OO23 A22 B22 A21 A20 A19 B19 A18"/>
+<hexes terrain="clear" ids="NN33 QQ33 NN32 QQ32 NN31 NN30 QQ30 QQ29 PP27 QQ27 QQ26 QQ25 B24 QQ24 PP23 QQ23 B21"/>
+<hexes terrain="sea" ids="A28 A27 B27 A26 B26 A25 B25 A24 PP22 QQ22 OO21 PP21 QQ21 PP20 QQ20 PP19 QQ19"/>
+<!-- 1441 hexes classified -->
+  <!-- rivers and country borders along hexsides, traced from the scan -->
+<edge at="D33:se" line="border"/>
+<edge at="BB33:sw" line="river"/>
+<edge at="JJ33:e" line="river"/>
+<edge at="KK33:e" line="blocked"/>
+<edge at="D32:sw" line="border"/>
+<edge at="HH32:e" line="river"/>
+<edge at="HH32:se" line="river"/>
+<edge at="HH32:ne" line="river"/>
+<edge at="JJ32:e" line="river"/>
+<edge at="JJ32:ne" line="river"/>
+<edge at="KK32:e" line="blocked"/>
+<edge at="KK32:se" line="blocked"/>
+<edge at="LL32:ne" line="blocked"/>
+<edge at="QQ32:e" line="river"/>
+<edge at="K31:e" line="blocked"/>
+<edge at="L31:ne" line="blocked"/>
+<edge at="N31:ne" line="river"/>
+<edge at="DD31:se" line="river"/>
+<edge at="GG31:se" line="river"/>
+<edge at="HH31:sw" line="river"/>
+<edge at="HH31:ne" line="river"/>
+<edge at="II31:e" line="river"/>
+<edge at="II31:se" line="river"/>
+<edge at="JJ31:e" line="river"/>
+<edge at="JJ31:se" line="river"/>
+<edge at="JJ31:ne" line="river"/>
+<edge at="KK31:e" line="blocked"/>
+<edge at="KK31:se" line="blocked"/>
+<edge at="LL31:sw" line="blocked"/>
+<edge at="NN31:se" line="blocked"/>
+<edge at="OO31:se" line="river"/>
+<edge at="PP31:sw" line="river"/>
+<edge at="PP31:ne" line="river"/>
+<edge at="QQ31:e" line="river"/>
+<edge at="A30:e" line="river"/>
+<edge at="A30:se" line="river"/>
+<edge at="B30:e" line="river"/>
+<edge at="B30:ne" line="river"/>
+<edge at="E30:se" line="river"/>
+<edge at="F30:sw" line="river"/>
+<edge at="G30:se" line="river"/>
+<edge at="H30:sw" line="river"/>
+<edge at="I30:se" line="river"/>
+<edge at="L30:sw" line="river"/>
+<edge at="GG30:e" line="river"/>
+<edge at="GG30:se" line="river"/>
+<edge at="JJ30:sw" line="river"/>
+<edge at="KK30:e" line="blocked"/>
+<edge at="PP30:e" line="blocked"/>
+<edge at="B29:e" line="blocked"/>
+<edge at="B29:se" line="river"/>
+<edge at="B29:sw" line="river"/>
+<edge at="D29:sw" line="river"/>
+<edge at="D29:ne" line="river"/>
+<edge at="K29:e" line="border"/>
+<edge at="M29:e" line="border"/>
+<edge at="N29:e" line="border"/>
+<edge at="P29:e" line="border"/>
+<edge at="R29:e" line="border"/>
+<edge at="GG29:se" line="river"/>
+<edge at="HH29:ne" line="river"/>
+<edge at="JJ29:e" line="blocked"/>
+<edge at="LL29:e" line="blocked"/>
+<edge at="LL29:sw" line="blocked"/>
+<edge at="PP29:sw" line="blocked"/>
+<edge at="A28:e" line="river"/>
+<edge at="C28:e" line="river"/>
+<edge at="C28:se" line="river"/>
+<edge at="D28:e" line="river"/>
+<edge at="D28:ne" line="river"/>
+<edge at="Q28:e" line="border"/>
+<edge at="DD28:sw" line="river"/>
+<edge at="FF28:e" line="river"/>
+<edge at="FF28:se" line="river"/>
+<edge at="FF28:sw" line="river"/>
+<edge at="GG28:e" line="river"/>
+<edge at="GG28:se" line="river"/>
+<edge at="LL28:e" line="river"/>
+<edge at="LL28:sw" line="river"/>
+<edge at="MM28:se" line="river"/>
+<edge at="NN28:sw" line="river"/>
+<edge at="OO28:se" line="river"/>
+<edge at="PP28:sw" line="river"/>
+<edge at="QQ28:e" line="river"/>
+<edge at="A27:se" line="border"/>
+<edge at="B27:e" line="river"/>
+<edge at="B27:sw" line="border"/>
+<edge at="D27:se" line="river"/>
+<edge at="D27:sw" line="river"/>
+<edge at="H27:e" line="river"/>
+<edge at="I27:se" line="river"/>
+<edge at="J27:se" line="river"/>
+<edge at="P27:sw" line="river"/>
+<edge at="P27:ne" line="river"/>
+<edge at="Z27:e" line="river"/>
+<edge at="FF27:e" line="river"/>
+<edge at="FF27:se" line="river"/>
+<edge at="FF27:sw" line="river"/>
+<edge at="FF27:ne" line="river"/>
+<edge at="NN27:se" line="river"/>
+<edge at="NN27:sw" line="river"/>
+<edge at="PP27:se" line="border"/>
+<edge at="A26:e" line="river"/>
+<edge at="A26:se" line="river"/>
+<edge at="B26:e" line="river"/>
+<edge at="B26:ne" line="river"/>
+<edge at="D26:se" line="river"/>
+<edge at="D26:sw" line="river"/>
+<edge at="E26:e" line="river"/>
+<edge at="H26:ne" line="river"/>
+<edge at="M26:se" line="river"/>
+<edge at="N26:sw" line="river"/>
+<edge at="EE26:se" line="river"/>
+<edge at="FF26:ne" line="river"/>
+<edge at="PP26:sw" line="border"/>
+<edge at="A25:e" line="river"/>
+<edge at="A25:se" line="river"/>
+<edge at="B25:e" line="river"/>
+<edge at="B25:ne" line="river"/>
+<edge at="D25:sw" line="river"/>
+<edge at="E25:e" line="river"/>
+<edge at="L25:se" line="border"/>
+<edge at="EE25:e" line="river"/>
+<edge at="EE25:se" line="river"/>
+<edge at="A24:e" line="river"/>
+<edge at="A24:se" line="river"/>
+<edge at="B24:se" line="blocked"/>
+<edge at="C24:se" line="river"/>
+<edge at="F24:se" line="river"/>
+<edge at="F24:sw" line="river"/>
+<edge at="G24:e" line="river"/>
+<edge at="H24:ne" line="river"/>
+<edge at="DD24:sw" line="river"/>
+<edge at="FF24:e" line="river"/>
+<edge at="HH24:e" line="river"/>
+<edge at="KK24:e" line="river"/>
+<edge at="NN24:e" line="river"/>
+<edge at="PP24:e" line="river"/>
+<edge at="A23:e" line="blocked"/>
+<edge at="B23:e" line="river"/>
+<edge at="F23:sw" line="river"/>
+<edge at="G23:e" line="river"/>
+<edge at="H23:ne" line="river"/>
+<edge at="J23:e" line="border"/>
+<edge at="K23:e" line="border"/>
+<edge at="M23:e" line="border"/>
+<edge at="V23:se" line="river"/>
+<edge at="X23:se" line="river"/>
+<edge at="X23:ne" line="river"/>
+<edge at="DD23:se" line="blocked"/>
+<edge at="EE23:se" line="river"/>
+<edge at="FF23:se" line="river"/>
+<edge at="GG23:se" line="river"/>
+<edge at="HH23:sw" line="river"/>
+<edge at="HH23:ne" line="river"/>
+<edge at="II23:e" line="river"/>
+<edge at="JJ23:ne" line="river"/>
+<edge at="KK23:e" line="river"/>
+<edge at="NN23:ne" line="river"/>
+<edge at="PP23:e" line="river"/>
+<edge at="PP23:sw" line="border"/>
+<edge at="A22:e" line="river"/>
+<edge at="B22:ne" line="river"/>
+<edge at="F22:se" line="river"/>
+<edge at="G22:e" line="river"/>
+<edge at="G22:se" line="river"/>
+<edge at="L22:se" line="river"/>
+<edge at="L22:ne" line="river"/>
+<edge at="Y22:se" line="river"/>
+<edge at="FF22:sw" line="river"/>
+<edge at="GG22:e" line="river"/>
+<edge at="GG22:se" line="river"/>
+<edge at="HH22:ne" line="river"/>
+<edge at="JJ22:se" line="river"/>
+<edge at="JJ22:sw" line="river"/>
+<edge at="PP22:se" line="river"/>
+<edge at="PP22:ne" line="blocked"/>
+<edge at="A21:e" line="river"/>
+<edge at="B21:e" line="border"/>
+<edge at="B21:ne" line="river"/>
+<edge at="F21:e" line="river"/>
+<edge at="F21:se" line="river"/>
+<edge at="F21:sw" line="river"/>
+<edge at="M21:se" line="river"/>
+<edge at="N21:sw" line="river"/>
+<edge at="O21:se" line="river"/>
+<edge at="P21:e" line="river"/>
+<edge at="FF21:se" line="river"/>
+<edge at="GG21:e" line="river"/>
+<edge at="GG21:se" line="river"/>
+<edge at="HH21:ne" line="river"/>
+<edge at="JJ21:e" line="river"/>
+<edge at="JJ21:se" line="river"/>
+<edge at="JJ21:sw" line="river"/>
+<edge at="JJ21:ne" line="river"/>
+<edge at="PP21:e" line="river"/>
+<edge at="PP21:sw" line="river"/>
+<edge at="PP21:ne" line="blocked"/>
+<edge at="A20:se" line="river"/>
+<edge at="B20:e" line="blocked"/>
+<edge at="B20:se" line="blocked"/>
+<edge at="B20:sw" line="blocked"/>
+<edge at="B20:ne" line="river"/>
+<edge at="D20:se" line="river"/>
+<edge at="E20:e" line="river"/>
+<edge at="E20:se" line="river"/>
+<edge at="V20:sw" line="river"/>
+<edge at="CC20:se" line="river"/>
+<edge at="FF20:sw" line="river"/>
+<edge at="GG20:e" line="river"/>
+<edge at="HH20:e" line="river"/>
+<edge at="HH20:sw" line="river"/>
+<edge at="HH20:ne" line="river"/>
+<edge at="JJ20:se" line="river"/>
+<edge at="JJ20:sw" line="river"/>
+<edge at="KK20:e" line="river"/>
+<edge at="LL20:ne" line="river"/>
+<edge at="OO20:se" line="blocked"/>
+<edge at="PP20:ne" line="border"/>
+<edge at="A19:se" line="river"/>
+<edge at="B19:e" line="blocked"/>
+<edge at="B19:se" line="blocked"/>
+<edge at="B19:sw" line="blocked"/>
+<edge at="B19:ne" line="river"/>
+<edge at="D19:e" line="river"/>
+<edge at="D19:se" line="river"/>
+<edge at="D19:sw" line="river"/>
+<edge at="HH19:e" line="river"/>
+<edge at="HH19:se" line="river"/>
+<edge at="HH19:sw" line="river"/>
+<edge at="II19:se" line="river"/>
+<edge at="JJ19:ne" line="river"/>
+<edge at="LL19:sw" line="river"/>
+<edge at="MM19:e" line="river"/>
+<edge at="NN19:e" line="river"/>
+<edge at="NN19:ne" line="river"/>
+<edge at="OO19:e" line="border"/>
+<edge at="OO19:se" line="border"/>
+<edge at="PP19:sw" line="river"/>
+<edge at="PP19:ne" line="border"/>
+<edge at="A18:se" line="river"/>
+<edge at="B18:se" line="blocked"/>
+<edge at="B18:sw" line="blocked"/>
+<edge at="B18:ne" line="river"/>
+<edge at="C18:se" line="river"/>
+<edge at="D18:e" line="river"/>
+<edge at="D18:se" line="river"/>
+<edge at="D18:ne" line="river"/>
+<edge at="E18:e" line="river"/>
+<edge at="F18:e" line="river"/>
+<edge at="F18:ne" line="river"/>
+<edge at="O18:se" line="border"/>
+<edge at="HH18:se" line="river"/>
+<edge at="HH18:sw" line="river"/>
+<edge at="II18:se" line="river"/>
+<edge at="MM18:se" line="river"/>
+<edge at="NN18:se" line="river"/>
+<edge at="NN18:sw" line="river"/>
+<edge at="D17:e" line="river"/>
+<edge at="E17:se" line="river"/>
+<edge at="F17:ne" line="river"/>
+<edge at="H17:se" line="river"/>
+<edge at="H17:ne" line="river"/>
+<edge at="HH17:se" line="river"/>
+<edge at="HH17:sw" line="river"/>
+<edge at="II17:se" line="river"/>
+<edge at="JJ17:se" line="river"/>
+<edge at="JJ17:sw" line="river"/>
+<edge at="JJ17:ne" line="river"/>
+<edge at="OO17:se" line="river"/>
+<edge at="PP17:sw" line="river"/>
+<edge at="A16:e" line="river"/>
+<edge at="B16:e" line="river"/>
+<edge at="B16:se" line="river"/>
+<edge at="B16:ne" line="river"/>
+<edge at="C16:e" line="river"/>
+<edge at="C16:se" line="river"/>
+<edge at="D16:sw" line="river"/>
+<edge at="E16:e" line="river"/>
+<edge at="E16:se" line="river"/>
+<edge at="I16:se" line="river"/>
+<edge at="J16:sw" line="river"/>
+<edge at="P16:sw" line="river"/>
+<edge at="P16:ne" line="river"/>
+<edge at="HH16:se" line="river"/>
+<edge at="HH16:sw" line="river"/>
+<edge at="JJ16:ne" line="river"/>
+<edge at="A15:se" line="river"/>
+<edge at="B15:e" line="river"/>
+<edge at="B15:se" line="river"/>
+<edge at="B15:sw" line="river"/>
+<edge at="C15:e" line="river"/>
+<edge at="D15:ne" line="river"/>
+<edge at="F15:e" line="river"/>
+<edge at="F15:se" line="river"/>
+<edge at="F15:ne" line="river"/>
+<edge at="G15:e" line="river"/>
+<edge at="H15:e" line="river"/>
+<edge at="H15:ne" line="river"/>
+<edge at="HH15:sw" line="river"/>
+<edge at="II15:se" line="river"/>
+<edge at="B14:e" line="river"/>
+<edge at="B14:se" line="river"/>
+<edge at="B14:sw" line="river"/>
+<edge at="C14:se" line="river"/>
+<edge at="D14:e" line="river"/>
+<edge at="D14:ne" line="river"/>
+<edge at="E14:se" line="river"/>
+<edge at="F14:e" line="river"/>
+<edge at="F14:se" line="river"/>
+<edge at="F14:ne" line="river"/>
+<edge at="G14:e" line="river"/>
+<edge at="G14:se" line="river"/>
+<edge at="M14:e" line="river"/>
+<edge at="P14:e" line="river"/>
+<edge at="P14:ne" line="river"/>
+<edge at="DD14:se" line="river"/>
+<edge at="PP14:ne" line="river"/>
+<edge at="B13:e" line="river"/>
+<edge at="B13:se" line="river"/>
+<edge at="B13:sw" line="river"/>
+<edge at="C13:se" line="river"/>
+<edge at="D13:e" line="river"/>
+<edge at="D13:ne" line="river"/>
+<edge at="E13:e" line="river"/>
+<edge at="M13:e" line="river"/>
+<edge at="Z13:ne" line="river"/>
+<edge at="B12:se" line="river"/>
+<edge at="B12:sw" line="river"/>
+<edge at="C12:se" line="river"/>
+<edge at="D12:e" line="river"/>
+<edge at="D12:se" line="river"/>
+<edge at="D12:sw" line="river"/>
+<edge at="D12:ne" line="river"/>
+<edge at="H12:se" line="river"/>
+<edge at="I12:e" line="river"/>
+<edge at="J12:ne" line="river"/>
+<edge at="JJ12:e" line="river"/>
+<edge at="B11:sw" line="river"/>
+<edge at="C11:e" line="river"/>
+<edge at="D11:e" line="river"/>
+<edge at="D11:se" line="river"/>
+<edge at="D11:sw" line="river"/>
+<edge at="D11:ne" line="river"/>
+<edge at="H11:e" line="river"/>
+<edge at="H11:sw" line="river"/>
+<edge at="I11:e" line="river"/>
+<edge at="I11:se" line="river"/>
+<edge at="A10:e" line="blocked"/>
+<edge at="B10:e" line="border"/>
+<edge at="B10:se" line="border"/>
+<edge at="D10:e" line="river"/>
+<edge at="D10:se" line="river"/>
+<edge at="E10:e" line="river"/>
+<edge at="F10:ne" line="river"/>
+<edge at="M10:se" line="river"/>
+<edge at="DD10:se" line="river"/>
+<edge at="DD10:ne" line="river"/>
+<edge at="B9:e" line="river"/>
+<edge at="B9:se" line="river"/>
+<edge at="B9:sw" line="river"/>
+<edge at="C9:se" line="river"/>
+<edge at="D9:e" line="river"/>
+<edge at="E9:e" line="river"/>
+<edge at="F9:ne" line="river"/>
+<edge at="T9:e" line="river"/>
+<edge at="W9:se" line="river"/>
+<edge at="X9:sw" line="river"/>
+<edge at="Y9:se" line="river"/>
+<edge at="EE9:se" line="river"/>
+<edge at="B8:sw" line="river"/>
+<edge at="C8:e" line="river"/>
+<edge at="D8:e" line="river"/>
+<edge at="D8:se" line="river"/>
+<edge at="D8:ne" line="river"/>
+<edge at="E8:e" line="river"/>
+<edge at="E8:se" line="river"/>
+<edge at="T8:se" line="river"/>
+<edge at="T8:sw" line="river"/>
+<edge at="O7:e" line="river"/>
+<edge at="D6:e" line="river"/>
+<edge at="D6:ne" line="river"/>
+<edge at="L6:e" line="river"/>
+<edge at="L6:se" line="river"/>
+<edge at="L6:sw" line="river"/>
+<edge at="M6:e" line="river"/>
+<edge at="N6:sw" line="river"/>
+<edge at="N6:ne" line="river"/>
+<edge at="HH6:sw" line="river"/>
+<edge at="KK6:se" line="river"/>
+<edge at="LL6:sw" line="river"/>
+<edge at="C5:e" line="river"/>
+<edge at="C5:se" line="river"/>
+<edge at="D5:se" line="river"/>
+<edge at="D5:sw" line="river"/>
+<edge at="D5:ne" line="river"/>
+<edge at="E5:e" line="river"/>
+<edge at="E5:se" line="river"/>
+<edge at="F5:se" line="river"/>
+<edge at="F5:ne" line="river"/>
+<edge at="H5:e" line="river"/>
+<edge at="L5:sw" line="river"/>
+<edge at="M5:e" line="river"/>
+<edge at="M5:se" line="river"/>
+<edge at="EE5:e" line="river"/>
+<edge at="QQ5:e" line="river"/>
+<edge at="A4:e" line="river"/>
+<edge at="B4:e" line="river"/>
+<edge at="B4:ne" line="river"/>
+<edge at="C4:se" line="river"/>
+<edge at="D4:sw" line="river"/>
+<edge at="G4:se" line="river"/>
+<edge at="H4:e" line="river"/>
+<edge at="H4:se" line="river"/>
+<edge at="H4:sw" line="river"/>
+<edge at="H4:ne" line="river"/>
+<edge at="O4:e" line="river"/>
+<edge at="PP4:se" line="river"/>
+<edge at="PP4:sw" line="river"/>
+<edge at="A3:se" line="river"/>
+<edge at="B3:e" line="river"/>
+<edge at="B3:se" line="river"/>
+<edge at="B3:ne" line="river"/>
+<edge at="G3:se" line="river"/>
+<edge at="T3:se" line="river"/>
+<edge at="PP3:se" line="river"/>
+<edge at="PP3:sw" line="river"/>
+<edge at="A2:e" line="river"/>
+<edge at="B2:e" line="river"/>
+<edge at="B2:se" line="river"/>
+<edge at="B2:sw" line="river"/>
+<edge at="C2:e" line="river"/>
+<edge at="Z2:e" line="river"/>
+<edge at="PP2:se" line="river"/>
+<edge at="PP2:sw" line="river"/>
+<edge at="A1:se" line="river"/>
+<edge at="PP1:sw" line="river"/>
+<!-- 437 edges -->
+  <!-- railroads, centre to centre, traced from the scan -->
+<link kind="rail" line="rail" hexes="D33 E32"/>
+<link kind="rail" line="rail" hexes="L33 M32"/>
+<link kind="rail" line="rail" hexes="L33 K32"/>
+<link kind="rail" line="rail" hexes="JJ33 KK33"/>
+<link kind="rail" line="rail" hexes="PP33 QQ32"/>
+<link kind="rail" line="rail" hexes="PP33 QQ33"/>
+<link kind="rail" line="rail" hexes="JJ32 II31"/>
+<link kind="rail" line="rail" hexes="LL32 LL31"/>
+<link kind="rail" line="rail" hexes="PP32 QQ31"/>
+<link kind="rail" line="rail" hexes="N31 M30"/>
+<link kind="rail" line="rail" hexes="DD31 EE30"/>
+<link kind="rail" line="rail" hexes="II31 JJ31"/>
+<link kind="rail" line="rail" hexes="JJ31 KK30"/>
+<link kind="rail" line="rail" hexes="JJ31 II30"/>
+<link kind="rail" line="rail" hexes="LL31 LL30"/>
+<link kind="rail" line="rail" hexes="OO31 PP31"/>
+<link kind="rail" line="rail" hexes="PP31 QQ31"/>
+<link kind="rail" line="rail" hexes="PP31 OO30"/>
+<link kind="rail" line="rail" hexes="QQ31 QQ30"/>
+<link kind="rail" line="rail" hexes="F30 G30"/>
+<link kind="rail" line="rail" hexes="G30 H30"/>
+<link kind="rail" line="rail" hexes="H30 I30"/>
+<link kind="rail" line="rail" hexes="I30 J30"/>
+<link kind="rail" line="rail" hexes="K30 L30"/>
+<link kind="rail" line="rail" hexes="L30 M30"/>
+<link kind="rail" line="rail" hexes="DD30 EE30"/>
+<link kind="rail" line="rail" hexes="EE30 EE29"/>
+<link kind="rail" line="rail" hexes="II30 JJ30"/>
+<link kind="rail" line="rail" hexes="JJ30 KK30"/>
+<link kind="rail" line="rail" hexes="JJ30 II29"/>
+<link kind="rail" line="rail" hexes="LL30 LL29"/>
+<link kind="rail" line="rail" hexes="LL30 MM29"/>
+<link kind="rail" line="rail" hexes="LL30 KK29"/>
+<link kind="rail" line="rail" hexes="PP30 OO29"/>
+<link kind="rail" line="rail" hexes="O29 O28"/>
+<link kind="rail" line="rail" hexes="Y29 Y28"/>
+<link kind="rail" line="rail" hexes="Z29 AA29"/>
+<link kind="rail" line="rail" hexes="EE29 EE28"/>
+<link kind="rail" line="rail" hexes="NN29 NN28"/>
+<link kind="rail" line="rail" hexes="A28 A27"/>
+<link kind="rail" line="rail" hexes="C28 D28"/>
+<link kind="rail" line="rail" hexes="D28 D27"/>
+<link kind="rail" line="rail" hexes="O28 O27"/>
+<link kind="rail" line="rail" hexes="R28 S27"/>
+<link kind="rail" line="rail" hexes="R28 S28"/>
+<link kind="rail" line="rail" hexes="R28 Q27"/>
+<link kind="rail" line="rail" hexes="V28 W27"/>
+<link kind="rail" line="rail" hexes="X28 W27"/>
+<link kind="rail" line="rail" hexes="DD28 EE27"/>
+<link kind="rail" line="rail" hexes="DD28 EE28"/>
+<link kind="rail" line="rail" hexes="FF28 FF27"/>
+<link kind="rail" line="rail" hexes="FF28 GG28"/>
+<link kind="rail" line="rail" hexes="JJ28 KK28"/>
+<link kind="rail" line="rail" hexes="KK28 LL28"/>
+<link kind="rail" line="rail" hexes="LL28 MM28"/>
+<link kind="rail" line="rail" hexes="MM28 MM27"/>
+<link kind="rail" line="rail" hexes="MM28 NN28"/>
+<link kind="rail" line="rail" hexes="NN28 OO27"/>
+<link kind="rail" line="rail" hexes="NN28 OO28"/>
+<link kind="rail" line="rail" hexes="NN28 MM27"/>
+<link kind="rail" line="rail" hexes="OO28 OO27"/>
+<link kind="rail" line="rail" hexes="OO28 PP28"/>
+<link kind="rail" line="rail" hexes="PP28 QQ27"/>
+<link kind="rail" line="rail" hexes="PP28 QQ28"/>
+<link kind="rail" line="rail" hexes="QQ28 QQ27"/>
+<link kind="rail" line="rail" hexes="A27 B27"/>
+<link kind="rail" line="rail" hexes="B27 C27"/>
+<link kind="rail" line="rail" hexes="H27 H26"/>
+<link kind="rail" line="rail" hexes="J27 K26"/>
+<link kind="rail" line="rail" hexes="P27 Q27"/>
+<link kind="rail" line="rail" hexes="P27 O26"/>
+<link kind="rail" line="rail" hexes="MM27 NN27"/>
+<link kind="rail" line="rail" hexes="NN27 OO26"/>
+<link kind="rail" line="rail" hexes="NN27 OO27"/>
+<link kind="rail" line="rail" hexes="NN27 MM26"/>
+<link kind="rail" line="rail" hexes="PP27 QQ27"/>
+<link kind="rail" line="rail" hexes="PP27 OO26"/>
+<link kind="rail" line="rail" hexes="K26 L26"/>
+<link kind="rail" line="rail" hexes="M26 N26"/>
+<link kind="rail" line="rail" hexes="MM26 NN26"/>
+<link kind="rail" line="rail" hexes="NN26 OO26"/>
+<link kind="rail" line="rail" hexes="NN26 MM25"/>
+<link kind="rail" line="rail" hexes="PP26 QQ26"/>
+<link kind="rail" line="rail" hexes="A25 A24"/>
+<link kind="rail" line="rail" hexes="D25 C24"/>
+<link kind="rail" line="rail" hexes="E25 E24"/>
+<link kind="rail" line="rail" hexes="G25 G24"/>
+<link kind="rail" line="rail" hexes="L25 M24"/>
+<link kind="rail" line="rail" hexes="V25 W24"/>
+<link kind="rail" line="rail" hexes="AA25 AA24"/>
+<link kind="rail" line="rail" hexes="BB25 CC24"/>
+<link kind="rail" line="rail" hexes="BB25 AA24"/>
+<link kind="rail" line="rail" hexes="MM25 NN25"/>
+<link kind="rail" line="rail" hexes="NN25 MM24"/>
+<link kind="rail" line="rail" hexes="PP25 QQ25"/>
+<link kind="rail" line="rail" hexes="A24 A23"/>
+<link kind="rail" line="rail" hexes="A24 B24"/>
+<link kind="rail" line="rail" hexes="C24 D24"/>
+<link kind="rail" line="rail" hexes="D24 C23"/>
+<link kind="rail" line="rail" hexes="G24 G23"/>
+<link kind="rail" line="rail" hexes="H24 G23"/>
+<link kind="rail" line="rail" hexes="L24 M24"/>
+<link kind="rail" line="rail" hexes="MM24 NN24"/>
+<link kind="rail" line="rail" hexes="NN24 MM23"/>
+<link kind="rail" line="rail" hexes="PP24 QQ23"/>
+<link kind="rail" line="rail" hexes="PP24 QQ24"/>
+<link kind="rail" line="rail" hexes="QQ24 QQ23"/>
+<link kind="rail" line="rail" hexes="A23 A22"/>
+<link kind="rail" line="rail" hexes="A23 B23"/>
+<link kind="rail" line="rail" hexes="B23 B22"/>
+<link kind="rail" line="rail" hexes="C23 D23"/>
+<link kind="rail" line="rail" hexes="D23 C22"/>
+<link kind="rail" line="rail" hexes="K23 L23"/>
+<link kind="rail" line="rail" hexes="N23 O22"/>
+<link kind="rail" line="rail" hexes="V23 W22"/>
+<link kind="rail" line="rail" hexes="X23 W22"/>
+<link kind="rail" line="rail" hexes="JJ23 II22"/>
+<link kind="rail" line="rail" hexes="MM23 NN23"/>
+<link kind="rail" line="rail" hexes="NN23 NN22"/>
+<link kind="rail" line="rail" hexes="NN23 OO23"/>
+<link kind="rail" line="rail" hexes="NN23 MM22"/>
+<link kind="rail" line="rail" hexes="OO23 PP23"/>
+<link kind="rail" line="rail" hexes="PP23 PP22"/>
+<link kind="rail" line="rail" hexes="PP23 QQ22"/>
+<link kind="rail" line="rail" hexes="PP23 QQ23"/>
+<link kind="rail" line="rail" hexes="PP23 OO22"/>
+<link kind="rail" line="rail" hexes="A22 A21"/>
+<link kind="rail" line="rail" hexes="A22 B22"/>
+<link kind="rail" line="rail" hexes="B22 B21"/>
+<link kind="rail" line="rail" hexes="B22 A21"/>
+<link kind="rail" line="rail" hexes="D22 C21"/>
+<link kind="rail" line="rail" hexes="L22 M21"/>
+<link kind="rail" line="rail" hexes="N22 N21"/>
+<link kind="rail" line="rail" hexes="N22 O21"/>
+<link kind="rail" line="rail" hexes="N22 O22"/>
+<link kind="rail" line="rail" hexes="O22 P22"/>
+<link kind="rail" line="rail" hexes="P22 O21"/>
+<link kind="rail" line="rail" hexes="X22 Y22"/>
+<link kind="rail" line="rail" hexes="Y22 Z22"/>
+<link kind="rail" line="rail" hexes="Z22 AA22"/>
+<link kind="rail" line="rail" hexes="BB22 CC22"/>
+<link kind="rail" line="rail" hexes="HH22 GG21"/>
+<link kind="rail" line="rail" hexes="PP22 OO21"/>
+<link kind="rail" line="rail" hexes="A21 A20"/>
+<link kind="rail" line="rail" hexes="A21 B21"/>
+<link kind="rail" line="rail" hexes="B21 B20"/>
+<link kind="rail" line="rail" hexes="B21 A20"/>
+<link kind="rail" line="rail" hexes="C21 D21"/>
+<link kind="rail" line="rail" hexes="I21 I20"/>
+<link kind="rail" line="rail" hexes="J21 K21"/>
+<link kind="rail" line="rail" hexes="J21 I20"/>
+<link kind="rail" line="rail" hexes="M21 N21"/>
+<link kind="rail" line="rail" hexes="N21 O20"/>
+<link kind="rail" line="rail" hexes="O21 P21"/>
+<link kind="rail" line="rail" hexes="P21 P20"/>
+<link kind="rail" line="rail" hexes="P21 O20"/>
+<link kind="rail" line="rail" hexes="DD21 CC20"/>
+<link kind="rail" line="rail" hexes="PP21 QQ21"/>
+<link kind="rail" line="rail" hexes="A20 B20"/>
+<link kind="rail" line="rail" hexes="B20 B19"/>
+<link kind="rail" line="rail" hexes="B20 A19"/>
+<link kind="rail" line="rail" hexes="O20 P20"/>
+<link kind="rail" line="rail" hexes="X20 W19"/>
+<link kind="rail" line="rail" hexes="DD20 CC19"/>
+<link kind="rail" line="rail" hexes="EE20 EE19"/>
+<link kind="rail" line="rail" hexes="KK20 KK19"/>
+<link kind="rail" line="rail" hexes="OO20 PP20"/>
+<link kind="rail" line="rail" hexes="PP20 OO19"/>
+<link kind="rail" line="rail" hexes="A19 B19"/>
+<link kind="rail" line="rail" hexes="B19 B18"/>
+<link kind="rail" line="rail" hexes="B19 A18"/>
+<link kind="rail" line="rail" hexes="Y19 Z19"/>
+<link kind="rail" line="rail" hexes="DD19 CC18"/>
+<link kind="rail" line="rail" hexes="EE19 EE18"/>
+<link kind="rail" line="rail" hexes="OO19 OO18"/>
+<link kind="rail" line="rail" hexes="OO19 PP19"/>
+<link kind="rail" line="rail" hexes="PP19 OO18"/>
+<link kind="rail" line="rail" hexes="A18 B18"/>
+<link kind="rail" line="rail" hexes="B18 B17"/>
+<link kind="rail" line="rail" hexes="B18 A17"/>
+<link kind="rail" line="rail" hexes="F18 F17"/>
+<link kind="rail" line="rail" hexes="O18 P18"/>
+<link kind="rail" line="rail" hexes="AA18 BB18"/>
+<link kind="rail" line="rail" hexes="DD18 EE18"/>
+<link kind="rail" line="rail" hexes="DD18 CC17"/>
+<link kind="rail" line="rail" hexes="LL18 MM17"/>
+<link kind="rail" line="rail" hexes="H17 I16"/>
+<link kind="rail" line="rail" hexes="H17 G16"/>
+<link kind="rail" line="rail" hexes="R17 Q16"/>
+<link kind="rail" line="rail" hexes="JJ17 KK17"/>
+<link kind="rail" line="rail" hexes="MM17 NN17"/>
+<link kind="rail" line="rail" hexes="NN17 NN16"/>
+<link kind="rail" line="rail" hexes="I16 J16"/>
+<link kind="rail" line="rail" hexes="P16 Q16"/>
+<link kind="rail" line="rail" hexes="B15 C15"/>
+<link kind="rail" line="rail" hexes="C15 C14"/>
+<link kind="rail" line="rail" hexes="K15 L15"/>
+<link kind="rail" line="rail" hexes="FF15 EE14"/>
+<link kind="rail" line="rail" hexes="NN15 NN14"/>
+<link kind="rail" line="rail" hexes="L14 M14"/>
+<link kind="rail" line="rail" hexes="M14 M13"/>
+<link kind="rail" line="rail" hexes="P14 P13"/>
+<link kind="rail" line="rail" hexes="T14 U13"/>
+<link kind="rail" line="rail" hexes="BB14 CC14"/>
+<link kind="rail" line="rail" hexes="DD14 EE13"/>
+<link kind="rail" line="rail" hexes="D13 D12"/>
+<link kind="rail" line="rail" hexes="E13 E12"/>
+<link kind="rail" line="rail" hexes="M13 M12"/>
+<link kind="rail" line="rail" hexes="P13 P12"/>
+<link kind="rail" line="rail" hexes="P12 Q11"/>
+<link kind="rail" line="rail" hexes="R12 Q11"/>
+<link kind="rail" line="rail" hexes="JJ12 JJ11"/>
+<link kind="rail" line="rail" hexes="D11 E10"/>
+<link kind="rail" line="rail" hexes="D11 C10"/>
+<link kind="rail" line="rail" hexes="H11 H10"/>
+<link kind="rail" line="rail" hexes="L11 M10"/>
+<link kind="rail" line="rail" hexes="Q11 R11"/>
+<link kind="rail" line="rail" hexes="M10 N10"/>
+<link kind="rail" line="rail" hexes="N10 O9"/>
+<link kind="rail" line="rail" hexes="S10 T10"/>
+<link kind="rail" line="rail" hexes="DD10 EE9"/>
+<link kind="rail" line="rail" hexes="DD10 EE10"/>
+<link kind="rail" line="rail" hexes="DD10 CC9"/>
+<link kind="rail" line="rail" hexes="B9 B8"/>
+<link kind="rail" line="rail" hexes="O9 O8"/>
+<link kind="rail" line="rail" hexes="U9 V9"/>
+<link kind="rail" line="rail" hexes="V9 W9"/>
+<link kind="rail" line="rail" hexes="W9 X9"/>
+<link kind="rail" line="rail" hexes="Y9 Z9"/>
+<link kind="rail" line="rail" hexes="BB9 CC9"/>
+<link kind="rail" line="rail" hexes="EE9 FF9"/>
+<link kind="rail" line="rail" hexes="FF9 FF8"/>
+<link kind="rail" line="rail" hexes="P8 Q8"/>
+<link kind="rail" line="rail" hexes="R8 Q7"/>
+<link kind="rail" line="rail" hexes="T8 U8"/>
+<link kind="rail" line="rail" hexes="FF8 GG7"/>
+<link kind="rail" line="rail" hexes="JJ8 JJ7"/>
+<link kind="rail" line="rail" hexes="E7 E6"/>
+<link kind="rail" line="rail" hexes="Q7 R7"/>
+<link kind="rail" line="rail" hexes="U7 V7"/>
+<link kind="rail" line="rail" hexes="HH7 II6"/>
+<link kind="rail" line="rail" hexes="II7 JJ7"/>
+<link kind="rail" line="rail" hexes="JJ7 KK7"/>
+<link kind="rail" line="rail" hexes="LL7 LL6"/>
+<link kind="rail" line="rail" hexes="E6 E5"/>
+<link kind="rail" line="rail" hexes="F6 E5"/>
+<link kind="rail" line="rail" hexes="L6 M6"/>
+<link kind="rail" line="rail" hexes="N6 O6"/>
+<link kind="rail" line="rail" hexes="S6 T6"/>
+<link kind="rail" line="rail" hexes="FF6 GG6"/>
+<link kind="rail" line="rail" hexes="FF6 EE5"/>
+<link kind="rail" line="rail" hexes="KK6 LL6"/>
+<link kind="rail" line="rail" hexes="LL6 MM6"/>
+<link kind="rail" line="rail" hexes="MM6 NN6"/>
+<link kind="rail" line="rail" hexes="NN6 OO5"/>
+<link kind="rail" line="rail" hexes="C5 C4"/>
+<link kind="rail" line="rail" hexes="E5 F5"/>
+<link kind="rail" line="rail" hexes="F5 G4"/>
+<link kind="rail" line="rail" hexes="N5 O4"/>
+<link kind="rail" line="rail" hexes="W5 W4"/>
+<link kind="rail" line="rail" hexes="DD5 EE4"/>
+<link kind="rail" line="rail" hexes="DD5 CC4"/>
+<link kind="rail" line="rail" hexes="A4 A3"/>
+<link kind="rail" line="rail" hexes="B4 B3"/>
+<link kind="rail" line="rail" hexes="C4 D4"/>
+<link kind="rail" line="rail" hexes="O4 O3"/>
+<link kind="rail" line="rail" hexes="BB4 BB3"/>
+<link kind="rail" line="rail" hexes="B3 B2"/>
+<link kind="rail" line="rail" hexes="D3 C2"/>
+<link kind="rail" line="rail" hexes="T3 U2"/>
+<link kind="rail" line="rail" hexes="OO3 PP3"/>
+<link kind="rail" line="rail" hexes="C2 C1"/>
+<link kind="rail" line="rail" hexes="Q2 R2"/>
+<link kind="rail" line="rail" hexes="R2 S2"/>
+<link kind="rail" line="rail" hexes="Z2 Z1"/>
+<link kind="rail" line="rail" hexes="Z2 AA2"/>
+<link kind="rail" line="rail" hexes="U1 V1"/>
+<!-- 277 links -->
+  <!-- the Kerch Strait: one hexside carrying five rule effects -->
+  <edge at="KK20:e" symbol="strait" color="white" label="Kerch Strait"/>
+  <!-- cities: cream ring, square for major, circle for minor; port anchors on the water side -->
+  <hex id="E31" name="BERLIN" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="BERLIN" at="E31" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="P21" name="WARSAW" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="WARSAW" at="P21" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="F17" name="RIGA" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="n" color="white" scale="0.7"/></hex>
+  <label text="RIGA" at="F17" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="C14" name="HELSINKI" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <label text="HELSINKI" at="C14" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="E10" name="LENINGRAD" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="w" color="white" scale="0.7"/></hex>
+  <label text="LENINGRAD" at="E10" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="O19" name="MINSK" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="MINSK" at="O19" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="R9" name="MOSCOW" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="MOSCOW" at="R9" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="W19" name="KIEV" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="KIEV" at="W19" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="AA14" name="KHARKOV" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="KHARKOV" at="AA14" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="AA9" name="VORONEZH" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="VORONEZH" at="AA9" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="CC4" name="SARATOV" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="SARATOV" at="CC4" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="II7" name="STALINGRAD" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="STALINGRAD" at="II7" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="DD18" name="DNEPROPETROVSK" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="DNEPROPETROVSK" at="DD18" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="DD24" name="ODESSA" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <label text="ODESSA" at="DD24" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="KK23" name="SEVASTOPOL" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <label text="SEVASTOPOL" at="KK23" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="II14" name="ROSTOV" ring="cream"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <label text="ROSTOV" at="II14" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="FF16" name="STALINO" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="STALINO" at="FF16" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="QQ5" name="ASTRAKHAN" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="ASTRAKHAN" at="QQ5" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="BB31" name="BUCHAREST" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="BUCHAREST" at="BB31" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="C1" name="ARCHANGEL" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="ARCHANGEL" at="C1" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="U2" name="GORKI" ring="cream"><glyph symbol="city-major" color="citygrey"/></hex>
+  <label text="GORKI" at="U2" slot="s" size="11" weight="bold" color="ink" halo="true"/>
+  <hex id="I25" name="Posen" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Posen" at="I25" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="O28" name="Breslau" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Breslau" at="O28" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="O23" name="Brest" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Brest" at="O23" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="K21" name="Kaunas" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Kaunas" at="K21" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="G23" name="Königsberg" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Königsberg" at="G23" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="D15" name="Tallinn" ring="cream"><glyph symbol="city-minor"/><glyph symbol="port" slot="n" color="white" scale="0.7"/></hex>
+  <label text="Tallinn" at="D15" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="L15" name="Vitebsk" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Vitebsk" at="L15" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="P14" name="Smolensk" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Smolensk" at="P14" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="O8" name="Kalinin" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Kalinin" at="O8" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="T14" name="Bryansk" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Bryansk" at="T14" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="U9" name="Tula" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Tula" at="U9" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="S25" name="Lvov" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Lvov" at="S25" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="X13" name="Kursk" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Kursk" at="X13" slot="s" size="9" color="ink" halo="true"/>
+  <hex id="OO14" name="Krasnodar" ring="cream"><glyph symbol="city-minor"/></hex>
+  <label text="Krasnodar" at="OO14" slot="s" size="9" color="ink" halo="true"/>
+  <!-- oil fields -->
+  <hex id="AA30" name="Ploesti Oil Fields" ring="cream"><glyph symbol="oil" color="ink"/></hex>
+  <label text="Ploesti Oil Fields" at="AA30" slot="s" size="6" color="ink"/>
+  <hex id="OO12" name="Maikop Oil Fields" ring="cream"><glyph symbol="oil" color="ink"/></hex>
+  <label text="Maikop Oil Fields" at="OO12" slot="s" size="6" color="ink"/>
+  <hex id="QQ6" name="Grozny Oil Fields" ring="cream"><glyph symbol="oil" color="ink"/></hex>
+  <label text="Grozny Oil Fields" at="QQ6" slot="s" size="6" color="ink"/>
+  <!-- country, sea and lake names -->
+  <label text="GERMANY" x="110" y="232" size="40" angle="-35" spacing="6" italic="false" color="label" halo="true"/>
+  <label text="POLAND" x="312" y="519" size="36" angle="0" spacing="6" italic="false" color="label" halo="true"/>
+  <label text="HUNGARY" x="55" y="723" size="34" angle="-60" spacing="5" italic="false" color="label" halo="true"/>
+  <label text="RUMANIA" x="101" y="936" size="34" angle="0" spacing="5" italic="false" color="label" halo="true"/>
+  <label text="FINLAND" x="818" y="162" size="32" angle="30" spacing="5" italic="false" color="label" halo="true"/>
+  <label text="RUSSIA" x="1057" y="862" size="60" angle="0" spacing="10" italic="false" color="label" halo="true"/>
+  <label text="Baltic Sea" x="404" y="232" size="40" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="White Sea" x="1139" y="148" size="30" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Black Sea" x="322" y="1307" size="46" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Sea of Azov" x="556" y="1233" size="22" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Caspian Sea" x="1130" y="1464" size="30" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Gulf of Finland" x="790" y="227" size="18" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Lake Ladoga" x="910" y="248" size="15" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Lake Onega" x="1029" y="248" size="15" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Lake Peipus" x="698" y="338" size="15" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Lake Ilmen" x="799" y="403" size="15" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Lake Beloje" x="1071" y="371" size="15" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Rybinsk Reservoir" x="1015" y="528" size="14" angle="0" spacing="0" italic="true" color="white" halo="true"/>
+  <label text="Dnieper" x="515" y="927" size="8" angle="-80" italic="true" color="riverblue"/>
+  <label text="Don" x="827" y="1094" size="8" angle="-60" italic="true" color="riverblue"/>
+  <label text="Volga" x="1057" y="1112" size="8" angle="-70" italic="true" color="riverblue"/>
+  <label text="Dvina" x="588" y="389" size="8" angle="-40" italic="true" color="riverblue"/>
+  <label text="Narva R." x="763" y="283" size="8" angle="0" italic="true" color="riverblue"/>
+  <label text="Moskva R." x="919" y="714" size="8" angle="0" italic="true" color="riverblue"/>
+  <label text="Pripet Marshes" x="524" y="686" size="8" angle="-30" italic="true" color="riverblue"/>
+  <!-- furniture: the strip across the top, two panels over sea hexes, and the corner charts -->
+  <panel id="title" x="8" y="8" w="300" h="68" fill="ink" stroke="ink">
+    <text x="10" y="30" size="22" weight="bold" color="red">The Russian Campaign</text>
+    <text x="10" y="56" size="11" color="white">Designer Signature Edition  --  John Edwards, Todd Davis</text>
+  </panel>
+  <panel id="axis-pool" x="322" y="8" w="140" h="68" fill="panel" stroke="ink" title="Axis Replacement Pool"/>
+  <panel id="russian-surrendered" x="470" y="8" w="140" h="68" fill="panel" stroke="ink" title="Russian Surrendered Units"/>
+  <panel id="weather" x="620" y="8" w="300" h="68" fill="panel" stroke="ink" title="Weather Chart">
+    <table x="6" y="18" cell-w="32" cell-h="15" size="6">
+      <row><cell>Months</cell><cell>0-</cell><cell>1</cell><cell>2</cell><cell>3</cell><cell>4</cell><cell>5</cell><cell>6</cell><cell>7+</cell></row>
+      <row><cell>Mar/Apr</cell><cell>Clear</cell><cell>LtMud</cell><cell>LtMud</cell><cell>LtMud</cell><cell>LtMud</cell><cell>Mud</cell><cell>Mud</cell><cell>Snow</cell></row>
+      <row><cell>Sep/Oct</cell><cell>Clear</cell><cell>Clear</cell><cell>Clear</cell><cell>LtMud</cell><cell>LtMud</cell><cell>Mud</cell><cell>Mud</cell><cell>Snow</cell></row>
+    </table>
+  </panel>
+  <panel id="russian-pool" x="930" y="8" w="140" h="68" fill="panel" stroke="ink" title="Russian Replacement Pool"/>
+  <panel id="axis-surrendered" x="1078" y="8" w="138" h="68" fill="panel" stroke="ink" title="Axis Surrendered Units"/>
+  <panel id="turn-track" x="8" y="84" w="1208" h="42" fill="panel" stroke="ink">
+    <text x="4" y="26" size="9" weight="bold">Turn Record Track</text>
+    <track x="90" y="4" cell-w="44" cell-h="34" cells="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" fill="cream"/>
+  </panel>
+  <panel id="baltic-box" x="195" y="140" w="160" h="70" fill="paneldark" stroke="ink">
+    <text x="6" y="14" size="8" weight="bold" color="white">Baltic Sea - Gulf of Finland Movement</text>
+    <text x="6" y="28" size="6" color="white">1 unit/side per turn. No invasions.</text>
+    <text x="6" y="40" size="6" color="white">Successful on die roll of 2 or less.</text>
+    <text x="6" y="52" size="6" color="white">-1 for each of Helsinki, Leningrad, Riga, Tallinn controlled</text>
+    <text x="6" y="64" size="6" color="white">+1 evacuation; +2 Russian, if Germans control Leningrad</text>
+  </panel>
+  <panel id="airpower" x="362" y="140" w="120" h="70" fill="panel" stroke="ink" title="Airpower Availability">
+    <table x="4" y="18" cell-w="28" cell-h="10" size="5">
+      <row><cell>Year</cell><cell>Clear</cell><cell>LtMud</cell><cell>Mud</cell></row>
+      <row><cell>1941</cell><cell>3/0</cell><cell>1/0</cell><cell>1/0</cell></row>
+      <row><cell>1942</cell><cell>2/0</cell><cell>1/0</cell><cell>1/0</cell></row>
+      <row><cell>1943</cell><cell>1/1</cell><cell>0/0</cell><cell>0/0</cell></row>
+      <row><cell>1944</cell><cell>0/2</cell><cell>0/1</cell><cell>0/0</cell></row>
+    </table>
+  </panel>
+  <panel id="black-sea-box" x="470" y="1385" w="130" h="58" rotate="180" fill="paneldark" stroke="ink">
+    <text x="6" y="14" size="7" weight="bold" color="white">Black Sea - Sea of Azov Movement</text>
+    <text x="6" y="26" size="5" color="white">1 unit per side per turn. Successful on die roll of 3 or less.</text>
+    <text x="6" y="36" size="5" color="white">-1 for each of Odessa, Sevastopol, Rostov controlled</text>
+  </panel>
+  <panel id="crt" x="214" y="1300" w="200" h="150" rotate="180" fill="panel" stroke="ink" title="Combat Results Table">
+    <table x="4" y="18" cell-w="19" cell-h="13" size="6">
+      <row><cell>Die</cell><cell>1-5</cell><cell>1-3</cell><cell>1-2</cell><cell>1-1</cell><cell>2-1</cell><cell>3-1</cell><cell>4-1</cell><cell>5-1</cell><cell>7-1</cell></row>
+      <row><cell>1</cell><cell>AE</cell><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell></row>
+      <row><cell>2</cell><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell></row>
+      <row><cell>3</cell><cell>AE</cell><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell></row>
+      <row><cell>4</cell><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell></row>
+      <row><cell>5</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell><cell>DS</cell></row>
+      <row><cell>6</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DS</cell><cell>DS</cell><cell>DS</cell></row>
+    </table>
+  </panel>
+  <panel id="tec" x="8" y="1220" w="200" h="230" rotate="180" fill="panel" stroke="ink" title="Terrain Effects Chart">
+    <box label="Clear: 1 MP" x="8" y="22" w="184" h="20" fill="steppe"/>
+    <box label="Woods: 1 MP, stop; no retreat" x="8" y="46" w="184" h="20" fill="leaf"/>
+    <box label="Mountain: 1 MP, stop; defender x2" x="8" y="70" w="184" h="20" fill="rock"/>
+    <box label="Swamp: 1 MP, stop; clear in Snow" x="8" y="94" w="184" h="20" fill="marsh"/>
+    <box label="River: defender x2 if all attackers on river hexes" x="8" y="118" w="184" h="20" fill="riverblue"/>
+    <box label="Major City: defender x2" x="8" y="142" w="184" h="20" fill="citygrey"/>
+    <box label="Sea or Lake: prohibited" x="8" y="166" w="184" h="20" fill="deep"/>
+    <box label="Blocked hexside: no movement, no ZOC" x="8" y="190" w="184" h="20"/>
+  </panel>
+</sheet>

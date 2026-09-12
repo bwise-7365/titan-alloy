@@ -1,0 +1,1691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"
+       id="tarawa" title="D-Day at Tarawa"
+       source="DDaT-map2.png, 1786 x 1153; Decision Games 2014, map redesign Delphine Echassoux"
+       width="1786" height="1153" background="paper" font="Arial, Helvetica, sans-serif">
+  <grid id="main" orientation="pointy" offset="odd" cols="42" rows="25" size="24.90" ox="8.59" oy="222.10"
+        id-format="{row:02}{col:02}" col-start="2" row-start="25" row-step="-1" terrain="water" id-side="w"/>
+  <palette>
+    <color id="paper" value="#efe8cf" name="sheet background"/>
+    <color id="lagoon" value="#c0dce7"/>
+    <color id="reefgreen" value="#cbdfdf"/>
+    <color id="sand" value="#e5e1c1"/>
+    <color id="white" value="#f8f8f4"/>
+    <color id="beige" value="#eed9a8"/>
+    <color id="palmgreen" value="#b9c9a6"/>
+    <color id="tan" value="#d9c19b"/>
+    <color id="concrete" value="#6a6a6a"/>
+    <color id="grid" value="#8a8a80"/>
+    <color id="gridw" value="#8fb3c4"/>
+    <color id="seawall" value="#3a3a3a"/>
+    <color id="ink" value="#111111"/>
+    <color id="teal" value="#2aa198"/>
+    <color id="cardred" value="#c8342b"/>
+    <color id="cardblue" value="#2f7fc1"/>
+    <color id="panel" value="#f7f4e6"/>
+    <color id="purple" value="#7476a5" name="position colour"/>
+    <color id="red" value="#d23a3a" name="position colour"/>
+    <color id="olive" value="#8f8f2c" name="position colour"/>
+    <color id="green" value="#78b23c" name="position colour"/>
+    <color id="blue" value="#3b8ed0" name="position colour"/>
+    <color id="orange" value="#f2b021" name="position colour"/>
+  </palette>
+  <terrains>
+    <terrain id="water" name="Water" fill="lagoon" stroke="gridw"/>
+    <terrain id="reef" name="Coral reef" fill="reefgreen" stroke="gridw" pattern="dots"/>
+    <terrain id="clear" name="Clear" fill="sand" stroke="grid"/>
+    <terrain id="airstrip" name="Airstrip" fill="white" stroke="grid"/>
+    <terrain id="beach" name="Beach" fill="beige" stroke="grid"/>
+    <terrain id="palm" name="Palm trees" fill="palmgreen" stroke="grid" pattern="palms"/>
+    <terrain id="rough" name="Rough / crater" fill="tan" stroke="grid" pattern="mottle"/>
+    <terrain id="building" name="Building" fill="concrete" stroke="grid" pattern="hatch"/>
+  </terrains>
+  <lines>
+    <line id="seawall-line" stroke="seawall" width="4" dash="5 2"/>
+    <line id="pier-line" stroke="concrete" width="6"/>
+    <line id="fz-purple" stroke="purple" width="3"/>
+    <line id="fz-red" stroke="red" width="3"/>
+    <line id="fz-olive" stroke="olive" width="3"/>
+    <line id="fz-green" stroke="green" width="3"/>
+    <line id="fz-blue" stroke="blue" width="3"/>
+    <line id="fz-orange" stroke="orange" width="3"/>
+  </lines>
+  <!-- terrain, sampled from the scan at every hex centre -->
+<hexes terrain="water" ids="1802 1602 2303 2203 1703 1603 1503 1403 2304 2204 1704 1604 1504 1404 2205 1505 1405 1305 2206 2106 1506 1406 1306 2107 1407 1307 1207 1007 0807 0607 0407 2108 2008 1308 1208 1108 1008 0908 0808 0708 0608 0508 0408 2109 2009 1309 1209 1109 1009 0909 0809 0709 0609 0509 0409 2010 1210 1110 1010 0910 0810 0710 0610 0510 0410 2011 1111 1011 0911 0811 0711 0611 0511 0411 0311 2012 1112 1012 0912 0812 0712 0612 0512 0412 0312 2013 1013 0913 0813 0713 0613 0513 0413 0313 2014 1014 0914 0814 0714 0614 0514 0414 0314 0214 2015 0915 0815 0715 0615 0515 0415 0315 0215 2016 0916 0816 0716 0616 0516 0416 0316 0216 0116 2017 0917 0817 0717 0617 0517 0417 0317 0217 0117 2018 0918 0818 0718 0618 0518 0418 0318 0218 0118 2019 0919 0819 0719 0619 0519 0419 0319 0219 2020 0920 0820 0720 0620 0520 0420 0320 0220 2021 0921 0821 0721 0621 0521 0421 0321 0221 2122 2022 0922 0822 0722 0622 0522 0422 0322 0222 0122 2123 1023 0823 0723 0623 0523 0423 0323 0223 2124 1024 0924 0824 0724 0624 0524 0424 0324 0224 0124 2125 1025 0925 0825 0725 0625 0525 0425 0325 0225 2226 2126 1126 1026 0926 0826 0726 0626 0526 0426 0326 0226 2227 1127 1027 0927 0827 0727 0627 0527 0427 0327 0227 0127 2328 2228 1228 1128 1028 0928 0828 0728 0628 0528 0428 0328 0228 2329 1229 1129 1029 0929 0829 0729 0629 0529 0429 0329 0229 0129 2330 1430 1230 1130 1030 0930 0730 0630 0530 0430 0330 0230 2331 1531 1431 1331 1231 1131 1031 0931 0831 0731 0631 0531 0431 0331 0231 0131 2432 2332 1532 1432 1332 1232 1132 0932 0832 0732 0632 0532 0432 0332 0232 2433 1533 1433 1333 1233 1133 1033 0933 0833 0633 0533 0433 0333 0233 2434 1534 1434 1334 1234 1134 1034 0934 0834 0734 0634 0534 0434 0334 0234 2435 1335 1235 1135 1035 0935 0835 0735 0635 0535 0435 0335 0235 2436 1336 1236 1136 1036 0936 0836 0736 0636 0536 0436 0336 0236 2437 1137 1037 0937 0837 0737 0637 0537 0437 0337 0237 2438 1138 1038 0938 0838 0738 0638 0538 0438 0338 0238 2439 1639 1439 1339 1239 1139 1039 0939 0839 0739 0639 0539 0439 0339 0239 0139 1940 1840 1740 1640 1540 1440 1340 1240 1140 1040 0940 0840 0740 0640 0540 0440 0340 0240 2441 2241 2141 2041 1941 1841 1741 1641 1541 1441 1341 1241 1141 1041 0941 0841 0741 0641 0541 0441 0341 0241 2442 2342 2242 2142 2042 1942 1842 1742 1642 1542 1442 1342 1242 1142 1042 0942 0842 0742 0642 0542 0442 0342 0242 0142"/>
+<hexes terrain="reef" ids="0803 0703 0503 0804 0704 0805 0705 0605 0806 0706 0506 0207 0308 0208 0108 0309 0209 0109 0310 0210 0110 0211 0111 0212 0112 0213 0113 0114 0115 0119 0120 0133 0135 0137 0140 0141"/>
+<hexes terrain="clear" ids="2402 2202 2002 1402 0402 2503 2403 2003 1903 1803 0403 2504 2404 2104 2004 1904 1804 0404 2305 2105 2005 1905 1805 1705 1605 0405 2506 2306 2006 1906 1706 0406 2507 2307 2207 2007 1907 1707 1507 1107 0907 0707 0507 0307 0107 2508 2308 2208 1908 1808 1608 1508 1408 2509 2309 2209 1909 1809 1709 1609 1509 1409 2110 1910 1710 1610 1510 1310 2111 1911 1711 1211 2512 2112 1912 1712 1612 1212 2513 2113 1913 1813 1713 1613 1313 1113 2514 2114 1914 1814 1714 1614 1114 2515 2115 1915 1815 1615 1315 1215 1015 2516 2116 1916 1816 1716 1016 2117 1917 1517 1417 1217 1017 2518 2218 2118 1918 1718 1518 1418 1018 2519 2119 1919 1819 1719 1519 1419 1319 1019 2520 2420 2320 2220 2120 1920 1820 1620 1520 1420 1320 1120 1020 2521 2421 2321 2221 2121 1921 1821 1621 1521 1421 1321 1021 2322 2222 1922 1822 1622 1522 1422 2323 2223 2023 1623 1523 1223 0923 2324 2224 2024 1924 1724 1624 1324 1124 2325 2225 2025 1925 1725 1425 1225 2326 1926 1626 1526 1426 1226 2327 2127 1627 1527 1227 2128 2028 1728 1628 1528 1428 1328 2229 2129 2029 1729 2230 2130 1730 1530 1330 2431 2231 2131 2031 1831 1731 1631 2532 2132 2032 1932 1832 1632 2533 2333 2133 2033 1933 1833 1733 1633 2534 2334 2234 2134 2034 1934 1834 1634 2535 2235 2135 2035 1935 1735 1635 1535 1435 2536 2336 2236 2136 2036 1936 1836 1736 1636 1536 2537 2337 2237 2137 2037 1937 1637 1537 1437 1337 1237 2538 2238 2138 2038 1938 1838 1638 1438 1238 2539 2339 2239 2139 2039 1939 1839 1739 1539 2540 2440 2140 2040 2541 2542"/>
+<hexes terrain="airstrip" ids="0802 0202 0603 0303 0203 0103 0604 0504 0304 0204 0104 0505 0305 0205 0105 0606 0306 0206 0106 2409 2210 1410 2511 2211 1611 1511 1411 1311 2212 1512 1412 1312 2313 2213 1513 1413 2414 2214 1514 1414 2215 1515 1415 2416 2216 1616 1516 2317 2217 1617 1317 1618 1318 1218 1619 1220 1721 1221 1121 1722 1222 1122 1823 1723 1423 1323 1824 1524 1424 1825 1625 1525 1125 1826 1726 1927 1827 1727 1928 1929 2030 1930 1931"/>
+<hexes terrain="beach" ids="2505 2405 2406 2407 2408 2510 2410 2310 2411 2311 2412 2312 2413 2314 2415 2315 2316 2517 2417 2418 2318 2419 2319"/>
+<hexes terrain="palm" ids="1202 1002 1303 1203 1103 1003 0903 1304 1204 1104 1004 1205 1105 1005 0905 1806 1206 1106 1006 0906 1807 1607 1708 1810 1811 1812 1213 1314 1715 1115 1316 1216 1116 1817 1717 1117 1119 0121 1322 1022 1923 1123 0123 1224 1325 0125 2026 1326 1427 1327 0128 1629 1529 1429 1329 1630 0130 1732 0132 1734 0134 2335 1835 1436 0136 1837 1737 2338 1538 1338 0138"/>
+<hexes terrain="rough" ids="1720 2522 2422 2523 2423 2524 2424 2525 2425 2526 2426 2527 2427 2027 2528 2428 2529 2429 2530 2430 0830 2531 1032 0733 1738"/>
+<hexes terrain="building" ids="0602 2103 0904 1606 1214 1416 1818 1118 2219 1219 0126 1828 1829 1830 2232 2233 2340 2240 2341"/>
+<!-- 1012 hexes classified -->
+  <!-- seawall and water-fire-zone boundary lines along hexsides, traced from the scan -->
+<edge at="2202:se" line="fz-purple"/>
+<edge at="1602:ne" line="fz-orange"/>
+<edge at="1002:ne" line="fz-olive"/>
+<edge at="0802:e" line="fz-purple"/>
+<edge at="0702:se" line="fz-purple"/>
+<edge at="0602:se" line="pier-line"/>
+<edge at="0502:e" line="pier-line"/>
+<edge at="2203:sw" line="fz-purple"/>
+<edge at="2103:e" line="fz-purple"/>
+<edge at="1803:se" line="fz-green"/>
+<edge at="1703:se" line="fz-orange"/>
+<edge at="1603:e" line="fz-green"/>
+<edge at="1503:e" line="fz-green"/>
+<edge at="1403:e" line="fz-green"/>
+<edge at="1003:se" line="fz-green"/>
+<edge at="0903:e" line="fz-purple"/>
+<edge at="0803:ne" line="pier-line"/>
+<edge at="0703:e" line="pier-line"/>
+<edge at="0503:e" line="pier-line"/>
+<edge at="0203:e" line="fz-orange"/>
+<edge at="1804:ne" line="fz-purple"/>
+<edge at="1104:e" line="seawall-line"/>
+<edge at="0804:ne" line="pier-line"/>
+<edge at="0704:e" line="pier-line"/>
+<edge at="0604:se" line="fz-purple"/>
+<edge at="0504:e" line="pier-line"/>
+<edge at="2405:se" line="seawall-line"/>
+<edge at="2405:sw" line="seawall-line"/>
+<edge at="1905:se" line="fz-purple"/>
+<edge at="1305:e" line="fz-blue"/>
+<edge at="0905:e" line="fz-purple"/>
+<edge at="0605:se" line="fz-purple"/>
+<edge at="2406:se" line="seawall-line"/>
+<edge at="2406:sw" line="seawall-line"/>
+<edge at="2006:sw" line="fz-purple"/>
+<edge at="1606:e" line="pier-line"/>
+<edge at="1406:e" line="fz-blue"/>
+<edge at="0906:e" line="fz-purple"/>
+<edge at="0606:sw" line="fz-purple"/>
+<edge at="2407:se" line="seawall-line"/>
+<edge at="2407:sw" line="seawall-line"/>
+<edge at="1307:e" line="fz-orange"/>
+<edge at="1007:se" line="fz-red"/>
+<edge at="0907:e" line="fz-red"/>
+<edge at="0607:se" line="fz-red"/>
+<edge at="0607:sw" line="fz-red"/>
+<edge at="0407:se" line="fz-purple"/>
+<edge at="1908:e" line="pier-line"/>
+<edge at="1408:e" line="fz-purple"/>
+<edge at="1208:se" line="fz-red"/>
+<edge at="1108:e" line="fz-red"/>
+<edge at="0608:se" line="fz-red"/>
+<edge at="0608:sw" line="fz-red"/>
+<edge at="1809:ne" line="pier-line"/>
+<edge at="1509:e" line="fz-purple"/>
+<edge at="1509:se" line="fz-purple"/>
+<edge at="0609:sw" line="fz-red"/>
+<edge at="0509:e" line="fz-olive"/>
+<edge at="0409:se" line="fz-blue"/>
+<edge at="0409:sw" line="fz-purple"/>
+<edge at="2410:ne" line="seawall-line"/>
+<edge at="1910:se" line="pier-line"/>
+<edge at="1810:ne" line="pier-line"/>
+<edge at="1610:e" line="fz-orange"/>
+<edge at="1110:e" line="fz-blue"/>
+<edge at="0910:e" line="fz-blue"/>
+<edge at="0710:e" line="fz-purple"/>
+<edge at="0710:se" line="fz-purple"/>
+<edge at="0610:sw" line="fz-purple"/>
+<edge at="0510:e" line="fz-blue"/>
+<edge at="0410:sw" line="fz-purple"/>
+<edge at="0310:e" line="fz-purple"/>
+<edge at="2511:e" line="seawall-line"/>
+<edge at="2511:se" line="seawall-line"/>
+<edge at="2211:se" line="fz-red"/>
+<edge at="1911:se" line="pier-line"/>
+<edge at="1411:ne" line="fz-orange"/>
+<edge at="1211:e" line="fz-olive"/>
+<edge at="2312:e" line="fz-orange"/>
+<edge at="2212:se" line="fz-red"/>
+<edge at="1912:se" line="pier-line"/>
+<edge at="1812:ne" line="pier-line"/>
+<edge at="1012:e" line="fz-red"/>
+<edge at="0212:ne" line="fz-purple"/>
+<edge at="1913:se" line="pier-line"/>
+<edge at="1013:sw" line="fz-red"/>
+<edge at="0813:e" line="fz-red"/>
+<edge at="0813:ne" line="fz-red"/>
+<edge at="0613:sw" line="fz-red"/>
+<edge at="0413:e" line="fz-blue"/>
+<edge at="0313:se" line="fz-purple"/>
+<edge at="0213:e" line="fz-purple"/>
+<edge at="0213:ne" line="fz-purple"/>
+<edge at="2514:se" line="seawall-line"/>
+<edge at="2414:ne" line="seawall-line"/>
+<edge at="1414:e" line="fz-green"/>
+<edge at="1214:se" line="fz-purple"/>
+<edge at="1214:sw" line="fz-purple"/>
+<edge at="0714:e" line="fz-red"/>
+<edge at="0614:e" line="fz-purple"/>
+<edge at="0614:sw" line="fz-red"/>
+<edge at="0514:e" line="fz-blue"/>
+<edge at="0214:sw" line="fz-purple"/>
+<edge at="2515:e" line="fz-red"/>
+<edge at="2515:se" line="seawall-line"/>
+<edge at="2215:sw" line="seawall-line"/>
+<edge at="1815:ne" line="pier-line"/>
+<edge at="0715:e" line="fz-blue"/>
+<edge at="0415:sw" line="fz-blue"/>
+<edge at="2516:e" line="fz-red"/>
+<edge at="2316:e" line="fz-red"/>
+<edge at="2316:se" line="fz-red"/>
+<edge at="2216:sw" line="seawall-line"/>
+<edge at="2216:ne" line="fz-red"/>
+<edge at="1916:se" line="pier-line"/>
+<edge at="1816:e" line="pier-line"/>
+<edge at="1216:e" line="fz-purple"/>
+<edge at="1016:ne" line="pier-line"/>
+<edge at="0316:e" line="fz-orange"/>
+<edge at="0216:sw" line="fz-purple"/>
+<edge at="2517:e" line="fz-red"/>
+<edge at="2317:e" line="fz-orange"/>
+<edge at="2217:sw" line="seawall-line"/>
+<edge at="1617:se" line="fz-red"/>
+<edge at="1117:e" line="fz-purple"/>
+<edge at="1117:se" line="fz-purple"/>
+<edge at="0817:e" line="fz-olive"/>
+<edge at="0617:e" line="fz-orange"/>
+<edge at="0517:e" line="fz-orange"/>
+<edge at="0517:se" line="fz-orange"/>
+<edge at="2518:e" line="fz-red"/>
+<edge at="1818:e" line="fz-purple"/>
+<edge at="1818:se" line="fz-purple"/>
+<edge at="1218:sw" line="fz-purple"/>
+<edge at="1118:se" line="fz-purple"/>
+<edge at="0818:e" line="fz-orange"/>
+<edge at="0818:se" line="fz-orange"/>
+<edge at="0718:e" line="fz-olive"/>
+<edge at="0718:se" line="fz-orange"/>
+<edge at="0618:e" line="fz-olive"/>
+<edge at="0318:e" line="fz-green"/>
+<edge at="2219:e" line="seawall-line"/>
+<edge at="2219:sw" line="fz-red"/>
+<edge at="1819:e" line="pier-line"/>
+<edge at="1819:sw" line="fz-purple"/>
+<edge at="1719:e" line="fz-purple"/>
+<edge at="1519:e" line="fz-purple"/>
+<edge at="1319:se" line="pier-line"/>
+<edge at="1219:e" line="fz-purple"/>
+<edge at="1219:ne" line="pier-line"/>
+<edge at="1019:sw" line="fz-blue"/>
+<edge at="0919:se" line="fz-orange"/>
+<edge at="0619:e" line="fz-green"/>
+<edge at="0619:se" line="fz-green"/>
+<edge at="0519:e" line="fz-olive"/>
+<edge at="0419:e" line="fz-olive"/>
+<edge at="0219:se" line="fz-purple"/>
+<edge at="0219:sw" line="fz-purple"/>
+<edge at="2420:sw" line="fz-red"/>
+<edge at="2420:ne" line="seawall-line"/>
+<edge at="2320:e" line="fz-red"/>
+<edge at="1720:e" line="fz-purple"/>
+<edge at="1520:e" line="fz-purple"/>
+<edge at="1420:sw" line="fz-purple"/>
+<edge at="1220:e" line="pier-line"/>
+<edge at="1220:sw" line="fz-purple"/>
+<edge at="0620:ne" line="fz-blue"/>
+<edge at="0420:se" line="fz-blue"/>
+<edge at="0420:sw" line="fz-purple"/>
+<edge at="0320:se" line="fz-green"/>
+<edge at="0220:sw" line="fz-purple"/>
+<edge at="0220:ne" line="fz-green"/>
+<edge at="2521:se" line="seawall-line"/>
+<edge at="2421:se" line="fz-red"/>
+<edge at="2421:sw" line="fz-red"/>
+<edge at="2421:ne" line="fz-red"/>
+<edge at="2221:e" line="pier-line"/>
+<edge at="1621:sw" line="fz-purple"/>
+<edge at="1521:se" line="fz-purple"/>
+<edge at="1221:e" line="pier-line"/>
+<edge at="0421:se" line="fz-blue"/>
+<edge at="0221:se" line="fz-purple"/>
+<edge at="2522:e" line="fz-red"/>
+<edge at="2422:se" line="fz-red"/>
+<edge at="1622:e" line="pier-line"/>
+<edge at="1222:e" line="fz-purple"/>
+<edge at="1022:e" line="fz-purple"/>
+<edge at="0822:e" line="pier-line"/>
+<edge at="0222:sw" line="fz-purple"/>
+<edge at="2523:e" line="fz-red"/>
+<edge at="2423:se" line="fz-red"/>
+<edge at="2423:sw" line="fz-red"/>
+<edge at="2323:se" line="pier-line"/>
+<edge at="1423:se" line="fz-green"/>
+<edge at="1223:se" line="fz-purple"/>
+<edge at="1223:ne" line="fz-purple"/>
+<edge at="0823:sw" line="pier-line"/>
+<edge at="0723:e" line="pier-line"/>
+<edge at="0623:e" line="pier-line"/>
+<edge at="0623:ne" line="pier-line"/>
+<edge at="0223:se" line="fz-purple"/>
+<edge at="2524:e" line="fz-red"/>
+<edge at="2424:se" line="fz-red"/>
+<edge at="2424:sw" line="fz-red"/>
+<edge at="2324:e" line="fz-red"/>
+<edge at="1224:se" line="pier-line"/>
+<edge at="1224:sw" line="pier-line"/>
+<edge at="0824:se" line="fz-red"/>
+<edge at="0724:e" line="fz-red"/>
+<edge at="0624:sw" line="pier-line"/>
+<edge at="0524:e" line="pier-line"/>
+<edge at="0424:e" line="fz-purple"/>
+<edge at="0424:ne" line="pier-line"/>
+<edge at="0324:se" line="fz-green"/>
+<edge at="0124:e" line="fz-purple"/>
+<edge at="2525:e" line="fz-red"/>
+<edge at="2425:se" line="fz-red"/>
+<edge at="2425:sw" line="fz-red"/>
+<edge at="2325:e" line="fz-red"/>
+<edge at="1625:e" line="pier-line"/>
+<edge at="1325:se" line="fz-purple"/>
+<edge at="1225:e" line="fz-purple"/>
+<edge at="1225:se" line="fz-purple"/>
+<edge at="1225:sw" line="fz-purple"/>
+<edge at="1025:e" line="fz-red"/>
+<edge at="0925:e" line="fz-red"/>
+<edge at="0425:e" line="fz-green"/>
+<edge at="0425:sw" line="pier-line"/>
+<edge at="0425:ne" line="fz-blue"/>
+<edge at="0325:e" line="pier-line"/>
+<edge at="0225:e" line="pier-line"/>
+<edge at="0225:ne" line="pier-line"/>
+<edge at="0125:e" line="pier-line"/>
+<edge at="2526:e" line="fz-red"/>
+<edge at="2326:e" line="fz-red"/>
+<edge at="2126:se" line="pier-line"/>
+<edge at="1226:se" line="fz-red"/>
+<edge at="1226:ne" line="fz-purple"/>
+<edge at="1126:e" line="fz-red"/>
+<edge at="1126:se" line="fz-red"/>
+<edge at="0626:e" line="fz-green"/>
+<edge at="0526:se" line="fz-green"/>
+<edge at="0226:se" line="fz-purple"/>
+<edge at="2527:e" line="fz-red"/>
+<edge at="1627:e" line="fz-green"/>
+<edge at="1627:ne" line="fz-olive"/>
+<edge at="1527:e" line="fz-purple"/>
+<edge at="1327:se" line="fz-purple"/>
+<edge at="1027:ne" line="fz-blue"/>
+<edge at="0827:e" line="fz-green"/>
+<edge at="0427:ne" line="fz-blue"/>
+<edge at="0227:sw" line="fz-purple"/>
+<edge at="2528:e" line="fz-red"/>
+<edge at="2128:se" line="pier-line"/>
+<edge at="1328:e" line="fz-orange"/>
+<edge at="1028:e" line="fz-green"/>
+<edge at="0828:e" line="fz-orange"/>
+<edge at="2529:e" line="fz-red"/>
+<edge at="1529:e" line="fz-purple"/>
+<edge at="1529:se" line="fz-purple"/>
+<edge at="1329:se" line="pier-line"/>
+<edge at="1229:se" line="fz-orange"/>
+<edge at="1129:e" line="fz-olive"/>
+<edge at="1129:se" line="fz-orange"/>
+<edge at="1029:se" line="fz-purple"/>
+<edge at="1029:sw" line="fz-purple"/>
+<edge at="0829:sw" line="fz-orange"/>
+<edge at="0729:e" line="fz-orange"/>
+<edge at="0629:e" line="fz-purple"/>
+<edge at="0529:e" line="fz-blue"/>
+<edge at="0129:e" line="fz-olive"/>
+<edge at="2530:e" line="fz-red"/>
+<edge at="1630:e" line="pier-line"/>
+<edge at="1630:se" line="pier-line"/>
+<edge at="1330:e" line="fz-red"/>
+<edge at="1230:e" line="fz-purple"/>
+<edge at="1230:ne" line="fz-red"/>
+<edge at="1130:e" line="fz-purple"/>
+<edge at="1030:e" line="fz-purple"/>
+<edge at="0930:e" line="fz-blue"/>
+<edge at="0830:e" line="fz-blue"/>
+<edge at="0730:e" line="fz-blue"/>
+<edge at="0530:e" line="fz-orange"/>
+<edge at="0430:ne" line="fz-orange"/>
+<edge at="2531:se" line="fz-red"/>
+<edge at="1831:ne" line="fz-olive"/>
+<edge at="1731:se" line="pier-line"/>
+<edge at="1631:ne" line="pier-line"/>
+<edge at="1531:e" line="fz-green"/>
+<edge at="1331:se" line="fz-red"/>
+<edge at="1231:ne" line="fz-orange"/>
+<edge at="1031:se" line="fz-purple"/>
+<edge at="1031:sw" line="fz-purple"/>
+<edge at="0331:e" line="fz-orange"/>
+<edge at="0231:sw" line="fz-purple"/>
+<edge at="0231:ne" line="fz-orange"/>
+<edge at="2532:e" line="seawall-line"/>
+<edge at="2332:se" line="fz-purple"/>
+<edge at="2232:e" line="fz-purple"/>
+<edge at="2232:se" line="fz-purple"/>
+<edge at="2232:ne" line="fz-purple"/>
+<edge at="1732:se" line="pier-line"/>
+<edge at="1332:e" line="fz-orange"/>
+<edge at="1332:se" line="fz-orange"/>
+<edge at="1232:se" line="fz-red"/>
+<edge at="1232:sw" line="fz-red"/>
+<edge at="1032:se" line="fz-purple"/>
+<edge at="1032:sw" line="fz-purple"/>
+<edge at="0332:se" line="fz-orange"/>
+<edge at="0232:se" line="fz-purple"/>
+<edge at="2333:se" line="fz-purple"/>
+<edge at="2233:e" line="fz-purple"/>
+<edge at="2233:ne" line="fz-purple"/>
+<edge at="1533:e" line="fz-purple"/>
+<edge at="1433:e" line="fz-orange"/>
+<edge at="1233:sw" line="fz-red"/>
+<edge at="1133:e" line="fz-red"/>
+<edge at="1033:se" line="fz-purple"/>
+<edge at="0333:se" line="fz-orange"/>
+<edge at="0233:sw" line="fz-purple"/>
+<edge at="0233:ne" line="fz-orange"/>
+<edge at="0133:e" line="fz-red"/>
+<edge at="2434:se" line="pier-line"/>
+<edge at="2334:e" line="pier-line"/>
+<edge at="1434:e" line="fz-purple"/>
+<edge at="1034:e" line="fz-red"/>
+<edge at="1034:se" line="fz-purple"/>
+<edge at="1034:sw" line="fz-purple"/>
+<edge at="0434:e" line="fz-red"/>
+<edge at="0334:e" line="fz-red"/>
+<edge at="0234:se" line="fz-purple"/>
+<edge at="0234:ne" line="fz-orange"/>
+<edge at="1535:se" line="fz-green"/>
+<edge at="1335:e" line="fz-purple"/>
+<edge at="1235:e" line="fz-purple"/>
+<edge at="1135:e" line="fz-purple"/>
+<edge at="1035:se" line="fz-red"/>
+<edge at="0635:e" line="fz-red"/>
+<edge at="0635:se" line="fz-red"/>
+<edge at="0535:e" line="fz-red"/>
+<edge at="0535:se" line="fz-red"/>
+<edge at="0335:se" line="fz-orange"/>
+<edge at="0235:ne" line="fz-orange"/>
+<edge at="1036:e" line="fz-green"/>
+<edge at="0836:e" line="fz-red"/>
+<edge at="0836:se" line="fz-red"/>
+<edge at="0336:se" line="fz-orange"/>
+<edge at="0236:se" line="fz-purple"/>
+<edge at="0236:ne" line="fz-orange"/>
+<edge at="2037:se" line="fz-purple"/>
+<edge at="1837:se" line="fz-purple"/>
+<edge at="1737:se" line="fz-purple"/>
+<edge at="1637:se" line="fz-purple"/>
+<edge at="1437:e" line="fz-purple"/>
+<edge at="1437:se" line="fz-purple"/>
+<edge at="1437:ne" line="fz-purple"/>
+<edge at="1337:e" line="fz-purple"/>
+<edge at="1237:ne" line="fz-purple"/>
+<edge at="0837:e" line="fz-green"/>
+<edge at="0237:e" line="fz-blue"/>
+<edge at="0237:sw" line="fz-purple"/>
+<edge at="0237:ne" line="fz-orange"/>
+<edge at="1838:e" line="pier-line"/>
+<edge at="1838:sw" line="fz-orange"/>
+<edge at="1738:se" line="fz-orange"/>
+<edge at="1638:sw" line="fz-purple"/>
+<edge at="1538:e" line="fz-purple"/>
+<edge at="1538:se" line="fz-purple"/>
+<edge at="1438:e" line="fz-red"/>
+<edge at="1438:sw" line="fz-purple"/>
+<edge at="1338:e" line="fz-purple"/>
+<edge at="1338:se" line="fz-purple"/>
+<edge at="1138:e" line="fz-purple"/>
+<edge at="1038:e" line="fz-orange"/>
+<edge at="0838:e" line="fz-orange"/>
+<edge at="0838:se" line="fz-orange"/>
+<edge at="0838:sw" line="fz-green"/>
+<edge at="0638:e" line="fz-purple"/>
+<edge at="0438:e" line="fz-purple"/>
+<edge at="0238:se" line="fz-purple"/>
+<edge at="0238:sw" line="fz-purple"/>
+<edge at="0138:e" line="fz-blue"/>
+<edge at="1339:e" line="fz-red"/>
+<edge at="0639:sw" line="fz-green"/>
+<edge at="0539:e" line="fz-green"/>
+<edge at="0239:sw" line="fz-purple"/>
+<edge at="2240:e" line="pier-line"/>
+<edge at="2240:se" line="pier-line"/>
+<edge at="2240:ne" line="fz-purple"/>
+<edge at="2140:se" line="fz-purple"/>
+<edge at="2040:e" line="fz-red"/>
+<edge at="1740:e" line="fz-blue"/>
+<edge at="1240:sw" line="fz-red"/>
+<edge at="1140:e" line="fz-red"/>
+<edge at="1040:ne" line="fz-red"/>
+<edge at="0340:e" line="fz-green"/>
+<edge at="0240:sw" line="fz-purple"/>
+<edge at="2441:sw" line="pier-line"/>
+<edge at="2341:e" line="pier-line"/>
+<edge at="2341:se" line="pier-line"/>
+<edge at="1941:e" line="fz-purple"/>
+<edge at="1841:e" line="fz-purple"/>
+<edge at="1841:se" line="fz-purple"/>
+<edge at="1841:sw" line="fz-purple"/>
+<edge at="0941:e" line="fz-red"/>
+<edge at="0841:ne" line="fz-red"/>
+<edge at="0241:sw" line="fz-green"/>
+<edge at="0141:e" line="fz-green"/>
+<!-- 408 edges -->
+  <!-- position perimeter rings, in the position colour -->
+<hex id="2103" ring="purple"/>
+<hex id="1003" ring="purple"/>
+<hex id="2104" ring="purple"/>
+<hex id="2004" ring="purple"/>
+<hex id="0904" ring="purple"/>
+<hex id="0905" ring="purple"/>
+<hex id="0505" ring="purple"/>
+<hex id="2406" ring="orange"/>
+<hex id="0906" ring="purple"/>
+<hex id="1807" ring="purple"/>
+<hex id="1107" ring="purple"/>
+<hex id="1708" ring="purple"/>
+<hex id="1509" ring="purple"/>
+<hex id="1409" ring="purple"/>
+<hex id="1510" ring="purple"/>
+<hex id="1711" ring="purple"/>
+<hex id="1311" ring="purple"/>
+<hex id="2312" ring="orange"/>
+<hex id="1213" ring="purple"/>
+<hex id="1214" ring="purple"/>
+<hex id="2515" ring="red"/>
+<hex id="1715" ring="purple"/>
+<hex id="1315" ring="purple"/>
+<hex id="1115" ring="purple"/>
+<hex id="1216" ring="purple"/>
+<hex id="1116" ring="purple"/>
+<hex id="2317" ring="orange"/>
+<hex id="1817" ring="purple"/>
+<hex id="1717" ring="purple"/>
+<hex id="1117" ring="purple"/>
+<hex id="2318" ring="orange"/>
+<hex id="1818" ring="purple"/>
+<hex id="1118" ring="purple"/>
+<hex id="2219" ring="red"/>
+<hex id="1819" ring="purple"/>
+<hex id="1719" ring="purple"/>
+<hex id="1219" ring="purple"/>
+<hex id="1720" ring="purple"/>
+<hex id="1220" ring="purple"/>
+<hex id="1120" ring="purple"/>
+<hex id="2421" ring="red"/>
+<hex id="1721" ring="purple"/>
+<hex id="1521" ring="purple"/>
+<hex id="2522" ring="red"/>
+<hex id="1322" ring="purple"/>
+<hex id="2523" ring="red"/>
+<hex id="1223" ring="purple"/>
+<hex id="0923" ring="purple"/>
+<hex id="2524" ring="red"/>
+<hex id="1624" ring="purple"/>
+<hex id="2525" ring="red"/>
+<hex id="2325" ring="red"/>
+<hex id="1325" ring="purple"/>
+<hex id="1225" ring="purple"/>
+<hex id="1125" ring="purple"/>
+<hex id="0125" ring="purple"/>
+<hex id="2526" ring="red"/>
+<hex id="2026" ring="purple"/>
+<hex id="1226" ring="purple"/>
+<hex id="0126" ring="purple"/>
+<hex id="2527" ring="red"/>
+<hex id="2427" ring="purple"/>
+<hex id="2027" ring="purple"/>
+<hex id="1327" ring="purple"/>
+<hex id="2528" ring="red"/>
+<hex id="2428" ring="purple"/>
+<hex id="2028" ring="purple"/>
+<hex id="1828" ring="purple"/>
+<hex id="1328" ring="purple"/>
+<hex id="2529" ring="red"/>
+<hex id="2429" ring="purple"/>
+<hex id="1529" ring="purple"/>
+<hex id="1429" ring="purple"/>
+<hex id="1329" ring="purple"/>
+<hex id="2530" ring="red"/>
+<hex id="2430" ring="purple"/>
+<hex id="1530" ring="purple"/>
+<hex id="0830" ring="purple"/>
+<hex id="2531" ring="red"/>
+<hex id="2431" ring="red"/>
+<hex id="1731" ring="purple"/>
+<hex id="2232" ring="purple"/>
+<hex id="1032" ring="purple"/>
+<hex id="2233" ring="purple"/>
+<hex id="2035" ring="orange"/>
+<hex id="1635" ring="purple"/>
+<hex id="2137" ring="purple"/>
+<hex id="1837" ring="purple"/>
+<hex id="1737" ring="purple"/>
+<hex id="1437" ring="purple"/>
+<hex id="1838" ring="purple"/>
+<hex id="1738" ring="purple"/>
+<hex id="1638" ring="purple"/>
+<hex id="1538" ring="purple"/>
+<hex id="1438" ring="purple"/>
+<hex id="1338" ring="purple"/>
+<hex id="2039" ring="purple"/>
+<hex id="2240" ring="purple"/>
+<hex id="2341" ring="purple"/>
+<!-- 119 rings -->
+  <!-- position badges at hex centres (the printed ID text is not recovered from the scan; A14 is known) -->
+<hex id="2002"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1102"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="0602"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="0502"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="0202"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="0102"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="0603"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2004"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="0604"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2505"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1705"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2506"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1706"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1606"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2507"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1807"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2508"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2509"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2510"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2511"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2111"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1311"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2512"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2112"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1612"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2513"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2113"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1213"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2514"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2114"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1114"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2515"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2115"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1815"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1715"><glyph symbol="position-badge" color="blue"/></hex>
+<hex id="2516"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2116"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1816"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1416"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1216"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2517"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2117"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1717"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1117"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2518"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1418"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1118"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2519"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2119"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1719"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1020"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1021"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2522"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2322"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1322"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1022"><glyph symbol="position-badge" color="green"/></hex>
+<hex id="2523"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2323"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1923"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1523"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="0923"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2524"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2525"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2325"><glyph symbol="position-badge" color="orange"/></hex>
+<hex id="2526"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2326"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2026"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1326"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="0126"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2527"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2027"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1427"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1327"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2528"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2028"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1328"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2529"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1629"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1429"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2530"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1830"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="0830"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2531"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2532"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2232"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2032"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1032"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="2233"><glyph symbol="position-badge" color="purple"/></hex>
+<hex id="1734"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1634"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1835"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1635"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1436"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="2137"><glyph symbol="position-badge" color="blue"/></hex>
+<hex id="1437"><glyph symbol="position-badge" color="olive"/></hex>
+<hex id="1838"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1738"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="1638"><glyph symbol="position-badge" color="red"/></hex>
+<hex id="2039"><glyph symbol="position-badge" color="olive"/></hex>
+<!-- 110 centres -->
+  <!-- fire dots: one side glyph per (hex, hexside), in the projecting position's colour -->
+<hex id="2202"><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2002"><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="blue"/></hex>
+<hex id="1802"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1602"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1002"><side dir="e" symbol="fire-intense" color="olive"/></hex>
+<hex id="0902"><side dir="e" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0802"><side dir="e" symbol="fire-intense" color="purple"/></hex>
+<hex id="0702"><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="0602"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0402"><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="0102"><side dir="e" symbol="fire-intense" color="purple"/></hex>
+<hex id="2303"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2203"><side dir="se" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2103"><side dir="e" symbol="fire-intense" color="olive"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2003"><side dir="sw" symbol="fire-intense" color="green"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1903"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1803"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/></hex>
+<hex id="1703"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1603"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1503"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1403"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1103"><side dir="se" symbol="fire-intense" color="olive"/></hex>
+<hex id="1003"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0903"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0803"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0703"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0603"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0503"><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0403"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="0203"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2404"><side dir="se" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2304"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2204"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2104"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2004"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1904"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1804"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1704"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/></hex>
+<hex id="1604"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1504"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1404"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1104"><side dir="e" symbol="fire-intense" color="olive"/></hex>
+<hex id="0904"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0804"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0704"><side dir="e" symbol="fire-intense" color="purple"/></hex>
+<hex id="0604"><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="0504"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0204"><side dir="w" symbol="fire-intense" color="blue"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0104"><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2505"><side dir="e" symbol="fire-intense" color="red"/></hex>
+<hex id="2305"><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2205"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2105"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2005"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1905"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1805"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1705"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1605"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1505"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1405"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1305"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0905"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0705"><side dir="se" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0605"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="0505"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0205"><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="0105"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2506"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2406"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2306"><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2206"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2106"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2006"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1906"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1806"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1706"><side dir="e" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1606"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1506"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1406"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1306"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0906"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0706"><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0606"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0506"><side dir="e" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0106"><side dir="se" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2507"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2307"><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2107"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2007"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1907"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1807"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1707"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1607"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1507"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1407"><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1307"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1207"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1107"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1007"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0907"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0807"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0607"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0407"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0207"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2508"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2308"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="2108"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2008"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1908"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1808"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1708"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1608"><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1508"><side dir="e" symbol="fire-intense" color="purple"/></hex>
+<hex id="1408"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1308"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1208"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1108"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1008"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0908"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0808"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0708"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0608"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0508"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0408"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0308"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="0208"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0108"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2509"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2409"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2309"><side dir="se" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2109"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2009"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1909"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1809"><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="1709"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1609"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1509"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1409"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1309"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1209"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1109"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1009"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0909"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0809"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0709"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0609"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0509"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0409"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0309"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0209"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0109"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2510"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2410"><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2310"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2210"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2110"><side dir="e" symbol="fire-intense" color="red"/></hex>
+<hex id="2010"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1910"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1810"><side dir="se" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1710"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1610"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1510"><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1410"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1310"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1210"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1110"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1010"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0910"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0810"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0710"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0610"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0510"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0410"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0310"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0210"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0110"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2511"><side dir="e" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2411"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="2311"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2211"><side dir="se" symbol="fire-intense" color="red"/></hex>
+<hex id="2111"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2011"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1911"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1811"><side dir="e" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1711"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1611"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1511"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1411"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1311"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1211"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1111"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1011"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0911"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0811"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0711"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0611"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0511"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0411"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0311"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0211"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0111"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2512"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2312"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2212"><side dir="se" symbol="fire-intense" color="red"/></hex>
+<hex id="2112"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2012"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1912"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1712"><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1612"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1512"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1412"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1312"><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="1212"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1112"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1012"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0912"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0812"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0712"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0612"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0512"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0412"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0312"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0212"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0112"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2513"><side dir="e" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2313"><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2213"><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="2113"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2013"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1913"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1813"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1713"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1613"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1513"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1413"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1313"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1213"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1113"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1013"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="0913"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0813"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0713"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0613"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0513"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0413"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0313"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0213"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0113"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2514"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2414"><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2214"><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2114"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2014"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1914"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1814"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1714"><side dir="e" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1614"><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1514"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1414"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1314"><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="1214"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1114"><side dir="se" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1014"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0914"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0814"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0714"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0614"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0514"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0414"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0314"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0214"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0114"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2515"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2415"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="2115"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2015"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1915"><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1815"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1715"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1615"><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1515"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1415"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1315"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1215"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1115"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1015"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0915"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0815"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0715"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0615"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0515"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0415"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0315"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0215"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0115"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2516"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2316"><side dir="e" symbol="fire-intense" color="red"/></hex>
+<hex id="2216"><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2116"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2016"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1916"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1816"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1716"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1616"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1516"><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1416"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1316"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1216"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1116"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1016"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="0916"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0816"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0716"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0616"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0516"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0416"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0316"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0216"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0116"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2517"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2317"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2217"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2117"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2017"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1917"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1817"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="green"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1717"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1617"><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1517"><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1417"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1317"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/></hex>
+<hex id="1217"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1117"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1017"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0917"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0817"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0717"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0617"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0517"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0417"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0317"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0217"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0117"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2518"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2318"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="orange"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2218"><side dir="e" symbol="fire-intense" color="red"/></hex>
+<hex id="2118"><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2018"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1918"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1818"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1718"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="1618"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1518"><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1418"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1318"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1218"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1118"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1018"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0918"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0818"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0718"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0618"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0518"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0418"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0318"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0218"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0118"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2519"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2219"><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2119"><side dir="e" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2019"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1919"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1819"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1719"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1619"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1519"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1419"><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1319"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1219"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1019"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0919"><side dir="e" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0819"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0719"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0619"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0519"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0319"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0219"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0119"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2520"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2420"><side dir="sw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2320"><side dir="e" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2120"><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2020"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1920"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1820"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1720"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1620"><side dir="se" symbol="fire-intense" color="blue"/></hex>
+<hex id="1520"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1420"><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1320"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1220"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1120"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1020"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0920"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0820"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0720"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0620"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0520"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0420"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0320"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="0220"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="0120"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2521"><side dir="se" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2421"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2321"><side dir="e" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2021"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1921"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1821"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1721"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1621"><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1521"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1421"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="blue"/></hex>
+<hex id="1321"><side dir="e" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1221"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1121"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1021"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0921"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0821"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0721"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0621"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0521"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0421"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0321"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0221"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0121"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2522"><side dir="se" symbol="fire-intense" color="red"/></hex>
+<hex id="2422"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2222"><side dir="e" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2122"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2022"><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1922"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1822"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1722"><side dir="se" symbol="fire-intense" color="green"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1622"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1522"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1422"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1322"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1222"><side dir="e" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1122"><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1022"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="0922"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0822"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0722"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0622"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0522"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0422"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0322"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0222"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0122"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2523"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2423"><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2323"><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2223"><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="2123"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2023"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1923"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1823"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1723"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1623"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/></hex>
+<hex id="1523"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1423"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1323"><side dir="e" symbol="fire-intense" color="olive"/><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="1223"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1123"><side dir="ne" symbol="fire-intense" color="blue"/></hex>
+<hex id="1023"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0923"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0823"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0723"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0623"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0523"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0423"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0323"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0223"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0123"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2524"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2424"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2324"><side dir="e" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2224"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="2124"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2024"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1924"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1824"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1724"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/></hex>
+<hex id="1624"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1524"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1424"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1324"><side dir="e" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="green"/></hex>
+<hex id="1224"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1124"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1024"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0924"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0824"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0724"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0624"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0524"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0424"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0324"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0224"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0124"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2525"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2425"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2325"><side dir="e" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2125"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2025"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1925"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1825"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1725"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1625"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1525"><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1425"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1325"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1225"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1125"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1025"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0925"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0825"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0725"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0625"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0525"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0425"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0325"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0225"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0125"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2526"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2426"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2326"><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2226"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2126"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2026"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1926"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1826"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1726"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1626"><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1526"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1426"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1326"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1226"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1126"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1026"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0926"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0826"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0726"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0626"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0526"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0426"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0326"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0226"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0126"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2527"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="orange"/></hex>
+<hex id="2427"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2327"><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="2227"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2127"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2027"><side dir="e" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1927"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1827"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1727"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1627"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1527"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1427"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1327"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1227"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1127"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1027"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0927"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0827"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0727"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0627"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0527"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0427"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0327"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0227"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0127"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2528"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2428"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2328"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2228"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2128"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2028"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1928"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1828"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1728"><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1628"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="blue"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1528"><side dir="e" symbol="fire-intense" color="blue"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1428"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="blue"/></hex>
+<hex id="1328"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="blue"/></hex>
+<hex id="1228"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1128"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1028"><side dir="e" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0928"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0828"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0728"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0628"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0528"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0428"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0328"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0228"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0128"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2529"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2429"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2329"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2229"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2129"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2029"><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="red"/></hex>
+<hex id="1929"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="1829"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1729"><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1629"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1529"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1429"><side dir="e" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1329"><side dir="e" symbol="fire-intense" color="olive"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1229"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1129"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1029"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0929"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0829"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0729"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0629"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0529"><side dir="e" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0429"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0329"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0229"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0129"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2530"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="blue"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2430"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2330"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2230"><side dir="e" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2030"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1930"><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1830"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1730"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1630"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1530"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1430"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1330"><side dir="e" symbol="fire-intense" color="red"/></hex>
+<hex id="1130"><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1030"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0930"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0830"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0730"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0630"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0530"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0430"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0330"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0230"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0130"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2531"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="2431"><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/></hex>
+<hex id="2331"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2231"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2131"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2031"><side dir="e" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1931"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1831"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1731"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1631"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1531"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1431"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1331"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="green"/></hex>
+<hex id="1231"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1131"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1031"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0931"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0831"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0731"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0631"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0531"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0431"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0331"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0231"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0131"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2532"><side dir="e" symbol="fire-intense" color="olive"/></hex>
+<hex id="2432"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2332"><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2232"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2132"><side dir="se" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2032"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1932"><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1832"><side dir="se" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1732"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1632"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1532"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1432"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1332"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1232"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1132"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1032"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0932"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0832"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0732"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0632"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0532"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0432"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0332"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0232"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0132"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2533"><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="2433"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2333"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2233"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2133"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2033"><side dir="e" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1933"><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1833"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1733"><side dir="e" symbol="fire-intense" color="green"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1633"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1533"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1433"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1333"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1233"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1133"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1033"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0933"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0833"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0733"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0633"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0533"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0433"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0333"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0233"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0133"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2434"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2334"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2234"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2034"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1934"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1834"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1734"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1634"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1534"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="1434"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1334"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1234"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1134"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1034"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0934"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0834"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0734"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0634"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0534"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0434"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0334"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0234"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0134"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2435"><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2235"><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2135"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="red"/></hex>
+<hex id="2035"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1935"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1835"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1735"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="1635"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1535"><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1435"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/></hex>
+<hex id="1335"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1235"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1135"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1035"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0935"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0835"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0735"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0635"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0535"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0435"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0335"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0235"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0135"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2436"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2336"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2236"><side dir="se" symbol="fire-intense" color="blue"/><side dir="sw" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="2136"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="red"/></hex>
+<hex id="2036"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1936"><side dir="sw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1836"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1736"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="orange"/></hex>
+<hex id="1636"><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1536"><side dir="se" symbol="fire-intense" color="orange"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1436"><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1336"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1236"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1136"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1036"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0936"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0836"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0736"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0636"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0536"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0436"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0336"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0236"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0136"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2437"><side dir="se" symbol="fire-intense" color="green"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2337"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="2237"><side dir="sw" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="2137"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="orange"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="2037"><side dir="se" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="1937"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1837"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1737"><side dir="e" symbol="fire-intense" color="red"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1637"><side dir="se" symbol="fire-intense" color="blue"/></hex>
+<hex id="1537"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1437"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1337"><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1237"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1137"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1037"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0937"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0837"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0737"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0637"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0537"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0437"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0337"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0237"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0137"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2438"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2338"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="2238"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2138"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2038"><side dir="e" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1938"><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1838"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="olive"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1738"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="red"/></hex>
+<hex id="1638"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="red"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="red"/><side dir="nw" symbol="fire-intense" color="red"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1538"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1438"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1338"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="olive"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1238"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1138"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1038"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="0938"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0838"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="0738"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0638"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="0538"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0438"><side dir="e" symbol="fire-intense" color="orange"/><side dir="se" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="orange"/></hex>
+<hex id="0338"><side dir="e" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0238"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0138"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2439"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2339"><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2239"><side dir="e" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2139"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2039"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="orange"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="1939"><side dir="sw" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="green"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="1839"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1539"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1439"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1339"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1239"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1139"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1039"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0939"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0839"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0739"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0639"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0539"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0439"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0339"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0239"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0139"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2440"><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2340"><side dir="e" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2240"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2140"><side dir="e" symbol="fire-intense" color="purple"/><side dir="se" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2040"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="olive"/></hex>
+<hex id="1940"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="olive"/></hex>
+<hex id="1840"><side dir="se" symbol="fire-intense" color="blue"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1740"><side dir="se" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1640"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1540"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1440"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1340"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1240"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1140"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1040"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0940"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0840"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="0740"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0640"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0540"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0440"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0340"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="0240"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="0140"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2541"><side dir="se" symbol="fire-intense" color="purple"/></hex>
+<hex id="2441"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2341"><side dir="e" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="nw" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="2241"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2141"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2041"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1941"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1841"><side dir="e" symbol="fire-intense" color="purple"/><side dir="sw" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1741"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1641"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1541"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1441"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1341"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1241"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1141"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1041"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0941"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0841"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="olive"/></hex>
+<hex id="0741"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0641"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0541"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0441"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0341"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0241"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0141"><side dir="e" symbol="fire-intense" color="green"/><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="green"/></hex>
+<hex id="2542"><side dir="nw" symbol="fire-intense" color="purple"/></hex>
+<hex id="2442"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2342"><side dir="se" symbol="fire-intense" color="olive"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2242"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2142"><side dir="se" symbol="fire-intense" color="red"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="2042"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1942"><side dir="se" symbol="fire-intense" color="blue"/><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1842"><side dir="sw" symbol="fire-intense" color="purple"/><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1742"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1642"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1542"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1442"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1342"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1242"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1142"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="1042"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0942"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0842"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0742"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<hex id="0642"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0542"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0442"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0342"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0242"><side dir="w" symbol="fire-intense" color="purple"/></hex>
+<hex id="0142"><side dir="w" symbol="fire-intense" color="purple"/><side dir="ne" symbol="fire-intense" color="purple"/></hex>
+<!-- 945 sides -->
+  <!-- beach approach labels along the south edge -->
+  <label text="R3C" x="273" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R3B" x="363" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R3D" x="458" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R3A" x="547" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R2C" x="748" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R2D" x="837" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R2B" x="926" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R2A" x="1005" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R1C" x="1127" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R1B" x="1217" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="R1A" x="1306" y="1122" size="11" weight="bold" color="teal" halo="true"/>
+  <label text="The Pier" x="954" y="982" size="10" italic="true" color="white" angle="65" halo="true"/>
+  <label text="Betio" x="781" y="525" size="20" italic="true" color="ink" halo="true"/>
+  <!-- furniture: sequence-of-play cards across the top, turn track, holding boxes, legends -->
+  <panel id="card-0" x="11" y="6" w="151" h="207" fill="panel" stroke="cardblue" title="CARD DECK"/>
+  <panel id="card-1" x="167" y="6" w="73" h="207" fill="panel" stroke="cardblue" title="US Amphibious Operations Phase"/>
+  <panel id="card-2" x="246" y="6" w="140" h="207" fill="panel" stroke="cardblue" title="LVT LANDING CHECK CARDS"/>
+  <panel id="card-3" x="391" y="6" w="151" h="207" fill="panel" stroke="cardred" title="First Event Phase -- EVENT CARD"/>
+  <panel id="card-4" x="553" y="6" w="207" h="207" fill="panel" stroke="cardred" title="Japanese Fire Phase -- JAPANESE FIRE CARD"/>
+  <panel id="card-5" x="770" y="6" w="145" h="207" fill="panel" stroke="cardred" title="Second Event Phase -- EVENT CARD"/>
+  <panel id="card-6" x="921" y="6" w="78" h="207" fill="panel" stroke="cardblue" title="US Engineer and HQ Phase"/>
+  <panel id="card-7" x="1005" y="6" w="84" h="207" fill="panel" stroke="cardblue" title="US Action Phase"/>
+  <panel id="card-8" x="1094" y="6" w="117" h="207" fill="panel" stroke="cardblue" title="ADDITIONAL CARD DRAWS"/>
+  <panel id="card-9" x="1217" y="6" w="61" h="207" fill="panel" stroke="cardblue" title="End of Turn"/>
+  <panel id="turn-track" x="1289" y="6" w="491" h="207" fill="panel" stroke="ink" title="TURN TRACK">
+    <track x="6" y="24" cell-w="48" cell-h="58" wrap="10" fill="white"
+           cells="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30"/>
+  </panel>
+  <panel id="jp-eliminated" x="128" y="218" w="190" h="73" fill="panel" stroke="cardred" title="Japanese Eliminated Units"/>
+  <panel id="depth-coastal" x="324" y="218" w="151" h="73" fill="panel" stroke="cardred" title="Japanese Coastal Depth Markers"/>
+  <panel id="depth-inland" x="480" y="218" w="156" h="73" fill="panel" stroke="cardred" title="Japanese Inland Depth Markers"/>
+  <panel id="jp-reserve" x="642" y="218" w="151" h="73" fill="panel" stroke="cardred" title="Japanese Reserve Units"/>
+  <panel id="cp-range" x="860" y="218" w="424" h="45" fill="cardred" stroke="cardred">
+    <text x="4" y="14" size="8" weight="bold" color="white">US COMMAND POST RANGE</text>
+    <track x="150" y="4" cell-w="26" cell-h="36" cells="1 2 2 3 3 3 4 4 4 5 5 5" fill="panel"/>
+  </panel>
+  <panel id="title" x="798" y="268" w="335" h="61" fill="paper" stroke="paper">
+    <text x="0" y="34" size="34" weight="bold" color="cardred">D-DAY AT TARAWA</text>
+    <text x="0" y="48" size="8">Game design: John Butterfield   Map graphics: Joe Youst   Map redesign: Delphine Echassoux (2014)</text>
+  </panel>
+  <panel id="allowed-actions" x="368" y="318" w="324" h="61" fill="panel" stroke="ink" title="JAPANESE ALLOWED ACTIONS">
+    <track x="6" y="20" cell-w="50" cell-h="30" cells="Fire Turn_3 Turn_5 Turn_7 Turn_9 [I]_Turn_11" fill="white"/>
+  </panel>
+  <panel id="shibasaki" x="726" y="318" w="67" h="61" fill="panel" stroke="ink" title="Adm. Shibasaki"/>
+  <panel id="infantry-losses" x="11" y="664" w="95" h="140" fill="green" stroke="ink" title="US 2nd Marine Division Infantry Losses"/>
+  <panel id="lvts" x="112" y="664" w="112" h="140" fill="green" stroke="ink" title="Available LVTs">
+    <box label="2 steps" x="6" y="30" w="46" h="90" fill="panel"/>
+    <box label="1 step" x="58" y="30" w="46" h="90" fill="panel"/>
+  </panel>
+  <panel id="terrain-table" x="11" y="815" w="212" h="195" fill="panel" stroke="ink">
+    <table x="4" y="4" cell-w="50" cell-h="22" size="5">
+      <row><cell>Terrain</cell><cell>US Inf/Eng/HQ</cell><cell>Other US</cell><cell>Japanese Defense</cell></row>
+      <row><cell>Beach, Clear, Airstrip</cell><cell>Yes</cell><cell>Yes</cell><cell>--</cell></row>
+      <row><cell>Palm Trees</cell><cell>Yes</cell><cell>Yes</cell><cell>Halve ranged fire through</cell></row>
+      <row><cell>Building</cell><cell>Yes</cell><cell>Yes</cell><cell>Unit doubled</cell></row>
+      <row><cell>Fortified Building</cell><cell>Yes</cell><cell>Yes</cell><cell>Unit and depth doubled</cell></row>
+      <row><cell>Rough / Crater</cell><cell>Yes</cell><cell>Yes, must stop</cell><cell>Unit doubled</cell></row>
+      <row><cell>Seawall Hexside</cell><cell>Yes</cell><cell>Yes</cell><cell>Unit doubled</cell></row>
+    </table>
+  </panel>
+  <panel id="water-legend" x="11" y="1044" w="212" h="100" fill="panel" stroke="ink">
+    <text x="6" y="12" size="7" weight="bold">Water Features</text>
+    <text x="6" y="24" size="6">Water / Coral Reef Hexside / Pier Head / Pier Hexside (may not cross)</text>
+    <text x="6" y="36" size="6">Water Fire Zone Boundary Line / Potential LVT Wreck (5.12) / USMC Arrival Box</text>
+    <text x="110" y="12" size="7" weight="bold">Japanese Symbols</text>
+    <text x="110" y="24" size="6">Position / Intense Fire Dot / Steady Fire Dots</text>
+    <text x="110" y="36" size="6">Fire Position Connector</text>
+  </panel>
+</sheet>

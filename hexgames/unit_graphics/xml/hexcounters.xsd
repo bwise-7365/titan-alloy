@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+hexcounters 1.0 -- a small language for wargame counters and counter sheets.
+
+A counter is a record with two faces.  A face is a flat ground of one colour with
+content placed in named slots on a unit square:
+
+    +---------------------------------+
+    | UL          TC             UR   |
+    | ML        CENTRE           MR   |     LCOL: a column of step pips down the left
+    | LL        BOTTOM           LR   |     BAND: a full-width strip behind BOTTOM
+    +---------------------------------+
+
+CENTRE holds a symbol box (a plain rectangle with a branch icon and modifiers), a
+silhouette, an emblem, or a date tile.  BOTTOM holds the value line, the largest text.
+Affiliation is never carried by frame shape; it is carried by the style (ground, text,
+box stroke and box fill colours), and a quality flag (elite, Guards, colonial) is a
+box-fill override.
+
+The back of a counter is one of: its own face; a face derived from the front by rule
+(reduced, concealed, same); or a reference to another counter (the back is a different
+game object).  A sheet places counters on a grid; the back sheet is the same grid
+mirrored so that duplex printing puts each back behind its own front.
+
+Conventions
+  * Every colour is a palette id; ids are xs:ID and must not collide across
+    palette, styles, counters and sheets.
+  * Geometry is in face units (a 100 x 100 square); the renderer scales to the
+    physical size.  The tile corner radius is one uniform value per set.
+  * The armour icon is a stadium (a rectangle with fully rounded ends), never a
+    rectangle; the symbol box has square corners.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ================= simple types ================= -->
+
+  <xs:simpleType name="RGB">
+    <xs:restriction base="xs:string"><xs:pattern value="#[0-9a-fA-F]{6}"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Slot">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UL"/><xs:enumeration value="TC"/><xs:enumeration value="UR"/>
+      <xs:enumeration value="ML"/><xs:enumeration value="MR"/>
+      <xs:enumeration value="LL"/><xs:enumeration value="BOTTOM"/><xs:enumeration value="LR"/>
+      <xs:enumeration value="BAND"/><xs:enumeration value="LCOL"/><xs:enumeration value="CENTRE"/>
+      <xs:enumeration value="free"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Icon">
+    <xs:annotation><xs:documentation>Main icons drawn inside the symbol box.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="infantry"/>
+      <xs:enumeration value="heavy-infantry"/>
+      <xs:enumeration value="machine-gun"/>
+      <xs:enumeration value="engineer"/>
+      <xs:enumeration value="artillery"/>
+      <xs:enumeration value="anti-tank"/>
+      <xs:enumeration value="armour"/>
+      <xs:enumeration value="mechanized"/>
+      <xs:enumeration value="motorized"/>
+      <xs:enumeration value="cavalry"/>
+      <xs:enumeration value="cav-mech"/>
+      <xs:enumeration value="garrison"/>
+      <xs:enumeration value="fortress"/>
+      <xs:enumeration value="port-a-fort"/>
+      <xs:enumeration value="hq"/>
+      <xs:enumeration value="hq-checker"/>
+      <xs:enumeration value="worker"/>
+      <xs:enumeration value="partisan"/>
+      <xs:enumeration value="text"/>
+      <xs:enumeration value="none"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Modifier">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="mountain"/>
+      <xs:enumeration value="airborne"/>
+      <xs:enumeration value="marine"/>
+      <xs:enumeration value="reserve"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Modifiers"><xs:list itemType="Modifier"/></xs:simpleType>
+
+  <xs:simpleType name="Silhouette">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="tank"/><xs:enumeration value="lvt"/><xs:enumeration value="truck"/>
+      <xs:enumeration value="aircraft"/><xs:enumeration value="bomber"/><xs:enumeration value="interceptor"/>
+      <xs:enumeration value="ship"/><xs:enumeration value="carrier"/><xs:enumeration value="submarine"/>
+      <xs:enumeration value="locomotive"/><xs:enumeration value="rifle"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Emblem">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="star"/><xs:enumeration value="cross"/><xs:enumeration value="balkenkreuz"/>
+      <xs:enumeration value="roundel"/><xs:enumeration value="flag"/><xs:enumeration value="hexagon"/>
+      <xs:enumeration value="parachute"/><xs:enumeration value="anchor"/><xs:enumeration value="pennant"/>
+      <xs:enumeration value="cloud"/><xs:enumeration value="skull"/><xs:enumeration value="none"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Echelon">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="company"/><xs:enumeration value="battalion"/><xs:enumeration value="regiment"/>
+      <xs:enumeration value="brigade"/><xs:enumeration value="division"/><xs:enumeration value="corps"/>
+      <xs:enumeration value="army"/><xs:enumeration value="army-group"/><xs:enumeration value="high-command"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="GlyphKind">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="circle"/><xs:enumeration value="diamond"/><xs:enumeration value="triangle"/>
+      <xs:enumeration value="disc"/><xs:enumeration value="range"/><xs:enumeration value="drm"/>
+      <xs:enumeration value="arrow-up"/><xs:enumeration value="arrow-down"/>
+      <xs:enumeration value="earmark"/><xs:enumeration value="hexagon"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TextSize">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="small"/><xs:enumeration value="medium"/><xs:enumeration value="large"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ================= definitions ================= -->
+
+  <xs:complexType name="Color">
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="value" type="RGB" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Style">
+    <xs:annotation><xs:documentation>A palette entry keyed by nationality, formation, side or country: ground, text, symbol-box stroke and fill.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="ground" type="xs:IDREF" use="required"/>
+    <xs:attribute name="text" type="xs:IDREF" use="required"/>
+    <xs:attribute name="box-stroke" type="xs:IDREF" use="required"/>
+    <xs:attribute name="box-fill" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <!-- ================= face content ================= -->
+
+  <xs:complexType name="Symbol">
+    <xs:annotation><xs:documentation>The symbol box. fill and stroke override the style (quality flags). partial fills one side of the box (heavy infantry). text is used by icon="text" and may caption others.</xs:documentation></xs:annotation>
+    <xs:attribute name="icon" type="Icon" use="required"/>
+    <xs:attribute name="modifiers" type="Modifiers"/>
+    <xs:attribute name="fill" type="xs:IDREF"/>
+    <xs:attribute name="stroke" type="xs:IDREF"/>
+    <xs:attribute name="partial" default="none">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="none"/><xs:enumeration value="left"/><xs:enumeration value="right"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="text" type="xs:string"/>
+    <xs:attribute name="scale" type="xs:decimal" default="1"/>
+  </xs:complexType>
+
+  <xs:complexType name="SilhouetteEl">
+    <xs:annotation><xs:documentation>A picture replacing the symbol box. href names a supplied SVG file; without it the renderer draws its own simple shape.</xs:documentation></xs:annotation>
+    <xs:attribute name="kind" type="Silhouette" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="href" type="xs:anyURI"/>
+    <xs:attribute name="scale" type="xs:decimal" default="1"/>
+  </xs:complexType>
+
+  <xs:complexType name="EmblemEl">
+    <xs:attribute name="kind" type="Emblem" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="color2" type="xs:IDREF"/>
+    <xs:attribute name="slot" type="Slot" default="CENTRE"/>
+    <xs:attribute name="scale" type="xs:decimal" default="1"/>
+  </xs:complexType>
+
+  <xs:complexType name="EchelonEl">
+    <xs:attribute name="level" type="Echelon" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="Value">
+    <xs:annotation><xs:documentation>The value line: tokens separated by hyphens, e.g. 8-7, 3-3-1, 4-U, Hero RD.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="color" type="xs:IDREF"/>
+        <xs:attribute name="size" type="TextSize" default="large"/>
+        <xs:attribute name="anchor" default="middle">
+          <xs:simpleType><xs:restriction base="xs:string">
+            <xs:enumeration value="start"/><xs:enumeration value="middle"/><xs:enumeration value="end"/>
+          </xs:restriction></xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Text">
+    <xs:annotation><xs:documentation>Text at a slot, or at x,y for slot="free". rotate is degrees clockwise; ML and MR are conventionally rotated -90 / 90. Several lines are separated by "|".</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="slot" type="Slot" use="required"/>
+        <xs:attribute name="x" type="xs:decimal"/>
+        <xs:attribute name="y" type="xs:decimal"/>
+        <xs:attribute name="rotate" type="xs:decimal" default="0"/>
+        <xs:attribute name="size" type="TextSize" default="small"/>
+        <xs:attribute name="color" type="xs:IDREF"/>
+        <xs:attribute name="weight" default="normal">
+          <xs:simpleType><xs:restriction base="xs:string">
+            <xs:enumeration value="normal"/><xs:enumeration value="bold"/>
+          </xs:restriction></xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="italic" type="xs:boolean" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Steps">
+    <xs:annotation><xs:documentation>Step marks. The mark's shape carries meaning of its own (dot vs square); slot LCOL is a column down the left, UR a row in the corner.</xs:documentation></xs:annotation>
+    <xs:attribute name="count" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="max" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="mark" default="dot">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="dot"/><xs:enumeration value="square"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="slot" type="Slot" default="LCOL"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="Glyph">
+    <xs:annotation><xs:documentation>Small game-specific marks: target shapes, a position disc, a range circle, a DRM square with a signed number, up/down arrows, an earmark, a hexagon outline.</xs:documentation></xs:annotation>
+    <xs:attribute name="kind" type="GlyphKind" use="required"/>
+    <xs:attribute name="slot" type="Slot" default="LL"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="text" type="xs:string"/>
+    <xs:attribute name="x" type="xs:decimal"/>
+    <xs:attribute name="y" type="xs:decimal"/>
+  </xs:complexType>
+
+  <xs:complexType name="Band">
+    <xs:annotation><xs:documentation>A full-width strip across the bottom (delay stripe, caption band, type label). The value line sits on top of it.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="color" type="xs:IDREF" use="required"/>
+        <xs:attribute name="text-color" type="xs:IDREF"/>
+        <xs:attribute name="height" type="xs:decimal" default="16"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Tile">
+    <xs:annotation><xs:documentation>A rounded tile in the centre carrying lines of text (TRC back faces: the fill encodes the year). Lines are separated by "|".</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="fill" type="xs:IDREF" use="required"/>
+        <xs:attribute name="color" type="xs:IDREF"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Face">
+    <xs:annotation><xs:documentation>One printed face. style gives the colours; ground, text and split override it. split paints the upper-right triangle a second colour.</xs:documentation></xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="symbol" type="Symbol"/>
+      <xs:element name="silhouette" type="SilhouetteEl"/>
+      <xs:element name="emblem" type="EmblemEl"/>
+      <xs:element name="echelon" type="EchelonEl"/>
+      <xs:element name="value" type="Value"/>
+      <xs:element name="text" type="Text"/>
+      <xs:element name="steps" type="Steps"/>
+      <xs:element name="glyph" type="Glyph"/>
+      <xs:element name="band" type="Band"/>
+      <xs:element name="tile" type="Tile"/>
+    </xs:choice>
+    <xs:attribute name="style" type="xs:IDREF">
+      <xs:annotation><xs:documentation>Required on a front; a back without one inherits the front's style.</xs:documentation></xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="ground" type="xs:IDREF"/>
+    <xs:attribute name="text" type="xs:IDREF"/>
+    <xs:attribute name="split" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <xs:complexType name="Back">
+    <xs:annotation><xs:documentation>Either a full face, or derived from the front (reduced: fewer steps and a new value line; concealed: everything but the symbol suppressed; same: identical), or ref to another counter whose front is printed here.</xs:documentation></xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Face">
+        <xs:attribute name="derived">
+          <xs:simpleType><xs:restriction base="xs:string">
+            <xs:enumeration value="reduced"/><xs:enumeration value="concealed"/><xs:enumeration value="same"/>
+          </xs:restriction></xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ref" type="xs:IDREF"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Counter">
+    <xs:sequence>
+      <xs:element name="front" type="Face"/>
+      <xs:element name="back" type="Back" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="family" use="required">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="unit"/><xs:enumeration value="support"/><xs:enumeration value="leader"/>
+        <xs:enumeration value="marker"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="count" type="xs:positiveInteger" default="1">
+      <xs:annotation><xs:documentation>How many identical copies exist; a sheet may still place it explicitly.</xs:documentation></xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <!-- ================= sheets ================= -->
+
+  <xs:complexType name="Place">
+    <xs:annotation><xs:documentation>Fills the grid row by row. counter names a record; blank leaves cells empty; repeat multiplies.</xs:documentation></xs:annotation>
+    <xs:attribute name="counter" type="xs:IDREF"/>
+    <xs:attribute name="blank" type="xs:boolean" default="false"/>
+    <xs:attribute name="repeat" type="xs:positiveInteger" default="1"/>
+  </xs:complexType>
+
+  <xs:complexType name="Sheet">
+    <xs:annotation><xs:documentation>A grid of cols x rows counters. mirror says how the back sheet is flipped relative to the front: horizontal (left-right, for a sheet turned about its vertical edge) or vertical. Crop marks are drawn at every grid line in the margins on both faces at identical positions.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="place" type="Place" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="title" type="xs:string"/>
+    <xs:attribute name="cols" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="rows" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="gutter" type="xs:decimal" default="0"/>
+    <xs:attribute name="margin" type="xs:decimal" default="10"/>
+    <xs:attribute name="mirror" default="horizontal">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="horizontal"/><xs:enumeration value="vertical"/><xs:enumeration value="none"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="crop-marks" type="xs:boolean" default="true"/>
+    <xs:attribute name="background" type="xs:IDREF"/>
+  </xs:complexType>
+
+  <!-- ================= root ================= -->
+
+  <xs:element name="counters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="palette">
+          <xs:complexType><xs:sequence>
+            <xs:element name="color" type="Color" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="styles">
+          <xs:complexType><xs:sequence>
+            <xs:element name="style" type="Style" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="counter" type="Counter" maxOccurs="unbounded"/>
+        <xs:element name="sheet" type="Sheet" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+      <xs:attribute name="title" type="xs:string" use="required"/>
+      <xs:attribute name="source" type="xs:string"/>
+      <xs:attribute name="size" type="xs:decimal" default="12.7">
+        <xs:annotation><xs:documentation>Counter edge in millimetres (12.7 = half inch, 15.875 = 5/8 inch).</xs:documentation></xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="corner" type="xs:decimal" default="0">
+        <xs:annotation><xs:documentation>Tile corner radius as a fraction of the edge, one value for the whole set.</xs:documentation></xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="font" type="xs:string" default="Arial Narrow, Liberation Sans Narrow, Arial, sans-serif"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

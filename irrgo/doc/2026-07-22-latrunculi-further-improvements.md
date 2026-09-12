@@ -109,14 +109,35 @@ Still not checked, and deliberately: whether the completing move would self-capt
 would repeat a position. Both need game state Eval does not hold. If the term ever needs
 to be exact, the check belongs in Game, not here.
 
+### 2.4 Centrality does not transfer across board sizes — PENDING (added 2026-08-27)
+
+Found by the 2026-08 weight-tuning campaign (bench README, "weight-tuning
+campaign" entry): `centre` x4 was the campaign's only confirmed improvement on the
+8x10 board (55% over 620 games, and 60.5% on 10x12), yet it failed the
+size-robustness gate because the gain is monotone in board size — 47.0% on 6x6/12.
+The mechanism is the term's shape, not the weight: `PositionalTerms::centrality`
+sums a per-square 0..1 value over all of a side's Free discs, so the term's
+magnitude scales with disc count, and the per-square value's useful range compresses
+as the board shrinks (on 6x6 a third of the squares touch the border). One weight
+therefore buys different amounts of centre-pull on different boards.
+
+Fix: normalize the summed centrality (per Free disc, or per perSide) so the term is
+scale-free, recalibrate the weight once to compensate on the reference 8x10, then
+rerun the centre sweep — the 0.2-equivalent value is expected to confirm cleanly
+once it means the same thing on every size. `openNeighbours` has the same disease
+(already documented in Eval.h as style- AND size-scaled) and the same medicine.
+
 ## 3. Search
 
-### 3.1 Placement is searched without ordering
+### 3.1 Placement is searched without ordering — DONE (2026-08-24)
 
-`Latrunculi::Game::moveOrderScore` returns 0 during placement, so alpha-beta gets no
+~~`Latrunculi::Game::moveOrderScore` returns 0 during placement, so alpha-beta gets no
 ordering for the first 40 plies and iterative deepening reaches only two or three ply in a
-second. Ranking placements by their positional delta — the same `Eval` terms the leaf
-already computes — would deepen the opening search substantially for little work.
+second.~~ Placement ordering and placement-phase eval terms landed together
+(`PlacementEval.{h,cpp}`, derived in `doc/2026-08-24-latrunculi-placement-heuristics.md`)
+and were measured before/after: opening depth 3.43 -> 3.60 at 1000 ms on identical
+seeds, captures up, quiet share unchanged pending weight tuning. Full write-up in
+`doc/bench/README.md` (2026-08-24 entry).
 
 ### 3.2 Per-node cost is now the binding constraint  — PARTLY DONE (Stage 8)
 
@@ -148,6 +169,38 @@ the deeper problem is the domain. The Pacific rule makes a rollout a slow, noisy
 re-derivation of the material balance the rollout started from, so even a well-built MCTS
 would be fighting the rules. Expect it to stay weaker than negamax on this game.
 
+### 3.4 Transposition table, aimed at the placement permutation explosion — PENDING
+(added 2026-08-24)
+
+Depth is a losing race in this game: the measured effective branching factor is
+roughly 6-9 (depth 2.71 at 200 ms, 3.20 at 500 ms, 3.60 at 1000 ms — each extra ply
+costs ~7x budget), so an overnight run buys one more ply and a season buys two. The
+lever that attacks the branching factor structurally rather than buying depth with
+wall clock is a transposition table, and placement is where it would bite hardest:
+placing the same k stones in a different order reaches the identical position, so the
+placement tree is riddled with permutation transpositions the searcher currently
+re-expands from scratch.
+
+What already exists: the incremental Zobrist hash (`hash_`, maintained through
+`setCell` for super-ko) gives every search node its position hash for free.
+
+What a TT needs beyond that:
+
+- The stored hash covers the board only, per the super-ko rule. During placement that
+  is nearly sufficient (the board determines both placed counts, and the side to move
+  is the parity of discs on it), but in movement the side to move is NOT derivable
+  from the board and must be folded in — one extra Zobrist key XORed by `current_`,
+  or stored alongside the entry.
+- The table itself lives in the searcher, which is `abs_game` — a shared-library
+  change, to be proposed as such, not snuck in (depth-preferred replacement, bounded
+  size, entry = depth/flag/score/best-move).
+- The best-move-first benefit compounds with ordering: a TT hit's stored move is the
+  "perfect order" alpha-beta's sqrt(b) bound assumes, so this also closes some of the
+  gap between the measured EBF and the theoretical floor.
+
+Not urgent while the weight-tuning campaign is the open question; recorded so the
+next strength push starts here instead of at a bigger time budget.
+
 ## 4. Rules still on the table
 
 None of these are needed unless the games go dull again. In rough order of size:
@@ -165,6 +218,10 @@ None of these are needed unless the games go dull again. In rough order of size:
   to even. Note the convex payoff appears to AMPLIFY the bias where the game cannot be
   decided on the board (step+convex was the worst cell at 42/50), so komi should be
   re-checked against whatever payoff is finally chosen, not tuned once and forgotten.
+  2026-08-27 addendum: it is board-size-dependent as well — in two 100-pair 6x6/12
+  matches at 500 ms the second player won ~73% of games regardless of eval weights
+  (details in the bench README's weight-tuning entry), so 1.5 overshoots badly on
+  small boards and any per-board-size play needs its own komi check.
 - **Immediate removal** — the other half of the Kharebga ruleset, deliberately not taken
   so that the slide could be evaluated alone. Adopting it deletes the Bound state, the
   mandatory remove-then-move, `immobilizationDiscount` and the X-mark rendering, and

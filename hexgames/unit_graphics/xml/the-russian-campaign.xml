@@ -1,0 +1,2586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<counters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexcounters.xsd"
+          id="trc-2020" title="The Russian Campaign, Compass Games 2020 remake" size="12.7" corner="0.06"
+          source="trc_units_sep14_page_1_front.jpg, page_2_back_1200px.jpg; both faces, complete">
+  <palette>
+    <color id="ink" value="#222222"/>
+    <color id="white" value="#ffffff"/>
+    <color id="red" value="#e0272a"/>
+    <color id="yellow" value="#f2d24a"/>
+    <color id="g-ground" value="#a9bda9" name="German"/>
+    <color id="g-box" value="#8a9a78"/>
+    <color id="ss-ground" value="#3a3a3a" name="SS"/>
+    <color id="lw-ground" value="#4a6a8a" name="Luftwaffe"/>
+    <color id="lw-box" value="#bcd0e0"/>
+    <color id="ru-ground" value="#4f7a55" name="Rumanian"/>
+    <color id="fi-ground" value="#e8e8ec" name="Finnish"/>
+    <color id="fi-text" value="#2c3fa0"/>
+    <color id="hu-ground" value="#9a9a9a" name="Hungarian"/>
+    <color id="it-ground" value="#8fd0a0" name="Italian"/>
+    <color id="it-box" value="#d8e060"/>
+    <color id="r-ground" value="#c9a463" name="Russian"/>
+    <color id="r-box" value="#a8874a"/>
+    <color id="w-ground" value="#8b4a1e" name="Workers"/>
+    <color id="m-ground" value="#f2f2f2" name="Markers"/>
+    <color id="y41" value="#ffffff" name="arrives 1941"/>
+    <color id="y42" value="#f7c9a0" name="arrives 1942"/>
+    <color id="y43" value="#bfe0f5" name="arrives 1943"/>
+    <color id="y44" value="#f5c0cf" name="arrives 1944"/>
+  </palette>
+  <styles>
+    <style id="german" ground="g-ground" text="ink" box-stroke="ink" box-fill="g-box"/>
+    <style id="ss" ground="ss-ground" text="white" box-stroke="white"/>
+    <style id="luftwaffe" ground="lw-ground" text="white" box-stroke="ink" box-fill="lw-box"/>
+    <style id="rumanian" ground="ru-ground" text="white" box-stroke="white"/>
+    <style id="finnish" ground="fi-ground" text="fi-text" box-stroke="fi-text"/>
+    <style id="hungarian" ground="hu-ground" text="ink" box-stroke="ink" box-fill="white"/>
+    <style id="italian" ground="it-ground" text="ink" box-stroke="ink" box-fill="it-box"/>
+    <style id="russian" ground="r-ground" text="ink" box-stroke="ink" box-fill="r-box"/>
+    <style id="guards" ground="r-ground" text="ink" box-stroke="white" box-fill="red"/>
+    <style id="worker" ground="w-ground" text="white" box-stroke="white" box-fill="red"/>
+    <style id="marker" ground="m-ground" text="ink" box-stroke="ink"/>
+  </styles>
+  <counter id="g-ge-n-hq" family="unit" name="N german">
+    <front style="german">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="MR" size="medium">N</text>
+      <value>1-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-41-armour" family="unit" name="41 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">41</text>
+      <value>8-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-56-armour" family="unit" name="56 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">56</text>
+      <value>7-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-1-infantry" family="unit" name="1 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-2-infantry" family="unit" name="2 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-10-infantry" family="unit" name="10 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">10</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-26-infantry" family="unit" name="26 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">26</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-28-infantry" family="unit" name="28 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">28</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-38-infantry" family="unit" name="38 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">38</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGN</text>
+    </back>
+  </counter>
+  <counter id="g-ge-c-hq" family="unit" name="C german">
+    <front style="german">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="MR" size="medium">C</text>
+      <value>1-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-24-armour" family="unit" name="24 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">24</text>
+      <value>8-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-39-armour" family="unit" name="39 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">39</text>
+      <value>8-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-46-armour" family="unit" name="46 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">46</text>
+      <value>6-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-47-armour" family="unit" name="47 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">47</text>
+      <value>7-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-57-armour" family="unit" name="57 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">57</text>
+      <value>6-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-5-infantry" family="unit" name="5 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-6-infantry" family="unit" name="6 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-7-infantry" family="unit" name="7 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">7</text>
+      <value>5-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-8-infantry" family="unit" name="8 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">8</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-9-infantry" family="unit" name="9 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">9</text>
+      <value>5-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-12-infantry" family="unit" name="12 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">12</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-13-infantry" family="unit" name="13 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">13</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-20-infantry" family="unit" name="20 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">20</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-42-infantry" family="unit" name="42 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">42</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-43-infantry" family="unit" name="43 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">43</text>
+      <value>5-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-53-infantry" family="unit" name="53 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">53</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-ge-s-hq" family="unit" name="S german">
+    <front style="german">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="MR" size="medium">S</text>
+      <value>1-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-3-armour" family="unit" name="3 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <value>7-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-48-armour" family="unit" name="48 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">48</text>
+      <value>6-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-14-armour" family="unit" name="14 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">14</text>
+      <value>7-7</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-52-mechanized" family="unit" name="52 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">52</text>
+      <value>3-6</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-49-infantry" family="unit" name="49 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">49</text>
+      <value>5-5</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-4-infantry" family="unit" name="4 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <value>5-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-17-infantry" family="unit" name="17 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">17</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-29-infantry" family="unit" name="29 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">29</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-44-infantry" family="unit" name="44 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">44</text>
+      <value>5-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-55-infantry" family="unit" name="55 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">55</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">AGS</text>
+    </back>
+  </counter>
+  <counter id="g-ge-11-infantry" family="unit" name="11 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">11</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ge-30-infantry" family="unit" name="30 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">30</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ge-54-infantry" family="unit" name="54 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">54</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ge-40-armour" family="unit" name="40 german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">40</text>
+      <value>8-7</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-27-infantry" family="unit" name="27 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">27</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-23-infantry" family="unit" name="23 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">23</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-34-infantry" family="unit" name="34 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">34</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-35-infantry" family="unit" name="35 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">35</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-51-infantry" family="unit" name="51 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">51</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-50-mechanized" family="unit" name="50 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">50</text>
+      <value>4-6</value>
+    </front>
+    <back style="german">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-59-infantry" family="unit" name="59 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">59</text>
+      <value>4-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-72-infantry" family="unit" name="72 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">72</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y42">Jul-Aug|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-3-infantry" family="unit" name="3 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <value>2-3</value>
+    </front>
+    <back style="german">
+      <tile fill="y42">Jul-Aug|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-1-cavalry" family="unit" name="1 german">
+    <front style="german">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>4-7</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">Jan-Feb|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-22-infantry" family="unit" name="22 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">22</text>
+      <value>3-5</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">May-Jun|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-11-mechanized" family="unit" name="11 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">11</text>
+      <value>4-6</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">Jul-Aug|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-26-mechanized" family="unit" name="26 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">26</text>
+      <value>4-6</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">Jul-Aug|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-29-mechanized" family="unit" name="29 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">29</text>
+      <value>4-6</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">Nov-Dec|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-43-mechanized" family="unit" name="43 german">
+    <front style="german">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">43</text>
+      <value>5-6</value>
+    </front>
+    <back style="german">
+      <tile fill="y43">Nov-Dec|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-90-infantry" family="unit" name="90 german">
+    <front style="german">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">90</text>
+      <value>3-4</value>
+    </front>
+    <back style="german">
+      <tile fill="y44">May-Jun|1944</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-gd-armour" family="unit" name="GD german">
+    <front style="german">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">GD</text>
+      <value>10-8</value>
+    </front>
+    <back style="german">
+      <tile fill="y44">Nov-Dec|1944</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-15-infantry" family="unit" name="15 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">15</text>
+      <value>2-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-res-infantry" family="unit" name="Res ss">
+    <front style="ss">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">Res</text>
+      <value>2-7</value>
+    </front>
+    <back style="ss">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-1-armour" family="unit" name="1 ss">
+    <front style="ss">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>10-8</value>
+    </front>
+    <back style="ss">
+      <tile fill="y43">May-Jun|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-2-armour" family="unit" name="2 ss">
+    <front style="ss">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <value>9-8</value>
+    </front>
+    <back style="ss">
+      <tile fill="y43">Jan-Feb|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-3-armour" family="unit" name="3 ss">
+    <front style="ss">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <value>7-7</value>
+    </front>
+    <back style="ss">
+      <tile fill="y43">Mar-Apr|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-lu-hg-mechanized" family="unit" name="HG luftwaffe">
+    <front style="luftwaffe">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">HG</text>
+      <value>7-8</value>
+    </front>
+    <back style="luftwaffe">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-lu-stuka-stuka" family="support" name="Stuka luftwaffe">
+    <front style="luftwaffe">
+      <silhouette kind="aircraft"/>
+      <text slot="BOTTOM" size="medium">Stuka</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ge-91-infantry" family="unit" name="91 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">91</text>
+      <value>2-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-97-infantry" family="unit" name="97 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">97</text>
+      <value>2-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-4-armour" family="unit" name="4 ss">
+    <front style="ss">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <value>6-7</value>
+    </front>
+    <back style="ss">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-5-mechanized" family="unit" name="5 ss">
+    <front style="ss">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <value>5-5</value>
+    </front>
+    <back style="ss">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-6-mechanized" family="unit" name="6 ss">
+    <front style="ss">
+      <symbol icon="mechanized"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <value>4-4</value>
+    </front>
+    <back style="ss">
+      <tile fill="y43">Sep-Oct|1943</tile>
+    </back>
+  </counter>
+  <counter id="g-ss-15-cavalry" family="unit" name="15 ss">
+    <front style="ss">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">15</text>
+      <value>4-7</value>
+    </front>
+    <back style="ss">
+      <tile fill="y44">Jul-Aug|1944</tile>
+    </back>
+  </counter>
+  <counter id="g-lu-stuka-stuka-2" family="support" name="Stuka luftwaffe">
+    <front style="luftwaffe">
+      <silhouette kind="aircraft"/>
+      <text slot="BOTTOM" size="medium">Stuka</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-lu-stuka-stuka-3" family="support" name="Stuka luftwaffe">
+    <front style="luftwaffe">
+      <silhouette kind="aircraft"/>
+      <text slot="BOTTOM" size="medium">Stuka</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ge-21-infantry" family="unit" name="21 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">21</text>
+      <value>4-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ge-36-infantry" family="unit" name="36 german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">36</text>
+      <value>3-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ru-1-infantry" family="unit" name="1 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>3-5</value>
+    </front>
+    <back style="rumanian">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ru-2-infantry" family="unit" name="2 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>4-6</value>
+    </front>
+    <back style="rumanian">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ru-4-infantry" family="unit" name="4 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>3-4</value>
+    </front>
+    <back style="rumanian">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ru-cv-cavalry" family="unit" name="Cv rumanian">
+    <front style="rumanian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">Cv</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-7</value>
+    </front>
+    <back style="rumanian">
+      <text slot="CENTRE" size="medium">Rumania</text>
+    </back>
+  </counter>
+  <counter id="g-ru-5-infantry" family="unit" name="5 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-4</value>
+    </front>
+    <back style="rumanian">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-fi-2-infantry" family="unit" name="2 finnish">
+    <front style="finnish">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <text slot="ML" size="small" weight="bold">F</text>
+      <value>3-4</value>
+    </front>
+    <back style="finnish">
+      <text slot="CENTRE" size="medium">Finland</text>
+    </back>
+  </counter>
+  <counter id="g-fi-4-infantry" family="unit" name="4 finnish">
+    <front style="finnish">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <text slot="ML" size="small" weight="bold">F</text>
+      <value>4-3</value>
+    </front>
+    <back style="finnish">
+      <text slot="CENTRE" size="medium">Finland</text>
+    </back>
+  </counter>
+  <counter id="g-ge-dtl-infantry" family="unit" name="Dtl german">
+    <front style="german">
+      <symbol icon="infantry" modifiers="mountain"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">Dtl</text>
+      <value>3-5</value>
+    </front>
+    <back style="german">
+      <tile fill="white" color="red">Special</tile>
+    </back>
+  </counter>
+  <counter id="g-ru-6-infantry" family="unit" name="6 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-4</value>
+    </front>
+    <back style="rumanian">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ru-7-infantry" family="unit" name="7 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">7</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-4</value>
+    </front>
+    <back style="rumanian">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ru-pz-armour" family="unit" name="Pz rumanian">
+    <front style="rumanian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">Pz</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-6</value>
+    </front>
+    <back style="rumanian">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ru-3-infantry" family="unit" name="3 rumanian">
+    <front style="rumanian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <text slot="ML" size="small" weight="bold">R</text>
+      <value>2-2</value>
+    </front>
+    <back style="rumanian">
+      <tile fill="y42">Sep-Oct|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-fi-6-infantry" family="unit" name="6 finnish">
+    <front style="finnish">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <text slot="ML" size="small" weight="bold">F</text>
+      <value>4-3</value>
+    </front>
+    <back style="finnish">
+      <text slot="CENTRE" size="medium">Finland</text>
+    </back>
+  </counter>
+  <counter id="g-fi-7-infantry" family="unit" name="7 finnish">
+    <front style="finnish">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">7</text>
+      <text slot="ML" size="small" weight="bold">F</text>
+      <value>2-3</value>
+    </front>
+    <back style="finnish">
+      <text slot="CENTRE" size="medium">Finland</text>
+    </back>
+  </counter>
+  <counter id="g-ge-hitler-hitler" family="leader" name="Hitler german">
+    <front style="german">
+      <emblem kind="balkenkreuz" color="ink"/>
+      <text slot="TC" size="medium">Hitler</text>
+      <value>1-8</value>
+    </front>
+    <back style="german">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Berlin</text>
+    </back>
+  </counter>
+  <counter id="g-hu-1-infantry" family="unit" name="1 hungarian">
+    <front style="hungarian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <text slot="ML" size="small" weight="bold">H</text>
+      <value>4-6</value>
+    </front>
+    <back style="hungarian">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-hu-2-infantry" family="unit" name="2 hungarian">
+    <front style="hungarian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <text slot="ML" size="small" weight="bold">H</text>
+      <value>3-3</value>
+    </front>
+    <back style="hungarian">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-it-3-infantry" family="unit" name="3 italian">
+    <front style="italian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <text slot="ML" size="small" weight="bold">I</text>
+      <value>2-4</value>
+    </front>
+    <back style="italian">
+      <text slot="CENTRE" size="medium">AGC</text>
+    </back>
+  </counter>
+  <counter id="g-it-4-infantry" family="unit" name="4 italian">
+    <front style="italian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <text slot="ML" size="small" weight="bold">I</text>
+      <value>2-3</value>
+    </front>
+    <back style="italian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="g-ma-weather-marker-weather" family="marker" name="Weather marker">
+    <front style="marker">
+      <emblem kind="cloud" color="white"/>
+      <text slot="BOTTOM" size="medium">Weather</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-year-marker-word" family="marker" name="Year marker">
+    <front style="marker">
+      <text slot="CENTRE" size="large" weight="bold">Year</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-2" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-3" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-4" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-hu-3-infantry" family="unit" name="3 hungarian">
+    <front style="hungarian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <text slot="ML" size="small" weight="bold">H</text>
+      <value>2-2</value>
+    </front>
+    <back style="hungarian">
+      <tile fill="y42">Jul-Aug|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-it-5-infantry" family="unit" name="5 italian">
+    <front style="italian">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <text slot="ML" size="small" weight="bold">I</text>
+      <value>2-3</value>
+    </front>
+    <back style="italian">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="g-ma-turn-marker-word" family="marker" name="Turn marker">
+    <front style="marker">
+      <text slot="CENTRE" size="large" weight="bold">Turn</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-impulse-marker-word" family="marker" name="Impulse marker">
+    <front style="marker">
+      <text slot="CENTRE" size="large" weight="bold">Impulse</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-5" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-6" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-7" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="g-ma-loco-loco-8" family="marker" name="Loco marker">
+    <front style="marker">
+      <silhouette kind="locomotive" color="ink"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="r-gu-1g-armour" family="unit" name="1G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">1G</text>
+      <value>8-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y41">Nov-Dec|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-2g-armour" family="unit" name="2G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">2G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-3g-armour" family="unit" name="3G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">3G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-4g-armour" family="unit" name="4G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">4G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-5g-armour" family="unit" name="5G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">5G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Mar-Apr|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-6g-armour" family="unit" name="6G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">6G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">May-Jun|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-7g-armour" family="unit" name="7G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">7G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Sep-Oct|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-8g-armour" family="unit" name="8G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">8G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Nov-Dec|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-9g-armour" family="unit" name="9G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">9G</text>
+      <value>7-4</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Mar-Apr|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-stalin-stalin" family="leader" name="Stalin russian">
+    <front style="russian">
+      <emblem kind="star" color="red"/>
+      <text slot="TC" size="medium">Stalin</text>
+      <value>1-8</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Moscow</text>
+    </back>
+  </counter>
+  <counter id="r-ru-11-infantry" family="unit" name="11 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">11</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Baltic|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-12-infantry" family="unit" name="12 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">12</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-16-infantry" family="unit" name="16 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">16</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Jul-Aug|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-39-infantry" family="unit" name="39 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">39</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-59-infantry" family="unit" name="59 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">59</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-60-infantry" family="unit" name="60 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">60</text>
+      <value>6-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-3-infantry" family="unit" name="3 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">3</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-5-infantry" family="unit" name="5 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">5</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-6-infantry" family="unit" name="6 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">6</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-8-infantry" family="unit" name="8 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">8</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Baltic|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-9-infantry" family="unit" name="9 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">9</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Odessa|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-10-infantry" family="unit" name="10 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">10</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-20-infantry" family="unit" name="20 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">20</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Jul-Aug|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-22-infantry" family="unit" name="22 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">22</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Kalinin</text>
+    </back>
+  </counter>
+  <counter id="r-ru-23-infantry" family="unit" name="23 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">23</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Finnish|Border</text>
+    </back>
+  </counter>
+  <counter id="r-ru-26-infantry" family="unit" name="26 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">26</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-29-infantry" family="unit" name="29 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">29</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-34-infantry" family="unit" name="34 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">34</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-37-infantry" family="unit" name="37 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">37</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-40-infantry" family="unit" name="40 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">40</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Jul-Aug|1941|Kursk</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-43-infantry" family="unit" name="43 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">43</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-61-infantry" family="unit" name="61 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">61</text>
+      <value>5-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-7-infantry" family="unit" name="7 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">7</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Finnish|Border</text>
+    </back>
+  </counter>
+  <counter id="r-ru-13-infantry" family="unit" name="13 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">13</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Minsk</text>
+    </back>
+  </counter>
+  <counter id="r-ru-18-infantry" family="unit" name="18 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">18</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Kiev</text>
+    </back>
+  </counter>
+  <counter id="r-ru-19-infantry" family="unit" name="19 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">19</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Moscow</text>
+    </back>
+  </counter>
+  <counter id="r-ru-21-infantry" family="unit" name="21 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">21</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Tula</text>
+    </back>
+  </counter>
+  <counter id="r-ru-24-infantry" family="unit" name="24 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">24</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Jul-Aug|1941|Kursk</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-27-infantry" family="unit" name="27 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">27</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Riga</text>
+    </back>
+  </counter>
+  <counter id="r-ru-30-infantry" family="unit" name="30 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">30</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-31-infantry" family="unit" name="31 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">31</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-32-infantry" family="unit" name="32 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">32</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-33-infantry" family="unit" name="33 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">33</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-49-infantry" family="unit" name="49 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">49</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-51-infantry" family="unit" name="51 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">51</text>
+      <value>4-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-3-infantry-2" family="unit" name="3 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">3</text>
+      <value>3-3</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-5-infantry-2" family="unit" name="5 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">5</text>
+      <value>3-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-52-infantry" family="unit" name="52 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">52</text>
+      <value>3-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-55-infantry" family="unit" name="55 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">55</text>
+      <value>3-3</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-14-infantry" family="unit" name="14 russian">
+    <front style="russian">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">14</text>
+      <value>3-3</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold" color="red">Special Rail</text>
+    </back>
+  </counter>
+  <counter id="r-ru-1-cavalry" family="unit" name="1 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>2-7</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Kiev</text>
+    </back>
+  </counter>
+  <counter id="r-ru-2-cavalry" family="unit" name="2 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <value>2-7</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Odessa</text>
+    </back>
+  </counter>
+  <counter id="r-ru-3-cavalry" family="unit" name="3 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <value>2-7</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-5-cavalry" family="unit" name="5 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <value>3-7</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Odessa|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-6-cavalry" family="unit" name="6 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <value>3-7</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-7-cavalry" family="unit" name="7 russian">
+    <front style="russian">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">7</text>
+      <value>3-7</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-gu-1g-cavalry" family="unit" name="1G guards">
+    <front style="guards">
+      <symbol icon="cavalry" fill="red" stroke="white"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1G</text>
+      <value>5-7</value>
+    </front>
+    <back style="guards">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-2g-cavalry" family="unit" name="2G guards">
+    <front style="guards">
+      <symbol icon="cavalry" fill="red" stroke="white"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2G</text>
+      <value>4-7</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Jan-Feb|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-3g-cavalry" family="unit" name="3G guards">
+    <front style="guards">
+      <symbol icon="cavalry" fill="red" stroke="white"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3G</text>
+      <value>4-7</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Jan-Feb|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-4g-cavalry" family="unit" name="4G guards">
+    <front style="guards">
+      <symbol icon="cavalry" fill="red" stroke="white"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4G</text>
+      <value>4-7</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Jul-Aug|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-1-armour" family="unit" name="1 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Baltic|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-2-armour" family="unit" name="2 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">2</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Moscow</text>
+    </back>
+  </counter>
+  <counter id="r-ru-3-armour" family="unit" name="3 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">3</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-4-armour" family="unit" name="4 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">4</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-5-armour" family="unit" name="5 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-6-armour" family="unit" name="6 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">6</text>
+      <value>2-5</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Minsk</text>
+    </back>
+  </counter>
+  <counter id="r-ru-7-armour" family="unit" name="7 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">7</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Baltic|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-8-armour" family="unit" name="8 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">8</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Western|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-9-armour" family="unit" name="9 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">9</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Leningrad</text>
+    </back>
+  </counter>
+  <counter id="r-ru-10-armour" family="unit" name="10 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">10</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Riga</text>
+    </back>
+  </counter>
+  <counter id="r-ru-11-armour" family="unit" name="11 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">11</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Kiev|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-12-armour" family="unit" name="12 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">12</text>
+      <value>3-5</value>
+    </front>
+    <back style="russian">
+      <text slot="CENTRE" size="medium">Odessa|MD</text>
+    </back>
+  </counter>
+  <counter id="r-ru-1-infantry" family="unit" name="1 russian">
+    <front style="russian">
+      <symbol icon="infantry" modifiers="airborne"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">1</text>
+      <value>1-2</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-5-infantry-3" family="unit" name="5 russian">
+    <front style="russian">
+      <symbol icon="infantry" modifiers="airborne"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">5</text>
+      <value>1-2</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Sep-Oct|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-8-infantry-2" family="unit" name="8 russian">
+    <front style="russian">
+      <symbol icon="infantry" modifiers="airborne"/>
+      <echelon level="corps"/>
+      <text slot="MR" size="small">8</text>
+      <value>1-2</value>
+    </front>
+    <back style="russian">
+      <tile fill="y41">Nov-Dec|1941|Moscow</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-1-armour-2" family="unit" name="1 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">1</text>
+      <value>6-5</value>
+    </front>
+    <back style="russian">
+      <tile fill="y42">Mar-Apr|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-2-armour-2" family="unit" name="2 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">2</text>
+      <value>6-5</value>
+    </front>
+    <back style="russian">
+      <tile fill="y42">Mar-Apr|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-3-armour-2" family="unit" name="3 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">3</text>
+      <value>6-5</value>
+    </front>
+    <back style="russian">
+      <tile fill="y42">Jul-Aug|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-4-armour-2" family="unit" name="4 russian">
+    <front style="russian">
+      <symbol icon="armour"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">4</text>
+      <value>6-5</value>
+    </front>
+    <back style="russian">
+      <tile fill="y42">Jul-Aug|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-1g-armour-2" family="unit" name="1G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">1G</text>
+      <value>10-7</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Mar-Apr|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-2g-armour-2" family="unit" name="2G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">2G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Sep-Oct|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-3g-armour-2" family="unit" name="3G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">3G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y42">Nov-Dec|1942</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-4g-armour-2" family="unit" name="4G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">4G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Jan-Feb|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-ru-stavka-hq" family="unit" name="STAVKA russian">
+    <front style="russian">
+      <symbol icon="hq"/>
+      <text slot="TC">STAVKA</text>
+      <value>1-7</value>
+    </front>
+    <back style="russian">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Moscow</text>
+    </back>
+  </counter>
+  <counter id="r-wo-2-worker" family="unit" name="2 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">2</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Jan-Feb|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y41">Nov-Dec|1941</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker-2" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y43">Mar-Apr|1943</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker-3" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Jul-Aug|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-gu-5g-armour-2" family="unit" name="5G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">5G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">May-Jun|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-6g-armour-2" family="unit" name="6G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">6G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Jul-Aug|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-7g-armour-2" family="unit" name="7G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">7G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Sep-Oct|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-gu-8g-armour-2" family="unit" name="8G guards">
+    <front style="guards">
+      <symbol icon="armour" fill="red" stroke="white"/>
+      <echelon level="army"/>
+      <text slot="MR" size="small">8G</text>
+      <value>8-6</value>
+    </front>
+    <back style="guards">
+      <tile fill="y43">Nov-Dec|1943</tile>
+    </back>
+  </counter>
+  <counter id="r-wo-2-worker-2" family="unit" name="2 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">2</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">May-Jun|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker-4" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Jan-Feb|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker-5" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Nov-Dec|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-1-worker-6" family="unit" name="1 worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">1</text>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Mar-Apr|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-partisans-partisan" family="unit" name="Partisans worker">
+    <front style="worker">
+      <silhouette kind="rifle" color="ink"/>
+      <text slot="BOTTOM" size="medium" color="yellow">Partisans</text>
+    </front>
+    <back style="worker">
+      <tile fill="y41">Nov-Dec|1941</tile>
+      <band color="ink" text-color="white">available</band>
+    </back>
+  </counter>
+  <counter id="r-wo-stalino-worker" family="unit" name="Stalino worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Stalino</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Stalino</text>
+    </back>
+  </counter>
+  <counter id="r-wo-worker-worker" family="unit" name="worker worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <value>1</value>
+    </front>
+    <back style="worker">
+      <tile fill="y42">Jan-Feb|1942</tile>
+      <band color="ink" text-color="white">any City</band>
+    </back>
+  </counter>
+  <counter id="r-wo-moscow-worker" family="unit" name="Moscow worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Moscow</text>
+      <value>3</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Moscow</text>
+    </back>
+  </counter>
+  <counter id="r-wo-kharkov-worker" family="unit" name="Kharkov worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Kharkov</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Kharkov</text>
+    </back>
+  </counter>
+  <counter id="r-wo-partisans-partisan-2" family="unit" name="Partisans worker">
+    <front style="worker">
+      <silhouette kind="rifle" color="ink"/>
+      <text slot="BOTTOM" size="medium" color="yellow">Partisans</text>
+    </front>
+    <back style="worker">
+      <tile fill="y41">Nov-Dec|1941</tile>
+      <band color="ink" text-color="white">available</band>
+    </back>
+  </counter>
+  <counter id="r-wo-partisans-partisan-3" family="unit" name="Partisans worker">
+    <front style="worker">
+      <silhouette kind="rifle" color="ink"/>
+      <text slot="BOTTOM" size="medium" color="yellow">Partisans</text>
+    </front>
+    <back style="worker">
+      <tile fill="y41">Sep-Oct|1941</tile>
+      <band color="ink" text-color="white">available</band>
+    </back>
+  </counter>
+  <counter id="r-wo-leningrad-worker" family="unit" name="Leningrad worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Leningrad</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Leningrad</text>
+    </back>
+  </counter>
+  <counter id="r-wo-kiev-worker" family="unit" name="Kiev worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Kiev</text>
+      <value>2</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Kiev</text>
+    </back>
+  </counter>
+  <counter id="r-wo-archangel-worker" family="unit" name="Archangel worker">
+    <front style="worker">
+      <symbol icon="worker" fill="red" stroke="white"/>
+      <text slot="TC">Archangel</text>
+      <value>(2)</value>
+    </front>
+    <back style="worker">
+      <text slot="free" x="50" y="52" rotate="-40" size="medium" weight="bold">Archangel</text>
+    </back>
+  </counter>
+  <sheet id="sheet" title="The Russian Campaign 2020" cols="21" rows="12" gutter="0.6" margin="8" mirror="horizontal">
+    <place counter="g-ge-n-hq"/>
+    <place counter="g-ge-41-armour"/>
+    <place counter="g-ge-56-armour"/>
+    <place counter="g-ge-1-infantry"/>
+    <place counter="g-ge-2-infantry"/>
+    <place counter="g-ge-10-infantry"/>
+    <place counter="g-ge-26-infantry"/>
+    <place counter="g-ge-28-infantry"/>
+    <place counter="g-ge-38-infantry"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-gu-1g-armour"/>
+    <place counter="r-gu-2g-armour"/>
+    <place counter="r-gu-3g-armour"/>
+    <place counter="r-gu-4g-armour"/>
+    <place counter="r-gu-5g-armour"/>
+    <place counter="r-gu-6g-armour"/>
+    <place counter="r-gu-7g-armour"/>
+    <place counter="r-gu-8g-armour"/>
+    <place counter="r-gu-9g-armour"/>
+    <place counter="r-ru-stalin-stalin"/>
+    <place counter="g-ge-c-hq"/>
+    <place counter="g-ge-24-armour"/>
+    <place counter="g-ge-39-armour"/>
+    <place counter="g-ge-46-armour"/>
+    <place counter="g-ge-47-armour"/>
+    <place counter="g-ge-57-armour"/>
+    <place counter="g-ge-5-infantry"/>
+    <place counter="g-ge-6-infantry"/>
+    <place counter="g-ge-7-infantry"/>
+    <place counter="g-ge-8-infantry"/>
+    <place blank="true"/>
+    <place counter="r-ru-11-infantry"/>
+    <place counter="r-ru-12-infantry"/>
+    <place counter="r-ru-16-infantry"/>
+    <place counter="r-ru-39-infantry"/>
+    <place counter="r-ru-59-infantry"/>
+    <place counter="r-ru-60-infantry"/>
+    <place counter="r-ru-3-infantry"/>
+    <place counter="r-ru-5-infantry"/>
+    <place counter="r-ru-6-infantry"/>
+    <place counter="r-ru-8-infantry"/>
+    <place counter="g-ge-9-infantry"/>
+    <place counter="g-ge-12-infantry"/>
+    <place counter="g-ge-13-infantry"/>
+    <place counter="g-ge-20-infantry"/>
+    <place counter="g-ge-42-infantry"/>
+    <place counter="g-ge-43-infantry"/>
+    <place counter="g-ge-53-infantry"/>
+    <place counter="g-ge-s-hq"/>
+    <place counter="g-ge-3-armour"/>
+    <place counter="g-ge-48-armour"/>
+    <place blank="true"/>
+    <place counter="r-ru-9-infantry"/>
+    <place counter="r-ru-10-infantry"/>
+    <place counter="r-ru-20-infantry"/>
+    <place counter="r-ru-22-infantry"/>
+    <place counter="r-ru-23-infantry"/>
+    <place counter="r-ru-26-infantry"/>
+    <place counter="r-ru-29-infantry"/>
+    <place counter="r-ru-34-infantry"/>
+    <place counter="r-ru-37-infantry"/>
+    <place counter="r-ru-40-infantry"/>
+    <place counter="g-ge-14-armour"/>
+    <place counter="g-ge-52-mechanized"/>
+    <place counter="g-ge-49-infantry"/>
+    <place counter="g-ge-4-infantry"/>
+    <place counter="g-ge-17-infantry"/>
+    <place counter="g-ge-29-infantry"/>
+    <place counter="g-ge-44-infantry"/>
+    <place counter="g-ge-55-infantry"/>
+    <place counter="g-ge-11-infantry"/>
+    <place counter="g-ge-30-infantry"/>
+    <place blank="true"/>
+    <place counter="r-ru-43-infantry"/>
+    <place counter="r-ru-61-infantry"/>
+    <place counter="r-ru-7-infantry"/>
+    <place counter="r-ru-13-infantry"/>
+    <place counter="r-ru-18-infantry"/>
+    <place counter="r-ru-19-infantry"/>
+    <place counter="r-ru-21-infantry"/>
+    <place counter="r-ru-24-infantry"/>
+    <place counter="r-ru-27-infantry"/>
+    <place counter="r-ru-30-infantry"/>
+    <place counter="g-ge-54-infantry"/>
+    <place counter="g-ge-40-armour"/>
+    <place counter="g-ge-27-infantry"/>
+    <place counter="g-ge-23-infantry"/>
+    <place counter="g-ge-34-infantry"/>
+    <place counter="g-ge-35-infantry"/>
+    <place counter="g-ge-51-infantry"/>
+    <place counter="g-ge-50-mechanized"/>
+    <place counter="g-ge-59-infantry"/>
+    <place counter="g-ge-72-infantry"/>
+    <place blank="true"/>
+    <place counter="r-ru-31-infantry"/>
+    <place counter="r-ru-32-infantry"/>
+    <place counter="r-ru-33-infantry"/>
+    <place counter="r-ru-49-infantry"/>
+    <place counter="r-ru-51-infantry"/>
+    <place counter="r-ru-3-infantry-2"/>
+    <place counter="r-ru-5-infantry-2"/>
+    <place counter="r-ru-52-infantry"/>
+    <place counter="r-ru-55-infantry"/>
+    <place counter="r-ru-14-infantry"/>
+    <place counter="g-ge-3-infantry"/>
+    <place counter="g-ge-1-cavalry"/>
+    <place counter="g-ge-22-infantry"/>
+    <place counter="g-ge-11-mechanized"/>
+    <place counter="g-ge-26-mechanized"/>
+    <place counter="g-ge-29-mechanized"/>
+    <place counter="g-ge-43-mechanized"/>
+    <place counter="g-ge-90-infantry"/>
+    <place counter="g-ge-gd-armour"/>
+    <place counter="g-ge-15-infantry"/>
+    <place blank="true"/>
+    <place counter="r-ru-1-cavalry"/>
+    <place counter="r-ru-2-cavalry"/>
+    <place counter="r-ru-3-cavalry"/>
+    <place counter="r-ru-5-cavalry"/>
+    <place counter="r-ru-6-cavalry"/>
+    <place counter="r-ru-7-cavalry"/>
+    <place counter="r-gu-1g-cavalry"/>
+    <place counter="r-gu-2g-cavalry"/>
+    <place counter="r-gu-3g-cavalry"/>
+    <place counter="r-gu-4g-cavalry"/>
+    <place counter="g-ss-res-infantry"/>
+    <place counter="g-ss-1-armour"/>
+    <place counter="g-ss-2-armour"/>
+    <place counter="g-ss-3-armour"/>
+    <place counter="g-lu-hg-mechanized"/>
+    <place counter="g-lu-stuka-stuka"/>
+    <place blank="true"/>
+    <place counter="g-ge-91-infantry"/>
+    <place counter="g-ge-97-infantry"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-ru-1-armour"/>
+    <place counter="r-ru-2-armour"/>
+    <place counter="r-ru-3-armour"/>
+    <place counter="r-ru-4-armour"/>
+    <place counter="r-ru-5-armour"/>
+    <place counter="r-ru-6-armour"/>
+    <place counter="r-ru-7-armour"/>
+    <place counter="r-ru-8-armour"/>
+    <place counter="r-ru-9-armour"/>
+    <place counter="r-ru-10-armour"/>
+    <place counter="g-ss-4-armour"/>
+    <place counter="g-ss-5-mechanized"/>
+    <place counter="g-ss-6-mechanized"/>
+    <place counter="g-ss-15-cavalry"/>
+    <place counter="g-lu-stuka-stuka-2"/>
+    <place counter="g-lu-stuka-stuka-3"/>
+    <place blank="true"/>
+    <place counter="g-ge-21-infantry"/>
+    <place counter="g-ge-36-infantry"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-ru-11-armour"/>
+    <place counter="r-ru-12-armour"/>
+    <place counter="r-ru-1-infantry"/>
+    <place counter="r-ru-5-infantry-3"/>
+    <place counter="r-ru-8-infantry-2"/>
+    <place blank="true"/>
+    <place counter="r-ru-1-armour-2"/>
+    <place counter="r-ru-2-armour-2"/>
+    <place counter="r-ru-3-armour-2"/>
+    <place counter="r-ru-4-armour-2"/>
+    <place counter="g-ru-1-infantry"/>
+    <place counter="g-ru-2-infantry"/>
+    <place counter="g-ru-4-infantry"/>
+    <place counter="g-ru-cv-cavalry"/>
+    <place counter="g-ru-5-infantry"/>
+    <place counter="g-fi-2-infantry"/>
+    <place counter="g-fi-4-infantry"/>
+    <place blank="true"/>
+    <place counter="g-ge-dtl-infantry"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-gu-1g-armour-2"/>
+    <place counter="r-gu-2g-armour-2"/>
+    <place counter="r-gu-3g-armour-2"/>
+    <place counter="r-gu-4g-armour-2"/>
+    <place counter="r-ru-stavka-hq"/>
+    <place blank="true"/>
+    <place counter="r-wo-2-worker"/>
+    <place counter="r-wo-1-worker"/>
+    <place counter="r-wo-1-worker-2"/>
+    <place counter="r-wo-1-worker-3"/>
+    <place counter="g-ru-6-infantry"/>
+    <place counter="g-ru-7-infantry"/>
+    <place counter="g-ru-pz-armour"/>
+    <place counter="g-ru-3-infantry"/>
+    <place blank="true"/>
+    <place counter="g-fi-6-infantry"/>
+    <place counter="g-fi-7-infantry"/>
+    <place blank="true"/>
+    <place counter="g-ge-hitler-hitler"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-gu-5g-armour-2"/>
+    <place counter="r-gu-6g-armour-2"/>
+    <place counter="r-gu-7g-armour-2"/>
+    <place counter="r-gu-8g-armour-2"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-wo-2-worker-2"/>
+    <place counter="r-wo-1-worker-4"/>
+    <place counter="r-wo-1-worker-5"/>
+    <place counter="r-wo-1-worker-6"/>
+    <place counter="g-hu-1-infantry"/>
+    <place counter="g-hu-2-infantry"/>
+    <place counter="g-it-3-infantry"/>
+    <place counter="g-it-4-infantry"/>
+    <place counter="g-ma-weather-marker-weather"/>
+    <place counter="g-ma-year-marker-word"/>
+    <place counter="g-ma-loco-loco"/>
+    <place counter="g-ma-loco-loco-2"/>
+    <place counter="g-ma-loco-loco-3"/>
+    <place counter="g-ma-loco-loco-4"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-wo-partisans-partisan"/>
+    <place counter="r-wo-stalino-worker"/>
+    <place counter="r-wo-worker-worker"/>
+    <place counter="r-wo-moscow-worker"/>
+    <place counter="r-wo-kharkov-worker"/>
+    <place counter="g-hu-3-infantry"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="g-it-5-infantry"/>
+    <place counter="g-ma-turn-marker-word"/>
+    <place counter="g-ma-impulse-marker-word"/>
+    <place counter="g-ma-loco-loco-5"/>
+    <place counter="g-ma-loco-loco-6"/>
+    <place counter="g-ma-loco-loco-7"/>
+    <place counter="g-ma-loco-loco-8"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place blank="true"/>
+    <place counter="r-wo-partisans-partisan-2"/>
+    <place counter="r-wo-partisans-partisan-3"/>
+    <place counter="r-wo-leningrad-worker"/>
+    <place counter="r-wo-kiev-worker"/>
+    <place counter="r-wo-archangel-worker"/>
+    <place blank="true"/>
+  </sheet>
+</counters>

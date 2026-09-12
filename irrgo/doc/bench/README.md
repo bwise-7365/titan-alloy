@@ -10,12 +10,179 @@ Not every experiment leaves its raw files here; the placement experiment below w
 summarised and its ten 10-game data files discarded, since it is unlikely to be rerun.
 The command line and seeds are recorded so it can be regenerated if that changes.
 
+## 2026-09-09 — phase-boundary exposure, one random stone per side
+
+First measurement of the capture surplus at the start of movement
+(`doc/2026-09-03-latrunculi-placement-capture-surplus.md`, section 10.2), taken the
+same day the placement policy was cut back to one random stone per side, so every
+placement after the first two is searched. The bench gained `plies=` (stop each game
+after N plies; the game is left unfinished and gets no game-quality row) and the
+boundary columns/summary from `BenchBoundary.{h,cpp}`: per side at the flip, discs the
+enemy can capture in one move (`exp`), threats held (`thr`), and captures made over the
+first 20 movement plies (`cap`). Raw file:
+`2026-09-09-bench-boundary-100g-750ms-60plies.txt`.
+
+    latrunculi_bench games=100 ms=750 plies=60 threads=8 seed=909001
+
+100 games, 8x10x20, slide + convex, komi 1.5, 40 placements + 20 movement plies each,
+5800 searched plies at mean depth 3.65, wall clock 566 s.
+
+| measure at the flip / early window | P0 | P1 |
+|---|---|---|
+| discs capturable in one move | 3.65 +/- 0.23 | 3.44 +/- 0.22 |
+| threats held | 3.35 +/- 0.21 | 3.50 +/- 0.22 |
+| notch exposure | 0.59 +/- 0.08 | 0.48 +/- 0.08 |
+| vulnerable axes | 9.70 +/- 0.38 | 9.61 +/- 0.36 |
+| captures made, first 20 movement plies | 4.77 +/- 0.20 | 4.40 +/- 0.18 |
+
+Findings. Each army ends placement with about 3.5 discs the other side can take in
+one move, and the two sides are equal within error, as the analysis doc predicted
+(prediction: both sides about equal, 5-15 each; observed lower but symmetric). The
+first 20 movement plies then produce about 9.2 captures per game, roughly one every
+other ply; only 1 game of 100 had none, and only 11 (P0) / 8 (P1) games had a side
+with nothing capturable at the flip. The first mover captures slightly more (4.77 vs
+4.40), consistent with the tempo argument, though the gap is under two standard
+errors. With the random placements now confined to the first two stones, this surplus
+is produced by the searched placement itself, not by the policy's random stones.
+
+## 2026-08-25..27 — weight-tuning campaign, rounds 1-2
+
+The first use of the A-vs-B machinery (`latrunculi_bench pairs=/wA./wB.` +
+`tools/latrunculi-sweep.ps1`): can self-play matches fit the eleven `EvalWeights`
+fields better than the hand-picked values? Protocol per the approved plan: a
+per-round incumbent-vs-incumbent baseline sets the noise floor; a lenient coarse
+filter (40 pairs per candidate, keep at >= 55% wins AND quiet share <= baseline + 5)
+nominates; a 310-pair confirmation (620 games; promote at >= 331 wins AND quiet <=
+baseline + 3 AND captures >= 0.9x baseline) decides. All matches 8x10x20, slide +
+convex, komi 1.5, 500 ms/ply, colors mirrored within each seed pair. Raw data:
+`sweeps/2026-08-24/` (round 1) and `sweeps/2026-08-26-round2/`.
+
+**Result: no change ships.** `centre` 0.05 -> 0.2 was the campaign's single
+confirmed promotion, and round 2 promoting nothing stopped the descent per
+protocol — but the final size-robustness gate then rejected it: pooled 6x6 wins
+198/400 against a pre-committed floor of 200. The defaults stand in full, now
+validated rather than guessed.
+
+| stage | candidates | outcome |
+|---|---|---|
+| round-1 coarse (x1/4..x4, 44) | 6 kept | best coarse figures did not survive |
+| round-1 confirm (5 distinct) | centre 0.2: **342/620**; spearheadPairs 0.6: 332/620 | 2 promoted, 3 rejected |
+| composed {centre, spearhead} | 384/620 + replication 389/620 | rejected: pooled quiet 77.5% > 75.5% |
+| round-2 coarse (x0.7/x1.4, 22) | 5 kept | all between 55% and 60% |
+| round-2 confirm (5) | best 329/620 | all rejected -> descent stops |
+| size robustness, centre 0.2 | 6x6: 94/200; 8x10: 110/200; 10x12: 121/200 | 6x6 cell fails the >=50% rule |
+| 6x6 tie-break replication | 104/200; pooled 198/400 vs floor 200 | **centre 0.2 rejected; 0.05 stands** |
+
+Findings:
+
+- **The liveliness guardrail is load-bearing, not decorative.** Three separate
+  candidates won overwhelmingly and were refused for dulling the game: `mobility`
+  0.005 (62.1% wins, quiet 81.5%), the composed centre+spearhead vector (62.3%
+  pooled over 1,240 games, quiet 77.5%), and implicitly the spearhead half of that
+  composition. In this rule set there is a standing exchange rate between win rate
+  and turtling, and an unguarded sweep would have bought strength with exactly the
+  dullness the last two months of rule work removed.
+- **The composed rejection needed a replication to be honest.** Its first
+  confirmation missed the quiet limit by 0.15 points against sampling noise of
+  +/-1.7; a pre-committed second 620-game run at a fresh seed block came in at
+  79.35%, settling it. One 100-minute replication converted a coin-flip verdict
+  into a clear one.
+- **Coarse figures regress hard.** `vulnerableAxes` nominated at 66.3% and 60.0% in
+  the two rounds and confirmed at 53.1% and 50.0%. Forty pairs nominate; only 620
+  games decide. No coarse number should ever be quoted as a result.
+- **The hand-picked weights largely survived.** `threat` = 0.25 is sharply optimal
+  (x2 -> 21% wins, x4 -> 1.3%); every placement-term default resisted all
+  perturbations tried at both granularities. The campaign's value was as much
+  validating those numbers as improving one.
+- Why `centre` x4 helps is not measured, only plausible: with capture geometry
+  priced by the other terms, a stronger centre pull concentrates discs where
+  flanks and denials actually form instead of along the safe but inert rim.
+
+- **The centre gain is monotone in board size, which is why it died.** 47.0% on
+  6x6/12, 55.0% on 8x10/20 (independently replicating the 55.2% confirmation),
+  60.5% on 10x12/30. The summed centrality term scales with disc count and board
+  geometry, so one weight cannot mean the same thing on every board — the
+  pre-written "suspect mobility/centre scaling" caveat, now with data. The
+  principled follow-up is a size-normalized centrality term, recorded in
+  `doc/2026-07-22-latrunculi-further-improvements.md` §2.4; re-tune centre only
+  after that lands.
+- **Komi 1.5 is board-size-dependent too.** In the two 6x6/12 robustness matches,
+  the second player won ~73% of games regardless of weight set (the candidate went
+  29/100 as P0 and 75/100 as P1 in the replication). Mirrored pairs cancelled it
+  from every verdict above, but any single-color measurement on a small board is
+  currently measuring komi as much as skill. Same lesson as the 2x2's komi
+  finding: re-check komi per configuration, never assume it transfers.
+
+The planned 1000 ms budget-sanity match was mooted by the rejection and not run.
+
+## 2026-08-24 — placement heuristics: before/after
+
+The engine gained a placement-phase evaluation (`PlacementEval.h`: seven terms derived
+in `doc/2026-08-24-latrunculi-placement-heuristics.md`) wired into `staticEval` and,
+for the first time, into `moveOrderScore` during placement — which previously returned
+0 for every placement, leaving alpha-beta nothing to prune on for the first 40 plies.
+This run measures that change and nothing else: same command, same seeds, before
+(HEAD) and after (working tree). Raw outputs are the two
+`2026-08-24-bench-placement-*.txt` files here.
+
+10 games, 8x10x20, slide + convex, komi 1.5, policy placement, 1000 ms/ply, seed
+777001, 8 threads.
+
+| | before | after |
+|---|---|---|
+| mean opening depth | 3.43 | **3.60** |
+| mean captures | 27.6 | 30.6 |
+| quiet game | 9 (90%) | 9 (90%) |
+| decisive (reduction) | 1 (10%) | 1 (10%) |
+| mean dead tail | 36.0 | 36.0 |
+| games with a lead change | 3/10 | 4/10 |
+| mean peak margin | 4.4 | 3.4 |
+| mean final margin | 3.7 | 2.3 |
+| won by A / B | 5/5 | 3/7 |
+| wall clock | 244 s | 308 s |
+
+Findings:
+
+- **Opening search got deeper, and the gain is robust.** 3.43 -> 3.60 over the same
+  678 searched opening plies, and a second, independent 'after' run agreed to a
+  hundredth (3.61). The gain comes despite each placement node getting more expensive
+  — placement ordering now scores every candidate square — so ordering paid for its
+  own cost. This settles the question the change was made for, and leaves no case for
+  the deferred search-width cap.
+- **Capture activity edges up** (27.6 -> 30.6, and 30.8 in the second after-run):
+  placements now build the structures captures feed on.
+- **The quiet-game share is untouched.** 9/10 both sides, dead tail 36.0 both sides.
+  The placement heuristics alone, at untuned first-guess weights, do not fix the
+  movement-phase stall — as expected; that is what the weight-tuning campaign is for.
+
+Caveats:
+
+- **A first 'after' run was invalid and briefly looked spectacular.** The machine
+  hibernated ~80 minutes mid-run; `steady_clock` advanced through it, so the plies in
+  flight had their budgets destroyed and completed at trivial depth. That run showed
+  6/10 reductions, dead tail 16.0, quiet share 40% — retracted in full once a clean
+  rerun reproduced the before-run's 9/10 quiet endings. The lesson is quantitative: a
+  handful of depth-1 plies flipped half the outcomes at n=10. Clock noise is the
+  dominant noise source in these benches, and n=10 outcome shares should never be
+  read as signal.
+- The margin and A/B rows differ between the columns, but at n=10 they are noise (see
+  above, forcefully).
+
+Regenerate: build at the respective revision, then
+
+    latrunculi_bench games=10 ms=1000 seed=777001 threads=8
+
+(the after-revision also reseeds the move-generation scan order from the game seed —
+`Game::reseedScanOrder` — so its runs are seed-reproducible in a way the before
+revision's were not; see the reproducibility note in bench.cpp).
+
 ## 2026-07-22 (evening) — does searched placement create the first-player bias?
 
 The 2x2 below left player A winning above chance in every cell, unrelated to any change
 made that day. This experiment isolates the cause. `latrunculi_bench` gained a
-`placement=policy|random` option: `policy` is the shared PlacementPolicy (each side plays
-one random opening placement, then runs of searched ones); `random` makes every placement
+`placement=policy|random` option: `policy` is the shared PlacementPolicy (at the time of
+this experiment, each side played one random opening placement, then runs of searched
+ones; since 2026-09-09 only each side's first placement is random); `random` makes every placement
 random for both sides, so neither gains anything from SEARCHING the opening. If the bias
 comes from player 0 optimising its first placements onto a nearly empty board, it should
 vanish under `random`; if it is inherent first-move tempo, it should survive.

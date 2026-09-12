@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="hexrules.xsd"
+      id="trc" title="The Russian Campaign, Deluxe Fifth Edition" publisher="Consim Press / GMT Games" year="2022" players="2"
+      source="The Russian Campaign 5th Rules - GMT 2022.pdf; TRC5_CRT_SOP_and_Replacements_Ref_v4.pdf; TRC5 map adjusted.png"
+      hex-scale="about 40 miles"
+      turn-scale="two calendar months; 25 turns from May/June 1941 (turn 1) to May/June 1945 (turn 25)">
+
+  <!-- ================= sides ================= -->
+  <sides>
+    <side id="axis" name="Axis" control="human">Germany with Finland, Hungary, Rumania and Italy as minor allies.</side>
+    <side id="russian" name="Russian" control="human">The Soviet Union.</side>
+    <note>Both sides move, fight and supply by the same rules; the asymmetry lies in the order of battle and in national exceptions.</note>
+  </sides>
+
+  <!-- ================= map ================= -->
+  <map>
+    <hex-ids pattern="[A-Z]{1,2}\d{1,2}" example="KK19">A row letter and a number. Letters run A to Z, then AA to QQ, naming hex rows from north (A) to south (QQ); the letter string orders by length, then alphabetically. The number indexes the other axis; which end is west is not established from the scans. Hex rows are addressable regions: Finnish units may not move south of the H row, Italian, Hungarian and Rumanian units not north of the L row (26.6), and one Russian reinforcement per turn may enter from the south edge QQ5-QQ16 (20.5).</hex-ids>
+
+    <hex-terrain id="clear" name="Clear" move-cost="1"/>
+    <hex-terrain id="woods" name="Woods" move-cost="1" stop="true" stop-except="infantry mountain paratroop luftwaffe" ref="14.2">Attackers and defenders do not retreat from woods; AR and DR become C.</hex-terrain>
+    <hex-terrain id="mountain-hex" name="Mountain" move-cost="1" stop="true" stop-except="mountain" defence-multiplier="2"/>
+    <hex-terrain id="swamp" name="Swamp" move-cost="1" stop="true">All units must stop. Treated as clear during Snow.</hex-terrain>
+    <hex-terrain id="river-hex" name="River hex" move-cost="other-terrain" defence-multiplier="2" ref="14.1.1">Defender doubled only if all attackers are on river hexes and the defender is not on a river hex of the same river. Partial river hexes count. The river carries an identity.</hex-terrain>
+    <hex-terrain id="major-city" name="Major city" move-cost="other-terrain" defence-multiplier="2">A supply source and a control point when friendly-controlled.</hex-terrain>
+    <hex-terrain id="minor-city" name="Minor city" move-cost="other-terrain">A supply source and a control point when friendly-controlled.</hex-terrain>
+    <hex-terrain id="oil-field" name="Oil fields" move-cost="other-terrain">A control point; Axis armour replacements depend on oil wells held.</hex-terrain>
+    <hex-terrain id="sea" name="Sea" move-cost="prohibited">Crossed only by sea movement. Air range is measured across it as if hexes existed (15.4).</hex-terrain>
+    <hex-terrain id="lake" name="Lake" move-cost="prohibited"/>
+
+    <hexside-terrain id="river" name="River hexside" ref="14.1.1">A river crossing the hexside between two river hexes connects them. Carries the river's identity.</hexside-terrain>
+    <hexside-terrain id="blocked" name="Blocked hexside" blocks="movement zoc" ref="7.1">Printed as a white dashed line.</hexside-terrain>
+    <hexside-terrain id="all-water" name="All-water hexside" blocks="zoc" ref="7.1">The edge of a lake or sea.</hexside-terrain>
+    <hexside-terrain id="coastline" name="Black coastal line" blocks="movement retreat" ref="8.5">May not be crossed by ground movement or retreat except at the Kerch Strait.</hexside-terrain>
+    <hexside-terrain id="kerch-strait" name="Kerch Strait" stop="true" defence-multiplier="2" blocks="zoc" ref="8.5">The single hexside between KK19 and KK20. Units stop in the first hex after crossing; ZOCs do not extend across; attacks across it are voluntary; the defender is doubled if all attackers are across it; supply and retreat may cross it.</hexside-terrain>
+    <hexside-terrain id="country-border" name="Country border">Solid black line; defines the country regions.</hexside-terrain>
+    <hexside-terrain id="district-border" name="Military district boundary">Dash-dot line; defines the Russian military districts.</hexside-terrain>
+
+    <network id="rail" name="Railroads" carries="movement supply" mutable="true">Drawn centre to centre with off-board extensions at the edges. Traversed by rail movement, followed by rail supply, and owned hex by hex through the railhead markers. Not a subgraph of adjacency in any useful sense.</network>
+
+    <region-layer id="countries" name="Countries" partition="true" bounded-by="country-border">
+      <region id="germany" name="Germany">East Prussia counts as Germany for setup.</region>
+      <region id="poland" name="Poland"/>
+      <region id="hungary" name="Hungary" side="axis"/>
+      <region id="rumania" name="Rumania" side="axis"/>
+      <region id="bulgaria" name="Bulgaria"/>
+      <region id="finland" name="Finland" side="axis"/>
+      <region id="russia" name="Russia" side="russian"/>
+      <note>Membership drives surrender triggers, national movement restrictions and worker placement.</note>
+    </region-layer>
+    <region-layer id="districts" name="Russian military districts" partition="true" bounded-by="district-border">
+      <region id="d-leningrad" name="Leningrad"/>
+      <region id="d-baltic" name="Baltic"/>
+      <region id="d-western" name="Western"/>
+      <region id="d-kiev" name="Kiev"/>
+      <region id="d-odessa" name="Odessa"/>
+      <note>Used for setup and for the first-impulse attack restriction: each German army group may attack only units in its assigned district.</note>
+    </region-layer>
+    <region-layer id="sea-areas" name="Sea areas" partition="true">
+      <region id="baltic" name="Baltic">Named ports Riga, Tallinn, Helsinki, Leningrad.</region>
+      <region id="black-sea" name="Black Sea and Sea of Azov">Named ports Odessa, Sevastopol, Rostov.</region>
+      <region id="caspian" name="Caspian">No sea movement.</region>
+    </region-layer>
+    <region-layer id="hex-rows" name="Hex rows" partition="true">
+      <note>One region per row letter, A to QQ; addressed by national restrictions.</note>
+    </region-layer>
+    <region-layer id="board-edges" name="Board edges" partition="false">
+      <region id="west-edge" name="West edge" side="axis"/>
+      <region id="east-edge" name="East edge" side="russian"/>
+      <region id="south-edge" name="South edge" side="russian"/>
+      <region id="north-edge" name="North edge">Owned by neither for rail purposes.</region>
+    </region-layer>
+
+    <space id="omb" name="Off-Map Units Box" kind="box" returns="true">A strategic reserve. Behaves as a port bordering both sea areas and as a node reachable by rail from a friendly edge. Units enter on any later impulse but forfeit the free rail move (20.1).</space>
+    <space id="axis-pool" name="Axis replacement pool" kind="box" side="axis" returns="true">Eliminated units.</space>
+    <space id="russian-pool" name="Russian replacement pool" kind="box" side="russian" returns="true">Eliminated units.</space>
+    <space id="axis-surrendered" name="Axis Surrendered Units box" kind="box" side="axis" returns="false"/>
+    <space id="russian-surrendered" name="Russian Surrendered Units box" kind="box" side="russian" returns="false"/>
+    <space id="stukas" name="Stukas box" kind="box" side="axis"/>
+    <space id="sturmoviks" name="Sturmoviks box" kind="box" side="russian"/>
+    <space id="paratroop-reserve" name="Paratroop Reserve box" kind="box" side="russian"/>
+    <space id="urals" name="Urals Industry box" kind="box" side="russian">Optional rule 26.2.</space>
+    <space id="turn-track" name="Turn Record Track" kind="track">A register as well as a calendar: holds the turn marker, the weather DRM, the worker replacement points, invasion counts, the scenario-end marker and industrially evacuated units.</space>
+
+    <note>Other hex-centred data: port flag; rail flag and rail junction flag (a non-city rail hex where lines intersect); control owner of cities, oil wells and junctions; railhead marker positions; setup codes; sea-hex range dots for air range (15.4).</note>
+  </map>
+
+  <!-- ================= counters ================= -->
+  <counters>
+    <unit-type id="infantry" name="Infantry" kind="ground" zoc="full">Russian infantry has no second-impulse movement.</unit-type>
+    <unit-type id="armour" name="Armour / Panzer" kind="ground" zoc="full">Moves in the second impulse.</unit-type>
+    <unit-type id="motorized" name="Motorized / Mechanized" kind="ground" zoc="full"/>
+    <unit-type id="panzer-grenadier" name="Panzer grenadier" kind="ground" zoc="full" side="axis"/>
+    <unit-type id="cavalry" name="Cavalry" kind="ground" zoc="full"/>
+    <unit-type id="mountain" name="Mountain" kind="ground" zoc="full">Need not stop on entering mountains.</unit-type>
+    <unit-type id="paratroop" name="Paratroop" kind="ground" zoc="full" side="russian">May drop once ever; exempt from general supply.</unit-type>
+    <unit-type id="luftwaffe" name="Luftwaffe ground" kind="ground" zoc="full" side="axis"/>
+    <unit-type id="ss" name="SS" kind="ground" zoc="full" side="axis">Repels partisans within five hexes.</unit-type>
+    <unit-type id="guards" name="Guards" kind="ground" zoc="full" side="russian"/>
+    <unit-type id="partisan" name="Partisan" kind="ground" zoc="own-hex" stacking="none" side="russian">Indestructible, relocating obstacle; see the partisan rules.</unit-type>
+    <unit-type id="worker" name="Worker" kind="ground" zoc="full" stacking="none" side="russian">Sits in a Russian city, cannot move once placed, can attack and defend, always surrenders rather than being eliminated, and generates replacement points (22.0).</unit-type>
+    <unit-type id="battle-group" name="Battle group" kind="ground" zoc="own-hex">Optional rule 26.4: a residue counter left in place of an eliminated defender.</unit-type>
+    <unit-type id="hq" name="Army Group HQ / Stavka" kind="hq" zoc="full" stacking="none">Moves only in the second impulse at full allowance ignoring weather; may not enter an enemy ZOC unless a friendly non-HQ unit is there (11.1). Each German HQ supports one Stuka; Stavka is the range origin for Sturmoviks and paradrops.</unit-type>
+    <unit-type id="leader" name="Hitler / Stalin" kind="leader" zoc="none" stacking="none">Moves only by rail or sea; eliminated if forced to retreat.</unit-type>
+    <unit-type id="stuka" name="Stuka" kind="air" side="axis">Committed in the first impulse combat phase only.</unit-type>
+    <unit-type id="sturmovik" name="Sturmovik" kind="air" side="russian">Committed in the first impulse combat phase only.</unit-type>
+
+    <list id="counter-fields" name="Fields printed on a unit counter" ref="2.0">
+      <item code="nationality">Colour.</item>
+      <item code="formation">Colour.</item>
+      <item code="type">Symbol; determines second-impulse movement and terrain behaviour (2.6).</item>
+      <item code="size">XXX corps, XXXX army, XXXXX army group, XXXXXX high command.</item>
+      <item code="combat-factor">One number, used unchanged in attack and defence (2.4).</item>
+      <item code="movement-factor">Hexes over clear terrain in clear weather in the first impulse (2.5).</item>
+      <item code="arrival">Set-up location or reinforcement turn.</item>
+    </list>
+    <list id="markers" name="Markers">
+      <item>weather</item><item>weather DRM</item><item>railhead</item><item>RR convert</item><item>RR move</item><item>invasion count</item>
+      <item>turn</item><item>scenario end</item><item>sudden death objectives</item><item>worker replacement points</item><item>para range</item>
+      <item>fortress city</item><item>artillery barrage</item><item>RP bid</item>
+    </list>
+  </counters>
+
+  <!-- ================= sequence of play ================= -->
+  <sequence turns="25">
+    <phase id="game-turn" name="Game turn">
+      <phase id="weather-phase" name="Weather Phase" side="axis"><note ref="4.1.1">The Axis rolls once for both players.</note></phase>
+      <phase id="axis-turn" name="Axis player turn" side="axis">
+        <phase id="axis-i1" name="Axis first impulse">
+          <phase id="axis-i1-move" name="Movement Phase"><note>Withdrawals first; then normal, rail and sea movement; reinforcements; replacements; automatic-victory attacks; partisan removal.</note></phase>
+          <phase id="axis-i1-combat" name="Combat Phase"><note>Stukas committed here only.</note></phase>
+        </phase>
+        <phase id="axis-i2" name="Axis second impulse">
+          <phase id="axis-i2-move" name="Movement Phase"><note>Only units with second-impulse capability; no rail, no air; HQ replacements only.</note></phase>
+          <phase id="axis-i2-combat" name="Combat Phase"/>
+        </phase>
+        <phase id="axis-end" name="Axis Player-Turn End Phase"><note ref="4.1.6">Advance Axis railheads, then eliminate out-of-supply Axis units. The order matters.</note></phase>
+      </phase>
+      <phase id="russian-turn" name="Russian player turn" side="russian">
+        <phase id="russian-i1" name="Russian first impulse">
+          <phase id="russian-i1-move" name="Movement Phase"><note>As the Axis, plus paratroop drops on snow turns and replacement purchase.</note></phase>
+          <phase id="russian-i1-combat" name="Combat Phase"><note>Sturmoviks committed here only.</note></phase>
+        </phase>
+        <phase id="russian-i2" name="Russian second impulse">
+          <phase id="russian-i2-move" name="Movement Phase"/>
+          <phase id="russian-i2-combat" name="Combat Phase"><note>Then partisans relocate.</note></phase>
+        </phase>
+        <phase id="russian-end" name="Russian Player-Turn End Phase"><note>Push back Axis railheads, eliminate out-of-supply Russian units, resolve Axis minor ally surrenders, advance the turn marker.</note></phase>
+      </phase>
+      <phase id="sudden-death" name="Sudden Death Victory Check" turns="5,11,17,23"><note>At the end of each January/February turn only.</note></phase>
+    </phase>
+    <note>Turn numbers: 1 May/Jun 1941, 5 Jan/Feb 1942, 10 Nov/Dec 1942, 11 Jan/Feb 1943, 13 May/Jun 1943, 14 Jul/Aug 1943, 15 Sep/Oct 1943, 17 Jan/Feb 1944, 19 May/Jun 1944, 21 Sep/Oct 1944, 23 Jan/Feb 1945, 25 May/Jun 1945.</note>
+    <rule id="second-impulse" ref="8.4 11.1" topic="sequence">The second impulse is restricted: only unit types with second-impulse movement may move; no rail movement or air power; only HQ replacements (Axis) or the Stavka replacement (Russian); a unit that began the impulse in an enemy ZOC may not move at all; HQs move only in this impulse.</rule>
+    <rule id="withdrawals-first" ref="4.1.2" topic="sequence">Withdrawals are executed first in a movement phase, before any other activity.</rule>
+  </sequence>
+
+  <!-- ================= stacking ================= -->
+  <stacking units="2" enforced="end of each movement phase and after each combat is resolved" repair="eliminate-excess" exempt="hq leader worker" ref="6.0">
+    <rule id="stacking-sizes" ref="6.1" topic="stacking">Two army-sized units per hex, or three corps-sized units; a mixed stack of corps and armies is limited to two. The constraint is over the multiset of unit sizes, not a count.</rule>
+    <rule id="stacking-no-value" ref="6.3" topic="stacking">Markers, Army Group HQs, Stavka, workers, Hitler, Stalin and the 2-7 SS Reserve have no stacking value.</rule>
+  </stacking>
+
+  <!-- ================= zones of control ================= -->
+  <zoc id="zoc" name="Zone of control" range="1" blocked-by="all-water blocked kerch-strait" stops-movement="true" zoc-to-zoc-forbidden="true" mandatory-attack="true" blocks="supply retreat network control" ref="7.0">
+    <note>Own hex plus the six adjacent hexes, into every terrain and into enemy-occupied hexes. Supply may not be traced through an enemy ZOC, though the tracing unit and the source city may be in one (17.2.3). Rail movement may not start in, pass through or end in one (9.3.2). Rail conversion may not occur in or through one except in a friendly-controlled city (9.4.1).</note>
+    <rule id="zoc-contested" ref="7.4" topic="zoc">A hex is contested when both players project into it; a vacant contested hex is controlled by neither. A unit must stop on entering an enemy ZOC whether contested or not.</rule>
+    <rule id="zoc-pinning" ref="8.3 8.4" topic="zoc">A unit starting its first-impulse move in an enemy ZOC may exit to a ZOC-free hex and re-enter a ZOC in the same impulse. A unit in an enemy ZOC at the start of the second impulse may not move at all that impulse.</rule>
+    <rule id="zoc-partisan" ref="7.3 19.2" topic="zoc" units="partisan">A partisan projects a ZOC only into its own hex. It blocks rail movement, forces a stop, blocks retreat into the hex and inhibits Axis rail conversion, but confers no control and does not support Russian rail conversion. Supply may be traced into but not through a partisan hex.</rule>
+    <rule id="zoc-battlegroup" ref="26.4.1" topic="zoc" units="battle-group" optional="true">Battle groups project a ZOC only into their own hex.</rule>
+    <rule id="zoc-av-exception" ref="16.1" topic="zoc">The stop on entering an enemy ZOC does not apply during an automatic victory.</rule>
+  </zoc>
+
+  <!-- ================= movement ================= -->
+  <movement budget="hexes">
+    <mode id="normal" name="Normal movement" ref="5.0 8.0">Every land hex costs one; the allowance is read from the Movement Allowance Chart indexed by unit type, weather and impulse. Some types have no second-impulse movement. Units may pass through and stack on friendly units and may not bank or transfer movement (5.3). Normal movement may not use rail lines to escape terrain effects (9.3.3).</mode>
+    <mode id="rail-move" name="Rail movement" phase="axis-i1-move russian-i1-move" network="rail" ref="9.0">First impulse only; unlimited distance; the unit does nothing else that impulse. The path is a contiguous chain of friendly rail hexes, starting and finishing on one, avoiding enemy ZOC entirely. Capacity six units per turn for the Axis (three in snow), five for the Russians; arriving reinforcements and replacements rail free. Terrain is ignored. Off-board rail movement is permitted between exit hexes on the same friendly edge (9.3.4). The segment GG19-HH21 is for rail movement only (8.6).</mode>
+    <mode id="sea-move" name="Sea movement" randomizer="die" ref="10.0">Movement factors play no role. One attempt per turn per sea area per player; no movement between the Baltic and the Black Sea in one impulse; none in the Caspian. Transfer port to port; invasion onto any non-enemy-occupied coastal hex; evacuation from any coastal hex to a friendly port or the Off-Map Units Box. Success needs a die roll modified by -1 per friendly-controlled named port in that sea, +1 for evacuation, +2 for any Russian move in the Baltic. Failed units go to the replacement pool.</mode>
+    <mode id="paradrop" name="Paradrop" side="russian" units="paratroop" phase="russian-i1-move" ref="18.0">Snow turns only; within eight hexes of Stavka; not into enemy ZOC, woods or mountains; no further movement that turn; each paratroop corps drops once ever.</mode>
+    <rule id="hq-movement" ref="11.1" topic="movement" units="hq">HQs move only in the second impulse, at full allowance, unaffected by weather.</rule>
+    <rule id="leader-movement" ref="11.3" topic="movement" units="leader">Hitler and Stalin move only by rail or sea.</rule>
+    <rule id="leader-loss" ref="11.3" topic="leaders">If Hitler or Stalin is eliminated, every unit of that country has a movement factor of zero for the next impulse; rail and sea are unaffected and Axis minor allies are exempt.</rule>
+    <rule id="national-rows" ref="26.6" topic="movement" optional="true">Finnish units may not move south of the H hex row; Italian, Hungarian and Rumanian units may not move north of the L hex row.</rule>
+    <rule id="strategic-movement" ref="26.10" topic="movement" optional="true">Movement is doubled for units not in an enemy ZOC and not adjacent to enemy rails, cities or oil wells.</rule>
+  </movement>
+
+  <!-- ================= supply ================= -->
+  <supply>
+    <trace id="general-supply" name="General supply" sources="a friendly-controlled city; or a friendly rail hex connected by a chain of friendly rail hexes to a friendly-controlled city or to a rail hex on the owner's board edge (west for the Axis, east or south for the Russians)" max-length="8" blocked-by-zoc="true" fatal="true" checked="owning player's end phase, after railheads move" ref="17.2">
+      <segment order="1" kind="free" length="8">Eight hexes; four during snow. Not through an enemy ZOC or an enemy-controlled city; the unit and the source may themselves be in an enemy ZOC. Into but not through a partisan hex (19.2). Across the Kerch Strait (8.5.3).</segment>
+      <segment order="2" kind="network" network="rail" length="unlimited">A continuous chain of friendly rail hexes from the reached rail hex to a friendly city or the owner's edge.</segment>
+      <rule id="supply-exempt" ref="17.2" topic="supply" units="paratroop partisan">Paratroops, partisans and units that conducted a sea invasion this turn are exempt.</rule>
+      <rule id="supply-partisan-city" ref="19.2" topic="supply">An Axis city with a partisan in it is still an Axis supply source.</rule>
+    </trace>
+    <trace id="combat-supply" name="Combat supply" side="axis" sources="an Axis-controlled city, in or adjacent to the unit" max-length="1" blocked-by-zoc="false" fatal="false" checked="at the moment of combat, on snow turns of the first two winters" ref="17.3">
+      <note>Russian and Finnish units always have combat supply. Non-Finnish Axis units in Russia have it during snow turns of 1941-42 and 1942-43 only if in or adjacent to an Axis-controlled city; the 1942-43 version widens this by one hex through a hex free of Russian ZOC (17.3.2, 17.3.3).</note>
+      <rule id="combat-supply-halving" ref="17.3.1" topic="combat">A unit without combat supply has its combat factor halved, rounded up per unit, and then doubled for terrain if applicable: a 5 becomes 3, then 6. The order does not commute.</rule>
+    </trace>
+  </supply>
+
+  <!-- ================= combat ================= -->
+  <combat mandatory="true">
+    <resolver id="crt" name="Combat Results Table" kind="odds-table" randomizer="die" min-odds="1-6" max-odds="9-1" rounding="defender" ref="13.0">
+      <note ref="12.3 13.1">Attacks are discrete battles; every attacking unit must be adjacent to every defending unit. Odds are total attacking factors to total defending factors, reduced and rounded in the defender's favour. The attacker may announce lower odds. Attacks worse than 1-6 are illegal; a unit that cannot make a legal attack surrenders (12.5). Soaking off is legal. No unit fights more than one battle per impulse (12.4).</note>
+      <table id="crt-table" name="Combat Results Table" rows="die" cols="odds">
+        <col label="1-5, 1-6"/><col label="1-3, 1-4"/><col label="1-2"/><col label="1-1"/><col label="2-1"/><col label="3-1"/><col label="4-1"/><col label="5-1, 6-1"/><col label="7-1, 9-1"/>
+        <row label="1"><cell>AE</cell><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell></row>
+        <row label="2"><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell></row>
+        <row label="3"><cell>AE</cell><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell></row>
+        <row label="4"><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell></row>
+        <row label="5"><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell><cell>DS</cell></row>
+        <row label="6"><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DS</cell><cell>DS</cell><cell>DS</cell></row>
+      </table>
+      <list id="crt-results" name="Combat results" ref="13.3">
+        <item code="AS">All attacking units surrender.</item>
+        <item code="AE">All attacking units eliminated.</item>
+        <item code="A1">One attacking unit of the attacker's choice eliminated; all attackers retreat one or two hexes.</item>
+        <item code="AR">All attacking units retreat one or two hexes.</item>
+        <item code="C">Contact; no loss or retreat by either side.</item>
+        <item code="EX">Attacker loses one involved unit of his choice, then the defender loses one of his; remaining defenders retreat one or two hexes.</item>
+        <item code="DR">All defending units retreat two hexes.</item>
+        <item code="D1">One defending unit of the defender's choice eliminated; the rest retreat two hexes.</item>
+        <item code="DE">All defending units eliminated.</item>
+        <item code="DS">All defending units surrender.</item>
+      </list>
+      <rule id="eliminate-vs-surrender" ref="13.3" topic="combat">Eliminated units go to the replacement pool and can return; surrendered units go to the Surrendered Units box permanently.</rule>
+      <rule id="control-frozen-ex" ref="13.3" topic="control">Control does not change while EX losses are applied; it is re-evaluated afterwards.</rule>
+    </resolver>
+    <resolver id="automatic-victory" name="Automatic victory" kind="automatic" min-odds="10-1" ref="16.0">
+      <note>Any attack reaching 10-1 odds removes the defender without a die roll, during the movement phase. Air power may count toward the threshold (15.1). Other units may then move through the vacated hex, ZOC pinning evaporates and rail movement becomes legal through it. Participants may not move further that impulse nor attack in the combat phase; after a first-impulse AV they may not enter an enemy ZOC or attack in the second impulse (16.2).</note>
+      <rule id="av-trap" ref="16.3" topic="combat">If AV units end the first impulse adjacent to enemy units, other friendly units must attack those enemies in the second impulse; otherwise the AV units face a mandatory attack they cannot make, and surrender.</rule>
+      <rule id="av-russian-date" ref="16.4" topic="combat" sides="russian" turns="10+">Russians may not conduct AV attacks before November/December 1942.</rule>
+    </resolver>
+
+    <modifier id="stuka-shift" name="Stuka" applies-to="attacker" kind="shift" value="3" cap="3" side="axis" phase="axis-i1-combat" ref="15.5">One per attack; each German Army Group HQ supports one; a 3-1 becomes a 6-1.</modifier>
+    <modifier id="sturmovik-shift" name="Sturmovik" applies-to="attacker" kind="shift" value="1" cap="3" side="russian" phase="russian-i1-combat" ref="15.7">Any number may be applied to one battle. Traced from Stavka, or Stalin if Stavka is gone (15.8).</modifier>
+    <modifier id="artillery" name="Artillery" applies-to="attacker" kind="shift" value="1" cap="3" ref="26.5.3">Optional rule; one per artillery unit. Air and artillery together never shift more than three.</modifier>
+    <modifier id="terrain-doubling" name="Terrain doubling" applies-to="defender" kind="multiplier" value="2" cap="2" ref="14.1.2">Mountain, major city, river and Kerch Strait conditions. A defender is never more than doubled; an attacker is never doubled.</modifier>
+    <modifier id="combat-supply-halving-mod" name="No combat supply" applies-to="either" kind="multiplier" value="0.5" ref="17.3.1">Halved, rounded up per unit, before terrain doubling.</modifier>
+    <rule id="air-range" ref="15.2" topic="combat">Air power requires all defenders in the battle to be within eight hexes of a single friendly HQ. Availability by year and weather is read from the Airpower Availability Chart; none on snow turns.</rule>
+    <rule id="fortress-cities" ref="26.9" topic="combat" optional="true">Combat is voluntary in fortress city hexes, with a lose-a-unit-instead-of-retreating option.</rule>
+  </combat>
+
+  <!-- ================= retreat ================= -->
+  <retreat routed-by="attacker" distance="1-2 for attackers, 2 for defenders" advance-after-combat="false" unsatisfiable="eliminate" blocked-by="coastline blocked all-water" ref="13.4">
+    <note>The attacker moves retreating units of both sides and chooses the length within the allowed range, but may not route the defender into elimination if an alternative exists. A two-hex retreat is a walk and may end one hex from its start. No retreat into an enemy ZOC or off the map. Retreat ignores movement costs and terrain restrictions; stacked units retreat individually; excess units after retreat are eliminated by their owner. Ground is taken by moving in next impulse, never by advance.</note>
+    <rule id="retreat-woods" ref="14.2" topic="retreat">Woods forbid retreat entirely; AR and DR become C.</rule>
+    <rule id="retreat-leaders-workers" ref="11.3 22.2 26.5.5" topic="retreat" units="leader worker">Leaders who retreat surrender; workers who retreat surrender; optional-rule artillery is eliminated if forced to retreat.</rule>
+  </retreat>
+
+  <!-- ================= randomiser ================= -->
+  <randomizer id="die" name="Die" kind="die" size="6">One six-sided die for combat, weather, sea movement and Archangel Lend-Lease.</randomizer>
+
+  <!-- ================= weather ================= -->
+  <weather source="rolled" randomizer="die" ref="4.1.1">
+    <list id="weather-states" name="Weather states">
+      <item code="clear"/><item code="light-mud"/><item code="mud"/><item code="snow"/>
+    </list>
+    <rule id="weather-fixed-turns" ref="4.1.1" topic="weather">May/June and July/August are automatically Clear; January/February is automatically Snow. The other three turns of the year roll on a chart indexed by month.</rule>
+    <rule id="weather-drm" ref="4.1.1" topic="weather">Each chart entry yields a weather state and a modifier added to a running DRM carried from turn to turn, which adjusts the next roll. Clear pushes the DRM up; Mud and Snow push it sharply down. Rolls are clamped to 0-7.</rule>
+    <rule id="weather-effects" topic="weather">Weather affects movement allowances, rail capacity (Axis six drops to three in snow), air availability, swamp (clear in snow), combat supply (snow only), supply range (eight drops to four in snow) and paratroop drops (snow only).</rule>
+  </weather>
+
+  <!-- ================= victory ================= -->
+  <victory>
+    <condition id="axis-moscow-stalin" side="axis" kind="immediate" ref="25.0">The Axis wins by controlling Moscow and eliminating Stalin.</condition>
+    <condition id="axis-berlin-held" side="axis" kind="final" turns="25" ref="25.0">The Axis wins if the Russians do not control Berlin at the end of the May/June 1945 turn.</condition>
+    <condition id="russian-berlin" side="russian" kind="immediate" ref="25.0">The Russian wins by controlling Berlin at any point.</condition>
+    <condition id="encirclement-default" side="axis russian" kind="immediate" ref="20.10.2">Either side loses immediately by failing to match units the opponent exited off a board edge.</condition>
+    <condition id="sudden-death-1942" side="axis russian" kind="scheduled" turns="5" ref="25.0">Hold all of: Kiev, Kalinin, Leningrad, Rostov, Kharkov, Stalino.</condition>
+    <condition id="sudden-death-1943" side="axis russian" kind="scheduled" turns="11" ref="25.0">Hold all of: Maikop Oil Fields, Moscow, Stalingrad, Kursk, Leningrad, Rostov.</condition>
+    <condition id="sudden-death-1944" side="axis russian" kind="scheduled" turns="17" ref="25.0">Hold all of: Leningrad, Smolensk, Kiev, Dnepropetrovsk, Sevastopol, Kharkov.</condition>
+    <condition id="sudden-death-1945-russian" side="russian" kind="scheduled" turns="23" ref="25.0">Surrender of Finland, Rumania and Hungary; one German city; all oil wells.</condition>
+    <condition id="sudden-death-1945-axis" side="axis" kind="scheduled" turns="23" ref="25.0">Prevent Rumanian and Hungarian surrender; all German cities; one oil well.</condition>
+  </victory>
+
+  <!-- ================= game-specific layer ================= -->
+
+  <note>Rail conversion: a mutable, side-owned network</note>
+  <rule id="rail-railhead-advance" ref="9.4.4" topic="movement" sides="axis">In the Axis end phase each railhead advances to the farthest rail hex occupied or passed through by an Axis unit that turn, but only if, both at the moment of occupation and again during the end phase, a path free of Russian ZOC and Russian-controlled cities can be traced along the railroad back to an Axis city or the west edge.</rule>
+  <rule id="rail-railhead-pushback" ref="9.4.5" topic="movement" sides="russian">The Russian pushes Axis railheads back in his own end phase by the mirror-image rule.</rule>
+  <rule id="rail-prior-turn" ref="9.4.1" topic="movement">Rail hexes must have been friendly before the turn of use. The phasing player never loses control of a rail hex during his own turn. Conversion may not occur in or through a hex in an enemy ZOC, except a friendly-controlled city hex.</rule>
+  <rule id="rail-city-conversion" ref="9.4.3" topic="movement">Controlling a city converts any rail in that hex. Controlling two cities with no enemy units, ZOCs or enemy-controlled cities on the rail line between them converts the entire line at once.</rule>
+  <rule id="rail-junction" ref="9.4.2 17.2.1" topic="control">A rail junction is controlled as if it were a city, and control of a city or junction may be gained merely by having it in one's uncontested ZOC.</rule>
+
+  <note>Control</note>
+  <rule id="control-last-toucher" ref="17.2.1" topic="control">A player controls a city, oil well or rail junction if he occupies it, or if it is out of enemy ZOC and he was the last to occupy it or have it in his uncontested ZOC. A vacant hex in both ZOCs is controlled by neither. Control may change in either impulse of either player's turn; it is stored state, not recomputed.</rule>
+
+  <note>Political events and national surrender</note>
+  <rule id="surrender-hungary" ref="24.0" topic="politics">Hungary surrenders when five or more Russian units are in Hungary at the Russian end phase.</rule>
+  <rule id="surrender-finland-rumania" ref="24.0" topic="politics">Finland and Rumania surrender when Helsinki or Bucharest respectively is Russian-controlled at the Russian end phase.</rule>
+  <rule id="surrender-italy" ref="24.0" topic="politics" turns="15">Italy surrenders automatically at the start of September/October 1943.</rule>
+  <rule id="surrender-finland-1944" ref="24.0" topic="politics" turns="21+">Finland surrenders at the start of each Axis turn from September/October 1944 unless the Axis control Leningrad. On surrender Helsinki becomes permanently Russian, neither player may enter Finland again, and all Axis units in Finland are eliminated.</rule>
+  <rule id="surrender-effect" ref="24.0" topic="politics">Surrender removes every unit of that nation, on the map and off. Surrenders are also 1945 victory objectives.</rule>
+  <rule id="garrison-bucharest" ref="20.7" topic="reinforcement" sides="russian" turns="11+">A Russian unit moving within five hexes of Bucharest from 1943 summons named Axis mountain corps to Bucharest on the next Axis impulse.</rule>
+  <rule id="garrison-warsaw" ref="20.8" topic="reinforcement" sides="russian" turns="17+">A Russian unit moving within two hexes of Warsaw from 1944 summons the 4th SS and Hermann Goering panzer corps.</rule>
+
+  <note>Off-board encirclement</note>
+  <rule id="encirclement-debt" ref="20.10.1" topic="other" turns="5+">From 1942, if one player exits units off an enemy board edge, the other must on his next turn remove an equal or greater number of combat factors and may place no arriving units until the debt is cleared.</rule>
+
+  <note>Partisans</note>
+  <rule id="partisan-placement" ref="19.1" topic="markers" sides="russian" units="partisan">Three partisans, placed in Russia in an Axis-controlled city or on an Axis rail hex, not in Axis ZOC and not within five hexes of an SS unit.</rule>
+  <rule id="partisan-cycle" ref="19.3 19.4" topic="markers" units="partisan">Partisans in Axis ZOC or within five hexes of an SS unit are removed at the end of each Axis movement phase, both impulses; all are relocated at the end of the Russian second impulse. They are never permanently eliminated.</rule>
+
+  <note>Reinforcement and replacement</note>
+  <rule id="reinforcement-schedule" ref="20.0 20.4" topic="reinforcement">Reinforcements arrive by the order-of-battle chart: a turn and a named city or board edge. Units listed for the first month arrive in the first impulse, the rest in the second. A unit whose city is enemy-controlled, or whose arrival would break stacking, enters from a board edge. Arrival hexes cost no movement.</rule>
+  <rule id="omb-diversion" ref="20.1" topic="reinforcement">Either player may divert arriving units to the Off-Map Units Box, rail units off a friendly edge into it, or move units into it by sea.</rule>
+  <rule id="south-edge-entry" ref="20.5" topic="reinforcement" sides="russian">One Russian reinforcement per turn may enter from the south edge, QQ5 to QQ16 inclusive.</rule>
+  <rule id="axis-replacements" ref="21.0" topic="replacement" sides="axis" turns="7,13,19">Axis replacements come only on the May/June turns of 1942, 1943 and 1944, from the pool of eliminated units, by a fixed list: one German armour corps per oil well held; all SS, Luftwaffe and HQ units; one each of the 3-4, 4-4 and 5-4 infantry corps; one mountain corps; one motorized corps; one unit from each of the four minor allies. Unused replacements are lost.</rule>
+  <rule id="russian-replacements" ref="22.0 22.7" topic="replacement" sides="russian">Russian replacement points each turn are the sum of the replacement values of all available worker units, plus an Archangel die roll from January/February 1942. Worker values double from May/June 1943. Points rebuild pool units whose combined combat factors do not exceed the total, with a cap of one armour and one Guards unit per turn, two of each from January/February 1944. Unused points are lost. A worker in a surrounded city still generates points.</rule>
+  <rule id="industrial-evacuation" ref="26.2" topic="replacement" sides="russian" optional="true">Worker units may leave by the east edge onto the turn track, reappearing three turns later in the Urals Industry box.</rule>
+  <rule id="battlegroups" ref="26.4" topic="combat" optional="true">EX, D1 and DE results leave a battle group counter in place of an eliminated defender.</rule>
+  <rule id="bidding" ref="26.8" topic="replacement" optional="true">Competitive bidding distributes a bid quantity of replacement points across turns.</rule>
+
+  <note>Ordering hazards</note>
+  <rule id="order-railheads-before-supply" ref="4.1.6" topic="sequence">Railheads advance before supply is checked in the end phase.</rule>
+  <rule id="order-partisan-removal" ref="19.3" topic="sequence">Partisan removal happens at the end of each Axis movement phase, both impulses.</rule>
+</game>

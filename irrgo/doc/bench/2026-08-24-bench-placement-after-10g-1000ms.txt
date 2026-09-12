@@ -1,0 +1,31 @@
+Latrunculi bench: 10 games, 8x10, 20 per side, slide, convex payoff, komi 1.5, policy placement, 1000 ms per searched ply, 8 threads
+base seed: 777001  (game g uses seed base+g)
+XML: not saved   memory tracking level: 0
+
+game   plies  moveP  capt  remv lastAct    tail  quiet   lead   peak  margin win  reason    depth    srchd
+6        154    114    31    31     114      40     40      0      3       1   B  QuietGame     3.49       68
+3        156    116    30    30     116      40     40      3      2      -2   B  QuietGame     3.54       68
+7        157    117    30    31     157       0     21      0      7       7   A  Reduction     3.65       68
+5        183    143    30    30     143      40     40      0      3       2   A  QuietGame     3.60       67
+4        191    151    29    30     151      40     40      1      2       0   B  QuietGame     3.49       68
+0        200    160    31    32     160      40     40      1      4      -4   B  QuietGame     3.46       68
+2        208    168    34    34     168      40     40      4      1       0   B  QuietGame     3.75       68
+1        238    198    34    35     198      40     40      0      3       1   B  QuietGame     3.66       67
+9        172    132    29    30     132      40     40      0      2       0   B  QuietGame     3.75       68
+8        180    140    28    28     140      40     40      0      7       6   A  QuietGame     3.65       68
+
+games                10
+mean plies           183.9   (movement 143.9)
+mean captures        30.6
+mean removals        31.1
+mean dead tail       36.0   plies after the last capture or removal
+mean longest quiet   38.1
+mean lead changes    0.9   (4 of 10 games had any)
+mean peak margin     3.4
+mean final margin    2.3   (absolute)
+ended by quiet game  9  (90%)
+ended by reduction   1  (10%)
+ended by immobilize  0  (0%)
+won by A / B         3 / 7
+mean depth           3.60   (over 678 searched opening plies)
+wall clock           307.577 s

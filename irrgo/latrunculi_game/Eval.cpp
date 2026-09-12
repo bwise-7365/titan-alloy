@@ -10,37 +10,9 @@ namespace Latrunculi {
 
 namespace {
 
-// Weights in "disc units": what one unit of each term is worth against one Free disc of
-// material. A threat is the most valuable positional asset because it is one move from
-// becoming material. A pair is a threat in waiting. Mobility and centrality are small
-// tie-breakers whose job is to choose between otherwise equal quiet moves -- they must
-// never add up to a real capture, which is why they are an order of magnitude smaller.
-constexpr double kThreatWeight   = 0.25;
-// Lowered 0.10 -> 0.02 on 2026-07-22 after self-play under both movement rules produced
-// two large mutually-defending blobs and ran out the quiet-game limit. `pairs` counts
-// EVERY adjacency between own discs, so the bonus grows quadratically with clumping
-// while the mobility penalty grows only linearly: nine discs in a solid 3x3 block hold
-// 12 pairs against 12 open neighbours, where the same nine dispersed hold 0 pairs and 36
-// open neighbours. At 0.10 that was +1.20 against +0.24 -- the engine was paid roughly
-// three quarters of a captured disc, every ply, to build a fortress, and the blob was
-// this function's stated optimum rather than a search artifact. At 0.02 the block scores
-// +0.24 against +0.72 and dispersal wins outright.
-//
-// This rebalances the two weights; it does not fix the term's shape. A saturating count
-// (each disc in at most one pair) or one restricted to pairs actually aimed at an enemy
-// would make shape unfarmable. See doc/latrunculi-implementation-plan.md, Stage 7.
-constexpr double kPairWeight     = 0.02;
-constexpr double kMobilityWeight = 0.02;
-constexpr double kCentreWeight   = 0.05;
-
-std::size_t index(int row, int column, int columns) {
-    return static_cast<std::size_t>(row) * static_cast<std::size_t>(columns) +
-           static_cast<std::size_t>(column);
-}
-
-bool inBounds(int row, int column, int rows, int columns) {
-    return row >= 0 && row < rows && column >= 0 && column < columns;
-}
+// The weights themselves live in EvalWeights (EvalWeights.h), defaults included, so the
+// bench can inject swept candidates at runtime; the justification comments moved there
+// too.
 
 // 1.0 at the centre of the board, 0.0 at an edge, averaged over the two axes. A board
 // one square wide has no spread on that axis, so every square is equally central there
@@ -56,21 +28,23 @@ double centrality(int row, int column, int rows, int columns) {
     return 0.5 * (rowTerm + columnTerm);
 }
 
-// If the disc at (row, column) is half-pinned along the axis (dRow, dColumn) by
-// `flanker` -- one end of the axis holds a flanker disc and the other end is on the board
-// and empty -- returns the index of that empty square, the one whose occupation completes
-// the custodial capture. Returns -1 if the disc is not half-pinned on this axis.
+}  // namespace
+
+// ── Shared flanking predicates (declared in Eval.h) ──────────────────────────
+
+// See the declaration comment: half-pin detection along one axis. Returns the index of
+// the empty completing square, or -1.
 int halfPinCompletion(const std::vector<Cell>& cells, int rows, int columns,
                       int row, int column, int dRow, int dColumn, Cell flanker) {
     const int aRow = row - dRow;
     const int aColumn = column - dColumn;
     const int bRow = row + dRow;
     const int bColumn = column + dColumn;
-    if (!inBounds(aRow, aColumn, rows, columns) || !inBounds(bRow, bColumn, rows, columns)) {
+    if (!onBoard(aRow, aColumn, rows, columns) || !onBoard(bRow, bColumn, rows, columns)) {
         return -1;
     }
-    const std::size_t aIndex = index(aRow, aColumn, columns);
-    const std::size_t bIndex = index(bRow, bColumn, columns);
+    const std::size_t aIndex = cellIndex(aRow, aColumn, columns);
+    const std::size_t bIndex = cellIndex(bRow, bColumn, columns);
     const Cell a = cells[aIndex];
     const Cell b = cells[bIndex];
     if (a == flanker && b == Cell::Empty) {
@@ -107,16 +81,16 @@ bool canOccupy(const std::vector<Cell>& cells, int rows, int columns, int square
         if (style == MoveStyle::Slide) {
             // Walk to the first occupied square on this ray: only that disc could slide
             // in, and only if it is mine.
-            while (inBounds(nRow, nColumn, rows, columns) &&
-                   cells[index(nRow, nColumn, columns)] == Cell::Empty) {
+            while (onBoard(nRow, nColumn, rows, columns) &&
+                   cells[cellIndex(nRow, nColumn, columns)] == Cell::Empty) {
                 nRow += kDRow[k];
                 nColumn += kDColumn[k];
             }
         }
-        if (!inBounds(nRow, nColumn, rows, columns)) {
+        if (!onBoard(nRow, nColumn, rows, columns)) {
             continue;
         }
-        if (cells[index(nRow, nColumn, columns)] == mine) {
+        if (cells[cellIndex(nRow, nColumn, columns)] == mine) {
             return true;
         }
     }
@@ -139,16 +113,18 @@ bool isThreatened(const std::vector<Cell>& cells, int rows, int columns,
     return false;
 }
 
+namespace {
+
 int emptyNeighbours(const std::vector<Cell>& cells, int rows, int columns,
                     int row, int column) {
     int count = 0;
     for (int k = 0; k < 4; ++k) {
         const int nRow = row + kDRow[k];
         const int nColumn = column + kDColumn[k];
-        if (!inBounds(nRow, nColumn, rows, columns)) {
+        if (!onBoard(nRow, nColumn, rows, columns)) {
             continue;
         }
-        if (cells[index(nRow, nColumn, columns)] == Cell::Empty) {
+        if (cells[cellIndex(nRow, nColumn, columns)] == Cell::Empty) {
             ++count;
         }
     }
@@ -164,8 +140,8 @@ int slideDestinations(const std::vector<Cell>& cells, int rows, int columns,
     for (int k = 0; k < 4; ++k) {
         int nRow = row + kDRow[k];
         int nColumn = column + kDColumn[k];
-        while (inBounds(nRow, nColumn, rows, columns) &&
-               cells[index(nRow, nColumn, columns)] == Cell::Empty) {
+        while (onBoard(nRow, nColumn, rows, columns) &&
+               cells[cellIndex(nRow, nColumn, columns)] == Cell::Empty) {
             ++count;
             nRow += kDRow[k];
             nColumn += kDColumn[k];
@@ -205,7 +181,7 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
     PositionalTerms terms;
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
-            const Cell cell = cells[index(row, column, columns)];
+            const Cell cell = cells[cellIndex(row, column, columns)];
 
             // Only Free discs can be threatened: a Bound disc is already captured, and a
             // Bound flanker does not pin (it mirrors Game::pinnedOn).
@@ -222,10 +198,10 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
             terms.centrality += centrality(row, column, rows, columns);
             terms.openNeighbours += mobilityProxy(cells, rows, columns, row, column, style);
             // Look only right and down so each pair is counted exactly once.
-            if (column + 1 < columns && cells[index(row, column + 1, columns)] == mine) {
+            if (column + 1 < columns && cells[cellIndex(row, column + 1, columns)] == mine) {
                 ++terms.pairs;
             }
-            if (row + 1 < rows && cells[index(row + 1, column, columns)] == mine) {
+            if (row + 1 < rows && cells[cellIndex(row + 1, column, columns)] == mine) {
                 ++terms.pairs;
             }
         }
@@ -233,11 +209,25 @@ PositionalTerms positionalTerms(const std::vector<Cell>& cells, int rows, int co
     return terms;
 }
 
-double positionalScore(const PositionalTerms& terms) {
-    return kThreatWeight * terms.threats +
-           kPairWeight * terms.pairs +
-           kMobilityWeight * terms.openNeighbours +
-           kCentreWeight * terms.centrality;
+void validateEvalWeights(const EvalWeights& weights) {
+    const double fields[] = {
+        weights.threat, weights.pair, weights.mobility, weights.centre,
+        weights.vulnerableAxes, weights.oneMoveCapturable, weights.spearheadPairs,
+        weights.diagonalSupport, weights.deniedSquares, weights.strikers,
+        weights.notchExposure,
+    };
+    for (double f : fields) {
+        if (!std::isfinite(f)) {
+            throw std::invalid_argument("Latrunculi eval: weight is not finite");
+        }
+    }
+}
+
+double positionalScore(const PositionalTerms& terms, const EvalWeights& weights) {
+    return weights.threat * terms.threats +
+           weights.pair * terms.pairs +
+           weights.mobility * terms.openNeighbours +
+           weights.centre * terms.centrality;
 }
 
 }  // namespace Latrunculi

@@ -25,14 +25,33 @@
 //     payoff     convex | gradient                            (default convex)
 //     komi       half-integer credited to player 1            (default kDefaultKomi)
 //     placement  policy | random                              (default policy)
-//                policy = the shared PlacementPolicy (one random placement, then runs of
-//                searched ones). random = every placement random, which removes any
+//                policy = the shared PlacementPolicy (each side's first placement
+//                random, the rest searched). random = every placement random, which removes any
 //                advantage either side gains from SEARCHING the opening and so isolates
 //                the first-move advantage proper.
 //     rows, columns, perside                                  (default 8, 10, 20)
+//     plies      stop each game after this many plies         (default 0 = play out)
+//                A capped game is unfinished, so it gets no game-quality row or
+//                summary -- only the depth and phase-boundary columns (BenchBoundary.h).
 //     threads    games played in parallel, one game per thread (default 1)
 //     xml        y | n -- save each finished game as XML      (default n)
 //     xmldir     directory for the XML files                  (default ".")
+//
+//   A-vs-B mode (weight tuning; see BenchAb.h and tools/latrunculi-sweep.ps1):
+//
+//     pairs      mirrored pairs to play; giving this key turns A-vs-B mode ON and the
+//                run plays 2*pairs games. Mutually exclusive with games=. Each pair is
+//                two games from the same seed with the colors swapped, so the residual
+//                first-mover advantage cancels out of the set comparison.
+//     wA.<f>, wB.<f>
+//                override one field of weight set A / B, e.g. wA.threat=0.5
+//                wA.spearheadPairs=0.3. Unspecified fields keep the EvalWeights
+//                defaults, so candidate-vs-incumbent needs no wB.* at all. Unknown
+//                field names and non-finite values throw. Requires pairs=.
+//     csv        append one machine-readable summary line to this file (header written
+//                when the file does not exist), for the sweep driver. Requires pairs=.
+//
+//   Example:  latrunculi_bench pairs=40 ms=200 seed=777001 wA.threat=0.5 csv=r1.csv
 //
 //     --mb <n> <m>  memory block tracking: level n, first suspect block m. Spelled and
 //                   behaved exactly as in abzar's demo.cpp, including taking both
@@ -41,13 +60,17 @@
 //                   always compiled in, so no rebuild is needed to use it; run with
 //                   `help` for the level descriptions. Default: no tracking.
 //
-// Game g uses seed base+g, and the seed follows the game index rather than the worker, so
-// threads= changes only how fast the run finishes and the order the rows appear in.
+// Classic mode: game g uses seed base+g. A-vs-B mode: game g uses seed base+(g/2), and
+// g%2 says which color set A holds. Either way the seed follows the game index rather
+// than the worker, so threads= changes only how fast the run finishes and the order the
+// rows appear in.
 //
-// Unlike irrgo_bench, this driver IS reproducible: NegaMax uses no random numbers, and
-// the only randomness in a game is the placement policy, which takes that seed. The one
-// caveat is the clock -- the search is time-budgeted, so a slower or busier machine
-// reaches a shallower depth and can therefore choose a different move.
+// Unlike irrgo_bench, this driver IS reproducible: NegaMax uses no random numbers, the
+// placement policy takes the game's seed, and the move-generation scan order -- which
+// the Game constructor seeds from the clock -- is reseeded here from the same game seed
+// (Game::reseedScanOrder), so equal-scored tie-breaks are also a function of the seed.
+// The one caveat is the clock -- the search is time-budgeted, so a slower or busier
+// machine reaches a shallower depth and can therefore choose a different move.
 //
 // DEPTH AND SRCHD: how deep iterative deepening actually got, averaged over the opening.
 // A move is chosen at the deepest iteration that COMPLETED -- one cut off by the deadline
@@ -73,13 +96,16 @@
 // the same command twice with different game counts -- say games=1 and games=10 -- and
 // compare: a real leak scales with the number of games, the iostream floor does not.
 
+#include "BenchAb.h"
 #include "Game.h"
 #include "GameStats.h"
 #include "GameXml.h"
+#include "BenchBoundary.h"
 #include "MemTrack.h"
 #include "PlacementPolicy.h"
 #include "Searcher.h"
 
+#include <array>
 #include <atomic>
 #include <cerrno>
 #include <chrono>
@@ -119,12 +145,22 @@ struct Options {
     int rows = Latrunculi::kDefaultRows;
     int columns = Latrunculi::kDefaultColumns;
     int perSide = Latrunculi::kDefaultPerSide;
+    int maxPlies = 0;  // 0 = play every game to its end
     int threads = 1;
     unsigned mbLevel = 0;
     std::uint64_t fsmb = 0;
     bool saveXml = false;
     std::string xmlDir = ".";
     bool showHelp = false;
+
+    // A-vs-B mode (0 = classic self-play). When pairs > 0 the run plays 2*pairs games
+    // and `games` is derived, never given.
+    int pairs = 0;
+    Latrunculi::EvalWeights weightsA{};
+    Latrunculi::EvalWeights weightsB{};
+    std::string csvPath;
+
+    bool abMode() const { return pairs > 0; }
 };
 
 std::string usage() {
@@ -139,9 +175,14 @@ std::string usage() {
         "    komi       half-integer credited to player 1           (default 0.5)\n"
         "    placement  policy | random                             (default policy)\n"
         "    rows, columns, perside                                 (default 8, 10, 20)\n"
+        "    plies      stop each game after this many plies         (default 0 = play out)\n"
         "    threads    games played in parallel, one game per thread (default 1)\n"
         "    xml        y | n -- save each finished game as XML     (default n)\n"
         "    xmldir     directory for the XML files                 (default \".\")\n"
+        "  A-vs-B weight matches (see the header comment in bench.cpp):\n"
+        "    pairs      mirrored pairs to play (turns A-vs-B on; excludes games=)\n"
+        "    wA.<f>=x, wB.<f>=x   override one weight field of set A / set B\n"
+        "    csv        append one summary line to this file (requires pairs=)\n"
         + AbsGame::MemTrack::levelHelp();
 }
 
@@ -196,6 +237,8 @@ double numberOf(const std::string& what, const std::string& value) {
 // somebody weeks later.
 Options parseArgs(int argc, char** argv) {
     Options opt;
+    bool gamesGiven = false;
+    bool weightKeyGiven = false;
 
     // Fetch the argument following the flag at argv[idx], advancing idx. Guards against
     // reading argv[argc], as abzar's demo.cpp does for the same flag.
@@ -236,7 +279,23 @@ Options parseArgs(int argc, char** argv) {
                                         b + "\", got \"" + value + "\"");
         };
 
-        if (key == "games")          { opt.games = positiveIntOf(key, value); }
+        // A-vs-B weight overrides: wA.<field> / wB.<field>. The field name is validated
+        // by applyWeightKey (unknown names throw with the valid list), the value by
+        // validateEvalWeights after the loop.
+        if (key.size() > 3 && (key.compare(0, 3, "wA.") == 0 ||
+                               key.compare(0, 3, "wB.") == 0)) {
+            Latrunculi::EvalWeights& weights =
+                (key[1] == 'A') ? opt.weightsA : opt.weightsB;
+            Latrunculi::Bench::applyWeightKey(weights, key.substr(3),
+                                              numberOf(key, value));
+            weightKeyGiven = true;
+            continue;
+        }
+
+        if (key == "games")          { opt.games = positiveIntOf(key, value);
+                                       gamesGiven = true; }
+        else if (key == "pairs")     { opt.pairs = positiveIntOf(key, value); }
+        else if (key == "csv")       { opt.csvPath = value; }
         else if (key == "ms")        { opt.msPerPly = positiveIntOf(key, value); }
         // Two spellings of one budget, so this driver can be given a per-move time the
         // same way irrgo_bench is. Whichever appears last on the command line wins.
@@ -245,6 +304,7 @@ Options parseArgs(int argc, char** argv) {
         else if (key == "rows")      { opt.rows = positiveIntOf(key, value); }
         else if (key == "columns")   { opt.columns = positiveIntOf(key, value); }
         else if (key == "perside")   { opt.perSide = positiveIntOf(key, value); }
+        else if (key == "plies")     { opt.maxPlies = positiveIntOf(key, value); }
         else if (key == "threads")   { opt.threads = positiveIntOf(key, value); }
         else if (key == "komi")      { opt.komi = numberOf(key, value);
                                        Latrunculi::validateKomi(opt.komi); }
@@ -262,6 +322,29 @@ Options parseArgs(int argc, char** argv) {
         else {
             throw std::invalid_argument("bench: unknown option \"" + key + "\"");
         }
+    }
+
+    // A-vs-B consistency. Each rule guards a way a run could silently measure something
+    // other than what was asked for.
+    if (opt.abMode() && gamesGiven) {
+        throw std::invalid_argument(
+            "bench: pairs= and games= are mutually exclusive (pairs plays 2*pairs games)");
+    }
+    if (!opt.abMode() && weightKeyGiven) {
+        throw std::invalid_argument(
+            "bench: wA./wB. weight overrides require pairs= (no silent single-set run)");
+    }
+    if (!opt.abMode() && !opt.csvPath.empty()) {
+        throw std::invalid_argument("bench: csv= requires pairs=");
+    }
+    if (opt.abMode() && opt.maxPlies > 0) {
+        throw std::invalid_argument(
+            "bench: plies= cannot be used with pairs= (an A-vs-B match needs winners)");
+    }
+    if (opt.abMode()) {
+        Latrunculi::validateEvalWeights(opt.weightsA);
+        Latrunculi::validateEvalWeights(opt.weightsB);
+        opt.games = 2 * opt.pairs;
     }
     return opt;
 }
@@ -312,10 +395,19 @@ struct WindowStats {
 };
 
 // Plays one complete game and returns it. Placement follows the shared PlacementPolicy
-// (a random opening placement, then runs of searched ones); movement is always searched.
-Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& window) {
+// (each side's first placement random, the rest searched); movement is always searched.
+// `sideWeights[p]` is the weight set player p searches with, or nullptr for the
+// defaults; in A-vs-B mode the weights are set before every searched ply, so each
+// side's whole search tree -- its model of the opponent included -- evaluates with its
+// own set, which is what a real match between two engines would do.
+Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& window,
+                          const std::array<const Latrunculi::EvalWeights*, 2>& sideWeights) {
     using namespace Latrunculi;
     Game game(opt.rows, opt.columns, opt.perSide, opt.style, opt.payoff, opt.komi);
+    // The constructor seeds the move-generation scan order from the clock; this driver
+    // promises reproducibility from the seed, so reseed it deterministically. Both
+    // games of an A-vs-B pair get the same seed and therefore break ties identically.
+    game.reseedScanOrder(seed);
     PlacementPolicy placement(seed);
 
     // C = stones on the board between both sides; the window is 2C plies.
@@ -323,7 +415,9 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& w
     const int windowPlies = 2 * totalStones;
     int ply = 0;
 
-    while (!game.isTerminal()) {
+    // plies= caps the game; the caller tells a capped game from a finished one by
+    // isOver(), so nothing here needs to record which it was.
+    while (!game.isTerminal() && (opt.maxPlies == 0 || ply < opt.maxPlies)) {
         const std::vector<AbsGame::MoveId> moves = game.getLegalMoves();
         if (moves.empty()) {
             throw std::runtime_error("bench: no legal moves in a non-terminal position");
@@ -342,6 +436,10 @@ Latrunculi::Game playGame(const Options& opt, std::uint64_t seed, WindowStats& w
             }
         }
         if (searched) {
+            const Latrunculi::EvalWeights* weights = sideWeights[game.currentPlayer()];
+            if (weights != nullptr) {
+                game.setEvalWeights(*weights);
+            }
             // The depth is only collected inside the window; past it the search runs
             // exactly as before and the out-parameter is not asked for.
             const bool inWindow = (ply < windowPlies);
@@ -395,7 +493,32 @@ std::string depthHeader() {
     return out.str();
 }
 
-// Plays games [0, opt.games) across opt.threads workers, filling stats[g] for each.
+// Everything measured about one game. `finished` is false for a game the plies= cap
+// stopped; its `stats` are then default-constructed and must not be read, since
+// analyseGame refuses an unfinished game and nothing here substitutes for it.
+struct GameResult {
+    bool finished = false;
+    Latrunculi::GameStats stats;
+    WindowStats window;
+    Latrunculi::Bench::BoundaryStats boundary;
+};
+
+// The row for a game the cap stopped: the index and ply count in their usual columns,
+// then a note padded to the stats header's width so the depth and boundary columns that
+// follow line up with the finished games' rows.
+std::string cappedRow(int gameIndex, int plies) {
+    std::ostringstream out;
+    out << std::left << std::setw(5) << gameIndex << std::right << std::setw(7) << plies
+        << "  capped (unfinished)";
+    std::string row = out.str();
+    const std::size_t width = Latrunculi::statsHeader().size();
+    if (row.size() < width) {
+        row.append(width - row.size(), ' ');
+    }
+    return row;
+}
+
+// Plays games [0, opt.games) across opt.threads workers, filling results[g] for each.
 //
 // This is safe because a game shares nothing with any other. Every Game, PlacementPolicy
 // and search is thread-local by construction, the engines hold no mutable global state,
@@ -408,9 +531,7 @@ std::string depthHeader() {
 // Two things do need guarding, and are: std::cout (interleaved << chains from several
 // threads would garble the table) and the first exception out of any worker, which is
 // re-thrown on the calling thread rather than left to terminate the process.
-void runGames(const Options& opt, std::uint64_t base,
-              std::vector<Latrunculi::GameStats>& stats,
-              std::vector<WindowStats>& windows) {
+void runGames(const Options& opt, std::uint64_t base, std::vector<GameResult>& results) {
     std::atomic<int> nextGame{0};
     std::mutex consoleMtx;
     std::mutex errorMtx;
@@ -424,16 +545,39 @@ void runGames(const Options& opt, std::uint64_t base,
             }
             try {
                 WindowStats window;
-                const Latrunculi::Game finished =
-                    playGame(opt, base + static_cast<std::uint64_t>(g), window);
-                if (opt.saveXml) {
-                    saveGameXml(finished, opt.xmlDir, g);
+                // A-vs-B: both games of pair g/2 share a seed; g%2 says which color
+                // set A holds. Classic: one game per seed, default weights both sides.
+                const int flip = g % 2;
+                const std::uint64_t seed = opt.abMode()
+                    ? base + static_cast<std::uint64_t>(g / 2)
+                    : base + static_cast<std::uint64_t>(g);
+                std::array<const Latrunculi::EvalWeights*, 2> sideWeights{nullptr,
+                                                                          nullptr};
+                if (opt.abMode()) {
+                    sideWeights[0] = (flip == 0) ? &opt.weightsA : &opt.weightsB;
+                    sideWeights[1] = (flip == 0) ? &opt.weightsB : &opt.weightsA;
                 }
-                stats[static_cast<std::size_t>(g)] = Latrunculi::analyseGame(finished);
-                windows[static_cast<std::size_t>(g)] = window;
-                const std::string row =
-                    Latrunculi::formatStatsRow(stats[static_cast<std::size_t>(g)], g) +
-                    depthColumns(window);
+                const Latrunculi::Game played = playGame(opt, seed, window, sideWeights);
+                if (opt.saveXml) {
+                    saveGameXml(played, opt.xmlDir, g);
+                }
+                GameResult& result = results[static_cast<std::size_t>(g)];
+                result.finished = played.isOver();
+                result.window = window;
+                result.boundary = Latrunculi::Bench::analyseBoundary(played);
+                std::string row;
+                if (result.finished) {
+                    result.stats = Latrunculi::analyseGame(played);
+                    row = Latrunculi::formatStatsRow(result.stats, g);
+                } else {
+                    row = cappedRow(g, static_cast<int>(played.history().size()));
+                }
+                row += depthColumns(window) +
+                       Latrunculi::Bench::boundaryColumns(result.boundary);
+                if (opt.abMode()) {
+                    // parseArgs forbids plies= with pairs=, so the game is finished.
+                    row += Latrunculi::Bench::abColumns(flip, result.stats.winner);
+                }
                 const std::lock_guard<std::mutex> lock(consoleMtx);
                 std::cout << row << std::endl;
             } catch (...) {
@@ -490,22 +634,36 @@ int main(int argc, char** argv) {
         // The banner is printed BEFORE tracking starts on purpose: the first use of an
         // iostream allocates buffers that live until process exit, and counting those as
         // leaks would bury the per-game signal the run exists to find.
-        std::cout << "Latrunculi bench: " << opt.games << " games, "
-                  << opt.rows << "x" << opt.columns << ", " << opt.perSide << " per side, "
+        std::cout << "Latrunculi bench: ";
+        if (opt.abMode()) {
+            std::cout << opt.pairs << " mirrored A-vs-B pairs (" << opt.games
+                      << " games), ";
+        } else {
+            std::cout << opt.games << " games, ";
+        }
+        std::cout << opt.rows << "x" << opt.columns << ", " << opt.perSide << " per side, "
                   << (opt.style == MoveStyle::Slide ? "slide" : "step/leap") << ", "
                   << (opt.payoff == PayoffStyle::ConvexMargin ? "convex" : "gradient")
                   << " payoff, komi " << opt.komi << ", "
                   << (opt.placement == PlacementMode::Policy ? "policy" : "random")
                   << " placement, "
                   << opt.msPerPly << " ms per searched ply, "
-                  << opt.threads << (opt.threads == 1 ? " thread\n" : " threads\n")
-                  << "base seed: " << base << "  (game g uses seed base+g)\n"
+                  << opt.threads << (opt.threads == 1 ? " thread" : " threads");
+        if (opt.maxPlies > 0) {
+            std::cout << ", games capped at " << opt.maxPlies << " plies";
+        }
+        std::cout << '\n'
+                  << "base seed: " << base
+                  << (opt.abMode()
+                          ? "  (pair p uses seed base+p; even game index = set A as P0)\n"
+                          : "  (game g uses seed base+g)\n")
                   << "XML: " << (opt.saveXml ? opt.xmlDir : std::string("not saved"))
                   << "   memory tracking level: " << opt.mbLevel;
         if (opt.fsmb > 0) {
             std::cout << ", first suspect block " << opt.fsmb;
         }
-        std::cout << "\n\n" << statsHeader() << depthHeader() << '\n';
+        std::cout << "\n\n" << statsHeader() << depthHeader() << Bench::boundaryHeader()
+                  << (opt.abMode() ? Bench::abHeader() : std::string()) << '\n';
 
         AbsGame::MemTrack::start(opt.mbLevel, opt.fsmb);
 
@@ -513,9 +671,8 @@ int main(int argc, char** argv) {
         // the tracker's report describes the engine and not the harness.
         {
             const auto started = std::chrono::steady_clock::now();
-            std::vector<GameStats> all(static_cast<std::size_t>(opt.games));
-            std::vector<WindowStats> windows(static_cast<std::size_t>(opt.games));
-            runGames(opt, base, all, windows);
+            std::vector<GameResult> results(static_cast<std::size_t>(opt.games));
+            runGames(opt, base, results);
             const auto elapsed = std::chrono::steady_clock::now() - started;
             const double seconds =
                 std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count()
@@ -525,17 +682,59 @@ int main(int argc, char** argv) {
             // run then carries the same weight, so a game whose opening was mostly random
             // placements cannot swing the figure.
             WindowStats runWindow;
-            for (const WindowStats& w : windows) {
-                runWindow.searched += w.searched;
-                runWindow.depthSum += w.depthSum;
+            std::vector<GameStats> all;
+            std::vector<Bench::BoundaryStats> boundaries;
+            all.reserve(results.size());
+            boundaries.reserve(results.size());
+            for (const GameResult& r : results) {
+                runWindow.searched += r.window.searched;
+                runWindow.depthSum += r.window.depthSum;
+                boundaries.push_back(r.boundary);
+                if (r.finished) {
+                    all.push_back(r.stats);
+                }
             }
 
-            std::cout << '\n' << formatStatsSummary(all)
-                      << "mean depth           "
+            // The game-quality summary describes finished games only. Under a cap it
+            // is either absent or, when a few games ended before the cap, explicitly
+            // partial -- never a summary of the capped games as if they had finished.
+            std::cout << '\n';
+            if (all.size() == results.size()) {
+                std::cout << formatStatsSummary(all);
+            } else {
+                std::cout << "game-quality summary: " << all.size() << " of "
+                          << results.size() << " games finished (the rest were capped)\n";
+                if (!all.empty()) {
+                    std::cout << formatStatsSummary(all);
+                }
+            }
+            std::cout << "mean depth           "
                       << ratioOr(static_cast<double>(runWindow.depthSum),
                                  static_cast<double>(runWindow.searched), 2)
                       << "   (over " << runWindow.searched << " searched opening plies)\n"
-                      << "wall clock           " << seconds << " s\n";
+                      << "wall clock           " << seconds << " s\n"
+                      << '\n' << Bench::formatBoundarySummary(boundaries);
+
+            if (opt.abMode()) {
+                std::cout << '\n' << Bench::formatAbSummary(all);
+                if (!opt.csvPath.empty()) {
+                    Bench::AbRunInfo info;
+                    info.baseSeed = base;
+                    info.pairs = opt.pairs;
+                    info.msPerPly = opt.msPerPly;
+                    info.rows = opt.rows;
+                    info.columns = opt.columns;
+                    info.perSide = opt.perSide;
+                    info.style = opt.style;
+                    info.payoff = opt.payoff;
+                    info.komi = opt.komi;
+                    info.wallSeconds = seconds;
+                    info.weightsA = opt.weightsA;
+                    info.weightsB = opt.weightsB;
+                    Bench::appendAbCsv(opt.csvPath, info, all);
+                    std::cout << "csv line appended to " << opt.csvPath << '\n';
+                }
+            }
         }
 
         AbsGame::MemTrack::stop();
