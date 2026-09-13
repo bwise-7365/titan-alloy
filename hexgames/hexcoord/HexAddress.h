@@ -38,7 +38,8 @@ namespace HexCoord {
     static constexpr HexCentre fromQrs(Qrs) noexcept;
 
     constexpr Abc abc() const { return abc_; }
-    // q = (c - b) / 3, r = (a - c) / 3, s = (b - a) / 3, exact by the invariant.
+    // The QRS triple of this centre: the three differences (c-b, a-c, b-a), shifted by the one
+    // residue that makes all three divisible by three (the invariant guarantees one exists).
     constexpr Qrs qrs() const;
 
     // Total operations: a centre plus a step is a centre; two centres differ by a step vector.
@@ -108,6 +109,62 @@ namespace HexCoord {
   std::vector<HexCentre> ring(HexCentre, int radius);             // radius >= 1, clockwise
   std::vector<HexCentre> disc(HexCentre, int radius);             // radius >= 0, centre first
   constexpr int hexDist(HexCentre, HexCentre) noexcept;
+
+  // ---- definitions of the constexpr declarations above ----------------------------------------
+
+  constexpr HexCentre
+  HexCentre::fromQrs(Qrs v) noexcept
+  {
+    return HexCentre{v.toAbc(), 0};
+  }
+
+  // The ABC triple of a centre sums to a multiple of three, so shifting it by the one representative
+  // that makes each difference divisible by three recovers the QRS triple exactly.
+  constexpr Qrs
+  HexCentre::qrs() const
+  {
+    const int u = abc_.c() - abc_.b();
+    const int v = abc_.a() - abc_.c();
+    const int w = abc_.b() - abc_.a();
+    const int t = iMod(-u, 3);
+    return Qrs{(u + t) / 3, (v + t) / 3, (w + t) / 3};
+  }
+
+  constexpr HexCentre
+  HexCentre::operator+(Qrs d) const noexcept
+  {
+    return HexCentre{abc_ + d.toAbc(), 0};
+  }
+
+  constexpr Qrs
+  HexCentre::operator-(HexCentre other) const noexcept
+  {
+    return HexCentre{abc_ - other.abc_, 0}.qrs();
+  }
+
+  constexpr HexCentre
+  HexCentre::neighbour(Direction d) const noexcept
+  {
+    return *this + step(d);
+  }
+
+  constexpr std::pair<HexVertex, HexVertex>
+  HexEdge::vertices() const
+  {
+    return {lo_, hi_};
+  }
+
+  constexpr Abc
+  HexEdge::twiceMidpoint() const
+  {
+    return lo_.abc() + hi_.abc();
+  }
+
+  constexpr int
+  hexDist(HexCentre l, HexCentre r) noexcept
+  {
+    return (l - r).height();
+  }
 
 }  // namespace HexCoord
 // ----------------------------------------------

@@ -8,12 +8,13 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core contracts)          milestone: M0 done, M1 done except review items
-- in-flight tasks: none (Fable alone)
-- next coordinator action: with Ben's go-ahead on token spend, write tasks/01-hexcoord.md (W1),
-  tasks/02-hexxml-hexmodel.md (W2), tasks/03-hexrecord.md (W3) from the contract headers + test lists
-  and launch M2/M3/M5 in parallel; meanwhile Ben reviews hexsave.xsd and hexpackage.xsd
-- blockers: none (hexview contract deferred to M10; PGG rules XML deferred to M7)
+- phase: 1 (core implementation)     milestone: M2 done (2026-09-13), M3/M4/M5 next
+- in-flight tasks: none (task 01 done and committed)
+- next coordinator action: with Ben's go-ahead, write tasks/02-hexxml-hexmodel.md (W2, sonnet) and
+  tasks/03-hexrecord.md (W3, sonnet) and launch M3 and M5 in parallel; W1 (opus) then takes M4
+  (hexsearch + hexengine) once M3's Board/Position land
+- blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; hexview contract deferred to M10;
+  PGG rules XML deferred to M7)
 - last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
 - M1 progress: hexcoord contract headers + test list + puml written; hexsave.xsd and hexpackage.xsd
   written (awaiting Ben's review in XML Copy Editor); next: hexmodel/hexengine/hexview contract
@@ -28,8 +29,8 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 - [x] M1  Contracts (F): interface headers (hexcoord, hexmodel, hexsearch, hexrules, hexengine, hexrecord),
           PlantUML `[PROPOSED]` (3 class, 4 sequence), test lists, hexsave.xsd, hexpackage.xsd,
           TRC test scenario + trc.package.xml, five forward design docs (01 02 04 05 08)
-- [ ] M2  hexcoord (W1): ABC strong types, Direction, Grid/HexIdFormat, pixel mapping, testtri port,
-          four-sheet pixel test
+- [x] M2  hexcoord (W1, 2026-09-13): ABC strong types, Direction, Grid/HexIdFormat, pixel mapping,
+          testtri port, four-sheet pixel test — 27 tests, ctest 35/35
 - [ ] M3  hexxml + hexmodel (W2): document models, Board/Position/Roster, BoardBuilder, package loader
           and package tests on the four sets
 - [ ] M4  hexsearch + hexengine (W1): scratch/Field/algorithms, Session, PhaseCursor, PRNG streams,
@@ -62,6 +63,13 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 - 2026-09-12 Style: irrgo layout (`#pragma once`, PascalCase files) with visolver's `.clang-format`
   (2-space). Banners enforced by `tools/banner-check.py`.
 
+- 2026-09-13 hexcoord (W1 review): a second grid on a sheet is placed by `Grid(GridSpec, const Grid&)`
+  reading the offset from the two pixel origins, tolerance `kLatticeTolerance = 0.05 * size` (the
+  1e-6 in the plan was unrealistic: scan-fitted origins put Dai Senso's east grid 0.0012 * size off).
+  Offset frame exposed as free functions `abcOfIndex`/`indexOfAbc` (the only place offset coordinates
+  exist). Pointy offsets derived from the renderer: row 2m -> (col, -3m, -col), row 2m+1 ->
+  (col+1, -(3m+1), -col); pointy basis = flat basis turned 30 degrees clockwise on screen.
+
 ## XSD proposals awaiting review
 
 - (none yet) Candidates noted in the plan: `unit-type/@reveal` (PGG untried), `phase/@repeat-per-side`,
@@ -69,6 +77,9 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## Open questions
 
+- `offset="even"` grids: hexcoord puts cell (0,0) at (ox, oy) exactly; hexsheet2svg.py would draw that
+  cell half a hex along the shifted axis. All relative geometry agrees; only the meaning of ox/oy on an
+  even-offset grid differs, and no sheet uses offset="even" today. Decide when one does.
 - `coords.txt` prose labels B "NorthEast"/C "SouthEast" disagree with the algebra in `tricoord.cpp`
   (B is the north-west corner vector, C the south-west). The code follows the algebra.
 

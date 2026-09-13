@@ -68,14 +68,33 @@ namespace HexCoord {
 
   std::string letters(int n);  // throws std::invalid_argument for n < 1
 
+  // The offset (col, row) frame. It exists here and nowhere else in the engine. Flat-topped grids
+  // shift odd columns down and pointy-topped ones shift odd rows right; Parity::Even shifts the
+  // others, which is the same lattice read one index over. Unbounded: no grid extent is consulted.
+  Abc abcOfIndex(GridIndex, Orientation, Parity);
+  GridIndex indexOfAbc(HexCentre, Orientation, Parity);
+
+  // How far a second grid's pixel origin may sit from the shared lattice, as a fraction of size.
+  // The sheet XML's origins are fitted to a scan by hand, so they are good to a small part of a hex
+  // and no better: Dai Senso's two maps are 0.0012 * size apart.
+  inline constexpr double kLatticeTolerance = 0.05;
+
   // One grid on a sheet. Several grids on one sheet (Dai Senso's west and east maps) share one ABC
   // lattice: latticeOffset places this grid's (0, 0) cell on it, and the constructor throws unless
   // the pixel origin sits on that lattice within 1e-6 * size.
   class Grid {
   public:
+    // Throws std::invalid_argument on an empty extent, a non-positive size, an unknown placeholder
+    // in the id format, or a lattice offset that is not a hex centre.
     explicit Grid(GridSpec spec, Abc latticeOffset = Abc{});
+    // A second grid of the same sheet, on the lattice of an existing one: the offset is read off the
+    // two pixel origins. Throws unless the orientation and size agree and the origin lands on a hex
+    // centre of that lattice within kLatticeTolerance * size.
+    Grid(GridSpec spec, const Grid& sheetLattice);
 
     const GridSpec& spec() const { return spec_; }
+    // The ABC coordinate of this grid's cell (0, 0) on the sheet's lattice.
+    Abc latticeOffset() const { return base_; }
 
     // (col, row) <-> centre. The offset formulas are the two documented in tricoord for flat-topped
     // grids (odd columns shifted down) and their pointy-topped counterpart (odd rows shifted
@@ -102,10 +121,24 @@ namespace HexCoord {
     std::vector<HexId> expandRange(const HexId& from, const HexId& to) const;
 
   private:
+    // The lattice hex nearest a pixel, with no regard for the grid's extent; hexAt() adds the
+    // extent and the clip, and the sheet-lattice constructor uses it to place a second grid.
+    HexCentre nearestCentre(Pixel) const;
+    // The lattice offset that puts `other`'s pixel origin on this grid's lattice, or a throw.
+    Abc offsetFor(const GridSpec& other) const;
+    // The printed id of a cell and the cell of a printed id, both ignoring the clip, as the
+    // renderer's make_id and locate do while the clip is still being resolved.
+    HexId renderedId(GridIndex) const;
+    std::optional<GridIndex> locate(const HexId&) const;
+    std::vector<HexId> clippedIds() const;
+
     GridSpec spec_;
+    HexIdFormat format_;
     Abc base_;
+    Pixel origin_;  // the pixel of the lattice point Abc{}, which is not this grid's cell (0, 0)
     std::vector<HexId> ids_;
     std::map<HexId, GridIndex> byId_;
+    std::map<GridIndex, HexId> byIndex_;
   };
 
 }  // namespace HexCoord
