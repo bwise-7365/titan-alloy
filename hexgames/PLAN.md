@@ -8,11 +8,12 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core implementation)     milestone: M2 done (2026-09-13), M3/M4/M5 next
-- in-flight tasks: none (task 01 done and committed)
-- next coordinator action: with Ben's go-ahead, write tasks/02-hexxml-hexmodel.md (W2, sonnet) and
-  tasks/03-hexrecord.md (W3, sonnet) and launch M3 and M5 in parallel; W1 (opus) then takes M4
-  (hexsearch + hexengine) once M3's Board/Position land
+- phase: 1 (core implementation)     milestone: M5 done (2026-09-13); M3 in progress (hexxml done, hexmodel next)
+- in-flight tasks: tasks/02-hexxml-hexmodel.md (W2, sonnet)
+- next coordinator action: when task 02 says `review`: rebuild, review API notes (SheetDoc keeps
+  eight same-kind vectors, not one interleaved list -- acceptable), commit M3; then write
+  tasks/04-hexsearch-hexengine.md and launch W1 (opus) on M4, whose brief must also cover the
+  `// M4:` glue W3 left in hexrecord/Record.cpp and its deferred replay tests
 - blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; hexview contract deferred to M10;
   PGG rules XML deferred to M7)
 - last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
@@ -35,7 +36,10 @@ milestone boxes, and appends to the decision log. Workers write only their own `
           and package tests on the four sets
 - [ ] M4  hexsearch + hexengine (W1): scratch/Field/algorithms, Session, PhaseCursor, PRNG streams,
           events, default policies, adjudicators, determinism + parallel tests, hexgames_cli
-- [ ] M5  hexrecord (W3): hexsave reader/writer, canonical writer, replay, golden harness, validate
+- [x] M5  hexrecord (W3, 2026-09-13): SaveModel document model, hexsave reader with document-level
+          checks, canonical writer (validates), LCS diff and golden report; 15 tests. Session glue
+          (readRecord/writeRecord/replay/sessionFor/compareWithGolden) compiles with `// M4:` markers;
+          replay tests deferred to M4
 - [ ] M6  TRC engine module (W4): bindings, policies, ledger, scripts + goldens
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
 - [ ] M8  DS engine module (W4)
