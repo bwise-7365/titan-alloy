@@ -1,0 +1,7 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
+hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
+
+(none yet)
+
+Copyright Ben Paul Wise. All Rights Reserved.

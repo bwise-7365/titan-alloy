@@ -1,0 +1,59 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base", "hidden": true, "generator": "Ninja",
+      "cacheVariables": { "CMAKE_EXPORT_COMPILE_COMMANDS": "ON" }
+    },
+    {
+      "name": "win-msvc-debug", "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug", "CMAKE_CXX_COMPILER": "cl",
+        "Qt6_DIR": "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6",
+        "HEXGAMES_PYTHON": "C:/Users/bwise/AppData/Local/Python/bin/python.exe"
+      }
+    },
+    {
+      "name": "win-msvc-release", "inherits": "win-msvc-debug",
+      "binaryDir": "${sourceDir}/cmake-build-release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "headless", "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-headless",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HEXGAMES_BUILD_GUI": "OFF" }
+    },
+    {
+      "name": "linux-debug", "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "linux-release", "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/cmake-build-release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "win-msvc-debug",   "configurePreset": "win-msvc-debug" },
+    { "name": "win-msvc-release", "configurePreset": "win-msvc-release" },
+    { "name": "headless",         "configurePreset": "headless" },
+    { "name": "linux-debug",      "configurePreset": "linux-debug" },
+    { "name": "linux-release",    "configurePreset": "linux-release" }
+  ],
+  "testPresets": [
+    { "name": "win-msvc-debug",   "configurePreset": "win-msvc-debug",
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }, "output": { "outputOnFailure": true } },
+    { "name": "win-msvc-release", "configurePreset": "win-msvc-release",
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }, "output": { "outputOnFailure": true } },
+    { "name": "headless",         "configurePreset": "headless", "output": { "outputOnFailure": true } },
+    { "name": "linux-debug",      "configurePreset": "linux-debug",
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }, "output": { "outputOnFailure": true } },
+    { "name": "linux-release",    "configurePreset": "linux-release",
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }, "output": { "outputOnFailure": true } }
+  ]
+}

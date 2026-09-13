@@ -1,0 +1,26 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
+# build trees and IDE state
+cmake-build-*/
+build/
+out/
+.idea/
+.vs/
+.vscode/
+CMakeCache.txt
+CMakeFiles/
+Testing/
+_deps/
+compile_commands.json
+# python
+__pycache__/
+*.pyc
+# rendered diagrams and golden diagnostics
+uml/out/
+*.actual.xml
+# latex
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+# Copyright Ben Paul Wise. All Rights Reserved.
