@@ -19,7 +19,14 @@ namespace HexEngine {
   StreamTag streamTag(std::string_view);   // throws std::invalid_argument for an unknown name
 
   // SplitMix64 finaliser over seed and tag: distinct tags give decorrelated generators.
-  constexpr std::uint64_t mixSeed(std::uint64_t seed, StreamTag tag);
+  constexpr std::uint64_t
+  mixSeed(std::uint64_t seed, StreamTag tag)
+  {
+    std::uint64_t z = seed ^ ((static_cast<std::uint64_t>(tag) + 1ull) * 0x9E3779B97F4A7C15ull);
+    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
+    z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
+    return z ^ (z >> 31);
+  }
 
   class PrngStreams {
   public:
@@ -29,6 +36,9 @@ namespace HexEngine {
     std::uint64_t draws(StreamTag) const;  // outputs consumed so far, for hexsave stream/@draws
     // Re-derive a stream and discard n outputs (loading a save).
     void restore(StreamTag, std::uint64_t draws);
+    // Added in M4: the one counted draw. Every consumer goes through this (or rollDie, which does)
+    // so that draws() and the event log can never disagree.
+    std::uint64_t next(StreamTag);
 
   private:
     std::uint64_t seed_;

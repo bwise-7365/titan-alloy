@@ -162,6 +162,10 @@ namespace HexRules {
     TerrainId terrain(const std::string& id) const;
     EdgeTerrainId edgeTerrain(const std::string& id) const;
     PhaseId phase(const std::string& id) const;
+    // Added in M4: the same map, whole, so that a PhaseId can be written back as the document's own
+    // phase id (a golden's cursor/@phase and every move/@phase). PhaseNode keeps only the display
+    // name, so this is the only route from a dense PhaseId to the token a document holds.
+    const std::map<std::string, PhaseId>& phaseIds() const { return phaseByName_; }
 
   private:
     friend class RuleSetBuilder;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package id="nosides" title="No side bindings">
+  <rules path="rules-broken.xml"/>
+  <sheet path="sheet-broken.xml"/>
+  <counters path="counters-broken.xml"/>
+  <unit type="infantry" counters="known-unit"/>
+</package>

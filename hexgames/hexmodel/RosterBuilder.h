@@ -25,16 +25,12 @@ namespace HexModel {
     // binding, when the bound type is unknown to the rules, or when its value line does not parse.
     // Marker-family counters are skipped.
     //
-    // OPEN QUESTION (see the task log): a unit-type's own @side restricts most counters to one side
-    // already, but a handful of shared, side-agnostic types (infantry, armour, HQ, leader ...) are
-    // the very same rules unit-type on every side, so the counter's own side cannot be read out of
-    // hexrules.xsd or hexpackage.xsd at all -- it is carried only by the counter id's own naming
-    // convention (TRC: "g-"/"r-" nationality prefixes), which is a per-game fact neither this
-    // builder nor PackageLoader::load's fixed (manifest, ValueLineReader) signature has anywhere to
-    // receive. Pending a real mechanism (a package binding addition, most likely), RosterBuilder
-    // tries the "countries"-shaped region layer (a region whose id equals the counter's style) and
-    // otherwise assigns the rules' first side as an explicit, flagged placeholder -- never a throw,
-    // since no test in the accepted list checks UnitSpec::side, but not a correct answer either.
+    // UnitSpec::side comes from the package's <side rules="..." styles="..."/> bindings: the
+    // counter's front-face style (the printed ground colour, which is the side on every sheet) names
+    // exactly one rules side. A style bound to no side, or to two, and a counter bound to a side its
+    // own unit-type's @side mask excludes, are each a throw naming the counter and the style.
+    // PackageLoader::check collects the same problems for every counter instead of stopping at the
+    // first (M4, task 04).
     static Roster build(const HexXml::CounterSetDoc&, const HexRules::RuleSet&, const HexXml::PackageDoc&,
                         const ValueLineReader&);
 

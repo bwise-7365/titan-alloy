@@ -54,10 +54,23 @@ namespace HexEngine {
     virtual void onEvent(const Event&) = 0;
   };
 
+  // Added in M4: the attributes hexsave's <event> element carries, which are also exactly the
+  // fields the one-line text form prints. Keeping them as a value lets hexrecord write a golden
+  // without re-parsing the line.
+  struct EventFields {
+    std::string kind;
+    std::optional<std::string> unit;
+    std::optional<std::string> hex;
+    std::optional<std::string> side;
+    std::optional<std::string> value;
+    std::string text;
+  };
+
   // One line per event, the golden record's text form; needs the Board and Roster for names.
   class TextEventEncoder {
   public:
     static std::string line(const Event&, const class GameNames&);
+    static EventFields fields(const Event&, const class GameNames&);
   };
 
 }  // namespace HexEngine

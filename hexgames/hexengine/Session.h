@@ -48,6 +48,12 @@ namespace HexEngine {
     const Position& position() const { return position_; }
     const EventLog& events() const { return log_; }
     Prompt prompt() const;
+    // Added in M4: what a save has to write back -- the seed and each stream's draw count -- and the
+    // policy set a fork or a record writer needs to hand on.
+    const PrngStreams& streams() const { return streams_; }
+    const Policies& policies() const { return policies_; }
+    // The immutable definition plus this session's position, as every policy and adjudicator sees it.
+    struct Ctx context() const;
 
     // Finite choices: decisions, phase ends, placements, game verbs. Unit moves come from reachable().
     std::vector<Command> legalCommands() const;
@@ -65,6 +71,11 @@ namespace HexEngine {
     void detach(EventSink&);
 
   private:
+    // Added in M4: validate the command, then build the next Position through the adjudicators,
+    // writing every event into `sink`. Throws before touching anything on an illegal command, which
+    // is what leaves position_ untouched.
+    Position adjudicate(const Command&, EventSink&);
+
     std::shared_ptr<const HexRules::GameDefinition> definition_;
     Policies policies_;
     Position position_;

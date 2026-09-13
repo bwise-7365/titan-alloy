@@ -9,6 +9,7 @@
 #include "hexmodel/Ids.h"
 
 #include <string>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -33,6 +34,10 @@ namespace HexEngine {
     virtual std::string verb(const Command&) const = 0;
     // Throws std::invalid_argument naming the verb or argument it could not read.
     virtual Command parse(const std::string& verb, const std::vector<std::pair<std::string, std::string>>& args) const = 0;
+    // Added in M4: the inverse of parse, so that a command written into a save or a golden reads
+    // back as itself. The names are hexsave move's own attribute names where one fits (units, mode,
+    // path, target, modifiers) and an <arg> name otherwise (what, answer, where).
+    virtual std::vector<std::pair<std::string, std::string>> arguments(const Command&) const = 0;
   };
 
 }  // namespace HexEngine

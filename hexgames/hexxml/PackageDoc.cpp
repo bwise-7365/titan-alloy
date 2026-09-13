@@ -84,6 +84,15 @@ namespace HexXml {
       return l;
     }
 
+    PackageSideBindingDoc
+    parseSideBinding(const XmlNode& node)
+    {
+      PackageSideBindingDoc s;
+      s.rules = node.required("rules");
+      s.styles = splitTokens(node.required("styles"));
+      return s;
+    }
+
     PackageUnitBindingDoc
     parseUnitBinding(const XmlNode& node)
     {
@@ -125,6 +134,9 @@ namespace HexXml {
     }
     for (const XmlNode& s : root.children("scenario")) {
       p.scenarios.push_back(parseScenario(s));
+    }
+    for (const XmlNode& s : root.children("side")) {
+      p.side.push_back(parseSideBinding(s));
     }
     for (const XmlNode& t : root.children("terrain")) {
       p.terrain.push_back(parseTerrainBinding(t));

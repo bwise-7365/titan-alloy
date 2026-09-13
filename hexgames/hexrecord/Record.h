@@ -7,6 +7,7 @@
 #pragma once
 #include "hexengine/Command.h"
 #include "hexengine/Session.h"
+#include "hexrecord/SaveModel.h"
 #include "hexrules/Package.h"
 
 #include <cstdint>
@@ -29,6 +30,9 @@ namespace HexRecord {
     // Present in saves and goldens: what the engine recorded when it applied the command.
     std::optional<std::string> outcome;
     std::vector<std::string> draws;   // "combat#5=3", "deck=card-17"
+    // Added in M4: the events the command emitted, as hexsave <event> children, so that a golden
+    // written from a replay carries the same log the engine printed.
+    std::vector<SaveEvent> events;
   };
 
   struct Record {
@@ -58,6 +62,11 @@ namespace HexRecord {
     std::string expected;
     std::string actual;
   };
+
+  // Added in M4: applies a record's log to a session, returning what the engine recorded for each
+  // command -- its outcome, its draws and its events. This is the log writeRecord writes, and the
+  // log replay() compares against a golden's own.
+  std::vector<ScriptedMove> playRecord(HexEngine::Session&, const Record&);
 
   // Applies a record's log to a session built from its scenario. In strict mode each recorded
   // outcome and draw is compared as it goes and the first divergence is returned.

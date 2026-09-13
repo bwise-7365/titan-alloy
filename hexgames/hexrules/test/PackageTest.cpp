@@ -63,8 +63,35 @@ TEST(PackageTest, TrcLoads)
   EXPECT_GT(def.board->hexCount(), 1000u);
   EXPECT_EQ(202u, def.roster->units().size());
 
+  // Every unit counter's printed ground colour is bound to a side by the package's <side> elements.
+  const HexModel::SideId axis = def.rules->side("axis");
+  const HexModel::SideId russian = def.rules->side("russian");
+  EXPECT_EQ(96u, def.roster->ofSide(axis).size());
+  EXPECT_EQ(106u, def.roster->ofSide(russian).size());
+  for (const HexModel::UnitSpec& unit : def.roster->units()) {
+    EXPECT_TRUE(axis == unit.side || russian == unit.side) << unit.counter.text;
+  }
+
   const std::vector<HexRules::PackageProblem> problems = HexRules::PackageLoader::check(manifest, &trcValueLines);
   EXPECT_TRUE(problems.empty()) << (problems.empty() ? "" : problems.front().message);
+}
+
+TEST(PackageTest, UnboundCounterStyleIsReported)
+{
+  const std::filesystem::path manifest = root() / "hexrules" / "test" / "package-no-sides.xml";
+  const std::vector<HexRules::PackageProblem> problems = HexRules::PackageLoader::check(manifest, &trcValueLines);
+
+  const auto contains = [&](std::string_view needle) {
+    for (const HexRules::PackageProblem& p : problems) {
+      if (std::string::npos != p.message.find(needle)) {
+        return true;
+      }
+    }
+    return false;
+  };
+  EXPECT_TRUE(contains("known-unit"));
+  EXPECT_TRUE(contains("plain"));
+  EXPECT_THROW((void)HexRules::PackageLoader::load(manifest, &trcValueLines), std::invalid_argument);
 }
 
 TEST(PackageTest, BindingProblemsAreNamed)

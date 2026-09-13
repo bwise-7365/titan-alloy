@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<counters id="toy" title="Toy counters for the hexsearch tests">
+  <palette>
+    <color id="ink" value="#000000"/>
+  </palette>
+  <styles>
+    <style id="plain" ground="ink" text="ink" box-stroke="ink"/>
+  </styles>
+  <counter id="toy-infantry" family="unit">
+    <front style="plain">
+      <value>1-1</value>
+    </front>
+  </counter>
+</counters>

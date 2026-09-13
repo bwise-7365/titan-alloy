@@ -59,6 +59,13 @@ namespace HexXml {
     std::string rules;
   };
 
+  // Counter style to rules side: the printed ground colour is the side on every sheet. One element
+  // per side; every unit, support and leader counter's style must be bound to exactly one of them.
+  struct PackageSideBindingDoc {
+    std::string rules;
+    std::vector<std::string> styles;
+  };
+
   // Counter to unit type: an explicit id list, or a regular expression over counter ids.
   struct PackageUnitBindingDoc {
     std::string type;
@@ -76,6 +83,7 @@ namespace HexXml {
     std::vector<PackagePathDoc> counters;
     std::vector<PackageCardsDoc> cards;
     std::vector<PackageScenarioDoc> scenarios;
+    std::vector<PackageSideBindingDoc> side;
     std::vector<PackageTerrainBindingDoc> terrain;
     std::vector<PackageHexsideBindingDoc> hexside;
     std::vector<PackageNetworkBindingDoc> network;

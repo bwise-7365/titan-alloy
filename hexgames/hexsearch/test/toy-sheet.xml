@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet id="toy" title="Toy 5x5 sheet for the hexsearch tests" width="200" height="200" background="frame">
+  <grid orientation="pointy" offset="odd" cols="5" rows="5" size="10" ox="20" oy="20"
+        id-format="{colletter}{row}" terrain="clear"/>
+  <palette>
+    <color id="frame" value="#ffffff"/>
+    <color id="ink" value="#000000"/>
+  </palette>
+  <terrains>
+    <terrain id="clear" name="Clear" fill="frame" stroke="ink"/>
+    <terrain id="rough" name="Rough" fill="frame" stroke="ink"/>
+  </terrains>
+  <lines>
+    <line id="wall" stroke="ink" width="2"/>
+  </lines>
+  <hexes terrain="rough" ids="B2 D4"/>
+  <!-- A wall along every hexside between row 3 and row 4: the only way from one to the other. -->
+  <edge at="A3:se" line="wall"/>
+  <edge at="A3:sw" line="wall"/>
+  <edge at="B3:se" line="wall"/>
+  <edge at="B3:sw" line="wall"/>
+  <edge at="C3:se" line="wall"/>
+  <edge at="C3:sw" line="wall"/>
+  <edge at="D3:se" line="wall"/>
+  <edge at="D3:sw" line="wall"/>
+  <edge at="E3:se" line="wall"/>
+  <edge at="E3:sw" line="wall"/>
+</sheet>

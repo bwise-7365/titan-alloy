@@ -18,6 +18,7 @@
 #include <bitset>
 #include <optional>
 #include <span>
+#include <string>
 #include <string_view>
 #include <variant>
 #include <vector>
@@ -79,9 +80,21 @@ namespace HexEngine {
   struct RevealAndReconsult {};
   struct GameEffect { std::string code; };
   using CombatEffect = std::variant<StepLoss, RetreatEffect, Eliminate, Surrender, NoEffect, RevealAndReconsult, GameEffect>;
+  // Added in M4: the same resolution with the text the event log and a golden record need -- the
+  // odds as printed, the table's own result code and every die value drawn, in order. The engine's
+  // adjudicators call report(); resolve() is the shorthand for a caller that wants only the
+  // effects, and an implementation writes it as report(...).effects.
+  struct CombatReport {
+    std::string odds;       // "3-1", or "below-minimum" / "above-maximum"
+    std::string outcome;    // the resolver table's own result code, e.g. TRC's "EX"
+    std::vector<int> dice;  // every die drawn while resolving, in the order drawn
+    std::vector<CombatEffect> effects;
+  };
+
   class CombatResolver : public Policy {
   public:
     virtual std::vector<CombatEffect> resolve(const Ctx&, const CombatContext&, PrngStreams&) const = 0;
+    virtual CombatReport report(const Ctx&, const CombatContext&, PrngStreams&) const = 0;
   };
 
   class RetreatPolicy : public Policy {

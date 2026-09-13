@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../packages/xml/trc.package.xml" seed="20260912">
+  <cursor turn="1" phase="axis-i2-move" side="axis" moves="6" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="F28" face="front" moved="false"/>
+    <unit id="g-ge-24-armour" counter="g-ge-24-armour" type="armour" owner="axis" space="omb" face="front" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="F27" face="front" moved="false"/>
+    <unit id="g-ge-56-armour" counter="g-ge-56-armour" type="armour" owner="axis" hex="G25" face="front" moved="false"/>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31" face="front" moved="false"/>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" space="axis-pool" face="front" moved="false"/>
+    <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="G23" face="front" moved="false"/>
+    <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="F24" face="front" moved="false"/>
+    <unit id="r-ru-8-infantry" counter="r-ru-8-infantry" type="infantry" owner="russian" space="russian-pool" face="front" moved="false"/>
+    <unit id="r-ru-stalin-stalin" counter="r-ru-stalin-stalin" type="leader" owner="russian" hex="P12" face="front" moved="false"/>
+    <unit id="r-ru-stavka-hq" counter="r-ru-stavka-hq" type="hq" owner="russian" hex="P12" face="front" moved="false"/>
+  </units>
+  <control>
+    <hex id="E31" side="axis"/>
+    <hex id="P12" side="russian"/>
+  </control>
+  <streams>
+    <stream tag="combat" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-56-armour" path="G27 G26 G25" mode="normal">
+      <event kind="moved" unit="g-ge-56-armour" hex="G25" value="G27 G26 G25"/>
+    </move>
+    <move n="2" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-n-hq" path="E27 F27 G26 H26 H25" mode="normal">
+      <event kind="moved" unit="g-ge-n-hq" hex="H25" value="E27 F27 G26 H26 H25"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i1-combat">turn 1</event>
+    </move>
+    <move n="4" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="attack" units="g-ge-56-armour g-ge-n-hq" target="G24">
+      <result outcome="EX"/>
+      <draw stream="combat" n="1" value="5"/>
+      <event kind="combat-declared" hex="G24" value="g-ge-56-armour g-ge-n-hq"/>
+      <event kind="die" value="5">combat</event>
+      <event kind="combat-resolved" hex="G24" value="1-1">EX</event>
+      <event kind="eliminated" unit="r-ru-8-infantry" value="russian-pool"/>
+      <event kind="decision-requested" value="loss"/>
+    </move>
+    <move n="5" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="g-ge-n-hq"/>
+      <event kind="decision-answered" value="loss">g-ge-n-hq</event>
+      <event kind="eliminated" unit="g-ge-n-hq" value="axis-pool"/>
+    </move>
+    <move n="6" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i2-move">turn 1</event>
+    </move>
+  </log>
+</save>

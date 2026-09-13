@@ -17,7 +17,10 @@ function(hexgames_add_gtest target)
   else()
     set(_env "")
   endif()
-  string(REPLACE ";" ";" _labels "${HG_LABELS}")
+  # gtest_discover_tests re-splits its PROPERTIES argument list, so a multi-label value has to reach
+  # it with its separators escaped; otherwise every label after the first is read as a property name
+  # of its own and quietly lost.
+  string(REPLACE ";" "\\;" _labels "${HG_LABELS}")
   gtest_discover_tests(${target}
     PROPERTIES LABELS "${_labels}" ENVIRONMENT "${_env}"
     DISCOVERY_MODE PRE_TEST)

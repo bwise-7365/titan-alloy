@@ -7,6 +7,7 @@
 
 #include "hexrules/RuleSet.h"
 
+#include <map>
 #include <regex>
 #include <stdexcept>
 
@@ -73,44 +74,49 @@ namespace HexModel {
                                    kind + "'");
     }
 
-    std::optional<SideId>
-    singletonSide(const SideMask& mask)
+    // Counter style -> rules side, from the package's <side> elements. A style named by two
+    // elements is a package error in its own right, reported here rather than silently taking the
+    // last binding.
+    std::map<std::string, SideId>
+    sideByStyle(const HexXml::PackageDoc& package, const HexRules::RuleSet& rules)
     {
-      if (1 != mask.count()) {
-        return std::nullopt;
-      }
-      for (std::size_t i = 0; i < mask.size(); ++i) {
-        if (mask.test(i)) {
-          return SideId{static_cast<std::uint32_t>(i)};
+      std::map<std::string, SideId> bound;
+      for (const HexXml::PackageSideBindingDoc& binding : package.side) {
+        const SideId side = rules.side(binding.rules);
+        for (const std::string& style : binding.styles) {
+          const auto existing = bound.find(style);
+          if (bound.end() != existing) {
+            throw std::invalid_argument("RosterBuilder: counter style '" + style +
+                                         "' is bound to more than one side");
+          }
+          bound[style] = side;
         }
       }
-      return std::nullopt;
+      return bound;
     }
 
-    // See RosterBuilder.h's open question: a shared unit-type carries no side of its own, so this
-    // tries the region layers for one whose region id or name equals the counter's own style
-    // (TRC's "countries" layer marks Finland/Hungary/Rumania/Russia this way); failing that, it
-    // falls back to the rules' first side as an explicit, known-imperfect placeholder.
+    // The counter's printed ground colour names its side; the unit type's own @side mask, where the
+    // rules give one, is a consistency check on that binding and never a source of its own.
     SideId
-    resolveSide(const HexRules::UnitType& type, const HexXml::CounterDoc& counter, const HexRules::RuleSet& rules)
+    resolveSide(const HexRules::UnitType& type, const HexXml::CounterDoc& counter,
+                 const std::map<std::string, SideId>& bound, const HexRules::RuleSet& rules)
     {
-      if (const std::optional<SideId> singleton = singletonSide(type.sides)) {
-        return *singleton;
+      if (!counter.front.style) {
+        throw std::invalid_argument("RosterBuilder: counter '" + counter.id +
+                                     "' has no front style, so no side can be bound to it");
       }
-      if (counter.front.style) {
-        for (const HexRules::RegionLayerSpec& layer : rules.layers()) {
-          for (std::size_t i = 0; i < layer.regionIds.size(); ++i) {
-            const bool matches =
-                layer.regionIds[i] == *counter.front.style || layer.regionNames[i] == *counter.front.style;
-            if (matches) {
-              if (const std::optional<SideId> bySide = singletonSide(layer.regionSides[i])) {
-                return *bySide;
-              }
-            }
-          }
-        }
+      const auto it = bound.find(*counter.front.style);
+      if (bound.end() == it) {
+        throw std::invalid_argument("RosterBuilder: counter '" + counter.id + "' has style '" +
+                                     *counter.front.style + "', which no package <side> binds");
       }
-      return SideId{0};
+      const SideId side = it->second;
+      if (type.sides.any() && !type.sides.test(side.value)) {
+        throw std::invalid_argument("RosterBuilder: counter '" + counter.id + "' is bound to side '" +
+                                     rules.sides()[side.value].id + "', which its unit type '" + type.id +
+                                     "' excludes");
+      }
+      return side;
     }
 
     int
@@ -140,7 +146,8 @@ namespace HexModel {
 
     UnitSpec
     buildOne(const HexXml::CounterDoc& counter, const std::string& counterIdText, const HexRules::RuleSet& rules,
-             const HexXml::PackageDoc& package, const ValueLineReader& reader, std::uint32_t unitIndex)
+             const HexXml::PackageDoc& package, const std::map<std::string, SideId>& bound,
+             const ValueLineReader& reader, std::uint32_t unitIndex)
     {
       const HexXml::PackageUnitBindingDoc& binding = findBinding(package, counter.id);
       const UnitTypeId typeId = rules.unitType(binding.type);
@@ -151,7 +158,7 @@ namespace HexModel {
       spec.counter = CounterId{counterIdText};
       spec.type = typeId;
       spec.kind = toUnitKind(type.kind, counter.id);
-      spec.side = resolveSide(type, counter, rules);
+      spec.side = resolveSide(type, counter, bound, rules);
       spec.nationality = counter.front.style.value_or("");
       spec.front = strengthsOfFace(counter.front, spec.kind, counter.id, reader);
       spec.maxSteps = maxStepsOf(counter.front);
@@ -179,20 +186,21 @@ namespace HexModel {
                         const HexXml::PackageDoc& package, const ValueLineReader& reader)
   {
     Roster roster;
+    const std::map<std::string, SideId> bound = sideByStyle(package, rules);
     std::uint32_t nextUnit = 0;
     for (const HexXml::CounterDoc& counter : counters.counters) {
       if ("marker" == counter.family) {
         continue;
       }
       if (1 == counter.count) {
-        UnitSpec spec = buildOne(counter, counter.id, rules, package, reader, nextUnit);
+        UnitSpec spec = buildOne(counter, counter.id, rules, package, bound, reader, nextUnit);
         roster.byCounter_[spec.counter] = spec.id;
         roster.units_.push_back(std::move(spec));
         ++nextUnit;
       } else {
         for (int copy = 1; copy <= counter.count; ++copy) {
           const std::string counterIdText = counter.id + "#" + std::to_string(copy);
-          UnitSpec spec = buildOne(counter, counterIdText, rules, package, reader, nextUnit);
+          UnitSpec spec = buildOne(counter, counterIdText, rules, package, bound, reader, nextUnit);
           roster.byCounter_[spec.counter] = spec.id;
           roster.units_.push_back(std::move(spec));
           ++nextUnit;

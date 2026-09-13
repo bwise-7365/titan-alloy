@@ -4,6 +4,7 @@
   <sheet path="sheet-broken.xml"/>
   <counters path="counters-broken.xml"/>
   <scenario id="s1" path="scenario-broken.xml"/>
+  <side rules="a" styles="plain"/>
   <space rules="some-space" panel="missing-panel"/>
   <unit type="infantry" counters="something-else"/>
 </package>

@@ -8,10 +8,11 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core implementation)     milestone: M4 in progress (launched 2026-09-13)
-- in-flight tasks: tasks/04-hexsearch-hexengine.md (W1, opus)
-- next coordinator action: when task 04 says `review`: rebuild, review, commit M4; then brief the
-  TRC game module (M6, W4 opus) and the PGG digest (M7 first half, W5 sonnet)
+- phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) next
+- in-flight tasks: none
+- next coordinator action: with Ben's go-ahead, write tasks/05-trc-engine.md (W4, opus) and
+  tasks/06-pgg-digest-rules.md (W5, sonnet) and launch both; then M8 (DS) and M7b (PGG engine)
+- worker spend so far: W1 217k + 475k, W3 286k, W2 618k (~1.6M); ctest 131/131, 8 labels
 - decided 2026-09-13 (Ben): hexpackage.xsd gains <side rules styles> (repeatable, any number of
   sides); SideMask widened to 16 bits (kMaxSides); W1 wires the binding through
   PackageDoc/RosterBuilder/PackageLoader as part of M4
@@ -37,8 +38,10 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 - [x] M3  hexxml + hexmodel + hexrules loaders (W2, 2026-09-13): TinyXML2 facade, five document
           models, Quantities/Board/Roster/Position, Board/Roster/Position builders, RuleSetBuilder,
           Ledger, PackageLoader; TRC package loads and checks clean; ctest 90/90
-- [ ] M4  hexsearch + hexengine (W1): scratch/Field/algorithms, Session, PhaseCursor, PRNG streams,
-          events, default policies, adjudicators, determinism + parallel tests, hexgames_cli
+- [x] M4  hexsearch + hexengine (W1, 2026-09-13): scratch/Field/algorithms, Session, PhaseCursor,
+          PRNG streams, events, default policies, adjudicators, determinism + 16-thread parallel
+          rollout test, hexrecord M4 glue, hexgames_cli, first TRC golden (with a pending-decision
+          round trip); side binding wired; ctest 131/131
 - [x] M5  hexrecord (W3, 2026-09-13): SaveModel document model, hexsave reader with document-level
           checks, canonical writer (validates), LCS diff and golden report; 15 tests. Session glue
           (readRecord/writeRecord/replay/sessionFor/compareWithGolden) compiles with `// M4:` markers;
@@ -83,6 +86,19 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   compiled into the hexrules target because they need RuleSet -- accepted for now; TODO(decide) move
   them to hexrules with `friend class HexRules::X` forward declarations. trc.package.xml unit
   bindings now accept the `-N` suffix of repeated printings (26 counters).
+
+- 2026-09-13 M4 review (engine defaults a game module overrides; obligations for M6):
+  (a) an empty hostility matrix (no @hostile-to anywhere, as in TRC) means every other side is an
+  enemy -- engine convention, no XML change; (b) combat decisions are ONE round trip: Position has a
+  single PendingDecision slot, so the defender's loss/retreat choices are settled by a fixed rule
+  (fewest steps, then lowest counter id) -- TRC 13.3 gives the defender the choice and the attacker the
+  routing, so M6 must add a CombatPlan to Position (or a queue of pending decisions) and chain them as
+  seq-combat-with-decision.puml draws; (c) the default supply check only marks isolatedP -- @fatal
+  elimination is a game rule; (d) BoundedTrace's default source set ("a controlled hex with a drawn
+  feature") is a placeholder -- M6 defines TRC's sources (friendly cities; rail chains to cities or the
+  owner's edge); (e) DefaultPhaseGate derives caps from phase names -- M6 supplies a real gate;
+  (f) defaultValueLine reads "8-7" as combat/combat/allowance -- correct for TRC; (g) cmake label
+  fix: multi-label ctest registration works now (`ctest -L trc` finds tests).
 
 ## XSD proposals awaiting review
 

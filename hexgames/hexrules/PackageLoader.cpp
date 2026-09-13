@@ -14,9 +14,12 @@
 #include "hexxml/XmlDocument.h"
 
 #include <algorithm>
+#include <functional>
+#include <map>
 #include <optional>
 #include <set>
 #include <stdexcept>
+#include <vector>
 
 namespace HexRules {
 
@@ -32,7 +35,60 @@ namespace HexRules {
     loadRules(const std::filesystem::path& base, const HexXml::PackageDoc& package)
     {
       const HexXml::RulesDoc doc = HexXml::RulesDoc::parse(HexXml::XmlDocument::load(base / package.rules.path));
-      return RuleSetBuilder::build(doc);
+      RuleSet rules = RuleSetBuilder::build(doc);
+      if (HexModel::kMaxSides < rules.sides().size()) {
+        throw std::invalid_argument("PackageLoader: rules document '" + package.rules.path + "' declares " +
+                                     std::to_string(rules.sides().size()) + " sides, more than the " +
+                                     std::to_string(HexModel::kMaxSides) + " a SideMask holds");
+      }
+      return rules;
+    }
+
+    // A counter that carries a side: everything but the marker family.
+    bool
+    sidedFamilyP(const std::string& family)
+    {
+      return "marker" != family;
+    }
+
+    // Every unit, support and leader counter's front style must be bound to exactly one side. The
+    // problems are collected here rather than inside RosterBuilder, which stops at the first.
+    void
+    checkSideBindings(const HexXml::PackageDoc& package, const HexXml::CounterSetDoc& counters,
+                       const RuleSet& rules, const std::function<void(const std::string&)>& addProblem)
+    {
+      std::map<std::string, std::vector<std::string>> sidesOfStyle;  // ordered, never unordered_*
+      for (const HexXml::PackageSideBindingDoc& binding : package.side) {
+        try {
+          (void)rules.side(binding.rules);
+        } catch (const std::exception& e) {
+          addProblem(e.what());
+          continue;
+        }
+        for (const std::string& style : binding.styles) {
+          sidesOfStyle[style].push_back(binding.rules);
+        }
+      }
+      for (const auto& [style, sides] : sidesOfStyle) {
+        if (1 < sides.size()) {
+          addProblem("counter style '" + style + "' is bound to " + std::to_string(sides.size()) +
+                      " sides, the first two being '" + sides[0] + "' and '" + sides[1] + "'");
+        }
+      }
+      for (const HexXml::CounterDoc& counter : counters.counters) {
+        if (!sidedFamilyP(counter.family)) {
+          continue;
+        }
+        if (!counter.front.style) {
+          addProblem("counter '" + counter.id + "' has no front style, so no side can be bound to it");
+          continue;
+        }
+        if (sidesOfStyle.end() == sidesOfStyle.find(*counter.front.style)) {
+          addProblem("counter '" + counter.id + "' has style '" + *counter.front.style +
+                      "', which no package <side> binds");
+        }
+      }
+      return;
     }
 
     HexXml::SheetDoc
@@ -123,6 +179,7 @@ namespace HexRules {
       addProblem(e.what());
     }
     if (rules && counterDoc) {
+      checkSideBindings(package, *counterDoc, *rules, addProblem);
       try {
         (void)HexModel::RosterBuilder::build(*counterDoc, *rules, package, reader);
       } catch (const std::exception& e) {
