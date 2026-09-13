@@ -1,0 +1,37 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml seq-load-package
+title Loading a game package into a Session [PROPOSED]
+
+participant "hexgames_cli / GUI" as Caller
+participant PackageLoader
+participant "HexXml\n(TinyXML2 facade)" as Xml
+participant RuleSetBuilder
+participant BoardBuilder
+participant RosterBuilder
+participant "readRecord\n(hexrecord)" as Rec
+participant Session
+
+Caller -> PackageLoader : load(trc.package.xml, TrcValueLines)
+PackageLoader -> Xml : load manifest, rules, sheet, counters
+Xml --> PackageLoader : RulesDoc, SheetDoc, CounterSetDoc, PackageDoc
+PackageLoader -> RuleSetBuilder : build(RulesDoc)
+RuleSetBuilder --> PackageLoader : RuleSet (IDREFS resolved, hostility symmetric, tables checked)
+PackageLoader -> BoardBuilder : build(SheetDoc, RuleSet, bindings)
+BoardBuilder -> BoardBuilder : Grid per <grid> ; ids interned ; terrain per hex via bindings\nedge terrains from lines/paths ; networks from links ; regions ; spaces
+BoardBuilder --> PackageLoader : Board
+PackageLoader -> RosterBuilder : build(CounterSetDoc, RuleSet, bindings, valueLines)
+RosterBuilder --> PackageLoader : Roster (every counter parsed or an exception naming it)
+PackageLoader --> Caller : GameDefinition {rules, board, roster}
+
+Caller -> Rec : readRecord(trc-test.xml, definition, grammar)
+Rec --> Caller : Record {position, seed, log}
+Caller -> Session : Session(definition, policies, record.position, record.seed)
+Session --> Caller : ready ; prompt() = turn 1, axis-i1-move, axis
+
+note over PackageLoader
+  check() collects every problem instead of
+  throwing at the first; the per-game package
+  test asserts the list is empty.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

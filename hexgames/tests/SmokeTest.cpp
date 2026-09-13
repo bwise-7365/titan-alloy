@@ -13,6 +13,16 @@
 #include "hexmodel/Quantities.h"
 #include "hexmodel/Roster.h"
 #include "hexsearch/Search.h"
+#include "hexrules/Ledger.h"
+#include "hexrules/Package.h"
+#include "hexrules/RuleSet.h"
+#include "hexengine/Command.h"
+#include "hexengine/Event.h"
+#include "hexengine/Player.h"
+#include "hexengine/Policies.h"
+#include "hexengine/PrngStreams.h"
+#include "hexengine/Session.h"
+#include "hexrecord/Record.h"
 
 #include <gtest/gtest.h>
 #include <tinyxml2.h>

@@ -8,11 +8,12 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core contracts)          milestone: M0 done, M1 in progress
+- phase: 1 (core contracts)          milestone: M0 done, M1 done except review items
 - in-flight tasks: none (Fable alone)
-- next coordinator action: M1 contracts — interface headers for hexcoord/hexmodel/hexengine,
-  `[PROPOSED]` PlantUML, test lists, `hexsave.xsd`, `hexpackage.xsd`, TRC scenario + package manifest
-- blockers: none
+- next coordinator action: with Ben's go-ahead on token spend, write tasks/01-hexcoord.md (W1),
+  tasks/02-hexxml-hexmodel.md (W2), tasks/03-hexrecord.md (W3) from the contract headers + test lists
+  and launch M2/M3/M5 in parallel; meanwhile Ben reviews hexsave.xsd and hexpackage.xsd
+- blockers: none (hexview contract deferred to M10; PGG rules XML deferred to M7)
 - last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
 - M1 progress: hexcoord contract headers + test list + puml written; hexsave.xsd and hexpackage.xsd
   written (awaiting Ben's review in XML Copy Editor); next: hexmodel/hexengine/hexview contract
@@ -24,8 +25,9 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 - [x] M0  PLAN.md, .gitignore, CLAUDE.md, BUGS.txt, CMake skeleton, presets, gtest + TinyXML2 fetch,
           banner check, XSD ctest, .clang-format, tasks/ protocol, smoke test
-- [ ] M1  Contracts (F): interface headers, PlantUML `[PROPOSED]`, test lists, hexsave.xsd, hexpackage.xsd,
-          TRC scenario + trc.package.xml, five forward design docs
+- [x] M1  Contracts (F): interface headers (hexcoord, hexmodel, hexsearch, hexrules, hexengine, hexrecord),
+          PlantUML `[PROPOSED]` (3 class, 4 sequence), test lists, hexsave.xsd, hexpackage.xsd,
+          TRC test scenario + trc.package.xml, five forward design docs (01 02 04 05 08)
 - [ ] M2  hexcoord (W1): ABC strong types, Direction, Grid/HexIdFormat, pixel mapping, testtri port,
           four-sheet pixel test
 - [ ] M3  hexxml + hexmodel (W2): document models, Board/Position/Roster, BoardBuilder, package loader

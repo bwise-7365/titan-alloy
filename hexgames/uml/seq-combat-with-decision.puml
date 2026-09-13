@@ -1,0 +1,43 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml seq-combat-with-decision
+title Combat with a mid-resolution decision (TRC EX result) [PROPOSED]
+
+actor Attacker
+actor Defender
+participant Session
+participant "applyAttack\n(pure)" as Apply
+participant "OddsTableResolver\n(CombatResolver)" as CRT
+participant PrngStreams
+participant RetreatPolicy
+participant Position
+participant EventLog
+
+Attacker -> Session : apply(DeclareAttack{attackers, target, modifiers})
+Session -> Apply : applyAttack(ctx, policies, cmd, streams, sink)
+Apply -> CRT : resolve(ctx, CombatContext, streams)
+CRT -> CRT : makeOdds(sum attack, sum defence, Defender) ; shifts (cap 3) ; multipliers (cap x2)
+CRT -> PrngStreams : rollDie(Combat, 6)
+PrngStreams --> CRT : 4
+CRT --> Apply : [StepLoss{attacker,1}, StepLoss{defender,1}, RetreatEffect{defender,2}]
+Apply -> Position : setPending(ChooseLoss{attacker candidates, 1})
+Apply -> EventLog : CombatDeclared, DieRolled, CombatResolved("3-1","EX"), DecisionRequested
+Session --> Attacker : Applied ; prompt().decisionPendingP == true
+
+Attacker -> Session : apply(DecisionAnswer{"loss", unit})
+Session -> Session : matches pending()? else throw "decision pending"
+Session -> Position : state(unit).steps.reduced() ; setPending(ChooseLoss{defender...})
+Session -> EventLog : DecisionAnswered, UnitReduced / UnitEliminated
+
+Defender -> Session : apply(DecisionAnswer{"loss", unit})
+Session -> RetreatPolicy : candidates(ctx, unit, origin) for each defender, 2 steps
+Session -> Position : setPending(ChooseRetreat{...}) (attacker routes in TRC)
+Attacker -> Session : apply(DecisionAnswer{"retreat", path})
+Session -> Position : place(...) ; stacking repair ; setPending(NoDecision)
+Session -> EventLog : Retreated, ControlChanged
+note over Session
+  Every choice is a command in the log, so a
+  script replays combat exactly; the die values
+  are events, so a golden pins the randomness.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

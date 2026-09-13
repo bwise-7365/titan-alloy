@@ -1,0 +1,76 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexengine-session
+title hexengine -- Session, Command, Player, events, policies [PROPOSED]
+
+package HexRules {
+  class GameDefinition <<immutable, shared const>> { rules : RuleSet\nboard : Board\nroster : Roster }
+  class RuleSet
+  class Ledger { {static} +checkLedger(ledger, ruleIds, claims) : LedgerReport }
+}
+
+package HexEngine {
+  class Session {
+    -definition : shared_ptr<const GameDefinition>
+    -policies : Policies
+    -position : Position
+    -streams : PrngStreams
+    -scratch : SearchScratch
+    -log : EventLog
+    +prompt() : Prompt
+    +legalCommands() : Command[]
+    +reachable(units, mode) : Reachability
+    +attackTargets(attackers) : HexIndex[]
+    +apply(Command) : Applied
+    +fork() : Session
+    +attach(EventSink&)
+  }
+  class Command <<variant>> { MoveUnit | DeclareAttack | ResolveNextAttack | DecisionAnswer | Place | EndPhase | GameCommand }
+  interface CommandGrammar { +verb(Command) +parse(verb, args) }
+  interface Player { +choose(Session, SideId) : Command }
+  class ScriptedPlayer
+  class RandomPlayer
+  class PrngStreams { +stream(StreamTag) : mt19937_64&\n+draws(tag)\n+restore(tag, draws) }
+  class EventLog
+  class Event <<variant>> { PhaseEntered | UnitMoved | ... | DieRolled | CardDrawn | VictoryDeclared | GameEvent }
+  interface EventSink { +onEvent(Event) }
+  class Adjudicators <<pure functions>> {
+    applyMove(Ctx, Policies, MoveUnit, EventSink&) : Position
+    applyAttack(Ctx, Policies, DeclareAttack, PrngStreams&, EventSink&) : Position
+    applyRetreat / applyStackingRepair / applySupplyCheck / advancePhase
+  }
+  class PhaseCursor { +current() : PhaseId\n+advance(Ctx, PhaseGate) }
+  package Policies {
+    interface ZocPolicy
+    interface MovementPolicy
+    interface SupplyTrace
+    interface CombatResolver
+    interface RetreatPolicy
+    interface StackingPolicy
+    interface VictoryCheck
+    interface PhaseGate
+    interface Deck
+  }
+}
+
+Session o-- GameDefinition
+Session *-- "1" PrngStreams
+Session *-- "1" EventLog
+Session ..> Command
+Session ..> Adjudicators
+Session ..> PhaseCursor
+Session --> "0..*" EventSink : notifies
+ScriptedPlayer --|> Player
+RandomPlayer --|> Player
+Player ..> Session : reads, then Session.apply
+Adjudicators ..> Policies
+Ledger ..> Policies : claims()
+
+note bottom of Session
+  No globals, no caches, no thread_local.
+  N sessions on N threads share one const
+  GameDefinition; fork() copies the rest.
+  Mid-resolution choices become
+  Position::pending(); never a blocking call.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.
