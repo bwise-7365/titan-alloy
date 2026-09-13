@@ -66,8 +66,10 @@ namespace HexModel {
   using RuleId = Name<RuleTag>;
   using CounterId = Name<CounterTag>;
 
-  // At most eight sides; Dai Senso has three. Bit i is side i.
-  using SideMask = std::bitset<8>;
+  // Bit i is side i. Sixteen sides covers every game in view (Dai Senso's three factions, a
+  // Diplomacy variant's eleven powers); the loader throws if a rules document declares more.
+  inline constexpr std::size_t kMaxSides = 16;
+  using SideMask = std::bitset<kMaxSides>;
 
 }  // namespace HexModel
 // ----------------------------------------------

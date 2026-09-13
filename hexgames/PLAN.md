@@ -8,12 +8,13 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core implementation)     milestone: M2, M3, M5 done (2026-09-13); M4 next
-- in-flight tasks: none
-- next coordinator action: (1) Ben's ruling on the hexpackage.xsd `side` binding proposal below;
-  (2) with Ben's go-ahead, write tasks/04-hexsearch-hexengine.md and launch W1 (opus) on M4 -- brief
-  must cover hexsearch, hexengine (defaults, adjudicators, PhaseCursor, Session), the `// M4:` glue in
-  hexrecord/Record.cpp with its deferred replay tests, and hexgames_cli
+- phase: 1 (core implementation)     milestone: M4 in progress (launched 2026-09-13)
+- in-flight tasks: tasks/04-hexsearch-hexengine.md (W1, opus)
+- next coordinator action: when task 04 says `review`: rebuild, review, commit M4; then brief the
+  TRC game module (M6, W4 opus) and the PGG digest (M7 first half, W5 sonnet)
+- decided 2026-09-13 (Ben): hexpackage.xsd gains <side rules styles> (repeatable, any number of
+  sides); SideMask widened to 16 bits (kMaxSides); W1 wires the binding through
+  PackageDoc/RosterBuilder/PackageLoader as part of M4
 - worker spend so far: W1 217k, W3 286k, W2 618k tokens (~1.1M); 90/90 tests, 5 labels
 - blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; hexview contract deferred to M10;
   PGG rules XML deferred to M7)
@@ -85,7 +86,8 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## XSD proposals awaiting review
 
-- PROPOSED 2026-09-13 (from M3): a counter's side. Unit types shared across sides (infantry, armour,
+- APPROVED 2026-09-13 by Ben, applied (hexpackage.xsd `<side>`, trc.package.xml, kMaxSides=16); to
+  be reviewed by Ben in XML Copy Editor. Original proposal: a counter's side. Unit types shared across sides (infantry, armour,
   hq...) carry no side, and hexpackage's <unit> binding has type/counters/match only, so
   RosterBuilder cannot assign UnitSpec::side generically (it currently falls back to the unit type's
   side mask, then a region's side, then a placeholder). Proposal: add to hexpackage.xsd

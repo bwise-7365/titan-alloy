@@ -6,6 +6,10 @@
   <counters path="../../unit_graphics/xml/the-russian-campaign.xml"/>
   <scenario id="trc-test" path="../../game_records/xml/trc-test.xml" title="Engine test position, a few units"/>
 
+  <!-- counter styles (the printed ground colour) -> rules sides; markers carry no side -->
+  <side rules="axis" styles="german ss luftwaffe rumanian finnish hungarian italian"/>
+  <side rules="russian" styles="russian guards worker"/>
+
   <!-- sheet terrain ids equal rules ids except these; symbols mark terrain the sheet draws as glyphs -->
   <terrain sheet="mountain" rules="mountain-hex"/>
   <terrain symbol="city-major" rules="major-city"/>
