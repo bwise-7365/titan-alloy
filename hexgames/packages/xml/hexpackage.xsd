@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+hexpackage 1.0 -- a game package: which rules, sheet and counters documents make one game, and how
+their identifiers bind to each other.
+
+The three languages were written independently, so their id spaces are separate: sheet terrain ids
+are appearance names, rules terrain ids are semantic names, counter ids are unit names.  The binding
+convention is "identity by default, exceptions listed": a sheet terrain named `clear` binds to the
+rules hex-terrain `clear` unless a terrain element says otherwise.  Region membership lives in the
+sheet (its region elements); the package binds only layer names.  The package loader checks every
+binding and every cross-reference and reports the offending id; the tests per game are listed in
+PLAN.md section 4.4.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:simpleType name="Tokens"><xs:list itemType="xs:token"/></xs:simpleType>
+
+  <xs:complexType name="Doc">
+    <xs:attribute name="path" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Cards">
+    <xs:annotation><xs:documentation>A card table for one deck or hand randomizer: a hexrules document holding one list per deck (no new language).</xs:documentation></xs:annotation>
+    <xs:attribute name="randomizer" type="xs:token" use="required"/>
+    <xs:attribute name="path" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Scenario">
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="path" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="TerrainBinding">
+    <xs:annotation><xs:documentation>sheet: a sheet terrain id; symbol: a sheet glyph symbol that marks the terrain (major-city); rules: the hex-terrain it means. Give sheet or symbol.</xs:documentation></xs:annotation>
+    <xs:attribute name="sheet" type="xs:token"/>
+    <xs:attribute name="symbol" type="xs:token"/>
+    <xs:attribute name="rules" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="HexsideBinding">
+    <xs:annotation><xs:documentation>line: a sheet line id, or kind: a sheet path/edge kind; rules: the hexside-terrain it means.</xs:documentation></xs:annotation>
+    <xs:attribute name="line" type="xs:token"/>
+    <xs:attribute name="kind" type="xs:token"/>
+    <xs:attribute name="rules" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="NetworkBinding">
+    <xs:attribute name="kind" type="xs:token" use="required"/>
+    <xs:attribute name="rules" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SpaceBinding">
+    <xs:annotation><xs:documentation>A rules space shown by a sheet panel, or declared off-sheet.</xs:documentation></xs:annotation>
+    <xs:attribute name="rules" type="xs:token" use="required"/>
+    <xs:attribute name="panel" type="xs:token"/>
+    <xs:attribute name="off-sheet" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="LayerBinding">
+    <xs:attribute name="sheet" type="xs:token" use="required"/>
+    <xs:attribute name="rules" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="UnitBinding">
+    <xs:annotation><xs:documentation>Counter to unit type: an explicit id list, or a regular expression over counter ids. Every unit, support and leader counter must match exactly one binding.</xs:documentation></xs:annotation>
+    <xs:attribute name="type" type="xs:token" use="required"/>
+    <xs:attribute name="counters" type="Tokens"/>
+    <xs:attribute name="match" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:element name="package">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rules" type="Doc"/>
+        <xs:element name="sheet" type="Doc" maxOccurs="unbounded"/>
+        <xs:element name="counters" type="Doc" maxOccurs="unbounded"/>
+        <xs:element name="cards" type="Cards" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="scenario" type="Scenario" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="terrain" type="TerrainBinding" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="hexside" type="HexsideBinding" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="network" type="NetworkBinding" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="space" type="SpaceBinding" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="layer" type="LayerBinding" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="unit" type="UnitBinding" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" use="required"/>
+      <xs:attribute name="title" type="xs:string"/>
+      <xs:attribute name="version" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexpackage.xsd"
+         id="trc" title="The Russian Campaign, Deluxe Fifth Edition (2020 remake counters)" version="0.1">
+  <rules path="../../game_rules/xml/the-russian-campaign.xml"/>
+  <sheet path="../../map_graphics/xml/the-russian-campaign.xml"/>
+  <counters path="../../unit_graphics/xml/the-russian-campaign.xml"/>
+  <scenario id="trc-test" path="../../game_records/xml/trc-test.xml" title="Engine test position, a few units"/>
+
+  <!-- sheet terrain ids equal rules ids except these; symbols mark terrain the sheet draws as glyphs -->
+  <terrain sheet="mountain" rules="mountain-hex"/>
+  <terrain symbol="city-major" rules="major-city"/>
+  <terrain symbol="city-minor" rules="minor-city"/>
+  <terrain symbol="oil" rules="oil-field"/>
+
+  <!-- sheet line ids -> rules hexside terrain -->
+  <hexside line="river" rules="river"/>
+  <hexside line="border" rules="country-border"/>
+  <hexside line="district" rules="district-border"/>
+  <hexside line="blocked" rules="blocked"/>
+  <hexside line="coast" rules="coastline"/>
+
+  <network kind="rail" rules="rail"/>
+
+  <!-- rules spaces shown by sheet panels, or kept off the sheet -->
+  <space rules="axis-pool" panel="axis-pool"/>
+  <space rules="russian-pool" panel="russian-pool"/>
+  <space rules="axis-surrendered" panel="axis-surrendered"/>
+  <space rules="russian-surrendered" panel="russian-surrendered"/>
+  <space rules="turn-track" panel="turn-track"/>
+  <space rules="omb" off-sheet="true"/>
+  <space rules="stukas" off-sheet="true"/>
+  <space rules="sturmoviks" off-sheet="true"/>
+  <space rules="paratroop-reserve" off-sheet="true"/>
+  <space rules="urals" off-sheet="true"/>
+
+  <!-- counters -> rules unit types, by pattern over the counter ids of the 2020 remake set -->
+  <unit type="infantry" match="^[gr]-(ge|ss|ru|fi|hu|it|gu)-.*-infantry$"/>
+  <unit type="armour" match="^[gr]-(ge|ss|ru|gu)-.*-armour$"/>
+  <unit type="motorized" match="^[gr]-(ge|ss|lu|ru)-.*-mechanized$"/>
+  <unit type="cavalry" match="^[gr]-(ge|ss|ru|gu)-.*-cavalry$"/>
+  <unit type="hq" match="^[gr]-(ge|ru)-.*-hq$"/>
+  <unit type="leader" counters="g-ge-hitler-hitler r-ru-stalin-stalin"/>
+  <unit type="worker" match="^r-wo-.*-worker$"/>
+  <unit type="partisan" match="^r-wo-partisans-partisan.*$"/>
+  <unit type="stuka" match="^g-lu-stuka-stuka.*$"/>
+</package>

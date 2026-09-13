@@ -13,8 +13,10 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 - next coordinator action: M1 contracts — interface headers for hexcoord/hexmodel/hexengine,
   `[PROPOSED]` PlantUML, test lists, `hexsave.xsd`, `hexpackage.xsd`, TRC scenario + package manifest
 - blockers: none
-- last green: `cmake --preset win-msvc-debug && cmake --build --preset win-msvc-debug && ctest --preset win-msvc-debug`
-  (smoke + xsd + hygiene labels)   commit: (pending)
+- last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
+- M1 progress: hexcoord contract headers + test list + puml written; hexsave.xsd and hexpackage.xsd
+  written (awaiting Ben's review in XML Copy Editor); next: hexmodel/hexengine/hexview contract
+  headers, remaining puml, TRC scenario + trc.package.xml, five design docs
 - crash protocol: read this block, then every `tasks/*.md` with status assigned|in-progress|blocked,
   then `git status`; continue from the task files' `resume:` lines. Nothing lives only in chat.
 

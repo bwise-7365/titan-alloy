@@ -1,0 +1,71 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexmodel-classes
+title hexmodel -- immutable Board and Roster, mutable Position [PROPOSED]
+
+package HexModel {
+  class "Id<Tag>" as Id <<value>> { value : uint32 }
+  note right of Id
+    HexIndex UnitId SideId UnitTypeId TerrainId EdgeTerrainId
+    NetworkId LayerId RegionId SpaceId PhaseId ModeId TraceId
+    ResolverId ModifierId RandomizerId TrackId
+    Name<Tag>: RuleId, CounterId (strings from the documents)
+  end note
+
+  package Quantities {
+    class Strength <<value>>
+    class MovementPoints <<value>> { halves : int }
+    class HexCount <<value>>
+    class Actions <<value>>
+    class Steps { +Steps(current, max) ' throws\n+reduced() : optional<Steps> }
+    class Odds <<value>> { attacker : int\ndefender : int }
+    class TurnSelector { {static} +parse(text)\n+containsP(turn) }
+  }
+
+  class Board <<immutable, shared const>> {
+    +hexCount() +centre(HexIndex) +index(HexCentre)
+    +id(HexIndex) +indexOf(HexId) +find(HexId)
+    +neighbour(HexIndex, Direction) : optional<HexIndex>
+    +terrain(HexIndex) +features(HexIndex) +edge(HexIndex, Direction)
+    +network(NetworkId) +layer(LayerId) +space(SpaceId)
+    +grids() +orientation()
+  }
+  class LinkNetwork { +links() +linksAt(HexIndex) +connectedP(a, b) }
+  class RegionLayer { +partitionP() +regionsOf(HexIndex) +members(RegionId) }
+  class Space <<value>> { name, kind, sides, returnsP }
+  class BoardBuilder { +build(SheetDoc, RulesDoc, Binding) : Board }
+
+  class Roster <<immutable>> { +units() +unit(UnitId) +find(CounterId) +ofSide(SideId) }
+  class UnitSpec <<value>> { id, counter, type, side, kind, front : Strengths, back?, maxSteps, hiddenP }
+  class "ValueLineReader" as VLR <<function>>
+
+  class Position <<value, forkable>> {
+    +unit(UnitId) +unitsAt(HexIndex) +unitsIn(SpaceId)
+    +place(UnitId, Location) +remove(UnitId) +state(UnitId)
+    +control(HexIndex) +setControl()
+    +linkOwner() +region() +track()
+    +clock() +pending() +setPending()
+    +digest() : uint64
+  }
+  class UnitState <<value>> { where : optional<Location>, steps, face, flags, delay, markers }
+  class PendingDecision <<variant>> { NoDecision | ChooseLoss | ChooseRetreat | ChooseCard | GameChoice }
+}
+
+Board *-- "many" LinkNetwork
+Board *-- "many" RegionLayer
+Board *-- "many" Space
+Board ..> "hexcoord.Grid" : pixels, printed ids
+BoardBuilder ..> Board : builds
+Roster *-- "many" UnitSpec
+Roster ..> VLR : reads value lines
+Position *-- "many" UnitState
+Position o-- PendingDecision
+Position ..> Board : indexes into
+Position ..> Roster : indexes into
+
+note bottom of Position
+  Cheap to copy: vectors of small values.
+  A rollout forks the Position; Board and
+  Roster are shared read-only across threads.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

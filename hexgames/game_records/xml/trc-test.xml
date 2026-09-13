@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
+      format="hexsave-1.0" kind="scenario" game="trc" package="../../packages/xml/trc.package.xml"
+      seed="20260912" title="TRC engine test position: a few units on the Polish frontier, turn 1">
+  <cursor turn="1" phase="axis-i1-move" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+    <side id="russian"/>
+  </sides>
+  <units>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="E27">Army Group North HQ</unit>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="F27"/>
+    <unit id="g-ge-56-armour" counter="g-ge-56-armour" type="armour" owner="axis" hex="G27"/>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="F28"/>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31">Berlin</unit>
+    <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="F24"/>
+    <unit id="r-ru-8-infantry" counter="r-ru-8-infantry" type="infantry" owner="russian" hex="G24"/>
+    <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="G23"/>
+    <unit id="r-ru-stalin-stalin" counter="r-ru-stalin-stalin" type="leader" owner="russian" hex="P12">Moscow</unit>
+    <unit id="r-ru-stavka-hq" counter="r-ru-stavka-hq" type="hq" owner="russian" hex="P12"/>
+    <unit id="g-ge-24-armour" counter="g-ge-24-armour" type="armour" owner="axis" space="omb">Held in the Off-Map Units Box</unit>
+  </units>
+  <control>
+    <hex id="P12" side="russian"/>
+    <hex id="E31" side="axis"/>
+  </control>
+  <streams>
+    <stream tag="combat" draws="0"/>
+    <stream tag="weather" draws="0"/>
+  </streams>
+  <notes>
+    <note>Hex ids here are placeholders on the real TRC grid (rows A-QQ, columns 33 west to 1 east); the
+      package test only requires that they exist on the sheet. The 1941 campaign set-up is a separate,
+      later scenario transcribed from the order-of-battle chart.</note>
+  </notes>
+</save>

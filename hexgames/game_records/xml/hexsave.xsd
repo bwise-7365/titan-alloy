@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+hexsave 1.0 -- game records for hexrules games: scenarios, saves, scripts and goldens.
+
+One schema, four flavours told apart by save/@kind:
+  scenario  the starting position of a game: units, control, region state, piles; no log
+  save      a position part-way through a game, with the log of how it got there
+  script    a log of commands only (@scenario names the start); what a system test replays
+  golden    the canonical full save the engine writes after replaying a script; the test oracle
+
+Attributes are for the machine, element text is one line for the reader.  Ids in other documents
+(rules, sheet, counters, package) are plain tokens here; the loader resolves them and reports
+"file:line attribute -> target document" on failure.  Only unit/@id and move/@n are unique within
+this document.  Hexes are printed identifiers; the engine maps them to ABC through the sheet grid.
+Random draws are recorded so a save is also an exact replay.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:simpleType name="Kind">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="scenario"/><xs:enumeration value="save"/>
+      <xs:enumeration value="script"/><xs:enumeration value="golden"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Tokens"><xs:list itemType="xs:token"/></xs:simpleType>
+
+  <xs:simpleType name="UnitRef">
+    <xs:annotation><xs:documentation>A counter id from the counters document, optionally "#k" for the k-th copy when counter/@count exceeds one.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:token"><xs:pattern value="[A-Za-z_][A-Za-z0-9_.\-]*(#[0-9]+)?"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="UnitRefs"><xs:list itemType="UnitRef"/></xs:simpleType>
+
+  <xs:complexType name="File">
+    <xs:attribute name="role" use="required">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="package"/><xs:enumeration value="rules"/><xs:enumeration value="sheet"/>
+        <xs:enumeration value="counters"/><xs:enumeration value="cards"/><xs:enumeration value="scenario"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="path" type="xs:string" use="required"/>
+    <xs:attribute name="sha256" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Cursor">
+    <xs:annotation><xs:documentation>Where the game is: the innermost active phase and the acting side. moves counts log entries applied so far.</xs:documentation></xs:annotation>
+    <xs:attribute name="turn" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="phase" type="xs:token" use="required"/>
+    <xs:attribute name="side" type="xs:token"/>
+    <xs:attribute name="moves" type="xs:nonNegativeInteger" default="0"/>
+    <xs:attribute name="over" type="xs:boolean" default="false"/>
+    <xs:attribute name="winner" type="xs:token"/>
+  </xs:complexType>
+
+  <xs:complexType name="Register">
+    <xs:annotation><xs:documentation>A value held on a track space: weather DRM, VP, ESV, command range, worker points.</xs:documentation></xs:annotation>
+    <xs:attribute name="track" type="xs:token" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Flag">
+    <xs:attribute name="name" type="xs:token" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Side">
+    <xs:sequence>
+      <xs:element name="register" type="Register" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="flag" type="Flag" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Unit">
+    <xs:annotation><xs:documentation>One counter in play. Exactly one of hex or space (checked by the loader). status holds marker tokens: marker counter ids or list/item codes from the rules.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="UnitRef" use="required"/>
+        <xs:attribute name="counter" type="xs:token" use="required"/>
+        <xs:attribute name="type" type="xs:token" use="required"/>
+        <xs:attribute name="owner" type="xs:token" use="required"/>
+        <xs:attribute name="hex" type="xs:token"/>
+        <xs:attribute name="space" type="xs:token"/>
+        <xs:attribute name="face" default="front">
+          <xs:simpleType><xs:restriction base="xs:string">
+            <xs:enumeration value="front"/><xs:enumeration value="back"/>
+          </xs:restriction></xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="steps" type="xs:positiveInteger"/>
+        <xs:attribute name="status" type="Tokens"/>
+        <xs:attribute name="attached" type="UnitRef"/>
+        <xs:attribute name="revealed" type="xs:boolean"/>
+        <xs:attribute name="moved" type="xs:boolean" default="false"/>
+        <xs:attribute name="delay" type="xs:nonNegativeInteger"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="ControlHex">
+    <xs:attribute name="id" type="xs:token" use="required"/>
+    <xs:attribute name="side" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ControlLink">
+    <xs:annotation><xs:documentation>Ownership of one link segment of a mutable network (TRC rail): the two hex ids of the segment.</xs:documentation></xs:annotation>
+    <xs:attribute name="network" type="xs:token" use="required"/>
+    <xs:attribute name="hexes" type="Tokens" use="required"/>
+    <xs:attribute name="side" type="xs:token" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Region">
+    <xs:annotation><xs:documentation>Mutable state of one region of a mutable layer (Dai Senso countries).</xs:documentation></xs:annotation>
+    <xs:attribute name="layer" type="xs:token" use="required"/>
+    <xs:attribute name="id" type="xs:token" use="required"/>
+    <xs:attribute name="status" type="xs:token"/>
+    <xs:attribute name="alignment" type="xs:token"/>
+    <xs:attribute name="posture" type="xs:token"/>
+    <xs:attribute name="owner" type="xs:token"/>
+  </xs:complexType>
+
+  <xs:complexType name="Pile">
+    <xs:annotation><xs:documentation>An ordered set of cards of one randomizer. A draw pile stores the whole shuffled order and the index of the next card, so a replay never re-shuffles.</xs:documentation></xs:annotation>
+    <xs:attribute name="randomizer" type="xs:token" use="required"/>
+    <xs:attribute name="kind" use="required">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="draw"/><xs:enumeration value="hand"/><xs:enumeration value="pending"/>
+        <xs:enumeration value="current"/><xs:enumeration value="discard"/><xs:enumeration value="removed"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="side" type="xs:token"/>
+    <xs:attribute name="cards" type="Tokens" use="required"/>
+    <xs:attribute name="next" type="xs:nonNegativeInteger"/>
+  </xs:complexType>
+
+  <xs:complexType name="Stream">
+    <xs:annotation><xs:documentation>One PRNG stream: the engine re-seeds mt19937_64 from save/@seed and the tag, then discards `draws` outputs.</xs:documentation></xs:annotation>
+    <xs:attribute name="tag" type="xs:token" use="required"/>
+    <xs:attribute name="draws" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="check" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Arg">
+    <xs:attribute name="name" type="xs:token" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="Result">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="outcome" type="xs:token" use="required"/>
+        <xs:attribute name="odds" type="xs:string"/>
+        <xs:attribute name="column" type="xs:string"/>
+        <xs:attribute name="drm" type="xs:integer"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Draw">
+    <xs:annotation><xs:documentation>One random consumption during the move, in order: a die value from a stream, or a card from a randomizer.</xs:documentation></xs:annotation>
+    <xs:attribute name="stream" type="xs:token"/>
+    <xs:attribute name="n" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="randomizer" type="xs:token"/>
+    <xs:attribute name="card" type="xs:token"/>
+  </xs:complexType>
+
+  <xs:complexType name="Event">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="kind" type="xs:token" use="required"/>
+        <xs:attribute name="unit" type="UnitRef"/>
+        <xs:attribute name="hex" type="xs:token"/>
+        <xs:attribute name="side" type="xs:token"/>
+        <xs:attribute name="value" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Move">
+    <xs:annotation><xs:documentation>One command. cmd is a verb of the game's command grammar; the fixed attributes cover the common verbs and arg covers the rest. In a script only the command is given; in a save or golden the engine appends result, draw and event children.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="arg" type="Arg" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="result" type="Result" minOccurs="0"/>
+      <xs:element name="draw" type="Draw" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="event" type="Event" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="n" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="turn" type="xs:positiveInteger" use="required"/>
+    <xs:attribute name="phase" type="xs:token" use="required"/>
+    <xs:attribute name="side" type="xs:token" use="required"/>
+    <xs:attribute name="by" default="script">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="human"/><xs:enumeration value="script"/><xs:enumeration value="ai"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="cmd" type="xs:token" use="required"/>
+    <xs:attribute name="units" type="UnitRefs"/>
+    <xs:attribute name="from" type="xs:token"/>
+    <xs:attribute name="to" type="xs:token"/>
+    <xs:attribute name="path" type="Tokens"/>
+    <xs:attribute name="target" type="xs:token"/>
+    <xs:attribute name="mode" type="xs:token"/>
+    <xs:attribute name="modifiers" type="Tokens"/>
+    <xs:attribute name="card" type="xs:token"/>
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="choice" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Note">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="n" type="xs:positiveInteger"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="save">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="package" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="file" type="File" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="cursor" type="Cursor"/>
+        <xs:element name="sides" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="side" type="Side" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="units" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="unit" type="Unit" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="control" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="hex" type="ControlHex" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="link" type="ControlLink" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="regions" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="region" type="Region" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="piles" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="pile" type="Pile" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="streams" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="stream" type="Stream" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="log" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="move" type="Move" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="notes" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element name="note" type="Note" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="format" type="xs:string" use="required" fixed="hexsave-1.0"/>
+      <xs:attribute name="kind" type="Kind" use="required"/>
+      <xs:attribute name="game" type="xs:token" use="required"/>
+      <xs:attribute name="package" type="xs:string" use="required"/>
+      <xs:attribute name="scenario" type="xs:token"/>
+      <xs:attribute name="seed" type="xs:unsignedLong" use="required"/>
+      <xs:attribute name="engine" type="xs:string"/>
+      <xs:attribute name="created" type="xs:dateTime"/>
+      <xs:attribute name="title" type="xs:string"/>
+    </xs:complexType>
+    <xs:unique name="uniqueUnitId">
+      <xs:selector xpath="units/unit"/><xs:field xpath="@id"/>
+    </xs:unique>
+    <xs:unique name="uniqueMoveNumber">
+      <xs:selector xpath="log/move"/><xs:field xpath="@n"/>
+    </xs:unique>
+  </xs:element>
+
+</xs:schema>

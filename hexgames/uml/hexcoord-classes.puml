@@ -1,0 +1,81 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexcoord-classes
+title hexcoord -- the ABC coordinate system [PROPOSED]
+
+package HexCoord {
+  class Abc {
+    -a, b, c : int  (canonical representative)
+    +Abc(a, b, c)   ' applies reduce()
+    +height() : int
+    +hvCode() : int  ' 0,3 centre; 1,2,4,5 vertex
+    +operator+ - *
+  }
+  class Qrs {
+    -q, r, s : int
+    +toAbc() : Abc  ' (r-s, s-q, q-r)
+    +height() : int
+  }
+  enum Direction { D0..D5 (clockwise -Q +R -S +Q -R +S) }
+  enum Orientation { Flat, Pointy }
+  enum Parity { Odd, Even }
+
+  class HexCentre {
+    +HexCentre(Abc)  ' throws unless hvCode in {0,3}
+    {static} +fromQrs(Qrs) : HexCentre  ' total
+    +qrs() : Qrs
+    +operator+(Qrs) : HexCentre
+    +operator-(HexCentre) : Qrs
+    +neighbour(Direction) : HexCentre
+    +edge(Direction) : HexEdge
+    +vertices() : HexVertex[6]
+  }
+  class HexVertex {
+    +HexVertex(Abc)  ' throws unless hvCode in {1,2,4,5}
+    +hexes() : HexCentre[3]
+    +neighbours() : HexVertex[3]
+  }
+  class HexEdge {
+    {static} +between(HexCentre, Direction) : HexEdge
+    {static} +of(HexVertex, HexVertex) : HexEdge  ' throws unless adjacent
+    +vertices() : pair<HexVertex, HexVertex>
+    +hexes() : pair<HexCentre, HexCentre>
+    +twiceMidpoint() : Abc
+  }
+  class HexIdFormat {
+    +HexIdFormat(format)
+    +render(printedCol, printedRow) : string
+  }
+  class Grid {
+    +Grid(GridSpec, Abc latticeOffset)
+    +centreOf(GridIndex) : HexCentre
+    +indexOf(HexCentre) : optional<GridIndex>
+    +idOf(GridIndex) : HexId
+    +find(HexId) : optional<GridIndex>
+    +pixelOf(Abc) : Pixel
+    +hexAt(Pixel) : optional<HexCentre>
+    +polygon(HexCentre, inset) : Pixel[6]
+  }
+  class GridSpec <<value>> {
+    orientation, offset, cols, rows, size, ox, oy
+    idFormat, colStart, colStep, rowStart, rowStep, clip
+  }
+}
+
+Qrs ..> Abc : toAbc
+HexCentre o-- Abc
+HexVertex o-- Abc
+HexEdge o-- "2" HexVertex
+HexCentre ..> Direction
+Grid o-- GridSpec
+Grid ..> HexIdFormat
+Grid ..> HexCentre
+Grid ..> Orientation
+
+note bottom of Grid
+  Orientation lives here and in the pixel basis only:
+  Flat  A=(s,0) B=(-s/2,-sqrt3 s/2) C=(-s/2,+sqrt3 s/2)
+  Pointy: the same basis rotated 30 degrees.
+  The algebra above never branches on it.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.
