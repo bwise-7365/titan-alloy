@@ -97,6 +97,9 @@ namespace HexModel {
 
   private:
     friend class PositionBuilder;
+    void removeFromStack(Location, UnitId);
+    void addToStack(Location, UnitId);
+
     std::vector<UnitState> units_;
     std::vector<std::vector<UnitId>> byHex_;
     std::vector<std::vector<UnitId>> bySpace_;

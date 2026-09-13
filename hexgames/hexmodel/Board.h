@@ -10,6 +10,7 @@
 #include "hexcoord/HexAddress.h"
 #include "hexmodel/Ids.h"
 
+#include <map>
 #include <optional>
 #include <string>
 #include <utility>
@@ -38,6 +39,7 @@ namespace HexModel {
     const std::vector<Link>& links() const { return links_; }           // insertion order
     const std::vector<std::size_t>& linksAt(HexIndex) const;            // indices into links()
     bool connectedP(HexIndex, HexIndex) const;
+    std::size_t linkCount() const { return links_.size(); }
 
   private:
     friend class BoardBuilder;
@@ -49,6 +51,7 @@ namespace HexModel {
   class RegionLayer {
   public:
     bool partitionP() const { return partition_; }
+    std::size_t regionCount() const { return names_.size(); }
     const std::vector<RegionId>& regionsOf(HexIndex) const;
     const std::vector<HexIndex>& members(RegionId) const;
     const std::string& name(RegionId) const;
@@ -92,6 +95,21 @@ namespace HexModel {
     const RegionLayer& layer(LayerId) const;
     const Space& space(SpaceId) const;
     std::size_t spaceCount() const { return spaces_.size(); }
+    std::size_t networkCount() const { return networks_.size(); }
+    std::size_t layerCount() const { return layers_.size(); }
+    std::size_t trackCount() const { return trackCount_; }
+
+    // Name lookups for builders and loaders; each throws std::invalid_argument naming the id. The
+    // dense ids are minted by BoardBuilder in the declaration order of the rules document's own
+    // networks()/layers()/spaces() lists, so these are the Board-side mirror of RuleSet's own
+    // side()/unitType()/terrain() lookups.
+    NetworkId networkId(const std::string& id) const;
+    LayerId layerId(const std::string& id) const;
+    RegionId regionId(LayerId, const std::string& id) const;
+    SpaceId spaceId(const std::string& id) const;
+    // nullopt if the space is not of SpaceKind::Track.
+    std::optional<TrackId> trackOf(SpaceId) const;
+    TrackId trackId(const std::string& id) const;  // spaceId(id) then trackOf(), throws if not a track
 
     // The sheet's grids, for pixels and for printed ids; several when a game has two map sheets.
     const std::vector<HexCoord::Grid>& grids() const { return grids_; }
@@ -109,6 +127,17 @@ namespace HexModel {
     std::vector<RegionLayer> layers_;
     std::vector<Space> spaces_;
     std::vector<HexCoord::Grid> grids_;
+
+    // Lookup indices, built once by BoardBuilder alongside the vectors above; ordered maps, never
+    // unordered_*, per house rule even though nothing here iterates them.
+    std::map<HexCentre, HexIndex> byCentre_;
+    std::map<HexId, HexIndex> byId_;
+    std::map<std::string, NetworkId> networkByName_;
+    std::map<std::string, LayerId> layerByName_;
+    std::vector<std::map<std::string, RegionId>> regionByNamePerLayer_;  // one map per LayerId
+    std::map<std::string, SpaceId> spaceByName_;
+    std::vector<std::optional<TrackId>> trackOfSpace_;  // one entry per SpaceId
+    std::size_t trackCount_ = 0;
   };
 
 }  // namespace HexModel

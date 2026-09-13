@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save format="hexsave-1.0" kind="scenario" game="broken" package="package-broken.xml" seed="1">
+  <cursor turn="1" phase="turn" side="a"/>
+  <units>
+    <unit id="known-unit" counter="known-unit" type="infantry" owner="a" hex="Z9"/>
+  </units>
+</save>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package id="broken" title="Broken">
+  <rules path="rules-broken.xml"/>
+  <sheet path="sheet-broken.xml"/>
+  <counters path="counters-broken.xml"/>
+  <scenario id="s1" path="scenario-broken.xml"/>
+  <space rules="some-space" panel="missing-panel"/>
+  <unit type="infantry" counters="something-else"/>
+</package>

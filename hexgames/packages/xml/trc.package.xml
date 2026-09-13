@@ -33,14 +33,16 @@
   <space rules="paratroop-reserve" off-sheet="true"/>
   <space rules="urals" off-sheet="true"/>
 
-  <!-- counters -> rules unit types, by pattern over the counter ids of the 2020 remake set -->
-  <unit type="infantry" match="^[gr]-(ge|ss|ru|fi|hu|it|gu)-.*-infantry$"/>
-  <unit type="armour" match="^[gr]-(ge|ss|ru|gu)-.*-armour$"/>
-  <unit type="motorized" match="^[gr]-(ge|ss|lu|ru)-.*-mechanized$"/>
-  <unit type="cavalry" match="^[gr]-(ge|ss|ru|gu)-.*-cavalry$"/>
-  <unit type="hq" match="^[gr]-(ge|ru)-.*-hq$"/>
+  <!-- counters -> rules unit types, by pattern over the counter ids of the 2020 remake set.
+       A trailing "-N" (a second, third ... printed copy of the same historical unit, e.g.
+       r-ru-3-infantry-2) is matched by every pattern below; confirmed against all 214 counters. -->
+  <unit type="infantry" match="^[gr]-(ge|ss|ru|fi|hu|it|gu)-.*-infantry(-[0-9]+)?$"/>
+  <unit type="armour" match="^[gr]-(ge|ss|ru|gu)-.*-armour(-[0-9]+)?$"/>
+  <unit type="motorized" match="^[gr]-(ge|ss|lu|ru)-.*-mechanized(-[0-9]+)?$"/>
+  <unit type="cavalry" match="^[gr]-(ge|ss|ru|gu)-.*-cavalry(-[0-9]+)?$"/>
+  <unit type="hq" match="^[gr]-(ge|ru)-.*-hq(-[0-9]+)?$"/>
   <unit type="leader" counters="g-ge-hitler-hitler r-ru-stalin-stalin"/>
-  <unit type="worker" match="^r-wo-.*-worker$"/>
+  <unit type="worker" match="^r-wo-.*-worker(-[0-9]+)?$"/>
   <unit type="partisan" match="^r-wo-partisans-partisan.*$"/>
   <unit type="stuka" match="^g-lu-stuka-stuka.*$"/>
 </package>

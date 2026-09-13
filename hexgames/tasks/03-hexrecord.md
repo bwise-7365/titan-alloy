@@ -2,7 +2,7 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # Task 03: hexrecord — hexsave reading, canonical writing, replay, golden compare (milestone M5)
 
-status: review
+status: done   (reviewed and accepted by the coordinator 2026-09-13; replay tests deferred to M4 as noted)
 worker: W3 (sonnet)          started: 2026-09-13
 resume: Done. Full build/test green (72/72, 15 under label `records`), banner-check 0 failures,
   canonical output validated against hexsave.xsd. Document-level model, writer, golden compare and

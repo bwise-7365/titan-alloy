@@ -9,6 +9,7 @@
 #include "hexmodel/Quantities.h"
 
 #include <cstdint>
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
@@ -49,7 +50,15 @@ namespace HexRules {
   };
 
   struct Network { std::string id; PurposeMask carries; bool mutableP = false; };
-  struct RegionLayerSpec { std::string id; bool partitionP = true; std::optional<EdgeTerrainId> boundedBy; bool mutableP = false; std::vector<std::string> regionIds; };
+  struct RegionLayerSpec {
+    std::string id;
+    bool partitionP = true;
+    std::optional<EdgeTerrainId> boundedBy;
+    bool mutableP = false;
+    std::vector<std::string> regionIds;
+    std::vector<std::string> regionNames;   // parallel to regionIds; BoardBuilder's display names
+    std::vector<SideMask> regionSides;      // parallel to regionIds; a region's own @side, if any
+  };
   struct SpaceSpec { std::string id; std::string name; std::string kind; SideMask sides; bool returnsP = false; };
 
   struct UnitType {
@@ -175,6 +184,11 @@ namespace HexRules {
     std::optional<WeatherSpec> weather_;
     std::vector<Condition> victory_;
     std::vector<ProseRule> prose_;
+
+    // PhaseNode keeps only its display name, not the document's own id string (phase ids are
+    // referenced from many places -- mode/@phase, rule/@phase, modifier/@phase -- but never
+    // re-displayed), so phase() needs this map rather than a linear search over the tree.
+    std::map<std::string, PhaseId> phaseByName_;
   };
 
 }  // namespace HexRules

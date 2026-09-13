@@ -9,6 +9,7 @@
 #include "hexmodel/Quantities.h"
 
 #include <functional>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -54,6 +55,7 @@ namespace HexModel {
   private:
     friend class RosterBuilder;
     std::vector<UnitSpec> units_;
+    std::map<CounterId, UnitId> byCounter_;  // built once by RosterBuilder; ordered, never unordered_*
   };
 
 }  // namespace HexModel

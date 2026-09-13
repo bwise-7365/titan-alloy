@@ -8,12 +8,13 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 1 (core implementation)     milestone: M5 done (2026-09-13); M3 in progress (hexxml done, hexmodel next)
-- in-flight tasks: tasks/02-hexxml-hexmodel.md (W2, sonnet)
-- next coordinator action: when task 02 says `review`: rebuild, review API notes (SheetDoc keeps
-  eight same-kind vectors, not one interleaved list -- acceptable), commit M3; then write
-  tasks/04-hexsearch-hexengine.md and launch W1 (opus) on M4, whose brief must also cover the
-  `// M4:` glue W3 left in hexrecord/Record.cpp and its deferred replay tests
+- phase: 1 (core implementation)     milestone: M2, M3, M5 done (2026-09-13); M4 next
+- in-flight tasks: none
+- next coordinator action: (1) Ben's ruling on the hexpackage.xsd `side` binding proposal below;
+  (2) with Ben's go-ahead, write tasks/04-hexsearch-hexengine.md and launch W1 (opus) on M4 -- brief
+  must cover hexsearch, hexengine (defaults, adjudicators, PhaseCursor, Session), the `// M4:` glue in
+  hexrecord/Record.cpp with its deferred replay tests, and hexgames_cli
+- worker spend so far: W1 217k, W3 286k, W2 618k tokens (~1.1M); 90/90 tests, 5 labels
 - blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; hexview contract deferred to M10;
   PGG rules XML deferred to M7)
 - last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
@@ -32,8 +33,9 @@ milestone boxes, and appends to the decision log. Workers write only their own `
           TRC test scenario + trc.package.xml, five forward design docs (01 02 04 05 08)
 - [x] M2  hexcoord (W1, 2026-09-13): ABC strong types, Direction, Grid/HexIdFormat, pixel mapping,
           testtri port, four-sheet pixel test — 27 tests, ctest 35/35
-- [ ] M3  hexxml + hexmodel (W2): document models, Board/Position/Roster, BoardBuilder, package loader
-          and package tests on the four sets
+- [x] M3  hexxml + hexmodel + hexrules loaders (W2, 2026-09-13): TinyXML2 facade, five document
+          models, Quantities/Board/Roster/Position, Board/Roster/Position builders, RuleSetBuilder,
+          Ledger, PackageLoader; TRC package loads and checks clean; ctest 90/90
 - [ ] M4  hexsearch + hexengine (W1): scratch/Field/algorithms, Session, PhaseCursor, PRNG streams,
           events, default policies, adjudicators, determinism + parallel tests, hexgames_cli
 - [x] M5  hexrecord (W3, 2026-09-13): SaveModel document model, hexsave reader with document-level
@@ -74,9 +76,25 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   exist). Pointy offsets derived from the renderer: row 2m -> (col, -3m, -col), row 2m+1 ->
   (col+1, -(3m+1), -col); pointy basis = flat basis turned 30 degrees clockwise on screen.
 
+- 2026-09-13 M3 review: SheetDoc keeps eight same-kind vectors (hexes, hex, edge, path, link, region,
+  label, panel) in document order each, not one interleaved list -- accepted, nothing needs the
+  cross-kind order. BoardBuilder/RosterBuilder/PositionBuilder are declared in HexModel (friends) but
+  compiled into the hexrules target because they need RuleSet -- accepted for now; TODO(decide) move
+  them to hexrules with `friend class HexRules::X` forward declarations. trc.package.xml unit
+  bindings now accept the `-N` suffix of repeated printings (26 counters).
+
 ## XSD proposals awaiting review
 
-- (none yet) Candidates noted in the plan: `unit-type/@reveal` (PGG untried), `phase/@repeat-per-side`,
+- PROPOSED 2026-09-13 (from M3): a counter's side. Unit types shared across sides (infantry, armour,
+  hq...) carry no side, and hexpackage's <unit> binding has type/counters/match only, so
+  RosterBuilder cannot assign UnitSpec::side generically (it currently falls back to the unit type's
+  side mask, then a region's side, then a placeholder). Proposal: add to hexpackage.xsd
+    <side rules="axis" styles="german ss luftwaffe rumanian finnish hungarian italian marker"/>
+    <side rules="russian" styles="russian guards worker"/>
+  binding the counters document's style ids (the printed ground colour, which IS the side on every
+  sheet) to rules side ids; the loader then requires every unit/support/leader counter's style to be
+  bound. No change to hexrules or hexcounters. Awaiting Ben.
+- Candidates noted in the plan: `unit-type/@reveal` (PGG untried), `phase/@repeat-per-side`,
   `phase/@caps`, `panel/@space`.
 
 ## Open questions
