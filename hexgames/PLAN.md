@@ -9,9 +9,10 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) next
-- in-flight tasks: none
-- next coordinator action: with Ben's go-ahead, write tasks/05-trc-engine.md (W4, opus) and
-  tasks/06-pgg-digest-rules.md (W5, sonnet) and launch both; then M8 (DS) and M7b (PGG engine)
+- in-flight tasks: none. tasks/05-trc-engine.md (W4, opus) and tasks/06-pgg-digest-rules.md (W5,
+  sonnet) are written and APPROVED by Ben for launch; NOT launched because the session was handed
+  over to CLion -- see doc/2026-09-13-handoff.md section 3 for the launch recipe
+- next coordinator action: launch W4 and W5 from the task files; then M8 (DS) and M7b (PGG engine)
 - worker spend so far: W1 217k + 475k, W3 286k, W2 618k (~1.6M); ctest 131/131, 8 labels
 - decided 2026-09-13 (Ben): hexpackage.xsd gains <side rules styles> (repeatable, any number of
   sides); SideMask widened to 16 bits (kMaxSides); W1 wires the binding through
