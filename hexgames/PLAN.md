@@ -64,6 +64,9 @@ Engine and records
   goldens unchanged by the borders. Coordinator re-checked: network_check 0 broken on both sheets,
   only supply/rail-move/full-turn goldens changed, XML valid, banners 0. status: review, W5 432k+374k
   tokens. Waiting on Ben: local ctest (185 full), the seven open questions in tasks/08, then commit.
+  After M6c: smoothed roads, railways and rivers in hexsheet2svg.py (Ben approved; TRC and PGG
+  re-rendered). Next in flight: tasks/09-ds-map.md (M6d, W5 fresh, opus). Engine tasks renumber:
+  Dai Senso engine (M8) and PGG engine (M7b) become tasks/10 and tasks/11, written after M6b/M6c commit.
   M6b is staged (105 files) for Ben's commit; W5 makes no git writes, so the index stays M6b only.
 - M6b: tasks/07-engine-api.md (W4, opus, 575k tokens) was at status: review
   (2026-09-14): W4 full ctest 180/180 with one skip (PendingSaveTest, waits for the hexsave proposal);
@@ -128,6 +131,8 @@ Engine and records
           one resolution stack; TRC goldens byte-identical (tasks/07-engine-api.md)
 - [ ] M6c Map networks (W5): connected road, rail and river networks on the TRC and PGG sheets; network_check
           in ctest; TRC scenario rail and goldens re-recorded to match (tasks/08-map-networks.md)
+- [ ] M6d Dai Senso map cleanup (W5): continuous roads per landmass and across the grid seam, border and
+          zone lines, mountain ranges, places checked against the DS images (tasks/09-ds-map.md)
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
@@ -239,7 +244,27 @@ Engine and records
   centre; joined into polylines between ends/junctions. Rendering only, the XML is unchanged; the C++
   renderer (M10) reproduces it. Also noted: Ben likes tempest's terrain colours (paleBeige 255,255,227;
   paleGreen 198,255,198; paleBlue 128,198,255; paleGray 227,227,227; paleBrown 178,161,144) and will
-  adapt tempest's terrain synthesis later to generate new terrain with road, river and rail networks. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
+  adapt tempest's terrain synthesis later to generate new terrain with road, river and rail networks.
+- 2026-09-14 Smoothed rivers (Ben: tried, "looks great", now the default; political boundaries and all
+  other hexside lines stay jagged, exactly along the hex edges): hexsheet2svg.py joins each
+  river's hexsides into corner chains and rounds every corner (quadratic curve from hexside midpoint
+  to midpoint); ends and junctions stay on their corners; other hexside lines stay straight. ROLLBACK:
+  re-render with `--straight-rivers` (Renderer(..., smooth_lines=())); the XML is unchanged either way.
+- 2026-09-14 M6c open questions (Ben accepted the coordinator's recommendations): (1) remove the
+  out-of-grid ids from the TRC and PGG <hexes> lists; (2) reclassify Riga F17, Helsinki C14 and Sevastopol
+  KK23 as land; (3) move the river guides and border lists out of tidy_networks.py into a data file
+  beside the sheets; (4) keep the TRC scenario control generator in the tree (games/trc/tools/);
+  (5) keep full-turn's attack at W15; (6) the old scenario rail control list is replaced wholesale;
+  (7) keep the extra borders the TRC map shows. Items 1-4 are follow-up work, done AFTER M6d, because
+  M6d's worker is editing the same map tools now; item 2 may change TRC goldens (re-record, cite
+  "maps: land cities").
+- 2026-09-14 Dai Senso map (Ben): add the rail network (white line, grey casing) to the sheet, not only
+  repair roads. Ben checks the result against pic4573603.png in two places: India's transportation
+  network (the white lines), and the dashed boundaries (red/yellow country/dependent borders and
+  white/grey naval zone borders) around the Eastern Carolines, Marshall and Gilbert Islands out to
+  Johnston Island. Boundaries at sea are printed and correct; sent to M6d's worker. Those two regions
+  are examples only: the whole map is to be fixed to the same standard (every rail and road line, every
+  international and naval zone border, region borders, mountains, places), against pic4573603.png. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
 
 ## XSD proposals awaiting review
 

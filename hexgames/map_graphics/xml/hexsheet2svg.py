@@ -2,10 +2,12 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 """hexsheet2svg.py -- reference renderer for hexsheet XML map sheets.
 
-    python hexsheet2svg.py sheet.xml [out.svg] [--png] [--scale S]
+    python hexsheet2svg.py sheet.xml [out.svg] [--png] [--scale S] [--straight-rivers]
 
 Validates against hexsheet.xsd (beside this script), writes SVG, and with --png
-rasterises through Inkscape.  Layers are emitted in the taxonomy's fixed order:
+rasterises through Inkscape.  Roads and railways are drawn smoothed, hexside midpoint
+to midpoint through each hex; rivers are drawn with rounded corners unless
+--straight-rivers asks for plain hexsides.  Layers are emitted in the taxonomy's fixed order:
 terrain, regions, grid, edges, links, rings, hex glyphs, side glyphs, labels, panels.
 """
 import math
@@ -228,7 +230,9 @@ DIR_ANGLE = {"e": 0, "se": 45, "s": 90, "sw": 135, "w": 180, "nw": 225, "n": 270
 
 # ---------------------------------------------------------------- renderer
 class Renderer:
-    def __init__(self, xml_path):
+    def __init__(self, xml_path, smooth_lines=("river",)):
+        # smooth_lines: hexside line ids drawn as rounded chains instead of straight hexsides.
+        self.smooth_lines = set(smooth_lines)
         self.doc = etree.parse(xml_path)
         schema = etree.XMLSchema(etree.parse(os.path.join(HERE, "hexsheet.xsd")))
         if not schema.validate(self.doc):
@@ -426,17 +430,95 @@ class Renderer:
                 o.append('<path d="%s" %s/>' % (d, cas))
             o.append('<path%s class="path %s" data-name="%s" d="%s" %s/>' % (
                 pid, escape(p.get("kind")), escape(p.get("name") or ""), d, attrs))
+        smooth = {}  # line id -> hexside end points, for the lines drawn as rounded chains
         for e in self.root.findall("edge"):
             pe = self.parse_edge(e.get("at"), "edge")
             if pe is None:
                 continue
             g, c, r, d = pe
             if e.get("line"):
-                attrs, l = self.line_attrs(e.get("line"))
                 a, b = g.edge_ends(c, r, d)
+                if e.get("line") in self.smooth_lines:
+                    smooth.setdefault(e.get("line"), []).append((a, b))
+                    continue
+                attrs, l = self.line_attrs(e.get("line"))
                 o.append('<path class="edge" d="M%.2f,%.2f L%.2f,%.2f" %s/>' % (a[0], a[1], b[0], b[1], attrs))
+        for line, sides in smooth.items():
+            attrs, l = self.line_attrs(line)
+            d = " ".join(self.rounded_path(chain) for chain in self.side_chains(sides))
+            o.append('<path class="edge smooth %s" d="%s" %s/>' % (escape(line), d, attrs))
         o.append("</g>")
         return "\n".join(o)
+
+    @staticmethod
+    def vertex_key(p):
+        # Hex corners computed from neighbouring hexes differ by float noise; the odd offset keeps that
+        # noise from straddling a bucket boundary.
+        return (math.floor(p[0] * 2 + 0.137), math.floor(p[1] * 2 + 0.137))
+
+    def side_chains(self, sides):
+        """Hexsides of one line joined into chains of hex corners, each from an end or junction to the
+        next, or round a closed loop (first corner repeated last)."""
+        point = {}
+        nbrs = {}
+        for a, b in sides:
+            ka, kb = self.vertex_key(a), self.vertex_key(b)
+            if ka == kb:
+                continue
+            point.setdefault(ka, a)
+            point.setdefault(kb, b)
+            nbrs.setdefault(ka, [])
+            nbrs.setdefault(kb, [])
+            if kb not in nbrs[ka]:
+                nbrs[ka].append(kb)
+                nbrs[kb].append(ka)
+        done = set()
+
+        def walk(prev, cur, keys):
+            done.add(frozenset((prev, cur)))
+            keys.append(cur)
+            while len(nbrs[cur]) == 2:
+                nxt = nbrs[cur][0] if nbrs[cur][1] == prev else nbrs[cur][1]
+                if frozenset((cur, nxt)) in done:
+                    return keys
+                done.add(frozenset((cur, nxt)))
+                keys.append(nxt)
+                prev, cur = cur, nxt
+            return keys
+
+        chains = []
+        for k, ns in nbrs.items():
+            if len(ns) != 2:
+                for n in ns:
+                    if frozenset((k, n)) not in done:
+                        chains.append([point[x] for x in walk(k, n, [k])])
+        for k, ns in nbrs.items():  # loops with no end or junction
+            for n in ns:
+                if frozenset((k, n)) not in done:
+                    chains.append([point[x] for x in walk(k, n, [k])])
+        return chains
+
+    @staticmethod
+    def rounded_path(pts):
+        """A chain of hex corners with its corners rounded: straight to the first side's midpoint, then a
+        quadratic curve round each corner to the next side's midpoint, straight to the last corner. Ends
+        and junctions stay on their corners; a closed chain is rounded all the way round."""
+        def mid(p, q):
+            return ((p[0] + q[0]) / 2, (p[1] + q[1]) / 2)
+        if len(pts) > 3 and pts[0] == pts[-1]:
+            ring = pts[:-1]
+            s = "M%.2f,%.2f" % mid(ring[-1], ring[0])
+            for i, p in enumerate(ring):
+                m = mid(p, ring[(i + 1) % len(ring)])
+                s += " Q%.2f,%.2f %.2f,%.2f" % (p[0], p[1], m[0], m[1])
+            return s
+        if len(pts) < 3:
+            return "M%.2f,%.2f L%.2f,%.2f" % (pts[0][0], pts[0][1], pts[-1][0], pts[-1][1])
+        s = "M%.2f,%.2f L%.2f,%.2f" % (pts[0] + mid(pts[0], pts[1]))
+        for i in range(1, len(pts) - 1):
+            m = mid(pts[i], pts[i + 1])
+            s += " Q%.2f,%.2f %.2f,%.2f" % (pts[i][0], pts[i][1], m[0], m[1])
+        return s + " L%.2f,%.2f" % pts[-1]
 
     def chain_path(self, edges, offset, ctx):
         """Join consecutive hexsides into polylines; break where they do not touch."""
@@ -766,7 +848,8 @@ def main(argv):
             out = a
     if out is None:
         out = os.path.splitext(src)[0] + ".svg"
-    r = Renderer(src)
+    # --straight-rivers draws rivers hexside by hexside, as before 2026-09-14 (the rollback for smoothing).
+    r = Renderer(src, smooth_lines=() if "--straight-rivers" in argv else ("river",))
     svg = r.render()
     with open(out, "w", encoding="utf-8") as f:
         f.write(svg)
