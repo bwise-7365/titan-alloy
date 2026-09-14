@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # hexsheet — an XML map-sheet language for hex wargames
 
 `hexsheet.xsd` defines the language; `hexsheet2svg.py` is the reference renderer
@@ -76,3 +78,5 @@ and from reading the sheets.
 - Furniture reproduces titles, tracks and tables, not the full printed text of every box.
 - Dai Senso's `map-detail.png` numbers hexes one row and one column lower than the game-map scan;
   the game-map scan's own labels were followed.
+
+Copyright Ben Paul Wise. All Rights Reserved.

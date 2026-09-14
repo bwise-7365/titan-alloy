@@ -39,8 +39,8 @@
 
   <!-- ================= counters ================= -->
   <counters>
-    <unit-type id="soviet-rifle" name="Soviet Rifle Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true">Placed Untried (12.0); true Attack-Defense-Movement is revealed only at the instant of first combat or Overrun (12.2). One step: any loss eliminates it (9.62).</unit-type>
-    <unit-type id="soviet-armour" name="Soviet Armoured/Mechanized Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true">Placed Untried, as soviet-rifle (12.0). Counted as armoured for set-up and reinforcement purposes (amendments 3.4); more are printed than are needed for play.</unit-type>
+    <unit-type id="soviet-rifle" name="Soviet Rifle Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true" hidden-from="all" conceals="values" reveal="combat" rehide="never">Placed Untried (12.0); true Attack-Defense-Movement is revealed only at the instant of first combat or Overrun (12.2). One step: any loss eliminates it (9.62).</unit-type>
+    <unit-type id="soviet-armour" name="Soviet Armoured/Mechanized Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true" hidden-from="all" conceals="values" reveal="combat" rehide="never">Placed Untried, as soviet-rifle (12.0). Counted as armoured for set-up and reinforcement purposes (amendments 3.4); more are printed than are needed for play.</unit-type>
     <unit-type id="german-infantry" name="German Infantry Division" side="german" kind="ground" steps="4" zoc="full">Four steps: 9-7, 4-7, 2-7, 1-7 (9.63). Does not qualify for Divisional Integration (7.3).</unit-type>
     <unit-type id="german-panzer" name="German Panzer Division" side="german" kind="ground" steps="2" zoc="full">Two steps, the second printed on the counter's reverse (9.63). One Panzer and two Panzer Grenadier regiments; qualifies for Divisional Integration when the whole division is stacked together with no foreign unit present (7.3).</unit-type>
     <unit-type id="german-motorized" name="German Motorized Infantry Division" side="german" kind="ground" steps="2" zoc="full">Two regiments, except Das Reich, which has three (7.3). Independent regiments GD (Grossdeutschland) and Lehr may stack with a two-regiment motorized division without breaking its integration (amendments 7.3).</unit-type>
@@ -187,6 +187,7 @@
       <item code="0424">Mogilev: 5</item>
       <item code="2117">Smolensk: 25 (reduced by two per Game Turn from Turn 5 onward, amendments 15.11)</item>
       <item code="2625">Roslavl: 10</item>
+      <item code="3122">Yelnya: 10 (hex from the original 1976 map; the sheet XML, traced from the Cyrillic map, does not mark it)</item>
       <item code="4606">Gzhatsk: 5</item>
       <item code="3915">Vyazma: 15</item>
       <item code="5619">Kaluga: 20</item>

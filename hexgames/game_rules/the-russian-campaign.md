@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # The Russian Campaign — Rules Digest for Library Design
 
 **Source.** *The Russian Campaign*, Deluxe Fifth Edition, John Edwards and Todd
@@ -815,3 +817,5 @@ Several rules are sensitive to evaluation order in ways worth encoding explicitl
 - Withdrawals are executed **first** in a movement phase, before any other activity
   (4.1.2).
 - Partisan removal happens at the end of *each* Axis movement phase, both impulses.
+
+Copyright Ben Paul Wise. All Rights Reserved.

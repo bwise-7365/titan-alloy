@@ -148,6 +148,10 @@ namespace HexXml {
     std::optional<std::string> zoc;  // full|own-hex|none
     std::optional<std::string> stacking;
     bool hidden = false;
+    std::optional<std::string> hiddenFrom;  // enemy|all
+    std::optional<std::string> conceals;    // values|identity
+    std::vector<std::string> reveal;        // attacked|attacking|combat|adjacent|rule|owner
+    std::optional<std::string> rehide;      // never|rule
     std::string text;
   };
 

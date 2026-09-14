@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # hexcounters — an XML language for wargame counters and counter sheets
 
 `hexcounters.xsd` defines the language; `counters2svg.py` validates a set and
@@ -105,3 +107,5 @@ python counters2svg.py the-russian-campaign.xml --png --dpi 300
 ```
 
 `tools\build_*.py` regenerate the XML from compact tables.
+
+Copyright Ben Paul Wise. All Rights Reserved.

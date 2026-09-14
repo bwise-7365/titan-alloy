@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # The Russian Campaign — Counter Inventory
 
 **Purpose.** This document describes the unit counters and markers of *The Russian
@@ -336,3 +338,5 @@ leaders; the date tile; the caption band.
 - Back-face text with an arbitrary rotation for the diagonal city names.
 - A sheet writer that lays counters out on a grid, and for the back face emits the same
   grid **mirrored left to right**.
+
+Copyright Ben Paul Wise. All Rights Reserved.

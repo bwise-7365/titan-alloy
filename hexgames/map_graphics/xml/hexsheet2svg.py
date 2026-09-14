@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright Ben Paul Wise. All Rights Reserved.
 """hexsheet2svg.py -- reference renderer for hexsheet XML map sheets.
 
     python hexsheet2svg.py sheet.xml [out.svg] [--png] [--scale S]
@@ -729,3 +730,4 @@ def main(argv):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
+# Copyright Ben Paul Wise. All Rights Reserved.

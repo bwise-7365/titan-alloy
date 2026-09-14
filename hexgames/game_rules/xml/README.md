@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # hexrules — an XML rule language for hex wargames
 
 `hexrules.xsd` defines the language. The three instance documents rebuild the
@@ -33,8 +35,11 @@ game  @id @title @publisher @year @players @source @hex-scale @turn-scale
                    network*      (@carries @mutable)
                    region-layer* (@partition @bounded-by @mutable) > region*
                    space*        (@kind=box|pool|track|display @side @returns)
-  counters         unit-type*    (@side @kind @steps @zoc @stacking @hidden)
+  counters         unit-type*    (@side @kind @steps @zoc @stacking @hidden
+                                  @hidden-from @conceals @reveal @rehide)
   sequence         phase*        (@side @turns @condition @optional) -- phases nest
+                     > step*     (@does @at=enter|before-command|after-command|end
+                                  @commands @rules @turns) -- what the rules make happen, in order
   stacking         @units @steps @enforced @repair @exempt
   zoc*             @side @range @projected-by @blocked-by @negated-by-friendly
                    @stops-movement @zoc-to-zoc-forbidden @mandatory-attack @blocks
@@ -75,3 +80,5 @@ python validate.py
 
 (`validate.py` sits beside the files; it loads the XSD, validates each
 `*.xml`, and checks table cell counts.)
+
+Copyright Ben Paul Wise. All Rights Reserved.

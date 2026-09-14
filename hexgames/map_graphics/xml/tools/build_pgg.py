@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_pgg.py -- assemble the Panzergruppe Guderian sheet (flat-topped test case)."""
 import sys
 
@@ -101,3 +102,4 @@ x.append('''  <!-- furniture -->
 </sheet>''')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT)
+# Copyright Ben Paul Wise. All Rights Reserved.

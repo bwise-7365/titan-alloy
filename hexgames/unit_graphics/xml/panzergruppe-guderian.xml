@@ -1682,288 +1682,288 @@
       <text slot="CENTRE" size="small" color="white">Air|Interdiction</text>
     </back>
   </counter>
-  <counter id="s2-5-mot-9-7" family="unit" name="5">
+  <counter id="s2-5-inf-9-7" family="unit" name="5">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">5</text>
       <text slot="UR" size="small">3D</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">5</text>
       <text slot="UR" size="small">3D</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-6-mot-9-7" family="unit" name="6">
+  <counter id="s2-6-inf-9-7" family="unit" name="6">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">6</text>
       <text slot="UR" size="small">2B</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">6</text>
       <text slot="UR" size="small">2B</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-7-mot-9-7" family="unit" name="7">
+  <counter id="s2-7-inf-9-7" family="unit" name="7">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">7</text>
       <text slot="UR" size="small">7E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">7</text>
       <text slot="UR" size="small">7E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-15-mot-9-7" family="unit" name="15">
+  <counter id="s2-15-inf-9-7" family="unit" name="15">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">15</text>
       <text slot="UR" size="small">7E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">15</text>
       <text slot="UR" size="small">7E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-17-mot-9-7" family="unit" name="17">
+  <counter id="s2-17-inf-9-7" family="unit" name="17">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">17</text>
       <text slot="UR" size="small">7E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">17</text>
       <text slot="UR" size="small">7E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-23-mot-9-7" family="unit" name="23">
+  <counter id="s2-23-inf-9-7" family="unit" name="23">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">23</text>
       <text slot="UR" size="small">5E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">23</text>
       <text slot="UR" size="small">5E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-26-mot-9-7" family="unit" name="26">
+  <counter id="s2-26-inf-9-7" family="unit" name="26">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">26</text>
       <text slot="UR" size="small">2B</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">26</text>
       <text slot="UR" size="small">2B</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-31-mot-9-7" family="unit" name="31">
+  <counter id="s2-31-inf-9-7" family="unit" name="31">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">31</text>
       <text slot="UR" size="small">9G</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">31</text>
       <text slot="UR" size="small">9G</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-34-mot-9-7" family="unit" name="34">
+  <counter id="s2-34-inf-9-7" family="unit" name="34">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">34</text>
       <text slot="UR" size="small">9G</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">34</text>
       <text slot="UR" size="small">9G</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-35-mot-9-7" family="unit" name="35">
+  <counter id="s2-35-inf-9-7" family="unit" name="35">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">35</text>
       <text slot="UR" size="small">3D</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">35</text>
       <text slot="UR" size="small">3D</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-78-mot-9-7" family="unit" name="78">
+  <counter id="s2-78-inf-9-7" family="unit" name="78">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">78</text>
       <text slot="UR" size="small">8F</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">78</text>
       <text slot="UR" size="small">8F</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-137-mot-9-7" family="unit" name="137">
+  <counter id="s2-137-inf-9-7" family="unit" name="137">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">137</text>
       <text slot="UR" size="small">5E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">137</text>
       <text slot="UR" size="small">5E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-161-mot-9-7" family="unit" name="161">
+  <counter id="s2-161-inf-9-7" family="unit" name="161">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">161</text>
       <text slot="UR" size="small">3D</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">161</text>
       <text slot="UR" size="small">3D</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-252-mot-9-7" family="unit" name="252">
+  <counter id="s2-252-inf-9-7" family="unit" name="252">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">252</text>
       <text slot="UR" size="small">8F</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">252</text>
       <text slot="UR" size="small">8F</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-258-mot-9-7" family="unit" name="258">
+  <counter id="s2-258-inf-9-7" family="unit" name="258">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">258</text>
       <text slot="UR" size="small">6E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">258</text>
       <text slot="UR" size="small">6E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-263-mot-9-7" family="unit" name="263">
+  <counter id="s2-263-inf-9-7" family="unit" name="263">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">263</text>
       <text slot="UR" size="small">5E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">263</text>
       <text slot="UR" size="small">5E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-268-mot-9-7" family="unit" name="268">
+  <counter id="s2-268-inf-9-7" family="unit" name="268">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">268</text>
       <text slot="UR" size="small">7E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">268</text>
       <text slot="UR" size="small">7E</text>
       <value>4-7</value>
     </back>
   </counter>
-  <counter id="s2-292-mot-9-7" family="unit" name="292">
+  <counter id="s2-292-inf-9-7" family="unit" name="292">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">292</text>
       <text slot="UR" size="small">6E</text>
       <value>9-7</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="infantry"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">292</text>
       <text slot="UR" size="small">6E</text>
@@ -1972,14 +1972,14 @@
   </counter>
   <counter id="s2-gd-mot-4-10" family="unit" name="GD">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">GD</text>
       <text slot="UR" size="small">3E</text>
       <value>4-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">GD</text>
       <text slot="UR" size="small">3E</text>
@@ -1988,14 +1988,14 @@
   </counter>
   <counter id="s2-lehr-mot-3-10" family="unit" name="Lehr">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">Lehr</text>
       <text slot="UR" size="small">2A</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="division"/>
       <text slot="ML" rotate="-90" size="small">Lehr</text>
       <text slot="UR" size="small">2A</text>
@@ -2484,14 +2484,14 @@
   </counter>
   <counter id="s2-69-10-mot-3-10" family="unit" name="69/10">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">69/10</text>
       <text slot="UR" size="small">3H</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">69/10</text>
       <text slot="UR" size="small">3H</text>
@@ -2500,14 +2500,14 @@
   </counter>
   <counter id="s2-86-10-mot-3-10" family="unit" name="86/10">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">86/10</text>
       <text slot="UR" size="small">3H</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">86/10</text>
       <text slot="UR" size="small">3H</text>
@@ -2516,14 +2516,14 @@
   </counter>
   <counter id="s2-11-14-mot-3-10" family="unit" name="11/14">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">11/14</text>
       <text slot="UR" size="small">1C</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">11/14</text>
       <text slot="UR" size="small">1C</text>
@@ -2532,14 +2532,14 @@
   </counter>
   <counter id="s2-53-14-mot-3-10" family="unit" name="53/14">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">53/14</text>
       <text slot="UR" size="small">1C</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">53/14</text>
       <text slot="UR" size="small">1C</text>
@@ -2548,14 +2548,14 @@
   </counter>
   <counter id="s2-30-18-mot-3-10" family="unit" name="30/18">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">30/18</text>
       <text slot="UR" size="small">2A</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">30/18</text>
       <text slot="UR" size="small">2A</text>
@@ -2604,14 +2604,14 @@
   </counter>
   <counter id="s2-51-18-mot-3-10" family="unit" name="51/18">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">51/18</text>
       <text slot="UR" size="small">2A</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">51/18</text>
       <text slot="UR" size="small">2A</text>
@@ -2620,14 +2620,14 @@
   </counter>
   <counter id="s2-76-20-mot-3-10" family="unit" name="76/20">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">76/20</text>
       <text slot="UR" size="small">1C</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">76/20</text>
       <text slot="UR" size="small">1C</text>
@@ -2636,14 +2636,14 @@
   </counter>
   <counter id="s2-90-20-mot-3-10" family="unit" name="90/20">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">90/20</text>
       <text slot="UR" size="small">1C</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">90/20</text>
       <text slot="UR" size="small">1C</text>
@@ -2652,14 +2652,14 @@
   </counter>
   <counter id="s2-15-29-mot-3-10" family="unit" name="15/29">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">15/29</text>
       <text slot="UR" size="small">3E</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">15/29</text>
       <text slot="UR" size="small">3E</text>
@@ -2668,14 +2668,14 @@
   </counter>
   <counter id="s2-71-29-mot-3-10" family="unit" name="71/29">
     <front style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">71/29</text>
       <text slot="UR" size="small">3E</text>
       <value>3-10</value>
     </front>
     <back style="german">
-      <symbol icon="mechanized"/>
+      <symbol icon="motorized"/>
       <echelon level="regiment"/>
       <text slot="ML" rotate="-90" size="small">71/29</text>
       <text slot="UR" size="small">3E</text>
@@ -3060,16 +3060,16 @@
     <place counter="s2-292-inf-2-7"/>
     <place counter="s2-1-cav-4-5"/>
     <place counter="s2-lw-air"/>
-    <place counter="s2-5-mot-9-7"/>
-    <place counter="s2-6-mot-9-7"/>
-    <place counter="s2-7-mot-9-7"/>
-    <place counter="s2-15-mot-9-7"/>
-    <place counter="s2-17-mot-9-7"/>
-    <place counter="s2-23-mot-9-7"/>
-    <place counter="s2-26-mot-9-7"/>
-    <place counter="s2-31-mot-9-7"/>
-    <place counter="s2-34-mot-9-7"/>
-    <place counter="s2-35-mot-9-7"/>
+    <place counter="s2-5-inf-9-7"/>
+    <place counter="s2-6-inf-9-7"/>
+    <place counter="s2-7-inf-9-7"/>
+    <place counter="s2-15-inf-9-7"/>
+    <place counter="s2-17-inf-9-7"/>
+    <place counter="s2-23-inf-9-7"/>
+    <place counter="s2-26-inf-9-7"/>
+    <place counter="s2-31-inf-9-7"/>
+    <place counter="s2-34-inf-9-7"/>
+    <place counter="s2-35-inf-9-7"/>
     <place blank="true"/>
     <place blank="true"/>
     <place blank="true"/>
@@ -3080,14 +3080,14 @@
     <place blank="true"/>
     <place blank="true"/>
     <place blank="true"/>
-    <place counter="s2-78-mot-9-7"/>
-    <place counter="s2-137-mot-9-7"/>
-    <place counter="s2-161-mot-9-7"/>
-    <place counter="s2-252-mot-9-7"/>
-    <place counter="s2-258-mot-9-7"/>
-    <place counter="s2-263-mot-9-7"/>
-    <place counter="s2-268-mot-9-7"/>
-    <place counter="s2-292-mot-9-7"/>
+    <place counter="s2-78-inf-9-7"/>
+    <place counter="s2-137-inf-9-7"/>
+    <place counter="s2-161-inf-9-7"/>
+    <place counter="s2-252-inf-9-7"/>
+    <place counter="s2-258-inf-9-7"/>
+    <place counter="s2-263-inf-9-7"/>
+    <place counter="s2-268-inf-9-7"/>
+    <place counter="s2-292-inf-9-7"/>
     <place counter="s2-gd-mot-4-10"/>
     <place counter="s2-lehr-mot-3-10"/>
     <place counter="s2-3-3-inf-2-10"/>

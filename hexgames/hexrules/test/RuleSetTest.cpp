@@ -114,6 +114,38 @@ TEST(RuleSetTest, IdrefsResolve)
   }
 }
 
+TEST(RuleSetTest, ConcealmentLoads)
+{
+  const HexRules::RuleSet pgg = buildFrom("panzergruppe-guderian.xml");
+  const HexRules::UnitType& rifle = pgg.unitTypes()[pgg.unitType("soviet-rifle").value];
+  ASSERT_TRUE(rifle.concealment.has_value());
+  EXPECT_EQ(HexRules::HiddenFrom::All, rifle.concealment->from);
+  EXPECT_EQ(HexRules::Conceals::Values, rifle.concealment->conceals);
+  EXPECT_EQ(std::vector<HexRules::RevealTrigger>{HexRules::RevealTrigger::Combat}, rifle.concealment->reveal);
+  EXPECT_EQ(HexRules::Rehide::Never, rifle.concealment->rehide);
+  EXPECT_FALSE(pgg.unitTypes()[pgg.unitType("german-infantry").value].concealment.has_value());
+
+  const HexRules::RuleSet tarawa = buildFrom("d-day-at-tarawa.xml");
+  const HexRules::UnitType& garrison = tarawa.unitTypes()[tarawa.unitType("jp-unit").value];
+  ASSERT_TRUE(garrison.concealment.has_value());
+  EXPECT_EQ(HexRules::HiddenFrom::Enemy, garrison.concealment->from);
+  EXPECT_EQ(HexRules::Conceals::Identity, garrison.concealment->conceals);
+  const std::vector<HexRules::RevealTrigger> attackedOrRule{HexRules::RevealTrigger::Attacked,
+                                                            HexRules::RevealTrigger::Rule};
+  EXPECT_EQ(attackedOrRule, garrison.concealment->reveal);
+  EXPECT_EQ(HexRules::Rehide::Rule, garrison.concealment->rehide);
+
+  // hidden="true" with only one of the four attributes is refused, naming the unit type.
+  const std::filesystem::path bad =
+      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexrules" / "test" / "rules-hidden-incomplete.xml";
+  try {
+    (void)HexRules::RuleSetBuilder::build(HexXml::RulesDoc::parse(HexXml::XmlDocument::load(bad)));
+    FAIL() << "expected std::invalid_argument";
+  } catch (const std::invalid_argument& e) {
+    EXPECT_NE(std::string::npos, std::string(e.what()).find("scout"));
+  }
+}
+
 TEST(RuleSetTest, TurnSelectorsAndTables)
 {
   const HexRules::RuleSet trc = buildFrom("the-russian-campaign.xml");

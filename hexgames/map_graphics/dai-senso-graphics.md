@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Axis Empires: Dai Senso! — Map Graphics Inventory
 
 **Source.** `C:\Library\War-Games\Dai Senso Pacific WWII\Dai Senso game map adjusted.png`
@@ -406,3 +408,5 @@ see it.
 
 **Two sheets.** Adjacency across the sheet boundary does not follow from either sheet's numbering
 and has to be authored.
+
+Copyright Ben Paul Wise. All Rights Reserved.

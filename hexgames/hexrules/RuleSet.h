@@ -61,6 +61,19 @@ namespace HexRules {
   };
   struct SpaceSpec { std::string id; std::string name; std::string kind; SideMask sides; bool returnsP = false; };
 
+  // A hidden unit type: who may not look, what stays secret, what turns it face up, and whether it
+  // can be hidden again (hexrules unit-type @hidden-from @conceals @reveal @rehide).
+  enum class HiddenFrom : std::uint8_t { Enemy, All };
+  enum class Conceals : std::uint8_t { Values, Identity };
+  enum class RevealTrigger : std::uint8_t { Attacked, Attacking, Combat, Adjacent, Rule, Owner };
+  enum class Rehide : std::uint8_t { Never, Rule };
+  struct Concealment {
+    HiddenFrom from;
+    Conceals conceals;
+    std::vector<RevealTrigger> reveal;  // at least one, in document order
+    Rehide rehide;
+  };
+
   struct UnitType {
     std::string id;
     std::string name;
@@ -69,7 +82,7 @@ namespace HexRules {
     std::optional<std::string> steps;
     std::optional<std::string> zoc;   // full | own-hex | none
     std::optional<std::string> stacking;
-    bool hiddenP = false;
+    std::optional<Concealment> concealment;  // set: the type is placed face down
   };
 
   struct PhaseNode {

@@ -4,10 +4,10 @@
 C++ (.h .hpp .cpp): the three-line banner as the first three and last three non-empty lines.
 Markdown and text (.md .txt), CMake (CMakeLists.txt .cmake), Python (.py), PowerShell (.ps1) and
 PlantUML (.puml): the one-line form (with the language's comment prefix) as the first and last
-non-empty line.
+non-empty line. A Python script may keep a "#!" line above its first banner line.
 
-Only the trees this project creates are checked; the pre-existing digests and generated XML/SVG/PNG
-are not.  Exemptions are listed in EXEMPT below with their reason.
+XML, SVG and PNG are not checked (an XML file cannot put a comment before its declaration).
+Exemptions are listed in EXEMPT below with their reason.
 """
 import os
 import sys
@@ -18,12 +18,14 @@ CPP = (".h", ".hpp", ".cpp")
 ONE_LINE = {".md": "", ".txt": "", ".cmake": "# ", ".py": "# ", ".ps1": "# ", ".puml": "' "}
 ROOTS = ["hexcoord", "hexxml", "hexmodel", "hexrules", "hexsearch", "hexengine", "hexrecord",
          "hexview", "hexqt", "games", "tools", "tasks", "tests", "cmake", "uml", "doc",
-         "game_records", "packages"]
+         "game_records", "packages", "game_rules", "map_graphics", "unit_graphics"]
 TOP_FILES = ["PLAN.md", "BUGS.txt", "CMakeLists.txt", ".gitignore"]
 EXEMPT = {
     "CLAUDE.md": "harness instruction file, as in irrgo",
     "CMakePresets.json": "JSON has no comments",
     "2026-09-12-2002-plan-request.txt": "Ben's request, not a project file",
+    "military-unit-icons-handoff.md": "a hand-off document, not written for this project",
+    "validate.py": "game_rules/xml/validate.py, the pre-project validator tools/validate-xml.py replaces",
 }
 SKIP_DIRS = {"cmake-build-debug", "cmake-build-release", "cmake-build-headless", "build", "out",
              "__pycache__", ".idea", ".vs", "_deps", "CMakeFiles", "golden"}
@@ -54,6 +56,8 @@ def check(path):
     else:
         return None
     want = prefix + LINE
+    if ".py" == ext and lines and lines[0].startswith("#!"):
+        lines = lines[1:]
     if len(lines) < 2 or lines[0] != want or lines[-1] != want:
         return "missing '%s' as first and last line" % want
     return None

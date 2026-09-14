@@ -53,10 +53,10 @@
        explicitly below to german-motorized -->
   <unit type="soviet-armour" match="^s[12]-(?!gd-mot|lehr-mot)[a-z0-9]+-(arm|mot)-[0-9]+-10$"/>
 
-  <!-- German Infantry Divisions: id ends "-inf-<atk>-7" or "-mot-<atk>-7" with a single leading
-       division number; movement 7 (foot pace) is what distinguishes these from the
-       movement-10 motorized/armoured regiment ids, regardless of the "inf"/"mot" infix -->
-  <unit type="german-infantry" match="^s[12]-[0-9]+-(inf|mot)-[0-9]+-7$"/>
+  <!-- German Infantry Divisions: two counters per division, "<division>-inf-9-7" (9-7/4-7) and
+       "<division>-inf-2-7" (2-7/1-7); movement 7 (foot pace) distinguishes them from the
+       movement-10 regiment ids -->
+  <unit type="german-infantry" match="^s[12]-[0-9]+-inf-[0-9]+-7$"/>
 
   <!-- German Panzer Division tank regiments: id is "<regiment>-<division>-arm-<atk>-10"
        (regiment/division code per Case 2.0, e.g. 20/12) -->

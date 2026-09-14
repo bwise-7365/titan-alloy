@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_tarawa.py -- assemble the D-Day at Tarawa sheet (pointy-topped; fire dots as side glyphs)."""
 import re
 
@@ -159,3 +160,4 @@ x.append('''  <panel id="water-legend" x="%.0f" y="%.0f" w="%.0f" h="%.0f" fill=
 x.append("</sheet>")
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT)
+# Copyright Ben Paul Wise. All Rights Reserved.

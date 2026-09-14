@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """calibrate.py SRC x0 y0 x1 y1 smin smax OUT.png -- find a flat-topped hex grid in a scan crop.
 
 Scores every (size, ox, oy) by cross-correlating an edge map with one hex outline
@@ -107,3 +108,4 @@ for cx, cy in cells:
     d.polygon([(cx + s * px_, cy + s * py_) for px_, py_ in corners], outline=(255, 0, 255))
 ov.save(out)
 print("overlay", out)
+# Copyright Ben Paul Wise. All Rights Reserved.

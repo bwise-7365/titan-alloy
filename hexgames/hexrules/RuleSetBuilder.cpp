@@ -20,6 +20,94 @@ namespace HexRules {
   using Detail::parseMoveCost;
   using Detail::parseTurnsOr;
 
+  namespace {
+
+    // The four concealment attributes, already checked against their enumerations by RulesDoc.
+    HiddenFrom
+    hiddenFromOf(const std::string& text)
+    {
+      if ("enemy" == text) {
+        return HiddenFrom::Enemy;
+      }
+      if ("all" == text) {
+        return HiddenFrom::All;
+      }
+      throw std::invalid_argument("RuleSetBuilder: hidden-from '" + text + "'");
+    }
+
+    Conceals
+    concealsOf(const std::string& text)
+    {
+      if ("values" == text) {
+        return Conceals::Values;
+      }
+      if ("identity" == text) {
+        return Conceals::Identity;
+      }
+      throw std::invalid_argument("RuleSetBuilder: conceals '" + text + "'");
+    }
+
+    RevealTrigger
+    revealTriggerOf(const std::string& text)
+    {
+      if ("attacked" == text) {
+        return RevealTrigger::Attacked;
+      }
+      if ("attacking" == text) {
+        return RevealTrigger::Attacking;
+      }
+      if ("combat" == text) {
+        return RevealTrigger::Combat;
+      }
+      if ("adjacent" == text) {
+        return RevealTrigger::Adjacent;
+      }
+      if ("rule" == text) {
+        return RevealTrigger::Rule;
+      }
+      if ("owner" == text) {
+        return RevealTrigger::Owner;
+      }
+      throw std::invalid_argument("RuleSetBuilder: reveal '" + text + "'");
+    }
+
+    Rehide
+    rehideOf(const std::string& text)
+    {
+      if ("never" == text) {
+        return Rehide::Never;
+      }
+      if ("rule" == text) {
+        return Rehide::Rule;
+      }
+      throw std::invalid_argument("RuleSetBuilder: rehide '" + text + "'");
+    }
+
+    // A hidden type carries all four attributes and a visible one none of them.
+    std::optional<Concealment>
+    concealmentOf(const HexXml::UnitTypeDoc& u)
+    {
+      const bool anyP = u.hiddenFrom || u.conceals || !u.reveal.empty() || u.rehide;
+      if (!u.hidden) {
+        if (anyP) {
+          throw std::invalid_argument("unit-type '" + u.id +
+                                      "': hidden-from, conceals, reveal and rehide need hidden=\"true\"");
+        }
+        return std::nullopt;
+      }
+      if (!u.hiddenFrom || !u.conceals || u.reveal.empty() || !u.rehide) {
+        throw std::invalid_argument("unit-type '" + u.id +
+                                    "': hidden=\"true\" needs hidden-from, conceals, reveal and rehide");
+      }
+      Concealment c{hiddenFromOf(*u.hiddenFrom), concealsOf(*u.conceals), {}, rehideOf(*u.rehide)};
+      for (const std::string& trigger : u.reveal) {
+        c.reveal.push_back(revealTriggerOf(trigger));
+      }
+      return c;
+    }
+
+  }  // namespace
+
   void
   RuleSetBuilder::buildSides(RuleSet& rs, const HexXml::RulesDoc& doc, BuildContext& ctx)
   {
@@ -59,7 +147,7 @@ namespace HexRules {
       type.steps = u.steps;
       type.zoc = u.zoc;
       type.stacking = u.stacking;
-      type.hiddenP = u.hidden;
+      type.concealment = concealmentOf(u);
       rs.unitTypes_.push_back(std::move(type));
     }
     return;

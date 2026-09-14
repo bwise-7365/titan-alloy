@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_trc.py -- assemble The Russian Campaign sheet (pointy-topped, lettered rows)."""
 import sys
 
@@ -188,3 +189,4 @@ x.append('''  <!-- furniture: the strip across the top, two panels over sea hexe
 </sheet>''')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT)
+# Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_ds.py -- Axis Empires: Dai Senso!  A representative set covering every counter family and every
 presentation device in the inventory: ground units of major and minor countries, support units whose
 backs are other counters, and the operational and political markers."""
@@ -211,3 +212,4 @@ x.append('  </sheet>')
 x.append('</counters>')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT, len(ids), "counters")
+# Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """sample.py -- sample the scan colour at every hex centre of a calibrated grid.
 
 python sample.py SRC GRIDSPEC clusters K                -> print K colour clusters with counts and an example hex
@@ -92,3 +93,4 @@ else:
         if members:
             print('<hexes terrain="%s" ids="%s"/>' % (n, " ".join(members)))
     print("<!-- %d hexes classified -->" % len(ids))
+# Copyright Ben Paul Wise. All Rights Reserved.

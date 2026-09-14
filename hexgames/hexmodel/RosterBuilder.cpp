@@ -162,7 +162,7 @@ namespace HexModel {
       spec.nationality = counter.front.style.value_or("");
       spec.front = strengthsOfFace(counter.front, spec.kind, counter.id, reader);
       spec.maxSteps = maxStepsOf(counter.front);
-      spec.hiddenP = type.hiddenP;
+      spec.hiddenP = type.concealment.has_value();
 
       if (counter.back) {
         if (!counter.back->face.values.empty()) {

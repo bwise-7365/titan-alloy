@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_ds.py -- assemble the Dai Senso sheet (two independently numbered pointy-topped grids)."""
 import re
 import sys
@@ -243,3 +244,4 @@ x.append('''  <!-- off-map furniture -->
 </sheet>''')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT)
+# Copyright Ben Paul Wise. All Rights Reserved.

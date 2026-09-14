@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_pgg.py -- Panzergruppe Guderian: the two 'new' counter sections (PGG_Countersheet_1-2_new.pdf, 2-2_new.pdf).
 
 Each PDF page prints the front on the left and the back, mirrored, on the right.  Backs:
@@ -43,9 +44,9 @@ S1 = [  # sheet 1/2, Soviet, 10 columns
 S2 = [  # sheet 2/2, German, 10 columns
     [(d, "", "inf", "division", "2-7", "1-7") for d in ("5", "6", "7", "15", "17", "23", "26", "31", "34", "35")],
     [(d, "", "inf", "division", "2-7", "1-7") for d in ("78", "137", "161", "252", "258", "263", "268", "292")] + [("1", "3H", "cav", "division", "4-5", "2-5"), ("Lw", "", "air", None, "", "Air|Interdiction")],
-    [(d, c, "mot", "division", "9-7", "4-7") for d, c in (("5", "3D"), ("6", "2B"), ("7", "7E"), ("15", "7E"), ("17", "7E"), ("23", "5E"), ("26", "2B"), ("31", "9G"), ("34", "9G"), ("35", "3D"))],
+    [(d, c, "inf", "division", "9-7", "4-7") for d, c in (("5", "3D"), ("6", "2B"), ("7", "7E"), ("15", "7E"), ("17", "7E"), ("23", "5E"), ("26", "2B"), ("31", "9G"), ("34", "9G"), ("35", "3D"))],
     [None] * 10,
-    [(d, c, "mot", "division", "9-7", "4-7") for d, c in (("78", "8F"), ("137", "5E"), ("161", "3D"), ("252", "8F"), ("258", "6E"), ("263", "5E"), ("268", "7E"), ("292", "6E"))] + [("GD", "3E", "mot", "division", "4-10", "2-10"), ("Lehr", "2A", "mot", "division", "3-10", "2-10")],
+    [(d, c, "inf", "division", "9-7", "4-7") for d, c in (("78", "8F"), ("137", "5E"), ("161", "3D"), ("252", "8F"), ("258", "6E"), ("263", "5E"), ("268", "7E"), ("292", "6E"))] + [("GD", "3E", "mot", "division", "4-10", "2-10"), ("Lehr", "2A", "mot", "division", "3-10", "2-10")],
     [(d, c, "inf", "regiment", "2-10", "1-10") for d, c in (("3/3", "3H"), ("12/4", "3H"), ("6/7", "1C"), ("69/10", "3E"), ("5/12", "1C"), ("40/17", "3E"), ("52/18", "3E"), ("73/19", "2A"), ("112/20", "1C"))] + [("Lw", "", "air", None, "", "Air|Interdiction")],
     [(d, c, "inf", "regiment", "2-10", "1-10") for d, c in (("394/3", "3H"), ("33/4", "3H"), ("7/7", "1C"), ("86/10", "3E"), ("25/12", "1C"), ("63/17", "3E"), ("101/18", "3E"), ("74/19", "2A"), ("59/20", "1C"))] + [("Lw", "", "air", None, "", "Air|Interdiction")],
     [None] * 10,
@@ -56,7 +57,10 @@ S2 = [  # sheet 2/2, German, 10 columns
     [("", "", "boom", None, "", "Out of|Supply")] * 3 + [("DIS", "", "dis", None, "", "Out of|Supply")] * 2 + [("DIS", "", "dis", None, "", "RAIL|CUT")] * 3 + [("", "", "sair", None, "", "Air|Interdiction"), ("296", "", "sinf", "division", "0-0-6", "U-6")],
 ]
 
+# "mot" prints differently on the two sheets: the Soviet divisions carry the mechanized symbol (a
+# crossed box with an oval), the German regiments the motorized one (a crossed box with wheels).
 ICON = {"inf": "infantry", "arm": "armour", "mot": "mechanized", "cav": "cavalry", "sinf": "infantry"}
+ICON_BY_SIDE = {"1": ICON, "2": dict(ICON, mot="motorized")}
 
 
 def slug(s):
@@ -97,7 +101,7 @@ def counter(cid, cell, side):
         return cid, fam, "plain", f, ['      <text slot="CENTRE" size="small" weight="bold">%s</text>' % bval], "plain"
     else:
         st = "ss" if icon == "ss" else "soviet" if icon == "sinf" else style
-        ic = ICON.get(icon, "infantry")
+        ic = ICON_BY_SIDE[side].get(icon, "infantry")
         f.append('      <symbol icon="%s"/>' % ic)
         if ech:
             f.append('      <echelon level="%s"/>' % ech)
@@ -179,3 +183,4 @@ for side, order, rows in sheets:
 x.append('</counters>')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT, len(seen), "counters")
+# Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_trc.py -- The Russian Campaign, Compass Games 2020 remake: the complete counter sheet, both faces.
 
 Transcribed from trc_units_sep14_page_1_front.jpg and page_2_back.  The back sheet is
@@ -224,3 +225,4 @@ x.append('  </sheet>')
 x.append('</counters>')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT, len(seen), "counters")
+# Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game id="synthetic" title="Synthetic" players="2">
+  <sides>
+    <side id="a" name="A" control="human"/>
+    <side id="b" name="B" control="human"/>
+  </sides>
+  <map>
+    <hex-ids pattern="[A-Z]" example="A"/>
+    <hex-terrain id="clear" name="Clear" move-cost="1"/>
+  </map>
+  <counters>
+    <unit-type id="infantry" name="Infantry" kind="ground"/>
+    <unit-type id="scout" name="Scout" kind="ground" hidden="true" hidden-from="enemy"/>
+  </counters>
+  <sequence>
+    <phase id="turn" name="Turn"/>
+  </sequence>
+  <stacking enforced="always" repair="none"/>
+  <zoc id="zoc" name="ZOC" range="1"/>
+  <movement budget="hexes">
+    <mode id="normal" name="Normal"/>
+  </movement>
+  <supply>
+    <trace id="supply" name="Supply" sources="a" max-length="8" blocked-by-zoc="true" fatal="true" checked="always"/>
+  </supply>
+  <combat mandatory="true">
+    <resolver id="crt" name="CRT" kind="odds-table"/>
+  </combat>
+  <randomizer id="die" name="Die" kind="die" size="6"/>
+  <victory>
+    <condition id="win" side="a" kind="immediate"/>
+  </victory>
+</game>

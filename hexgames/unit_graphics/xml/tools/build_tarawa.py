@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """build_tarawa.py -- D-Day at Tarawa: every US unit from the USMC OOB chart, Japanese unit types from the
 rules samples, depth markers and the marker set.  Backs: US units flip to a reduced face (fewer pips,
 lower strength, the weapons still held); Japanese units flip to a concealed face; depth markers to a type label."""
@@ -201,3 +202,4 @@ x.append('  </sheet>')
 x.append('</counters>')
 open(OUT, "w", encoding="utf-8").write("\n".join(x))
 print("wrote", OUT, len(ids), "counters")
+# Copyright Ben Paul Wise. All Rights Reserved.

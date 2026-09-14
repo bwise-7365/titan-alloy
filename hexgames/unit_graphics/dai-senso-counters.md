@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Axis Empires: Dai Senso! — Counter Inventory
 
 **Purpose.** This document describes the unit counters and markers of *Axis Empires:
@@ -359,3 +361,5 @@ Accept supplied SVG, and fall back to the APP-6 air and sea icons for the silhou
 - The hexagon outline as a `<polygon>` with a thick stroke behind the title.
 - Because the back can be a different counter, the sheet writer must pair front and back
   records explicitly and mirror the back grid for duplex printing.
+
+Copyright Ben Paul Wise. All Rights Reserved.

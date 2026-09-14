@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright Ben Paul Wise. All Rights Reserved.
 """counters2svg.py -- reference renderer for hexcounters XML.
 
     python counters2svg.py set.xml [--png] [--dpi N]
@@ -461,3 +462,4 @@ def main(argv):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
+# Copyright Ben Paul Wise. All Rights Reserved.

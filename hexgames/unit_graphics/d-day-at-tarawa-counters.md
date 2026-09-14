@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # D-Day at Tarawa — Counter Inventory
 
 **Purpose.** This document describes the unit counters and markers of *D-Day at
@@ -317,3 +319,5 @@ supplied.
 - Target shapes as `<circle>`, a rotated `<rect>`, and a `<polygon>`.
 - Markers drawn from a generic template — ground colour, title, optional icon,
   optional value — rather than as one-off artwork.
+
+Copyright Ben Paul Wise. All Rights Reserved.

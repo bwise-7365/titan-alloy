@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # D-Day at Tarawa — Rules Digest for Library Design
 
 **Source.** *D-Day at Tarawa*, John Butterfield, Decision Games, 2014.
@@ -751,3 +753,5 @@ requires revealed status (8.44). A single `revealed` flag on the counter plus ex
 query flavours is enough. A general fog-of-war system is not needed: only one side
 hides information, and concealment is restored exactly once, at the overnight
 loss-of-contact step.
+
+Copyright Ben Paul Wise. All Rights Reserved.

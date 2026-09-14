@@ -466,8 +466,9 @@ road hex; `4015`/`2216`/`1414` the Soviet 24th/16th/19th Army setup hexes (5.1).
   Reinforcement entrance areas and lettered Entrance Hexes `V`,`W`,`X`,`Z` (14.1, 16.1) and German
   Entrance Areas `A` through `H` (16.2).
 - Victory-point hexes named without a city glyph: `5907`, `5915` (15.11).
-- Yelnya (10 Victory Points, 15.11) is on the schedule but has no glyph or name in the sheet XML;
-  its hex id is an open question, so the rules XML's occupation list omits it for now.
+- Yelnya (10 Victory Points, 15.11) is hex `3122` on the original 1976 map. The Cyrillic map the
+  sheet XML was traced from does not mark it, so the sheet has no glyph or name there; the rules
+  XML's occupation list names the hex directly.
 
 ### 4.3 Hexside (edge) features
 

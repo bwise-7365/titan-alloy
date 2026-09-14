@@ -246,6 +246,22 @@ namespace HexXml {
       }
       u.stacking = node.optional("stacking");
       u.hidden = node.optionalAs<bool>("hidden").value_or(false);
+      u.hiddenFrom = node.optional("hidden-from");
+      if (u.hiddenFrom) {
+        checkEnum(node, "hidden-from", *u.hiddenFrom, {"enemy", "all"});
+      }
+      u.conceals = node.optional("conceals");
+      if (u.conceals) {
+        checkEnum(node, "conceals", *u.conceals, {"values", "identity"});
+      }
+      u.reveal = idrefs(node, "reveal");
+      for (const std::string& trigger : u.reveal) {
+        checkEnum(node, "reveal", trigger, {"attacked", "attacking", "combat", "adjacent", "rule", "owner"});
+      }
+      u.rehide = node.optional("rehide");
+      if (u.rehide) {
+        checkEnum(node, "rehide", *u.rehide, {"never", "rule"});
+      }
       u.text = node.text();
       return u;
     }

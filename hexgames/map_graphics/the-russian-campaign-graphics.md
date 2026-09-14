@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # The Russian Campaign — Map Graphics Inventory
 
 **Source.** `C:\Library\War-Games\The Russian Campaign\TRC map v1 adjusted.png`
@@ -366,3 +368,5 @@ encode length-then-lexicographic ordering.
 field. The hexes beneath them are still in play. The renderer must draw the panel above the
 map layer and the game logic must ignore the panel entirely — so panels cannot be part of the
 map's spatial model.
+
+Copyright Ben Paul Wise. All Rights Reserved.

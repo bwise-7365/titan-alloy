@@ -156,201 +156,183 @@
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-5</text></g></g>
 <g class="counter" data-id="s2-lw-air" transform="translate(126.800,21.200) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="silhouette aircraft" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><path d="M0,-13 L3,-4 L21,2 L21,5 L3,3 L2,10 L7,13 L7,15 L0,13 L-7,15 L-7,13 L-2,10 L-3,3 L-21,5 L-21,2 L-3,-4 Z"/></g></g>
-<g class="counter" data-id="s2-5-mot-9-7" transform="translate(8.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-5-inf-9-7" transform="translate(8.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-6-mot-9-7" transform="translate(21.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-6-inf-9-7" transform="translate(21.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2B</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-7-mot-9-7" transform="translate(34.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-7-inf-9-7" transform="translate(34.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-15-mot-9-7" transform="translate(47.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-15-inf-9-7" transform="translate(47.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">15</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-17-mot-9-7" transform="translate(60.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-17-inf-9-7" transform="translate(60.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">17</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-23-mot-9-7" transform="translate(74.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-23-inf-9-7" transform="translate(74.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">23</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-26-mot-9-7" transform="translate(87.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-26-inf-9-7" transform="translate(87.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">26</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2B</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-31-mot-9-7" transform="translate(100.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-31-inf-9-7" transform="translate(100.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">31</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">9G</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-34-mot-9-7" transform="translate(113.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-34-inf-9-7" transform="translate(113.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">34</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">9G</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-35-mot-9-7" transform="translate(126.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-35-inf-9-7" transform="translate(126.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">35</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-78-mot-9-7" transform="translate(8.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-78-inf-9-7" transform="translate(8.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">78</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">8F</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-137-mot-9-7" transform="translate(21.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-137-inf-9-7" transform="translate(21.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">137</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-161-mot-9-7" transform="translate(34.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-161-inf-9-7" transform="translate(34.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">161</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-252-mot-9-7" transform="translate(47.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-252-inf-9-7" transform="translate(47.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">252</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">8F</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-258-mot-9-7" transform="translate(60.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-258-inf-9-7" transform="translate(60.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">258</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-263-mot-9-7" transform="translate(74.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-263-inf-9-7" transform="translate(74.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">263</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-268-mot-9-7" transform="translate(87.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-268-inf-9-7" transform="translate(87.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">268</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
-<g class="counter" data-id="s2-292-mot-9-7" transform="translate(100.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-292-inf-9-7" transform="translate(100.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">292</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">9-7</text></g></g>
 <g class="counter" data-id="s2-gd-mot-4-10" transform="translate(113.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">GD</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-10</text></g></g>
 <g class="counter" data-id="s2-lehr-mot-3-10" transform="translate(126.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Lehr</text></g>
@@ -617,50 +599,50 @@
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-10</text></g></g>
 <g class="counter" data-id="s2-69-10-mot-3-10" transform="translate(34.400,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">69/10</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3H</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-86-10-mot-3-10" transform="translate(47.600,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">86/10</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3H</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-11-14-mot-3-10" transform="translate(60.800,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">11/14</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-53-14-mot-3-10" transform="translate(74.000,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">53/14</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-30-18-mot-3-10" transform="translate(87.200,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">30/18</text></g>
@@ -682,50 +664,50 @@
 <g class="counter" data-id="s2-game-turn-gt" transform="translate(8.000,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#e21414" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Game</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">Turn</text></g></g>
 <g class="counter" data-id="s2-51-18-mot-3-10" transform="translate(21.200,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">51/18</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2A</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-76-20-mot-3-10" transform="translate(34.400,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">76/20</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-90-20-mot-3-10" transform="translate(47.600,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">90/20</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-15-29-mot-3-10" transform="translate(60.800,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">15/29</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-10</text></g></g>
 <g class="counter" data-id="s2-71-29-mot-3-10" transform="translate(74.000,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">71/29</text></g>
@@ -1015,201 +997,183 @@
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-5</text></g></g>
 <g class="counter" data-id="s2-lw-air" transform="translate(8.000,21.200) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#8a9880" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,-4.2)">Air</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,4.2)">Interdiction</text></g></g>
-<g class="counter" data-id="s2-5-mot-9-7" transform="translate(126.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-5-inf-9-7" transform="translate(126.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-6-mot-9-7" transform="translate(113.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-6-inf-9-7" transform="translate(113.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2B</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-7-mot-9-7" transform="translate(100.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-7-inf-9-7" transform="translate(100.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-15-mot-9-7" transform="translate(87.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-15-inf-9-7" transform="translate(87.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">15</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-17-mot-9-7" transform="translate(74.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-17-inf-9-7" transform="translate(74.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">17</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-23-mot-9-7" transform="translate(60.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-23-inf-9-7" transform="translate(60.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">23</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-26-mot-9-7" transform="translate(47.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-26-inf-9-7" transform="translate(47.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">26</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2B</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-31-mot-9-7" transform="translate(34.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-31-inf-9-7" transform="translate(34.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">31</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">9G</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-34-mot-9-7" transform="translate(21.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-34-inf-9-7" transform="translate(21.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">34</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">9G</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-35-mot-9-7" transform="translate(8.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-35-inf-9-7" transform="translate(8.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">35</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-78-mot-9-7" transform="translate(126.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-78-inf-9-7" transform="translate(126.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">78</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">8F</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-137-mot-9-7" transform="translate(113.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-137-inf-9-7" transform="translate(113.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">137</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-161-mot-9-7" transform="translate(100.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-161-inf-9-7" transform="translate(100.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">161</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3D</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-252-mot-9-7" transform="translate(87.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-252-inf-9-7" transform="translate(87.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">252</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">8F</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-258-mot-9-7" transform="translate(74.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-258-inf-9-7" transform="translate(74.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">258</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-263-mot-9-7" transform="translate(60.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-263-inf-9-7" transform="translate(60.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">263</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-268-mot-9-7" transform="translate(47.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-268-inf-9-7" transform="translate(47.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">268</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">7E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
-<g class="counter" data-id="s2-292-mot-9-7" transform="translate(34.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="counter" data-id="s2-292-inf-9-7" transform="translate(34.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">292</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-7</text></g></g>
 <g class="counter" data-id="s2-gd-mot-4-10" transform="translate(21.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">GD</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-lehr-mot-3-10" transform="translate(8.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XX</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Lehr</text></g>
@@ -1476,50 +1440,50 @@
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-69-10-mot-3-10" transform="translate(100.400,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">69/10</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3H</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-86-10-mot-3-10" transform="translate(87.200,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">86/10</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3H</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-11-14-mot-3-10" transform="translate(74.000,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">11/14</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-53-14-mot-3-10" transform="translate(60.800,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">53/14</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-30-18-mot-3-10" transform="translate(47.600,126.800) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">30/18</text></g>
@@ -1541,50 +1505,50 @@
 <g class="counter" data-id="s2-game-turn-gt" transform="translate(126.800,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Game</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">Turn</text></g></g>
 <g class="counter" data-id="s2-51-18-mot-3-10" transform="translate(113.600,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">51/18</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2A</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-76-20-mot-3-10" transform="translate(100.400,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">76/20</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-90-20-mot-3-10" transform="translate(87.200,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">90/20</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1C</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-15-29-mot-3-10" transform="translate(74.000,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">15/29</text></g>
 <g transform="translate(92.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="end" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">3E</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-10</text></g></g>
 <g class="counter" data-id="s2-71-29-mot-3-10" transform="translate(60.800,140.000) scale(0.12700)"><rect width="100" height="100" rx="4.0" fill="#9aa88c" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="symbol mechanized">
+<g class="symbol motorized">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
-<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">III</text></g>
 <g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">71/29</text></g>

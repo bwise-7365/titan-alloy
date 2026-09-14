@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Counter Specification — Synthesis Across Three Games
 
 A synthesis of `d-day-at-tarawa-counters.md`, `the-russian-campaign-counters.md` and
@@ -398,3 +400,5 @@ generated one — not whether the two look alike.
 - **Doctrinal mode.** Should the generator offer true APP-6 affiliation frames as an option,
   for users who want military-manual output rather than wargame counters? The handoff
   mentions both styles. It costs little, since the frames are in the same piece sources.
+
+Copyright Ben Paul Wise. All Rights Reserved.

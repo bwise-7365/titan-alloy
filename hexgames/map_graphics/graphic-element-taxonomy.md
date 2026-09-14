@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Map Graphic Element Taxonomy
 
 A synthesis of `d-day-at-tarawa-graphics.md`, `the-russian-campaign-graphics.md`
@@ -359,3 +361,5 @@ already solved.
   reads a vertex. They are needed for drawing edge chains and for the mitre behaviour at turns.
   That is a rendering argument, not a rules argument, and it is worth saying so plainly rather
   than overstating the case.
+
+Copyright Ben Paul Wise. All Rights Reserved.

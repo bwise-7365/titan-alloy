@@ -55,6 +55,46 @@ Conventions
     </xs:union>
   </xs:simpleType>
 
+  <xs:simpleType name="HiddenFrom">
+    <xs:annotation><xs:documentation>Who may not look at a hidden unit: enemy (its owner may; Tarawa's Japanese); all (neither player; PGG's Untried units).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="enemy"/>
+      <xs:enumeration value="all"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Conceals">
+    <xs:annotation><xs:documentation>What a hidden unit keeps secret: values (its type shows, its printed values do not); identity (only the face-down back shows, not even the exact type).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="values"/>
+      <xs:enumeration value="identity"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RevealTrigger">
+    <xs:annotation><xs:documentation>An event that turns a hidden unit face up: attacked (it is the target of an attack); attacking (it attacks); combat (either, including combat during movement such as an overrun); adjacent (an enemy unit becomes adjacent); rule (a rule, chart result or card, named in the prose); owner (its owner may reveal it at will).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="attacked"/>
+      <xs:enumeration value="attacking"/>
+      <xs:enumeration value="combat"/>
+      <xs:enumeration value="adjacent"/>
+      <xs:enumeration value="rule"/>
+      <xs:enumeration value="owner"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RevealTriggers">
+    <xs:list itemType="RevealTrigger"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="Rehide">
+    <xs:annotation><xs:documentation>Whether a revealed unit can be turned face down again: never; rule (a rule does it, named in the prose; Tarawa's overnight loss of contact).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="never"/>
+      <xs:enumeration value="rule"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="Extent">
     <xs:annotation><xs:documentation>A hex count, or: unlimited; authored (the set is printed on the map, not computed).</xs:documentation></xs:annotation>
     <xs:union>
@@ -322,7 +362,7 @@ Conventions
   <!-- ================= counters ================= -->
 
   <xs:complexType name="UnitType">
-    <xs:annotation><xs:documentation>steps: printed step range, e.g. "1-4". zoc: how far this type projects its zone of control. stacking: stacking value, a number or "none". hidden: placed face down.</xs:documentation></xs:annotation>
+    <xs:annotation><xs:documentation>steps: printed step range, e.g. "1-4". zoc: how far this type projects its zone of control. stacking: stacking value, a number or "none". hidden: placed face down. A hidden type must also say who may not look (hidden-from), what stays secret (conceals), what turns it face up (reveal) and whether it can be hidden again (rehide); a type that is not hidden carries none of the four. The loader enforces both.</xs:documentation></xs:annotation>
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute name="id" type="xs:ID" use="required"/>
@@ -352,6 +392,10 @@ Conventions
         </xs:attribute>
         <xs:attribute name="stacking" type="xs:string"/>
         <xs:attribute name="hidden" type="xs:boolean" default="false"/>
+        <xs:attribute name="hidden-from" type="HiddenFrom"/>
+        <xs:attribute name="conceals" type="Conceals"/>
+        <xs:attribute name="reveal" type="RevealTriggers"/>
+        <xs:attribute name="rehide" type="Rehide"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -365,9 +409,33 @@ Conventions
 
   <!-- ================= sequence of play ================= -->
 
+  <xs:complexType name="Step">
+    <xs:annotation><xs:documentation>One thing the rules make happen in a phase; steps with the same at run in document order. does: the behaviour, looked up by name in the engine's and the game's step registry (one behaviour may be named in many phases; an unregistered name is refused when a session is built). at: enter (as the phase begins, before its first child phase); before-command (for each command issued in this phase or a child, before the engine adjudicates it; the step may refuse the command); after-command (after each such command is applied); end (as the phase ends, after its last child phase). commands: the command verbs a before- or after-command step applies to; absent means every verb. rules: the prose rules the step carries out, for the coverage ledger. turns: the game turns on which the step runs; absent means every turn the phase exists. The element text is one sentence for the reader.</xs:documentation></xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="does" type="xs:NMTOKEN" use="required"/>
+        <xs:attribute name="at" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="enter"/>
+              <xs:enumeration value="before-command"/>
+              <xs:enumeration value="after-command"/>
+              <xs:enumeration value="end"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="commands" type="xs:NMTOKENS"/>
+        <xs:attribute name="rules" type="xs:IDREFS"/>
+        <xs:attribute name="turns" type="Turns"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
   <xs:complexType name="Phase">
-    <xs:annotation><xs:documentation>A phase, segment or impulse. Phases nest. side: the acting side(s). turns: the game turns on which the phase exists. condition: a textual condition such as "seasonal turns only".</xs:documentation></xs:annotation>
+    <xs:annotation><xs:documentation>A phase, segment or impulse. Phases nest. side: the acting side(s). turns: the game turns on which the phase exists. condition: a textual condition such as "seasonal turns only". step: what the rules make happen in this phase (see Step), listed before the child phases.</xs:documentation></xs:annotation>
     <xs:sequence>
+      <xs:element name="step" type="Step" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="phase" type="Phase" minOccurs="0" maxOccurs="unbounded"/>
       <xs:group ref="Annex" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>

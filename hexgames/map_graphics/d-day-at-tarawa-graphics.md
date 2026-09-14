@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # D-Day at Tarawa — Map Graphics Inventory
 
 **Source.** `C:\Library\War-Games\D-Day at Tarawa wargame\DDaT-map2.png`
@@ -371,3 +373,5 @@ code.
 **Half-disc orientation.** A fire dot must be rotated to face into its own hex. With QRS
 directions available this is a table lookup from direction to angle; without them it means
 computing an angle from two hex centres every time.
+
+Copyright Ben Paul Wise. All Rights Reserved.

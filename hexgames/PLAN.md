@@ -21,8 +21,11 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   rows 3-6 against crt.txt; Rzhev 5 VP, not 10). Awaiting Ben on the PGG open questions below.
   W5 died three times reading the 6.6 MB scanned rulebook PDF directly; the relaunch worked from the
   coordinator's pdftotext extraction (scratchpad, not kept) -- for DS/DDaT digests, extract first.
-- next coordinator action: wait for W4 status: review; rebuild, review "API changes" and open
-  questions, commit, tick M6; M7a after Ben's PGG review; then M8 (DS, W4) and M7b (PGG engine, W5)
+- next coordinator action (2026-09-14): M6 and M7a are done and staged (Ben committing). Ben chose
+  the post-M6 engine API (decision log: steps in the rules XML, game-owned typed state, resolution
+  stack); tasks/07-engine-api.md (M6b, W4, opus) is written, NOT launched. Ben reviewed and approved
+  the hexrules.xsd step and concealment elements (2026-09-14); ready to launch on Ben's word. Then tasks/08 (M8 DS, W4, 2014 living rules) and tasks/09 (M7b
+  PGG engine, W5) on the new API.
 - worker spend so far: W1 217k + 475k, W3 286k, W2 618k, W5 ~290k (+ three failed starts) (~1.9M)
 - 2026-09-14 coordinator changes (staged, not yet committed): hexcoord offset="even" keeps the odd
   grid's ABC origin (GridTest 11/11); TRC rules XML hostile-to written out; three class .puml files
@@ -56,6 +59,8 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 - [x] M6  TRC engine module (W4, 2026-09-14): CombatPlan + GameAdjudicator in the engine, 27-file
           trc_game, 43/54 rules implemented, 1941 scenario (derived start line), six goldens; ctest
           165/165. Provisional data marked TODO(decide); see tasks/05 open questions
+- [ ] M6b Engine API after M6 (W4): phase steps declared in the rules XML, game-owned typed state,
+          one resolution stack; TRC goldens byte-identical (tasks/07-engine-api.md)
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
@@ -120,6 +125,29 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   `hex-ABC-offset-even-down.svg`); the origin need not be a printed hex. (ox, oy) keeps
   hexsheet2svg.py's meaning, so on an even grid the ABC origin is half a hex before it along the
   shifted axis. `hexcoord::Grid` now matches the renderer in absolute pixels for both parities.
+- 2026-09-14 PGG (Ben): Yelnya is hex 3122 (original 1976 map; absent from the Cyrillic map the sheet
+  was traced from), 10 VP in the rules XML occupation list. PGG-amendments.pdf (the "Panzergruppe
+  Guderian II" fan variant) is used as base rules, as W5 wrote it.
+- 2026-09-14 Counter graphics (Ben): icons follow the clearest counter sheet actually played with; the
+  aim is to show every TYPE of information can be represented, not to reproduce a game exactly.
+  build_pgg.py: the 18 German 9-7/4-7 division counters are infantry (ids s2-<n>-inf-9-7, were
+  -mot-9-7); "mot" is motorized on the German sheet and mechanized on the Soviet one.
+- 2026-09-14 Hidden units (Ben): hiding and revealing are common, so the rules language handles them.
+  hexrules.xsd unit-type gains @hidden-from (enemy|all), @conceals (values|identity), @reveal (list of
+  attacked|attacking|combat|adjacent|rule|owner) and @rehide (never|rule); RuleSetBuilder requires all
+  four on a hidden type and none on a visible one (HexRules::Concealment). PGG and Tarawa carry them.
+  XSD change applied at Ben's request; review it in XML Copy Editor.
+- 2026-09-14 Banners (Ben): tools/banner-check.py also checks game_rules, map_graphics and
+  unit_graphics; the 29 older files there carry banners now; exempt: military-unit-icons-handoff.md
+  and game_rules/xml/validate.py; a Python "#!" line may precede the banner.
+- 2026-09-14 Engine API after M6 (Ben): (2) the game's sequence of play is declared as steps in the
+  rules XML phase tree -- "the whole point of the rule language is to guide the engine" -- and the
+  engine runs, in document order, the functions a game registers under those step ids (replaces the
+  single GameAdjudicator hook; needs an XSD change). (3) CombatPlan generalises to one resolution
+  stack in Position whose step kinds games extend (combat losses and retreats first; DS card effects,
+  Tarawa reveal-and-consult-again later); PendingDecision comes from its top. (1) per-side flags:
+  a game-owned typed state struct held by Position (option C); strings only in the hexsave codec.
+  Implementation: tasks/07-engine-api.md (M6b, W4), before M8 and M7b. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
 
 ## XSD proposals awaiting review
 
@@ -133,23 +161,23 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   binding the counters document's style ids (the printed ground colour, which IS the side on every
   sheet) to rules side ids; the loader then requires every unit/support/leader counter's style to be
   bound. No change to hexrules or hexcounters. Awaiting Ben.
-- Candidates noted in the plan: `unit-type/@reveal` (PGG untried), `phase/@repeat-per-side`,
-  `phase/@caps`, `panel/@space`.
+- APPROVED 2026-09-14 (Ben reviewed): hexrules.xsd unit-type
+  @hidden-from @conceals @reveal @rehide (replaces the `unit-type/@reveal` candidate).
+- APPROVED 2026-09-14 (Ben chose option 2C and reviewed the schema):
+  hexrules.xsd phase gains step* (@id @does @at=enter|before-command|after-command|end @commands
+  @rules @turns). Optional element, so every existing rules document still validates.
+- EXPECTED from M6b: a hexsave.xsd proposal to store the resolution stack, so a save taken while a
+  decision is pending reloads (hexsave has no element for it today). W4 proposes; not applied.
+- Candidates noted in the plan: `phase/@repeat-per-side`, `phase/@caps`, `panel/@space`.
 
 ## Open questions
 
 - PGG (W5 review, 2026-09-14):
-  (a) Yelnya is on the 15.11 schedule (10 VP) but not in the sheet XML; its hex id is needed before
-  the german-city-vp list can be completed.
-  (b) PGG-amendments.pdf is "Panzergruppe Guderian II: A variant to the AH reprint", a fan variant,
-  not official errata; the rules XML cites it in base rules (unit-type notes, divisional-integration
-  and supply modifier order, Smolensk VP decay). Keep as base rules, mark optional, or drop?
-  (c) Counter XML: each German infantry division is two counters (9-7/4-7 and 2-7/1-7), but the
-  9-7 counter is drawn with icon="mechanized" and UR code "3D" (e.g. s2-5-mot-9-7). Data error?
-  (d) W5's three schema proposals (unit-type/@reveal, conditional CRT-cell side effects, per-unit
-  segment length) are in tasks/06 "## Notes"; not applied.
-  (e) tools/banner-check.py ROOTS omits game_rules, map_graphics and unit_graphics; scanning them
-  finds 31 older files without banners (digests, READMEs, the Python map and counter tools).
+  (a), (b) settled 2026-09-14 (decision log). Still open: whether the sheet XML should gain a town
+  glyph for Yelnya at 3122.
+  (c), (e) and W5's first schema proposal (hidden units) settled 2026-09-14 (decision log). Parked:
+  W5's proposals 2 (a conditional side effect on a CRT result) and 3 (a per-unit segment length),
+  tasks/06 "## Notes".
 
 ---
 

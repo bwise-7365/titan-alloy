@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Axis Empires: Dai Senso! — Rules Digest for Library Design
 
 **Source.** *Axis Empires: Dai Senso!*, Alan Emrich, Thomas Prowell and Salvatore
@@ -862,3 +864,5 @@ type but different *container* types.
   combat.
 - Units swept into a retreating stack count as having participated in the original combat,
   which can retroactively disqualify an HQ from supporting later combats (4.2.5).
+
+Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """overlay.py -- draw a candidate hex grid over a scan crop to check calibration.
 
 python overlay.py SRC OUT x0 y0 x1 y1 scale orientation offset size ox oy cols rows fmt cstart cstep rstart rstep
@@ -30,3 +31,4 @@ for (c, r), pid in g.cells.items():
     d.text(((cx-x0)*scale-10, (cy-y0)*scale-5), pid, fill=(200, 0, 0))
 im.save(out)
 print(out, im.size, "cells", len(g.cells))
+# Copyright Ben Paul Wise. All Rights Reserved.

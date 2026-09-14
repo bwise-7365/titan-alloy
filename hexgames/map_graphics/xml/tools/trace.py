@@ -1,3 +1,4 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
 """trace.py -- detect coloured features on a calibrated hex grid in a scan.
 
 python trace.py SRC GRIDSPEC MODE name=#rrggbb:minfrac ... [bbox=x0,y0,x1,y1] [band=W]
@@ -170,3 +171,4 @@ for (c, r), pid in g.cells.items():
             out.append('<hex id="%s">%s</hex>' % (pid, found[0]))   # one port per hex is enough
 print("\n".join(out))
 print("<!-- %d %s -->" % (len(out), mode))
+# Copyright Ben Paul Wise. All Rights Reserved.

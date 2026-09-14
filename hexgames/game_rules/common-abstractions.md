@@ -1,3 +1,5 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+
 # Common Abstractions Across Three Hex Wargames
 
 A synthesis of `d-day-at-tarawa.md`, `the-russian-campaign.md` and `dai-senso.md`,
@@ -500,3 +502,5 @@ game-layer concerns, and the sample of three does not support generalising any o
   phase list that changes shape at turn 11. A three-level nesting (turn → sub-turn →
   phase) covers all three, but it may be simpler to treat the whole thing as a flat named
   sequence with capability masks and let games nest as they wish.
+
+Copyright Ben Paul Wise. All Rights Reserved.
