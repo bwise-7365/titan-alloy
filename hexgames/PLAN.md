@@ -58,7 +58,11 @@ Engine and records
 - in-flight tasks (2026-09-14, evening): tasks/12-pgg-map.md (M6e, W5, Opus by Ben's choice), the pilot
   of the image2sheet process; W5 keeps "Process notes for Sonnet" in the task file and folds them into
   map_graphics/xml/tools/image2sheet/README.md so later maps (TRC, DS, DDaT, out-of-sample) can run on
-  Sonnet from the README alone.
+  Sonnet from the README alone. 2026-09-14 18:xx the laptop's phone hotspot dropped: W5 and its
+  row-by-row reader helpers failed (API unreachable) after stages 1-4 and 8 of 120 tile readings.
+  19:30 resumed in its own conversation; told to re-read partial tiles and to run fewer helpers at a time
+  so that a drop costs only a few tiles. Then stopped again on Ben's session usage limit (reset 19:40)
+  with 8 of 120 tiles read; resumed 19:49, at most two reader helpers at once.
 - M7b: M7b (tasks/11-pgg-engine.md, W4, 850k+769k tokens) is at
   status: review: ctest full 224/224, -LE long 221/221, 0 warnings; TRC goldens byte-identical; games/pgg
   (engine library, 8 test suites, scenario/pgg-1941.xml, six goldens); ledger 0 OutOfScope, 3 optional not

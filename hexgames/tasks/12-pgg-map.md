@@ -6,7 +6,10 @@ status: in-progress
 worker: W5 (opus; Ben chose Opus for this pilot)   started: 2026-09-14
 resume: stages 1-4 done (calibrate gate passed; 120 scan tiles, drafts and candidate tiles); stage 5: worked
   examples read/0117_0420.json and read/2117_2420.json written; reader prompt work/pgg/catalogue/reader-prompt.txt;
-  readers for tile rows 1-4 launched (rows 5-8 not yet); edge-marker pass done (catalogue/markers.json);
+  first helpers died in a connection drop (8 complete records: 0101_0404 0501_0804 0105_0408 0505_0808 0109_0412
+  0113_0416 0117_0420 2117_2420); relaunch also stopped (usage limit) with nothing written; 19:50 two helpers
+  running, batch A 0901_1204..3701_4004 and batch B 0905_1208..3705_4008 (8 tiles each); every other tile is
+  still to read; edge-marker pass done (catalogue/markers.json);
   merge.py, assemble.py, verify.py and verify prompt written, not yet run on a full catalogue;
   next: launch rows 5-8 when 1-4 finish, then merge; a relaunch reads only tiles with no read/*.json
 inputs:
@@ -164,6 +167,19 @@ Working folder: `hexgames/map_graphics/xml/tools/image2sheet` (all commands belo
   (now decision rule 1): between 0.35 and 0.65 the measured coverage decides; override only when the mask
   counted the wrong thing or is off by more than 0.2. The correction went to the running readers by message
   and into the prompt file for later batches.
+- PITFALL (2026-09-14, connection drop): all four reader helpers died together when the API connection
+  dropped (ECONNRESET); only 6 of their 60 tiles were on disk. Rules: run at most TWO helpers at a time;
+  tell each to write a tile's record the moment that tile is done; after any batch (or a drop), count
+  complete records with merge.check_record (parses, every area hex has a terrain, every token valid) and
+  relaunch helpers with only the missing tiles. A record that fails the check is deleted and re-read.
+- PITFALL (same evening, usage limit): the relaunched helpers and this worker stopped on the session usage
+  limit before writing a single tile. Limits and drops are the same problem, with the same rules: batches of
+  about 8 tiles per helper, at most two helpers at once, a record written per tile as it is finished, and
+  after every batch the list of complete tiles written to the task file's resume line. On a limit, stop
+  cleanly with the resume line current; the next run checks read/ and relaunches only the missing tiles.
+  Check command (prints complete, bad and missing tiles):
+  `python -c "import json,os,common as C,merge as M; ..."` (the loop over the manifest calling
+  M.check_record, as in the resume procedure of the README).
 
 ### Stage 5b -- edge-marker pass (the coordinator/worker, about 20 minutes)
 - Tiles do not reach the margin furniture (brackets and boxes outside the grid), so read the four edge
@@ -177,6 +193,15 @@ Working folder: `hexgames/map_graphics/xml/tools/image2sheet` (all commands belo
   VP texts, printed lines). PGG findings: two entrance areas (C, G) are blue lines INSIDE column 01, the
   others black brackets outside; X is printed inside 5907 with "(20 ПО)"; КАЛУГА is 5921 (the old sheet had
   5619); railways leave the south edge at 0131, 1831, 3131, 3831, near 4331 and 5431.
+
+### Dry run while readers work (5 minutes, cheap)
+- Run merge and assemble on the machine drafts into a scratch folder, so the later stages are tested before
+  the catalogue exists: `python merge.py pgg --records work/pgg/catalogue/draft --out SCRATCH` then
+  `python assemble.py pgg --catalogue SCRATCH/catalogue.json --out SCRATCH/pgg-dry.xml`, render it, and run
+  `tools/network_check.py SCRATCH/pgg-dry.xml --quiet`. On PGG this caught a naming bug (readers say
+  "river", the catalogue kind is "rivers") before it could hide resolutions. Drafts: 764 open items (mostly
+  draft "unclear" terrain), valid XML, render 0 warnings in 3 s, network report 28 items (river sources that do
+  not reach water, separate rail pieces running off the south edge, 21 road pieces): hints only.
 
 - The candidate tile draws proposals over the scan: magenta hexside strokes (dashed = maybe), red (rail)
   and yellow (road) centre-to-centre steps, rings for corner crossings, W/S/L terrain letters (lower case or
