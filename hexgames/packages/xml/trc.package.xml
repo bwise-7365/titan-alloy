@@ -5,6 +5,7 @@
   <sheet path="../../map_graphics/xml/the-russian-campaign.xml"/>
   <counters path="../../unit_graphics/xml/the-russian-campaign.xml"/>
   <scenario id="trc-test" path="../../game_records/xml/trc-test.xml" title="Engine test position, a few units"/>
+  <scenario id="trc-1941" path="../../games/trc/scenario/trc-1941.xml" title="June 1941: the campaign set-up"/>
 
   <!-- counter styles (the printed ground colour) -> rules sides; markers carry no side -->
   <side rules="axis" styles="german ss luftwaffe rumanian finnish hungarian italian"/>

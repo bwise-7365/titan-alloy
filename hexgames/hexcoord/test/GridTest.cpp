@@ -314,16 +314,44 @@ TEST(GridTest, PixelLayoutMatchesRendererForBothParities)
     for (const Parity offset : {Parity::Odd, Parity::Even}) {
       const GridSpec spec = smallSpec(orientation, offset);
       const Grid grid{spec};
-      const Pixel homeMine = grid.pixelOf(grid.centreOf(GridIndex{0, 0}));
-      const Pixel homeTheirs = rendererCentre(spec, GridIndex{0, 0});
       for (int row = 0; row < spec.rows; ++row) {
         for (int col = 0; col < spec.cols; ++col) {
           const Pixel mine = grid.pixelOf(grid.centreOf(GridIndex{col, row}));
           const Pixel theirs = rendererCentre(spec, GridIndex{col, row});
-          EXPECT_NEAR(theirs.x - homeTheirs.x, mine.x - homeMine.x, kPixelTolerance);
-          EXPECT_NEAR(theirs.y - homeTheirs.y, mine.y - homeMine.y, kPixelTolerance);
+          EXPECT_NEAR(theirs.x, mine.x, kPixelTolerance) << col << ", " << row;
+          EXPECT_NEAR(theirs.y, mine.y, kPixelTolerance) << col << ", " << row;
         }
       }
+    }
+  }
+}
+
+// doc/hex-ABC-offset-odd-down.svg and hex-ABC-offset-even-down.svg: the same lattice and the same
+// ABC origin; on the even grid the origin is the unprinted hex just before cell (0, 0).
+TEST(GridTest, EvenGridKeepsTheAbcOrigin)
+{
+  const double half = kSqrt3 / 2.0 * 10.0;
+  for (const Orientation orientation : {Orientation::Flat, Orientation::Pointy}) {
+    const bool flatP = Orientation::Flat == orientation;
+    const GridSpec spec = smallSpec(orientation, Parity::Even);
+    const Grid even{spec};
+    const Grid odd{smallSpec(orientation, Parity::Odd)};
+    const HexCentre origin{Abc{}};
+
+    EXPECT_EQ(origin, odd.centreOf(GridIndex{0, 0}));
+    EXPECT_FALSE(even.indexOf(origin).has_value());
+    EXPECT_EQ(1, HexCoord::hexDist(origin, even.centreOf(GridIndex{0, 0})));
+
+    const Pixel atOrigin = even.pixelOf(origin);
+    EXPECT_NEAR(flatP ? spec.ox : spec.ox - half, atOrigin.x, kPixelTolerance);
+    EXPECT_NEAR(flatP ? spec.oy - half : spec.oy, atOrigin.y, kPixelTolerance);
+
+    std::mt19937_64 rng(20260914u);
+    std::uniform_int_distribution<int> draw(-10, 20);
+    for (int i = 0; i < kIterations; ++i) {
+      const GridIndex index{draw(rng), draw(rng)};
+      const HexCentre centre{abcOfIndex(index, orientation, Parity::Even)};
+      EXPECT_EQ(index, indexOfAbc(centre, orientation, Parity::Even));
     }
   }
 }

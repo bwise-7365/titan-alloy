@@ -22,8 +22,7 @@ namespace HexModel {
   public:
     // Throws std::invalid_argument naming the offending id (a unit's counter, a hex, a space, a
     // side, a network, a layer or a region) on any reference the save document makes that the
-    // board, roster or rules do not recognise. Flags on a <side> are outside this milestone's
-    // scope (Position has no per-side flag store yet; see the task log).
+    // board, roster or rules do not recognise. Flags on a <side> become Position::flag (M6).
     static Position build(const HexXml::SaveDoc&, const Board&, const Roster&, const HexRules::RuleSet&);
 
   private:

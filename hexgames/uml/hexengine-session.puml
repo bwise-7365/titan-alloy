@@ -1,11 +1,18 @@
 ' Copyright Ben Paul Wise. All Rights Reserved.
 @startuml hexengine-session
 title hexengine -- Session, Command, Player, events, policies [PROPOSED]
+hide empty members
 
 package HexRules {
-  class GameDefinition <<immutable, shared const>> { rules : RuleSet\nboard : Board\nroster : Roster }
+  class GameDefinition <<immutable, shared const>> {
+    rules : RuleSet
+    board : Board
+    roster : Roster
+  }
   class RuleSet
-  class Ledger { {static} +checkLedger(ledger, ruleIds, claims) : LedgerReport }
+  class Ledger {
+    {static} +checkLedger(ledger, ruleIds, claims) : LedgerReport
+  }
 }
 
 package HexEngine {
@@ -24,21 +31,51 @@ package HexEngine {
     +fork() : Session
     +attach(EventSink&)
   }
-  class Command <<variant>> { MoveUnit | DeclareAttack | ResolveNextAttack | DecisionAnswer | Place | EndPhase | GameCommand }
-  interface CommandGrammar { +verb(Command) +parse(verb, args) }
-  interface Player { +choose(Session, SideId) : Command }
+  class Command <<variant>> {
+    MoveUnit
+    DeclareAttack
+    ResolveNextAttack
+    DecisionAnswer
+    Place
+    EndPhase
+    GameCommand
+  }
+  interface CommandGrammar {
+    +verb(Command)
+    +parse(verb, args)
+  }
+  interface Player {
+    +choose(Session, SideId) : Command
+  }
   class ScriptedPlayer
   class RandomPlayer
-  class PrngStreams { +stream(StreamTag) : mt19937_64&\n+draws(tag)\n+restore(tag, draws) }
+  class PrngStreams {
+    +stream(StreamTag) : mt19937_64&
+    +draws(tag)
+    +restore(tag, draws)
+  }
   class EventLog
-  class Event <<variant>> { PhaseEntered | UnitMoved | ... | DieRolled | CardDrawn | VictoryDeclared | GameEvent }
-  interface EventSink { +onEvent(Event) }
+  class Event <<variant>> {
+    PhaseEntered
+    UnitMoved
+    (and the other engine events)
+    DieRolled
+    CardDrawn
+    VictoryDeclared
+    GameEvent
+  }
+  interface EventSink {
+    +onEvent(Event)
+  }
   class Adjudicators <<pure functions>> {
     applyMove(Ctx, Policies, MoveUnit, EventSink&) : Position
     applyAttack(Ctx, Policies, DeclareAttack, PrngStreams&, EventSink&) : Position
     applyRetreat / applyStackingRepair / applySupplyCheck / advancePhase
   }
-  class PhaseCursor { +current() : PhaseId\n+advance(Ctx, PhaseGate) }
+  class PhaseCursor {
+    +current() : PhaseId
+    +advance(Ctx, PhaseGate)
+  }
   package Policies {
     interface ZocPolicy
     interface MovementPolicy

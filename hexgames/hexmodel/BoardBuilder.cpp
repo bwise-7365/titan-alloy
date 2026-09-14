@@ -19,13 +19,38 @@ namespace HexModel {
     using HexXml::PackageDoc;
     using HexXml::SheetDoc;
 
+    HexCoord::Orientation
+    parseOrientation(const std::string& gridId, const std::string& text)
+    {
+      if ("flat" == text) {
+        return HexCoord::Orientation::Flat;
+      }
+      if ("pointy" == text) {
+        return HexCoord::Orientation::Pointy;
+      }
+      throw std::invalid_argument("grid '" + gridId + "': orientation '" + text +
+                                  "' is neither flat nor pointy");
+    }
+
+    HexCoord::Parity
+    parseParity(const std::string& gridId, const std::string& text)
+    {
+      if ("odd" == text) {
+        return HexCoord::Parity::Odd;
+      }
+      if ("even" == text) {
+        return HexCoord::Parity::Even;
+      }
+      throw std::invalid_argument("grid '" + gridId + "': offset '" + text + "' is neither odd nor even");
+    }
+
     HexCoord::GridSpec
     toSpec(const HexXml::SheetGridDoc& g)
     {
       HexCoord::GridSpec spec;
       spec.id = g.id.value_or("");
-      spec.orientation = "flat" == g.orientation ? HexCoord::Orientation::Flat : HexCoord::Orientation::Pointy;
-      spec.offset = "odd" == g.offset ? HexCoord::Parity::Odd : HexCoord::Parity::Even;
+      spec.orientation = parseOrientation(spec.id, g.orientation);
+      spec.offset = parseParity(spec.id, g.offset);
       spec.cols = g.cols;
       spec.rows = g.rows;
       spec.size = g.size;

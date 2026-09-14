@@ -8,22 +8,28 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## RESUME HERE
 
-- phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) next
-- in-flight tasks: none. tasks/05-trc-engine.md (W4, opus) and tasks/06-pgg-digest-rules.md (W5,
-  sonnet) are written and APPROVED by Ben for launch; NOT launched because the session was handed
-  over to CLion -- see doc/2026-09-13-handoff.md section 3 for the launch recipe
-- next coordinator action: launch W4 and W5 from the task files; then M8 (DS) and M7b (PGG engine)
-- worker spend so far: W1 217k + 475k, W3 286k, W2 618k (~1.6M); ctest 131/131, 8 labels
-- decided 2026-09-13 (Ben): hexpackage.xsd gains <side rules styles> (repeatable, any number of
-  sides); SideMask widened to 16 bits (kMaxSides); W1 wires the binding through
-  PackageDoc/RosterBuilder/PackageLoader as part of M4
-- worker spend so far: W1 217k, W3 286k, W2 618k tokens (~1.1M); 90/90 tests, 5 labels
-- blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; hexview contract deferred to M10;
-  PGG rules XML deferred to M7)
-- last green: `tools\build-dev.cmd win-msvc-debug` (8/8: smoke, hygiene, five xsd)   commit: cd6b6d4 (M0)
-- M1 progress: hexcoord contract headers + test list + puml written; hexsave.xsd and hexpackage.xsd
-  written (awaiting Ben's review in XML Copy Editor); next: hexmodel/hexengine/hexview contract
-  headers, remaining puml, TRC scenario + trc.package.xml, five design docs
+- phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
+- in-flight tasks: none
+- in review: tasks/05-trc-engine.md (W4, opus) -- status: review 2026-09-14, W4 ctest 165/165
+  (683k tokens). Coordinator review: scope and style clean (no unordered_/assert/default:/mutable
+  statics in new code); golden diff consistent with a re-record (rules 13.3). Engine API grew more
+  than "minimal": GameAdjudicator hook, CombatPlan in Position, string-keyed per-side flags in
+  Position -- for Ben. Ben's local ctest -LE long 163/163 (2026-09-14). All work staged (117 files);
+  next: commit, split into coordinator changes, M6 (TRC) and M7a (PGG, after Ben's PGG decisions).
+- in review: tasks/06-pgg-digest-rules.md (W5, sonnet) -- status: review 2026-09-14; outputs
+  untracked, not staged. Coordinator review fixed two transcription errors in the PGG rules XML (CRT
+  rows 3-6 against crt.txt; Rzhev 5 VP, not 10). Awaiting Ben on the PGG open questions below.
+  W5 died three times reading the 6.6 MB scanned rulebook PDF directly; the relaunch worked from the
+  coordinator's pdftotext extraction (scratchpad, not kept) -- for DS/DDaT digests, extract first.
+- next coordinator action: wait for W4 status: review; rebuild, review "API changes" and open
+  questions, commit, tick M6; M7a after Ben's PGG review; then M8 (DS, W4) and M7b (PGG engine, W5)
+- worker spend so far: W1 217k + 475k, W3 286k, W2 618k, W5 ~290k (+ three failed starts) (~1.9M)
+- 2026-09-14 coordinator changes (staged, not yet committed): hexcoord offset="even" keeps the odd
+  grid's ABC origin (GridTest 11/11); TRC rules XML hostile-to written out; three class .puml files
+  fixed (one-line bodies); BoardBuilder parses orientation/offset exhaustively (throws)
+- blockers: none (Ben reviewing hexsave.xsd and hexpackage.xsd; parked XSD proposals unchanged)
+- last green: ctest --preset win-msvc-debug -LE long 163/163 (Ben, 2026-09-14, all staged work);
+  full ctest 165/165 (W4)   last commit: 0eccf0b
 - crash protocol: read this block, then every `tasks/*.md` with status assigned|in-progress|blocked,
   then `git status`; continue from the task files' `resume:` lines. Nothing lives only in chat.
 
@@ -47,7 +53,9 @@ milestone boxes, and appends to the decision log. Workers write only their own `
           checks, canonical writer (validates), LCS diff and golden report; 15 tests. Session glue
           (readRecord/writeRecord/replay/sessionFor/compareWithGolden) compiles with `// M4:` markers;
           replay tests deferred to M4
-- [ ] M6  TRC engine module (W4): bindings, policies, ledger, scripts + goldens
+- [x] M6  TRC engine module (W4, 2026-09-14): CombatPlan + GameAdjudicator in the engine, 27-file
+          trc_game, 43/54 rules implemented, 1941 scenario (derived start line), six goldens; ctest
+          165/165. Provisional data marked TODO(decide); see tasks/05 open questions
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
@@ -101,6 +109,18 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   (f) defaultValueLine reads "8-7" as combat/combat/allowance -- correct for TRC; (g) cmake label
   fix: multi-label ctest registration works now (`ctest -L trc` finds tests).
 
+- 2026-09-14 ABC axes (Ben): A is due east, B north-west, C south-west, as drawn in
+  `doc/hex-ABC-coord-example.svg`. This is the algebra `hexcoord` already follows; the "NorthEast" /
+  "SouthEast" labels in `panj\tempest\doc\coords.txt` are wrong.
+- 2026-09-14 TRC hostility (Ben): written out explicitly in the-russian-campaign.xml
+  (`axis hostile-to="russian"`, `russian hostile-to="axis"`). The engine's empty-matrix convention
+  stays for documents that omit it.
+- 2026-09-14 offset="even" (Ben): "offset" means shifted down (flat) or right (pointy). An even grid
+  keeps the odd grid's lattice and ABC origin (`doc/hex-ABC-offset-odd-down.svg`,
+  `hex-ABC-offset-even-down.svg`); the origin need not be a printed hex. (ox, oy) keeps
+  hexsheet2svg.py's meaning, so on an even grid the ABC origin is half a hex before it along the
+  shifted axis. `hexcoord::Grid` now matches the renderer in absolute pixels for both parities.
+
 ## XSD proposals awaiting review
 
 - APPROVED 2026-09-13 by Ben, applied (hexpackage.xsd `<side>`, trc.package.xml, kMaxSides=16); to
@@ -118,11 +138,18 @@ milestone boxes, and appends to the decision log. Workers write only their own `
 
 ## Open questions
 
-- `offset="even"` grids: hexcoord puts cell (0,0) at (ox, oy) exactly; hexsheet2svg.py would draw that
-  cell half a hex along the shifted axis. All relative geometry agrees; only the meaning of ox/oy on an
-  even-offset grid differs, and no sheet uses offset="even" today. Decide when one does.
-- `coords.txt` prose labels B "NorthEast"/C "SouthEast" disagree with the algebra in `tricoord.cpp`
-  (B is the north-west corner vector, C the south-west). The code follows the algebra.
+- PGG (W5 review, 2026-09-14):
+  (a) Yelnya is on the 15.11 schedule (10 VP) but not in the sheet XML; its hex id is needed before
+  the german-city-vp list can be completed.
+  (b) PGG-amendments.pdf is "Panzergruppe Guderian II: A variant to the AH reprint", a fan variant,
+  not official errata; the rules XML cites it in base rules (unit-type notes, divisional-integration
+  and supply modifier order, Smolensk VP decay). Keep as base rules, mark optional, or drop?
+  (c) Counter XML: each German infantry division is two counters (9-7/4-7 and 2-7/1-7), but the
+  9-7 counter is drawn with icon="mechanized" and UR code "3D" (e.g. s2-5-mot-9-7). Data error?
+  (d) W5's three schema proposals (unit-type/@reveal, conditional CRT-cell side effects, per-unit
+  segment length) are in tasks/06 "## Notes"; not applied.
+  (e) tools/banner-check.py ROOTS omits game_rules, map_graphics and unit_graphics; scanning them
+  finds 31 older files without banners (digests, READMEs, the Python map and counter tools).
 
 ---
 

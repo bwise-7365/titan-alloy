@@ -14,6 +14,7 @@ add_library(hexengine STATIC
   AdjudicatorsDetail.cpp
   AdjudicatorsMove.cpp
   AdjudicatorsCombat.cpp
+  AdjudicatorsPlan.cpp
   Session.cpp
   Player.cpp)
 target_include_directories(hexengine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)

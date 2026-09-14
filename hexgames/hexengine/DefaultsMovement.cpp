@@ -183,6 +183,23 @@ namespace HexEngine {
     return EntryVerdict{cost, mustStopP};
   }
 
+  bool
+  TerrainMovement::stopsInP(const Ctx& ctx, UnitId unit, HexIndex hex, ModeId) const
+  {
+    const UnitTypeId type = ctx.roster.unit(unit).type;
+    const HexRules::Terrain& terrain = rules_.hexTerrain()[ctx.board.terrain(hex).value];
+    if (terrain.stopP && !exceptedP(terrain.stopExcept, type)) {
+      return true;
+    }
+    for (const HexModel::Feature& feature : ctx.board.features(hex)) {
+      const HexRules::Terrain& drawn = rules_.hexTerrain()[feature.terrain.value];
+      if (drawn.stopP && !exceptedP(drawn.stopExcept, type)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Budget
   PointCostMovement::allowance(const Ctx& ctx, UnitId unit, ModeId) const
   {

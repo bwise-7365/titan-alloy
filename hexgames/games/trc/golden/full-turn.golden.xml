@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../../packages/xml/trc.package.xml" seed="20260914">
+  <cursor turn="4" phase="weather-phase" side="axis" moves="16" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="4"/>
+      <flag name="weather" value="snow"/>
+      <flag name="weather-drm" value="-1"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" space="axis-pool" face="front" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V16" face="front" moved="false"/>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31" face="front" moved="false"/>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16" face="front" moved="false"/>
+    <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="Y13" face="front" moved="false"/>
+    <unit id="r-ru-52-infantry" counter="r-ru-52-infantry" type="infantry" owner="russian" space="russian-pool" face="front" moved="false"/>
+    <unit id="r-wo-kharkov-worker" counter="r-wo-kharkov-worker" type="worker" owner="russian" hex="AA14" face="front" moved="false"/>
+  </units>
+  <control>
+    <hex id="AA14" side="russian"/>
+    <hex id="E31" side="axis"/>
+    <hex id="MM28" side="axis"/>
+    <hex id="NN28" side="axis"/>
+    <hex id="PP28" side="axis"/>
+    <hex id="QQ27" side="axis"/>
+    <hex id="W19" side="axis"/>
+    <hex id="X13" side="russian"/>
+    <link network="rail" hexes="MM28 NN28" side="axis"/>
+    <link network="rail" hexes="NN28 OO27" side="axis"/>
+    <link network="rail" hexes="OO28 OO27" side="axis"/>
+    <link network="rail" hexes="OO28 PP28" side="axis"/>
+    <link network="rail" hexes="PP28 QQ27" side="axis"/>
+    <link network="rail" hexes="QQ28 QQ27" side="axis"/>
+    <link network="rail" hexes="X20 W19" side="axis"/>
+  </control>
+  <streams>
+    <stream tag="combat" draws="1"/>
+    <stream tag="weather" draws="2"/>
+  </streams>
+  <log>
+    <move n="1" turn="2" phase="russian-end" side="russian" by="script" cmd="end-phase">
+      <draw stream="weather" n="1" value="1"/>
+      <event kind="phase" side="axis" value="weather-phase">turn 3</event>
+      <event kind="die" value="1">weather</event>
+      <event kind="weather">clear (die 1, drm 1, row 2)</event>
+      <event kind="control" hex="MM28" side="axis"/>
+      <event kind="control" hex="NN28" side="axis"/>
+    </move>
+    <move n="2" turn="3" phase="weather-phase" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i1-move">turn 3</event>
+    </move>
+    <move n="3" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28" mode="rail-move">
+      <event kind="moved" unit="g-ge-1-infantry" hex="QQ28" value="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28"/>
+      <event kind="control" hex="PP28" side="axis"/>
+      <event kind="control" hex="QQ27" side="axis"/>
+    </move>
+    <move n="4" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="V17 V16" mode="normal">
+      <event kind="moved" unit="g-ge-41-armour" hex="V16" value="V17 V16"/>
+    </move>
+    <move n="5" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i1-combat">turn 3</event>
+    </move>
+    <move n="6" turn="3" phase="axis-i1-combat" side="axis" by="script" cmd="attack" units="g-ge-41-armour" target="V15">
+      <result outcome="D1"/>
+      <draw stream="combat" n="1" value="6"/>
+      <event kind="combat-declared" hex="V15" value="g-ge-41-armour"/>
+      <event kind="die" value="6">combat</event>
+      <event kind="combat-resolved" hex="V15" value="2-1">D1</event>
+      <event kind="eliminated" unit="r-ru-52-infantry" value="russian-pool"/>
+    </move>
+    <move n="7" turn="3" phase="axis-i1-combat" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i2-move">turn 3</event>
+    </move>
+    <move n="8" turn="3" phase="axis-i2-move" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i2-combat">turn 3</event>
+    </move>
+    <move n="9" turn="3" phase="axis-i2-combat" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-end">turn 3</event>
+    </move>
+    <move n="10" turn="3" phase="axis-end" side="axis" by="script" cmd="end-phase">
+      <event kind="rail-converted">axis X20-W19</event>
+      <event kind="supply" unit="g-ge-1-infantry" value="isolated"/>
+      <event kind="eliminated" unit="g-ge-1-infantry" value="axis-pool"/>
+      <event kind="phase" side="russian" value="russian-i1-move">turn 3</event>
+      <event kind="replacement-points">2</event>
+    </move>
+    <move n="11" turn="3" phase="russian-i1-move" side="russian" by="script" cmd="move" units="r-ru-11-infantry" path="AA13 Z13 Y13" mode="normal">
+      <event kind="moved" unit="r-ru-11-infantry" hex="Y13" value="AA13 Z13 Y13"/>
+      <event kind="control" hex="X13" side="russian"/>
+    </move>
+    <move n="12" turn="3" phase="russian-i1-move" side="russian" by="script" cmd="end-phase">
+      <event kind="phase" side="russian" value="russian-i1-combat">turn 3</event>
+    </move>
+    <move n="13" turn="3" phase="russian-i1-combat" side="russian" by="script" cmd="end-phase">
+      <event kind="phase" side="russian" value="russian-i2-move">turn 3</event>
+    </move>
+    <move n="14" turn="3" phase="russian-i2-move" side="russian" by="script" cmd="end-phase">
+      <event kind="phase" side="russian" value="russian-i2-combat">turn 3</event>
+    </move>
+    <move n="15" turn="3" phase="russian-i2-combat" side="russian" by="script" cmd="end-phase">
+      <event kind="phase" side="russian" value="russian-end">turn 3</event>
+    </move>
+    <move n="16" turn="3" phase="russian-end" side="russian" by="script" cmd="end-phase">
+      <draw stream="weather" n="2" value="4"/>
+      <event kind="phase" side="axis" value="weather-phase">turn 4</event>
+      <event kind="die" value="4">weather</event>
+      <event kind="weather">snow (die 4, drm 2, row 6)</event>
+    </move>
+  </log>
+</save>

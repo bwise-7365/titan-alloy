@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="scenario" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="19410622" title="The Russian Campaign, June 1941: the campaign set-up (derived start line)">
+  <cursor turn="1" phase="axis-i1-move" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+    <side id="russian"/>
+  </sides>
+  <units>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="I22">AGN</unit>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="I22">AGN</unit>
+    <unit id="g-ge-56-armour" counter="g-ge-56-armour" type="armour" owner="axis" hex="I22">AGN</unit>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="I22">AGN</unit>
+    <unit id="g-ge-2-infantry" counter="g-ge-2-infantry" type="infantry" owner="axis" hex="H21">AGN</unit>
+    <unit id="g-ge-10-infantry" counter="g-ge-10-infantry" type="infantry" owner="axis" hex="H21">AGN</unit>
+    <unit id="g-ge-26-infantry" counter="g-ge-26-infantry" type="infantry" owner="axis" hex="H21">AGN</unit>
+    <unit id="g-ge-28-infantry" counter="g-ge-28-infantry" type="infantry" owner="axis" hex="H22">AGN</unit>
+    <unit id="g-ge-38-infantry" counter="g-ge-38-infantry" type="infantry" owner="axis" hex="H22">AGN</unit>
+    <unit id="g-ge-c-hq" counter="g-ge-c-hq" type="hq" owner="axis" hex="O21">AGC</unit>
+    <unit id="g-ge-24-armour" counter="g-ge-24-armour" type="armour" owner="axis" hex="O21">AGC</unit>
+    <unit id="g-ge-39-armour" counter="g-ge-39-armour" type="armour" owner="axis" hex="O21">AGC</unit>
+    <unit id="g-ge-46-armour" counter="g-ge-46-armour" type="armour" owner="axis" hex="O21">AGC</unit>
+    <unit id="g-ge-47-armour" counter="g-ge-47-armour" type="armour" owner="axis" hex="P22">AGC</unit>
+    <unit id="g-ge-57-armour" counter="g-ge-57-armour" type="armour" owner="axis" hex="P22">AGC</unit>
+    <unit id="g-ge-5-infantry" counter="g-ge-5-infantry" type="infantry" owner="axis" hex="P22">AGC</unit>
+    <unit id="g-ge-6-infantry" counter="g-ge-6-infantry" type="infantry" owner="axis" hex="L24">AGC</unit>
+    <unit id="g-ge-7-infantry" counter="g-ge-7-infantry" type="infantry" owner="axis" hex="L24">AGC</unit>
+    <unit id="g-ge-8-infantry" counter="g-ge-8-infantry" type="infantry" owner="axis" hex="L24">AGC</unit>
+    <unit id="g-ge-9-infantry" counter="g-ge-9-infantry" type="infantry" owner="axis" hex="L25">AGC</unit>
+    <unit id="g-ge-12-infantry" counter="g-ge-12-infantry" type="infantry" owner="axis" hex="L25">AGC</unit>
+    <unit id="g-ge-13-infantry" counter="g-ge-13-infantry" type="infantry" owner="axis" hex="L25">AGC</unit>
+    <unit id="g-ge-20-infantry" counter="g-ge-20-infantry" type="infantry" owner="axis" hex="O26">AGC</unit>
+    <unit id="g-ge-42-infantry" counter="g-ge-42-infantry" type="infantry" owner="axis" hex="O26">AGC</unit>
+    <unit id="g-ge-43-infantry" counter="g-ge-43-infantry" type="infantry" owner="axis" hex="O26">AGC</unit>
+    <unit id="g-ge-53-infantry" counter="g-ge-53-infantry" type="infantry" owner="axis" hex="P21">AGC</unit>
+    <unit id="g-ge-s-hq" counter="g-ge-s-hq" type="hq" owner="axis" hex="P27">AGS</unit>
+    <unit id="g-ge-3-armour" counter="g-ge-3-armour" type="armour" owner="axis" hex="P27">AGS</unit>
+    <unit id="g-ge-48-armour" counter="g-ge-48-armour" type="armour" owner="axis" hex="P27">AGS</unit>
+    <unit id="g-ge-14-armour" counter="g-ge-14-armour" type="armour" owner="axis" hex="P27">AGS</unit>
+    <unit id="g-ge-52-mechanized" counter="g-ge-52-mechanized" type="motorized" owner="axis" hex="Q27">AGS</unit>
+    <unit id="g-ge-49-infantry" counter="g-ge-49-infantry" type="infantry" owner="axis" hex="Q27">AGS</unit>
+    <unit id="g-ge-4-infantry" counter="g-ge-4-infantry" type="infantry" owner="axis" hex="Q27">AGS</unit>
+    <unit id="g-ge-17-infantry" counter="g-ge-17-infantry" type="infantry" owner="axis" hex="R28">AGS</unit>
+    <unit id="g-ge-29-infantry" counter="g-ge-29-infantry" type="infantry" owner="axis" hex="R28">AGS</unit>
+    <unit id="g-ge-44-infantry" counter="g-ge-44-infantry" type="infantry" owner="axis" hex="R28">AGS</unit>
+    <unit id="g-ge-55-infantry" counter="g-ge-55-infantry" type="infantry" owner="axis" hex="S22">AGS</unit>
+    <unit id="g-ge-11-infantry" counter="g-ge-11-infantry" type="infantry" owner="axis" hex="AA26">Rumania</unit>
+    <unit id="g-ge-30-infantry" counter="g-ge-30-infantry" type="infantry" owner="axis" hex="AA26">Rumania</unit>
+    <unit id="g-ge-54-infantry" counter="g-ge-54-infantry" type="infantry" owner="axis" hex="AA26">Rumania</unit>
+    <unit id="g-lu-stuka-stuka" counter="g-lu-stuka-stuka" type="stuka" owner="axis" space="stukas"></unit>
+    <unit id="g-lu-stuka-stuka-2" counter="g-lu-stuka-stuka-2" type="stuka" owner="axis" space="stukas"></unit>
+    <unit id="g-lu-stuka-stuka-3" counter="g-lu-stuka-stuka-3" type="stuka" owner="axis" space="stukas"></unit>
+    <unit id="g-ru-1-infantry" counter="g-ru-1-infantry" type="infantry" owner="axis" hex="BB27">Rumania</unit>
+    <unit id="g-ru-2-infantry" counter="g-ru-2-infantry" type="infantry" owner="axis" hex="BB27">Rumania</unit>
+    <unit id="g-ru-4-infantry" counter="g-ru-4-infantry" type="infantry" owner="axis" hex="BB27">Rumania</unit>
+    <unit id="g-ru-cv-cavalry" counter="g-ru-cv-cavalry" type="cavalry" owner="axis" hex="CC27">Rumania</unit>
+    <unit id="g-fi-2-infantry" counter="g-fi-2-infantry" type="infantry" owner="axis" hex="B12">Finland</unit>
+    <unit id="g-fi-4-infantry" counter="g-fi-4-infantry" type="infantry" owner="axis" hex="B12">Finland</unit>
+    <unit id="g-fi-6-infantry" counter="g-fi-6-infantry" type="infantry" owner="axis" hex="B12">Finland</unit>
+    <unit id="g-fi-7-infantry" counter="g-fi-7-infantry" type="infantry" owner="axis" hex="E13">Finland</unit>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31">Berlin</unit>
+    <unit id="g-it-3-infantry" counter="g-it-3-infantry" type="infantry" owner="axis" hex="P21">AGC</unit>
+    <unit id="r-ru-stalin-stalin" counter="r-ru-stalin-stalin" type="leader" owner="russian" hex="R9">Moscow</unit>
+    <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="J22">Baltic MD</unit>
+    <unit id="r-ru-12-infantry" counter="r-ru-12-infantry" type="infantry" owner="russian" hex="Q26">Kiev MD</unit>
+    <unit id="r-ru-3-infantry" counter="r-ru-3-infantry" type="infantry" owner="russian" hex="O22">Western MD</unit>
+    <unit id="r-ru-5-infantry" counter="r-ru-5-infantry" type="infantry" owner="russian" hex="Q26">Kiev MD</unit>
+    <unit id="r-ru-6-infantry" counter="r-ru-6-infantry" type="infantry" owner="russian" hex="R27">Kiev MD</unit>
+    <unit id="r-ru-8-infantry" counter="r-ru-8-infantry" type="infantry" owner="russian" hex="J22">Baltic MD</unit>
+    <unit id="r-ru-9-infantry" counter="r-ru-9-infantry" type="infantry" owner="russian" hex="AA25">Odessa MD</unit>
+    <unit id="r-ru-10-infantry" counter="r-ru-10-infantry" type="infantry" owner="russian" hex="O22">Western MD</unit>
+    <unit id="r-ru-22-infantry" counter="r-ru-22-infantry" type="infantry" owner="russian" hex="O8">Kalinin</unit>
+    <unit id="r-ru-23-infantry" counter="r-ru-23-infantry" type="infantry" owner="russian" hex="D15">Finnish Border</unit>
+    <unit id="r-ru-26-infantry" counter="r-ru-26-infantry" type="infantry" owner="russian" hex="R27">Kiev MD</unit>
+    <unit id="r-ru-7-infantry" counter="r-ru-7-infantry" type="infantry" owner="russian" hex="D15">Finnish Border</unit>
+    <unit id="r-ru-13-infantry" counter="r-ru-13-infantry" type="infantry" owner="russian" hex="O19">Minsk</unit>
+    <unit id="r-ru-18-infantry" counter="r-ru-18-infantry" type="infantry" owner="russian" hex="W19">Kiev</unit>
+    <unit id="r-ru-19-infantry" counter="r-ru-19-infantry" type="infantry" owner="russian" hex="R9">Moscow</unit>
+    <unit id="r-ru-21-infantry" counter="r-ru-21-infantry" type="infantry" owner="russian" hex="U9">Tula</unit>
+    <unit id="r-ru-27-infantry" counter="r-ru-27-infantry" type="infantry" owner="russian" hex="F16">Riga</unit>
+    <unit id="r-ru-3-infantry-2" counter="r-ru-3-infantry-2" type="infantry" owner="russian" hex="P23">Western MD</unit>
+    <unit id="r-ru-14-infantry" counter="r-ru-14-infantry" type="infantry" owner="russian" space="omb">Special Rail</unit>
+    <unit id="r-ru-1-cavalry" counter="r-ru-1-cavalry" type="cavalry" owner="russian" hex="W19">Kiev</unit>
+    <unit id="r-ru-2-cavalry" counter="r-ru-2-cavalry" type="cavalry" owner="russian" hex="DD24">Odessa</unit>
+    <unit id="r-ru-3-cavalry" counter="r-ru-3-cavalry" type="cavalry" owner="russian" hex="P23">Western MD</unit>
+    <unit id="r-ru-5-cavalry" counter="r-ru-5-cavalry" type="cavalry" owner="russian" hex="AA25">Odessa MD</unit>
+    <unit id="r-ru-6-cavalry" counter="r-ru-6-cavalry" type="cavalry" owner="russian" hex="S23">Kiev MD</unit>
+    <unit id="r-ru-7-cavalry" counter="r-ru-7-cavalry" type="cavalry" owner="russian" hex="M23">Western MD</unit>
+    <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="I20">Baltic MD</unit>
+    <unit id="r-ru-2-armour" counter="r-ru-2-armour" type="armour" owner="russian" hex="R9">Moscow</unit>
+    <unit id="r-ru-3-armour" counter="r-ru-3-armour" type="armour" owner="russian" hex="S23">Kiev MD</unit>
+    <unit id="r-ru-4-armour" counter="r-ru-4-armour" type="armour" owner="russian" hex="S23">Kiev MD</unit>
+    <unit id="r-ru-5-armour" counter="r-ru-5-armour" type="armour" owner="russian" hex="M23">Western MD</unit>
+    <unit id="r-ru-6-armour" counter="r-ru-6-armour" type="armour" owner="russian" hex="O19">Minsk</unit>
+    <unit id="r-ru-7-armour" counter="r-ru-7-armour" type="armour" owner="russian" hex="I20">Baltic MD</unit>
+    <unit id="r-ru-8-armour" counter="r-ru-8-armour" type="armour" owner="russian" hex="M23">Western MD</unit>
+    <unit id="r-ru-9-armour" counter="r-ru-9-armour" type="armour" owner="russian" hex="E10">Leningrad</unit>
+    <unit id="r-ru-10-armour" counter="r-ru-10-armour" type="armour" owner="russian" hex="F16">Riga</unit>
+    <unit id="r-ru-11-armour" counter="r-ru-11-armour" type="armour" owner="russian" hex="S27">Kiev MD</unit>
+    <unit id="r-ru-12-armour" counter="r-ru-12-armour" type="armour" owner="russian" hex="BB26">Odessa MD</unit>
+    <unit id="r-ru-stavka-hq" counter="r-ru-stavka-hq" type="hq" owner="russian" hex="R9">Moscow</unit>
+    <unit id="r-wo-stalino-worker" counter="r-wo-stalino-worker" type="worker" owner="russian" hex="FF16">Stalino</unit>
+    <unit id="r-wo-moscow-worker" counter="r-wo-moscow-worker" type="worker" owner="russian" hex="R9">Moscow</unit>
+    <unit id="r-wo-kharkov-worker" counter="r-wo-kharkov-worker" type="worker" owner="russian" hex="AA14">Kharkov</unit>
+    <unit id="r-wo-leningrad-worker" counter="r-wo-leningrad-worker" type="worker" owner="russian" hex="E10">Leningrad</unit>
+    <unit id="r-wo-kiev-worker" counter="r-wo-kiev-worker" type="worker" owner="russian" hex="W19">Kiev</unit>
+    <unit id="r-wo-archangel-worker" counter="r-wo-archangel-worker" type="worker" owner="russian" hex="C1">Archangel</unit>
+  </units>
+  <control>
+    <hex id="A20" side="russian"/>
+    <hex id="A21" side="axis"/>
+    <hex id="A22" side="axis"/>
+    <hex id="A23" side="axis"/>
+    <hex id="A24" side="axis"/>
+    <hex id="B18" side="axis"/>
+    <hex id="B19" side="russian"/>
+    <hex id="B20" side="russian"/>
+    <hex id="B21" side="axis"/>
+    <hex id="B22" side="axis"/>
+    <hex id="C1" side="russian"/>
+    <hex id="C14" side="axis"/>
+    <hex id="D15" side="russian"/>
+    <hex id="E5" side="russian"/>
+    <hex id="E10" side="russian"/>
+    <hex id="E31" side="axis"/>
+    <hex id="F17" side="russian"/>
+    <hex id="G23" side="axis"/>
+    <hex id="I25" side="axis"/>
+    <hex id="K21" side="russian"/>
+    <hex id="L15" side="russian"/>
+    <hex id="N21" side="russian"/>
+    <hex id="N22" side="russian"/>
+    <hex id="O8" side="russian"/>
+    <hex id="O19" side="russian"/>
+    <hex id="O20" side="russian"/>
+    <hex id="O21" side="axis"/>
+    <hex id="O22" side="russian"/>
+    <hex id="O23" side="russian"/>
+    <hex id="O28" side="axis"/>
+    <hex id="P14" side="russian"/>
+    <hex id="P21" side="axis"/>
+    <hex id="Q11" side="russian"/>
+    <hex id="R9" side="russian"/>
+    <hex id="R28" side="axis"/>
+    <hex id="S25" side="russian"/>
+    <hex id="T14" side="russian"/>
+    <hex id="U2" side="russian"/>
+    <hex id="U9" side="russian"/>
+    <hex id="W19" side="russian"/>
+    <hex id="X13" side="russian"/>
+    <hex id="AA9" side="russian"/>
+    <hex id="AA14" side="russian"/>
+    <hex id="AA30" side="axis"/>
+    <hex id="BB31" side="axis"/>
+    <hex id="CC4" side="russian"/>
+    <hex id="DD10" side="russian"/>
+    <hex id="DD18" side="russian"/>
+    <hex id="DD24" side="russian"/>
+    <hex id="EE30" side="axis"/>
+    <hex id="FF16" side="russian"/>
+    <hex id="II7" side="russian"/>
+    <hex id="II14" side="russian"/>
+    <hex id="JJ7" side="russian"/>
+    <hex id="JJ30" side="axis"/>
+    <hex id="JJ31" side="axis"/>
+    <hex id="KK23" side="russian"/>
+    <hex id="LL6" side="russian"/>
+    <hex id="LL30" side="axis"/>
+    <hex id="MM27" side="russian"/>
+    <hex id="MM28" side="russian"/>
+    <hex id="NN23" side="russian"/>
+    <hex id="NN26" side="russian"/>
+    <hex id="NN27" side="russian"/>
+    <hex id="NN28" side="russian"/>
+    <hex id="OO12" side="russian"/>
+    <hex id="OO14" side="russian"/>
+    <hex id="OO19" side="russian"/>
+    <hex id="OO26" side="russian"/>
+    <hex id="OO27" side="russian"/>
+    <hex id="OO28" side="russian"/>
+    <hex id="PP23" side="russian"/>
+    <hex id="PP28" side="russian"/>
+    <hex id="PP31" side="russian"/>
+    <hex id="QQ5" side="russian"/>
+    <hex id="QQ6" side="russian"/>
+    <hex id="QQ23" side="russian"/>
+    <hex id="QQ27" side="russian"/>
+    <hex id="QQ31" side="russian"/>
+    <link network="rail" hexes="D33 E32" side="axis"/>
+    <link network="rail" hexes="L33 M32" side="axis"/>
+    <link network="rail" hexes="L33 K32" side="axis"/>
+    <link network="rail" hexes="JJ33 KK33" side="axis"/>
+    <link network="rail" hexes="PP33 QQ32" side="axis"/>
+    <link network="rail" hexes="PP33 QQ33" side="axis"/>
+    <link network="rail" hexes="JJ32 II31" side="axis"/>
+    <link network="rail" hexes="LL32 LL31" side="axis"/>
+    <link network="rail" hexes="N31 M30" side="axis"/>
+    <link network="rail" hexes="DD31 EE30" side="axis"/>
+    <link network="rail" hexes="II31 JJ31" side="axis"/>
+    <link network="rail" hexes="JJ31 KK30" side="axis"/>
+    <link network="rail" hexes="JJ31 II30" side="axis"/>
+    <link network="rail" hexes="LL31 LL30" side="axis"/>
+    <link network="rail" hexes="PP31 QQ31" side="russian"/>
+    <link network="rail" hexes="PP31 OO30" side="russian"/>
+    <link network="rail" hexes="QQ31 QQ30" side="russian"/>
+    <link network="rail" hexes="F30 G30" side="axis"/>
+    <link network="rail" hexes="G30 H30" side="axis"/>
+    <link network="rail" hexes="H30 I30" side="axis"/>
+    <link network="rail" hexes="I30 J30" side="axis"/>
+    <link network="rail" hexes="K30 L30" side="axis"/>
+    <link network="rail" hexes="L30 M30" side="axis"/>
+    <link network="rail" hexes="DD30 EE30" side="axis"/>
+    <link network="rail" hexes="EE30 EE29" side="axis"/>
+    <link network="rail" hexes="II30 JJ30" side="axis"/>
+    <link network="rail" hexes="JJ30 KK30" side="axis"/>
+    <link network="rail" hexes="JJ30 II29" side="axis"/>
+    <link network="rail" hexes="LL30 KK29" side="axis"/>
+    <link network="rail" hexes="PP30 OO29" side="russian"/>
+    <link network="rail" hexes="O29 O28" side="axis"/>
+    <link network="rail" hexes="Y29 Y28" side="axis"/>
+    <link network="rail" hexes="Z29 AA29" side="axis"/>
+    <link network="rail" hexes="EE29 EE28" side="axis"/>
+    <link network="rail" hexes="NN29 NN28" side="russian"/>
+    <link network="rail" hexes="A28 A27" side="axis"/>
+    <link network="rail" hexes="C28 D28" side="axis"/>
+    <link network="rail" hexes="D28 D27" side="axis"/>
+    <link network="rail" hexes="O28 O27" side="axis"/>
+    <link network="rail" hexes="R28 Q27" side="axis"/>
+    <link network="rail" hexes="V28 W27" side="russian"/>
+    <link network="rail" hexes="DD28 EE28" side="axis"/>
+    <link network="rail" hexes="FF28 GG28" side="axis"/>
+    <link network="rail" hexes="JJ28 KK28" side="russian"/>
+    <link network="rail" hexes="KK28 LL28" side="russian"/>
+    <link network="rail" hexes="LL28 MM28" side="russian"/>
+    <link network="rail" hexes="MM28 MM27" side="russian"/>
+    <link network="rail" hexes="MM28 NN28" side="russian"/>
+    <link network="rail" hexes="NN28 OO27" side="russian"/>
+    <link network="rail" hexes="NN28 OO28" side="russian"/>
+    <link network="rail" hexes="NN28 MM27" side="russian"/>
+    <link network="rail" hexes="OO28 OO27" side="russian"/>
+    <link network="rail" hexes="OO28 PP28" side="russian"/>
+    <link network="rail" hexes="PP28 QQ27" side="russian"/>
+    <link network="rail" hexes="PP28 QQ28" side="russian"/>
+    <link network="rail" hexes="QQ28 QQ27" side="russian"/>
+    <link network="rail" hexes="A27 B27" side="axis"/>
+    <link network="rail" hexes="B27 C27" side="axis"/>
+    <link network="rail" hexes="H27 H26" side="axis"/>
+    <link network="rail" hexes="J27 K26" side="axis"/>
+    <link network="rail" hexes="P27 Q27" side="axis"/>
+    <link network="rail" hexes="P27 O26" side="axis"/>
+    <link network="rail" hexes="MM27 NN27" side="russian"/>
+    <link network="rail" hexes="NN27 OO26" side="russian"/>
+    <link network="rail" hexes="NN27 OO27" side="russian"/>
+    <link network="rail" hexes="NN27 MM26" side="russian"/>
+    <link network="rail" hexes="PP27 QQ27" side="russian"/>
+    <link network="rail" hexes="PP27 OO26" side="russian"/>
+    <link network="rail" hexes="K26 L26" side="axis"/>
+    <link network="rail" hexes="MM26 NN26" side="russian"/>
+    <link network="rail" hexes="NN26 OO26" side="russian"/>
+    <link network="rail" hexes="NN26 MM25" side="russian"/>
+    <link network="rail" hexes="PP26 QQ26" side="russian"/>
+    <link network="rail" hexes="A25 A24" side="axis"/>
+    <link network="rail" hexes="D25 C24" side="axis"/>
+    <link network="rail" hexes="E25 E24" side="axis"/>
+    <link network="rail" hexes="G25 G24" side="axis"/>
+    <link network="rail" hexes="V25 W24" side="russian"/>
+    <link network="rail" hexes="AA25 AA24" side="russian"/>
+    <link network="rail" hexes="BB25 CC24" side="russian"/>
+    <link network="rail" hexes="BB25 AA24" side="russian"/>
+    <link network="rail" hexes="MM25 NN25" side="russian"/>
+    <link network="rail" hexes="NN25 MM24" side="russian"/>
+    <link network="rail" hexes="PP25 QQ25" side="russian"/>
+    <link network="rail" hexes="A24 A23" side="axis"/>
+    <link network="rail" hexes="A24 B24" side="axis"/>
+    <link network="rail" hexes="C24 D24" side="axis"/>
+    <link network="rail" hexes="D24 C23" side="axis"/>
+    <link network="rail" hexes="G24 G23" side="axis"/>
+    <link network="rail" hexes="H24 G23" side="axis"/>
+    <link network="rail" hexes="MM24 NN24" side="russian"/>
+    <link network="rail" hexes="NN24 MM23" side="russian"/>
+    <link network="rail" hexes="PP24 QQ23" side="russian"/>
+    <link network="rail" hexes="PP24 QQ24" side="russian"/>
+    <link network="rail" hexes="QQ24 QQ23" side="russian"/>
+    <link network="rail" hexes="A23 A22" side="axis"/>
+    <link network="rail" hexes="A23 B23" side="axis"/>
+    <link network="rail" hexes="B23 B22" side="axis"/>
+    <link network="rail" hexes="C23 D23" side="axis"/>
+    <link network="rail" hexes="D23 C22" side="axis"/>
+    <link network="rail" hexes="K23 L23" side="russian"/>
+    <link network="rail" hexes="N23 O22" side="russian"/>
+    <link network="rail" hexes="V23 W22" side="russian"/>
+    <link network="rail" hexes="X23 W22" side="russian"/>
+    <link network="rail" hexes="JJ23 II22" side="russian"/>
+    <link network="rail" hexes="MM23 NN23" side="russian"/>
+    <link network="rail" hexes="NN23 NN22" side="russian"/>
+    <link network="rail" hexes="NN23 OO23" side="russian"/>
+    <link network="rail" hexes="NN23 MM22" side="russian"/>
+    <link network="rail" hexes="OO23 PP23" side="russian"/>
+    <link network="rail" hexes="PP23 PP22" side="russian"/>
+    <link network="rail" hexes="PP23 QQ22" side="russian"/>
+    <link network="rail" hexes="PP23 QQ23" side="russian"/>
+    <link network="rail" hexes="PP23 OO22" side="russian"/>
+    <link network="rail" hexes="A22 A21" side="axis"/>
+    <link network="rail" hexes="A22 B22" side="axis"/>
+    <link network="rail" hexes="B22 B21" side="axis"/>
+    <link network="rail" hexes="B22 A21" side="axis"/>
+    <link network="rail" hexes="D22 C21" side="axis"/>
+    <link network="rail" hexes="L22 M21" side="russian"/>
+    <link network="rail" hexes="N22 N21" side="russian"/>
+    <link network="rail" hexes="N22 O22" side="russian"/>
+    <link network="rail" hexes="P22 O21" side="axis"/>
+    <link network="rail" hexes="X22 Y22" side="russian"/>
+    <link network="rail" hexes="Y22 Z22" side="russian"/>
+    <link network="rail" hexes="Z22 AA22" side="russian"/>
+    <link network="rail" hexes="BB22 CC22" side="russian"/>
+    <link network="rail" hexes="HH22 GG21" side="russian"/>
+    <link network="rail" hexes="PP22 OO21" side="russian"/>
+    <link network="rail" hexes="A21 B21" side="axis"/>
+    <link network="rail" hexes="C21 D21" side="axis"/>
+    <link network="rail" hexes="I21 I20" side="russian"/>
+    <link network="rail" hexes="J21 K21" side="russian"/>
+    <link network="rail" hexes="J21 I20" side="russian"/>
+    <link network="rail" hexes="M21 N21" side="russian"/>
+    <link network="rail" hexes="N21 O20" side="russian"/>
+    <link network="rail" hexes="O21 P21" side="axis"/>
+    <link network="rail" hexes="DD21 CC20" side="russian"/>
+    <link network="rail" hexes="PP21 QQ21" side="russian"/>
+    <link network="rail" hexes="A20 B20" side="russian"/>
+    <link network="rail" hexes="B20 B19" side="russian"/>
+    <link network="rail" hexes="B20 A19" side="russian"/>
+    <link network="rail" hexes="O20 P20" side="russian"/>
+    <link network="rail" hexes="X20 W19" side="russian"/>
+    <link network="rail" hexes="DD20 CC19" side="russian"/>
+    <link network="rail" hexes="EE20 EE19" side="russian"/>
+    <link network="rail" hexes="KK20 KK19" side="russian"/>
+    <link network="rail" hexes="OO20 PP20" side="russian"/>
+    <link network="rail" hexes="PP20 OO19" side="russian"/>
+    <link network="rail" hexes="A19 B19" side="russian"/>
+    <link network="rail" hexes="Y19 Z19" side="russian"/>
+    <link network="rail" hexes="DD19 CC18" side="russian"/>
+    <link network="rail" hexes="EE19 EE18" side="russian"/>
+    <link network="rail" hexes="OO19 OO18" side="russian"/>
+    <link network="rail" hexes="OO19 PP19" side="russian"/>
+    <link network="rail" hexes="PP19 OO18" side="russian"/>
+    <link network="rail" hexes="A18 B18" side="axis"/>
+    <link network="rail" hexes="B18 B17" side="axis"/>
+    <link network="rail" hexes="B18 A17" side="axis"/>
+    <link network="rail" hexes="F18 F17" side="russian"/>
+    <link network="rail" hexes="O18 P18" side="russian"/>
+    <link network="rail" hexes="AA18 BB18" side="russian"/>
+    <link network="rail" hexes="DD18 EE18" side="russian"/>
+    <link network="rail" hexes="DD18 CC17" side="russian"/>
+    <link network="rail" hexes="LL18 MM17" side="russian"/>
+    <link network="rail" hexes="H17 I16" side="russian"/>
+    <link network="rail" hexes="H17 G16" side="russian"/>
+    <link network="rail" hexes="R17 Q16" side="russian"/>
+    <link network="rail" hexes="JJ17 KK17" side="russian"/>
+    <link network="rail" hexes="MM17 NN17" side="russian"/>
+    <link network="rail" hexes="NN17 NN16" side="russian"/>
+    <link network="rail" hexes="I16 J16" side="russian"/>
+    <link network="rail" hexes="P16 Q16" side="russian"/>
+    <link network="rail" hexes="B15 C15" side="axis"/>
+    <link network="rail" hexes="C15 C14" side="axis"/>
+    <link network="rail" hexes="K15 L15" side="russian"/>
+    <link network="rail" hexes="FF15 EE14" side="russian"/>
+    <link network="rail" hexes="NN15 NN14" side="russian"/>
+    <link network="rail" hexes="L14 M14" side="russian"/>
+    <link network="rail" hexes="M14 M13" side="russian"/>
+    <link network="rail" hexes="P14 P13" side="russian"/>
+    <link network="rail" hexes="T14 U13" side="russian"/>
+    <link network="rail" hexes="BB14 CC14" side="russian"/>
+    <link network="rail" hexes="DD14 EE13" side="russian"/>
+    <link network="rail" hexes="M13 M12" side="russian"/>
+    <link network="rail" hexes="P13 P12" side="russian"/>
+    <link network="rail" hexes="P12 Q11" side="russian"/>
+    <link network="rail" hexes="R12 Q11" side="russian"/>
+    <link network="rail" hexes="JJ12 JJ11" side="russian"/>
+    <link network="rail" hexes="D11 E10" side="russian"/>
+    <link network="rail" hexes="D11 C10" side="russian"/>
+    <link network="rail" hexes="H11 H10" side="russian"/>
+    <link network="rail" hexes="L11 M10" side="russian"/>
+    <link network="rail" hexes="Q11 R11" side="russian"/>
+    <link network="rail" hexes="M10 N10" side="russian"/>
+    <link network="rail" hexes="N10 O9" side="russian"/>
+    <link network="rail" hexes="S10 T10" side="russian"/>
+    <link network="rail" hexes="DD10 EE9" side="russian"/>
+    <link network="rail" hexes="DD10 EE10" side="russian"/>
+    <link network="rail" hexes="DD10 CC9" side="russian"/>
+    <link network="rail" hexes="B9 B8" side="russian"/>
+    <link network="rail" hexes="O9 O8" side="russian"/>
+    <link network="rail" hexes="U9 V9" side="russian"/>
+    <link network="rail" hexes="V9 W9" side="russian"/>
+    <link network="rail" hexes="W9 X9" side="russian"/>
+    <link network="rail" hexes="Y9 Z9" side="russian"/>
+    <link network="rail" hexes="BB9 CC9" side="russian"/>
+    <link network="rail" hexes="EE9 FF9" side="russian"/>
+    <link network="rail" hexes="FF9 FF8" side="russian"/>
+    <link network="rail" hexes="P8 Q8" side="russian"/>
+    <link network="rail" hexes="R8 Q7" side="russian"/>
+    <link network="rail" hexes="T8 U8" side="russian"/>
+    <link network="rail" hexes="FF8 GG7" side="russian"/>
+    <link network="rail" hexes="JJ8 JJ7" side="russian"/>
+    <link network="rail" hexes="E7 E6" side="russian"/>
+    <link network="rail" hexes="Q7 R7" side="russian"/>
+    <link network="rail" hexes="U7 V7" side="russian"/>
+    <link network="rail" hexes="HH7 II6" side="russian"/>
+    <link network="rail" hexes="II7 JJ7" side="russian"/>
+    <link network="rail" hexes="JJ7 KK7" side="russian"/>
+    <link network="rail" hexes="LL7 LL6" side="russian"/>
+    <link network="rail" hexes="E6 E5" side="russian"/>
+    <link network="rail" hexes="F6 E5" side="russian"/>
+    <link network="rail" hexes="L6 M6" side="russian"/>
+    <link network="rail" hexes="N6 O6" side="russian"/>
+    <link network="rail" hexes="S6 T6" side="russian"/>
+    <link network="rail" hexes="FF6 GG6" side="russian"/>
+    <link network="rail" hexes="FF6 EE5" side="russian"/>
+    <link network="rail" hexes="KK6 LL6" side="russian"/>
+    <link network="rail" hexes="LL6 MM6" side="russian"/>
+    <link network="rail" hexes="MM6 NN6" side="russian"/>
+    <link network="rail" hexes="NN6 OO5" side="russian"/>
+    <link network="rail" hexes="C5 C4" side="russian"/>
+    <link network="rail" hexes="E5 F5" side="russian"/>
+    <link network="rail" hexes="F5 G4" side="russian"/>
+    <link network="rail" hexes="N5 O4" side="russian"/>
+    <link network="rail" hexes="W5 W4" side="russian"/>
+    <link network="rail" hexes="DD5 EE4" side="russian"/>
+    <link network="rail" hexes="DD5 CC4" side="russian"/>
+    <link network="rail" hexes="A4 A3" side="russian"/>
+    <link network="rail" hexes="B4 B3" side="russian"/>
+    <link network="rail" hexes="C4 D4" side="russian"/>
+    <link network="rail" hexes="O4 O3" side="russian"/>
+    <link network="rail" hexes="BB4 BB3" side="russian"/>
+    <link network="rail" hexes="B3 B2" side="russian"/>
+    <link network="rail" hexes="D3 C2" side="russian"/>
+    <link network="rail" hexes="T3 U2" side="russian"/>
+    <link network="rail" hexes="OO3 PP3" side="russian"/>
+    <link network="rail" hexes="C2 C1" side="russian"/>
+    <link network="rail" hexes="Q2 R2" side="russian"/>
+    <link network="rail" hexes="R2 S2" side="russian"/>
+    <link network="rail" hexes="Z2 Z1" side="russian"/>
+    <link network="rail" hexes="Z2 AA2" side="russian"/>
+    <link network="rail" hexes="U1 V1" side="russian"/>
+  </control>
+  <notes>
+    <note>Generated once from the sheet, the 2020 counters and the package; edit by hand from here on.</note>
+    <note>The counter backs name a set-up area or a city, not hexes, and no input document carries the
+      hexes of the areas. The start line is derived: each land hex takes the side of its nearest anchor city
+      (Axis: Berlin, Posen, Breslau, Warsaw, Koenigsberg, Bucharest, Ploesti, Helsinki; Russian: Riga, Kaunas,
+      Brest, Lvov, Minsk, Tallinn, Leningrad, Kiev, Odessa, Vitebsk, Moscow), and each area's units are
+      stacked legally on their own side's hexes nearest that front and nearest the area's anchor. Cities,
+      oil fields, junctions and rail links wholly inside a side's hexes start under that side.</note>
+    <note>Units with a blank back carry no arrival turn and are not in this scenario; the Special Rail
+      army waits in the Off-Map Units Box; the three Stukas are in their box. Riga, Helsinki and
+      Sevastopol stand on hexes the sheet classifies as sea, so their units start on the nearest land hex.</note>
+  </notes>
+</save>

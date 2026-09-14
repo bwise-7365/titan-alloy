@@ -4,6 +4,7 @@
   <sides>
     <side id="axis">
       <register track="turn-track" value="1"/>
+      <flag name="weather-drm" value="0"/>
     </side>
   </sides>
   <units>
@@ -42,7 +43,6 @@
       <event kind="combat-declared" hex="G24" value="g-ge-56-armour g-ge-n-hq"/>
       <event kind="die" value="5">combat</event>
       <event kind="combat-resolved" hex="G24" value="1-1">EX</event>
-      <event kind="eliminated" unit="r-ru-8-infantry" value="russian-pool"/>
       <event kind="decision-requested" value="loss"/>
     </move>
     <move n="5" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
@@ -50,6 +50,7 @@
       <arg name="answer" value="g-ge-n-hq"/>
       <event kind="decision-answered" value="loss">g-ge-n-hq</event>
       <event kind="eliminated" unit="g-ge-n-hq" value="axis-pool"/>
+      <event kind="eliminated" unit="r-ru-8-infantry" value="russian-pool"/>
     </move>
     <move n="6" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="end-phase">
       <event kind="phase" side="axis" value="axis-i2-move">turn 1</event>

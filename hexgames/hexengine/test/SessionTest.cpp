@@ -156,13 +156,18 @@ TEST(SessionTest, PendingDecisionGate)
   HexEngine::Session& session = *asking;
   EXPECT_THROW((void)session.apply(HexEngine::EndPhase{}), std::invalid_argument);
 
-  const std::vector<HexEngine::Command> legal = session.legalCommands();
-  ASSERT_FALSE(legal.empty());
-  for (const HexEngine::Command& command : legal) {
-    EXPECT_TRUE(std::holds_alternative<HexEngine::DecisionAnswer>(command));
+  // A battle may owe several answers in turn (a loss, then a retreat for each unit); every one of
+  // them offers answers only, and the plan runs out.
+  for (int answered = 0; session.prompt().decisionPendingP; ++answered) {
+    ASSERT_GT(10, answered) << "the combat plan did not run out";
+    const std::vector<HexEngine::Command> legal = session.legalCommands();
+    ASSERT_FALSE(legal.empty());
+    for (const HexEngine::Command& command : legal) {
+      EXPECT_TRUE(std::holds_alternative<HexEngine::DecisionAnswer>(command));
+    }
+    session.apply(legal.front());
   }
-  session.apply(legal.front());
-  EXPECT_FALSE(session.prompt().decisionPendingP);
+  EXPECT_FALSE(session.position().combatPlan().has_value());
 }
 
 TEST(SessionTest, ForkIsIndependent)

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../../packages/xml/trc.package.xml" seed="20260914">
+  <cursor turn="1" phase="axis-i1-combat" side="axis" moves="4" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="rail-moves" value="2"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="QQ28" face="front" status="railed" moved="false"/>
+    <unit id="g-ge-2-infantry" counter="g-ge-2-infantry" type="infantry" owner="axis" hex="OO28" face="front" status="railed" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="NN28" face="front" moved="false"/>
+  </units>
+  <control>
+    <hex id="MM28" side="axis"/>
+    <hex id="NN27" side="axis"/>
+    <hex id="NN28" side="axis"/>
+    <hex id="OO27" side="axis"/>
+    <hex id="OO28" side="axis"/>
+    <hex id="PP28" side="axis"/>
+    <hex id="QQ27" side="axis"/>
+    <link network="rail" hexes="MM28 NN28" side="axis"/>
+    <link network="rail" hexes="NN28 OO27" side="axis"/>
+    <link network="rail" hexes="OO28 OO27" side="axis"/>
+    <link network="rail" hexes="OO28 PP28" side="axis"/>
+    <link network="rail" hexes="PP28 QQ27" side="axis"/>
+    <link network="rail" hexes="QQ28 QQ27" side="axis"/>
+  </control>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28" mode="rail-move">
+      <event kind="moved" unit="g-ge-1-infantry" hex="QQ28" value="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28"/>
+      <event kind="control" hex="MM28" side="axis"/>
+      <event kind="control" hex="NN28" side="axis"/>
+      <event kind="control" hex="NN27" side="axis"/>
+      <event kind="control" hex="OO28" side="axis"/>
+      <event kind="control" hex="OO27" side="axis"/>
+      <event kind="control" hex="PP28" side="axis"/>
+      <event kind="control" hex="QQ27" side="axis"/>
+    </move>
+    <move n="2" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-2-infantry" path="NN28 OO27 OO28" mode="rail-move">
+      <event kind="moved" unit="g-ge-2-infantry" hex="OO28" value="NN28 OO27 OO28"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="MM28 NN28" mode="normal">
+      <event kind="moved" unit="g-ge-41-armour" hex="NN28" value="MM28 NN28"/>
+    </move>
+    <move n="4" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-i1-combat">turn 1</event>
+    </move>
+  </log>
+</save>

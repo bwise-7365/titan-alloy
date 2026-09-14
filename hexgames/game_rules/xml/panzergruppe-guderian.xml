@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="hexrules.xsd"
+      id="pgg" title="Panzergruppe Guderian: The Battle of Smolensk, July 1941" publisher="Simulations Publications, Inc." year="1976" players="2"
+      source="pdftotext extraction of PGG rules counters map v1.pdf (coordinator scratchpad, page-01..08.txt); crt.txt (typed CRT/TEC/supply summary); amendments.txt (Panzergruppe Guderian II fan variant, Tim Alanthwaite 2012); errata.txt (Clarifications, Errata and Addenda)"
+      hex-scale="10.5 km"
+      turn-scale="two days; 12 turns">
+
+  <!-- ================= sides ================= -->
+  <sides>
+    <side id="german" name="German" control="human" hostile-to="soviet">Panzergruppe Guderian. Has no combat units on the map at the start of the game; enters entirely by reinforcement (2.0).</side>
+    <side id="soviet" name="Soviet" control="human" hostile-to="german">The Red Army defending the Dnepr and Smolensk.</side>
+    <note>The two sides are asymmetric in mechanism, not just order of battle: only the Soviet has Rail Movement, Leaders and Untried units; only the German has a second (Mechanized) Movement Phase.</note>
+  </sides>
+
+  <!-- ================= map ================= -->
+  <map>
+    <hex-ids pattern="\d{2}\d{2}" example="2117">Two-digit column then two-digit row, no letter component (unlike The Russian Campaign's row-letter scheme). Grid is flat-topped, offset odd; the sheet's id-format is "{col:02}{row:02}", col-start 1, row-start 1. Smolensk is 2117; the German west-edge supply road hex is 0120.</hex-ids>
+
+    <hex-terrain id="clear" name="Clear" move-cost="1" ref="6.7"/>
+    <hex-terrain id="woods" name="Forest" move-cost="1" ref="6.7">Infantry (not motorized) pays 1 MP; all other unit types pay 2 MP. No stop is required by the text supplied.</hex-terrain>
+    <hex-terrain id="swamp" name="Swamp" move-cost="2" ref="6.7">Supply may be traced into a Swamp hex but not through one.</hex-terrain>
+    <hex-terrain id="lake" name="Lake" move-cost="prohibited" ref="6.7">May not be entered or crossed by movement; no combat may be resolved across a Lake hexside (see the lake-hexside hexside-terrain); supply may not be traced through.</hex-terrain>
+    <hex-terrain id="major-city" name="Major City" move-cost="1" defence-multiplier="2" ref="6.7 15.11">A defender doubled and a Victory Point objective (15.1): Vitebsk 0513, Orsha 0420, Mogilev 0424, Smolensk 2117, Roslavl 2625, Yelnya, Rzhev 3901, Gzhatsk 4606, Vyazma 3915, Kaluga 5619, plus VP hexes 5907 and 5915 with no city glyph.</hex-terrain>
+    <hex-terrain id="minor-city" name="Minor City" move-cost="1" ref="6.7">No combat effect. Drawn on the sheet as the "town" glyph: Velizh 1509, Bely 3005, Mstislavl 1524, Krichev 1427.</hex-terrain>
+
+    <hexside-terrain id="river" name="River hexside" ref="6.7 9.32">Germans pay 2 extra MP to cross, Soviets 1. Doubles the defender only if every attacking unit attacks across a River hexside (9.32); roads are considered to cross rivers for German supply tracing even though normal movement may not use a road to cross one (11.13, corrected by errata from the rulebook's misprinted cross-reference "11.14").</hexside-terrain>
+    <hexside-terrain id="lake-hexside" name="Lake hexside" blocks="movement" ref="6.7">May not be crossed by movement; no combat may be resolved across it; supply may not be traced through it. Stronger than a plain movement block: attacks across a lake hexside are not merely undoubled, they are disallowed outright.</hexside-terrain>
+    <hexside-terrain id="road" name="Road hexside" move-cost="0.5" ref="6.7 11.13">Movement along a road pays this cost instead of the hex's terrain cost: half a Movement Point for a mechanized/motorized/armour/cavalry unit, one full Movement Point for other infantry (not motorized). Also a network; see below. German Supply must trace along Road hexes to hex 0120 on the west edge (11.1).</hexside-terrain>
+
+    <network id="road-net" name="Roads" carries="movement supply">Drawn centre to centre (6.7, 11.1). Carries the Road movement discount and is the German Supply network: a German unit must reach hex 0120 by an unbroken chain of Road hexes.</network>
+    <network id="rail" name="Railroads" carries="movement" mutable="true">Soviet-only Rail Movement network, drawn centre to centre (6.3). Affects neither supply nor normal movement (6.35) -- its only function is the Rail Movement mode. Mutable: a German unit moving through a Soviet rail hex may cut the line (errata 6.37); Soviet units may not rail-move into or through a cut hex; repair happens only by a Soviet combat unit entering the cut hex during ordinary movement, and Rail Movement over the repaired line resumes the following turn.</network>
+
+    <space id="dead-pile" name="Soviet dead pile" kind="pool" side="soviet" returns="true">Eliminated Untried Soviet units, still face-down; drawn from once the counter pool proper is exhausted (12.4). The absolute ceiling on units in play is the number of physical counters, regardless of source.</space>
+
+    <note>Other hex-centred data: the six numbered Soviet Provisional Reinforcement entrance areas (14.1); the lettered Soviet entrance points V, W, X, Z (16.1); the lettered German entrance areas A-H (16.2); the Soviet initial-deployment hexes/areas (5.1). These are authored, scenario-specific placements, not a general region layer.</note>
+    <note>The westernmost two hexrows (all hexes with column "01" or "02") are a rules-significant region named directly by column rather than by a sheet layer: forbidden to voluntary or involuntary Soviet entry through turn 6 (6.4), and mandatory for the 13th and 20th Armies to clear entirely on turn 1 (5.23).</note>
+  </map>
+
+  <!-- ================= counters ================= -->
+  <counters>
+    <unit-type id="soviet-rifle" name="Soviet Rifle Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true">Placed Untried (12.0); true Attack-Defense-Movement is revealed only at the instant of first combat or Overrun (12.2). One step: any loss eliminates it (9.62).</unit-type>
+    <unit-type id="soviet-armour" name="Soviet Armoured/Mechanized Division" side="soviet" kind="ground" steps="1" zoc="full" hidden="true">Placed Untried, as soviet-rifle (12.0). Counted as armoured for set-up and reinforcement purposes (amendments 3.4); more are printed than are needed for play.</unit-type>
+    <unit-type id="german-infantry" name="German Infantry Division" side="german" kind="ground" steps="4" zoc="full">Four steps: 9-7, 4-7, 2-7, 1-7 (9.63). Does not qualify for Divisional Integration (7.3).</unit-type>
+    <unit-type id="german-panzer" name="German Panzer Division" side="german" kind="ground" steps="2" zoc="full">Two steps, the second printed on the counter's reverse (9.63). One Panzer and two Panzer Grenadier regiments; qualifies for Divisional Integration when the whole division is stacked together with no foreign unit present (7.3).</unit-type>
+    <unit-type id="german-motorized" name="German Motorized Infantry Division" side="german" kind="ground" steps="2" zoc="full">Two regiments, except Das Reich, which has three (7.3). Independent regiments GD (Grossdeutschland) and Lehr may stack with a two-regiment motorized division without breaking its integration (amendments 7.3).</unit-type>
+    <unit-type id="german-cavalry" name="German Cavalry Division" side="german" kind="ground" steps="2" zoc="full">Two steps (9.63). Does not qualify for Divisional Integration; the Soviet Player receives no Victory Points for its elimination (15.12).</unit-type>
+    <unit-type id="soviet-leader" name="Soviet Leader" side="soviet" kind="leader" steps="1" zoc="full">An army-level command organisation, not merely a figurehead (10.0): its one printed rating is simultaneously the Line-of-Communications Radius, the maximum Combat Points it may add to a directly-stacked attack, and its own Defense Strength (10.1). Has no Attack Strength (10.22); may not Overrun by itself (6.53).</unit-type>
+    <unit-type id="disruption-marker" name="Disruption marker" kind="marker">Placed on a unit Disrupted by a failed or partial Overrun defense (6.6); removed automatically in the owner's next Disruption Removal Phase.</unit-type>
+    <unit-type id="german-air-interdiction-marker" name="German Air Interdiction marker" side="german" kind="marker">No ZOC, no combat capability, does not count against stacking (13.1). Three provided.</unit-type>
+    <unit-type id="soviet-interdiction-marker" name="Soviet Interdiction marker" side="soviet" kind="marker">No ZOC (13.4). Usable on at most three turns in the game, never the last.</unit-type>
+    <unit-type id="rail-cut-marker" name="Rail Cut marker" side="german" kind="marker">Placed on a Soviet Railroad hex a German unit has moved through (errata 6.37); six provided. Blocks Soviet Rail Movement into or through the hex.</unit-type>
+
+    <list id="counter-fields" name="Fields printed on a unit counter" ref="3.4">
+      <item code="size">III regiment, XX division.</item>
+      <item code="designation">Regiment ids embed the parent division, e.g. 20/12 for the 20th Panzer Regiment of the 12th Panzer Division (2.0).</item>
+      <item code="strength">German: Attack-Defense, or a single Combat Strength; Soviet: Attack-Defense-Movement when revealed, a question mark when Untried.</item>
+      <item code="movement-allowance">Hexes of Movement Points.</item>
+    </list>
+  </counters>
+
+  <!-- ================= sequence of play ================= -->
+  <sequence turns="12">
+    <phase id="game-turn" name="Game Turn">
+      <phase id="soviet-turn" name="Soviet Player-Turn" side="soviet">
+        <phase id="soviet-move" name="Movement Phase"><note ref="4.2">Check Supply; move any or all units; conduct Overruns; bring in Reinforcements. German Air Interdiction Markers are removed at the end of this Phase.</note></phase>
+        <phase id="soviet-combat" name="Combat Phase"><note>Soviet units may attack adjacent German units.</note></phase>
+        <phase id="soviet-disruption-removal" name="Disruption Removal Phase"/>
+        <phase id="soviet-interdiction" name="Soviet Interdiction Phase"><note ref="13.4">At most three times in the game, never turn 12: place a Soviet Interdiction Marker.</note></phase>
+      </phase>
+      <phase id="german-turn" name="German Player-Turn" side="german">
+        <phase id="german-move1" name="Initial Movement Phase"><note>Check Supply; bring in Reinforcements; move units; conduct Overruns.</note></phase>
+        <phase id="german-combat" name="Combat Phase"><note>German units may attack adjacent Soviet units, with the Divisional Integration bonus where it applies.</note></phase>
+        <phase id="german-move2" name="Mechanized Movement Phase"><note ref="4.2">Only Panzer, Mech, Motorized and Cavalry units (german-panzer, german-motorized, german-cavalry) may move, and may conduct further Overruns. Infantry may not act in this Phase.</note></phase>
+        <phase id="german-disruption-removal" name="Disruption Removal Phase"/>
+        <phase id="german-air-interdiction" name="Air Interdiction Phase"><note ref="13.2">Place German Air Interdiction Markers for the following Soviet turn; remove any Soviet Interdiction Marker.</note></phase>
+      </phase>
+    </phase>
+    <rule id="soviet-first-turn-die" ref="5.21 5.22" topic="sequence" sides="soviet" turns="1">The 16th Army (hex 2216) and the 19th Army (hex 1414) may move on turn 1 only if a die roll of 1, 2 or 3 is made for that army; otherwise it stands in place, shuffling at most one hex per unit if needed to satisfy stacking.</rule>
+    <rule id="soviet-first-turn-mandatory" ref="5.23" topic="sequence" sides="soviet" turns="1">The 13th and 20th Armies must expend their full Movement Allowance, may not end the phase in hex-columns 01 or 02, may not re-enter a hex, may move only north, south or east, and may not use Rail Movement.</rule>
+  </sequence>
+
+  <!-- ================= stacking ================= -->
+  <stacking units="3" enforced="end of the Friendly Movement Phase and throughout the Combat Phase" repair="eliminate-excess" exempt="disruption-marker german-air-interdiction-marker soviet-interdiction-marker rail-cut-marker" ref="7.0">
+    <rule id="stacking-soviet-leader-bonus" ref="7.1" topic="stacking" sides="soviet">The Soviet Player may stack up to four units in a hex, rather than three, if at least one of the four is a Leader.</rule>
+    <rule id="divisional-integration" ref="7.3" topic="stacking" sides="german">If every regiment of a German Panzer or Motorized Infantry Division is stacked together, with no unit from any other division present, the stack's Combat Strength is doubled for both attack and defense. German Infantry and Cavalry Divisions never qualify. Losing any regiment of the division disqualifies it from the bonus. The independent regiments GD and Lehr may stack with a two-regiment motorized division without breaking its integration (amendments 7.3).</rule>
+  </stacking>
+
+  <!-- ================= zones of control ================= -->
+  <zoc id="zoc" name="Zone of control" side="german soviet" range="1" blocked-by="lake-hexside" negated-by-friendly="true" stops-movement="true" mandatory-attack="false" blocks="supply retreat network" ref="8.0">
+    <note>Own hex plus the six adjacent hexes. Extends across River hexsides; does not extend across Lake hexsides (8.17). No stacking of effect from multiple ZOCs on one hex (8.18). Friendly units, but not Friendly ZOC, negate an enemy ZOC for supply and leadership-radius tracing and for retreat, never for movement (8.15).</note>
+    <rule id="zoc-disrupted-none" ref="8.11" topic="zoc">Disrupted units project no Zone of Control.</rule>
+    <rule id="zoc-mutual" ref="8.16" topic="zoc">If a unit is in an enemy-controlled hex, the enemy unit is equally in that unit's Zone of Control; the two are jointly affected.</rule>
+    <rule id="zoc-stop-and-leave" ref="6.22 8.13" topic="zoc">A unit must stop the instant it enters an enemy-controlled hex and may not leave voluntarily; it may leave only as a result of combat, or by Overrun (6.5).</rule>
+  </zoc>
+
+  <!-- ================= movement ================= -->
+  <movement budget="points">
+    <mode id="normal" name="Normal movement" phase="soviet-move german-move1 german-move2" ref="6.0 6.7">Pay the entry cost of each hex from the Terrain Effects Chart, or the Road hexside cost when moving along a road. Movement Points may not be saved, banked, or transferred between units or phases (6.12, 6.23). German mechanized units get a fresh allowance in the Mechanized Movement Phase.</mode>
+    <mode id="rail-move" name="Rail movement" side="soviet" phase="soviet-move" network="rail" ref="6.3">Up to eight combat units (each Soviet armour/mechanized division counting as three) plus any number of Leaders, thirty hexes, hex to adjacent connected Rail hex only, starting and finishing on a Railroad hex, never through an enemy ZOC. Terrain has no cost effect; German Air Interdiction raises the per-hex cost (13.31). No Supply or Leader-radius requirement to use the bonus (6.34).</mode>
+    <mode id="overrun" name="Overrun" phase="soviet-move german-move1 german-move2" ref="6.5">Move the participating units, all from one hex, adjacent to the target; pay three extra Movement Points; resolve combat immediately on the ordinary Combat Results Table at halved Attack Strength (see the overrun-halving modifier). If the target hex is vacated, move into it at no further cost and continue moving, and Overrunning again, with any remaining points, unless now in an enemy ZOC. A split or Engaged result, or any attacker loss or retreat, halts the Overrunning unit(s) for the rest of the Phase (6.52). Not Advance After Combat: the free entry into a vacated hex is movement, not an advance (6.57, 9.88).</mode>
+    <rule id="overrun-eligibility" ref="6.55" topic="movement" sides="soviet">A Soviet unit that begins the Movement Phase outside its coordinating Leader's Radius may not conduct an Overrun.</rule>
+    <rule id="leader-movement" ref="10.21" topic="movement" units="soviet-leader">Movement Allowance ten; moves like a Motorized unit on roads but like Infantry in Forest; may use Rail Movement alone and does not count against the eight-unit Rail cap.</rule>
+    <rule id="soviet-forbidden-hexrows" ref="6.4" topic="movement" sides="soviet" turns="1-6">No Soviet unit may voluntarily or involuntarily enter hex-columns 01 or 02. A unit forced to retreat there is eliminated instead. Soviet units may still trace Supply and Leadership Radius through those hexrows.</rule>
+    <rule id="out-of-supply-movement" ref="11.31 11.32" topic="movement">A unit not in Supply has its Movement Allowance halved, fractions dropped, never below one.</rule>
+  </movement>
+
+  <!-- ================= supply ================= -->
+  <supply>
+    <trace id="german-supply-road" name="German supply, via the road network" side="german" sources="hex 0120 on the west map edge" max-length="20" blocked-by-zoc="true" fatal="false" checked="start of each Movement Phase for movement; instant of combat or Overrun for combat" ref="11.11">
+      <segment order="1" kind="free" length="20">Twenty hexes from the unit to reach some Road hex, uninterrupted by enemy units, enemy-controlled hexes or impassable terrain.</segment>
+      <segment order="2" kind="network" network="road-net" length="unlimited">That Road hex to hex 0120, along an unbroken chain of Road hexes, likewise uninterrupted.</segment>
+    </trace>
+    <trace id="german-supply-direct" name="German supply, direct movement-point trace" side="german" sources="any hex on the west map edge" max-length="20" blocked-by-zoc="true" fatal="false" checked="start of each Movement Phase for movement; instant of combat or Overrun for combat" ref="11.12">
+      <segment order="1" kind="free" length="20">Twenty Movement Points, not hexes, counted by the tracing unit's own type, directly to any west-edge hex. The river-crossing cost is paid regardless of whether a road is present (errata 11.13); terrain otherwise applies as for normal movement.</segment>
+    </trace>
+    <trace id="soviet-supply" name="Soviet supply, relayed through a Leader" side="soviet" sources="the east map edge, reached by relaying through a Soviet Leader" max-length="authored" blocked-by-zoc="true" fatal="false" checked="start of each Movement Phase for movement; instant of combat or Overrun for combat" ref="11.21 11.22">
+      <segment order="1" kind="free">Line of Communications: the combat unit to any Soviet Leader, no more hexes than that Leader's own printed Radius rating (a per-Leader value, not a game-wide constant). May not pass through enemy units, enemy ZOCs, or impassable terrain; into but not through a Swamp hex (amendments 10.31).</segment>
+      <segment order="2" kind="free" length="unlimited">Line of Supply: that Leader to the east map edge, any length, under the same blocking rules. The Leader itself needs no line to another Leader (11.24).</segment>
+    </trace>
+    <rule id="supply-never-fatal" ref="11.34" topic="supply">Units may remain out of Supply indefinitely; they are never eliminated for lack of Supply alone.</rule>
+    <rule id="supply-first-turn" ref="11.33" topic="supply">All units are considered in Supply during the first Player-Turn of their entrance into the game.</rule>
+    <rule id="supply-rail-cut-blocks-supply" ref="6.35" topic="supply">Railroads carry neither supply nor normal movement; they affect nothing but Rail Movement, so a Rail Cut marker has no supply effect by itself.</rule>
+  </supply>
+
+  <!-- ================= combat ================= -->
+  <combat mandatory="false">
+    <resolver id="crt" name="Combat Results Table" kind="odds-table" randomizer="die" min-odds="1-3" max-odds="10-1" rounding="defender" ref="9.4 9.5">
+      <note ref="9.13 9.14 9.21">An enemy-occupied hex may be attacked by every unit that can bear from the six adjacent hexes; all units in the target hex are attacked as a single Defense Strength; no unit may attack, or be attacked, more than once per Combat Phase. Attacks worse than 1-3 or better than 10-1 are treated as the nearest end column.</note>
+      <table id="crt-table" name="Combat Results Table" rows="die" cols="odds">
+        <col label="1-3"/><col label="1-2"/><col label="1-1"/><col label="2-1"/><col label="3-1"/><col label="4-1"/><col label="5-1"/><col label="6-1"/><col label="7-1"/><col label="8-1"/><col label="9-1"/><col label="10-1"/>
+        <row label="1"><cell>A1</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>De/A1</cell><cell>De</cell><cell>De</cell><cell>De</cell><cell>De</cell></row>
+        <row label="2"><cell>A1</cell><cell>Eng</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>De/A1</cell><cell>De</cell><cell>De</cell><cell>De</cell></row>
+        <row label="3"><cell>A1</cell><cell>A1</cell><cell>D1*/A1</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*/A1</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>De/A1</cell><cell>De</cell><cell>De</cell></row>
+        <row label="4"><cell>A2</cell><cell>A1</cell><cell>Eng</cell><cell>D1*/A1</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*/A1</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>De/A1</cell><cell>De</cell></row>
+        <row label="5"><cell>Ae</cell><cell>A2</cell><cell>A1</cell><cell>Eng</cell><cell>D1*/A1</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*/A1</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell><cell>De</cell></row>
+        <row label="6"><cell>Ae</cell><cell>Ae</cell><cell>A2</cell><cell>A1</cell><cell>Eng</cell><cell>Eng</cell><cell>D1*/A1</cell><cell>D1*</cell><cell>D2*/A1</cell><cell>D2*</cell><cell>D2*</cell><cell>D2*</cell></row>
+      </table>
+      <list id="crt-results" name="Combat results" ref="9.6">
+        <item code="Ae">All attacking units eliminated. Opposing Player may advance one or two hexes, the first the vacated hex.</item>
+        <item code="De">All defending units eliminated. Opposing Player may advance one or two hexes, the first the vacated hex.</item>
+        <item code="A1">The attacker loses one step from any one unit, or retreats the whole attacking stack one hex; not both (9.65).</item>
+        <item code="A2">As A1, but two steps or two hexes.</item>
+        <item code="D1">The defender loses one step from any one unit, or retreats the whole defending stack one hex; not both.</item>
+        <item code="D2">As D1, but two steps or two hexes.</item>
+        <item code="Eng">Engaged: each side loses one step and remains in place. No retreat option; neither side may advance.</item>
+      </list>
+      <rule id="split-results" ref="9.66" topic="combat">In a split result (e.g. D1*/A1) the defender's result is applied first, then the attacker's. Only the attacker may then advance, and only if the defending hex was vacated; the defender never advances in a split result.</rule>
+      <rule id="overrun-disruption" ref="6.61" topic="combat">A defender result earned during an Overrun (marked "*" above) also Disrupts the surviving defending unit(s): loss of Zone of Control, cannot move or attack, defends normally, and a Disrupted Leader cannot function as a Leader (6.62, 6.64).</rule>
+    </resolver>
+
+    <modifier id="divisional-integration-mod" name="German Divisional Integration" applies-to="either" kind="multiplier" value="2" side="german" ref="7.3">Applied before terrain multipliers and before halving for Overrun or being out of Supply (amendments 9.35, 11.37).</modifier>
+    <modifier id="terrain-doubling" name="Terrain doubling" applies-to="defender" kind="multiplier" value="2" ref="9.31 9.33">Major City and River (if every attacker crosses a River hexside) each double; Forest doubles. Effects are cumulative additively, minus one: Forest plus River gives x3, not x4 (9.33).</modifier>
+    <modifier id="out-of-supply-halving" name="Out of Supply" applies-to="either" kind="multiplier" value="0.5" ref="11.31">Combat Strength halved, fractions dropped, never below one. Applied after Divisional Integration doubling, before Overrun halving.</modifier>
+    <modifier id="overrun-halving" name="Overrun" applies-to="attacker" kind="multiplier" value="0.5" phase="soviet-move german-move1 german-move2" ref="6.55">Halving is the final adjustment; fractions are dropped after it. Worked example: a Panzer Division (8) doubled for integration (16), halved for out-of-supply (8), halved again for Overrun (4).</modifier>
+    <modifier id="leader-attack-bonus" name="Leader combat addition" applies-to="attacker" kind="other" side="soviet" ref="10.36">A Soviet Leader stacked directly with an attacking unit may add its Leadership Value to that unit's attack, never more than the unit's own post-modifier Strength; the addition may not be split across units.</modifier>
+    <rule id="no-strength-units" ref="12.3" topic="hidden" sides="soviet">A Soviet unit revealed as 0-0-6 is removed from play at the instant of revelation. Two specific 0-1-6 Rifle Divisions remain in play but may only ever defend; if committed to an attack before revelation, they must retreat as a Leader does under Case 10.23.</rule>
+    <rule id="soviet-attack-radius" ref="10.35" topic="combat" sides="soviet">A Soviet combat unit may not attack unless it is within a Soviet Leader's Radius; it may attack at half Strength while out of Supply if still within radius, and may defend at half Strength without any Leader present.</rule>
+  </combat>
+
+  <!-- ================= retreat ================= -->
+  <retreat routed-by="attacker" distance="1-2" advance-after-combat="true" unsatisfiable="eliminate" blocked-by="lake-hexside" ref="9.7">
+    <note>Retreat is always optional in place of a step loss (9.71, 9.65). Routed by the opposing Player, even for split results (9.72). May not pass through an enemy unit or enemy ZOC unless the hex holds a Friendly unit; prefers a vacant hex; a retreat that would violate stacking eliminates the excess unit instead (9.73). A unit retreated onto a Friendly-occupied hex adds nothing to its defense and is eliminated automatically if that hex later suffers any combat result (9.75).</note>
+    <rule id="advance-after-combat" ref="9.81 9.85 9.86" topic="retreat">Victorious units may advance into the vacated hex or along the Path of Retreat, ignoring enemy ZOCs, stopping where they choose, immediately and before other combat is resolved; they may not then attack or be attacked that Phase. If the whole defending stack was eliminated, the advance may be up to two hexes, the first of which must be the vacated hex.</rule>
+    <rule id="no-advance-overrun" ref="9.88 6.57" topic="retreat">Advance After Combat never applies to Overrun; its free entry into a vacated hex is ordinary movement.</rule>
+    <rule id="forbidden-hexrow-retreat" ref="6.4" topic="retreat" sides="soviet" turns="1-6">A Soviet unit forced to retreat into hex-column 01 or 02 is eliminated instead.</rule>
+  </retreat>
+
+  <!-- ================= randomiser ================= -->
+  <randomizer id="die" name="Die" kind="die" size="6">One six-sided die for combat, the first-turn Soviet movement check (5.21), and the Provisional Reinforcement entrance roll (14.11).</randomizer>
+
+  <!-- ================= victory ================= -->
+  <victory>
+    <condition id="final-vp-total" side="german soviet" kind="final" turns="12" ref="15.0">Total each side's Victory Points; subtract the Soviet total from the German total; read the Level of Victory from the schedule below.</condition>
+    <list id="victory-levels" name="Levels of Victory" ordered="true" ref="15.2">
+      <item code="&lt;=0">Soviet Decisive</item>
+      <item code="1-25">Soviet Strategic</item>
+      <item code="26-49">Soviet Marginal</item>
+      <item code="50-79">German Marginal</item>
+      <item code="80-124">German Strategic</item>
+      <item code="125+">German Decisive</item>
+    </list>
+    <list id="german-city-vp" name="German Victory Points for occupation" ref="15.11">
+      <item code="3901">Rzhev: 5</item>
+      <item code="0513">Vitebsk: 10</item>
+      <item code="0420">Orsha: 5</item>
+      <item code="0424">Mogilev: 5</item>
+      <item code="2117">Smolensk: 25 (reduced by two per Game Turn from Turn 5 onward, amendments 15.11)</item>
+      <item code="2625">Roslavl: 10</item>
+      <item code="4606">Gzhatsk: 5</item>
+      <item code="3915">Vyazma: 15</item>
+      <item code="5619">Kaluga: 20</item>
+      <item code="5907">Hex 5907: 20</item>
+      <item code="5915">Hex 5915: 20</item>
+    </list>
+    <rule id="german-vp-occupation" ref="15.11" topic="victory" sides="german">Occupation means a German combat unit in every hex of the city, or the last Player to have passed a unit through them, with a line of hexes free of Enemy units or Enemy ZOCs (negated by Friendly units) traced from the city to the west map edge.</rule>
+    <rule id="german-vp-swf" ref="14.23 15.11" topic="victory" sides="german">One Victory Point per South-Western Front division the Soviet Player uses among the first five, two for each of the next five; fifteen if all ten are used (the rulebook's cross-reference "13.23" is corrected by errata to "14.23").</rule>
+    <rule id="soviet-vp-eliminated-division" ref="15.12" topic="victory" sides="soviet">One Victory Point for each entire German division eliminated, except the Cavalry Division, for which none is awarded; no points for individual regiments alone.</rule>
+    <rule id="soviet-vp-recapture" ref="15.12" topic="victory" sides="soviet">Two Victory Points each time the Soviet Player recaptures a city that the German Player held, with the west-edge line described in german-vp-occupation, at the end of the previous German Player-Turn. May be earned repeatedly for the same city.</rule>
+    <rule id="historical-result" ref="15.2" topic="victory" optional="true">Errata addition: the historical outcome was a German Marginal Victory. Players who want that reading may treat a German Marginal Victory as a draw and require a German Strategic Victory or better for a German win.</rule>
+  </victory>
+
+  <!-- ================= game-specific layer ================= -->
+
+  <note>Untried Soviet units</note>
+  <rule id="untried-placement" ref="12.1" topic="hidden" sides="soviet">All Soviet combat units, set-up or reinforcement, are placed face-down (Untried), chosen by type from the counter pool without either Player knowing the true Strength.</rule>
+  <rule id="untried-reveal-timing" ref="12.2" topic="hidden" sides="soviet">A unit is revealed only at the instant it is committed to combat or Overrun, not at the start of the Combat Phase; once committed it may not be withdrawn or reallocated even at unfavourable odds. A preceding combat earlier in the same phase can change what a later attack sees.</rule>
+  <rule id="untried-zoc" ref="12.3" topic="hidden" sides="soviet">While Untried, even a unit that will reveal as zero-strength still projects a Zone of Control and blocks supply and retreat lines.</rule>
+  <rule id="untried-dead-pile" ref="12.4" topic="hidden" sides="soviet">Eliminated Untried units go to the dead pile, still face-down, and may be drawn as further reinforcements once the counter pool proper is exhausted. The counter-count ceiling on units in play is absolute regardless of source.</rule>
+
+  <note>Interdiction</note>
+  <rule id="german-interdiction-placement" ref="13.2" topic="markers" sides="german" units="german-air-interdiction-marker">No farther east than hex-row 40 (inclusive), unless the German Player holds both Smolensk hexes and has traced a Line of Communications to the west edge, one turn after taking the city; recapture by the Soviet Player reverts the restriction. Placed once before the game for the first Soviet turn, then each Air Interdiction Phase.</rule>
+  <rule id="german-interdiction-effect" ref="13.31 13.32" topic="markers" sides="german" units="german-air-interdiction-marker">On a Railroad hex, adds four points to Rail Movement cost through it. On any other hex, adds one Movement Point for Soviet units entering it. At most one marker per hex; all removed at the end of the following Soviet Movement Phase; no effect on Soviet supply tracing.</rule>
+  <rule id="soviet-interdiction-effect" ref="13.42 13.43 13.44" topic="markers" sides="soviet" units="soviet-interdiction-marker" turns="1-11">Placed anywhere at the end of the Soviet Player-Turn, uncounted against stacking, not on a German-occupied hex; has the same Movement Point effect on German units as the German marker has on Soviet units, for both German Movement Phases, and additionally interrupts German supply tracing through its hex. Removed at the end of the German Player-Turn.</rule>
+
+  <note>Reinforcement</note>
+  <rule id="soviet-provisional-reinforcement" ref="14.11 14.12" topic="reinforcement" sides="soviet" units="soviet-rifle">Each turn, one die roll selects one of six numbered entrance hexes/areas; one Untried Rifle Division arrives there, in addition to the scheduled reinforcements (16.1). If the rolled area is fully German-occupied or German-controlled, the unit enters instead at the nearest open hex toward the east edge. May not be saved or accumulated.</rule>
+  <rule id="soviet-swf-reinforcement" ref="14.21 14.22 14.24" topic="reinforcement" sides="soviet" units="soviet-rifle" turns="2+">Up to five Rifle Divisions per turn, ten for the whole game, entering any southern-edge Railroad hex at or east of entrance hex Z; entirely voluntary; costs German Victory Points (see german-vp-swf); no Leader accompanies them.</rule>
+  <rule id="reinforcement-turn-12" ref="errata 16.1" topic="reinforcement" sides="soviet" turns="12">The Soviet Player does not receive scheduled reinforcements on Game-Turn Twelve; the rulebook's Section 16.1 list is authoritative over the map's printed reinforcement table.</rule>
+  <rule id="german-reinforcement-26th" ref="errata 16.2" topic="reinforcement" sides="german" turns="2">On Game-Turn Two, Entrance Area B, the German Player receives the 26th Infantry Division, not the 16th as the rulebook misprints.</rule>
+  <rule id="german-reinforcement-268th" ref="errata 16.2" topic="reinforcement" sides="german" turns="7">On Game-Turn Seven, Entrance Area E, the German Player also receives the 268th Infantry Division.</rule>
+
+  <note>Rail Cut (errata addition to the AH reprint, 6.37)</note>
+  <rule id="rail-cut-place" ref="errata 6.37" topic="markers" sides="german" units="rail-cut-marker">A German combat unit moving through a Soviet Railroad hex may cut that line; mark it with a Rail Cut marker (six provided). Soviet units may not use Rail Movement into or through a cut hex.</rule>
+  <rule id="rail-cut-repair" ref="errata 6.37" topic="markers" sides="soviet" units="rail-cut-marker">A Soviet combat unit entering the cut hex during ordinary (non-rail) movement removes the marker; Rail Movement over the repaired line resumes the turn following the repair. The German Player may instead move a unit back over his own cut to free the marker for a new cut elsewhere.</rule>
+
+  <note>Divisional Integration and Overrun order of operations (amendments 9.35, 11.37)</note>
+  <rule id="integration-order" ref="amendments 9.35 11.37" topic="combat" sides="german">A division's Combat Strength is doubled for Divisional Integration before it is multiplied for terrain effects, and before it is halved for conducting an Overrun or being out of Supply.</rule>
+
+  <note>Optional systems from the amendments, not enabled by default</note>
+  <rule id="german-side-bidding" ref="amendments 15.3" topic="victory" optional="true">Before play, both Players secretly bid a Victory Point adjustment to play the German side; the higher (or least negative) bid wins the German side and suffers that adjustment against the final total.</rule>
+  <rule id="step-loss-vp-variant" ref="amendments 15.12" topic="victory" optional="true">Replaces the flat per-division Soviet award with: one-half Victory Point per German step lost to a German attack, one point per German step lost to a Soviet attack, plus 3/2/1 additional points for eliminating an entire Panzer/Panzergrenadier/Infantry-or-Cavalry division (net per-division totals: Panzer 6, Panzergrenadier 4, Infantry 3, Cavalry 2).</rule>
+
+  <note>Ordering hazards</note>
+  <rule id="order-integration-before-terrain" ref="9.35" topic="combat">Divisional Integration doubling, terrain multiplication, and Overrun/out-of-supply halving do not commute; apply them in that order (see integration-order).</rule>
+  <rule id="order-reveal-mid-phase" ref="12.2" topic="hidden">An Untried reveal happens at the instant of its own combat, not at the start of the Combat Phase, so an earlier combat in the same phase can change what a later attack in that phase sees.</rule>
+  <rule id="order-interdiction-removal" ref="13.33" topic="markers">German Air Interdiction Markers are removed at the end of the Soviet Movement Phase, not the end of the whole Soviet Player-Turn, even though they were placed the German turn before.</rule>
+  <rule id="order-rail-cut-latency" ref="errata 6.37" topic="markers">Rail Cut repair takes effect the turn after the repairing movement, not immediately.</rule>
+
+</game>

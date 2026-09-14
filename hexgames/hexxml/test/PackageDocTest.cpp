@@ -27,8 +27,9 @@ TEST(PackageDocTest, TrcParses)
   EXPECT_NE(std::string::npos, doc.rules.path.find("the-russian-campaign.xml"));
   ASSERT_EQ(1u, doc.sheets.size());
   ASSERT_EQ(1u, doc.counters.size());
-  ASSERT_EQ(1u, doc.scenarios.size());
+  ASSERT_EQ(2u, doc.scenarios.size());
   EXPECT_EQ("trc-test", doc.scenarios[0].id);
+  EXPECT_EQ("trc-1941", doc.scenarios[1].id);
 
   EXPECT_FALSE(doc.terrain.empty());
   EXPECT_FALSE(doc.hexside.empty());

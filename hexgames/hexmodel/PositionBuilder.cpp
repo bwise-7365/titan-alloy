@@ -59,6 +59,7 @@ namespace HexModel {
       pos.regions_[i].assign(board.layer(LayerId{static_cast<std::uint32_t>(i)}).regionCount(), RegionState{});
     }
     pos.tracks_.assign(board.trackCount(), 0);
+    pos.flags_.assign(rules.sides().size(), {});
 
     // ---- cursor / clock -------------------------------------------------------------------------
     pos.clock_.turn = save.cursor.turn;
@@ -71,7 +72,10 @@ namespace HexModel {
         const TrackId t = board.trackId(reg.track);
         pos.tracks_[t.value] = parseRegisterValue(reg.track, reg.value);
       }
-      // side.flags: outside this milestone's scope (see PositionBuilder.h).
+      const SideId owner = rules.side(side.id);
+      for (const HexXml::SaveFlagDoc& flag : side.flags) {
+        pos.setFlag(owner, flag.name, flag.value);
+      }
     }
 
     // ---- units ------------------------------------------------------------------------------------

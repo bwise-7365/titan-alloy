@@ -1,7 +1,9 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// Combat and the decisions it raises.
+// Combat and the decisions it raises. A battle is declared and resolved at once; what the result
+// leaves owing -- losses a side chooses, retreats the router walks -- becomes a CombatPlan that
+// settlePlan (AdjudicatorsPlan.cpp) works down one answer at a time.
 // ----------------------------------------------
 #include "hexengine/AdjudicatorsDetail.h"
 
@@ -15,9 +17,7 @@
 namespace HexEngine::Adjudicators {
 
   using Detail::boxFor;
-  using Detail::hexOf;
   using Detail::loseStep;
-  using Detail::lossOrder;
   using Detail::removeToBox;
 
   namespace {
@@ -69,6 +69,17 @@ namespace HexEngine::Adjudicators {
       return;
     }
 
+    // The rules document's retreat/@routed-by: "attacker" names the attacking side as router of
+    // every retreat; any other reading leaves each unit's owner to route its own.
+    std::optional<SideId>
+    routerOf(const Ctx& ctx, SideId attacker)
+    {
+      if (ctx.rules.retreat() && "attacker" == ctx.rules.retreat()->routedBy) {
+        return attacker;
+      }
+      return std::nullopt;
+    }
+
   }  // namespace
 
   Position
@@ -86,7 +97,6 @@ namespace HexEngine::Adjudicators {
     if (defenders.empty()) {
       throw std::invalid_argument("applyAttack: the target hex holds no enemy unit");
     }
-    const SideId defenderSide = ctx.roster.unit(defenders.front()).side;
 
     CombatContext combat;
     combat.attackers = command.attackers;
@@ -102,40 +112,32 @@ namespace HexEngine::Adjudicators {
     }
     sink.onEvent(CombatResolved{command.target, report.odds, report.outcome});
 
-    std::vector<UnitId> involved = command.attackers;
-    involved.insert(involved.end(), defenders.begin(), defenders.end());
+    CombatPlan plan;
+    plan.router = routerOf(ctx, attackerSide);
+    plan.involved = command.attackers;
+    plan.involved.insert(plan.involved.end(), defenders.begin(), defenders.end());
 
     Position next = ctx.position;
     for (UnitId unit : command.attackers) {
       next.state(unit).flags.attackedP = true;
     }
+    for (UnitId unit : defenders) {
+      next.state(unit).flags.defendedP = true;
+    }
 
-    // The order below is the order the rules read in: what leaves play, then what the defender
-    // loses, then what retreats, and only then the choice the attacker has to make. Keeping the
-    // attacker's choice last is what lets one decision finish the battle.
-    int attackerLosses = 0;
-    std::vector<std::pair<SideId, int>> retreats;
+    // What leaves play outright happens now; losses and retreats keep the result's own order.
     for (const CombatEffect& effect : report.effects) {
       std::visit(
           [&](auto&& e) {
             using T = std::decay_t<decltype(e)>;
             if constexpr (std::is_same_v<T, Eliminate>) {
-              clearSide(ctx, next, involved, e.side, true, sink);
+              clearSide(ctx, next, plan.involved, e.side, true, sink);
             } else if constexpr (std::is_same_v<T, Surrender>) {
-              clearSide(ctx, next, involved, e.side, false, sink);
+              clearSide(ctx, next, plan.involved, e.side, false, sink);
             } else if constexpr (std::is_same_v<T, StepLoss>) {
-              if (e.side == attackerSide) {
-                attackerLosses += e.steps;
-              } else {
-                const Ctx here{ctx.board, ctx.rules, ctx.roster, next};
-                const std::vector<UnitId> order = lossOrder(here, next, involved, e.side);
-                for (int taken = 0; taken < e.steps && taken < static_cast<int>(order.size()); ++taken) {
-                  loseStep(here, next, order[static_cast<std::size_t>(taken)],
-                            boxFor(ctx, e.side, true), sink);
-                }
-              }
+              plan.steps.push_back(OwedLoss{e.side, e.steps});
             } else if constexpr (std::is_same_v<T, RetreatEffect>) {
-              retreats.emplace_back(e.side, e.hexes);
+              plan.steps.push_back(OwedRetreat{e.side, e.fewest, e.most});
             } else if constexpr (std::is_same_v<T, NoEffect>) {
               sink.onEvent(GameEvent{"contact", "no loss or retreat by either side"});
             } else if constexpr (std::is_same_v<T, RevealAndReconsult>) {
@@ -147,100 +149,103 @@ namespace HexEngine::Adjudicators {
           effect);
     }
 
-    for (const auto& [side, hexes] : retreats) {
-      for (UnitId unit : involved) {
-        if (side != ctx.roster.unit(unit).side || !next.unit(unit).where.has_value()) {
-          continue;
-        }
-        const Ctx here{ctx.board, ctx.rules, ctx.roster, next};
-        next = applyRetreat(here, policies, unit, hexes, sink);
-      }
-    }
-
-    if (0 < attackerLosses) {
-      const Ctx here{ctx.board, ctx.rules, ctx.roster, next};
-      const std::vector<UnitId> order = lossOrder(here, next, involved, attackerSide);
-      if (order.empty()) {
-        // Nothing of the attacker's is left to lose; the result is spent.
-      } else if (1 == order.size()) {
-        loseStep(here, next, order.front(), boxFor(ctx, attackerSide, true), sink);
-      } else {
-        next.setPending(HexModel::ChooseLoss{order, attackerLosses});
-        sink.onEvent(DecisionRequested{"loss"});
-      }
-    }
-    static_cast<void>(defenderSide);
-    return next;
+    next.setCombatPlan(std::move(plan));
+    const Ctx planned{ctx.board, ctx.rules, ctx.roster, next};
+    return settlePlan(planned, policies, sink);
   }
 
-  Position
-  applyDecision(const Ctx& ctx, const Policies& policies, const DecisionAnswer& answer,
-                 const GameNames& names, EventSink& sink)
-  {
-    Position next = ctx.position;
-    const HexModel::PendingDecision pending = ctx.position.pending();
+  namespace {
 
-    if (const HexModel::ChooseLoss* loss = std::get_if<HexModel::ChooseLoss>(&pending)) {
+    Position
+    answerLoss(const Ctx& ctx, const Policies& policies, const HexModel::ChooseLoss& loss,
+                const DecisionAnswer& answer, const GameNames& names, EventSink& sink)
+    {
       if ("loss" != answer.what) {
         throw std::invalid_argument("applyDecision: the position is waiting for a 'loss' answer, not '" +
                                      answer.what + "'");
       }
       const UnitId chosen = names.unitOf(answer.answer);
-      if (loss->candidates.end() ==
-          std::find(loss->candidates.begin(), loss->candidates.end(), chosen)) {
+      if (loss.candidates.end() == std::find(loss.candidates.begin(), loss.candidates.end(), chosen)) {
         throw std::invalid_argument("applyDecision: counter '" + answer.answer +
                                      "' is not among the units that may take the loss");
       }
+      Position next = ctx.position;
+      CombatPlan plan = *next.combatPlan();
+      HexModel::OwedLoss& owed = std::get<HexModel::OwedLoss>(plan.steps.front());
       sink.onEvent(DecisionAnswered{answer.what, answer.answer});
-      loseStep(ctx, next, chosen, Detail::boxFor(ctx, ctx.roster.unit(chosen).side, true), sink);
-      if (1 < loss->count) {
-        std::vector<UnitId> remaining;
-        for (UnitId unit : loss->candidates) {
-          if (unit != chosen && next.unit(unit).where.has_value()) {
-            remaining.push_back(unit);
-          }
-        }
-        next.setPending(HexModel::ChooseLoss{remaining, loss->count - 1});
-        sink.onEvent(DecisionRequested{"loss"});
-      } else {
-        next.setPending(HexModel::NoDecision{});
+      loseStep(ctx, next, chosen, boxFor(ctx, ctx.roster.unit(chosen).side, true), sink);
+      owed.count -= 1;
+      if (0 >= owed.count) {
+        plan.steps.erase(plan.steps.begin());
       }
-      return next;
+      next.setCombatPlan(std::move(plan));
+      next.setPending(HexModel::NoDecision{});
+      const Ctx answered{ctx.board, ctx.rules, ctx.roster, next};
+      return settlePlan(answered, policies, sink);
     }
 
-    if (const HexModel::ChooseRetreat* retreat = std::get_if<HexModel::ChooseRetreat>(&pending)) {
+    Position
+    answerRetreat(const Ctx& ctx, const Policies& policies, const HexModel::ChooseRetreat& retreat,
+                   const DecisionAnswer& answer, const GameNames& names, EventSink& sink)
+    {
       if ("retreat" != answer.what) {
         throw std::invalid_argument("applyDecision: the position is waiting for a 'retreat' answer, not '" +
                                      answer.what + "'");
       }
-      const HexIndex to = names.hexOf(answer.answer);
-      if (retreat->candidates.end() ==
-          std::find(retreat->candidates.begin(), retreat->candidates.end(), to)) {
-        throw std::invalid_argument("applyDecision: hex '" + answer.answer +
-                                     "' is not a hex the unit may retreat into");
+      Position next = ctx.position;
+      CombatPlan plan = *next.combatPlan();
+      HexModel::UnitRetreat& walk = std::get<HexModel::UnitRetreat>(plan.steps.front());
+      if ("stop" == answer.answer) {
+        if (!retreat.mayStopP) {
+          throw std::invalid_argument("applyDecision: counter '" + names.counter(retreat.unit) +
+                                       "' has not yet retreated as far as it must");
+        }
+        sink.onEvent(DecisionAnswered{answer.what, answer.answer});
+        sink.onEvent(Retreated{walk.unit, walk.path});
+        plan.steps.erase(plan.steps.begin());
+      } else {
+        const HexIndex to = names.hexOf(answer.answer);
+        if (retreat.candidates.end() == std::find(retreat.candidates.begin(), retreat.candidates.end(), to)) {
+          throw std::invalid_argument("applyDecision: hex '" + answer.answer +
+                                       "' is not a hex the unit may retreat into");
+        }
+        sink.onEvent(DecisionAnswered{answer.what, answer.answer});
+        next.place(walk.unit, to);
+        walk.path.push_back(to);
       }
-      sink.onEvent(DecisionAnswered{answer.what, answer.answer});
-      next.place(retreat->unit, to);
-      sink.onEvent(Retreated{retreat->unit, {to}});
+      next.setCombatPlan(std::move(plan));
       next.setPending(HexModel::NoDecision{});
-      return next;
+      const Ctx answered{ctx.board, ctx.rules, ctx.roster, next};
+      return settlePlan(answered, policies, sink);
     }
 
+  }  // namespace
+
+  Position
+  applyDecision(const Ctx& ctx, const Policies& policies, const DecisionAnswer& answer,
+                 const GameNames& names, EventSink& sink)
+  {
+    const HexModel::PendingDecision pending = ctx.position.pending();
+
+    if (const HexModel::ChooseLoss* loss = std::get_if<HexModel::ChooseLoss>(&pending)) {
+      return answerLoss(ctx, policies, *loss, answer, names, sink);
+    }
+    if (const HexModel::ChooseRetreat* retreat = std::get_if<HexModel::ChooseRetreat>(&pending)) {
+      return answerRetreat(ctx, policies, *retreat, answer, names, sink);
+    }
     if (const HexModel::GameChoice* choice = std::get_if<HexModel::GameChoice>(&pending)) {
       if (choice->verb != answer.what) {
         throw std::invalid_argument("applyDecision: the position is waiting for a '" + choice->verb +
                                      "' answer, not '" + answer.what + "'");
       }
-      if (choice->options.end() ==
-          std::find(choice->options.begin(), choice->options.end(), answer.answer)) {
+      if (choice->options.end() == std::find(choice->options.begin(), choice->options.end(), answer.answer)) {
         throw std::invalid_argument("applyDecision: '" + answer.answer + "' is not one of the options");
       }
+      Position next = ctx.position;
       sink.onEvent(DecisionAnswered{answer.what, answer.answer});
       next.setPending(HexModel::NoDecision{});
       return next;
     }
-
-    static_cast<void>(policies);
     throw std::invalid_argument("applyDecision: no decision is pending");
   }
 

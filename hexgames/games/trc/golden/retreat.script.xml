@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="2" title="TRC retreat: a defender driven back two hexes, routed by the attacker">
+  <cursor turn="1" phase="axis-i1-combat" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ss-2-armour" counter="g-ss-2-armour" type="armour" owner="axis" hex="MM11"/>
+    <unit id="r-ru-52-infantry" counter="r-ru-52-infantry" type="infantry" owner="russian" hex="MM10"/>
+  </units>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-combat" side="axis" cmd="attack" units="g-ss-2-armour" target="MM10"/>
+    <move n="2" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="MM9"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="NN9"/>
+    </move>
+  </log>
+  <notes>
+    <note>Nine against three is 3-1. On a DR the Russian army retreats exactly two hexes (13.4); the Axis
+      player routes it, never into the panzer corps' zone of control, and a walk may not double back.</note>
+  </notes>
+</save>

@@ -155,23 +155,25 @@ namespace HexEngine {
     if ("AS" == code) {
       return {Surrender{attacker}};
     }
+    // In the order TRC 13.3 settles them: the attacker's loss before the defender's, losses before
+    // retreats; attackers retreat one or two hexes, defenders exactly two.
     if ("A1" == code) {
-      return {StepLoss{attacker, 1}, RetreatEffect{attacker, 1}};
+      return {StepLoss{attacker, 1}, RetreatEffect{attacker, 1, 2}};
     }
     if ("AR" == code) {
-      return {RetreatEffect{attacker, 1}};
+      return {RetreatEffect{attacker, 1, 2}};
     }
     if ("C" == code) {
       return {NoEffect{}};
     }
     if ("EX" == code) {
-      return {StepLoss{defender, 1}, StepLoss{attacker, 1}, RetreatEffect{defender, 2}};
+      return {StepLoss{attacker, 1}, StepLoss{defender, 1}, RetreatEffect{defender, 2, 2}};
     }
     if ("DR" == code) {
-      return {RetreatEffect{defender, 2}};
+      return {RetreatEffect{defender, 2, 2}};
     }
     if ("D1" == code) {
-      return {StepLoss{defender, 1}, RetreatEffect{defender, 2}};
+      return {StepLoss{defender, 1}, RetreatEffect{defender, 2, 2}};
     }
     if ("DE" == code) {
       return {Eliminate{defender}};

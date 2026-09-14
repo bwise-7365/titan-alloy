@@ -8,8 +8,8 @@
 
   <!-- ================= sides ================= -->
   <sides>
-    <side id="axis" name="Axis" control="human">Germany with Finland, Hungary, Rumania and Italy as minor allies.</side>
-    <side id="russian" name="Russian" control="human">The Soviet Union.</side>
+    <side id="axis" name="Axis" control="human" hostile-to="russian">Germany with Finland, Hungary, Rumania and Italy as minor allies.</side>
+    <side id="russian" name="Russian" control="human" hostile-to="axis">The Soviet Union.</side>
     <note>Both sides move, fight and supply by the same rules; the asymmetry lies in the order of battle and in national exceptions.</note>
   </sides>
 

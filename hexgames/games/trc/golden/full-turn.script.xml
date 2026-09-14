@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="20260914" title="TRC full game turn: September/October 1941 from the Weather Phase to the next, both players">
+  <cursor turn="2" phase="russian-end" side="russian"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="2"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="1"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31">Berlin</unit>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V17"/>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="MM28"/>
+    <unit id="r-ru-52-infantry" counter="r-ru-52-infantry" type="infantry" owner="russian" hex="V15"/>
+    <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="AA13"/>
+    <unit id="r-wo-kharkov-worker" counter="r-wo-kharkov-worker" type="worker" owner="russian" hex="AA14">Kharkov</unit>
+  </units>
+  <control>
+    <hex id="E31" side="axis"/>
+    <hex id="W19" side="axis"/>
+    <hex id="AA14" side="russian"/>
+    <link network="rail" hexes="MM28 NN28" side="axis"/>
+    <link network="rail" hexes="NN28 OO27" side="axis"/>
+    <link network="rail" hexes="OO27 OO28" side="axis"/>
+    <link network="rail" hexes="OO28 PP28" side="axis"/>
+    <link network="rail" hexes="PP28 QQ27" side="axis"/>
+    <link network="rail" hexes="QQ27 QQ28" side="axis"/>
+  </control>
+  <log>
+    <move n="1" turn="2" phase="russian-end" side="russian" cmd="end-phase"/>
+    <move n="2" turn="3" phase="weather-phase" side="axis" cmd="end-phase"/>
+    <move n="3" turn="3" phase="axis-i1-move" side="axis" cmd="rail-move" units="g-ge-1-infantry"
+          path="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28"/>
+    <move n="4" turn="3" phase="axis-i1-move" side="axis" cmd="move" units="g-ge-41-armour" mode="normal"
+          path="V17 V16"/>
+    <move n="5" turn="3" phase="axis-i1-move" side="axis" cmd="end-phase"/>
+    <move n="6" turn="3" phase="axis-i1-combat" side="axis" cmd="attack" units="g-ge-41-armour" target="V15"/>
+    <move n="7" turn="3" phase="axis-i1-combat" side="axis" cmd="end-phase"/>
+    <move n="8" turn="3" phase="axis-i2-move" side="axis" cmd="end-phase"/>
+    <move n="9" turn="3" phase="axis-i2-combat" side="axis" cmd="end-phase"/>
+    <move n="10" turn="3" phase="axis-end" side="axis" cmd="end-phase"/>
+    <move n="11" turn="3" phase="russian-i1-move" side="russian" cmd="move" units="r-ru-11-infantry" mode="normal"
+          path="AA13 Z13 Y13"/>
+    <move n="12" turn="3" phase="russian-i1-move" side="russian" cmd="end-phase"/>
+    <move n="13" turn="3" phase="russian-i1-combat" side="russian" cmd="end-phase"/>
+    <move n="14" turn="3" phase="russian-i2-move" side="russian" cmd="end-phase"/>
+    <move n="15" turn="3" phase="russian-i2-combat" side="russian" cmd="end-phase"/>
+    <move n="16" turn="3" phase="russian-end" side="russian" cmd="end-phase"/>
+  </log>
+  <notes>
+    <note>A whole game turn on a small position: the September/October 1941 weather roll, an Axis rail move
+      and an attack with its decisions, both impulses, the Axis end phase (railheads, then supply), the
+      Russian replacement points, a Russian move, the Russian end phase, and the next Weather Phase.</note>
+  </notes>
+</save>

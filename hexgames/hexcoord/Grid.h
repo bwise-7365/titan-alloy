@@ -43,7 +43,9 @@ namespace HexCoord {
     int cols = 0;
     int rows = 0;
     double size = 0.0;  // circumradius in sheet pixels
-    double ox = 0.0;    // pixel centre of grid cell (0, 0)
+    // hexsheet2svg.py's origin: the centre of cell (0, 0) before its offset shift, so the cell's
+    // centre on an odd grid and half a hex before it (along the shifted axis) on an even grid.
+    double ox = 0.0;
     double oy = 0.0;
     std::string idFormat = "{col}{row}";
     int colStart = 1;
@@ -69,8 +71,9 @@ namespace HexCoord {
   std::string letters(int n);  // throws std::invalid_argument for n < 1
 
   // The offset (col, row) frame. It exists here and nowhere else in the engine. Flat-topped grids
-  // shift odd columns down and pointy-topped ones shift odd rows right; Parity::Even shifts the
-  // others, which is the same lattice read one index over. Unbounded: no grid extent is consulted.
+  // shift odd columns down and pointy-topped ones shift odd rows right; Parity::Even shifts the even
+  // ones instead, on the same lattice about the same ABC origin, which is then the centre of the
+  // unprinted hex just before cell (0, 0). Unbounded: no grid extent is consulted.
   Abc abcOfIndex(GridIndex, Orientation, Parity);
   GridIndex indexOfAbc(HexCentre, Orientation, Parity);
 
@@ -80,8 +83,7 @@ namespace HexCoord {
   inline constexpr double kLatticeTolerance = 0.05;
 
   // One grid on a sheet. Several grids on one sheet (Dai Senso's west and east maps) share one ABC
-  // lattice: latticeOffset places this grid's (0, 0) cell on it, and the constructor throws unless
-  // the pixel origin sits on that lattice within 1e-6 * size.
+  // lattice: latticeOffset places this grid's ABC origin on it.
   class Grid {
   public:
     // Throws std::invalid_argument on an empty extent, a non-positive size, an unknown placeholder
@@ -93,12 +95,13 @@ namespace HexCoord {
     Grid(GridSpec spec, const Grid& sheetLattice);
 
     const GridSpec& spec() const { return spec_; }
-    // The ABC coordinate of this grid's cell (0, 0) on the sheet's lattice.
+    // The sheet-lattice coordinate of this grid's ABC origin (its cell (0, 0) on an odd grid).
     Abc latticeOffset() const { return base_; }
 
     // (col, row) <-> centre. The offset formulas are the two documented in tricoord for flat-topped
     // grids (odd columns shifted down) and their pointy-topped counterpart (odd rows shifted
-    // right); offset="even" evaluates the shifted formula one index over and subtracts the base.
+    // right); offset="even" reads a pushed cell as the odd frame's cell one index further along its
+    // own column (flat) or row (pointy).
     HexCentre centreOf(GridIndex) const;              // throws if outside the grid
     std::optional<GridIndex> indexOf(HexCentre) const;  // nullopt: not on this grid (or clipped)
 

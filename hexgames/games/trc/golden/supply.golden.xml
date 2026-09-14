@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../../packages/xml/trc.package.xml" seed="20260914">
+  <cursor turn="1" phase="russian-i1-move" side="russian" moves="2" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+    <side id="russian">
+      <flag name="replacement-points" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="E30" face="front" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" space="axis-pool" face="front" moved="false"/>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31" face="front" moved="false"/>
+  </units>
+  <control>
+    <hex id="E31" side="axis"/>
+  </control>
+  <log>
+    <move n="1" turn="1" phase="axis-i2-combat" side="axis" by="script" cmd="end-phase">
+      <event kind="phase" side="axis" value="axis-end">turn 1</event>
+    </move>
+    <move n="2" turn="1" phase="axis-end" side="axis" by="script" cmd="end-phase">
+      <event kind="supply" unit="g-ge-41-armour" value="isolated"/>
+      <event kind="eliminated" unit="g-ge-41-armour" value="axis-pool"/>
+      <event kind="phase" side="russian" value="russian-i1-move">turn 1</event>
+      <event kind="replacement-points">0</event>
+    </move>
+  </log>
+</save>

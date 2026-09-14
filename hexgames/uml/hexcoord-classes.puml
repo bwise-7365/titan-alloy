@@ -1,27 +1,41 @@
 ' Copyright Ben Paul Wise. All Rights Reserved.
 @startuml hexcoord-classes
 title hexcoord -- the ABC coordinate system [PROPOSED]
+hide empty members
 
 package HexCoord {
   class Abc {
     -a, b, c : int  (canonical representative)
-    +Abc(a, b, c)   ' applies reduce()
+    +Abc(a, b, c)  // applies reduce()
     +height() : int
-    +hvCode() : int  ' 0,3 centre; 1,2,4,5 vertex
+    +hvCode() : int  // 0,3 centre; 1,2,4,5 vertex
     +operator+ - *
   }
   class Qrs {
     -q, r, s : int
-    +toAbc() : Abc  ' (r-s, s-q, q-r)
+    +toAbc() : Abc  // (r-s, s-q, q-r)
     +height() : int
   }
-  enum Direction { D0..D5 (clockwise -Q +R -S +Q -R +S) }
-  enum Orientation { Flat, Pointy }
-  enum Parity { Odd, Even }
+  enum Direction {
+    D0  -Q
+    D1  +R
+    D2  -S
+    D3  +Q
+    D4  -R
+    D5  +S
+  }
+  enum Orientation {
+    Flat
+    Pointy
+  }
+  enum Parity {
+    Odd
+    Even
+  }
 
   class HexCentre {
-    +HexCentre(Abc)  ' throws unless hvCode in {0,3}
-    {static} +fromQrs(Qrs) : HexCentre  ' total
+    +HexCentre(Abc)  // throws unless hvCode in {0,3}
+    {static} +fromQrs(Qrs) : HexCentre  // total
     +qrs() : Qrs
     +operator+(Qrs) : HexCentre
     +operator-(HexCentre) : Qrs
@@ -30,13 +44,13 @@ package HexCoord {
     +vertices() : HexVertex[6]
   }
   class HexVertex {
-    +HexVertex(Abc)  ' throws unless hvCode in {1,2,4,5}
+    +HexVertex(Abc)  // throws unless hvCode in {1,2,4,5}
     +hexes() : HexCentre[3]
     +neighbours() : HexVertex[3]
   }
   class HexEdge {
     {static} +between(HexCentre, Direction) : HexEdge
-    {static} +of(HexVertex, HexVertex) : HexEdge  ' throws unless adjacent
+    {static} +of(HexVertex, HexVertex) : HexEdge  // throws unless adjacent
     +vertices() : pair<HexVertex, HexVertex>
     +hexes() : pair<HexCentre, HexCentre>
     +twiceMidpoint() : Abc

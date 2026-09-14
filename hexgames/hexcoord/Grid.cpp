@@ -10,8 +10,10 @@
 //   flat,   column 2n    -> (3n,     -row,        row)      column 2n+1 -> (3n+1, -(row+1), row)
 //   pointy, row    2m    -> (col,    -3m,        -col)      row    2m+1 -> (col+1, -(3m+1), -col)
 //
-// Parity::Even is the same lattice read one index over along the shifted axis, with that index's
-// coordinate subtracted so that cell (0, 0) still lands on the grid's lattice offset.
+// Parity::Even keeps the lattice and the ABC origin and pushes the other columns (flat) or rows
+// (pointy) down or right: a pushed cell is the odd frame's cell one index further along its own
+// column or row. The ABC origin is then the centre of the unprinted hex just before cell (0, 0),
+// half a hex before hexsheet2svg.py's (ox, oy) along the shifted axis (doc/hex-ABC-offset-*.svg).
 // ----------------------------------------------
 #include "Grid.h"
 
@@ -136,41 +138,58 @@ namespace HexCoord {
       throw std::invalid_argument("indexOfAbcOdd: orientation is neither Flat nor Pointy");
     }
 
-    // The cell one step along the shifted axis, whose coordinate Parity::Even subtracts.
+    // An even-frame cell as the odd-frame cell at the same place: the pushed columns (flat) or rows
+    // (pointy) are the even ones, one index further along their own column or row.
     GridIndex
-    evenBaseIndex(Orientation orientation)
+    oddIndexOfEven(GridIndex index, Orientation orientation)
     {
       switch (orientation) {
         case Orientation::Flat:
-          return GridIndex{1, 0};
+          return 0 == iMod(index.col, 2) ? GridIndex{index.col, index.row + 1} : index;
         case Orientation::Pointy:
-          return GridIndex{0, 1};
+          return 0 == iMod(index.row, 2) ? GridIndex{index.col + 1, index.row} : index;
       }
-      throw std::invalid_argument("evenBaseIndex: orientation is neither Flat nor Pointy");
+      throw std::invalid_argument("oddIndexOfEven: orientation is neither Flat nor Pointy");
     }
 
     GridIndex
-    shiftedOneOver(GridIndex index, Orientation orientation)
+    evenIndexOfOdd(GridIndex index, Orientation orientation)
     {
       switch (orientation) {
         case Orientation::Flat:
-          return GridIndex{index.col + 1, index.row};
+          return 0 == iMod(index.col, 2) ? GridIndex{index.col, index.row - 1} : index;
         case Orientation::Pointy:
-          return GridIndex{index.col, index.row + 1};
+          return 0 == iMod(index.row, 2) ? GridIndex{index.col - 1, index.row} : index;
       }
-      throw std::invalid_argument("shiftedOneOver: orientation is neither Flat nor Pointy");
+      throw std::invalid_argument("evenIndexOfOdd: orientation is neither Flat nor Pointy");
     }
 
-    GridIndex
-    shiftedOneBack(GridIndex index, Orientation orientation)
+    // (ox, oy) moved half a hex back along the shifted axis: up (flat) or left (pointy).
+    Pixel
+    halfHexBack(const GridSpec& spec)
     {
-      switch (orientation) {
+      const double half = kSqrt3 / 2.0 * spec.size;
+      switch (spec.orientation) {
         case Orientation::Flat:
-          return GridIndex{index.col - 1, index.row};
+          return Pixel{spec.ox, spec.oy - half};
         case Orientation::Pointy:
-          return GridIndex{index.col, index.row - 1};
+          return Pixel{spec.ox - half, spec.oy};
       }
-      throw std::invalid_argument("shiftedOneBack: orientation is neither Flat nor Pointy");
+      throw std::invalid_argument("halfHexBack: orientation is neither Flat nor Pointy");
+    }
+
+    // The pixel of the grid's ABC origin: (ox, oy) on an odd grid, where it is the centre of cell
+    // (0, 0); half a hex back on an even grid, the centre of the unprinted hex before cell (0, 0).
+    Pixel
+    abcOriginPixel(const GridSpec& spec)
+    {
+      switch (spec.offset) {
+        case Parity::Odd:
+          return Pixel{spec.ox, spec.oy};
+        case Parity::Even:
+          return halfHexBack(spec);
+      }
+      throw std::invalid_argument("abcOriginPixel: offset parity is neither Odd nor Even");
     }
 
     std::string
@@ -269,8 +288,7 @@ namespace HexCoord {
       case Parity::Odd:
         return abcOfIndexOdd(index, orientation);
       case Parity::Even:
-        return abcOfIndexOdd(shiftedOneOver(index, orientation), orientation) -
-               abcOfIndexOdd(evenBaseIndex(orientation), orientation);
+        return abcOfIndexOdd(oddIndexOfEven(index, orientation), orientation);
     }
     throw std::invalid_argument("abcOfIndex: offset parity is neither Odd nor Even");
   }
@@ -281,11 +299,8 @@ namespace HexCoord {
     switch (offset) {
       case Parity::Odd:
         return indexOfAbcOdd(centre, orientation);
-      case Parity::Even: {
-        const Abc base = abcOfIndexOdd(evenBaseIndex(orientation), orientation);
-        const GridIndex shifted = indexOfAbcOdd(HexCentre{centre.abc() + base}, orientation);
-        return shiftedOneBack(shifted, orientation);
-      }
+      case Parity::Even:
+        return evenIndexOfOdd(indexOfAbcOdd(centre, orientation), orientation);
     }
     throw std::invalid_argument("indexOfAbc: offset parity is neither Odd nor Even");
   }
@@ -306,7 +321,8 @@ namespace HexCoord {
                                   std::to_string(base_.hvCode()) + ", so it is a vertex, not a hex");
     }
     const Pixel here = combine(basisOf(spec_.orientation, spec_.size), base_);
-    origin_ = Pixel{spec_.ox - here.x, spec_.oy - here.y};
+    const Pixel abcOrigin = abcOriginPixel(spec_);
+    origin_ = Pixel{abcOrigin.x - here.x, abcOrigin.y - here.y};
 
     const std::vector<HexId> clipped = clippedIds();
     for (int row = 0; row < spec_.rows; ++row) {
@@ -470,9 +486,10 @@ namespace HexCoord {
                                   " differs from the lattice of '" + spec_.id + "', size " +
                                   std::to_string(spec_.size));
     }
-    const HexCentre nearest = nearestCentre(Pixel{other.ox, other.oy});
+    const Pixel abcOrigin = abcOriginPixel(other);
+    const HexCentre nearest = nearestCentre(abcOrigin);
     const Pixel onLattice = pixelOf(nearest.abc());
-    const double off = std::hypot(other.ox - onLattice.x, other.oy - onLattice.y);
+    const double off = std::hypot(abcOrigin.x - onLattice.x, abcOrigin.y - onLattice.y);
     if (kLatticeTolerance * spec_.size < off) {
       throw std::invalid_argument("Grid '" + other.id + "': origin is " + std::to_string(off) +
                                   " pixels off the lattice of '" + spec_.id + "', more than " +

@@ -345,8 +345,9 @@ namespace HexRecord {
     doc.game = definition.rules->gameId();
     // Canonical on both sides, so that the same pair of files gives the same relative path whatever
     // directory the writer was run from.
+    // absolute() first: a bare file name has an empty parent, and relative() to "" is "" (M6 fix).
     doc.package = std::filesystem::relative(std::filesystem::weakly_canonical(definition.packagePath),
-                                            std::filesystem::weakly_canonical(path.parent_path()))
+                                            std::filesystem::weakly_canonical(std::filesystem::absolute(path).parent_path()))
                        .generic_string();
     doc.seed = session.streams().seed();
 
@@ -386,8 +387,14 @@ namespace HexRecord {
         sides[owner].registers.push_back(
             SaveRegister{names.space(space), std::to_string(position.track(*track))});
       }
+      for (std::size_t i = 0; i < sides.size(); ++i) {
+        const HexModel::SideId sideId{static_cast<std::uint32_t>(i)};
+        for (const auto& [name, value] : position.flags(sideId)) {
+          sides[i].flags.push_back(SaveFlag{name, value});
+        }
+      }
       for (SaveSide& side : sides) {
-        if (!side.registers.empty()) {
+        if (!side.registers.empty() || !side.flags.empty()) {
           doc.sides.push_back(std::move(side));
         }
       }

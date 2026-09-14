@@ -88,6 +88,13 @@ namespace HexEngine {
     out.phase = clock.phase;
     out.side = clock.actingSide;
     out.decisionPendingP = !std::holds_alternative<HexModel::NoDecision>(position_.pending());
+    // A combat decision is answered by the side it names, which need not be the acting side.
+    if (const HexModel::ChooseLoss* loss = std::get_if<HexModel::ChooseLoss>(&position_.pending())) {
+      out.side = loss->side;
+    }
+    if (const HexModel::ChooseRetreat* retreat = std::get_if<HexModel::ChooseRetreat>(&position_.pending())) {
+      out.side = retreat->side;
+    }
     if (nullptr != policies_.victory) {
       if (const std::optional<Outcome> outcome = policies_.victory->check(context())) {
         out.overP = true;
@@ -113,6 +120,9 @@ namespace HexEngine {
     if (const HexModel::ChooseRetreat* retreat = std::get_if<HexModel::ChooseRetreat>(&pending)) {
       for (HexIndex hex : retreat->candidates) {
         out.push_back(DecisionAnswer{"retreat", names.hex(hex)});
+      }
+      if (retreat->mayStopP) {
+        out.push_back(DecisionAnswer{"retreat", "stop"});
       }
       return out;
     }
@@ -197,15 +207,8 @@ namespace HexEngine {
       if (nullptr != policies_.zoc && policies_.zoc->blockedForP(ctx, hex, side, Purpose::Movement)) {
         return true;
       }
-      const HexRules::Terrain& terrain =
-          definition_->rules->hexTerrain()[definition_->board->terrain(hex).value];
-      if (!terrain.stopP) {
-        return false;
-      }
       for (UnitId unit : units) {
-        const UnitTypeId type = definition_->roster->unit(unit).type;
-        if (terrain.stopExcept.end() ==
-            std::find(terrain.stopExcept.begin(), terrain.stopExcept.end(), type)) {
+        if (policies_.movement->stopsInP(ctx, unit, hex, mode)) {
           return true;
         }
       }
@@ -298,15 +301,29 @@ namespace HexEngine {
   Position
   Session::adjudicate(const Command& command, EventSink& sink)
   {
+    if (nullptr == policies_.game) {
+      throw std::invalid_argument("Session::apply: the policy set has no GameAdjudicator");
+    }
+    const Ctx ctx = context();
+    if (!std::holds_alternative<HexModel::NoDecision>(position_.pending()) &&
+        !std::holds_alternative<DecisionAnswer>(command)) {
+      throw std::invalid_argument("Session::apply: a decision pending on this position must be "
+                                  "answered before any other command");
+    }
+    policies_.game->check(ctx, command);
+    const Position next = adjudicateCommand(command, sink);
+    const Ctx settling{*definition_->board, *definition_->rules, *definition_->roster, next};
+    return policies_.game->settle(settling, command, sink);
+  }
+
+  Position
+  Session::adjudicateCommand(const Command& command, EventSink& sink)
+  {
     const Ctx ctx = context();
     const GameNames names(*definition_->board, *definition_->roster, *definition_->rules);
     const bool pendingP = !std::holds_alternative<HexModel::NoDecision>(position_.pending());
     const std::optional<SideId> acting = position_.clock().actingSide;
 
-    if (pendingP && !std::holds_alternative<DecisionAnswer>(command)) {
-      throw std::invalid_argument("Session::apply: a decision pending on this position must be "
-                                  "answered before any other command");
-    }
     if (nullptr == policies_.phases) {
       throw std::invalid_argument("Session::apply: the policy set has no PhaseGate");
     }
@@ -372,7 +389,7 @@ namespace HexEngine {
     }
 
     if (std::holds_alternative<EndPhase>(command)) {
-      Position next = position_;
+      Position next = policies_.game->endPhase(ctx, scratch_, sink);
       if (caps.test(static_cast<std::size_t>(Cap::Supply)) && acting) {
         const Ctx checking{*definition_->board, *definition_->rules, *definition_->roster, next};
         next = Adjudicators::applySupplyCheck(checking, policies_, scratch_, *acting, sink);
@@ -383,18 +400,17 @@ namespace HexEngine {
       }
       const Ctx turning{*definition_->board, *definition_->rules, *definition_->roster, next};
       const PhaseCursor cursor(*definition_->rules);
-      return Adjudicators::advancePhase(turning, policies_, cursor, sink);
+      next = Adjudicators::advancePhase(turning, policies_, cursor, sink);
+      const Ctx entering{*definition_->board, *definition_->rules, *definition_->roster, next};
+      return policies_.game->enterPhase(entering, streams_, sink);
     }
 
     if (std::holds_alternative<ResolveNextAttack>(command)) {
       throw std::invalid_argument("Session::apply: no declared attack is waiting to be resolved; the "
                                   "engine resolves an attack as it is declared");
     }
-    if (std::holds_alternative<Place>(command)) {
-      throw std::invalid_argument("Session::apply: placing a counter needs the game's own arrival "
-                                  "schedule, which no game supplies yet");
-    }
-    throw std::invalid_argument("Session::apply: the engine has no default for this game command");
+    // Place and the game's own verbs: only the game knows what they mean.
+    return policies_.game->apply(ctx, command, streams_, sink);
   }
 
   Session

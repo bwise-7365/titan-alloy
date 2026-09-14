@@ -23,18 +23,19 @@ namespace HexEngine::Adjudicators {
   // featured hexes the path ends on (the last toucher owns a city).
   Position applyMove(const Ctx&, const Policies&, const MoveUnit&, EventSink&);
 
-  // Declares the battle, resolves it through the CombatResolver on the Combat stream, and turns the
-  // effects into eliminations, step losses and retreats. The defender's own choices are settled by
-  // a fixed rule (fewest steps, then lowest counter id); a loss the attacker owes with more than one
-  // candidate becomes a ChooseLoss the attacker answers next.
+  // Declares the battle, resolves it through the CombatResolver on the Combat stream, removes the
+  // sides the result eliminates or surrenders outright, and keeps the losses and retreats as a
+  // CombatPlan (changed in M6). The plan is worked down at once: a loss or a retreat step with only
+  // one possible outcome is taken without asking, and the first real choice becomes the position's
+  // PendingDecision -- a ChooseLoss for the side owing the loss, a ChooseRetreat for the router.
   Position applyAttack(const Ctx&, const Policies&, const DeclareAttack&, PrngStreams&, EventSink&);
 
-  // Answers the position's pending decision. Throws unless the answer matches it.
+  // Answers the position's pending decision, then works the rest of the combat plan down to the
+  // next decision or its end. Throws unless the answer matches the decision.
   Position applyDecision(const Ctx&, const Policies&, const DecisionAnswer&, const GameNames&, EventSink&);
 
-  // Walks one unit back the given number of hexes through the RetreatPolicy's candidates, taking
-  // the first candidate at each step; an unsatisfiable retreat eliminates the unit.
-  Position applyRetreat(const Ctx&, const Policies&, UnitId, int hexes, EventSink&);
+  // Works a position's combat plan down until it needs an answer or is empty (added in M6).
+  Position settlePlan(const Ctx&, const Policies&, EventSink&);
 
   // Removes what the StackingPolicy calls excess from every occupied hex.
   Position applyStackingRepair(const Ctx&, const Policies&, EventSink&);

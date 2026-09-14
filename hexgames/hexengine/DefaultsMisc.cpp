@@ -134,6 +134,54 @@ namespace HexEngine {
     return out;
   }
 
+  RetreatFate
+  AdjacentRetreat::fate(const Ctx&, UnitId) const
+  {
+    return RetreatFate::Walk;
+  }
+
+  // ---- the game's sequence of play ---------------------------------------------------------------
+
+  std::span<const std::string_view>
+  NoGameAdjudicator::claims() const
+  {
+    return {};
+  }
+
+  void
+  NoGameAdjudicator::check(const Ctx&, const Command&) const
+  {
+    return;
+  }
+
+  Position
+  NoGameAdjudicator::apply(const Ctx&, const Command& command, PrngStreams&, EventSink&) const
+  {
+    if (std::holds_alternative<Place>(command)) {
+      throw std::invalid_argument("Session::apply: placing a counter needs the game's own arrival "
+                                  "schedule, which this policy set does not have");
+    }
+    throw std::invalid_argument("Session::apply: the engine has no default for this game command");
+  }
+
+  Position
+  NoGameAdjudicator::settle(const Ctx& ctx, const Command&, EventSink&) const
+  {
+    return ctx.position;
+  }
+
+  Position
+  NoGameAdjudicator::endPhase(const Ctx& ctx, HexSearch::SearchScratch&, EventSink&) const
+  {
+    return ctx.position;
+  }
+
+  Position
+  NoGameAdjudicator::enterPhase(const Ctx& ctx, PrngStreams&, EventSink&) const
+  {
+    return ctx.position;
+  }
+
   // ---- stacking ----------------------------------------------------------------------------------
 
   CountStacking::CountStacking(const HexRules::RuleSet& rules) : rules_(rules)
@@ -239,6 +287,7 @@ namespace HexEngine {
     policies_.victory = &victory_;
     policies_.phases = &phases_;
     policies_.grammar = &grammar_;
+    policies_.game = &game_;
   }
 
 }  // namespace HexEngine

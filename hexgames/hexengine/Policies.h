@@ -7,6 +7,7 @@
 // ----------------------------------------------
 #pragma once
 #include "hexengine/Command.h"
+#include "hexengine/Event.h"
 #include "hexengine/PrngStreams.h"
 #include "hexmodel/Board.h"
 #include "hexmodel/Position.h"
@@ -57,6 +58,10 @@ namespace HexEngine {
   public:
     virtual EntryVerdict enter(const Ctx&, UnitId, HexIndex from, Direction, ModeId) const = 0;
     virtual Budget allowance(const Ctx&, UnitId, ModeId) const = 0;
+    // Added in M6: whether a unit moving in `mode` has to stop on entering `hex`. Session::reachable
+    // settles such a hex without expanding it; before M6 it read the terrain table itself, which
+    // left a game no way to say "swamp is clear in snow" or "stop after the Kerch Strait".
+    virtual bool stopsInP(const Ctx&, UnitId, HexIndex, ModeId) const = 0;
   };
 
   struct SupplyReport { std::vector<UnitId> supplied; std::vector<UnitId> unsupplied; };
@@ -73,7 +78,9 @@ namespace HexEngine {
     std::vector<ModifierId> declared;
   };
   struct StepLoss { SideId side; int steps; };
-  struct RetreatEffect { SideId side; int hexes; };
+  // Changed in M6: a range, because TRC's attackers retreat "one or two hexes" at the router's
+  // choice while its defenders retreat exactly two.
+  struct RetreatEffect { SideId side; int fewest; int most; };
   struct Eliminate { SideId side; };
   struct Surrender { SideId side; };
   struct NoEffect {};
@@ -97,10 +104,16 @@ namespace HexEngine {
     virtual CombatReport report(const Ctx&, const CombatContext&, PrngStreams&) const = 0;
   };
 
+  // Added in M6: what a unit ordered to retreat does before any hex is chosen. Walk is the ordinary
+  // case; Stay is a unit the rules hold in place (TRC woods); Surrender is a unit that leaves play
+  // for good instead of retreating (TRC leaders and workers).
+  enum class RetreatFate : std::uint8_t { Walk, Stay, Surrender };
+
   class RetreatPolicy : public Policy {
   public:
     // Hexes the unit may retreat into for one step, in a stable order; empty means it cannot.
     virtual std::vector<HexIndex> candidates(const Ctx&, UnitId, HexIndex origin) const = 0;
+    virtual RetreatFate fate(const Ctx&, UnitId) const = 0;
   };
 
   class StackingPolicy : public Policy {
@@ -133,6 +146,21 @@ namespace HexEngine {
     virtual std::vector<std::string> order() const = 0;  // for hexsave piles
   };
 
+  // Added in M6: the game's own sequence of play, around the engine's adjudicators. The Session
+  // calls check() before it adjudicates any command, apply() for the commands the engine has no
+  // adjudicator of its own for (Place and GameCommand), settle() after every command it applied,
+  // endPhase() before an EndPhase moves the clock and enterPhase() once it has. Every member is
+  // pure: it returns the next Position and writes what happened into the sink.
+  class GameAdjudicator : public Policy {
+  public:
+    // Throws std::invalid_argument, naming the rule, when the game forbids the command here.
+    virtual void check(const Ctx&, const Command&) const = 0;
+    virtual Position apply(const Ctx&, const Command&, PrngStreams&, EventSink&) const = 0;
+    virtual Position settle(const Ctx&, const Command&, EventSink&) const = 0;
+    virtual Position endPhase(const Ctx&, HexSearch::SearchScratch&, EventSink&) const = 0;
+    virtual Position enterPhase(const Ctx&, PrngStreams&, EventSink&) const = 0;
+  };
+
   // The set a game hands the engine; unset members use the engine defaults.
   struct Policies {
     const ZocPolicy* zoc = nullptr;
@@ -144,6 +172,7 @@ namespace HexEngine {
     const VictoryCheck* victory = nullptr;
     const PhaseGate* phases = nullptr;
     const CommandGrammar* grammar = nullptr;
+    const GameAdjudicator* game = nullptr;
   };
 
 }  // namespace HexEngine

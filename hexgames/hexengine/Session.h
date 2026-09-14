@@ -75,6 +75,9 @@ namespace HexEngine {
     // writing every event into `sink`. Throws before touching anything on an illegal command, which
     // is what leaves position_ untouched.
     Position adjudicate(const Command&, EventSink&);
+    // Added in M6: the engine's own adjudication of one command, between the GameAdjudicator's
+    // check() before it and settle() after it.
+    Position adjudicateCommand(const Command&, EventSink&);
 
     std::shared_ptr<const HexRules::GameDefinition> definition_;
     Policies policies_;

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../../packages/xml/trc.package.xml" seed="3">
+  <cursor turn="1" phase="axis-i1-combat" side="axis" moves="5" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="air-used" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" space="axis-pool" face="front" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V17" face="front" moved="false"/>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16" face="front" moved="false"/>
+    <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="X15" face="front" moved="false"/>
+    <unit id="r-ru-2-armour" counter="r-ru-2-armour" type="armour" owner="russian" space="russian-pool" face="front" moved="false"/>
+  </units>
+  <streams>
+    <stream tag="combat" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="attack" units="g-ge-41-armour g-ge-1-infantry" target="V16" modifiers="stuka-shift">
+      <result outcome="EX"/>
+      <draw stream="combat" n="1" value="1"/>
+      <event kind="combat-declared" hex="V16" value="g-ge-41-armour g-ge-1-infantry"/>
+      <event kind="die" value="1">combat</event>
+      <event kind="combat-resolved" hex="V16" value="6-1">EX</event>
+      <event kind="decision-requested" value="loss"/>
+    </move>
+    <move n="2" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="g-ge-1-infantry"/>
+      <event kind="decision-answered" value="loss">g-ge-1-infantry</event>
+      <event kind="eliminated" unit="g-ge-1-infantry" value="axis-pool"/>
+      <event kind="decision-requested" value="loss"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-combat" side="russian" by="script" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="r-ru-2-armour"/>
+      <event kind="decision-answered" value="loss">r-ru-2-armour</event>
+      <event kind="eliminated" unit="r-ru-2-armour" value="russian-pool"/>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="4" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="W15"/>
+      <event kind="decision-answered" value="retreat">W15</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="5" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="X15"/>
+      <event kind="decision-answered" value="retreat">X15</event>
+      <event kind="retreated" unit="r-ru-1-armour" hex="X15" value="W15 X15"/>
+    </move>
+  </log>
+</save>

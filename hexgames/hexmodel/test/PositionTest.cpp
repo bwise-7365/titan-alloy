@@ -140,11 +140,11 @@ TEST(PositionTest, PendingDecisionRoundTrip)
   pos.setPending(HexModel::NoDecision{});
   EXPECT_TRUE(std::holds_alternative<HexModel::NoDecision>(pos.pending()));
 
-  pos.setPending(HexModel::ChooseLoss{{armour41}, 1});
+  pos.setPending(HexModel::ChooseLoss{HexModel::SideId{0}, {armour41}, 1});
   ASSERT_TRUE(std::holds_alternative<HexModel::ChooseLoss>(pos.pending()));
   EXPECT_EQ(1, std::get<HexModel::ChooseLoss>(pos.pending()).count);
 
-  pos.setPending(HexModel::ChooseRetreat{armour41, {hexA}});
+  pos.setPending(HexModel::ChooseRetreat{HexModel::SideId{0}, armour41, {hexA}, false});
   ASSERT_TRUE(std::holds_alternative<HexModel::ChooseRetreat>(pos.pending()));
   EXPECT_EQ(armour41, std::get<HexModel::ChooseRetreat>(pos.pending()).unit);
 

@@ -232,6 +232,48 @@ namespace HexModel {
     return;
   }
 
+  void
+  Position::setCombatPlan(std::optional<CombatPlan> plan)
+  {
+    plan_ = std::move(plan);
+    return;
+  }
+
+  std::map<std::string, std::string>&
+  Position::flagsOf(SideId side)
+  {
+    return atMut(flags_, side, "side");
+  }
+
+  const std::map<std::string, std::string>&
+  Position::flags(SideId side) const
+  {
+    return atConst(flags_, side, "side");
+  }
+
+  std::optional<std::string>
+  Position::flag(SideId side, const std::string& name) const
+  {
+    const std::map<std::string, std::string>& named = flags(side);
+    const auto it = named.find(name);
+    if (named.end() == it) {
+      return std::nullopt;
+    }
+    return it->second;
+  }
+
+  void
+  Position::setFlag(SideId side, const std::string& name, std::optional<std::string> value)
+  {
+    std::map<std::string, std::string>& named = flagsOf(side);
+    if (value) {
+      named[name] = std::move(*value);
+    } else {
+      named.erase(name);
+    }
+    return;
+  }
+
   std::uint64_t
   Position::digest() const
   {
@@ -277,6 +319,7 @@ namespace HexModel {
       appendI(static_cast<int>(u.face));
       appendI(u.flags.movedP);
       appendI(u.flags.attackedP);
+      appendI(u.flags.defendedP);
       appendI(u.flags.revealedP);
       appendI(u.flags.disruptedP);
       appendI(u.flags.isolatedP);
@@ -333,16 +376,19 @@ namespace HexModel {
             s += "0;";
           } else if constexpr (std::is_same_v<T, ChooseLoss>) {
             s += "1;";
+            appendI(p.side.value);
             for (UnitId id : p.candidates) {
               appendI(id.value);
             }
             appendI(p.count);
           } else if constexpr (std::is_same_v<T, ChooseRetreat>) {
             s += "2;";
+            appendI(p.side.value);
             appendI(p.unit.value);
             for (HexIndex h : p.candidates) {
               appendI(h.value);
             }
+            appendI(p.mayStopP);
           } else if constexpr (std::is_same_v<T, ChooseCard>) {
             s += "3;";
             appendI(p.deck.value);
@@ -358,6 +404,51 @@ namespace HexModel {
           }
         },
         pending_);
+
+    s += 'B';
+    if (plan_) {
+      appendOptSide(plan_->router);
+      for (UnitId id : plan_->involved) {
+        appendI(id.value);
+      }
+      for (const CombatStep& step : plan_->steps) {
+        std::visit(
+            [&](auto&& p) {
+              using T = std::decay_t<decltype(p)>;
+              if constexpr (std::is_same_v<T, OwedLoss>) {
+                s += "l;";
+                appendI(p.side.value);
+                appendI(p.count);
+              } else if constexpr (std::is_same_v<T, OwedRetreat>) {
+                s += "r;";
+                appendI(p.side.value);
+                appendI(p.fewest);
+                appendI(p.most);
+              } else if constexpr (std::is_same_v<T, UnitRetreat>) {
+                s += "u;";
+                appendI(p.unit.value);
+                appendI(p.from.value);
+                appendI(p.fewest);
+                appendI(p.most);
+                for (HexIndex h : p.path) {
+                  appendI(h.value);
+                }
+              }
+            },
+            step);
+      }
+    } else {
+      s += "-;";
+    }
+
+    s += 'F';
+    for (const std::map<std::string, std::string>& named : flags_) {
+      for (const auto& [name, value] : named) {
+        appendS(name);
+        appendS(value);
+      }
+      s += '|';
+    }
 
     return fnv1a(s);
   }

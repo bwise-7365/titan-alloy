@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="20260914" title="TRC general supply: the Axis end phase keeps a corps beside Berlin and eliminates one cut off in the Ukraine">
+  <cursor turn="1" phase="axis-i2-combat" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31">Berlin</unit>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="E30">next to Berlin</unit>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V16">far from any Axis city or rail</unit>
+  </units>
+  <control>
+    <hex id="E31" side="axis"/>
+  </control>
+  <log>
+    <move n="1" turn="1" phase="axis-i2-combat" side="axis" cmd="end-phase"/>
+    <move n="2" turn="1" phase="axis-end" side="axis" cmd="end-phase"/>
+  </log>
+  <notes>
+    <note>17.2: in the Axis end phase, after the railheads (none move here), every Axis unit traces eight hexes
+      to a friendly city or a friendly rail chain. The corps at E30 is one hex from Berlin; the panzer corps
+      at V16 reaches nothing and goes to the Axis replacement pool.</note>
+  </notes>
+</save>

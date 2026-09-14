@@ -60,6 +60,8 @@ namespace HexEngine {
     explicit TerrainMovement(const HexRules::RuleSet&);
     std::span<const std::string_view> claims() const override;
     EntryVerdict enter(const Ctx&, UnitId, HexIndex from, Direction, ModeId) const override;
+    // The hex terrain's stop, unless the unit's type is excepted (what Session read before M6).
+    bool stopsInP(const Ctx&, UnitId, HexIndex, ModeId) const override;
 
   protected:
     // The printed allowance of a unit, as MovementPoints; throws when the counter prints none.
@@ -137,6 +139,7 @@ namespace HexEngine {
     AdjacentRetreat(const HexRules::RuleSet&, const ZocPolicy&);
     std::span<const std::string_view> claims() const override;
     std::vector<HexIndex> candidates(const Ctx&, UnitId, HexIndex origin) const override;
+    RetreatFate fate(const Ctx&, UnitId) const override;  // always Walk
 
   private:
     const HexRules::RuleSet& rules_;
@@ -193,6 +196,20 @@ namespace HexEngine {
     const GameNames& names_;
   };
 
+  // ---- the game's sequence of play --------------------------------------------------------------
+  // A game with no sequence of its own: every command the engine adjudicates is allowed, settle,
+  // endPhase and enterPhase change nothing, and a Place or GameCommand throws, because only a game
+  // knows where a counter may arrive or what its own verbs mean.
+  class NoGameAdjudicator : public GameAdjudicator {
+  public:
+    std::span<const std::string_view> claims() const override;
+    void check(const Ctx&, const Command&) const override;
+    Position apply(const Ctx&, const Command&, PrngStreams&, EventSink&) const override;
+    Position settle(const Ctx&, const Command&, EventSink&) const override;
+    Position endPhase(const Ctx&, HexSearch::SearchScratch&, EventSink&) const override;
+    Position enterPhase(const Ctx&, PrngStreams&, EventSink&) const override;
+  };
+
   // ---- the set ----------------------------------------------------------------------------------
   // Owns one of each and hands out the Policies a Session wants. A game builds one, then replaces
   // the members it disagrees with before handing the set to a Session.
@@ -213,6 +230,7 @@ namespace HexEngine {
     DefaultVictory victory_;
     DefaultPhaseGate phases_;
     DefaultCommandGrammar grammar_;
+    NoGameAdjudicator game_;
     Policies policies_;
   };
 

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexpackage.xsd"
+         id="pgg" title="Panzergruppe Guderian: The Battle of Smolensk, July 1941" version="0.1">
+  <rules path="../../game_rules/xml/panzergruppe-guderian.xml"/>
+  <sheet path="../../map_graphics/xml/panzergruppe-guderian.xml"/>
+  <counters path="../../unit_graphics/xml/panzergruppe-guderian.xml"/>
+  <scenario id="pgg-test" path="../../game_records/xml/pgg-test.xml" title="Engine test position, a few units"/>
+
+  <!-- counter styles (the printed ground colour) -> rules sides; family="marker" counters (cross,
+       dis, boom, game-turn) carry no side and are exempt from side and unit binding -->
+  <side rules="german" styles="german german-back ss"/>
+  <side rules="soviet" styles="soviet soviet-back"/>
+
+  <!-- sheet terrain fills equal rules hex-terrain ids except these; symbols mark terrain drawn as a
+       glyph rather than a fill -->
+  <terrain symbol="city-major" rules="major-city"/>
+  <terrain symbol="town" rules="minor-city"/>
+
+  <!-- sheet line ids -> rules hexside terrain; the sheet has no lake hexside line (a Lake is a
+       hex-terrain fill only, so the rules' lake-hexside applies to every hexside between a Lake
+       hex and any other hex, not to a drawn line) -->
+  <hexside line="river" rules="river"/>
+  <hexside line="road" rules="road"/>
+
+  <network kind="road" rules="road-net"/>
+  <network kind="rail" rules="rail"/>
+
+  <!-- rules spaces kept off the sheet: the dead pile is a bookkeeping pool, not drawn -->
+  <space rules="dead-pile" off-sheet="true"/>
+
+  <!-- counters -> rules unit types, by pattern or explicit list over the counter ids of the
+       "Panzer Gruppe Guderian Counter Section" sheets. The id prefix "s1-"/"s2-" names the
+       PHYSICAL SHEET (section 1 or 2), not a side or nationality; both sides' counters are
+       printed on both sheets. Side is carried by the counter's style (german/german-back/ss vs
+       soviet/soviet-back), which a family="unit"/"support" counter id does not directly encode, so
+       these patterns rely on id SHAPE (trailing value field count, movement figure, leading token
+       count) confirmed against the counter definitions rather than the sheet prefix.
+       family="marker" counters (cross, dis, boom, game-turn) need no unit binding (hexpackage.xsd:
+       "every unit, support and leader counter must match exactly one binding"; markers are none
+       of those three families). -->
+
+  <!-- Soviet Leaders (army HQs): id ends "-hq-<rating>-10"; style soviet -->
+  <unit type="soviet-leader" match="^s[12]-.*-hq-[0-9]+-10$"/>
+
+  <!-- Soviet Rifle Divisions: id ends "-inf-<atk>-<def>-<mov>" or "-sinf-<atk>-<def>-<mov>"
+       (three trailing numeric fields; "sinf" disambiguates the three no-strength units whose
+       plain division number would otherwise collide with a same-numbered German regiment id) -->
+  <unit type="soviet-rifle" match="^s[12]-[a-z0-9]+-s?inf-[0-9]+-[0-9]+-[0-9]+$"/>
+
+  <!-- Soviet Armoured/Mechanized Divisions: id ends "-arm-<val>-10" or "-mot-<val>-10" with a
+       single leading token (division number or letter code), movement 10; excludes the two
+       independent German regiments gd/lehr, which also end "-mot-<val>-10" but are bound
+       explicitly below to german-motorized -->
+  <unit type="soviet-armour" match="^s[12]-(?!gd-mot|lehr-mot)[a-z0-9]+-(arm|mot)-[0-9]+-10$"/>
+
+  <!-- German Infantry Divisions: id ends "-inf-<atk>-7" or "-mot-<atk>-7" with a single leading
+       division number; movement 7 (foot pace) is what distinguishes these from the
+       movement-10 motorized/armoured regiment ids, regardless of the "inf"/"mot" infix -->
+  <unit type="german-infantry" match="^s[12]-[0-9]+-(inf|mot)-[0-9]+-7$"/>
+
+  <!-- German Panzer Division tank regiments: id is "<regiment>-<division>-arm-<atk>-10"
+       (regiment/division code per Case 2.0, e.g. 20/12) -->
+  <unit type="german-panzer" match="^s[12]-[0-9]+-[0-9]+-arm-[0-9]+-10$"/>
+
+  <!-- German Motorized Infantry Division and Panzer Grenadier regiments: regiment/division-coded
+       "inf" or "mot" ids at movement 10, plus the two independent regiments (GD, Lehr) and the SS
+       Das Reich regiments (Deutschland, Der Fuhrer, Germania) -->
+  <unit type="german-motorized" match="^s[12]-[0-9]+-[0-9]+-(inf|mot)-[0-9]+-10$"/>
+  <unit type="german-motorized" match="^s[12]-[0-9]+-[a-z]+-ss-[0-9]+-10$"/>
+  <unit type="german-motorized" counters="s2-gd-mot-4-10 s2-lehr-mot-3-10"/>
+
+  <!-- German Cavalry Division -->
+  <unit type="german-cavalry" match="^s[12]-[0-9]+-cav-[0-9]+-[0-9]+$"/>
+
+  <!-- Interdiction markers, family="support" -->
+  <unit type="german-air-interdiction-marker" match="^s[12]-lw-air(-[0-9]+)?$"/>
+  <unit type="soviet-interdiction-marker" counters="s2-sair-sair"/>
+</package>

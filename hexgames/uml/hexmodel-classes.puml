@@ -1,9 +1,12 @@
 ' Copyright Ben Paul Wise. All Rights Reserved.
 @startuml hexmodel-classes
 title hexmodel -- immutable Board and Roster, mutable Position [PROPOSED]
+hide empty members
 
 package HexModel {
-  class "Id<Tag>" as Id <<value>> { value : uint32 }
+  class "Id<Tag>" as Id <<value>> {
+    value : uint32
+  }
   note right of Id
     HexIndex UnitId SideId UnitTypeId TerrainId EdgeTerrainId
     NetworkId LayerId RegionId SpaceId PhaseId ModeId TraceId
@@ -13,12 +16,23 @@ package HexModel {
 
   package Quantities {
     class Strength <<value>>
-    class MovementPoints <<value>> { halves : int }
+    class MovementPoints <<value>> {
+      halves : int
+    }
     class HexCount <<value>>
     class Actions <<value>>
-    class Steps { +Steps(current, max) ' throws\n+reduced() : optional<Steps> }
-    class Odds <<value>> { attacker : int\ndefender : int }
-    class TurnSelector { {static} +parse(text)\n+containsP(turn) }
+    class Steps {
+      +Steps(current, max)  // throws
+      +reduced() : optional<Steps>
+    }
+    class Odds <<value>> {
+      attacker : int
+      defender : int
+    }
+    class TurnSelector {
+      {static} +parse(text)
+      +containsP(turn)
+    }
   }
 
   class Board <<immutable, shared const>> {
@@ -29,13 +43,34 @@ package HexModel {
     +network(NetworkId) +layer(LayerId) +space(SpaceId)
     +grids() +orientation()
   }
-  class LinkNetwork { +links() +linksAt(HexIndex) +connectedP(a, b) }
-  class RegionLayer { +partitionP() +regionsOf(HexIndex) +members(RegionId) }
-  class Space <<value>> { name, kind, sides, returnsP }
-  class BoardBuilder { +build(SheetDoc, RulesDoc, Binding) : Board }
+  class LinkNetwork {
+    +links()
+    +linksAt(HexIndex)
+    +connectedP(a, b)
+  }
+  class RegionLayer {
+    +partitionP()
+    +regionsOf(HexIndex)
+    +members(RegionId)
+  }
+  class Space <<value>> {
+    name, kind, sides, returnsP
+  }
+  class BoardBuilder {
+    +build(SheetDoc, RulesDoc, Binding) : Board
+  }
 
-  class Roster <<immutable>> { +units() +unit(UnitId) +find(CounterId) +ofSide(SideId) }
-  class UnitSpec <<value>> { id, counter, type, side, kind, front : Strengths, back?, maxSteps, hiddenP }
+  class Roster <<immutable>> {
+    +units()
+    +unit(UnitId)
+    +find(CounterId)
+    +ofSide(SideId)
+  }
+  class UnitSpec <<value>> {
+    id, counter, type, side, kind
+    front : Strengths, back?
+    maxSteps, hiddenP
+  }
   class "ValueLineReader" as VLR <<function>>
 
   class Position <<value, forkable>> {
@@ -46,8 +81,17 @@ package HexModel {
     +clock() +pending() +setPending()
     +digest() : uint64
   }
-  class UnitState <<value>> { where : optional<Location>, steps, face, flags, delay, markers }
-  class PendingDecision <<variant>> { NoDecision | ChooseLoss | ChooseRetreat | ChooseCard | GameChoice }
+  class UnitState <<value>> {
+    where : optional<Location>
+    steps, face, flags, delay, markers
+  }
+  class PendingDecision <<variant>> {
+    NoDecision
+    ChooseLoss
+    ChooseRetreat
+    ChooseCard
+    GameChoice
+  }
 }
 
 Board *-- "many" LinkNetwork

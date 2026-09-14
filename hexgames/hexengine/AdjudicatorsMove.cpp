@@ -51,36 +51,6 @@ namespace HexEngine::Adjudicators {
   }
 
   Position
-  applyRetreat(const Ctx& ctx, const Policies& policies, UnitId unit, int hexes, EventSink& sink)
-  {
-    if (nullptr == policies.retreat) {
-      throw std::invalid_argument("applyRetreat: the policy set has no RetreatPolicy");
-    }
-    Position next = ctx.position;
-    std::vector<HexIndex> path;
-    for (int step = 0; step < hexes; ++step) {
-      const std::optional<HexIndex> from = hexOf(next, unit);
-      if (!from) {
-        break;
-      }
-      const Ctx walking{ctx.board, ctx.rules, ctx.roster, next};
-      const std::vector<HexIndex> candidates = policies.retreat->candidates(walking, unit, *from);
-      if (candidates.empty()) {
-        // An unsatisfiable retreat: the rules document's @unsatisfiable says what happens, and
-        // "eliminate" is the engine's reading of every other word it might hold.
-        removeToBox(next, unit, boxFor(ctx, ctx.roster.unit(unit).side, true), sink);
-        return next;
-      }
-      path.push_back(candidates.front());
-      next.place(unit, candidates.front());
-    }
-    if (!path.empty()) {
-      sink.onEvent(Retreated{unit, path});
-    }
-    return next;
-  }
-
-  Position
   applyStackingRepair(const Ctx& ctx, const Policies& policies, EventSink& sink)
   {
     if (nullptr == policies.stacking) {
@@ -144,6 +114,7 @@ namespace HexEngine::Adjudicators {
       HexModel::UnitFlags& flags = next.state(spec.id).flags;
       flags.movedP = false;
       flags.attackedP = false;
+      flags.defendedP = false;
     }
     sink.onEvent(PhaseEntered{stop.turn, stop.phase, stop.side});
     return next;
