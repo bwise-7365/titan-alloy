@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="pgg" package="../../../packages/xml/pgg.package.xml"
+      seed="1941" title="PGG full turn: Game-Turn One of the 1941 set-up, both player-turns">
+  <cursor turn="1" phase="set-up" side="german"/>
+  <sides>
+    <side id="soviet">
+      <flag name="army-13" value="s1-110-inf-1-1-6 s1-133-inf-3-4-6 s1-143-inf-5-5-6 s1-145-inf-0-0-6 s1-19-inf-1-3-6 s1-1prgd-mot-8-10 s1-2-inf-0-0-6 s1-258-inf-6-8-6 s1-remezov-13th-army-hq-4-10"/>
+      <flag name="army-16" value="s1-102-inf-2-3-6 s1-153-inf-4-5-6 s1-154-inf-4-7-6 s1-158-inf-2-3-6 s1-181-inf-4-5-6 s1-45-inf-1-2-6 s1-lukin-16th-army-hq-3-10"/>
+      <flag name="army-19" value="s1-27-inf-0-0-6 s1-46-inf-2-1-6 s1-60-inf-0-0-6 s1-91-inf-2-2-6 s1-konev-19th-army-hq-5-10"/>
+      <flag name="army-20" value="s1-13mos-inf-2-4-6 s1-167-inf-3-5-6 s1-26-arm-5-10 s1-27-arm-4-10 s1-31-arm-5-10 s1-50-inf-9-8-6 s1-57-mot-8-10 s1-65-inf-2-6-6 s1-8mos-inf-3-4-6 s1-kurchkin-20th-army-hq-4-10 s2-2mos-sinf-0-0-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-rakutin-24th-army-hq-2-10" counter="s1-rakutin-24th-army-hq-2-10" type="soviet-leader" owner="soviet" hex="4015"/>
+    <unit id="s1-56-inf-3-3-6" counter="s1-56-inf-3-3-6" type="soviet-rifle" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-49-inf-5-8-6" counter="s1-49-inf-5-8-6" type="soviet-rifle" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-48-inf-1-4-6" counter="s1-48-inf-1-4-6" type="soviet-rifle" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-154-inf-2-3-6" counter="s1-154-inf-2-3-6" type="soviet-rifle" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-76-inf-1-5-6" counter="s1-76-inf-1-5-6" type="soviet-rifle" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-0-arm-0-10" counter="s1-0-arm-0-10" type="soviet-armour" owner="soviet" hex="4015" revealed="false"/>
+    <unit id="s1-lukin-16th-army-hq-3-10" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="2216"/>
+    <unit id="s1-181-inf-4-5-6" counter="s1-181-inf-4-5-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-154-inf-4-7-6" counter="s1-154-inf-4-7-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-158-inf-2-3-6" counter="s1-158-inf-2-3-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-153-inf-4-5-6" counter="s1-153-inf-4-5-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-45-inf-1-2-6" counter="s1-45-inf-1-2-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-102-inf-2-3-6" counter="s1-102-inf-2-3-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-konev-19th-army-hq-5-10" counter="s1-konev-19th-army-hq-5-10" type="soviet-leader" owner="soviet" hex="1414"/>
+    <unit id="s1-60-inf-0-0-6" counter="s1-60-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s1-46-inf-2-1-6" counter="s1-46-inf-2-1-6" type="soviet-rifle" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s1-27-inf-0-0-6" counter="s1-27-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s1-91-inf-2-2-6" counter="s1-91-inf-2-2-6" type="soviet-rifle" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s1-remezov-13th-army-hq-4-10" counter="s1-remezov-13th-army-hq-4-10" type="soviet-leader" owner="soviet" hex="0123"/>
+    <unit id="s1-143-inf-5-5-6" counter="s1-143-inf-5-5-6" type="soviet-rifle" owner="soviet" hex="0123" revealed="false"/>
+    <unit id="s1-2-inf-0-0-6" counter="s1-2-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="0124" revealed="false"/>
+    <unit id="s1-133-inf-3-4-6" counter="s1-133-inf-3-4-6" type="soviet-rifle" owner="soviet" hex="0125" revealed="false"/>
+    <unit id="s1-110-inf-1-1-6" counter="s1-110-inf-1-1-6" type="soviet-rifle" owner="soviet" hex="0126" revealed="false"/>
+    <unit id="s1-258-inf-6-8-6" counter="s1-258-inf-6-8-6" type="soviet-rifle" owner="soviet" hex="0123" revealed="false"/>
+    <unit id="s1-145-inf-0-0-6" counter="s1-145-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="0124" revealed="false"/>
+    <unit id="s1-19-inf-1-3-6" counter="s1-19-inf-1-3-6" type="soviet-rifle" owner="soviet" hex="0125" revealed="false"/>
+    <unit id="s1-1prgd-mot-8-10" counter="s1-1prgd-mot-8-10" type="soviet-armour" owner="soviet" hex="0126" revealed="false"/>
+    <unit id="s1-kurchkin-20th-army-hq-4-10" counter="s1-kurchkin-20th-army-hq-4-10" type="soviet-leader" owner="soviet" hex="0108"/>
+    <unit id="s1-8mos-inf-3-4-6" counter="s1-8mos-inf-3-4-6" type="soviet-rifle" owner="soviet" hex="0108" revealed="false"/>
+    <unit id="s1-167-inf-3-5-6" counter="s1-167-inf-3-5-6" type="soviet-rifle" owner="soviet" hex="0109" revealed="false"/>
+    <unit id="s1-13mos-inf-2-4-6" counter="s1-13mos-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0110" revealed="false"/>
+    <unit id="s1-50-inf-9-8-6" counter="s1-50-inf-9-8-6" type="soviet-rifle" owner="soviet" hex="0111" revealed="false"/>
+    <unit id="s1-65-inf-2-6-6" counter="s1-65-inf-2-6-6" type="soviet-rifle" owner="soviet" hex="0112" revealed="false"/>
+    <unit id="s2-2mos-sinf-0-0-6" counter="s2-2mos-sinf-0-0-6" type="soviet-rifle" owner="soviet" hex="0113" revealed="false"/>
+    <unit id="s1-27-arm-4-10" counter="s1-27-arm-4-10" type="soviet-armour" owner="soviet" hex="0114" revealed="false"/>
+    <unit id="s1-57-mot-8-10" counter="s1-57-mot-8-10" type="soviet-armour" owner="soviet" hex="0115" revealed="false"/>
+    <unit id="s1-31-arm-5-10" counter="s1-31-arm-5-10" type="soviet-armour" owner="soviet" hex="0108" revealed="false"/>
+    <unit id="s1-26-arm-5-10" counter="s1-26-arm-5-10" type="soviet-armour" owner="soviet" hex="0109" revealed="false"/>
+    <unit id="s1-kachalov-28th-army-hq-2-10" counter="s1-kachalov-28th-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="3"/>
+    <unit id="s1-khomenko-30th-army-hq-3-10" counter="s1-khomenko-30th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="1"/>
+    <unit id="s1-maslikev-29th-army-hq-3-10" counter="s1-maslikev-29th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="6"/>
+    <unit id="s1-yrshakov-22nd-army-hq-3-10" counter="s1-yrshakov-22nd-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="0"/>
+    <unit id="s1-gramenko-21st-army-hq-2-10" counter="s1-gramenko-21st-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="2"/>
+    <unit id="s1-dolmatov-31st-army-hq-2-10" counter="s1-dolmatov-31st-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="7"/>
+    <unit id="s1-vshnvsky-32nd-army-hq-2-10" counter="s1-vshnvsky-32nd-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="9"/>
+    <unit id="s1-onprenko-33rd-army-hq-2-10" counter="s1-onprenko-33rd-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="10"/>
+    <unit id="s1-zkhatkin-49th-army-hq-3-10" counter="s1-zkhatkin-49th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="8"/>
+    <unit id="s1-rokovski-reserve-hq-5-10" counter="s1-rokovski-reserve-hq-5-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" delay="0"/>
+    <unit id="s2-296-sinf-0-0-6" counter="s2-296-sinf-0-0-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-134-inf-3-3-6" counter="s1-134-inf-3-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-161-inf-8-8-6" counter="s1-161-inf-8-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-232-inf-3-3-6" counter="s1-232-inf-3-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-1mos-inf-5-8-6" counter="s1-1mos-inf-5-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-275-inf-2-4-6" counter="s1-275-inf-2-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-118-inf-4-4-6" counter="s1-118-inf-4-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-5mos-inf-2-1-6" counter="s1-5mos-inf-2-1-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s2-7mos-sinf-0-0-6" counter="s2-7mos-sinf-0-0-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-174-inf-6-7-6" counter="s1-174-inf-6-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-138-inf-3-5-6" counter="s1-138-inf-3-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-180-inf-4-5-6" counter="s1-180-inf-4-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-162-inf-2-5-6" counter="s1-162-inf-2-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-19-inf-0-1-6" counter="s1-19-inf-0-1-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-42-inf-3-4-6" counter="s1-42-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-8mos-inf-2-4-6" counter="s1-8mos-inf-2-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-172-inf-2-3-6" counter="s1-172-inf-2-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-126-inf-7-7-6" counter="s1-126-inf-7-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-178-inf-2-5-6" counter="s1-178-inf-2-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-13-inf-1-1-6" counter="s1-13-inf-1-1-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-300-inf-2-5-6" counter="s1-300-inf-2-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-152-inf-1-3-6" counter="s1-152-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-127-inf-5-5-6" counter="s1-127-inf-5-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-260-inf-4-5-6" counter="s1-260-inf-4-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-117-inf-3-7-6" counter="s1-117-inf-3-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-38-inf-2-2-6" counter="s1-38-inf-2-2-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-17mos-inf-3-4-6" counter="s1-17mos-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-100-inf-6-6-6" counter="s1-100-inf-6-6-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-108-inf-1-1-6" counter="s1-108-inf-1-1-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-171-inf-3-8-6" counter="s1-171-inf-3-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-17-inf-4-4-6" counter="s1-17-inf-4-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-57-inf-3-4-6" counter="s1-57-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-112-inf-4-6-6" counter="s1-112-inf-4-6-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-143-inf-1-3-6" counter="s1-143-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-187-inf-2-2-6" counter="s1-187-inf-2-2-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-55-inf-4-3-6" counter="s1-55-inf-4-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-123-inf-8-8-6" counter="s1-123-inf-8-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-121-inf-1-3-6" counter="s1-121-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-53-inf-0-0-6" counter="s1-53-inf-0-0-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-89-inf-5-5-6" counter="s1-89-inf-5-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-232-inf-4-5-6" counter="s1-232-inf-4-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-61-inf-6-5-6" counter="s1-61-inf-6-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-86-inf-5-4-6" counter="s1-86-inf-5-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-111-inf-7-6-6" counter="s1-111-inf-7-6-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-137-inf-5-8-6" counter="s1-137-inf-5-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-18-inf-3-5-6" counter="s1-18-inf-3-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-172-inf-1-3-6" counter="s1-172-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-25-inf-3-4-6" counter="s1-25-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-103-mot-8-10" counter="s1-103-mot-8-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-19-arm-3-10" counter="s1-19-arm-3-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-4-mot-2-10" counter="s1-4-mot-2-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-22-mot-6-10" counter="s1-22-mot-6-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-208-mot-4-10" counter="s1-208-mot-4-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-22-arm-0-10" counter="s1-22-arm-0-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-10-arm-3-10" counter="s1-10-arm-3-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-205-mot-4-10" counter="s1-205-mot-4-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-210-mot-4-10" counter="s1-210-mot-4-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-204-mot-5-10" counter="s1-204-mot-5-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-29-mot-1-10" counter="s1-29-mot-1-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-8-arm-7-10" counter="s1-8-arm-7-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-23-arm-0-10" counter="s1-23-arm-0-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s1-7-arm-3-10" counter="s1-7-arm-3-10" type="soviet-armour" owner="soviet" space="soviet-pool" revealed="false"/>
+    <unit id="s2-1-cav-4-5" counter="s2-1-cav-4-5" type="german-cavalry" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-7-inf-9-7" counter="s2-7-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="6"/>
+    <unit id="s2-15-inf-9-7" counter="s2-15-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="6"/>
+    <unit id="s2-17-inf-9-7" counter="s2-17-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="6"/>
+    <unit id="s2-23-inf-9-7" counter="s2-23-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="4"/>
+    <unit id="s2-26-inf-9-7" counter="s2-26-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-31-inf-9-7" counter="s2-31-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="8"/>
+    <unit id="s2-34-inf-9-7" counter="s2-34-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="8"/>
+    <unit id="s2-35-inf-9-7" counter="s2-35-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-78-inf-9-7" counter="s2-78-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="7"/>
+    <unit id="s2-137-inf-9-7" counter="s2-137-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="4"/>
+    <unit id="s2-161-inf-9-7" counter="s2-161-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-252-inf-9-7" counter="s2-252-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="7"/>
+    <unit id="s2-258-inf-9-7" counter="s2-258-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="5"/>
+    <unit id="s2-263-inf-9-7" counter="s2-263-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="4"/>
+    <unit id="s2-268-inf-9-7" counter="s2-268-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="6"/>
+    <unit id="s2-292-inf-9-7" counter="s2-292-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" delay="5"/>
+    <unit id="s2-gd-mot-4-10" counter="s2-gd-mot-4-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-lehr-mot-3-10" counter="s2-lehr-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-3-3-inf-2-10" counter="s2-3-3-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-12-4-inf-2-10" counter="s2-12-4-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-69-10-inf-2-10" counter="s2-69-10-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-5-12-inf-2-10" counter="s2-5-12-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-40-17-inf-2-10" counter="s2-40-17-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-52-18-inf-2-10" counter="s2-52-18-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-73-19-inf-2-10" counter="s2-73-19-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-112-20-inf-2-10" counter="s2-112-20-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-394-3-inf-2-10" counter="s2-394-3-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-33-4-inf-2-10" counter="s2-33-4-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-86-10-inf-2-10" counter="s2-86-10-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-25-12-inf-2-10" counter="s2-25-12-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-63-17-inf-2-10" counter="s2-63-17-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-101-18-inf-2-10" counter="s2-101-18-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-74-19-inf-2-10" counter="s2-74-19-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-59-20-inf-2-10" counter="s2-59-20-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-6-3-arm-4-10" counter="s2-6-3-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-35-4-arm-4-10" counter="s2-35-4-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-7-10-arm-4-10" counter="s2-7-10-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-29-12-arm-4-10" counter="s2-29-12-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-39-17-arm-4-10" counter="s2-39-17-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-18-18-arm-4-10" counter="s2-18-18-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-4-de-ss-3-10" counter="s2-4-de-ss-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-27-19-arm-4-10" counter="s2-27-19-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-21-20-arm-4-10" counter="s2-21-20-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-69-10-mot-3-10" counter="s2-69-10-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-86-10-mot-3-10" counter="s2-86-10-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-11-14-mot-3-10" counter="s2-11-14-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-53-14-mot-3-10" counter="s2-53-14-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-30-18-mot-3-10" counter="s2-30-18-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-3-dr-ss-3-10" counter="s2-3-dr-ss-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-51-18-mot-3-10" counter="s2-51-18-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="1"/>
+    <unit id="s2-76-20-mot-3-10" counter="s2-76-20-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-90-20-mot-3-10" counter="s2-90-20-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="0"/>
+    <unit id="s2-15-29-mot-3-10" counter="s2-15-29-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-71-29-mot-3-10" counter="s2-71-29-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+    <unit id="s2-2-gr-ss-3-10" counter="s2-2-gr-ss-3-10" type="german-motorized" owner="german" space="german-arrivals" delay="2"/>
+  </units>
+  <log>
+    <move n="1" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="2117"/>
+    </move>
+    <move n="2" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="3915"/>
+    </move>
+    <move n="3" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="2625"/>
+    </move>
+    <move n="4" turn="1" phase="set-up" side="german" cmd="end-phase"/>
+    <move n="5" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-31-arm-5-10" mode="normal" path="0108 0207 0307 0406 0506 0605 0705 0804 0904"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-kurchkin-20th-army-hq-4-10" mode="normal" path="0108 0207 0307 0406 0506 0605 0705 0804 0904 1003 1103"/>
+    <move n="7" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-8mos-inf-3-4-6" mode="normal" path="0108 0207 0307 0406 0506 0605 0705"/>
+    <move n="8" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-26-arm-5-10" mode="normal" path="0109 0208 0308 0407 0507 0606 0706 0805 0905"/>
+    <move n="9" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-167-inf-3-5-6" mode="normal" path="0109 0208 0308 0407 0507 0606 0706"/>
+    <move n="10" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-13mos-inf-2-4-6" mode="normal" path="0110 0209 0309 0408 0508 0607 0707"/>
+    <move n="11" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-50-inf-9-8-6" mode="normal" path="0111 0210 0310 0409 0509 0608 0708"/>
+    <move n="12" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-65-inf-2-6-6" mode="normal" path="0112 0211 0311 0410 0510 0609 0709"/>
+    <move n="13" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s2-2mos-sinf-0-0-6" mode="normal" path="0113 0212 0312"/>
+    <move n="14" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-27-arm-4-10" mode="normal" path="0114 0213 0313 0412"/>
+    <move n="15" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-57-mot-8-10" mode="normal" path="0115 0214 0314 0413 0513 0613"/>
+    <move n="16" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-remezov-13th-army-hq-4-10" mode="normal" path="0123 0222 0322 0421 0521 0620 0720 0819 0919 1018"/>
+    <move n="17" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-143-inf-5-5-6 s1-258-inf-6-8-6" mode="normal" path="0123 0222 0322 0421 0521 0620"/>
+    <move n="18" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-2-inf-0-0-6 s1-145-inf-0-0-6" mode="normal" path="0124 0223 0323 0422 0522 0621"/>
+    <move n="19" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-133-inf-3-4-6 s1-19-inf-1-3-6" mode="normal" path="0125 0224 0324 0423 0523 0622"/>
+    <move n="20" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-1prgd-mot-8-10" mode="normal" path="0126 0225 0325 0424 0524 0623 0723 0822"/>
+    <move n="21" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-110-inf-1-1-6" mode="normal" path="0126 0225 0325 0424 0524 0623"/>
+    <move n="22" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-181-inf-4-5-6 s1-154-inf-4-7-6 s1-158-inf-2-3-6" mode="normal" path="2216 2316"/>
+    <move n="23" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-60-inf-0-0-6" mode="normal" path="1414 1514"/>
+    <move n="24" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-56-inf-3-3-6 s1-49-inf-5-8-6 s1-48-inf-1-4-6" mode="normal" path="4015 4115"/>
+    <move n="25" turn="1" phase="soviet-move" side="soviet" cmd="place">
+      <arg name="units" value="s1-rokovski-reserve-hq-5-10"/>
+      <arg name="where" value="5614"/>
+    </move>
+    <move n="26" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
+      <arg name="type" value="soviet-rifle"/>
+      <arg name="where" value="5614"/>
+      <arg name="source" value="scheduled"/>
+    </move>
+    <move n="27" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
+      <arg name="type" value="soviet-rifle"/>
+      <arg name="where" value="5615"/>
+      <arg name="source" value="scheduled"/>
+    </move>
+    <move n="28" turn="1" phase="soviet-move" side="soviet" cmd="place">
+      <arg name="units" value="s1-yrshakov-22nd-army-hq-3-10"/>
+      <arg name="where" value="1101"/>
+    </move>
+    <move n="29" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
+      <arg name="type" value="soviet-rifle"/>
+      <arg name="where" value="1101"/>
+      <arg name="source" value="scheduled"/>
+    </move>
+    <move n="30" turn="1" phase="soviet-move" side="soviet" cmd="end-phase"/>
+    <move n="31" turn="1" phase="soviet-combat" side="soviet" cmd="end-phase"/>
+    <move n="32" turn="1" phase="soviet-disruption-removal" side="soviet" cmd="end-phase"/>
+    <move n="33" turn="1" phase="soviet-interdiction" side="soviet" cmd="end-phase"/>
+    <move n="34" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-25-7-arm-4-10"/>
+      <arg name="where" value="0113"/>
+    </move>
+    <move n="35" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-6-7-inf-2-10"/>
+      <arg name="where" value="0113"/>
+    </move>
+    <move n="36" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-7-7-inf-2-10"/>
+      <arg name="where" value="0113"/>
+    </move>
+    <move n="37" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-29-12-arm-4-10"/>
+      <arg name="where" value="0114"/>
+    </move>
+    <move n="38" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-5-12-inf-2-10"/>
+      <arg name="where" value="0114"/>
+    </move>
+    <move n="39" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-25-12-inf-2-10"/>
+      <arg name="where" value="0114"/>
+    </move>
+    <move n="40" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-21-20-arm-4-10"/>
+      <arg name="where" value="0115"/>
+    </move>
+    <move n="41" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-112-20-inf-2-10"/>
+      <arg name="where" value="0115"/>
+    </move>
+    <move n="42" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-59-20-inf-2-10"/>
+      <arg name="where" value="0115"/>
+    </move>
+    <move n="43" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-11-14-mot-3-10"/>
+      <arg name="where" value="0116"/>
+    </move>
+    <move n="44" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-53-14-mot-3-10"/>
+      <arg name="where" value="0116"/>
+    </move>
+    <move n="45" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-76-20-mot-3-10"/>
+      <arg name="where" value="0117"/>
+    </move>
+    <move n="46" turn="1" phase="german-move1" side="german" cmd="place">
+      <arg name="units" value="s2-90-20-mot-3-10"/>
+      <arg name="where" value="0117"/>
+    </move>
+    <move n="47" turn="1" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="0113 0213 0313"/>
+    <move n="48" turn="1" phase="german-move1" side="german" cmd="end-phase"/>
+    <move n="49" turn="1" phase="german-combat" side="german" cmd="end-phase"/>
+    <move n="50" turn="1" phase="german-move2" side="german" cmd="end-phase"/>
+    <move n="51" turn="1" phase="german-disruption-removal" side="german" cmd="end-phase"/>
+    <move n="52" turn="1" phase="german-air-interdiction" side="german" cmd="interdict">
+      <arg name="target" value="1414"/>
+    </move>
+    <move n="53" turn="1" phase="german-air-interdiction" side="german" cmd="interdict">
+      <arg name="target" value="2216"/>
+    </move>
+    <move n="54" turn="1" phase="german-air-interdiction" side="german" cmd="interdict">
+      <arg name="target" value="4015"/>
+    </move>
+    <move n="55" turn="1" phase="german-air-interdiction" side="german" cmd="end-phase"/>
+  </log>
+  <notes>
+    <note>The 1941 scenario through Game-Turn One: German air interdiction, the first-turn army dice and
+      the Provisional Reinforcement, the 13th and 20th Armies marching east on their whole allowance (5.23),
+      the overstacked set-up hexes thinned, scheduled Soviet arrivals, the 39th Panzer Corps entering Area C,
+      and the markers of the German Air Interdiction Phase.</note>
+  </notes>
+</save>

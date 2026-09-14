@@ -94,7 +94,8 @@ if(_py)
     add_test(NAME hygiene_map_networks
              COMMAND "${_py}" "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/tools/network_check.py" --quiet
                      "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/the-russian-campaign.xml"
-                     "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/panzergruppe-guderian.xml")
+                     "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/panzergruppe-guderian.xml"
+                     "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/dai-senso.xml")
     set_tests_properties(hygiene_map_networks PROPERTIES LABELS "hygiene")
   endif()
 else()

@@ -44,7 +44,11 @@ namespace HexRecord::Detail {
             } else if constexpr (std::is_same_v<T, HexModel::ChooseCard>) {
               out = SaveAsk{.what = "card", .candidates = d.candidates, .deck = names.randomizer(d.deck)};
             } else if constexpr (std::is_same_v<T, HexModel::GameChoice>) {
-              out = SaveAsk{.what = "choice", .verb = d.verb, .options = d.options};
+              SaveAsk ask{.what = "choice", .verb = d.verb, .options = d.options};
+              if (d.side) {
+                ask.side = names.side(*d.side);
+              }
+              out = ask;
             }
           },
           decision);

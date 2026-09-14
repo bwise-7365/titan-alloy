@@ -425,6 +425,7 @@ namespace HexModel {
             for (const std::string& o : p.options) {
               appendS(o);
             }
+            appendOptSide(p.side);
           }
         },
         pending());

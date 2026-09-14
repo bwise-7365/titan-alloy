@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="pgg" package="../../../packages/xml/pgg.package.xml" seed="11">
+  <cursor turn="2" phase="german-move1" side="german" moves="7" over="false"/>
+  <sides>
+    <side id="german">
+      <flag name="spent" value="s2-6-inf-9-7:4"/>
+      <flag name="unsupplied" value="s2-6-inf-9-7"/>
+    </side>
+    <side id="soviet">
+      <flag name="beyond-radius" value="s1-f-inf-2-4-6"/>
+      <flag name="owed" value="W:3:1 X:4:0"/>
+      <flag name="unsupplied" value="s1-f-inf-2-4-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4315" face="front" moved="false"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4615" face="front" moved="false"/>
+    <unit id="s1-lukin-16th-army-hq-3-10" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="4015" face="front" moved="false"/>
+    <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="1715" face="front" moved="false"/>
+    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="2916" face="front" moved="true"/>
+  </units>
+  <streams>
+    <stream tag="setup" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="1" phase="german-air-interdiction" side="german" by="script" cmd="end-phase">
+      <draw stream="setup" n="1" value="3"/>
+      <event kind="phase" side="soviet" value="soviet-move">turn 2</event>
+      <event kind="supply" unit="s1-f-inf-2-4-6" value="isolated"/>
+      <event kind="die" value="3">setup</event>
+      <event kind="provisional-none">area 3: no open hex or counter</event>
+    </move>
+    <move n="2" turn="2" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-f-inf-2-4-6" path="4515 4615" mode="normal">
+      <event kind="moved" unit="s1-f-inf-2-4-6" hex="4615" value="4515 4615"/>
+    </move>
+    <move n="3" turn="2" phase="soviet-move" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="soviet" value="soviet-combat">turn 2</event>
+    </move>
+    <move n="4" turn="2" phase="soviet-combat" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="soviet" value="soviet-disruption-removal">turn 2</event>
+    </move>
+    <move n="5" turn="2" phase="soviet-disruption-removal" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="soviet" value="soviet-interdiction">turn 2</event>
+    </move>
+    <move n="6" turn="2" phase="soviet-interdiction" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="german" value="german-move1">turn 2</event>
+      <event kind="supply" unit="s2-6-inf-9-7" value="isolated"/>
+    </move>
+    <move n="7" turn="2" phase="german-move1" side="german" by="script" cmd="move" units="s2-6-inf-9-7" path="3014 2915 2916" mode="normal">
+      <event kind="moved" unit="s2-6-inf-9-7" hex="2916" value="3014 2915 2916"/>
+    </move>
+  </log>
+</save>

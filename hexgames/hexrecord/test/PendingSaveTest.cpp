@@ -145,7 +145,7 @@ TEST(PendingSaveTest, GameObligationsNeedTheGameCodec)
   Consult consult;
   consult.rounds = 2;
   position.push(HexModel::makePolymorphic<HexModel::GameObligation, Consult>(consult));
-  position.ask(HexModel::GameChoice{"consult", {"again", "done"}});
+  position.ask(HexModel::GameChoice{"consult", {"again", "done"}, definition->rules->side("russian")});
 
   const std::filesystem::path saved = scratchFile("hexgames-game-obligation.xml");
   {
@@ -160,6 +160,7 @@ TEST(PendingSaveTest, GameObligationsNeedTheGameCodec)
   EXPECT_EQ(2, owed.as<Consult>("the reloaded obligation").rounds);
   ASSERT_TRUE(std::holds_alternative<HexModel::GameChoice>(reloaded.position.pending()));
   EXPECT_EQ((std::vector<std::string>{"again", "done"}), std::get<HexModel::GameChoice>(reloaded.position.pending()).options);
+  EXPECT_EQ(definition->rules->side("russian"), std::get<HexModel::GameChoice>(reloaded.position.pending()).side);
 
   // Without the game's codec the obligation is refused by name.
   const HexEngine::Session plain(definition, defaults.policies(), position, 1ull);

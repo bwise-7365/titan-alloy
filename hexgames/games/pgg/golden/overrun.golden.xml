@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="pgg" package="../../../packages/xml/pgg.package.xml" seed="3">
+  <cursor turn="3" phase="german-move1" side="german" moves="6" over="false"/>
+  <sides>
+    <side id="german">
+      <flag name="entered" value="s2-6-7-inf-2-10 s2-7-7-inf-2-10 s2-25-7-arm-4-10"/>
+      <flag name="spent" value="s2-6-7-inf-2-10:12 s2-7-7-inf-2-10:12 s2-25-7-arm-4-10:12"/>
+    </side>
+    <side id="soviet">
+      <flag name="disrupted" value="s1-64-inf-2-4-6"/>
+      <flag name="entered" value="s1-64-inf-2-4-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0811" face="front" moved="false"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0612" face="front" moved="true"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0612" face="front" moved="true"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0612" face="front" moved="true"/>
+  </units>
+  <streams>
+    <stream tag="combat" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="3" phase="german-move1" side="german" by="script" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" path="0608 0609 0610" mode="normal">
+      <event kind="moved" unit="s2-25-7-arm-4-10" hex="0610" value="0608 0609 0610"/>
+      <event kind="moved" unit="s2-6-7-inf-2-10" hex="0610" value="0608 0609 0610"/>
+      <event kind="moved" unit="s2-7-7-inf-2-10" hex="0610" value="0608 0609 0610"/>
+    </move>
+    <move n="2" turn="3" phase="german-move1" side="german" by="script" cmd="overrun" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611">
+      <result outcome="D2*"/>
+      <draw stream="combat" n="1" value="1"/>
+      <event kind="combat-declared" hex="0611" value="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10"/>
+      <event kind="die" value="1">combat</event>
+      <event kind="combat-resolved" hex="0611" value="2-1">D2*</event>
+      <event kind="revealed" unit="s1-64-inf-2-4-6"/>
+      <event kind="decision-requested" value="result"/>
+    </move>
+    <move n="3" turn="3" phase="german-move1" side="soviet" by="script" cmd="answer">
+      <arg name="what" value="result"/>
+      <arg name="answer" value="retreat"/>
+      <event kind="decision-answered" value="result">retreat</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="4" turn="3" phase="german-move1" side="german" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0712"/>
+      <event kind="decision-answered" value="retreat">0712</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="5" turn="3" phase="german-move1" side="german" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0811"/>
+      <event kind="decision-answered" value="retreat">0811</event>
+      <event kind="retreated" unit="s1-64-inf-2-4-6" hex="0811" value="0712 0811"/>
+      <event kind="disrupted">s1-64-inf-2-4-6</event>
+      <event kind="moved" unit="s2-25-7-arm-4-10" hex="0611" value="0610 0611"/>
+      <event kind="moved" unit="s2-6-7-inf-2-10" hex="0611" value="0610 0611"/>
+      <event kind="moved" unit="s2-7-7-inf-2-10" hex="0611" value="0610 0611"/>
+    </move>
+    <move n="6" turn="3" phase="german-move1" side="german" by="script" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" path="0611 0612" mode="normal">
+      <event kind="moved" unit="s2-25-7-arm-4-10" hex="0612" value="0611 0612"/>
+      <event kind="moved" unit="s2-6-7-inf-2-10" hex="0612" value="0611 0612"/>
+      <event kind="moved" unit="s2-7-7-inf-2-10" hex="0612" value="0611 0612"/>
+    </move>
+  </log>
+</save>

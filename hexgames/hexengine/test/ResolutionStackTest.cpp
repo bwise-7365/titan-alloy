@@ -8,6 +8,7 @@
 // ----------------------------------------------
 #include "TrcFixture.h"
 
+#include "hexengine/Adjudicators.h"
 #include "hexengine/Defaults.h"
 
 #include <gtest/gtest.h>
@@ -97,6 +98,75 @@ TEST(ResolutionStackTest, GameObligationUnderAnEngineLoss)
   forked.apply(HexEngine::DecisionAnswer{"consult", "done"});
   EXPECT_TRUE(forked.position().resolution().empty());
   EXPECT_EQ(1u, session.position().resolution().size());
+}
+
+namespace {
+
+  // A result the game settles itself (M7b): the resolver owes a Consult instead of a loss or a retreat.
+  class OwingResolver : public HexEngine::CombatResolver {
+  public:
+    std::span<const std::string_view> claims() const override { return {}; }
+    std::vector<HexEngine::CombatEffect>
+    resolve(const HexEngine::Ctx& ctx, const HexEngine::CombatContext& combat, HexEngine::PrngStreams& streams) const override
+    {
+      return report(ctx, combat, streams).effects;
+    }
+    HexEngine::CombatReport
+    report(const HexEngine::Ctx&, const HexEngine::CombatContext&, HexEngine::PrngStreams&) const override
+    {
+      HexEngine::CombatReport out{"1-1", "owed", {}, {}};
+      out.effects.push_back(HexEngine::OweEffect{HexModel::makePolymorphic<HexModel::GameObligation, Consult>()});
+      return out;
+    }
+  };
+
+  struct NullSink : HexEngine::EventSink {
+    void onEvent(const HexEngine::Event&) override { return; }
+  };
+
+}  // namespace
+
+TEST(ResolutionStackTest, AnAttackCanOweAGameObligation)
+{
+  const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
+  const ConsultPolicy consult;
+  const OwingResolver owing;
+  HexEngine::Policies policies = defaults.policies();
+  policies.obligations = &consult;
+  policies.combat = &owing;
+
+  HexModel::Position position = TrcFixture::scenario(*definition);
+  const UnitId attacker = TrcFixture::unitOf(*definition, "g-ge-41-armour");
+  const HexModel::HexIndex target =
+      *definition->board->neighbour(TrcFixture::hexOf(*definition, "F27"), HexModel::Direction::D0);
+  position.place(TrcFixture::unitOf(*definition, "r-ru-11-infantry"), target);
+  const HexEngine::Ctx ctx{*definition->board, *definition->rules, *definition->roster, position};
+  HexEngine::PrngStreams streams(1ull);
+  NullSink sink;
+  const HexModel::Position next =
+      HexEngine::Adjudicators::applyAttack(ctx, policies, HexEngine::DeclareAttack{{attacker}, target, {}}, streams, sink);
+
+  ASSERT_EQ(1u, next.resolution().size());
+  EXPECT_EQ("consult", std::get<HexModel::Polymorphic<HexModel::GameObligation>>(next.top().owed).base().kind());
+  EXPECT_TRUE(std::holds_alternative<HexModel::GameChoice>(next.pending()));  // settled at once: it asked
+}
+
+TEST(ResolutionStackTest, AGameChoiceNamesTheSideThatAnswers)
+{
+  const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
+  const HexModel::SideId russian = definition->rules->side("russian");
+  HexModel::Position position = TrcFixture::scenario(*definition);
+  position.push(HexModel::makePolymorphic<HexModel::GameObligation, Consult>());
+  position.ask(HexModel::GameChoice{"consult", {"again", "done"}});
+  const HexEngine::Session acting(definition, defaults.policies(), position, 1ull);
+  EXPECT_EQ(definition->rules->side("axis"), acting.prompt().side);  // nullopt: the acting side answers
+
+  position.ask(HexModel::GameChoice{"consult", {"again", "done"}, russian});
+  const HexEngine::Session other(definition, defaults.policies(), position, 1ull);
+  EXPECT_EQ(russian, other.prompt().side);
+  EXPECT_NE(acting.position().digest(), other.position().digest());
 }
 
 TEST(ResolutionStackTest, GameObligationWithoutAPolicyIsRefused)

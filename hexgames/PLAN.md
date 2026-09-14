@@ -55,7 +55,51 @@ Engine and records
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
-- in-flight tasks: tasks/08-map-networks.md (M6c, W5, opus): connected rail, road and river networks on
+- in-flight tasks (2026-09-14, evening): tasks/12-pgg-map.md (M6e, W5, Opus by Ben's choice), the pilot
+  of the image2sheet process; W5 keeps "Process notes for Sonnet" in the task file and folds them into
+  map_graphics/xml/tools/image2sheet/README.md so later maps (TRC, DS, DDaT, out-of-sample) can run on
+  Sonnet from the README alone.
+- M7b: M7b (tasks/11-pgg-engine.md, W4, 850k+769k tokens) is at
+  status: review: ctest full 224/224, -LE long 221/221, 0 warnings; TRC goldens byte-identical; games/pgg
+  (engine library, 8 test suites, scenario/pgg-1941.xml, six goldens); ledger 0 OutOfScope, 3 optional not
+  implemented. Two small engine changes: E1 a combat result can hand the engine a game obligation
+  (OweEffect), E2 a GameChoice names the side that answers. Rules XML gained 34 steps, three spaces and a
+  turn-1 "set-up" phase. For Ben: open questions 1 (E1/E2), 2 (markers kept in PggState, not on the map,
+  because the engine treats any enemy counter as a unit), 3 ("set-up" phase vs an engine option to run
+  the starting phase's enter steps), 6-8 (simplified owner's choices, one target per battle, one move
+  per unit per phase). Map data gaps W4 found go to M6e.
+  Ben's answers (2026-09-14): the turn-1 "set-up" phase is OK; the simplified owner's choices, one
+  target per battle and one move per unit per phase are OK. Still open: E1/E2 (coordinator to explain)
+  and markers (Ben: markers are very common; the rules should let non-combat, information-only icons
+  be placed on maps; coordinator to recommend). Map gaps are errors in the PGG sheet, not in the
+  rules: Orsha should be a junction of four railways and three rivers (Cyrillic PNG) but the sheet has
+  a short rail stub and one river; column 59 is missing because the sheet's grid is too narrow; the
+  south-edge rail and the entrance areas are the same kind of error. All go to M6e, which waits on the
+  coordinator's advice on building accurate sheets from images.
+  Later the same day Ben ACCEPTED E1 (OweEffect: a combat result the game settles, pushed on the
+  resolution stack) and E2 (GameChoice names the side that answers), and chose markers option B (M6h).
+- 2026-09-14 Building sheets from images (Ben accepted the coordinator's advice): the old method (colour
+  sampling, reading shrunken crops, plausibility checks, tidy tools that re-author features) matched
+  the print badly. New method, written as a repeatable process for PGG first, then DDaT, TRC, DS and
+  out-of-sample maps: verify the grid geometry against printed hex numbers across the whole map; tile
+  a grid-and-id overlay at full resolution; catalogue each tile into JSON with a fixed vocabulary (hex
+  terrain and places, hexside lines, per-hex rail/road exits), recording only what is printed; cross-
+  check tile overlaps and neighbour exits; assemble XML with a plain script (no re-authoring); verify
+  render tile beside scan tile until no differences remain; image processing only proposes
+  candidates. Process: map_graphics/xml/tools/image2sheet/README.md; first run: tasks/12-pgg-map.md. M6d (tasks/09-ds-map.md, W5, 731k tokens) is at status:
+  review: network_check 1989 -> 0 broken on dai-senso.xml (TRC, PGG still 0); ctest 185/185; files
+  staged. Coordinator's visual check against pic4573603.png: India rail connected, Nepal border and
+  Himalaya ridge right, but rivers are short loops round single hexes instead of the Indus and Ganges
+  courses; central Pacific rings closed, but the Gilbert ring has an extra southward leg, and islands
+  are drawn as whole land hexes (115 sea hexes made clear) where the print shows sea hexes with island
+  marks. Eight open questions in tasks/09. Waiting on Ben's look before any fix round.
+- worker lesson (2026-09-14, twice: W5 on M6d, W4 on M7b): a background worker that starts its build or
+  ctest with run_in_background and then ends its turn never sees the result and stops without
+  reporting. Every worker brief must say: run builds and ctest in the FOREGROUND with a long timeout;
+  before building, wait until no ninja, cl, link, ctest or cmake process is running, because workers
+  share the cmake-build-debug tree.
+  Coordinator: games/trc/tools/trc_control.py (M6c item 4) and the hexview contracts (M10 prep).
+- M6c: tasks/08-map-networks.md (W5, opus): connected rail, road and river networks on
   the TRC and PGG sheets, SVG/PNG regenerated, TRC scenario rail and goldens re-recorded to match.
   2026-09-14: networks done (network_check 0 broken on both sheets; ctest 185/185; goldens supply,
   rail-move, full-turn re-recorded, two golden scripts moved off removed rail; 5 tests updated, 3 of them
@@ -133,14 +177,64 @@ Engine and records
           in ctest; TRC scenario rail and goldens re-recorded to match (tasks/08-map-networks.md)
 - [ ] M6d Dai Senso map cleanup (W5): continuous roads per landmass and across the grid seam, border and
           zone lines, mountain ranges, places checked against the DS images (tasks/09-ds-map.md)
-- [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
+- [ ] M6e PGG map accuracy (task written, not launched: tasks/12-pgg-map.md, first run of the image2sheet
+          process in map_graphics/xml/tools/image2sheet/README.md): carefully compare the generated PGG sheet (XML, SVG, PNG)
+          with the PNG/JPG references in C:\Library\War-Games\Panzergruppe Guderian and repair it feature
+          by feature, as M6d does for Dai Senso. Known example (Ben, 2026-09-14): in the Russian redesign
+          map ("Panzergruppe Guderian map Russian redesign.jpg", same image as "PGG map, Russian.png")
+          rivers run down around columns 48/49 and 57/58, with twists and angled stretches, which the
+          sheet does not show. Do after M7b (the PGG goldens it records depend on the sheet); re-record
+          them afterwards, citing "maps: PGG accuracy". Data gaps the M7b engine found (PggFacts::dataGaps,
+          asserted by pgg_package_test, so fixing them will fail that test until it is updated): no road
+          reaches the German supply hex 0120 (German supply works only through the 20-point trace);
+          Victory Point hexes 5907 and 5915 lie beyond the sheet's 56 columns; no rail reaches the south
+          edge; the entrance areas A, C-H, V, W, X, Z and 1-6 are provisional hexes (only B is in the text).
+- [ ] M6g Dai Senso map, second round (pending, not started): fix what the M6d review found, and more.
+          Known items (coordinator's check against pic4573603.png, 2026-09-14): rivers traced along their
+          printed courses (India's Indus and Ganges came out as short loops round single hexes); the
+          Gilbert Islands border ring trimmed to its printed outline (an extra southward leg); how islands
+          are shown (115 sea hexes were made land; the print shows sea hexes with island marks); ports
+          hidden under counters placed (Saipan, Palau, Truk, Kwajalein, Okinawa ...); place-name labels a
+          hex or more off moved (VLADIVOSTOK beside Mukden); plus tasks/09's eight open questions and a
+          fresh region-by-region comparison. PART OF THIS TASK, before any fixing: the coordinator advises
+          Ben on a more effective way to build XML map sheets from PNG/JPG/PDF maps (the M6c/M6d method --
+          colour sampling, per-region reading of small crops, hand-authored guide data, network tidying --
+          was slow and still inaccurate); compare two or three approaches and recommend one.
+- [ ] M6h Map markers, option B (pending, not started; Ben chose it 2026-09-14): markers become their own
+          kind of object, never units -- placed on a hex, a hexside, a unit, or a space or track, with a
+          type, an optional owning side, an optional value (track markers) and an optional counter for
+          the artwork; one ordered list in Position (digest, fork); rules XML unit-type kind="marker"
+          gains where a marker may be placed and how many exist; hexsave gains <markers><marker .../>
+          and unit/@status tokens move there (both XSD changes proposed for review first); PGG's
+          air-interdiction, Soviet-interdiction, disruption and rail-cut markers move out of PggState;
+          TRC's unit tokens migrate; hexview's Markers layer draws them. Before more game modules
+          depend on the workaround.
+- [ ] M6f TRC map accuracy (pending, not started): carefully compare the generated TRC sheet with the PNG
+          references in C:\Library\War-Games\The Russian Campaign (the three TRC v5 deluxe maps, TRC map v1
+          adjusted.png) and repair it feature by feature: rivers, rail, borders, terrain, cities. Fold in
+          M6c follow-ups 1-3 (out-of-grid ids, land cities, guide data file). Re-record TRC goldens after,
+          citing "maps: TRC accuracy".
+- [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module. M7a (digest, rules XML,
+          package, test scenario) done 2026-09-14; M7b engine module (W4, not W5 as first planned) in flight,
+          tasks/11-pgg-engine.md
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
-- [ ] M10 hexview (W6): geometry, scenes, faces, SVG goldens, InteractionMachine, replay
+- [ ] M10 hexview (W6): geometry, scenes, faces, SVG goldens, InteractionMachine, replay. Must reproduce
+          the reference renderers' look (smoothed links, rounded rivers, straight boundaries, casings,
+          dashes, ticks, terrain colours) for both Qt6 and HTML; see decision log "Visual parity"
 - [ ] M11 hexqt (W6): Viewport, painters, MapView, panels, GameSession, AiTurnRunner, viewer
 - [ ] M12 trc_gui, pgg_gui, ds_gui, ddat_gui + GUI tests + script/snapshot playback (W4/W5)
 - [ ] M13 hexgames_bench + sanitizers, diagrams `[AS BUILT]`, docs snapshot 2, Debian build (F)
 - [ ] M14 two out-of-sample games
+- [ ] M15 Card-driven "AI" opponents (pending, design not started): the kind of card- or chart-driven bot common
+          as the opponent in solitaire wargames (a deck or table of prioritised instructions per phase,
+          with conditions, target selection and tie-breaks, as DDaT's Japanese action deck already is).
+          Two uses, one design: (a) an opponent a human plays against in the GUIs, and (b) a player for
+          running hundreds of computer-vs-computer games headless (hexgames_bench, M13) to debug the game
+          engines -- rule coverage, crashes, stuck phases, determinism, statistical sanity of outcomes.
+          First step is a design for Ben's review: how bot instructions are expressed (rules XML or a new
+          document, vs. code), how they plug into Player/PendingDecision without blocking, how randomness
+          uses the named PRNG streams, and how batch runs report problems.
 
 ## Decision log
 
@@ -264,7 +358,32 @@ Engine and records
   white/grey naval zone borders) around the Eastern Carolines, Marshall and Gilbert Islands out to
   Johnston Island. Boundaries at sea are printed and correct; sent to M6d's worker. Those two regions
   are examples only: the whole map is to be fixed to the same standard (every rail and road line, every
-  international and naval zone border, region borders, mountains, places), against pic4573603.png. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
+  international and naval zone border, region borders, mountains, places), against pic4573603.png.
+- 2026-09-14 Visual parity (Ben, for the future): the C++ visualization, both the Qt6 GUI (hexqt) and
+  the HTML/browser client, must reproduce the graphics now being settled in the Python reference
+  renderers' SVG/PNG: smoothed roads and railways (hexside midpoint to midpoint through a hex, midpoint to
+  centre at ends and junctions, joined into polylines), rivers with rounded corners, political and
+  other boundary lines straight along the hexsides, line casings, dashes and rail ticks, and the terrain
+  colours and patterns. hexview's Scene builder (M10) owns this geometry, so both front ends draw the
+  same primitives; its SVG goldens are compared against hexsheet2svg.py / counters2svg.py output.
+- 2026-09-14 Parallel work while M6d runs (Ben): W4 starts the PGG engine module (M7b, tasks/11); the
+  coordinator moves the TRC scenario control generator into games/trc/tools/ (M6c item 4, made
+  self-contained on hexsheet2svg.Grid so it does not depend on the network_check.py M6d is rewriting)
+  and writes the hexview contracts (M10 preparation: headers, test list, UML) for Ben's review.
+  Deferred: the DDaT package, scenario and steps (M9 preparation) to a free worker slot.
+  Done by the coordinator the same day: games/trc/tools/trc_control.py (reproduces the scenario's 224
+  rail control entries exactly); hexview contracts [PROPOSED] for Ben's review -- hexview/Style.h,
+  Scene.h, MapFrame.h, LineGeometry.h, SymbolLibrary.h, MapSceneBuilder.h, FaceModel.h, ViewState.h,
+  StateSceneBuilder.h, Interaction.h (intents, EngineFacade, InteractionMachine), Replay.h
+  (ReplayController, AnimationPlan), SceneWriters.h; doc/2026-09-12-design/test-lists/hexview-tests.md;
+  uml/hexview-classes.puml. Deliberately NO hexview/CMakeLists.txt yet: the root CMakeLists adds
+  hexview as soon as one exists, and uncompiled contracts must not break W4's and W5's builds; after
+  Ben's review, add it with a header-compile check and build.
+- 2026-09-14 (Ben) hexview/CMakeLists.txt added so the contracts can be built: target hexview_contracts,
+  EXCLUDE_FROM_ALL (ordinary and worker builds skip it), built on request with
+  `cmake --build --preset win-msvc-debug --target hexview_contracts`. Ben built it 2026-09-14 evening:
+  no errors, and a full Debug build also clean. Also recorded as pending, not
+  started: M6e (PGG map accuracy against the references) and M6f (TRC map accuracy), both after M7b. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
 
 ## XSD proposals awaiting review
 

@@ -135,7 +135,8 @@ namespace HexModel {
         return ChooseCard{randomizerNamed(rules, need(ask.deck, entry, "deck")), ask.candidates};
       }
       if ("choice" == ask.what) {
-        return GameChoice{need(ask.verb, entry, "verb"), ask.options};
+        return GameChoice{need(ask.verb, entry, "verb"), ask.options,
+                          ask.side ? std::optional<SideId>(rules.side(*ask.side)) : std::nullopt};
       }
       throw std::invalid_argument("PositionBuilder: resolution entry " + std::to_string(entry + 1) + " asks '" +
                                   ask.what + "'");

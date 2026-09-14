@@ -32,6 +32,9 @@
     <network id="rail" name="Railroads" carries="movement" mutable="true">Soviet-only Rail Movement network, drawn centre to centre (6.3). Affects neither supply nor normal movement (6.35) -- its only function is the Rail Movement mode. Mutable: a German unit moving through a Soviet rail hex may cut the line (errata 6.37); Soviet units may not rail-move into or through a cut hex; repair happens only by a Soviet combat unit entering the cut hex during ordinary movement, and Rail Movement over the repaired line resumes the following turn.</network>
 
     <space id="dead-pile" name="Soviet dead pile" kind="pool" side="soviet" returns="true">Eliminated Untried Soviet units, still face-down; drawn from once the counter pool proper is exhausted (12.4). The absolute ceiling on units in play is the number of physical counters, regardless of source.</space>
+    <space id="soviet-pool" name="Soviet counter pool" kind="pool" side="soviet" returns="true">Soviet divisions not yet in play, from which set-up and reinforcement divisions are drawn at random by type, face down (12.1).</space>
+    <space id="soviet-arrivals" name="Soviet reinforcements" kind="box" side="soviet" returns="true">Scheduled Soviet Leaders waiting to enter, each with the turns left before it may (16.1).</space>
+    <space id="german-arrivals" name="German reinforcements" kind="box" side="german" returns="true">German counters waiting to enter, each with the turns left before it may (16.2).</space>
 
     <note>Other hex-centred data: the six numbered Soviet Provisional Reinforcement entrance areas (14.1); the lettered Soviet entrance points V, W, X, Z (16.1); the lettered German entrance areas A-H (16.2); the Soviet initial-deployment hexes/areas (5.1). These are authored, scenario-specific placements, not a general region layer.</note>
     <note>The westernmost two hexrows (all hexes with column "01" or "02") are a rules-significant region named directly by column rather than by a sheet layer: forbidden to voluntary or involuntary Soviet entry through turn 6 (6.4), and mandatory for the 13th and 20th Armies to clear entirely on turn 1 (5.23).</note>
@@ -62,17 +65,64 @@
   <!-- ================= sequence of play ================= -->
   <sequence turns="12">
     <phase id="game-turn" name="Game Turn">
+      <step id="turn-arrivals" does="age-arrivals" at="enter">Every reinforcement still waiting comes a turn nearer.</step>
+      <step id="turn-check-move" does="check-move" at="before-command" commands="move rail-move" rules="zoc-stop-and-leave">A move follows one connected path its units can afford, through no enemy unit, stopping in the first enemy zone of control.</step>
+      <step id="turn-check-attack" does="check-attack" at="before-command" commands="attack" rules="soviet-attack-radius">An attacker is no Leader, is not Disrupted and attacks once; a Soviet attacker is within a working Leader's radius; a defender is attacked once a phase.</step>
+      <step id="turn-spend" does="spend-movement" at="after-command" commands="move rail-move" rules="out-of-supply-movement">The path's movement points are spent, and rail movement counts against the eight units of the turn.</step>
+      <step id="turn-passage" does="note-passage" at="after-command" commands="move rail-move" rules="rail-cut-repair">Rail hexes German units passed are noted, a Soviet unit's march repairs a cut, and the hex a unit left to enter an enemy zone is kept.</step>
+      <step id="turn-control" does="note-control" at="after-command" rules="german-vp-occupation">A Victory Point hex belongs to the last side to occupy it or pass through it.</step>
+      <step id="turn-victory" does="declare-victory" at="end" turns="12" rules="german-vp-occupation german-vp-swf soviet-vp-eliminated-division soviet-vp-recapture">After Game-Turn Twelve the Soviet total is taken from the German and the level of victory is read.</step>
+      <phase id="set-up" name="Initial Set-Up" side="german" turns="1">
+        <note ref="5.0">The Soviet units stand as the scenario places them; the German Player places his three Air Interdiction Markers before the first Soviet turn (13.2).</note>
+      </phase>
       <phase id="soviet-turn" name="Soviet Player-Turn" side="soviet">
-        <phase id="soviet-move" name="Movement Phase"><note ref="4.2">Check Supply; move any or all units; conduct Overruns; bring in Reinforcements. German Air Interdiction Markers are removed at the end of this Phase.</note></phase>
-        <phase id="soviet-combat" name="Combat Phase"><note>Soviet units may attack adjacent German units.</note></phase>
-        <phase id="soviet-disruption-removal" name="Disruption Removal Phase"/>
+        <step id="soviet-turn-recaptures" does="score-recaptures" at="end" rules="soviet-vp-recapture">Cities the German Player held at the end of his last player-turn and the Soviet Player now occupies score their recapture.</step>
+        <step id="soviet-turn-clear" does="clear-player-turn" at="end" rules="supply-first-turn">Units that entered this player-turn lose their free supply; the turn's rail and South-Western Front counts start again.</step>
+        <phase id="soviet-move" name="Movement Phase">
+          <step id="soviet-move-supply" does="check-movement-supply" at="enter" rules="out-of-supply-movement overrun-eligibility">Supply for movement, and each unit's Leader radius for overruns, are judged as the phase begins.</step>
+          <step id="soviet-move-armies" does="roll-first-turn-armies" at="enter" turns="1" rules="soviet-first-turn-die">A die for the 16th and one for the 19th Army: on 4 to 6 the army stands for the turn.</step>
+          <step id="soviet-move-schedule" does="schedule-reinforcements" at="enter" rules="reinforcement-turn-12">The turn's scheduled divisions are owed at their entrance hexes.</step>
+          <step id="soviet-move-provisional" does="roll-provisional-reinforcement" at="enter" rules="soviet-provisional-reinforcement">One Provisional Reinforcement is rolled for and placed.</step>
+          <step id="soviet-move-first-turn" does="check-first-turn" at="before-command" turns="1" commands="move rail-move overrun end-phase" rules="soviet-first-turn-die soviet-first-turn-mandatory">The first-turn armies move as 5.2 requires.</step>
+          <step id="soviet-move-air" does="remove-air-interdiction" at="end" rules="german-interdiction-effect order-interdiction-removal">The German Air Interdiction Markers come off.</step>
+          <step id="soviet-move-stacking" does="repair-stacking" at="end" rules="stacking-soviet-leader-bonus">Overstacked units are eliminated.</step>
+          <step id="soviet-move-clear" does="clear-movement-marks" at="end">The phase's movement points, halts and passages are forgotten.</step>
+          <note ref="4.2">Check Supply; move any or all units; conduct Overruns; bring in Reinforcements. German Air Interdiction Markers are removed at the end of this Phase.</note>
+        </phase>
+        <phase id="soviet-combat" name="Combat Phase">
+          <step id="soviet-combat-stacking" does="repair-stacking" at="end" rules="stacking-soviet-leader-bonus">Overstacked units are eliminated.</step>
+          <step id="soviet-combat-clear" does="clear-retreated" at="end">Units retreated onto friendly stacks count as defenders again.</step>
+          <note>Soviet units may attack adjacent German units.</note>
+        </phase>
+        <phase id="soviet-disruption-removal" name="Disruption Removal Phase">
+          <step id="soviet-disruption" does="remove-disruption" at="enter" rules="overrun-disruption">Disruption comes off the Soviet units.</step>
+        </phase>
         <phase id="soviet-interdiction" name="Soviet Interdiction Phase"><note ref="13.4">At most three times in the game, never turn 12: place a Soviet Interdiction Marker.</note></phase>
       </phase>
       <phase id="german-turn" name="German Player-Turn" side="german">
-        <phase id="german-move1" name="Initial Movement Phase"><note>Check Supply; bring in Reinforcements; move units; conduct Overruns.</note></phase>
-        <phase id="german-combat" name="Combat Phase"><note>German units may attack adjacent Soviet units, with the Divisional Integration bonus where it applies.</note></phase>
-        <phase id="german-move2" name="Mechanized Movement Phase"><note ref="4.2">Only Panzer, Mech, Motorized and Cavalry units (german-panzer, german-motorized, german-cavalry) may move, and may conduct further Overruns. Infantry may not act in this Phase.</note></phase>
-        <phase id="german-disruption-removal" name="Disruption Removal Phase"/>
+        <step id="german-turn-cities" does="record-german-cities" at="end" rules="soviet-vp-recapture">The cities the German Player holds with a line to the west edge are recorded.</step>
+        <step id="german-turn-soviet-marker" does="remove-soviet-interdiction" at="end" rules="soviet-interdiction-effect">The Soviet Interdiction Marker comes off.</step>
+        <step id="german-turn-clear" does="clear-player-turn" at="end" rules="supply-first-turn">Units that entered this player-turn lose their free supply.</step>
+        <phase id="german-move1" name="Initial Movement Phase">
+          <step id="german-move1-supply" does="check-movement-supply" at="enter" rules="out-of-supply-movement">Supply for movement is judged as the phase begins.</step>
+          <step id="german-move1-stacking" does="repair-stacking" at="end" rules="stacking-soviet-leader-bonus">Overstacked units are eliminated.</step>
+          <step id="german-move1-clear" does="clear-movement-marks" at="end">The phase's movement points, halts and passages are forgotten.</step>
+          <note>Check Supply; bring in Reinforcements; move units; conduct Overruns.</note>
+        </phase>
+        <phase id="german-combat" name="Combat Phase">
+          <step id="german-combat-stacking" does="repair-stacking" at="end" rules="stacking-soviet-leader-bonus">Overstacked units are eliminated.</step>
+          <step id="german-combat-clear" does="clear-retreated" at="end">Units retreated onto friendly stacks count as defenders again.</step>
+          <note>German units may attack adjacent Soviet units, with the Divisional Integration bonus where it applies.</note>
+        </phase>
+        <phase id="german-move2" name="Mechanized Movement Phase">
+          <step id="german-move2-supply" does="check-movement-supply" at="enter" rules="out-of-supply-movement">Supply for movement is judged again as the phase begins.</step>
+          <step id="german-move2-stacking" does="repair-stacking" at="end" rules="stacking-soviet-leader-bonus">Overstacked units are eliminated.</step>
+          <step id="german-move2-clear" does="clear-movement-marks" at="end">The phase's movement points, halts and passages are forgotten.</step>
+          <note ref="4.2">Only Panzer, Mech, Motorized and Cavalry units (german-panzer, german-motorized, german-cavalry) may move, and may conduct further Overruns. Infantry may not act in this Phase.</note>
+        </phase>
+        <phase id="german-disruption-removal" name="Disruption Removal Phase">
+          <step id="german-disruption" does="remove-disruption" at="enter" rules="overrun-disruption">Disruption comes off the German units.</step>
+        </phase>
         <phase id="german-air-interdiction" name="Air Interdiction Phase"><note ref="13.2">Place German Air Interdiction Markers for the following Soviet turn; remove any Soviet Interdiction Marker.</note></phase>
       </phase>
     </phase>

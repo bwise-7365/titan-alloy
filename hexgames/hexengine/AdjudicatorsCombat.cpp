@@ -145,6 +145,8 @@ namespace HexEngine::Adjudicators {
               sink.onEvent(GameEvent{"reveal", "the table is consulted again once the defender shows"});
             } else if constexpr (std::is_same_v<T, GameEffect>) {
               sink.onEvent(GameEvent{"result", e.code});
+            } else if constexpr (std::is_same_v<T, OweEffect>) {
+              owed.push_back(e.owed);
             }
           },
           effect);

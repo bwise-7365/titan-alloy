@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="pgg" package="../../../packages/xml/pgg.package.xml"
+      seed="2" title="PGG combat: a split result, the defenders retreat routed by the attacker, who loses a step and advances">
+  <cursor turn="3" phase="german-combat" side="german"/>
+  <sides>
+    <side id="german">
+      <flag name="entered" value="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10"/>
+    </side>
+    <side id="soviet">
+      <flag name="entered" value="s1-64-inf-2-4-6 s1-f-inf-2-4-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0610"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611"/>
+  </units>
+  <log>
+    <move n="1" turn="3" phase="german-combat" side="german" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611"/>
+    <move n="2" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="result"/>
+      <arg name="answer" value="retreat"/>
+    </move>
+    <move n="3" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0712"/>
+    </move>
+    <move n="4" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0612"/>
+    </move>
+    <move n="5" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="result"/>
+      <arg name="answer" value="s2-25-7-arm-4-10"/>
+    </move>
+    <move n="6" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="advance"/>
+      <arg name="answer" value="s2-25-7-arm-4-10"/>
+    </move>
+    <move n="7" turn="3" phase="german-combat" side="german" cmd="answer">
+      <arg name="what" value="advance"/>
+      <arg name="answer" value="done"/>
+    </move>
+  </log>
+  <notes>
+    <note>16 (the integrated 7th Panzer Division) against 8 (two revealed 2-4-6 divisions) is 2-1. On a split
+      result the defender's half comes first (9.66): the Soviet Player retreats both divisions, each walk routed
+      by the German Player (9.72) and preferring vacant hexes (9.73); then the German Player takes his step loss,
+      the panzer regiment turning over, and advances a regiment into the vacated hex (9.81).</note>
+  </notes>
+</save>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="pgg" package="../../../packages/xml/pgg.package.xml" seed="5">
+  <cursor turn="1" phase="german-move1" side="german" moves="12" over="false"/>
+  <sides>
+    <side id="german">
+      <flag name="spent" value="s2-5-inf-9-7:4"/>
+    </side>
+    <side id="soviet">
+      <flag name="beyond-radius" value="s1-64-inf-2-4-6 s1-f-inf-2-4-6"/>
+      <flag name="frozen" value="16 19"/>
+      <flag name="interdiction" value="0707"/>
+      <flag name="interdiction-turns" value="1"/>
+      <flag name="owed" value="V:5:0 X:6:0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0909" face="front" moved="false"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0715" face="front" moved="false"/>
+    <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="0707" face="front" moved="true"/>
+  </units>
+  <streams>
+    <stream tag="setup" draws="3"/>
+  </streams>
+  <log>
+    <move n="1" turn="1" phase="set-up" side="german" by="script" cmd="interdict" target="0909">
+      <event kind="air-interdiction">0909</event>
+    </move>
+    <move n="2" turn="1" phase="set-up" side="german" by="script" cmd="interdict" target="0714">
+      <event kind="air-interdiction">0714</event>
+    </move>
+    <move n="3" turn="1" phase="set-up" side="german" by="script" cmd="interdict" target="2117">
+      <event kind="air-interdiction">2117</event>
+    </move>
+    <move n="4" turn="1" phase="set-up" side="german" by="script" cmd="end-phase">
+      <draw stream="setup" n="1" value="5"/>
+      <draw stream="setup" n="2" value="5"/>
+      <draw stream="setup" n="3" value="6"/>
+      <event kind="phase" side="soviet" value="soviet-move">turn 1</event>
+      <event kind="die" value="5">setup</event>
+      <event kind="first-turn-army">16 stands</event>
+      <event kind="die" value="5">setup</event>
+      <event kind="first-turn-army">19 stands</event>
+      <event kind="die" value="6">setup</event>
+      <event kind="provisional-none">area 6: no open hex or counter</event>
+    </move>
+    <move n="5" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-64-inf-2-4-6" path="0908 0909" mode="normal">
+      <event kind="moved" unit="s1-64-inf-2-4-6" hex="0909" value="0908 0909"/>
+    </move>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" by="script" cmd="rail-move" units="s1-f-inf-2-4-6" path="0613 0714 0715" mode="rail-move">
+      <event kind="moved" unit="s1-f-inf-2-4-6" hex="0715" value="0613 0714 0715"/>
+    </move>
+    <move n="7" turn="1" phase="soviet-move" side="soviet" by="script" cmd="end-phase">
+      <event kind="air-interdiction-removed">0909</event>
+      <event kind="air-interdiction-removed">0714</event>
+      <event kind="air-interdiction-removed">2117</event>
+      <event kind="phase" side="soviet" value="soviet-combat">turn 1</event>
+    </move>
+    <move n="8" turn="1" phase="soviet-combat" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="soviet" value="soviet-disruption-removal">turn 1</event>
+    </move>
+    <move n="9" turn="1" phase="soviet-disruption-removal" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="soviet" value="soviet-interdiction">turn 1</event>
+    </move>
+    <move n="10" turn="1" phase="soviet-interdiction" side="soviet" by="script" cmd="interdict" target="0707">
+      <event kind="soviet-interdiction">0707</event>
+    </move>
+    <move n="11" turn="1" phase="soviet-interdiction" side="soviet" by="script" cmd="end-phase">
+      <event kind="phase" side="german" value="german-move1">turn 1</event>
+    </move>
+    <move n="12" turn="1" phase="german-move1" side="german" by="script" cmd="move" units="s2-5-inf-9-7" path="0708 0707" mode="normal">
+      <event kind="moved" unit="s2-5-inf-9-7" hex="0707" value="0708 0707"/>
+    </move>
+  </log>
+</save>

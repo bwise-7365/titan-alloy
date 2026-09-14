@@ -104,6 +104,11 @@ namespace HexEngine {
     if (const HexModel::ChooseRetreat* retreat = std::get_if<HexModel::ChooseRetreat>(&position_.pending())) {
       out.side = retreat->side;
     }
+    if (const HexModel::GameChoice* choice = std::get_if<HexModel::GameChoice>(&position_.pending())) {
+      if (choice->side) {
+        out.side = *choice->side;
+      }
+    }
     if (nullptr != policies_.victory) {
       if (const std::optional<Outcome> outcome = policies_.victory->check(context())) {
         out.overP = true;

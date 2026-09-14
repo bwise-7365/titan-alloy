@@ -27,7 +27,9 @@ namespace HexModel {
   struct ChooseLoss { SideId side; std::vector<UnitId> candidates; int count; };
   struct ChooseRetreat { SideId side; UnitId unit; std::vector<HexIndex> candidates; bool mayStopP = false; };
   struct ChooseCard { RandomizerId deck; std::vector<std::string> candidates; };
-  struct GameChoice { std::string verb; std::vector<std::string> options; };
+  // Changed in M7b: a game's choice may name the side that answers it (PGG 9.65: the defender
+  // chooses between a step loss and a retreat in the attacker's phase); nullopt: the acting side.
+  struct GameChoice { std::string verb; std::vector<std::string> options; std::optional<SideId> side; };
   using PendingDecision = std::variant<NoDecision, ChooseLoss, ChooseRetreat, ChooseCard, GameChoice>;
 
   // The battle an engine obligation belongs to: who routes its retreats (nullopt: each unit's

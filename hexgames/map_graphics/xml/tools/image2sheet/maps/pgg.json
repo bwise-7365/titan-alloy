@@ -1,0 +1,104 @@
+{
+ "map": "pgg",
+ "title": "Panzergruppe Guderian (SPI 1976), Russian-language redesign",
+ "sources": {
+  "primary": {
+   "path": "C:/Library/War-Games/Panzergruppe Guderian/PGG - Cyrillic.png",
+   "note": "5615 x 3727; 'PGG map, Russian.png' and 'Panzergruppe Guderian map Russian redesign.png' are the same size",
+   "size_hint": 61.65,
+   "line_dark": 60,
+   "control_points": [
+    {"id": "0101", "x": 132.9, "y": 121.5},
+    {"id": "3001", "x": 2820.0, "y": 174.8},
+    {"id": "5901", "x": 5506.9, "y": 121.4},
+    {"id": "0116", "x": 133.3, "y": 1726.5},
+    {"id": "3016", "x": 2820.1, "y": 1780.1},
+    {"id": "5916", "x": 5506.7, "y": 1726.6},
+    {"id": "0131", "x": 133.1, "y": 3330.2},
+    {"id": "3031", "x": 2820.3, "y": 3384.0},
+    {"id": "5931", "x": 5506.5, "y": 3329.7},
+    {"id": "1508", "x": 1430.7, "y": 869.5},
+    {"id": "4508", "x": 4209.4, "y": 869.5},
+    {"id": "1524", "x": 1430.4, "y": 2581.3},
+    {"id": "4524", "x": 4209.6, "y": 2581.4},
+    {"id": "2117", "x": 1986.5, "y": 1833.5},
+    {"id": "5816", "x": 5413.9, "y": 1780.1}
+   ]
+  }
+ },
+ "grid": {
+  "id": "main",
+  "orientation": "flat",
+  "offset": "odd",
+  "cols": 59,
+  "rows": 31,
+  "id-format": "{col:02}{row:02}",
+  "col-start": 1,
+  "row-start": 1,
+  "id-side": "s",
+  "terrain": "clear",
+  "extent": {"first": "0101", "last": "5931"}
+ },
+ "tiles": {"core": 4, "margin": 1, "scale": 1.5},
+ "vocabulary": {
+  "terrain": {
+   "clear": "Открытая местность: pale paper (243,250,243) and nothing else",
+   "woods": "Лес: a mottled green blob, light green (138,174,90) with dark green spots (78,102,54)",
+   "swamp": "Болото: short dark green horizontal hatch strokes (15,135,65) with small tufts, on paper",
+   "lake": "Озеро: bright cyan fill (5,185,245) inside a dark teal outline"
+  },
+  "places": {
+   "city-major": "Большой город: a cluster of dark grey blocks (65,65,65) with black edges; bold capital name, '(N ПО)' victory points",
+   "town": "Посёлок: a small black ring with a grey centre; a small name"
+  },
+  "hexside_lines": {
+   "river": "Река: a thick teal line (6,126,150), about 10 px, drawn along hexsides with rounded bends and wobbles; a lake's outline has the same colour and is not a river"
+  },
+  "links": {
+   "rail": "Железная дорога: a black-cased line with alternating pure-white and black dashes, about 9 px; runs straight across hexes, not through their centres",
+   "road": "Дорога: a solid dark grey line (105,105,115), about 6 px"
+  },
+  "markers": {
+   "entrance": "Область ввода: a boxed letter or number in the margin with arrowed brackets spanning edge hexes, or a boxed letter with an arrow pointing at one edge hex",
+   "setup": "thin light-blue line with arrowheads just outside the west edge",
+   "german-limit": "dotted light-blue line down a column",
+   "vp": "'(N ПО)' printed beside a city or a hex: N victory points"
+  }
+ },
+ "candidates": {
+  "colour_masks": {
+   "river": {"rgb": [[6, 126, 150]], "tol": 34},
+   "lake": {"rgb": [[5, 185, 245]], "tol": 40},
+   "woods": {"green": {"over_r": 14, "over_b": 22, "min_r": 40}, "close": 5},
+   "swamp": {"rgb": [[15, 135, 65]], "tol": 36},
+   "city": {"rgb": [[65, 65, 65]], "tol": 10},
+   "road": {"rgb": [[105, 105, 115]], "tol": 16, "open": 3, "grow": 2},
+   "rail": {"rgb": [[255, 255, 255]], "tol": 3, "grow": 5}
+  },
+  "hex_masks": ["woods", "lake", "swamp", "city", "river", "rail", "road"],
+  "presence": {"rail": 0.04, "road": 0.025},
+  "default_terrain": "clear",
+  "terrain": {
+   "lake": {"mask": "lake", "at_least": 0.5, "sure": 0.6, "maybe": 0.2},
+   "woods": {"mask": "woods", "at_least": 0.5, "sure": 0.6, "maybe": 0.3},
+   "swamp": {"mask": "swamp", "at_least": 0.03, "sure": 0.06, "maybe": 0.01}
+  },
+  "city_at_least": 0.03,
+  "hexside_lines": ["river"],
+  "band": 0.3,
+  "along_sure": 0.8,
+  "along_maybe": 0.45,
+  "links": ["rail", "road"],
+  "half_width": 2,
+  "along_share": 0.6,
+  "min_run": 0.07,
+  "end": 0.06,
+  "corner": 0.12
+ },
+ "sheet": {
+  "path": "panzergruppe-guderian.xml",
+  "png": "panzergruppe-guderian.png",
+  "keep": ["palette", "terrains", "lines", "label", "panel"],
+  "place_style": {"city-major": {"size": 34, "weight": "bold"}, "town": {"size": 26, "weight": "normal"}}
+ }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="pgg" package="../../../packages/xml/pgg.package.xml"
+      seed="5" title="PGG interdiction: German air markers slow a Soviet march and a rail move, a Soviet marker slows a German one">
+  <cursor turn="1" phase="set-up" side="german"/>
+  <sides>
+    <side id="soviet">
+      <flag name="entered" value="s1-64-inf-2-4-6 s1-f-inf-2-4-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0908"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0613"/>
+    <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="0708"/>
+  </units>
+  <log>
+    <move n="1" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="0909"/>
+    </move>
+    <move n="2" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="0714"/>
+    </move>
+    <move n="3" turn="1" phase="set-up" side="german" cmd="interdict">
+      <arg name="target" value="2117"/>
+    </move>
+    <move n="4" turn="1" phase="set-up" side="german" cmd="end-phase"/>
+    <move n="5" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-64-inf-2-4-6" mode="normal" path="0908 0909"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="rail-move" units="s1-f-inf-2-4-6" mode="rail-move" path="0613 0714 0715"/>
+    <move n="7" turn="1" phase="soviet-move" side="soviet" cmd="end-phase"/>
+    <move n="8" turn="1" phase="soviet-combat" side="soviet" cmd="end-phase"/>
+    <move n="9" turn="1" phase="soviet-disruption-removal" side="soviet" cmd="end-phase"/>
+    <move n="10" turn="1" phase="soviet-interdiction" side="soviet" cmd="interdict">
+      <arg name="target" value="0707"/>
+    </move>
+    <move n="11" turn="1" phase="soviet-interdiction" side="soviet" cmd="end-phase"/>
+    <move n="12" turn="1" phase="german-move1" side="german" cmd="move" units="s2-5-inf-9-7" mode="normal" path="0708 0707"/>
+  </log>
+  <notes>
+    <note>Before the first Soviet turn the German Player places his three Air Interdiction Markers, all west of
+      hex-row 4000 (13.2). The Soviet march into 0909 costs one point more (13.32) and the rail move through 0714
+      four more (13.31); the markers come off as the Soviet Movement Phase ends (13.33). The Soviet Player then
+      interdicts 0707 (13.42), and the German division's entry there costs one point more (13.43); the marker stays
+      until the German Player-Turn ends (13.46).</note>
+  </notes>
+</save>

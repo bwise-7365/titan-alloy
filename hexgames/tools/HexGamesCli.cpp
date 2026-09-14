@@ -4,8 +4,11 @@
 // hexgames_cli -- the headless front end: check a package's bindings, replay a script and print its
 // event log, compare a replay with its golden, or record a fresh golden. A record of a game with a
 // module of its own (TRC since M6) is played with that module's policies; --defaults plays it with
-// the engine's defaults instead, which is what the engine's own smoke golden is recorded with.
+// the engine's defaults instead, which is what the engine's own smoke golden is recorded with. A
+// PGG record (M7b) is loaded with PGG's own value-line reader and played with the PGG policy set.
 // ----------------------------------------------
+#include "PggBinding.h"
+#include "PggPolicySet.h"
 #include "TrcPolicySet.h"
 
 #include "hexengine/Defaults.h"
@@ -42,12 +45,28 @@ namespace {
     {
       if (!defaultsP && "trc" == definition.rules->gameId()) {
         trc_ = std::make_unique<Trc::TrcPolicySet>(definition);
+      } else if (!defaultsP && "pgg" == definition.rules->gameId()) {
+        pgg_ = std::make_unique<Pgg::PggPolicySet>(definition);
       } else {
         defaults_ = std::make_unique<HexEngine::DefaultPolicySet>(definition, HexEngine::GameSteps::Withheld);
       }
     }
-    const HexEngine::Policies& policies() const { return trc_ ? trc_->policies() : defaults_->policies(); }
-    const HexEngine::GameNames& names() const { return trc_ ? trc_->names() : defaults_->names(); }
+    const HexEngine::Policies&
+    policies() const
+    {
+      if (trc_) {
+        return trc_->policies();
+      }
+      return pgg_ ? pgg_->policies() : defaults_->policies();
+    }
+    const HexEngine::GameNames&
+    names() const
+    {
+      if (trc_) {
+        return trc_->names();
+      }
+      return pgg_ ? pgg_->names() : defaults_->names();
+    }
 
     // A run on engine defaults names every step behaviour of the rules it withheld (M6b).
     void
@@ -63,6 +82,7 @@ namespace {
 
   private:
     std::unique_ptr<Trc::TrcPolicySet> trc_;
+    std::unique_ptr<Pgg::PggPolicySet> pgg_;
     std::unique_ptr<HexEngine::DefaultPolicySet> defaults_;
   };
 
@@ -86,8 +106,9 @@ namespace {
     const HexRecord::SaveModel model = HexRecord::SaveModel::read(record);
     const std::filesystem::path manifest =
         std::filesystem::weakly_canonical(record.parent_path() / model.package);
-    return std::make_shared<const HexRules::GameDefinition>(
-        HexRules::PackageLoader::load(manifest, &HexEngine::defaultValueLine));
+    const HexModel::ValueLineReader reader =
+        "pgg" == model.game ? HexModel::ValueLineReader(&Pgg::valueLine) : HexModel::ValueLineReader(&HexEngine::defaultValueLine);
+    return std::make_shared<const HexRules::GameDefinition>(HexRules::PackageLoader::load(manifest, reader));
   }
 
   int

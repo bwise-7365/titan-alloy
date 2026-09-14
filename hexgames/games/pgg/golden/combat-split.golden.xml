@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="pgg" package="../../../packages/xml/pgg.package.xml" seed="2">
+  <cursor turn="3" phase="german-combat" side="german" moves="7" over="false"/>
+  <sides>
+    <side id="german">
+      <flag name="entered" value="s2-6-7-inf-2-10 s2-7-7-inf-2-10 s2-25-7-arm-4-10"/>
+    </side>
+    <side id="soviet">
+      <flag name="entered" value="s1-64-inf-2-4-6 s1-f-inf-2-4-6"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0712" face="front" moved="false"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0612" face="front" moved="false"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0611" face="back" moved="false"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0610" face="front" moved="false"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0610" face="front" moved="false"/>
+  </units>
+  <streams>
+    <stream tag="combat" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="3" phase="german-combat" side="german" by="script" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611">
+      <result outcome="D1*/A1"/>
+      <draw stream="combat" n="1" value="4"/>
+      <event kind="combat-declared" hex="0611" value="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10"/>
+      <event kind="die" value="4">combat</event>
+      <event kind="combat-resolved" hex="0611" value="2-1">D1*/A1</event>
+      <event kind="decision-requested" value="result"/>
+    </move>
+    <move n="2" turn="3" phase="german-combat" side="soviet" by="script" cmd="answer">
+      <arg name="what" value="result"/>
+      <arg name="answer" value="retreat"/>
+      <event kind="decision-answered" value="result">retreat</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="3" turn="3" phase="german-combat" side="german" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0712"/>
+      <event kind="decision-answered" value="retreat">0712</event>
+      <event kind="retreated" unit="s1-64-inf-2-4-6" hex="0712" value="0712"/>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="4" turn="3" phase="german-combat" side="german" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="0612"/>
+      <event kind="decision-answered" value="retreat">0612</event>
+      <event kind="retreated" unit="s1-f-inf-2-4-6" hex="0612" value="0612"/>
+      <event kind="decision-requested" value="result"/>
+    </move>
+    <move n="5" turn="3" phase="german-combat" side="german" by="script" cmd="answer">
+      <arg name="what" value="result"/>
+      <arg name="answer" value="s2-25-7-arm-4-10"/>
+      <event kind="decision-answered" value="result">s2-25-7-arm-4-10</event>
+      <event kind="reduced" unit="s2-25-7-arm-4-10" value="1"/>
+      <event kind="decision-requested" value="advance"/>
+    </move>
+    <move n="6" turn="3" phase="german-combat" side="german" by="script" cmd="answer">
+      <arg name="what" value="advance"/>
+      <arg name="answer" value="s2-25-7-arm-4-10"/>
+      <event kind="decision-answered" value="advance">s2-25-7-arm-4-10</event>
+      <event kind="moved" unit="s2-25-7-arm-4-10" hex="0611" value="0610 0611"/>
+      <event kind="decision-requested" value="advance"/>
+    </move>
+    <move n="7" turn="3" phase="german-combat" side="german" by="script" cmd="answer">
+      <arg name="what" value="advance"/>
+      <arg name="answer" value="done"/>
+      <event kind="decision-answered" value="advance">done</event>
+    </move>
+  </log>
+</save>

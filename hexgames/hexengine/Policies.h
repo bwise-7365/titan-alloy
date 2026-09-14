@@ -86,7 +86,13 @@ namespace HexEngine {
   struct NoEffect {};
   struct RevealAndReconsult {};
   struct GameEffect { std::string code; };
-  using CombatEffect = std::variant<StepLoss, RetreatEffect, Eliminate, Surrender, NoEffect, RevealAndReconsult, GameEffect>;
+  // Added in M7b: a result the game settles itself. applyAttack pushes the obligation on the
+  // resolution stack in the result's order, like a loss or a retreat, and the game's
+  // ObligationPolicy works it down (PGG: the defender's choice between a step loss and a retreat,
+  // steps taken by flipping and replacing counters, disruption and advance after combat).
+  struct OweEffect { HexModel::Polymorphic<HexModel::GameObligation> owed; };
+  using CombatEffect =
+      std::variant<StepLoss, RetreatEffect, Eliminate, Surrender, NoEffect, RevealAndReconsult, GameEffect, OweEffect>;
   // Added in M4: the same resolution with the text the event log and a golden record need -- the
   // odds as printed, the table's own result code and every die value drawn, in order. The engine's
   // adjudicators call report(); resolve() is the shorthand for a caller that wants only the

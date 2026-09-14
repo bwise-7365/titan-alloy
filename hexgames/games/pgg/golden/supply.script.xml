@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="pgg" package="../../../packages/xml/pgg.package.xml"
+      seed="11" title="PGG supply: a Soviet division beyond its Leader's radius, a German division beyond twenty points of the west edge">
+  <cursor turn="1" phase="german-air-interdiction" side="german"/>
+  <units>
+    <unit id="s1-lukin-16th-army-hq-3-10" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="4015"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4315"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4515"/>
+    <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="1715"/>
+    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="3014"/>
+  </units>
+  <log>
+    <move n="1" turn="1" phase="german-air-interdiction" side="german" cmd="end-phase"/>
+    <move n="2" turn="2" phase="soviet-move" side="soviet" cmd="move" units="s1-f-inf-2-4-6" mode="normal" path="4515 4615"/>
+    <move n="3" turn="2" phase="soviet-move" side="soviet" cmd="end-phase"/>
+    <move n="4" turn="2" phase="soviet-combat" side="soviet" cmd="end-phase"/>
+    <move n="5" turn="2" phase="soviet-disruption-removal" side="soviet" cmd="end-phase"/>
+    <move n="6" turn="2" phase="soviet-interdiction" side="soviet" cmd="end-phase"/>
+    <move n="7" turn="2" phase="german-move1" side="german" cmd="move" units="s2-6-inf-9-7" mode="normal" path="3014 2915 2916"/>
+  </log>
+  <notes>
+    <note>As the Soviet Movement Phase opens, Lukin (rating 3) in 4015 supplies the division three hexes away in
+      4315 but not the one five away in 4515, which is marked out of supply and moves on half its allowance
+      (11.22, 11.31). As the German Initial Movement Phase opens, the 5th Infantry Division in 1715 traces twenty
+      points along the Smolensk road to the west edge (11.12); the 6th in 3014 cannot, and no road on the sheet
+      reaches 0120 (a data gap, 11.11), so it moves on three points of its seven. Nothing is eliminated (11.34).</note>
+  </notes>
+</save>
