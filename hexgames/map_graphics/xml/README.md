@@ -37,7 +37,9 @@ sheet  @id @title @source @width @height @background @font
   hex        @id @terrain @ring @ring-width @name > glyph* (@symbol @slot @color @text @dir) side* (@dir @symbol @color)
   edge       @at=HEX:DIR @line @symbol @color @label      -- one hexside: stroke and/or edge-centred glyph
   path       @kind @name @line @edges @offset              -- an ordered hexside chain
-  link       @kind @name @line @hexes @owner               -- an ordered hex-centre chain
+  link       @kind @name @line @hexes @owner               -- an ordered hex-centre chain; drawn smoothed:
+                                                             through a hex, hexside midpoint to midpoint;
+                                                             at ends and junctions, midpoint to centre
   region     @layer @name @hexes @tint @opacity @outline @label @label-at
   label      @text (@at @slot | @x @y | @path) @angle @size @color @weight @italic @spacing @halo @anchor
   panel      @id @title @x @y @w @h @rotate @fill @stroke > text* box* track* table*

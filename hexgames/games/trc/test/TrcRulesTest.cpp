@@ -6,7 +6,8 @@
 // ----------------------------------------------
 #include "TrcTestFixture.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <gtest/gtest.h>
 
@@ -165,7 +166,7 @@ TEST(TrcWeatherTest, ChartFixedTurnsAndTheRunningDrm)
   HexEngine::PrngStreams fixed(7);
   const HexModel::Position rolledMay = set.weather().roll(TrcTest::ctx(*definition, may), fixed, sink);
   EXPECT_EQ(0u, fixed.draws(HexEngine::StreamTag::Weather));
-  EXPECT_EQ("clear", rolledMay.flag(set.facts().axis(), Trc::Flags::kWeather).value_or(""));
+  EXPECT_TRUE(Trc::Weather::Clear == Trc::stateOf(rolledMay).weather);
 
   const HexModel::Position september = TrcTest::blank(*definition, 3, "weather-phase", "axis");
   const std::uint64_t seed = TrcTest::seedRolling(HexEngine::StreamTag::Weather, 6);

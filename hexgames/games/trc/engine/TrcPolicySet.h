@@ -2,8 +2,9 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // The whole TRC policy set: owns one of each TRC policy over one GameDefinition (which must outlive
-// it) and hands a Session its Policies. claims() is the union of every policy's claimed rule ids,
-// which is what trc_ledger_test checks the ledger against.
+// it) and hands a Session its Policies. claims() is the union of every policy's claimed rule ids
+// and the rules named by the phase steps whose behaviour TRC registers (M6b), which is what
+// trc_ledger_test checks the ledger against.
 // ----------------------------------------------
 #pragma once
 #include "TrcAir.h"
@@ -12,7 +13,7 @@
 #include "TrcCommandGrammar.h"
 #include "TrcControl.h"
 #include "TrcFacts.h"
-#include "TrcGame.h"
+#include "TrcSteps.h"
 #include "TrcMandatory.h"
 #include "TrcMovement.h"
 #include "TrcPhaseGate.h"
@@ -21,6 +22,7 @@
 #include "TrcRetreat.h"
 #include "TrcSpecialMoves.h"
 #include "TrcStacking.h"
+#include "TrcState.h"
 #include "TrcSupply.h"
 #include "TrcVictory.h"
 #include "TrcWeather.h"
@@ -46,6 +48,7 @@ namespace Trc {
     const TrcStacking& stacking() const { return stacking_; }
     const TrcZoc& zoc() const { return zoc_; }
     const TrcVictory& victory() const { return victory_; }
+    const HexEngine::StepRegistry& steps() const { return steps_; }
     std::vector<std::string_view> claims() const;
 
   private:
@@ -68,7 +71,9 @@ namespace Trc {
     TrcPolitics politics_;
     TrcPhaseGate phases_;
     TrcCommandGrammar grammar_;
-    TrcGame game_;
+    TrcStateCodec state_;
+    HexEngine::NoObligationCodec obligationCodec_;  // TRC pushes no game obligations
+    HexEngine::StepRegistry steps_;  // the engine's behaviours and TRC's, for the rules' phase steps
     HexEngine::Policies policies_;
   };
 

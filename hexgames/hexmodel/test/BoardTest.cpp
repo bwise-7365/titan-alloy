@@ -49,9 +49,11 @@ TEST(BoardTest, TrcBoardFromSheet)
   ASSERT_TRUE(east.has_value());
   EXPECT_EQ(kk19, *east);
 
-  const std::vector<HexModel::EdgeTerrainId>& kk20east =
-      board.edge(kk20, HexCoord::fromCompass("e", board.orientation()));
-  EXPECT_FALSE(kk20east.empty());
+  // The strait itself is a rules fact (TrcFacts::kerchP), not a sheet line; a blocked hexside is a sheet line.
+  const HexModel::HexIndex kk32 = board.indexOf(HexCoord::HexId{"KK32"});
+  const std::vector<HexModel::EdgeTerrainId>& kk32east =
+      board.edge(kk32, HexCoord::fromCompass("e", board.orientation()));
+  EXPECT_FALSE(kk32east.empty());
 
   const HexModel::HexIndex someSea = board.indexOf(HexCoord::HexId{"HH31"});
   (void)board.terrain(someSea);  // must not throw; TRC's sheet marks HH31 as sea

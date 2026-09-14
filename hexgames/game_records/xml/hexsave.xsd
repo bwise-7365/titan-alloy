@@ -123,6 +123,48 @@ Random draws are recorded so a save is also an exact replay.
     <xs:attribute name="owner" type="xs:token"/>
   </xs:complexType>
 
+  <xs:complexType name="Ask">
+    <xs:annotation><xs:documentation>The decision an owed entry asked and is waiting for. loss: side candidates (counter ids) count. retreat: side unit candidates (hex ids) may-stop. card: deck candidates (card ids). choice: verb options.</xs:documentation></xs:annotation>
+    <xs:attribute name="what" use="required">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="loss"/><xs:enumeration value="retreat"/>
+        <xs:enumeration value="card"/><xs:enumeration value="choice"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="side" type="xs:token"/>
+    <xs:attribute name="unit" type="UnitRef"/>
+    <xs:attribute name="candidates" type="Tokens"/>
+    <xs:attribute name="count" type="xs:positiveInteger"/>
+    <xs:attribute name="may-stop" type="xs:boolean"/>
+    <xs:attribute name="deck" type="xs:token"/>
+    <xs:attribute name="verb" type="xs:token"/>
+    <xs:attribute name="options" type="Tokens"/>
+  </xs:complexType>
+
+  <xs:complexType name="Owe">
+    <xs:annotation><xs:documentation>One entry of the resolution stack: what the rules still owe before play goes on. loss: side count. retreat: side fewest most. unit-retreat: unit from path? fewest most. The three carry their battle: router (absent: each unit's owner) and involved (counter ids). game: name, then arg children, read and written by the game module. ask: the decision the entry is waiting for, if any.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="arg" type="Arg" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ask" type="Ask" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="kind" use="required">
+      <xs:simpleType><xs:restriction base="xs:string">
+        <xs:enumeration value="loss"/><xs:enumeration value="retreat"/>
+        <xs:enumeration value="unit-retreat"/><xs:enumeration value="game"/>
+      </xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="side" type="xs:token"/>
+    <xs:attribute name="count" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="fewest" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="most" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="unit" type="UnitRef"/>
+    <xs:attribute name="from" type="xs:token"/>
+    <xs:attribute name="path" type="Tokens"/>
+    <xs:attribute name="router" type="xs:token"/>
+    <xs:attribute name="involved" type="UnitRefs"/>
+    <xs:attribute name="name" type="xs:token"/>
+  </xs:complexType>
+
   <xs:complexType name="Pile">
     <xs:annotation><xs:documentation>An ordered set of cards of one randomizer. A draw pile stores the whole shuffled order and the index of the next card, so a replay never re-shuffles.</xs:documentation></xs:annotation>
     <xs:attribute name="randomizer" type="xs:token" use="required"/>
@@ -247,6 +289,12 @@ Random draws are recorded so a save is also an exact replay.
         <xs:element name="regions" minOccurs="0">
           <xs:complexType><xs:sequence>
             <xs:element name="region" type="Region" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="resolution" minOccurs="0">
+          <xs:annotation><xs:documentation>The resolution stack, bottom first, so that a save taken while a decision is pending reloads asking it (approved 2026-09-14, M6b review). Omitted when nothing is owed.</xs:documentation></xs:annotation>
+          <xs:complexType><xs:sequence>
+            <xs:element name="owe" type="Owe" maxOccurs="unbounded"/>
           </xs:sequence></xs:complexType>
         </xs:element>
         <xs:element name="piles" minOccurs="0">

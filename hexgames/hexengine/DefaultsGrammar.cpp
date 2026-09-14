@@ -160,6 +160,12 @@ namespace HexEngine {
     return args;
   }
 
+  std::vector<std::string>
+  DefaultCommandGrammar::verbs() const
+  {
+    return {"move", "attack", "resolve", "answer", "place", "end-phase"};
+  }
+
   Command
   DefaultCommandGrammar::parse(const std::string& verb,
                                 const std::vector<std::pair<std::string, std::string>>& args) const

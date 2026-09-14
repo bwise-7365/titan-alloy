@@ -37,7 +37,7 @@ TEST(SheetDocTest, TrcParsesWithExpectedShape)
   EXPECT_FALSE(doc.hexesBulk.empty());
   EXPECT_FALSE(doc.hexes.empty());  // Moscow, cities and a few other named hexes are per-hex elements
   EXPECT_FALSE(doc.edges.empty());
-  EXPECT_EQ(277u, doc.links.size());
+  EXPECT_EQ(39u, doc.links.size());  // rail chains written by map_graphics/xml/tools/tidy_networks.py
   EXPECT_TRUE(doc.regions.empty());
   ASSERT_EQ(12u, doc.panels.size());
 

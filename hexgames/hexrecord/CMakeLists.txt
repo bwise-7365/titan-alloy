@@ -7,7 +7,8 @@
 add_library(hexrecord STATIC
   SaveModel.cpp
   GoldenCompare.cpp
-  Record.cpp)
+  Record.cpp
+  RecordResolution.cpp)
 target_include_directories(hexrecord PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(hexrecord PUBLIC hexengine)
 # hexxml is a real target as of 2026-09-13, so the read side is always compiled in.

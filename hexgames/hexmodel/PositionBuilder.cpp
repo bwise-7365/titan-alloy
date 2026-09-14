@@ -29,11 +29,124 @@ namespace HexModel {
       }
     }
 
+    template <class T>
+    const T&
+    need(const std::optional<T>& value, std::size_t entry, const char* attribute)
+    {
+      if (!value) {
+        throw std::invalid_argument("PositionBuilder: resolution entry " + std::to_string(entry + 1) + " needs @" +
+                                    attribute);
+      }
+      return *value;
+    }
+
+    UnitId
+    unitNamed(const Roster& roster, const std::string& id)
+    {
+      const std::optional<UnitId> found = roster.find(CounterId{id});
+      if (!found) {
+        throw std::invalid_argument("PositionBuilder: resolution names unknown counter '" + id + "'");
+      }
+      return *found;
+    }
+
+    std::vector<UnitId>
+    unitsNamed(const Roster& roster, const std::vector<std::string>& ids)
+    {
+      std::vector<UnitId> out;
+      for (const std::string& id : ids) {
+        out.push_back(unitNamed(roster, id));
+      }
+      return out;
+    }
+
+    std::vector<HexIndex>
+    hexesNamed(const Board& board, const std::vector<std::string>& ids)
+    {
+      std::vector<HexIndex> out;
+      for (const std::string& id : ids) {
+        out.push_back(board.indexOf(HexCoord::HexId{id}));
+      }
+      return out;
+    }
+
+    RandomizerId
+    randomizerNamed(const HexRules::RuleSet& rules, const std::string& id)
+    {
+      for (std::size_t i = 0; i < rules.randomizers().size(); ++i) {
+        if (id == rules.randomizers()[i].id) {
+          return RandomizerId{static_cast<std::uint32_t>(i)};
+        }
+      }
+      throw std::invalid_argument("PositionBuilder: resolution names unknown randomizer '" + id + "'");
+    }
+
+    Battle
+    battleOf(const HexXml::SaveOweDoc& owe, const Roster& roster, const HexRules::RuleSet& rules)
+    {
+      Battle battle;
+      battle.router = owe.router ? std::optional<SideId>(rules.side(*owe.router)) : std::nullopt;
+      battle.involved = unitsNamed(roster, owe.involved);
+      return battle;
+    }
+
+    Obligation
+    obligationOf(const HexXml::SaveOweDoc& owe, std::size_t entry, const Board& board, const Roster& roster,
+                 const HexRules::RuleSet& rules, const ObligationCodec& codec)
+    {
+      if ("loss" == owe.kind) {
+        return OwedLoss{battleOf(owe, roster, rules), rules.side(need(owe.side, entry, "side")),
+                        need(owe.count, entry, "count")};
+      }
+      if ("retreat" == owe.kind) {
+        return OwedRetreat{battleOf(owe, roster, rules), rules.side(need(owe.side, entry, "side")),
+                           need(owe.fewest, entry, "fewest"), need(owe.most, entry, "most")};
+      }
+      if ("unit-retreat" == owe.kind) {
+        return UnitRetreat{battleOf(owe, roster, rules), unitNamed(roster, need(owe.unit, entry, "unit")),
+                           board.indexOf(HexCoord::HexId{need(owe.from, entry, "from")}),
+                           need(owe.fewest, entry, "fewest"), need(owe.most, entry, "most"),
+                           hexesNamed(board, owe.path)};
+      }
+      if ("game" == owe.kind) {
+        std::vector<ObligationArg> args;
+        for (const HexXml::SaveArgDoc& arg : owe.args) {
+          args.push_back(ObligationArg{arg.name, arg.value});
+        }
+        return codec.decode(need(owe.name, entry, "name"), args);
+      }
+      throw std::invalid_argument("PositionBuilder: resolution entry " + std::to_string(entry + 1) + " has kind '" +
+                                  owe.kind + "'");
+    }
+
+    PendingDecision
+    decisionOf(const HexXml::SaveAskDoc& ask, std::size_t entry, const Board& board, const Roster& roster,
+               const HexRules::RuleSet& rules)
+    {
+      if ("loss" == ask.what) {
+        return ChooseLoss{rules.side(need(ask.side, entry, "side")), unitsNamed(roster, ask.candidates),
+                          need(ask.count, entry, "count")};
+      }
+      if ("retreat" == ask.what) {
+        return ChooseRetreat{rules.side(need(ask.side, entry, "side")), unitNamed(roster, need(ask.unit, entry, "unit")),
+                             hexesNamed(board, ask.candidates), need(ask.mayStop, entry, "may-stop")};
+      }
+      if ("card" == ask.what) {
+        return ChooseCard{randomizerNamed(rules, need(ask.deck, entry, "deck")), ask.candidates};
+      }
+      if ("choice" == ask.what) {
+        return GameChoice{need(ask.verb, entry, "verb"), ask.options};
+      }
+      throw std::invalid_argument("PositionBuilder: resolution entry " + std::to_string(entry + 1) + " asks '" +
+                                  ask.what + "'");
+    }
+
   }  // namespace
 
   Position
   PositionBuilder::build(const HexXml::SaveDoc& save, const Board& board, const Roster& roster,
-                          const HexRules::RuleSet& rules)
+                          const HexRules::RuleSet& rules, const GameStateCodec& codec,
+                          const ObligationCodec& obligations)
   {
     Position pos;
 
@@ -59,14 +172,14 @@ namespace HexModel {
       pos.regions_[i].assign(board.layer(LayerId{static_cast<std::uint32_t>(i)}).regionCount(), RegionState{});
     }
     pos.tracks_.assign(board.trackCount(), 0);
-    pos.flags_.assign(rules.sides().size(), {});
 
     // ---- cursor / clock -------------------------------------------------------------------------
     pos.clock_.turn = save.cursor.turn;
     pos.clock_.phase = rules.phase(save.cursor.phase);
     pos.clock_.actingSide = save.cursor.side ? std::optional<SideId>(rules.side(*save.cursor.side)) : std::nullopt;
 
-    // ---- side registers, i.e. tracks --------------------------------------------------------------
+    // ---- side registers (tracks) and flags (the game's state) ------------------------------------
+    SideFlags flags(rules.sides().size());
     for (const HexXml::SaveSideDoc& side : save.sides) {
       for (const HexXml::SaveRegisterDoc& reg : side.registers) {
         const TrackId t = board.trackId(reg.track);
@@ -74,9 +187,10 @@ namespace HexModel {
       }
       const SideId owner = rules.side(side.id);
       for (const HexXml::SaveFlagDoc& flag : side.flags) {
-        pos.setFlag(owner, flag.name, flag.value);
+        flags[owner.value].push_back(SideFlag{flag.name, flag.value});
       }
     }
+    pos.setGameState(codec.decode(flags));
 
     // ---- units ------------------------------------------------------------------------------------
     for (const HexXml::SaveUnitDoc& u : save.units) {
@@ -146,6 +260,15 @@ namespace HexModel {
       state.alignment = r.alignment ? std::optional<SideId>(rules.side(*r.alignment)) : std::nullopt;
       state.posture = r.posture;
       state.owner = r.owner ? std::optional<SideId>(rules.side(*r.owner)) : std::nullopt;
+    }
+
+    // ---- the resolution stack, bottom first ------------------------------------------------------------
+    for (std::size_t entry = 0; entry < save.resolution.size(); ++entry) {
+      const HexXml::SaveOweDoc& owe = save.resolution[entry];
+      pos.push(obligationOf(owe, entry, board, roster, rules, obligations));
+      if (owe.ask) {
+        pos.ask(decisionOf(*owe.ask, entry, board, roster, rules));
+      }
     }
 
     return pos;

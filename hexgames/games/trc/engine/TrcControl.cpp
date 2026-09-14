@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcControl.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <array>
 
@@ -29,7 +30,7 @@ namespace Trc {
   std::optional<SideId>
   TrcControl::ownerOf(const Ctx& ctx, HexIndex hex) const
   {
-    if (facts_.named("HELSINKI") == hex && ctx.position.flag(facts_.axis(), Flags::kHelsinkiRussian)) {
+    if (facts_.named("HELSINKI") == hex && stateOf(ctx.position).helsinkiRussianP) {
       return facts_.russian();  // 24.0: permanently Russian once Finland surrenders
     }
     for (UnitId occupant : ctx.position.unitsAt(hex)) {
@@ -55,7 +56,7 @@ namespace Trc {
   TrcControl::update(const Ctx& ctx, HexEngine::EventSink& sink) const
   {
     Position next = ctx.position;
-    if (next.combatPlan()) {
+    if (!next.resolution().empty()) {
       return next;  // 13.3: frozen until the battle's losses are all taken
     }
     for (std::size_t h = 0; h < ctx.board.hexCount(); ++h) {

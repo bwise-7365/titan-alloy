@@ -36,7 +36,7 @@ TEST(SaveDocTest, TrcTestScenarioParses)
   EXPECT_EQ("axis", doc.sides[0].id);
   ASSERT_EQ(1u, doc.sides[0].registers.size());
   EXPECT_EQ("turn-track", doc.sides[0].registers[0].track);
-  ASSERT_EQ(1u, doc.sides[0].flags.size());
+  EXPECT_TRUE(doc.sides[0].flags.empty());  // the engine smoke scenario carries no flags (M6b review)
 
   ASSERT_EQ(11u, doc.units.size());
   const auto hq = std::find_if(doc.units.begin(), doc.units.end(),
@@ -55,6 +55,20 @@ TEST(SaveDocTest, TrcTestScenarioParses)
   ASSERT_EQ(2u, doc.streams.size());
   EXPECT_TRUE(doc.log.empty());
   EXPECT_FALSE(doc.notes.empty());
+}
+
+TEST(SaveDocTest, SideFlagsParse)
+{
+  const std::filesystem::path scenario =
+      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "games" / "trc" / "scenario" / "trc-1941.xml";
+  const HexXml::SaveDoc doc = HexXml::SaveDoc::parse(HexXml::XmlDocument::load(scenario));
+  const auto axis = std::find_if(doc.sides.begin(), doc.sides.end(),
+                                  [](const HexXml::SaveSideDoc& s) { return "axis" == s.id; });
+  ASSERT_NE(doc.sides.end(), axis);
+  ASSERT_EQ(2u, axis->flags.size());
+  EXPECT_EQ("weather", axis->flags[0].name);
+  EXPECT_EQ("clear", axis->flags[0].value);
+  EXPECT_EQ("weather-drm", axis->flags[1].name);
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcArrivals.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 #include "TrcUnits.h"
 
 #include <array>
@@ -15,9 +16,6 @@ namespace Trc {
 
     constexpr std::array<std::string_view, 6> kClaims{"reinforcement-schedule", "omb-diversion", "south-edge-entry",
                                                       "axis-replacements", "russian-replacements", "partisan-placement"};
-
-    const std::string kReplacedArmour = "replaced-armour";
-    const std::string kReplacedGuards = "replaced-guards";
 
     [[noreturn]] void
     refuse(const Ctx& ctx, UnitId unit, const std::string& why)
@@ -95,10 +93,10 @@ namespace Trc {
     const bool southP = facts_.russian() == side && facts_.southEntryP(hex) &&
                         !(facts_.cityP(hex) && side == ctx.position.control(hex));
     if (southP) {
-      if (0 < Flags::counter(ctx.position, side, Flags::kSouthEntry)) {
+      if (0 < stateOf(ctx.position).side(side).southEntry.value_or(0)) {
         refuse(ctx, unit, "cannot enter from the south edge: one Russian unit per turn does (20.5)");
       }
-      Flags::bump(next, side, Flags::kSouthEntry, 1);
+      addCount(stateOf(next).side(side).southEntry, 1);
     } else if (facts_.ownEdgeP(side, hex) && facts_.russian() == side && ctx.board.id(hex).text.starts_with("QQ")) {
       refuse(ctx, unit, "may enter the south edge only between QQ5 and QQ16 (20.5)");
     }
@@ -119,11 +117,11 @@ namespace Trc {
       refuse(ctx, unit, "can rail into the box only as its first-impulse move (9.1)");
     }
     const int capacity = TrcMovement::railCapacity(facts_.axis() == side, weather_.current(ctx.position));
-    if (capacity <= Flags::counter(ctx.position, side, Flags::kRailMoves)) {
+    if (capacity <= stateOf(ctx.position).side(side).railMoves.value_or(0)) {
       refuse(ctx, unit, "cannot rail: the side's rail capacity is spent (9.2)");
     }
     Position next = ctx.position;
-    Flags::bump(next, side, Flags::kRailMoves, 1);
+    addCount(stateOf(next).side(side).railMoves, 1);
     next.place(unit, facts_.omb());
     next.state(unit).flags.movedP = true;
     sink.onEvent(HexEngine::UnitPlaced{unit, facts_.omb()});
@@ -176,40 +174,42 @@ namespace Trc {
         for (HexIndex well : facts_.oilWells()) {
           wells += facts_.axis() == ctx.position.control(well) ? 1 : 0;
         }
-        if (wells <= Flags::counter(ctx.position, side, kReplacedArmour)) {
+        if (wells <= stateOf(ctx.position).side(side).replacedArmour.value_or(0)) {
           refuse(ctx, unit, "exceeds one German armour corps per oil well held (21.0)");
         }
-        Flags::bump(next, side, kReplacedArmour, 1);
+        addCount(stateOf(next).side(side).replacedArmour, 1);
       } else if (!category.empty()) {
-        if (Flags::listedP(ctx.position, side, Flags::kReplaced, category)) {
+        if (stateOf(ctx.position).side(side).replaced.contains(category)) {
           refuse(ctx, unit, "repeats the replacement category '" + category + "' (21.0)");
         }
-        Flags::add(next, side, Flags::kReplaced, category);
+        stateOf(next).side(side).replaced.insert(category);
       }
     } else {
       if (secondP && facts_.stavka() != unit) {
         refuse(ctx, unit, "cannot be replaced in the second impulse, which takes Stavka only (8.4)");
       }
       const int cost = ctx.roster.unit(unit).front.attack->value;
-      const int points = Flags::counter(ctx.position, side, Flags::kReplacementPoints);
+      const TrcSideState& before = stateOf(ctx.position).side(side);
+      TrcSideState& after = stateOf(next).side(side);
+      const int points = before.replacementPoints.value_or(0);
       if (points < cost) {
         refuse(ctx, unit, "costs " + std::to_string(cost) + " replacement points and " + std::to_string(points) +
                               " are left (22.0)");
       }
       const int cap = 17 <= turn ? 2 : 1;
       if (facts_.typeP(unit, "armour")) {
-        if (cap <= Flags::counter(ctx.position, side, kReplacedArmour)) {
+        if (cap <= before.replacedArmour.value_or(0)) {
           refuse(ctx, unit, "exceeds the armour replacements allowed this turn (22.0)");
         }
-        Flags::bump(next, side, kReplacedArmour, 1);
+        addCount(after.replacedArmour, 1);
       }
       if ("guards" == ctx.roster.unit(unit).nationality) {
-        if (cap <= Flags::counter(ctx.position, side, kReplacedGuards)) {
+        if (cap <= before.replacedGuards.value_or(0)) {
           refuse(ctx, unit, "exceeds the Guards replacements allowed this turn (22.0)");
         }
-        Flags::bump(next, side, kReplacedGuards, 1);
+        addCount(after.replacedGuards, 1);
       }
-      Flags::bump(next, side, Flags::kReplacementPoints, -cost);
+      addCount(after.replacementPoints, -cost);
     }
     Units::place(next, unit, hex, sink);
     return next;
@@ -233,7 +233,7 @@ namespace Trc {
       sink.onEvent(HexEngine::DieRolled{HexEngine::StreamTag::Setup, archangel});
       points += archangel;
     }
-    next.setFlag(facts_.russian(), Flags::kReplacementPoints, std::to_string(points));
+    stateOf(next).side(facts_.russian()).replacementPoints = points;
     sink.onEvent(HexEngine::GameEvent{"replacement-points", std::to_string(points)});
     return next;
   }

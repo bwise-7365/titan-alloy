@@ -6,8 +6,10 @@
 // table and the unit table can never disagree.
 // ----------------------------------------------
 #pragma once
+#include "hexmodel/GameState.h"
 #include "hexmodel/Ids.h"
 #include "hexmodel/Quantities.h"
+#include "hexmodel/Resolution.h"
 
 #include <cstdint>
 #include <map>
@@ -47,36 +49,6 @@ namespace HexModel {
     std::optional<SideId> actingSide;
   };
 
-  // A choice the rules require before adjudication can continue; the engine accepts only the
-  // matching answer next. Games extend GameChoice with their own vocabularies. Since M6 a combat
-  // decision names the side that answers it, which is not always the side whose turn it is (TRC
-  // 13.3: the defender picks his own loss, the attacker routes every retreat).
-  struct NoDecision {};
-  struct ChooseLoss { SideId side; std::vector<UnitId> candidates; int count; };
-  struct ChooseRetreat { SideId side; UnitId unit; std::vector<HexIndex> candidates; bool mayStopP = false; };
-  struct ChooseCard { RandomizerId deck; std::vector<std::string> candidates; };
-  struct GameChoice { std::string verb; std::vector<std::string> options; };
-  using PendingDecision = std::variant<NoDecision, ChooseLoss, ChooseRetreat, ChooseCard, GameChoice>;
-
-  // Added in M6: the rest of a battle, in the order the rules settle it. The head of `steps` is
-  // what the current PendingDecision is about; when it is answered the adjudicator works down the
-  // list until it needs another answer or the list is empty.
-  struct OwedLoss { SideId side; int count; };                // steps a side still has to lose
-  struct OwedRetreat { SideId side; int fewest; int most; };  // every unit of a side retreats
-  struct UnitRetreat {                                        // one unit's walk, part-way through
-    UnitId unit;
-    HexIndex from;
-    int fewest;
-    int most;
-    std::vector<HexIndex> path;
-  };
-  using CombatStep = std::variant<OwedLoss, OwedRetreat, UnitRetreat>;
-  struct CombatPlan {
-    std::optional<SideId> router;  // who routes retreats; nullopt: each unit's owner
-    std::vector<UnitId> involved;
-    std::vector<CombatStep> steps;
-  };
-
   // Mutable state of a region in a mutable layer (Dai Senso countries).
   struct RegionState {
     std::optional<std::string> status;
@@ -112,17 +84,35 @@ namespace HexModel {
     // ---- clock and decisions ----------------------------------------------------------------
     const TurnClock& clock() const { return clock_; }
     TurnClock& clock() { return clock_; }
-    const PendingDecision& pending() const { return pending_; }
-    void setPending(PendingDecision);
-    const std::optional<CombatPlan>& combatPlan() const { return plan_; }
-    void setCombatPlan(std::optional<CombatPlan>);
 
-    // ---- side flags (hexsave sides/side/flag), added in M6 ---------------------------------------
-    // Named per-side values a game keeps between commands (TRC's weather and weather DRM). nullopt:
-    // the flag is not set. Throws for a side outside the position.
-    std::optional<std::string> flag(SideId, const std::string& name) const;
-    void setFlag(SideId, const std::string& name, std::optional<std::string> value);
-    const std::map<std::string, std::string>& flags(SideId) const;
+    // ---- the resolution stack (M6b; see Resolution.h) ------------------------------------------
+    // Bottom first, top last. top() and pop() throw std::invalid_argument when nothing is owed.
+    const std::vector<Resolution>& resolution() const { return resolution_; }
+    const Resolution& top() const;
+    Resolution& top();
+    void push(Obligation);  // the new top, asking nothing yet
+    void pop();
+    // The top entry's decision; NoDecision when nothing is owed or the top asks nothing.
+    const PendingDecision& pending() const;
+    // Sets the top entry's decision (NoDecision once it is answered); throws when nothing is owed.
+    void ask(PendingDecision);
+
+    // ---- the game's own state (M6b; see GameState.h) --------------------------------------------
+    // gameState<T>() throws std::invalid_argument when no state is held or it is not a T.
+    template <class T>
+    const T&
+    gameState() const
+    {
+      return game_.template as<T>("Position: the game state");
+    }
+    template <class T>
+    T&
+    gameState()
+    {
+      return game_.template as<T>("Position: the game state");
+    }
+    const Polymorphic<GameState>& heldGameState() const { return game_; }  // for a codec
+    void setGameState(Polymorphic<GameState>);
 
     // A stable hash of the canonical serialisation, for determinism tests.
     std::uint64_t digest() const;
@@ -131,7 +121,6 @@ namespace HexModel {
     friend class PositionBuilder;
     void removeFromStack(Location, UnitId);
     void addToStack(Location, UnitId);
-    std::map<std::string, std::string>& flagsOf(SideId);
 
     std::vector<UnitState> units_;
     std::vector<std::vector<UnitId>> byHex_;
@@ -141,9 +130,8 @@ namespace HexModel {
     std::vector<std::vector<RegionState>> regions_;
     std::vector<int> tracks_;
     TurnClock clock_;
-    PendingDecision pending_;
-    std::optional<CombatPlan> plan_;
-    std::vector<std::map<std::string, std::string>> flags_;  // one ordered map per side
+    std::vector<Resolution> resolution_;
+    Polymorphic<GameState> game_;
   };
 
 }  // namespace HexModel

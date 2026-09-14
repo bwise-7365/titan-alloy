@@ -53,6 +53,21 @@ namespace HexModel {
       return h;
     }
 
+    const PendingDecision kNothingAsked{NoDecision{}};
+
+    void
+    appendBattle(std::string& s, const Battle& battle)
+    {
+      s += battle.router ? std::to_string(battle.router->value) : std::string("-");
+      s += ';';
+      for (UnitId id : battle.involved) {
+        s += std::to_string(id.value);
+        s += ',';
+      }
+      s += ';';
+      return;
+    }
+
   }  // namespace
 
   void
@@ -225,52 +240,61 @@ namespace HexModel {
     return;
   }
 
-  void
-  Position::setPending(PendingDecision decision)
+  const Resolution&
+  Position::top() const
   {
-    pending_ = std::move(decision);
+    if (resolution_.empty()) {
+      throw std::invalid_argument("Position::top: nothing is owed on the resolution stack");
+    }
+    return resolution_.back();
+  }
+
+  Resolution&
+  Position::top()
+  {
+    if (resolution_.empty()) {
+      throw std::invalid_argument("Position::top: nothing is owed on the resolution stack");
+    }
+    return resolution_.back();
+  }
+
+  void
+  Position::push(Obligation owed)
+  {
+    resolution_.push_back(Resolution{std::move(owed), NoDecision{}});
     return;
   }
 
   void
-  Position::setCombatPlan(std::optional<CombatPlan> plan)
+  Position::pop()
   {
-    plan_ = std::move(plan);
+    if (resolution_.empty()) {
+      throw std::invalid_argument("Position::pop: nothing is owed on the resolution stack");
+    }
+    resolution_.pop_back();
     return;
   }
 
-  std::map<std::string, std::string>&
-  Position::flagsOf(SideId side)
+  const PendingDecision&
+  Position::pending() const
   {
-    return atMut(flags_, side, "side");
-  }
-
-  const std::map<std::string, std::string>&
-  Position::flags(SideId side) const
-  {
-    return atConst(flags_, side, "side");
-  }
-
-  std::optional<std::string>
-  Position::flag(SideId side, const std::string& name) const
-  {
-    const std::map<std::string, std::string>& named = flags(side);
-    const auto it = named.find(name);
-    if (named.end() == it) {
-      return std::nullopt;
+    if (resolution_.empty()) {
+      return kNothingAsked;
     }
-    return it->second;
+    return resolution_.back().asked;
   }
 
   void
-  Position::setFlag(SideId side, const std::string& name, std::optional<std::string> value)
+  Position::ask(PendingDecision decision)
   {
-    std::map<std::string, std::string>& named = flagsOf(side);
-    if (value) {
-      named[name] = std::move(*value);
-    } else {
-      named.erase(name);
-    }
+    top().asked = std::move(decision);
+    return;
+  }
+
+  void
+  Position::setGameState(Polymorphic<GameState> state)
+  {
+    game_ = std::move(state);
     return;
   }
 
@@ -403,51 +427,52 @@ namespace HexModel {
             }
           }
         },
-        pending_);
+        pending());
 
     s += 'B';
-    if (plan_) {
-      appendOptSide(plan_->router);
-      for (UnitId id : plan_->involved) {
-        appendI(id.value);
-      }
-      for (const CombatStep& step : plan_->steps) {
-        std::visit(
-            [&](auto&& p) {
-              using T = std::decay_t<decltype(p)>;
-              if constexpr (std::is_same_v<T, OwedLoss>) {
-                s += "l;";
-                appendI(p.side.value);
-                appendI(p.count);
-              } else if constexpr (std::is_same_v<T, OwedRetreat>) {
-                s += "r;";
-                appendI(p.side.value);
-                appendI(p.fewest);
-                appendI(p.most);
-              } else if constexpr (std::is_same_v<T, UnitRetreat>) {
-                s += "u;";
-                appendI(p.unit.value);
-                appendI(p.from.value);
-                appendI(p.fewest);
-                appendI(p.most);
-                for (HexIndex h : p.path) {
-                  appendI(h.value);
-                }
+    for (const Resolution& entry : resolution_) {
+      std::visit(
+          [&](auto&& p) {
+            using T = std::decay_t<decltype(p)>;
+            if constexpr (std::is_same_v<T, OwedLoss>) {
+              s += "l;";
+              appendBattle(s, p.battle);
+              appendI(p.side.value);
+              appendI(p.count);
+            } else if constexpr (std::is_same_v<T, OwedRetreat>) {
+              s += "r;";
+              appendBattle(s, p.battle);
+              appendI(p.side.value);
+              appendI(p.fewest);
+              appendI(p.most);
+            } else if constexpr (std::is_same_v<T, UnitRetreat>) {
+              s += "u;";
+              appendBattle(s, p.battle);
+              appendI(p.unit.value);
+              appendI(p.from.value);
+              appendI(p.fewest);
+              appendI(p.most);
+              for (HexIndex h : p.path) {
+                appendI(h.value);
               }
-            },
-            step);
-      }
-    } else {
-      s += "-;";
+            } else {
+              s += "g;";
+              appendS(p.base().kind());
+              p.base().appendDigest(s);
+              s += ';';
+            }
+          },
+          entry.owed);
+      // The decision an entry below the top asked is kept; only the top's reaches pending().
+      s += std::holds_alternative<NoDecision>(entry.asked) ? "a0;" : "a1;";
+      s += '|';
     }
 
-    s += 'F';
-    for (const std::map<std::string, std::string>& named : flags_) {
-      for (const auto& [name, value] : named) {
-        appendS(name);
-        appendS(value);
-      }
-      s += '|';
+    s += 'G';
+    if (game_.holdsP()) {
+      game_.base().appendDigest(s);
+    } else {
+      s += "-;";
     }
 
     return fnv1a(s);

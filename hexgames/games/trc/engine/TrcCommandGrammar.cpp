@@ -82,6 +82,17 @@ namespace Trc {
     return common_.parse(verb, args);
   }
 
+  std::vector<std::string>
+  TrcCommandGrammar::verbs() const
+  {
+    std::vector<std::string> out = common_.verbs();
+    out.push_back("rail-move");
+    for (const GameVerb& known : kVerbs) {
+      out.push_back(known.verb);
+    }
+    return out;
+  }
+
   std::vector<std::pair<std::string, std::string>>
   TrcCommandGrammar::arguments(const HexEngine::Command& command) const
   {

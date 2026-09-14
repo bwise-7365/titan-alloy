@@ -85,6 +85,20 @@ namespace HexRules {
     std::optional<Concealment> concealment;  // set: the type is placed face down
   };
 
+  // Added in M6b: a step of the sequence of play (hexrules phase/step), what the rules make happen
+  // in a phase. The engine runs, by `at`, the behaviour a registry holds under `does`.
+  enum class StepAt : std::uint8_t { Enter, BeforeCommand, AfterCommand, End };
+  struct Step {
+    std::string id;
+    std::string does;
+    StepAt at = StepAt::Enter;
+    std::vector<std::string> commands;  // command verbs; empty: every verb
+    std::vector<RuleId> rules;          // each checked at load to be a prose <rule>
+    TurnSelector turns;
+    std::string text;
+    int line = 0;
+  };
+
   struct PhaseNode {
     PhaseId id;
     std::string name;
@@ -92,6 +106,7 @@ namespace HexRules {
     TurnSelector turns;
     std::optional<std::string> condition;
     bool optionalP = false;
+    std::vector<Step> steps;    // document order
     std::vector<PhaseNode> children;
   };
 

@@ -80,6 +80,53 @@ namespace HexRecord {
       return;
     }
 
+    std::vector<std::string>
+    tokensOf(const HexXml::XmlNode& node, const char* attribute)
+    {
+      const std::optional<std::string> raw = node.optional(attribute);
+      return raw.has_value() ? splitTokens(*raw) : std::vector<std::string>{};
+    }
+
+    SaveAsk
+    readAsk(const HexXml::XmlNode& node)
+    {
+      SaveAsk ask;
+      ask.what = node.required("what");
+      ask.side = node.optional("side");
+      ask.unit = node.optional("unit");
+      ask.candidates = tokensOf(node, "candidates");
+      ask.count = node.optionalAs<int>("count");
+      ask.mayStopP = node.optionalAs<bool>("may-stop");
+      ask.deck = node.optional("deck");
+      ask.verb = node.optional("verb");
+      ask.options = tokensOf(node, "options");
+      return ask;
+    }
+
+    SaveOwe
+    readOwe(const HexXml::XmlNode& node)
+    {
+      SaveOwe owe;
+      owe.kind = node.required("kind");
+      owe.side = node.optional("side");
+      owe.count = node.optionalAs<int>("count");
+      owe.fewest = node.optionalAs<int>("fewest");
+      owe.most = node.optionalAs<int>("most");
+      owe.unit = node.optional("unit");
+      owe.from = node.optional("from");
+      owe.path = tokensOf(node, "path");
+      owe.router = node.optional("router");
+      owe.involved = tokensOf(node, "involved");
+      owe.name = node.optional("name");
+      for (const HexXml::XmlNode& arg : node.children("arg")) {
+        owe.args.push_back(SaveArg{arg.required("name"), arg.required("value")});
+      }
+      if (const std::optional<HexXml::XmlNode> ask = node.child("ask"); ask.has_value()) {
+        owe.ask = readAsk(*ask);
+      }
+      return owe;
+    }
+
   }  // namespace
 
   SaveModel
@@ -182,6 +229,12 @@ namespace HexRecord {
         region.posture = r.optional("posture");
         region.owner = r.optional("owner");
         model.regions.push_back(std::move(region));
+      }
+    }
+
+    if (const std::optional<HexXml::XmlNode> resolution = root.child("resolution"); resolution.has_value()) {
+      for (const HexXml::XmlNode& o : resolution->children("owe")) {
+        model.resolution.push_back(readOwe(o));
       }
     }
 

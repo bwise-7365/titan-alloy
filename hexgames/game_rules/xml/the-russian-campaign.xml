@@ -124,30 +124,118 @@
   <!-- ================= sequence of play ================= -->
   <sequence turns="25">
     <phase id="game-turn" name="Game turn">
-      <phase id="weather-phase" name="Weather Phase" side="axis"><note ref="4.1.1">The Axis rolls once for both players.</note></phase>
+      <step id="turn-check-attack" does="check-attack" at="before-command" commands="attack" rules="air-range av-trap">A unit attacks once a phase, not after moving by rail or winning an automatic victory, at 1-6 or better, with air power as the chart and the HQs allow.</step>
+      <step id="turn-rail-moves" does="count-rail-moves" at="after-command" commands="rail-move">Units moved by rail count against the side's rail capacity and do nothing else this impulse.</step>
+      <step id="turn-rail-touched" does="note-rail-touched" at="after-command" commands="move rail-move" rules="rail-railhead-advance">Rail hexes a unit enters with a line back to a friendly city or edge are kept for the end phase's conversion.</step>
+      <step id="turn-warsaw" does="note-warsaw" at="after-command" commands="move rail-move" rules="garrison-warsaw">A Russian unit coming within two hexes of Warsaw from 1944 summons its garrison.</step>
+      <step id="turn-air-used" does="count-air-used" at="after-command" commands="attack" rules="air-range">Air units committed to an attack count against the impulse's availability.</step>
+      <step id="turn-workers" does="workers-surrender" at="after-command" rules="retreat-leaders-workers">A worker sent to the pool surrenders instead.</step>
+      <step id="turn-leaders" does="note-leaders" at="after-command" rules="leader-loss">A leader lost to the pool or the surrendered box freezes his nation in its next movement phase.</step>
+      <step id="turn-stacking-after-combat" does="repair-stacking-after-combat" at="after-command" commands="attack answer" rules="stacking-sizes">Once a battle's last answer is given, overstacked units go to their pool.</step>
+      <step id="turn-control" does="update-control" at="after-command" rules="control-last-toucher zoc-contested">Control of cities, oil wells and junctions follows occupation and uncontested zones, frozen while a battle is still owed.</step>
+      <phase id="weather-phase" name="Weather Phase" side="axis">
+        <step id="weather-roll" does="roll-weather" at="enter" rules="weather-fixed-turns weather-drm">The weather of the new turn is fixed by the calendar or rolled with the running DRM.</step>
+        <step id="weather-turn-marker" does="advance-turn-marker" at="enter">The turn marker moves to the new turn.</step>
+        <step id="weather-reinforcements" does="age-reinforcements" at="enter" rules="reinforcement-schedule">Every waiting reinforcement comes a turn nearer.</step>
+        <step id="weather-italy" does="italy-surrenders" at="enter" turns="15" rules="surrender-italy">Italy leaves the war in July/August 1943.</step>
+        <step id="weather-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+        <note ref="4.1.1">The Axis rolls once for both players.</note>
+      </phase>
       <phase id="axis-turn" name="Axis player turn" side="axis">
         <phase id="axis-i1" name="Axis first impulse">
-          <phase id="axis-i1-move" name="Movement Phase"><note>Withdrawals first; then normal, rail and sea movement; reinforcements; replacements; automatic-victory attacks; partisan removal.</note></phase>
-          <phase id="axis-i1-combat" name="Combat Phase"><note>Stukas committed here only.</note></phase>
+          <phase id="axis-i1-move" name="Movement Phase">
+            <step id="axis-i1-move-markers" does="clear-impulse-markers" at="enter">The last impulse's automatic-victory and rail markers come off the side's units.</step>
+            <step id="axis-i1-move-leader" does="wake-leader-freeze" at="enter" rules="leader-loss">A leader lost since the side last moved freezes his nation now.</step>
+            <step id="axis-i1-move-warsaw" does="garrison-warsaw" at="enter" rules="garrison-warsaw">A summoned Warsaw garrison arrives.</step>
+            <step id="axis-i1-move-finland" does="finland-surrenders-1944" at="enter" rules="surrender-finland-1944">From 1944 Finland surrenders unless the Axis holds Leningrad.</step>
+            <step id="axis-i1-move-partisans" does="remove-exposed-partisans" at="end" rules="order-partisan-removal">Partisans in an Axis zone of control or near an SS unit are removed.</step>
+            <step id="axis-i1-move-freeze-spent" does="spend-leader-freeze" at="end" rules="leader-loss">A leader's freeze is spent when the frozen phase ends.</step>
+            <step id="axis-i1-move-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>Withdrawals first; then normal, rail and sea movement; reinforcements; replacements; automatic-victory attacks; partisan removal.</note>
+          </phase>
+          <phase id="axis-i1-combat" name="Combat Phase">
+            <step id="axis-i1-combat-mandatory" does="check-mandatory-attacks" at="before-command" commands="end-phase" rules="av-trap">The phase may not end while a unit in an enemy zone of control can still make its attack.</step>
+            <step id="axis-i1-combat-debtors" does="surrender-debtors" at="end" rules="av-trap">Units that owed an attack and made none surrender.</step>
+            <step id="axis-i1-combat-air" does="end-air-commitment" at="end" rules="air-range">The impulse's air commitment ends.</step>
+            <step id="axis-i1-combat-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>Stukas committed here only.</note>
+          </phase>
         </phase>
         <phase id="axis-i2" name="Axis second impulse">
-          <phase id="axis-i2-move" name="Movement Phase"><note>Only units with second-impulse capability; no rail, no air; HQ replacements only.</note></phase>
-          <phase id="axis-i2-combat" name="Combat Phase"/>
+          <step id="axis-i2-no-rail" does="refuse" at="before-command" commands="rail-move" rules="second-impulse">No unit moves by rail in the second impulse.</step>
+          <phase id="axis-i2-move" name="Movement Phase">
+            <step id="axis-i2-move-markers" does="clear-impulse-markers" at="enter">The last impulse's automatic-victory and rail markers come off the side's units.</step>
+            <step id="axis-i2-move-leader" does="wake-leader-freeze" at="enter" rules="leader-loss">A leader lost since the side last moved freezes his nation now.</step>
+            <step id="axis-i2-move-warsaw" does="garrison-warsaw" at="enter" rules="garrison-warsaw">A summoned Warsaw garrison arrives.</step>
+            <step id="axis-i2-move-partisans" does="remove-exposed-partisans" at="end" rules="order-partisan-removal">Partisans in an Axis zone of control or near an SS unit are removed.</step>
+            <step id="axis-i2-move-freeze-spent" does="spend-leader-freeze" at="end" rules="leader-loss">A leader's freeze is spent when the frozen phase ends.</step>
+            <step id="axis-i2-move-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>Only units with second-impulse capability; no rail, no air; HQ replacements only.</note>
+          </phase>
+          <phase id="axis-i2-combat" name="Combat Phase">
+            <step id="axis-i2-combat-mandatory" does="check-mandatory-attacks" at="before-command" commands="end-phase" rules="av-trap">The phase may not end while a unit in an enemy zone of control can still make its attack.</step>
+            <step id="axis-i2-combat-debtors" does="surrender-debtors" at="end" rules="av-trap">Units that owed an attack and made none surrender.</step>
+            <step id="axis-i2-combat-air" does="end-air-commitment" at="end" rules="air-range">The impulse's air commitment ends.</step>
+            <step id="axis-i2-combat-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+          </phase>
         </phase>
-        <phase id="axis-end" name="Axis Player-Turn End Phase"><note ref="4.1.6">Advance Axis railheads, then eliminate out-of-supply Axis units. The order matters.</note></phase>
+        <phase id="axis-end" name="Axis Player-Turn End Phase">
+          <step id="axis-end-rail" does="convert-rail" at="end" rules="rail-railhead-advance rail-railhead-pushback rail-prior-turn rail-city-conversion">Rail the side's units reached is converted, then the lines between its cities.</step>
+          <step id="axis-end-supply" does="eliminate-unsupplied" at="end" rules="order-railheads-before-supply">Units that trace no supply are eliminated, after the railheads have advanced.</step>
+          <step id="axis-end-clear" does="clear-turn-state" at="end">The side's rail, sea, replacement and invasion records for the turn are cleared.</step>
+          <step id="axis-end-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+          <note ref="4.1.6">Advance Axis railheads, then eliminate out-of-supply Axis units. The order matters.</note>
+        </phase>
       </phase>
       <phase id="russian-turn" name="Russian player turn" side="russian">
         <phase id="russian-i1" name="Russian first impulse">
-          <phase id="russian-i1-move" name="Movement Phase"><note>As the Axis, plus paratroop drops on snow turns and replacement purchase.</note></phase>
-          <phase id="russian-i1-combat" name="Combat Phase"><note>Sturmoviks committed here only.</note></phase>
+          <phase id="russian-i1-move" name="Movement Phase">
+            <step id="russian-i1-move-markers" does="clear-impulse-markers" at="enter">The last impulse's automatic-victory and rail markers come off the side's units.</step>
+            <step id="russian-i1-move-leader" does="wake-leader-freeze" at="enter" rules="leader-loss">A leader lost since the side last moved freezes his nation now.</step>
+            <step id="russian-i1-move-points" does="grant-replacement-points" at="enter" rules="russian-replacements">The Russians receive the turn's replacement points.</step>
+            <step id="russian-i1-move-freeze-spent" does="spend-leader-freeze" at="end" rules="leader-loss">A leader's freeze is spent when the frozen phase ends.</step>
+            <step id="russian-i1-move-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>As the Axis, plus paratroop drops on snow turns and replacement purchase.</note>
+          </phase>
+          <phase id="russian-i1-combat" name="Combat Phase">
+            <step id="russian-i1-combat-mandatory" does="check-mandatory-attacks" at="before-command" commands="end-phase" rules="av-trap">The phase may not end while a unit in an enemy zone of control can still make its attack.</step>
+            <step id="russian-i1-combat-debtors" does="surrender-debtors" at="end" rules="av-trap">Units that owed an attack and made none surrender.</step>
+            <step id="russian-i1-combat-air" does="end-air-commitment" at="end" rules="air-range">The impulse's air commitment ends.</step>
+            <step id="russian-i1-combat-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>Sturmoviks committed here only.</note>
+          </phase>
         </phase>
         <phase id="russian-i2" name="Russian second impulse">
-          <phase id="russian-i2-move" name="Movement Phase"/>
-          <phase id="russian-i2-combat" name="Combat Phase"><note>Then partisans relocate.</note></phase>
+          <step id="russian-i2-no-rail" does="refuse" at="before-command" commands="rail-move" rules="second-impulse">No unit moves by rail in the second impulse.</step>
+          <phase id="russian-i2-move" name="Movement Phase">
+            <step id="russian-i2-move-markers" does="clear-impulse-markers" at="enter">The last impulse's automatic-victory and rail markers come off the side's units.</step>
+            <step id="russian-i2-move-leader" does="wake-leader-freeze" at="enter" rules="leader-loss">A leader lost since the side last moved freezes his nation now.</step>
+            <step id="russian-i2-move-freeze-spent" does="spend-leader-freeze" at="end" rules="leader-loss">A leader's freeze is spent when the frozen phase ends.</step>
+            <step id="russian-i2-move-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+          </phase>
+          <phase id="russian-i2-combat" name="Combat Phase">
+            <step id="russian-i2-combat-mandatory" does="check-mandatory-attacks" at="before-command" commands="end-phase" rules="av-trap">The phase may not end while a unit in an enemy zone of control can still make its attack.</step>
+            <step id="russian-i2-combat-debtors" does="surrender-debtors" at="end" rules="av-trap">Units that owed an attack and made none surrender.</step>
+            <step id="russian-i2-combat-air" does="end-air-commitment" at="end" rules="air-range">The impulse's air commitment ends.</step>
+            <step id="russian-i2-combat-partisans" does="lift-partisans" at="end" rules="partisan-cycle">Every partisan leaves the map, to be placed again in the end phase.</step>
+            <step id="russian-i2-combat-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+            <note>Then partisans relocate.</note>
+          </phase>
         </phase>
-        <phase id="russian-end" name="Russian Player-Turn End Phase"><note>Push back Axis railheads, eliminate out-of-supply Russian units, resolve Axis minor ally surrenders, advance the turn marker.</note></phase>
+        <phase id="russian-end" name="Russian Player-Turn End Phase">
+          <step id="russian-end-rail" does="convert-rail" at="end" rules="rail-railhead-advance rail-railhead-pushback rail-prior-turn rail-city-conversion">Rail the side's units reached is converted, then the lines between its cities.</step>
+          <step id="russian-end-supply" does="eliminate-unsupplied" at="end" rules="order-railheads-before-supply">Units that trace no supply are eliminated, after the railheads have been pushed back.</step>
+          <step id="russian-end-surrenders" does="minor-ally-surrenders" at="end" rules="surrender-hungary surrender-finland-rumania surrender-effect">Hungary, Finland and Rumania surrender when the Russians meet their conditions.</step>
+          <step id="russian-end-clear" does="clear-turn-state" at="end">The side's rail, sea, replacement and invasion records for the turn are cleared.</step>
+          <step id="russian-end-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+          <note>Push back Axis railheads, eliminate out-of-supply Russian units, resolve Axis minor ally surrenders, advance the turn marker.</note>
+        </phase>
       </phase>
-      <phase id="sudden-death" name="Sudden Death Victory Check" turns="5,11,17,23"><note>At the end of each January/February turn only.</note></phase>
+      <phase id="sudden-death" name="Sudden Death Victory Check" turns="5,11,17,23">
+        <step id="sudden-death-check" does="record-sudden-death" at="enter">A sudden-death condition met now ends the game.</step>
+        <step id="sudden-death-stacking" does="stacking-repair" at="end" rules="stacking-sizes">Overstacked units are removed.</step>
+        <note>At the end of each January/February turn only.</note>
+      </phase>
     </phase>
     <note>Turn numbers: 1 May/Jun 1941, 5 Jan/Feb 1942, 10 Nov/Dec 1942, 11 Jan/Feb 1943, 13 May/Jun 1943, 14 Jul/Aug 1943, 15 Sep/Oct 1943, 17 Jan/Feb 1944, 19 May/Jun 1944, 21 Sep/Oct 1944, 23 Jan/Feb 1945, 25 May/Jun 1945.</note>
     <rule id="second-impulse" ref="8.4 11.1" topic="sequence">The second impulse is restricted: only unit types with second-impulse movement may move; no rail movement or air power; only HQ replacements (Axis) or the Stavka replacement (Russian); a unit that began the impulse in an enemy ZOC may not move at all; HQs move only in this impulse.</rule>

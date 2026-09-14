@@ -73,7 +73,7 @@ TEST(TrcPackageTest, The1941ScenarioLoadsLegally)
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcTest::definition();
   const Trc::TrcPolicySet set(*definition);
   const HexRecord::Record record = HexRecord::readRecord(TrcTest::root() / "games" / "trc" / "scenario" / "trc-1941.xml",
-                                                         *definition, *set.policies().grammar);
+                                                         *definition, set.policies());
   const HexModel::Position& position = record.position;
   const HexEngine::Ctx ctx = TrcTest::ctx(*definition, position);
 

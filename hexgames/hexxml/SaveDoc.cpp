@@ -145,6 +145,55 @@ namespace HexXml {
       return SaveArgDoc{node.required("name"), node.required("value")};
     }
 
+    std::vector<std::string>
+    tokensOf(const XmlNode& node, const char* attribute)
+    {
+      const std::optional<std::string> raw = node.optional(attribute);
+      return raw ? splitTokens(*raw) : std::vector<std::string>{};
+    }
+
+    SaveAskDoc
+    parseAsk(const XmlNode& node)
+    {
+      SaveAskDoc a;
+      a.what = node.required("what");
+      checkEnum(node, "what", a.what, {"loss", "retreat", "card", "choice"});
+      a.side = node.optional("side");
+      a.unit = node.optional("unit");
+      a.candidates = tokensOf(node, "candidates");
+      a.count = node.optionalAs<int>("count");
+      a.mayStop = node.optionalAs<bool>("may-stop");
+      a.deck = node.optional("deck");
+      a.verb = node.optional("verb");
+      a.options = tokensOf(node, "options");
+      return a;
+    }
+
+    SaveOweDoc
+    parseOwe(const XmlNode& node)
+    {
+      SaveOweDoc o;
+      o.kind = node.required("kind");
+      checkEnum(node, "kind", o.kind, {"loss", "retreat", "unit-retreat", "game"});
+      o.side = node.optional("side");
+      o.count = node.optionalAs<int>("count");
+      o.fewest = node.optionalAs<int>("fewest");
+      o.most = node.optionalAs<int>("most");
+      o.unit = node.optional("unit");
+      o.from = node.optional("from");
+      o.path = tokensOf(node, "path");
+      o.router = node.optional("router");
+      o.involved = tokensOf(node, "involved");
+      o.name = node.optional("name");
+      for (const XmlNode& a : node.children("arg")) {
+        o.args.push_back(SaveArgDoc{a.required("name"), a.required("value")});
+      }
+      if (const std::optional<XmlNode> ask = node.child("ask")) {
+        o.ask = parseAsk(*ask);
+      }
+      return o;
+    }
+
     SaveResultDoc
     parseResult(const XmlNode& node)
     {
@@ -289,6 +338,12 @@ namespace HexXml {
     if (const std::optional<XmlNode> regions = root.child("regions")) {
       for (const XmlNode& r : regions->children("region")) {
         s.regions.push_back(parseRegion(r));
+      }
+    }
+
+    if (const std::optional<XmlNode> resolution = root.child("resolution")) {
+      for (const XmlNode& o : resolution->children("owe")) {
+        s.resolution.push_back(parseOwe(o));
       }
     }
 

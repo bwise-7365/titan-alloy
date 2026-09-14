@@ -38,6 +38,9 @@ namespace HexEngine {
     // back as itself. The names are hexsave move's own attribute names where one fits (units, mode,
     // path, target, modifiers) and an <arg> name otherwise (what, answer, where).
     virtual std::vector<std::pair<std::string, std::string>> arguments(const Command&) const = 0;
+    // Added in M6b review: every verb parse() reads, so that a Session can refuse rules steps whose
+    // @commands name a verb the game cannot issue.
+    virtual std::vector<std::string> verbs() const = 0;
   };
 
 }  // namespace HexEngine

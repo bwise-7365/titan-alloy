@@ -4,7 +4,8 @@
 // Walking the rules document's phase tree. A stop is one leaf phase acting for one side; a node
 // that names several sides repeats its whole subtree once per side, in the sides' declaration
 // order (Dai Senso's faction turn). Nodes outside the turn's TurnSelector, and nodes the game's
-// PhaseGate calls inactive, are skipped whole.
+// PhaseGate calls inactive, are skipped whole. Since M6b the cursor also says which phases a stop
+// stands in (its lineage), so the engine knows which phases end and begin at a phase boundary.
 // ----------------------------------------------
 #pragma once
 #include "hexmodel/Ids.h"
@@ -25,6 +26,14 @@ namespace HexEngine {
       bool operator==(const Stop&) const = default;
     };
 
+    // One phase a stop stands in, with the side acting in it: a node that repeats per side is a
+    // different frame for each side.
+    struct Frame {
+      HexModel::PhaseId phase;
+      std::optional<HexModel::SideId> side;
+      bool operator==(const Frame&) const = default;
+    };
+
     // The PhaseGate reduced to what the walk needs, so that the cursor itself needs no Position.
     using ActiveFilter = std::function<bool(HexModel::PhaseId)>;
 
@@ -39,10 +48,19 @@ namespace HexEngine {
     // own turn, which means the position and the rules document disagree.
     Stop next(const Stop& current, const ActiveFilter&) const;
 
+    // The frames a stop stands in, outermost first, the stop's own phase last. Throws as next()
+    // does when the stop is not a stop of its turn.
+    std::vector<Frame> lineage(const Stop&, const ActiveFilter&) const;
+    // A phase and every phase containing it, outermost first; throws for a phase outside the rules.
+    std::vector<HexModel::PhaseId> ancestry(HexModel::PhaseId) const;
+    const HexRules::PhaseNode& node(HexModel::PhaseId) const;
+
     static constexpr int kTurnSearch = 64;
 
   private:
     const HexRules::RuleSet& rules_;
+    std::vector<const HexRules::PhaseNode*> nodes_;          // by PhaseId
+    std::vector<std::optional<HexModel::PhaseId>> parents_;  // by PhaseId
   };
 
 }  // namespace HexEngine

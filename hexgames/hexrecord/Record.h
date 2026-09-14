@@ -47,12 +47,16 @@ namespace HexRecord {
   };
 
   // Reads any hexsave document; every cross-document reference is resolved against the definition
-  // and a failure names file:line, the attribute and the id.
-  Record readRecord(const std::filesystem::path&, const HexRules::GameDefinition&, const HexEngine::CommandGrammar&);
+  // and a failure names file:line, the attribute and the id. The policy set supplies the grammar
+  // (the log), the GameStateCodec (side flags) and the ObligationCodec (game entries of
+  // <resolution>); each must be set (M6b review).
+  Record readRecord(const std::filesystem::path&, const HexRules::GameDefinition&, const HexEngine::Policies&);
 
   // Writes the canonical form: fixed attribute order, units sorted by id, LF line ends, two-space
   // indent, `created` copied from the source when replaying a script. Two equal sessions write
-  // byte-identical files.
+  // byte-identical files. Side flags come from the session's Policies::state (none when the position
+  // holds no game state), and the resolution stack, with any pending decision, is written as
+  // <resolution> through Policies::obligationCodec.
   void writeRecord(const std::filesystem::path&, Kind, const HexEngine::Session&, const std::vector<ScriptedMove>& log,
                    const HexEngine::CommandGrammar&);
 

@@ -266,6 +266,22 @@ namespace HexXml {
       return u;
     }
 
+    StepDoc
+    parseStep(const XmlNode& node)
+    {
+      StepDoc s;
+      s.id = node.required("id");
+      s.does = node.required("does");
+      s.at = node.required("at");
+      checkEnum(node, "at", s.at, {"enter", "before-command", "after-command", "end"});
+      s.commands = idrefs(node, "commands");
+      s.rules = idrefs(node, "rules");
+      s.turns = node.optional("turns");
+      s.text = node.text();
+      s.line = node.line();
+      return s;
+    }
+
     PhaseDoc
     parsePhase(const XmlNode& node)
     {
@@ -277,6 +293,9 @@ namespace HexXml {
       p.condition = node.optional("condition");
       p.optionalFlag = node.optionalAs<bool>("optional").value_or(false);
       p.line = node.line();
+      for (const XmlNode& s : node.children("step")) {
+        p.steps.push_back(parseStep(s));
+      }
       for (const XmlNode& c : node.children("phase")) {
         p.children.push_back(parsePhase(c));
       }

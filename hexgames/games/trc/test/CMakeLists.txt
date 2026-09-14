@@ -12,6 +12,7 @@ trc_add_test(trc_ledger_test TrcLedgerTest.cpp "trc")
 trc_add_test(trc_rules_test TrcRulesTest.cpp "trc")
 trc_add_test(trc_combat_test TrcCombatTest.cpp "trc")
 trc_add_test(trc_sequence_test TrcSequenceTest.cpp "trc")
+trc_add_test(trc_state_test TrcStateTest.cpp "trc")
 trc_add_test(trc_golden_test TrcGoldenTest.cpp "golden;trc")
 trc_add_test(trc_golden_long_test TrcGoldenLongTest.cpp "golden;trc;long")
 # Copyright Ben Paul Wise. All Rights Reserved.

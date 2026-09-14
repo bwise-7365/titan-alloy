@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcMandatory.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 #include "TrcUnits.h"
 
 #include <array>
@@ -33,11 +34,11 @@ namespace Trc {
   TrcMandatory::mayAttackP(const Ctx& ctx, UnitId unit) const
   {
     const PhaseInfo phase = facts_.phase(ctx.position.clock().phase);
-    if (ctx.position.unit(unit).flags.attackedP || Flags::markedP(ctx.position, unit, Flags::kRailed) ||
-        Flags::markedP(ctx.position, unit, Flags::kAv)) {
+    if (ctx.position.unit(unit).flags.attackedP || Markers::markedP(ctx.position, unit, Markers::kRailed) ||
+        Markers::markedP(ctx.position, unit, Markers::kAv)) {
       return false;
     }
-    return !(Impulse::Second == phase.impulse && Flags::markedP(ctx.position, unit, Flags::kAvFirst));
+    return !(Impulse::Second == phase.impulse && Markers::markedP(ctx.position, unit, Markers::kAvFirst));
   }
 
   std::vector<HexIndex>
@@ -70,7 +71,7 @@ namespace Trc {
       return false;
     }
     const PhaseInfo phase = facts_.phase(ctx.position.clock().phase);
-    if (Impulse::First == phase.impulse && Flags::markedP(ctx.position, unit, Flags::kAv)) {
+    if (Impulse::First == phase.impulse && Markers::markedP(ctx.position, unit, Markers::kAv)) {
       return false;  // 16.2: may not attack now; 16.3 judges it in the second impulse
     }
     return !unattackedNeighbours(ctx, unit).empty();

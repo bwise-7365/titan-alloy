@@ -103,6 +103,35 @@ namespace HexXml {
     std::string value;
   };
 
+  // Added in M6b review: one entry of <resolution>, and the decision it asked.
+  struct SaveAskDoc {
+    std::string what;  // loss | retreat | card | choice
+    std::optional<std::string> side;
+    std::optional<std::string> unit;
+    std::vector<std::string> candidates;
+    std::optional<int> count;
+    std::optional<bool> mayStop;
+    std::optional<std::string> deck;
+    std::optional<std::string> verb;
+    std::vector<std::string> options;
+  };
+
+  struct SaveOweDoc {
+    std::string kind;  // loss | retreat | unit-retreat | game
+    std::optional<std::string> side;
+    std::optional<int> count;
+    std::optional<int> fewest;
+    std::optional<int> most;
+    std::optional<std::string> unit;
+    std::optional<std::string> from;
+    std::vector<std::string> path;
+    std::optional<std::string> router;
+    std::vector<std::string> involved;
+    std::optional<std::string> name;
+    std::vector<SaveArgDoc> args;
+    std::optional<SaveAskDoc> ask;
+  };
+
   struct SaveResultDoc {
     std::string outcome;
     std::optional<std::string> odds;
@@ -175,6 +204,7 @@ namespace HexXml {
     std::vector<SaveControlHexDoc> controlHexes;
     std::vector<SaveControlLinkDoc> controlLinks;
     std::vector<SaveRegionDoc> regions;
+    std::vector<SaveOweDoc> resolution;  // bottom first
     std::vector<SavePileDoc> piles;
     std::vector<SaveStreamDoc> streams;
     std::vector<SaveMoveDoc> log;

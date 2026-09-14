@@ -37,428 +37,127 @@
 <hexes terrain="swamp" ids="0132 0200 0332 0400 0532 0600 0732 0800 0932 1000 1132 1200 1332 1400 1532 1600 1732 1800 1932 2000 2132 2200 2332 2400 2532 2600 2732 2800 2932 3000 3132 3200 3332 3400 3532 3600 3732 3800 3932 4000 4132 4200 4332 4400 4532 4600 4732 4800 4932 5000 5132 5200 5332 5400 5532 5600 5732 5800 5932"/>
 <hexes terrain="lake" ids="0602 1401 1502 1503 5602 5603 5702 5703 5802 5901"/>
 <!-- 1888 hexes classified -->
-  <!-- rivers along hexsides, traced from the scan -->
-<edge at="0107:s" line="river"/>
-<edge at="0108:s" line="river"/>
-<edge at="0109:se" line="river"/>
-<edge at="0109:s" line="river"/>
-<edge at="0110:s" line="river"/>
+  <!-- rivers along hexsides, traced from the scan, then tidied by tools/tidy_networks.py -->
 <edge at="0112:s" line="river"/>
 <edge at="0113:ne" line="river"/>
-<edge at="0114:s" line="river"/>
-<edge at="0115:s" line="river"/>
-<edge at="0118:s" line="river"/>
-<edge at="0120:se" line="river"/>
-<edge at="0120:s" line="river"/>
-<edge at="0120:ne" line="river"/>
-<edge at="0121:s" line="river"/>
-<edge at="0122:s" line="river"/>
-<edge at="0123:s" line="river"/>
-<edge at="0124:s" line="river"/>
-<edge at="0125:s" line="river"/>
-<edge at="0126:s" line="river"/>
-<edge at="0127:s" line="river"/>
+<edge at="0127:se" line="river"/>
+<edge at="0128:se" line="river"/>
 <edge at="0128:s" line="river"/>
-<edge at="0129:s" line="river"/>
-<edge at="0130:se" line="river"/>
-<edge at="0130:s" line="river"/>
-<edge at="0206:s" line="river"/>
-<edge at="0207:s" line="river"/>
-<edge at="0208:s" line="river"/>
-<edge at="0209:s" line="river"/>
-<edge at="0210:se" line="river"/>
-<edge at="0212:se" line="river"/>
+<edge at="0128:ne" line="river"/>
 <edge at="0212:s" line="river"/>
-<edge at="0214:s" line="river"/>
-<edge at="0215:s" line="river"/>
-<edge at="0219:se" line="river"/>
-<edge at="0219:s" line="river"/>
-<edge at="0219:ne" line="river"/>
-<edge at="0220:s" line="river"/>
-<edge at="0220:ne" line="river"/>
-<edge at="0221:s" line="river"/>
-<edge at="0222:s" line="river"/>
-<edge at="0225:s" line="river"/>
-<edge at="0225:ne" line="river"/>
+<edge at="0213:ne" line="river"/>
 <edge at="0226:se" line="river"/>
 <edge at="0226:s" line="river"/>
-<edge at="0227:se" line="river"/>
-<edge at="0227:s" line="river"/>
-<edge at="0227:ne" line="river"/>
-<edge at="0228:s" line="river"/>
-<edge at="0228:ne" line="river"/>
-<edge at="0229:s" line="river"/>
-<edge at="0230:s" line="river"/>
-<edge at="0310:s" line="river"/>
-<edge at="0311:se" line="river"/>
-<edge at="0312:s" line="river"/>
+<edge at="0313:se" line="river"/>
 <edge at="0313:s" line="river"/>
-<edge at="0317:s" line="river"/>
-<edge at="0318:s" line="river"/>
-<edge at="0319:ne" line="river"/>
-<edge at="0320:se" line="river"/>
-<edge at="0320:s" line="river"/>
-<edge at="0321:s" line="river"/>
-<edge at="0321:ne" line="river"/>
-<edge at="0322:s" line="river"/>
-<edge at="0322:ne" line="river"/>
-<edge at="0324:se" line="river"/>
-<edge at="0325:se" line="river"/>
 <edge at="0326:se" line="river"/>
-<edge at="0326:ne" line="river"/>
-<edge at="0327:se" line="river"/>
-<edge at="0327:s" line="river"/>
-<edge at="0327:ne" line="river"/>
-<edge at="0328:se" line="river"/>
-<edge at="0328:s" line="river"/>
-<edge at="0328:ne" line="river"/>
-<edge at="0329:se" line="river"/>
-<edge at="0329:s" line="river"/>
-<edge at="0329:ne" line="river"/>
-<edge at="0330:se" line="river"/>
-<edge at="0330:s" line="river"/>
-<edge at="0330:ne" line="river"/>
-<edge at="0331:se" line="river"/>
-<edge at="0411:se" line="river"/>
+<edge at="0326:s" line="river"/>
 <edge at="0412:se" line="river"/>
 <edge at="0412:s" line="river"/>
-<edge at="0412:ne" line="river"/>
-<edge at="0413:se" line="river"/>
-<edge at="0413:s" line="river"/>
-<edge at="0413:ne" line="river"/>
-<edge at="0414:s" line="river"/>
-<edge at="0414:ne" line="river"/>
-<edge at="0415:s" line="river"/>
 <edge at="0419:se" line="river"/>
-<edge at="0419:s" line="river"/>
-<edge at="0419:ne" line="river"/>
 <edge at="0420:se" line="river"/>
-<edge at="0420:s" line="river"/>
 <edge at="0420:ne" line="river"/>
 <edge at="0421:se" line="river"/>
 <edge at="0421:ne" line="river"/>
 <edge at="0422:se" line="river"/>
 <edge at="0422:ne" line="river"/>
 <edge at="0423:se" line="river"/>
-<edge at="0423:s" line="river"/>
 <edge at="0423:ne" line="river"/>
 <edge at="0424:se" line="river"/>
-<edge at="0424:s" line="river"/>
 <edge at="0424:ne" line="river"/>
-<edge at="0428:s" line="river"/>
-<edge at="0429:s" line="river"/>
-<edge at="0430:s" line="river"/>
-<edge at="0501:se" line="river"/>
-<edge at="0502:s" line="river"/>
-<edge at="0502:ne" line="river"/>
-<edge at="0503:se" line="river"/>
-<edge at="0510:s" line="river"/>
-<edge at="0511:se" line="river"/>
-<edge at="0511:s" line="river"/>
-<edge at="0511:ne" line="river"/>
-<edge at="0513:se" line="river"/>
+<edge at="0425:se" line="river"/>
+<edge at="0425:s" line="river"/>
+<edge at="0425:ne" line="river"/>
+<edge at="0512:s" line="river"/>
 <edge at="0513:ne" line="river"/>
 <edge at="0519:se" line="river"/>
 <edge at="0519:s" line="river"/>
-<edge at="0519:ne" line="river"/>
-<edge at="0520:s" line="river"/>
-<edge at="0521:se" line="river"/>
-<edge at="0521:s" line="river"/>
-<edge at="0522:s" line="river"/>
-<edge at="0524:se" line="river"/>
-<edge at="0529:s" line="river"/>
-<edge at="0530:s" line="river"/>
-<edge at="0601:se" line="river"/>
-<edge at="0603:ne" line="river"/>
-<edge at="0607:s" line="river"/>
-<edge at="0608:s" line="river"/>
-<edge at="0609:s" line="river"/>
-<edge at="0610:se" line="river"/>
-<edge at="0610:s" line="river"/>
 <edge at="0612:se" line="river"/>
 <edge at="0612:s" line="river"/>
-<edge at="0612:ne" line="river"/>
-<edge at="0613:se" line="river"/>
-<edge at="0613:s" line="river"/>
-<edge at="0614:s" line="river"/>
-<edge at="0615:se" line="river"/>
-<edge at="0615:s" line="river"/>
 <edge at="0618:se" line="river"/>
 <edge at="0618:s" line="river"/>
-<edge at="0618:ne" line="river"/>
-<edge at="0620:s" line="river"/>
-<edge at="0621:s" line="river"/>
-<edge at="0622:s" line="river"/>
-<edge at="0623:s" line="river"/>
-<edge at="0624:s" line="river"/>
-<edge at="0624:ne" line="river"/>
-<edge at="0625:s" line="river"/>
-<edge at="0625:ne" line="river"/>
-<edge at="0626:s" line="river"/>
-<edge at="0629:s" line="river"/>
-<edge at="0630:s" line="river"/>
-<edge at="0702:se" line="river"/>
-<edge at="0702:s" line="river"/>
-<edge at="0702:ne" line="river"/>
-<edge at="0703:s" line="river"/>
-<edge at="0704:se" line="river"/>
-<edge at="0704:s" line="river"/>
-<edge at="0705:se" line="river"/>
-<edge at="0705:ne" line="river"/>
-<edge at="0708:se" line="river"/>
-<edge at="0710:s" line="river"/>
-<edge at="0711:ne" line="river"/>
+<edge at="0712:se" line="river"/>
 <edge at="0712:s" line="river"/>
-<edge at="0712:ne" line="river"/>
-<edge at="0714:se" line="river"/>
+<edge at="0718:se" line="river"/>
 <edge at="0718:s" line="river"/>
-<edge at="0719:se" line="river"/>
-<edge at="0719:ne" line="river"/>
-<edge at="0725:se" line="river"/>
-<edge at="0725:s" line="river"/>
-<edge at="0726:s" line="river"/>
-<edge at="0730:s" line="river"/>
 <edge at="0731:se" line="river"/>
-<edge at="0801:s" line="river"/>
-<edge at="0802:se" line="river"/>
-<edge at="0802:ne" line="river"/>
-<edge at="0803:se" line="river"/>
-<edge at="0803:s" line="river"/>
-<edge at="0803:ne" line="river"/>
-<edge at="0805:se" line="river"/>
-<edge at="0806:s" line="river"/>
-<edge at="0807:s" line="river"/>
-<edge at="0808:s" line="river"/>
-<edge at="0809:se" line="river"/>
-<edge at="0810:se" line="river"/>
-<edge at="0810:s" line="river"/>
-<edge at="0810:ne" line="river"/>
-<edge at="0812:s" line="river"/>
-<edge at="0813:s" line="river"/>
-<edge at="0814:se" line="river"/>
-<edge at="0814:s" line="river"/>
+<edge at="0811:se" line="river"/>
+<edge at="0811:s" line="river"/>
 <edge at="0817:se" line="river"/>
-<edge at="0818:se" line="river"/>
-<edge at="0818:s" line="river"/>
-<edge at="0818:ne" line="river"/>
-<edge at="0820:s" line="river"/>
-<edge at="0824:s" line="river"/>
-<edge at="0825:s" line="river"/>
-<edge at="0825:ne" line="river"/>
-<edge at="0826:s" line="river"/>
-<edge at="0829:se" line="river"/>
+<edge at="0817:s" line="river"/>
 <edge at="0830:se" line="river"/>
 <edge at="0830:s" line="river"/>
-<edge at="0830:ne" line="river"/>
-<edge at="0906:se" line="river"/>
-<edge at="0906:s" line="river"/>
-<edge at="0907:se" line="river"/>
-<edge at="0907:ne" line="river"/>
-<edge at="0908:ne" line="river"/>
-<edge at="0909:se" line="river"/>
-<edge at="0909:s" line="river"/>
-<edge at="0909:ne" line="river"/>
-<edge at="0910:s" line="river"/>
+<edge at="0911:se" line="river"/>
 <edge at="0911:s" line="river"/>
-<edge at="0912:s" line="river"/>
-<edge at="0912:ne" line="river"/>
-<edge at="0915:se" line="river"/>
 <edge at="0917:se" line="river"/>
 <edge at="0917:s" line="river"/>
-<edge at="0918:s" line="river"/>
-<edge at="0920:s" line="river"/>
-<edge at="0921:s" line="river"/>
-<edge at="0922:s" line="river"/>
-<edge at="0923:se" line="river"/>
-<edge at="0925:se" line="river"/>
-<edge at="0925:s" line="river"/>
-<edge at="0929:se" line="river"/>
-<edge at="0929:s" line="river"/>
-<edge at="1006:se" line="river"/>
-<edge at="1006:s" line="river"/>
-<edge at="1007:s" line="river"/>
-<edge at="1008:ne" line="river"/>
-<edge at="1009:se" line="river"/>
-<edge at="1009:s" line="river"/>
-<edge at="1011:se" line="river"/>
-<edge at="1012:s" line="river"/>
-<edge at="1015:s" line="river"/>
-<edge at="1015:ne" line="river"/>
+<edge at="0930:se" line="river"/>
+<edge at="0930:s" line="river"/>
+<edge at="1010:se" line="river"/>
+<edge at="1010:s" line="river"/>
 <edge at="1016:s" line="river"/>
-<edge at="1017:s" line="river"/>
 <edge at="1017:ne" line="river"/>
-<edge at="1020:s" line="river"/>
-<edge at="1021:s" line="river"/>
-<edge at="1022:s" line="river"/>
-<edge at="1023:s" line="river"/>
-<edge at="1024:se" line="river"/>
-<edge at="1024:s" line="river"/>
-<edge at="1025:s" line="river"/>
-<edge at="1025:ne" line="river"/>
-<edge at="1028:se" line="river"/>
-<edge at="1028:s" line="river"/>
-<edge at="1028:ne" line="river"/>
-<edge at="1030:s" line="river"/>
-<edge at="1107:se" line="river"/>
-<edge at="1109:se" line="river"/>
-<edge at="1109:s" line="river"/>
-<edge at="1111:se" line="river"/>
-<edge at="1111:s" line="river"/>
-<edge at="1115:se" line="river"/>
+<edge at="1029:se" line="river"/>
+<edge at="1029:s" line="river"/>
+<edge at="1110:se" line="river"/>
+<edge at="1110:s" line="river"/>
+<edge at="1111:ne" line="river"/>
 <edge at="1117:s" line="river"/>
 <edge at="1118:ne" line="river"/>
-<edge at="1120:s" line="river"/>
-<edge at="1125:se" line="river"/>
-<edge at="1125:s" line="river"/>
-<edge at="1126:s" line="river"/>
-<edge at="1127:s" line="river"/>
-<edge at="1128:se" line="river"/>
-<edge at="1130:s" line="river"/>
-<edge at="1207:se" line="river"/>
-<edge at="1208:se" line="river"/>
-<edge at="1208:s" line="river"/>
+<edge at="1129:se" line="river"/>
+<edge at="1129:s" line="river"/>
+<edge at="1209:se" line="river"/>
+<edge at="1209:s" line="river"/>
 <edge at="1210:s" line="river"/>
 <edge at="1211:ne" line="river"/>
-<edge at="1212:s" line="river"/>
-<edge at="1215:ne" line="river"/>
 <edge at="1217:se" line="river"/>
 <edge at="1217:s" line="river"/>
-<edge at="1220:s" line="river"/>
-<edge at="1221:s" line="river"/>
-<edge at="1222:s" line="river"/>
-<edge at="1223:s" line="river"/>
-<edge at="1224:s" line="river"/>
-<edge at="1225:se" line="river"/>
-<edge at="1225:s" line="river"/>
-<edge at="1225:ne" line="river"/>
-<edge at="1226:s" line="river"/>
+<edge at="1226:se" line="river"/>
 <edge at="1227:se" line="river"/>
-<edge at="1227:s" line="river"/>
-<edge at="1230:s" line="river"/>
-<edge at="1308:se" line="river"/>
-<edge at="1308:s" line="river"/>
+<edge at="1227:ne" line="river"/>
+<edge at="1228:se" line="river"/>
+<edge at="1228:s" line="river"/>
+<edge at="1228:ne" line="river"/>
 <edge at="1309:se" line="river"/>
 <edge at="1309:s" line="river"/>
-<edge at="1309:ne" line="river"/>
-<edge at="1311:se" line="river"/>
 <edge at="1311:s" line="river"/>
 <edge at="1312:ne" line="river"/>
-<edge at="1315:se" line="river"/>
-<edge at="1316:se" line="river"/>
 <edge at="1317:se" line="river"/>
 <edge at="1317:s" line="river"/>
-<edge at="1318:s" line="river"/>
-<edge at="1320:s" line="river"/>
-<edge at="1322:s" line="river"/>
-<edge at="1325:s" line="river"/>
-<edge at="1325:ne" line="river"/>
+<edge at="1326:se" line="river"/>
 <edge at="1326:s" line="river"/>
-<edge at="1327:se" line="river"/>
-<edge at="1327:s" line="river"/>
-<edge at="1401:s" line="river"/>
-<edge at="1401:ne" line="river"/>
-<edge at="1402:se" line="river"/>
-<edge at="1406:s" line="river"/>
-<edge at="1407:se" line="river"/>
 <edge at="1408:se" line="river"/>
 <edge at="1408:s" line="river"/>
-<edge at="1408:ne" line="river"/>
-<edge at="1409:s" line="river"/>
-<edge at="1409:ne" line="river"/>
 <edge at="1411:s" line="river"/>
-<edge at="1412:s" line="river"/>
 <edge at="1412:ne" line="river"/>
-<edge at="1415:s" line="river"/>
-<edge at="1415:ne" line="river"/>
+<edge at="1416:se" line="river"/>
 <edge at="1416:s" line="river"/>
-<edge at="1416:ne" line="river"/>
-<edge at="1417:ne" line="river"/>
-<edge at="1420:s" line="river"/>
-<edge at="1421:se" line="river"/>
-<edge at="1421:s" line="river"/>
-<edge at="1422:se" line="river"/>
-<edge at="1422:s" line="river"/>
-<edge at="1422:ne" line="river"/>
 <edge at="1423:se" line="river"/>
-<edge at="1423:s" line="river"/>
-<edge at="1423:ne" line="river"/>
-<edge at="1424:s" line="river"/>
+<edge at="1424:se" line="river"/>
 <edge at="1424:ne" line="river"/>
+<edge at="1425:se" line="river"/>
 <edge at="1425:s" line="river"/>
-<edge at="1426:se" line="river"/>
-<edge at="1426:s" line="river"/>
-<edge at="1430:s" line="river"/>
-<edge at="1501:se" line="river"/>
-<edge at="1503:ne" line="river"/>
-<edge at="1507:se" line="river"/>
-<edge at="1507:s" line="river"/>
-<edge at="1512:se" line="river"/>
+<edge at="1425:ne" line="river"/>
+<edge at="1508:se" line="river"/>
+<edge at="1508:s" line="river"/>
 <edge at="1512:s" line="river"/>
 <edge at="1513:se" line="river"/>
-<edge at="1513:s" line="river"/>
 <edge at="1513:ne" line="river"/>
 <edge at="1514:se" line="river"/>
 <edge at="1514:ne" line="river"/>
-<edge at="1515:ne" line="river"/>
-<edge at="1516:ne" line="river"/>
-<edge at="1517:se" line="river"/>
-<edge at="1517:s" line="river"/>
-<edge at="1518:s" line="river"/>
-<edge at="1520:se" line="river"/>
-<edge at="1520:s" line="river"/>
-<edge at="1521:se" line="river"/>
-<edge at="1521:s" line="river"/>
-<edge at="1521:ne" line="river"/>
-<edge at="1522:s" line="river"/>
-<edge at="1524:se" line="river"/>
-<edge at="1524:ne" line="river"/>
-<edge at="1525:se" line="river"/>
-<edge at="1525:s" line="river"/>
-<edge at="1525:ne" line="river"/>
-<edge at="1526:se" line="river"/>
-<edge at="1526:s" line="river"/>
-<edge at="1526:ne" line="river"/>
-<edge at="1527:s" line="river"/>
-<edge at="1528:s" line="river"/>
-<edge at="1529:se" line="river"/>
-<edge at="1529:s" line="river"/>
-<edge at="1530:s" line="river"/>
-<edge at="1601:s" line="river"/>
-<edge at="1602:se" line="river"/>
-<edge at="1602:ne" line="river"/>
-<edge at="1603:ne" line="river"/>
-<edge at="1606:s" line="river"/>
-<edge at="1607:ne" line="river"/>
-<edge at="1608:s" line="river"/>
-<edge at="1609:s" line="river"/>
-<edge at="1611:se" line="river"/>
-<edge at="1611:s" line="river"/>
-<edge at="1612:se" line="river"/>
-<edge at="1612:s" line="river"/>
-<edge at="1614:se" line="river"/>
+<edge at="1516:se" line="river"/>
+<edge at="1516:s" line="river"/>
+<edge at="1523:se" line="river"/>
+<edge at="1523:s" line="river"/>
+<edge at="1607:se" line="river"/>
+<edge at="1607:s" line="river"/>
 <edge at="1615:se" line="river"/>
-<edge at="1616:se" line="river"/>
-<edge at="1616:s" line="river"/>
-<edge at="1620:s" line="river"/>
-<edge at="1621:s" line="river"/>
+<edge at="1615:s" line="river"/>
 <edge at="1622:se" line="river"/>
 <edge at="1622:s" line="river"/>
-<edge at="1623:se" line="river"/>
-<edge at="1623:s" line="river"/>
-<edge at="1623:ne" line="river"/>
-<edge at="1624:se" line="river"/>
-<edge at="1624:s" line="river"/>
-<edge at="1625:s" line="river"/>
-<edge at="1626:s" line="river"/>
-<edge at="1628:s" line="river"/>
-<edge at="1629:s" line="river"/>
-<edge at="1630:s" line="river"/>
-<edge at="1630:ne" line="river"/>
-<edge at="1701:se" line="river"/>
-<edge at="1702:se" line="river"/>
 <edge at="1702:s" line="river"/>
-<edge at="1702:ne" line="river"/>
-<edge at="1703:s" line="river"/>
+<edge at="1703:se" line="river"/>
+<edge at="1703:ne" line="river"/>
 <edge at="1704:se" line="river"/>
 <edge at="1704:ne" line="river"/>
 <edge at="1705:se" line="river"/>
@@ -468,1462 +167,420 @@
 <edge at="1707:se" line="river"/>
 <edge at="1707:s" line="river"/>
 <edge at="1707:ne" line="river"/>
-<edge at="1713:se" line="river"/>
-<edge at="1715:se" line="river"/>
-<edge at="1716:se" line="river"/>
-<edge at="1716:s" line="river"/>
+<edge at="1715:s" line="river"/>
 <edge at="1716:ne" line="river"/>
-<edge at="1718:s" line="river"/>
-<edge at="1720:s" line="river"/>
 <edge at="1722:se" line="river"/>
 <edge at="1722:s" line="river"/>
-<edge at="1725:s" line="river"/>
-<edge at="1725:ne" line="river"/>
-<edge at="1726:s" line="river"/>
-<edge at="1727:s" line="river"/>
-<edge at="1728:s" line="river"/>
-<edge at="1729:s" line="river"/>
-<edge at="1730:s" line="river"/>
+<edge at="1730:se" line="river"/>
 <edge at="1731:se" line="river"/>
-<edge at="1801:s" line="river"/>
-<edge at="1802:ne" line="river"/>
+<edge at="1731:ne" line="river"/>
 <edge at="1804:se" line="river"/>
 <edge at="1804:s" line="river"/>
-<edge at="1805:se" line="river"/>
-<edge at="1805:s" line="river"/>
-<edge at="1805:ne" line="river"/>
-<edge at="1806:s" line="river"/>
-<edge at="1806:ne" line="river"/>
-<edge at="1812:s" line="river"/>
-<edge at="1813:se" line="river"/>
-<edge at="1815:se" line="river"/>
 <edge at="1815:s" line="river"/>
-<edge at="1815:ne" line="river"/>
-<edge at="1820:s" line="river"/>
+<edge at="1816:ne" line="river"/>
+<edge at="1820:se" line="river"/>
 <edge at="1821:se" line="river"/>
 <edge at="1821:s" line="river"/>
-<edge at="1822:s" line="river"/>
-<edge at="1823:s" line="river"/>
-<edge at="1824:se" line="river"/>
-<edge at="1824:s" line="river"/>
-<edge at="1825:s" line="river"/>
-<edge at="1826:s" line="river"/>
-<edge at="1828:s" line="river"/>
+<edge at="1821:ne" line="river"/>
 <edge at="1829:se" line="river"/>
 <edge at="1829:s" line="river"/>
-<edge at="1830:se" line="river"/>
-<edge at="1830:s" line="river"/>
-<edge at="1830:ne" line="river"/>
-<edge at="1831:ne" line="river"/>
-<edge at="1902:se" line="river"/>
-<edge at="1902:s" line="river"/>
 <edge at="1904:se" line="river"/>
-<edge at="1904:ne" line="river"/>
-<edge at="1905:se" line="river"/>
-<edge at="1905:s" line="river"/>
-<edge at="1905:ne" line="river"/>
-<edge at="1914:se" line="river"/>
-<edge at="1915:se" line="river"/>
-<edge at="1915:s" line="river"/>
-<edge at="1915:ne" line="river"/>
-<edge at="1916:ne" line="river"/>
-<edge at="1918:s" line="river"/>
-<edge at="1920:se" line="river"/>
-<edge at="1920:s" line="river"/>
-<edge at="1921:se" line="river"/>
-<edge at="1921:s" line="river"/>
-<edge at="1921:ne" line="river"/>
-<edge at="1922:s" line="river"/>
-<edge at="1925:se" line="river"/>
-<edge at="1925:s" line="river"/>
-<edge at="1926:s" line="river"/>
-<edge at="1927:s" line="river"/>
-<edge at="1928:s" line="river"/>
+<edge at="1904:s" line="river"/>
+<edge at="1916:s" line="river"/>
+<edge at="1917:ne" line="river"/>
+<edge at="1929:se" line="river"/>
 <edge at="1929:s" line="river"/>
-<edge at="1930:s" line="river"/>
-<edge at="1930:ne" line="river"/>
-<edge at="2001:se" line="river"/>
-<edge at="2001:s" line="river"/>
 <edge at="2003:se" line="river"/>
 <edge at="2003:s" line="river"/>
-<edge at="2012:s" line="river"/>
-<edge at="2014:se" line="river"/>
-<edge at="2014:s" line="river"/>
-<edge at="2015:se" line="river"/>
-<edge at="2015:s" line="river"/>
 <edge at="2016:s" line="river"/>
-<edge at="2016:ne" line="river"/>
-<edge at="2017:s" line="river"/>
-<edge at="2020:s" line="river"/>
-<edge at="2021:s" line="river"/>
-<edge at="2022:s" line="river"/>
-<edge at="2023:s" line="river"/>
-<edge at="2024:s" line="river"/>
-<edge at="2025:se" line="river"/>
-<edge at="2025:s" line="river"/>
-<edge at="2026:s" line="river"/>
+<edge at="2017:ne" line="river"/>
+<edge at="2028:se" line="river"/>
 <edge at="2028:s" line="river"/>
-<edge at="2029:s" line="river"/>
-<edge at="2030:s" line="river"/>
-<edge at="2030:ne" line="river"/>
-<edge at="2102:ne" line="river"/>
 <edge at="2103:s" line="river"/>
 <edge at="2104:ne" line="river"/>
-<edge at="2115:se" line="river"/>
-<edge at="2115:ne" line="river"/>
-<edge at="2116:se" line="river"/>
-<edge at="2116:s" line="river"/>
-<edge at="2117:ne" line="river"/>
-<edge at="2118:s" line="river"/>
-<edge at="2119:ne" line="river"/>
-<edge at="2120:s" line="river"/>
-<edge at="2121:s" line="river"/>
-<edge at="2122:s" line="river"/>
-<edge at="2125:s" line="river"/>
-<edge at="2126:ne" line="river"/>
+<edge at="2117:s" line="river"/>
+<edge at="2118:ne" line="river"/>
+<edge at="2126:se" line="river"/>
+<edge at="2127:se" line="river"/>
+<edge at="2127:ne" line="river"/>
 <edge at="2128:se" line="river"/>
 <edge at="2128:s" line="river"/>
-<edge at="2129:se" line="river"/>
-<edge at="2129:s" line="river"/>
-<edge at="2129:ne" line="river"/>
-<edge at="2130:se" line="river"/>
-<edge at="2130:s" line="river"/>
-<edge at="2130:ne" line="river"/>
-<edge at="2201:se" line="river"/>
-<edge at="2201:s" line="river"/>
+<edge at="2128:ne" line="river"/>
 <edge at="2203:s" line="river"/>
 <edge at="2204:ne" line="river"/>
-<edge at="2214:se" line="river"/>
-<edge at="2215:s" line="river"/>
-<edge at="2216:se" line="river"/>
-<edge at="2216:s" line="river"/>
-<edge at="2217:ne" line="river"/>
-<edge at="2220:s" line="river"/>
-<edge at="2221:s" line="river"/>
-<edge at="2222:s" line="river"/>
-<edge at="2223:s" line="river"/>
-<edge at="2224:s" line="river"/>
-<edge at="2225:se" line="river"/>
-<edge at="2225:s" line="river"/>
-<edge at="2226:se" line="river"/>
-<edge at="2227:se" line="river"/>
-<edge at="2227:s" line="river"/>
-<edge at="2227:ne" line="river"/>
-<edge at="2229:s" line="river"/>
-<edge at="2230:s" line="river"/>
-<edge at="2301:s" line="river"/>
-<edge at="2302:ne" line="river"/>
+<edge at="2217:se" line="river"/>
+<edge at="2217:s" line="river"/>
+<edge at="2304:se" line="river"/>
 <edge at="2304:s" line="river"/>
-<edge at="2305:ne" line="river"/>
-<edge at="2315:ne" line="river"/>
 <edge at="2317:se" line="river"/>
 <edge at="2317:s" line="river"/>
-<edge at="2317:ne" line="river"/>
-<edge at="2318:se" line="river"/>
-<edge at="2318:s" line="river"/>
-<edge at="2318:ne" line="river"/>
-<edge at="2319:s" line="river"/>
-<edge at="2319:ne" line="river"/>
-<edge at="2320:se" line="river"/>
-<edge at="2320:s" line="river"/>
-<edge at="2321:se" line="river"/>
-<edge at="2321:s" line="river"/>
-<edge at="2321:ne" line="river"/>
-<edge at="2322:s" line="river"/>
-<edge at="2326:se" line="river"/>
-<edge at="2326:s" line="river"/>
-<edge at="2327:s" line="river"/>
-<edge at="2327:ne" line="river"/>
-<edge at="2328:s" line="river"/>
-<edge at="2329:s" line="river"/>
-<edge at="2330:s" line="river"/>
-<edge at="2401:s" line="river"/>
-<edge at="2402:ne" line="river"/>
-<edge at="2404:se" line="river"/>
-<edge at="2404:s" line="river"/>
-<edge at="2406:s" line="river"/>
-<edge at="2407:s" line="river"/>
-<edge at="2412:s" line="river"/>
-<edge at="2414:s" line="river"/>
-<edge at="2415:s" line="river"/>
-<edge at="2416:ne" line="river"/>
-<edge at="2417:se" line="river"/>
-<edge at="2418:se" line="river"/>
-<edge at="2418:s" line="river"/>
-<edge at="2418:ne" line="river"/>
-<edge at="2420:s" line="river"/>
-<edge at="2421:s" line="river"/>
-<edge at="2422:se" line="river"/>
-<edge at="2422:s" line="river"/>
-<edge at="2423:se" line="river"/>
-<edge at="2423:ne" line="river"/>
-<edge at="2426:s" line="river"/>
-<edge at="2426:ne" line="river"/>
-<edge at="2428:s" line="river"/>
-<edge at="2429:s" line="river"/>
-<edge at="2430:s" line="river"/>
-<edge at="2502:s" line="river"/>
-<edge at="2503:ne" line="river"/>
-<edge at="2504:s" line="river"/>
-<edge at="2505:ne" line="river"/>
-<edge at="2510:s" line="river"/>
-<edge at="2516:ne" line="river"/>
-<edge at="2517:se" line="river"/>
-<edge at="2517:s" line="river"/>
-<edge at="2518:se" line="river"/>
-<edge at="2518:s" line="river"/>
-<edge at="2520:s" line="river"/>
-<edge at="2521:s" line="river"/>
-<edge at="2522:s" line="river"/>
-<edge at="2526:se" line="river"/>
-<edge at="2526:ne" line="river"/>
-<edge at="2527:s" line="river"/>
-<edge at="2528:se" line="river"/>
-<edge at="2528:s" line="river"/>
-<edge at="2528:ne" line="river"/>
-<edge at="2529:s" line="river"/>
-<edge at="2529:ne" line="river"/>
-<edge at="2530:s" line="river"/>
+<edge at="2403:se" line="river"/>
+<edge at="2403:s" line="river"/>
+<edge at="2416:se" line="river"/>
+<edge at="2416:s" line="river"/>
+<edge at="2503:s" line="river"/>
+<edge at="2504:ne" line="river"/>
+<edge at="2516:se" line="river"/>
+<edge at="2516:s" line="river"/>
+<edge at="2529:se" line="river"/>
+<edge at="2530:se" line="river"/>
+<edge at="2530:ne" line="river"/>
 <edge at="2531:se" line="river"/>
-<edge at="2602:se" line="river"/>
-<edge at="2602:s" line="river"/>
-<edge at="2604:s" line="river"/>
-<edge at="2605:ne" line="river"/>
-<edge at="2609:s" line="river"/>
-<edge at="2612:s" line="river"/>
-<edge at="2613:s" line="river"/>
-<edge at="2614:se" line="river"/>
-<edge at="2614:s" line="river"/>
-<edge at="2615:se" line="river"/>
+<edge at="2531:ne" line="river"/>
+<edge at="2603:s" line="river"/>
+<edge at="2604:ne" line="river"/>
 <edge at="2615:s" line="river"/>
-<edge at="2615:ne" line="river"/>
-<edge at="2616:se" line="river"/>
-<edge at="2616:s" line="river"/>
 <edge at="2616:ne" line="river"/>
-<edge at="2618:se" line="river"/>
-<edge at="2620:s" line="river"/>
-<edge at="2621:s" line="river"/>
-<edge at="2622:s" line="river"/>
-<edge at="2624:se" line="river"/>
-<edge at="2625:se" line="river"/>
-<edge at="2625:s" line="river"/>
-<edge at="2625:ne" line="river"/>
-<edge at="2626:se" line="river"/>
-<edge at="2626:s" line="river"/>
-<edge at="2626:ne" line="river"/>
-<edge at="2627:se" line="river"/>
-<edge at="2627:s" line="river"/>
+<edge at="2628:se" line="river"/>
 <edge at="2628:s" line="river"/>
-<edge at="2629:s" line="river"/>
-<edge at="2629:ne" line="river"/>
-<edge at="2630:se" line="river"/>
-<edge at="2630:s" line="river"/>
-<edge at="2701:se" line="river"/>
-<edge at="2702:se" line="river"/>
-<edge at="2702:s" line="river"/>
-<edge at="2702:ne" line="river"/>
-<edge at="2705:se" line="river"/>
-<edge at="2705:s" line="river"/>
-<edge at="2715:se" line="river"/>
-<edge at="2715:s" line="river"/>
-<edge at="2715:ne" line="river"/>
+<edge at="2704:se" line="river"/>
+<edge at="2704:s" line="river"/>
 <edge at="2716:s" line="river"/>
 <edge at="2717:ne" line="river"/>
-<edge at="2719:se" line="river"/>
-<edge at="2720:s" line="river"/>
-<edge at="2722:s" line="river"/>
-<edge at="2725:s" line="river"/>
-<edge at="2729:s" line="river"/>
-<edge at="2730:se" line="river"/>
-<edge at="2730:s" line="river"/>
-<edge at="2730:ne" line="river"/>
+<edge at="2728:se" line="river"/>
+<edge at="2728:s" line="river"/>
 <edge at="2803:se" line="river"/>
-<edge at="2804:se" line="river"/>
-<edge at="2804:s" line="river"/>
-<edge at="2804:ne" line="river"/>
-<edge at="2808:s" line="river"/>
-<edge at="2809:s" line="river"/>
-<edge at="2812:s" line="river"/>
-<edge at="2813:se" line="river"/>
-<edge at="2813:s" line="river"/>
+<edge at="2803:s" line="river"/>
 <edge at="2814:se" line="river"/>
-<edge at="2814:s" line="river"/>
-<edge at="2814:ne" line="river"/>
+<edge at="2815:se" line="river"/>
+<edge at="2815:ne" line="river"/>
 <edge at="2816:se" line="river"/>
 <edge at="2816:s" line="river"/>
-<edge at="2819:se" line="river"/>
-<edge at="2820:s" line="river"/>
-<edge at="2821:s" line="river"/>
-<edge at="2822:s" line="river"/>
-<edge at="2823:s" line="river"/>
-<edge at="2828:se" line="river"/>
-<edge at="2828:s" line="river"/>
-<edge at="2902:se" line="river"/>
+<edge at="2816:ne" line="river"/>
+<edge at="2824:se" line="river"/>
+<edge at="2825:se" line="river"/>
+<edge at="2825:ne" line="river"/>
+<edge at="2826:se" line="river"/>
+<edge at="2826:ne" line="river"/>
+<edge at="2827:se" line="river"/>
+<edge at="2827:s" line="river"/>
+<edge at="2827:ne" line="river"/>
 <edge at="2903:se" line="river"/>
 <edge at="2903:s" line="river"/>
-<edge at="2903:ne" line="river"/>
-<edge at="2904:se" line="river"/>
-<edge at="2904:s" line="river"/>
-<edge at="2905:ne" line="river"/>
-<edge at="2910:s" line="river"/>
-<edge at="2912:se" line="river"/>
-<edge at="2913:se" line="river"/>
-<edge at="2913:s" line="river"/>
-<edge at="2913:ne" line="river"/>
+<edge at="2914:se" line="river"/>
+<edge at="2914:s" line="river"/>
+<edge at="2916:se" line="river"/>
 <edge at="2916:s" line="river"/>
-<edge at="2917:s" line="river"/>
-<edge at="2917:ne" line="river"/>
-<edge at="2918:s" line="river"/>
-<edge at="2920:se" line="river"/>
-<edge at="2920:s" line="river"/>
-<edge at="2921:s" line="river"/>
-<edge at="2922:s" line="river"/>
-<edge at="2925:se" line="river"/>
-<edge at="2925:s" line="river"/>
-<edge at="2926:s" line="river"/>
-<edge at="2926:ne" line="river"/>
-<edge at="2929:se" line="river"/>
-<edge at="2929:s" line="river"/>
-<edge at="3001:se" line="river"/>
-<edge at="3001:s" line="river"/>
-<edge at="3003:s" line="river"/>
-<edge at="3004:ne" line="river"/>
-<edge at="3006:s" line="river"/>
-<edge at="3009:se" line="river"/>
-<edge at="3010:se" line="river"/>
-<edge at="3010:ne" line="river"/>
+<edge at="2921:se" line="river"/>
+<edge at="2921:ne" line="river"/>
+<edge at="2922:se" line="river"/>
+<edge at="2922:ne" line="river"/>
+<edge at="2923:se" line="river"/>
+<edge at="2923:ne" line="river"/>
+<edge at="2924:se" line="river"/>
+<edge at="2924:s" line="river"/>
+<edge at="2924:ne" line="river"/>
+<edge at="3002:s" line="river"/>
+<edge at="3003:ne" line="river"/>
 <edge at="3011:se" line="river"/>
-<edge at="3011:s" line="river"/>
-<edge at="3011:ne" line="river"/>
+<edge at="3012:se" line="river"/>
+<edge at="3012:ne" line="river"/>
+<edge at="3013:se" line="river"/>
+<edge at="3013:s" line="river"/>
+<edge at="3013:ne" line="river"/>
+<edge at="3015:se" line="river"/>
 <edge at="3015:s" line="river"/>
-<edge at="3016:s" line="river"/>
-<edge at="3017:ne" line="river"/>
-<edge at="3020:s" line="river"/>
-<edge at="3021:se" line="river"/>
-<edge at="3021:s" line="river"/>
-<edge at="3022:se" line="river"/>
-<edge at="3022:s" line="river"/>
-<edge at="3023:se" line="river"/>
-<edge at="3023:s" line="river"/>
-<edge at="3023:ne" line="river"/>
-<edge at="3024:se" line="river"/>
-<edge at="3024:s" line="river"/>
-<edge at="3024:ne" line="river"/>
-<edge at="3025:s" line="river"/>
-<edge at="3026:se" line="river"/>
-<edge at="3026:s" line="river"/>
-<edge at="3027:s" line="river"/>
-<edge at="3027:ne" line="river"/>
-<edge at="3028:s" line="river"/>
-<edge at="3029:s" line="river"/>
-<edge at="3030:se" line="river"/>
-<edge at="3030:s" line="river"/>
-<edge at="3101:s" line="river"/>
-<edge at="3102:se" line="river"/>
-<edge at="3102:ne" line="river"/>
-<edge at="3104:se" line="river"/>
-<edge at="3104:s" line="river"/>
-<edge at="3115:ne" line="river"/>
-<edge at="3117:se" line="river"/>
-<edge at="3118:s" line="river"/>
-<edge at="3120:s" line="river"/>
-<edge at="3121:s" line="river"/>
-<edge at="3127:s" line="river"/>
-<edge at="3128:se" line="river"/>
-<edge at="3128:s" line="river"/>
-<edge at="3128:ne" line="river"/>
-<edge at="3129:s" line="river"/>
-<edge at="3129:ne" line="river"/>
-<edge at="3130:s" line="river"/>
-<edge at="3201:ne" line="river"/>
+<edge at="3103:s" line="river"/>
+<edge at="3104:ne" line="river"/>
+<edge at="3111:se" line="river"/>
+<edge at="3111:s" line="river"/>
+<edge at="3115:se" line="river"/>
+<edge at="3115:s" line="river"/>
+<edge at="3203:se" line="river"/>
 <edge at="3203:s" line="river"/>
-<edge at="3204:ne" line="river"/>
-<edge at="3206:s" line="river"/>
-<edge at="3207:s" line="river"/>
-<edge at="3208:s" line="river"/>
+<edge at="3210:se" line="river"/>
+<edge at="3210:s" line="river"/>
 <edge at="3214:se" line="river"/>
 <edge at="3214:s" line="river"/>
-<edge at="3214:ne" line="river"/>
-<edge at="3215:s" line="river"/>
-<edge at="3216:se" line="river"/>
-<edge at="3216:s" line="river"/>
-<edge at="3220:s" line="river"/>
-<edge at="3221:s" line="river"/>
-<edge at="3222:se" line="river"/>
-<edge at="3222:s" line="river"/>
-<edge at="3223:s" line="river"/>
-<edge at="3224:s" line="river"/>
-<edge at="3225:ne" line="river"/>
-<edge at="3228:se" line="river"/>
-<edge at="3228:s" line="river"/>
-<edge at="3229:se" line="river"/>
-<edge at="3229:s" line="river"/>
-<edge at="3229:ne" line="river"/>
-<edge at="3230:s" line="river"/>
-<edge at="3230:ne" line="river"/>
-<edge at="3304:se" line="river"/>
-<edge at="3304:s" line="river"/>
-<edge at="3312:s" line="river"/>
+<edge at="3220:se" line="river"/>
+<edge at="3221:se" line="river"/>
+<edge at="3221:ne" line="river"/>
+<edge at="3222:ne" line="river"/>
+<edge at="3303:se" line="river"/>
+<edge at="3303:s" line="river"/>
+<edge at="3310:se" line="river"/>
+<edge at="3310:s" line="river"/>
+<edge at="3311:se" line="river"/>
+<edge at="3312:se" line="river"/>
+<edge at="3312:ne" line="river"/>
+<edge at="3313:se" line="river"/>
+<edge at="3313:ne" line="river"/>
 <edge at="3314:se" line="river"/>
-<edge at="3315:se" line="river"/>
-<edge at="3315:ne" line="river"/>
-<edge at="3316:se" line="river"/>
-<edge at="3316:s" line="river"/>
-<edge at="3316:ne" line="river"/>
-<edge at="3317:s" line="river"/>
+<edge at="3314:s" line="river"/>
+<edge at="3314:ne" line="river"/>
+<edge at="3320:se" line="river"/>
 <edge at="3320:s" line="river"/>
-<edge at="3321:s" line="river"/>
 <edge at="3322:s" line="river"/>
-<edge at="3323:se" line="river"/>
-<edge at="3325:s" line="river"/>
-<edge at="3325:ne" line="river"/>
-<edge at="3326:s" line="river"/>
-<edge at="3327:se" line="river"/>
-<edge at="3327:s" line="river"/>
-<edge at="3327:ne" line="river"/>
-<edge at="3328:se" line="river"/>
-<edge at="3328:s" line="river"/>
-<edge at="3328:ne" line="river"/>
-<edge at="3329:s" line="river"/>
-<edge at="3330:s" line="river"/>
-<edge at="3331:se" line="river"/>
-<edge at="3331:ne" line="river"/>
-<edge at="3403:se" line="river"/>
-<edge at="3403:s" line="river"/>
-<edge at="3406:s" line="river"/>
-<edge at="3408:se" line="river"/>
+<edge at="3322:ne" line="river"/>
+<edge at="3323:ne" line="river"/>
+<edge at="3402:se" line="river"/>
+<edge at="3402:s" line="river"/>
 <edge at="3409:se" line="river"/>
+<edge at="3409:s" line="river"/>
 <edge at="3409:ne" line="river"/>
 <edge at="3410:se" line="river"/>
-<edge at="3410:ne" line="river"/>
-<edge at="3411:se" line="river"/>
-<edge at="3411:ne" line="river"/>
-<edge at="3412:se" line="river"/>
-<edge at="3412:s" line="river"/>
-<edge at="3412:ne" line="river"/>
-<edge at="3413:se" line="river"/>
-<edge at="3413:s" line="river"/>
-<edge at="3413:ne" line="river"/>
-<edge at="3414:se" line="river"/>
-<edge at="3414:s" line="river"/>
-<edge at="3415:s" line="river"/>
-<edge at="3417:s" line="river"/>
+<edge at="3410:s" line="river"/>
+<edge at="3419:se" line="river"/>
+<edge at="3419:s" line="river"/>
+<edge at="3421:se" line="river"/>
 <edge at="3421:s" line="river"/>
-<edge at="3422:se" line="river"/>
 <edge at="3422:s" line="river"/>
-<edge at="3423:se" line="river"/>
-<edge at="3423:s" line="river"/>
 <edge at="3423:ne" line="river"/>
-<edge at="3424:s" line="river"/>
-<edge at="3424:ne" line="river"/>
-<edge at="3425:s" line="river"/>
-<edge at="3426:s" line="river"/>
-<edge at="3428:s" line="river"/>
-<edge at="3429:s" line="river"/>
-<edge at="3503:se" line="river"/>
-<edge at="3503:s" line="river"/>
+<edge at="3502:s" line="river"/>
+<edge at="3503:ne" line="river"/>
+<edge at="3505:se" line="river"/>
+<edge at="3506:se" line="river"/>
+<edge at="3506:ne" line="river"/>
+<edge at="3507:se" line="river"/>
+<edge at="3507:ne" line="river"/>
+<edge at="3508:se" line="river"/>
+<edge at="3508:ne" line="river"/>
+<edge at="3509:se" line="river"/>
 <edge at="3509:ne" line="river"/>
+<edge at="3510:se" line="river"/>
 <edge at="3510:s" line="river"/>
-<edge at="3512:s" line="river"/>
-<edge at="3515:se" line="river"/>
-<edge at="3517:s" line="river"/>
-<edge at="3518:s" line="river"/>
-<edge at="3522:se" line="river"/>
-<edge at="3522:s" line="river"/>
-<edge at="3524:s" line="river"/>
-<edge at="3525:s" line="river"/>
-<edge at="3526:s" line="river"/>
-<edge at="3527:s" line="river"/>
+<edge at="3510:ne" line="river"/>
+<edge at="3519:se" line="river"/>
+<edge at="3519:s" line="river"/>
+<edge at="3521:se" line="river"/>
+<edge at="3521:s" line="river"/>
+<edge at="3523:s" line="river"/>
+<edge at="3524:ne" line="river"/>
 <edge at="3602:s" line="river"/>
-<edge at="3605:se" line="river"/>
-<edge at="3605:ne" line="river"/>
-<edge at="3606:se" line="river"/>
-<edge at="3606:ne" line="river"/>
-<edge at="3607:se" line="river"/>
-<edge at="3607:ne" line="river"/>
-<edge at="3608:se" line="river"/>
-<edge at="3608:s" line="river"/>
-<edge at="3608:ne" line="river"/>
-<edge at="3609:s" line="river"/>
-<edge at="3615:s" line="river"/>
-<edge at="3617:s" line="river"/>
+<edge at="3603:ne" line="river"/>
+<edge at="3604:s" line="river"/>
+<edge at="3618:se" line="river"/>
+<edge at="3618:s" line="river"/>
+<edge at="3620:se" line="river"/>
 <edge at="3620:s" line="river"/>
-<edge at="3621:se" line="river"/>
-<edge at="3621:s" line="river"/>
 <edge at="3623:s" line="river"/>
-<edge at="3624:s" line="river"/>
 <edge at="3624:ne" line="river"/>
-<edge at="3625:s" line="river"/>
-<edge at="3626:s" line="river"/>
-<edge at="3627:s" line="river"/>
-<edge at="3714:se" line="river"/>
-<edge at="3715:s" line="river"/>
+<edge at="3718:se" line="river"/>
 <edge at="3718:s" line="river"/>
 <edge at="3720:s" line="river"/>
-<edge at="3721:s" line="river"/>
-<edge at="3722:ne" line="river"/>
-<edge at="3724:se" line="river"/>
-<edge at="3724:ne" line="river"/>
-<edge at="3725:s" line="river"/>
-<edge at="3726:s" line="river"/>
-<edge at="3727:s" line="river"/>
-<edge at="3730:s" line="river"/>
-<edge at="3801:ne" line="river"/>
-<edge at="3806:se" line="river"/>
-<edge at="3806:s" line="river"/>
-<edge at="3807:s" line="river"/>
-<edge at="3807:ne" line="river"/>
-<edge at="3808:s" line="river"/>
-<edge at="3809:s" line="river"/>
-<edge at="3812:s" line="river"/>
-<edge at="3813:s" line="river"/>
-<edge at="3814:se" line="river"/>
-<edge at="3814:s" line="river"/>
-<edge at="3814:ne" line="river"/>
-<edge at="3815:se" line="river"/>
-<edge at="3815:s" line="river"/>
+<edge at="3721:ne" line="river"/>
+<edge at="3724:s" line="river"/>
+<edge at="3725:se" line="river"/>
+<edge at="3725:ne" line="river"/>
+<edge at="3726:ne" line="river"/>
+<edge at="3817:se" line="river"/>
+<edge at="3817:s" line="river"/>
+<edge at="3820:se" line="river"/>
 <edge at="3820:s" line="river"/>
-<edge at="3821:se" line="river"/>
-<edge at="3821:s" line="river"/>
-<edge at="3823:s" line="river"/>
-<edge at="3824:se" line="river"/>
 <edge at="3824:s" line="river"/>
 <edge at="3825:s" line="river"/>
-<edge at="3826:s" line="river"/>
-<edge at="3827:s" line="river"/>
-<edge at="3828:s" line="river"/>
-<edge at="3829:s" line="river"/>
-<edge at="3830:s" line="river"/>
-<edge at="3831:ne" line="river"/>
-<edge at="3901:se" line="river"/>
+<edge at="3825:ne" line="river"/>
+<edge at="3826:se" line="river"/>
+<edge at="3826:ne" line="river"/>
+<edge at="3827:se" line="river"/>
+<edge at="3827:ne" line="river"/>
+<edge at="3828:se" line="river"/>
+<edge at="3828:ne" line="river"/>
+<edge at="3829:se" line="river"/>
+<edge at="3829:ne" line="river"/>
+<edge at="3830:ne" line="river"/>
 <edge at="3901:s" line="river"/>
-<edge at="3902:se" line="river"/>
 <edge at="3902:ne" line="river"/>
-<edge at="3905:se" line="river"/>
-<edge at="3906:se" line="river"/>
-<edge at="3906:s" line="river"/>
-<edge at="3906:ne" line="river"/>
-<edge at="3910:s" line="river"/>
-<edge at="3914:se" line="river"/>
-<edge at="3914:ne" line="river"/>
-<edge at="3915:ne" line="river"/>
-<edge at="3916:ne" line="river"/>
+<edge at="3917:se" line="river"/>
 <edge at="3917:s" line="river"/>
-<edge at="3918:s" line="river"/>
+<edge at="3920:se" line="river"/>
 <edge at="3920:s" line="river"/>
-<edge at="3921:se" line="river"/>
-<edge at="3921:s" line="river"/>
-<edge at="3925:se" line="river"/>
 <edge at="3925:s" line="river"/>
-<edge at="3926:s" line="river"/>
-<edge at="3927:s" line="river"/>
-<edge at="3928:se" line="river"/>
-<edge at="3928:s" line="river"/>
-<edge at="3928:ne" line="river"/>
-<edge at="3929:s" line="river"/>
-<edge at="3929:ne" line="river"/>
-<edge at="3930:se" line="river"/>
-<edge at="3930:s" line="river"/>
-<edge at="3931:se" line="river"/>
-<edge at="3931:ne" line="river"/>
-<edge at="4001:se" line="river"/>
+<edge at="3926:ne" line="river"/>
 <edge at="4001:s" line="river"/>
-<edge at="4001:ne" line="river"/>
-<edge at="4002:se" line="river"/>
-<edge at="4002:s" line="river"/>
 <edge at="4002:ne" line="river"/>
-<edge at="4003:se" line="river"/>
-<edge at="4003:s" line="river"/>
-<edge at="4003:ne" line="river"/>
-<edge at="4004:se" line="river"/>
-<edge at="4004:s" line="river"/>
-<edge at="4004:ne" line="river"/>
-<edge at="4005:se" line="river"/>
-<edge at="4005:s" line="river"/>
-<edge at="4005:ne" line="river"/>
-<edge at="4006:se" line="river"/>
-<edge at="4006:s" line="river"/>
-<edge at="4006:ne" line="river"/>
-<edge at="4007:se" line="river"/>
-<edge at="4007:s" line="river"/>
-<edge at="4007:ne" line="river"/>
-<edge at="4008:se" line="river"/>
-<edge at="4008:s" line="river"/>
-<edge at="4008:ne" line="river"/>
-<edge at="4009:se" line="river"/>
-<edge at="4009:s" line="river"/>
-<edge at="4009:ne" line="river"/>
-<edge at="4010:se" line="river"/>
-<edge at="4010:s" line="river"/>
-<edge at="4010:ne" line="river"/>
-<edge at="4011:se" line="river"/>
-<edge at="4011:s" line="river"/>
-<edge at="4011:ne" line="river"/>
-<edge at="4012:se" line="river"/>
-<edge at="4012:s" line="river"/>
-<edge at="4012:ne" line="river"/>
-<edge at="4013:se" line="river"/>
-<edge at="4013:s" line="river"/>
-<edge at="4013:ne" line="river"/>
-<edge at="4014:se" line="river"/>
-<edge at="4014:s" line="river"/>
-<edge at="4014:ne" line="river"/>
 <edge at="4015:se" line="river"/>
-<edge at="4015:s" line="river"/>
-<edge at="4015:ne" line="river"/>
 <edge at="4016:se" line="river"/>
+<edge at="4016:s" line="river"/>
 <edge at="4016:ne" line="river"/>
-<edge at="4018:se" line="river"/>
-<edge at="4018:ne" line="river"/>
 <edge at="4019:se" line="river"/>
-<edge at="4019:ne" line="river"/>
-<edge at="4020:se" line="river"/>
-<edge at="4020:s" line="river"/>
-<edge at="4020:ne" line="river"/>
-<edge at="4024:se" line="river"/>
-<edge at="4024:s" line="river"/>
-<edge at="4024:ne" line="river"/>
-<edge at="4025:se" line="river"/>
+<edge at="4019:s" line="river"/>
 <edge at="4025:s" line="river"/>
-<edge at="4025:ne" line="river"/>
-<edge at="4026:s" line="river"/>
 <edge at="4026:ne" line="river"/>
-<edge at="4027:se" line="river"/>
-<edge at="4028:s" line="river"/>
-<edge at="4029:se" line="river"/>
-<edge at="4029:s" line="river"/>
-<edge at="4029:ne" line="river"/>
-<edge at="4030:s" line="river"/>
-<edge at="4030:ne" line="river"/>
 <edge at="4102:se" line="river"/>
 <edge at="4102:s" line="river"/>
-<edge at="4103:se" line="river"/>
-<edge at="4103:s" line="river"/>
-<edge at="4103:ne" line="river"/>
-<edge at="4104:ne" line="river"/>
-<edge at="4105:s" line="river"/>
-<edge at="4106:se" line="river"/>
-<edge at="4106:ne" line="river"/>
-<edge at="4107:se" line="river"/>
-<edge at="4107:ne" line="river"/>
-<edge at="4108:ne" line="river"/>
-<edge at="4110:s" line="river"/>
-<edge at="4111:s" line="river"/>
-<edge at="4111:ne" line="river"/>
-<edge at="4112:s" line="river"/>
-<edge at="4113:s" line="river"/>
-<edge at="4113:ne" line="river"/>
-<edge at="4116:s" line="river"/>
-<edge at="4117:s" line="river"/>
-<edge at="4118:s" line="river"/>
+<edge at="4115:se" line="river"/>
+<edge at="4115:s" line="river"/>
+<edge at="4116:se" line="river"/>
+<edge at="4117:se" line="river"/>
+<edge at="4117:ne" line="river"/>
+<edge at="4118:se" line="river"/>
+<edge at="4118:ne" line="river"/>
+<edge at="4119:se" line="river"/>
 <edge at="4119:s" line="river"/>
-<edge at="4120:se" line="river"/>
-<edge at="4120:s" line="river"/>
-<edge at="4125:s" line="river"/>
+<edge at="4119:ne" line="river"/>
 <edge at="4126:s" line="river"/>
-<edge at="4127:s" line="river"/>
-<edge at="4128:s" line="river"/>
-<edge at="4129:s" line="river"/>
-<edge at="4130:ne" line="river"/>
+<edge at="4127:ne" line="river"/>
+<edge at="4201:se" line="river"/>
 <edge at="4201:s" line="river"/>
-<edge at="4202:ne" line="river"/>
-<edge at="4203:se" line="river"/>
-<edge at="4203:s" line="river"/>
-<edge at="4206:s" line="river"/>
-<edge at="4207:s" line="river"/>
-<edge at="4208:s" line="river"/>
-<edge at="4209:s" line="river"/>
-<edge at="4210:ne" line="river"/>
-<edge at="4211:s" line="river"/>
-<edge at="4211:ne" line="river"/>
-<edge at="4212:s" line="river"/>
+<edge at="4214:se" line="river"/>
+<edge at="4214:s" line="river"/>
 <edge at="4215:se" line="river"/>
 <edge at="4215:s" line="river"/>
-<edge at="4216:s" line="river"/>
-<edge at="4217:se" line="river"/>
-<edge at="4217:s" line="river"/>
-<edge at="4218:se" line="river"/>
-<edge at="4218:s" line="river"/>
-<edge at="4218:ne" line="river"/>
-<edge at="4219:se" line="river"/>
-<edge at="4219:s" line="river"/>
-<edge at="4219:ne" line="river"/>
-<edge at="4222:s" line="river"/>
-<edge at="4222:ne" line="river"/>
-<edge at="4223:s" line="river"/>
-<edge at="4224:s" line="river"/>
-<edge at="4225:se" line="river"/>
-<edge at="4225:s" line="river"/>
 <edge at="4226:s" line="river"/>
-<edge at="4228:s" line="river"/>
-<edge at="4229:s" line="river"/>
-<edge at="4229:ne" line="river"/>
-<edge at="4230:s" line="river"/>
+<edge at="4227:ne" line="river"/>
+<edge at="4301:s" line="river"/>
 <edge at="4302:se" line="river"/>
-<edge at="4302:s" line="river"/>
-<edge at="4303:s" line="river"/>
+<edge at="4302:ne" line="river"/>
+<edge at="4303:se" line="river"/>
+<edge at="4303:ne" line="river"/>
 <edge at="4304:se" line="river"/>
 <edge at="4304:ne" line="river"/>
 <edge at="4305:ne" line="river"/>
-<edge at="4309:s" line="river"/>
-<edge at="4309:ne" line="river"/>
-<edge at="4310:s" line="river"/>
-<edge at="4311:ne" line="river"/>
-<edge at="4312:s" line="river"/>
-<edge at="4313:se" line="river"/>
-<edge at="4313:s" line="river"/>
-<edge at="4313:ne" line="river"/>
-<edge at="4314:ne" line="river"/>
-<edge at="4316:se" line="river"/>
-<edge at="4316:ne" line="river"/>
-<edge at="4317:se" line="river"/>
-<edge at="4317:s" line="river"/>
-<edge at="4317:ne" line="river"/>
-<edge at="4318:s" line="river"/>
-<edge at="4322:s" line="river"/>
-<edge at="4322:ne" line="river"/>
-<edge at="4325:s" line="river"/>
-<edge at="4326:s" line="river"/>
-<edge at="4326:ne" line="river"/>
-<edge at="4329:s" line="river"/>
-<edge at="4330:s" line="river"/>
+<edge at="4314:se" line="river"/>
+<edge at="4314:s" line="river"/>
+<edge at="4315:se" line="river"/>
+<edge at="4315:s" line="river"/>
+<edge at="4327:s" line="river"/>
+<edge at="4328:ne" line="river"/>
+<edge at="4401:se" line="river"/>
 <edge at="4401:s" line="river"/>
-<edge at="4402:ne" line="river"/>
 <edge at="4404:s" line="river"/>
 <edge at="4405:ne" line="river"/>
-<edge at="4406:s" line="river"/>
-<edge at="4407:s" line="river"/>
-<edge at="4408:s" line="river"/>
-<edge at="4408:ne" line="river"/>
-<edge at="4409:s" line="river"/>
-<edge at="4410:ne" line="river"/>
-<edge at="4412:s" line="river"/>
 <edge at="4413:s" line="river"/>
-<edge at="4414:se" line="river"/>
 <edge at="4414:s" line="river"/>
 <edge at="4414:ne" line="river"/>
-<edge at="4415:se" line="river"/>
-<edge at="4415:s" line="river"/>
 <edge at="4415:ne" line="river"/>
-<edge at="4416:ne" line="river"/>
-<edge at="4417:s" line="river"/>
-<edge at="4420:s" line="river"/>
-<edge at="4421:s" line="river"/>
-<edge at="4421:ne" line="river"/>
-<edge at="4422:s" line="river"/>
-<edge at="4423:s" line="river"/>
-<edge at="4424:s" line="river"/>
-<edge at="4425:s" line="river"/>
-<edge at="4428:s" line="river"/>
-<edge at="4429:s" line="river"/>
-<edge at="4430:s" line="river"/>
-<edge at="4502:se" line="river"/>
-<edge at="4502:s" line="river"/>
+<edge at="4427:s" line="river"/>
+<edge at="4428:ne" line="river"/>
+<edge at="4501:s" line="river"/>
+<edge at="4502:ne" line="river"/>
 <edge at="4505:s" line="river"/>
 <edge at="4506:se" line="river"/>
 <edge at="4506:ne" line="river"/>
-<edge at="4507:se" line="river"/>
 <edge at="4507:ne" line="river"/>
-<edge at="4508:se" line="river"/>
-<edge at="4508:ne" line="river"/>
-<edge at="4509:ne" line="river"/>
-<edge at="4510:s" line="river"/>
-<edge at="4510:ne" line="river"/>
-<edge at="4516:s" line="river"/>
-<edge at="4517:s" line="river"/>
-<edge at="4517:ne" line="river"/>
-<edge at="4520:s" line="river"/>
-<edge at="4521:s" line="river"/>
-<edge at="4522:s" line="river"/>
-<edge at="4525:s" line="river"/>
-<edge at="4526:s" line="river"/>
-<edge at="4527:s" line="river"/>
+<edge at="4514:s" line="river"/>
+<edge at="4515:s" line="river"/>
+<edge at="4515:ne" line="river"/>
+<edge at="4516:ne" line="river"/>
 <edge at="4528:s" line="river"/>
-<edge at="4529:s" line="river"/>
 <edge at="4529:ne" line="river"/>
-<edge at="4530:s" line="river"/>
 <edge at="4601:se" line="river"/>
 <edge at="4601:s" line="river"/>
-<edge at="4606:se" line="river"/>
-<edge at="4606:s" line="river"/>
-<edge at="4607:se" line="river"/>
-<edge at="4607:s" line="river"/>
-<edge at="4608:s" line="river"/>
-<edge at="4609:s" line="river"/>
-<edge at="4609:ne" line="river"/>
-<edge at="4612:s" line="river"/>
-<edge at="4613:s" line="river"/>
-<edge at="4616:s" line="river"/>
-<edge at="4617:s" line="river"/>
-<edge at="4617:ne" line="river"/>
-<edge at="4621:s" line="river"/>
-<edge at="4622:s" line="river"/>
-<edge at="4623:s" line="river"/>
-<edge at="4624:s" line="river"/>
-<edge at="4625:s" line="river"/>
-<edge at="4626:s" line="river"/>
-<edge at="4627:s" line="river"/>
+<edge at="4614:s" line="river"/>
+<edge at="4615:s" line="river"/>
+<edge at="4615:ne" line="river"/>
+<edge at="4616:ne" line="river"/>
 <edge at="4628:s" line="river"/>
-<edge at="4628:ne" line="river"/>
-<edge at="4629:s" line="river"/>
-<edge at="4630:s" line="river"/>
-<edge at="4701:se" line="river"/>
+<edge at="4629:ne" line="river"/>
 <edge at="4701:s" line="river"/>
-<edge at="4707:ne" line="river"/>
-<edge at="4708:se" line="river"/>
-<edge at="4710:s" line="river"/>
+<edge at="4702:ne" line="river"/>
+<edge at="4715:s" line="river"/>
 <edge at="4716:s" line="river"/>
-<edge at="4717:s" line="river"/>
-<edge at="4718:s" line="river"/>
-<edge at="4718:ne" line="river"/>
-<edge at="4720:s" line="river"/>
-<edge at="4721:s" line="river"/>
-<edge at="4721:ne" line="river"/>
-<edge at="4722:s" line="river"/>
-<edge at="4724:se" line="river"/>
-<edge at="4725:s" line="river"/>
-<edge at="4725:ne" line="river"/>
-<edge at="4726:s" line="river"/>
-<edge at="4727:s" line="river"/>
-<edge at="4728:s" line="river"/>
-<edge at="4728:ne" line="river"/>
+<edge at="4716:ne" line="river"/>
+<edge at="4717:ne" line="river"/>
 <edge at="4729:s" line="river"/>
-<edge at="4730:s" line="river"/>
-<edge at="4806:s" line="river"/>
-<edge at="4807:s" line="river"/>
-<edge at="4808:s" line="river"/>
-<edge at="4808:ne" line="river"/>
-<edge at="4812:s" line="river"/>
+<edge at="4730:ne" line="river"/>
+<edge at="4801:se" line="river"/>
+<edge at="4801:s" line="river"/>
+<edge at="4801:ne" line="river"/>
+<edge at="4805:se" line="river"/>
 <edge at="4815:s" line="river"/>
-<edge at="4816:se" line="river"/>
-<edge at="4817:s" line="river"/>
-<edge at="4818:se" line="river"/>
-<edge at="4819:se" line="river"/>
-<edge at="4819:ne" line="river"/>
-<edge at="4820:se" line="river"/>
-<edge at="4820:s" line="river"/>
-<edge at="4820:ne" line="river"/>
-<edge at="4821:s" line="river"/>
-<edge at="4821:ne" line="river"/>
-<edge at="4822:se" line="river"/>
-<edge at="4822:s" line="river"/>
-<edge at="4823:se" line="river"/>
-<edge at="4823:s" line="river"/>
-<edge at="4823:ne" line="river"/>
-<edge at="4824:s" line="river"/>
-<edge at="4825:se" line="river"/>
-<edge at="4825:s" line="river"/>
-<edge at="4826:s" line="river"/>
-<edge at="4827:se" line="river"/>
-<edge at="4827:s" line="river"/>
-<edge at="4827:ne" line="river"/>
-<edge at="4828:se" line="river"/>
-<edge at="4828:s" line="river"/>
-<edge at="4828:ne" line="river"/>
+<edge at="4816:s" line="river"/>
+<edge at="4816:ne" line="river"/>
+<edge at="4817:ne" line="river"/>
 <edge at="4829:s" line="river"/>
-<edge at="4830:s" line="river"/>
-<edge at="4906:se" line="river"/>
-<edge at="4907:se" line="river"/>
-<edge at="4907:ne" line="river"/>
-<edge at="4908:se" line="river"/>
-<edge at="4908:ne" line="river"/>
-<edge at="4909:ne" line="river"/>
-<edge at="4917:se" line="river"/>
+<edge at="4830:ne" line="river"/>
+<edge at="4905:s" line="river"/>
+<edge at="4906:ne" line="river"/>
+<edge at="4916:s" line="river"/>
 <edge at="4917:s" line="river"/>
-<edge at="4918:s" line="river"/>
-<edge at="4919:se" line="river"/>
-<edge at="4919:s" line="river"/>
-<edge at="4920:s" line="river"/>
-<edge at="4921:s" line="river"/>
-<edge at="4922:se" line="river"/>
-<edge at="4922:s" line="river"/>
-<edge at="4922:ne" line="river"/>
-<edge at="4925:s" line="river"/>
-<edge at="4926:se" line="river"/>
-<edge at="4926:s" line="river"/>
-<edge at="4926:ne" line="river"/>
-<edge at="4927:se" line="river"/>
-<edge at="4927:s" line="river"/>
-<edge at="4927:ne" line="river"/>
-<edge at="4928:s" line="river"/>
-<edge at="4929:s" line="river"/>
+<edge at="4917:ne" line="river"/>
+<edge at="4918:ne" line="river"/>
 <edge at="4930:s" line="river"/>
+<edge at="4931:ne" line="river"/>
 <edge at="5005:s" line="river"/>
-<edge at="5006:s" line="river"/>
 <edge at="5006:ne" line="river"/>
-<edge at="5007:s" line="river"/>
-<edge at="5008:se" line="river"/>
-<edge at="5008:s" line="river"/>
-<edge at="5008:ne" line="river"/>
-<edge at="5009:s" line="river"/>
-<edge at="5012:s" line="river"/>
-<edge at="5013:s" line="river"/>
-<edge at="5014:s" line="river"/>
-<edge at="5015:s" line="river"/>
+<edge at="5016:s" line="river"/>
 <edge at="5017:s" line="river"/>
-<edge at="5018:s" line="river"/>
-<edge at="5019:ne" line="river"/>
-<edge at="5020:s" line="river"/>
-<edge at="5021:s" line="river"/>
-<edge at="5022:s" line="river"/>
-<edge at="5023:s" line="river"/>
-<edge at="5024:s" line="river"/>
-<edge at="5025:s" line="river"/>
-<edge at="5026:s" line="river"/>
-<edge at="5026:ne" line="river"/>
-<edge at="5027:s" line="river"/>
-<edge at="5028:s" line="river"/>
-<edge at="5029:s" line="river"/>
+<edge at="5017:ne" line="river"/>
+<edge at="5018:ne" line="river"/>
+<edge at="5030:se" line="river"/>
 <edge at="5030:s" line="river"/>
 <edge at="5106:s" line="river"/>
 <edge at="5107:ne" line="river"/>
 <edge at="5117:s" line="river"/>
 <edge at="5118:s" line="river"/>
-<edge at="5119:s" line="river"/>
-<edge at="5120:ne" line="river"/>
-<edge at="5122:s" line="river"/>
-<edge at="5125:s" line="river"/>
-<edge at="5126:s" line="river"/>
-<edge at="5126:ne" line="river"/>
-<edge at="5127:s" line="river"/>
-<edge at="5128:s" line="river"/>
-<edge at="5129:s" line="river"/>
+<edge at="5118:ne" line="river"/>
+<edge at="5119:ne" line="river"/>
 <edge at="5130:s" line="river"/>
+<edge at="5131:ne" line="river"/>
 <edge at="5206:s" line="river"/>
-<edge at="5207:se" line="river"/>
 <edge at="5207:ne" line="river"/>
-<edge at="5208:ne" line="river"/>
-<edge at="5212:s" line="river"/>
-<edge at="5215:s" line="river"/>
-<edge at="5217:se" line="river"/>
-<edge at="5217:ne" line="river"/>
-<edge at="5219:s" line="river"/>
-<edge at="5220:se" line="river"/>
-<edge at="5220:ne" line="river"/>
-<edge at="5221:s" line="river"/>
-<edge at="5221:ne" line="river"/>
-<edge at="5222:s" line="river"/>
-<edge at="5223:s" line="river"/>
-<edge at="5224:s" line="river"/>
-<edge at="5224:ne" line="river"/>
-<edge at="5225:s" line="river"/>
-<edge at="5226:s" line="river"/>
-<edge at="5228:s" line="river"/>
-<edge at="5229:s" line="river"/>
+<edge at="5217:s" line="river"/>
+<edge at="5218:s" line="river"/>
+<edge at="5218:ne" line="river"/>
+<edge at="5219:ne" line="river"/>
 <edge at="5230:s" line="river"/>
-<edge at="5308:se" line="river"/>
-<edge at="5308:s" line="river"/>
-<edge at="5316:s" line="river"/>
-<edge at="5317:s" line="river"/>
+<edge at="5307:se" line="river"/>
+<edge at="5307:s" line="river"/>
 <edge at="5318:se" line="river"/>
 <edge at="5318:s" line="river"/>
-<edge at="5321:se" line="river"/>
-<edge at="5321:s" line="river"/>
-<edge at="5322:s" line="river"/>
-<edge at="5324:ne" line="river"/>
-<edge at="5325:s" line="river"/>
-<edge at="5326:s" line="river"/>
-<edge at="5327:s" line="river"/>
-<edge at="5328:s" line="river"/>
-<edge at="5329:s" line="river"/>
-<edge at="5330:s" line="river"/>
+<edge at="5319:s" line="river"/>
+<edge at="5320:ne" line="river"/>
+<edge at="5406:se" line="river"/>
 <edge at="5406:s" line="river"/>
-<edge at="5407:se" line="river"/>
-<edge at="5407:s" line="river"/>
-<edge at="5408:s" line="river"/>
-<edge at="5408:ne" line="river"/>
-<edge at="5409:s" line="river"/>
-<edge at="5412:s" line="river"/>
-<edge at="5413:s" line="river"/>
-<edge at="5414:s" line="river"/>
-<edge at="5415:s" line="river"/>
+<edge at="5417:se" line="river"/>
 <edge at="5417:s" line="river"/>
-<edge at="5418:se" line="river"/>
-<edge at="5420:se" line="river"/>
-<edge at="5420:s" line="river"/>
-<edge at="5421:s" line="river"/>
-<edge at="5422:s" line="river"/>
-<edge at="5423:s" line="river"/>
-<edge at="5423:ne" line="river"/>
-<edge at="5424:s" line="river"/>
-<edge at="5425:s" line="river"/>
-<edge at="5426:s" line="river"/>
-<edge at="5427:s" line="river"/>
-<edge at="5428:s" line="river"/>
-<edge at="5429:s" line="river"/>
-<edge at="5430:se" line="river"/>
-<edge at="5430:s" line="river"/>
-<edge at="5431:ne" line="river"/>
-<edge at="5502:s" line="river"/>
-<edge at="5502:ne" line="river"/>
-<edge at="5503:s" line="river"/>
-<edge at="5504:ne" line="river"/>
-<edge at="5507:s" line="river"/>
-<edge at="5508:s" line="river"/>
+<edge at="5419:se" line="river"/>
+<edge at="5419:s" line="river"/>
+<edge at="5506:se" line="river"/>
+<edge at="5506:s" line="river"/>
+<edge at="5517:se" line="river"/>
 <edge at="5517:s" line="river"/>
-<edge at="5518:s" line="river"/>
 <edge at="5519:se" line="river"/>
-<edge at="5520:s" line="river"/>
-<edge at="5521:s" line="river"/>
-<edge at="5521:ne" line="river"/>
-<edge at="5522:s" line="river"/>
-<edge at="5523:ne" line="river"/>
-<edge at="5525:s" line="river"/>
-<edge at="5526:s" line="river"/>
-<edge at="5527:s" line="river"/>
-<edge at="5528:s" line="river"/>
-<edge at="5529:s" line="river"/>
-<edge at="5530:s" line="river"/>
-<edge at="5607:s" line="river"/>
-<edge at="5612:s" line="river"/>
-<edge at="5613:s" line="river"/>
-<edge at="5614:s" line="river"/>
-<edge at="5620:s" line="river"/>
-<edge at="5621:s" line="river"/>
-<edge at="5622:s" line="river"/>
-<edge at="5623:s" line="river"/>
-<edge at="5624:s" line="river"/>
-<edge at="5625:s" line="river"/>
-<edge at="5626:s" line="river"/>
-<edge at="5627:s" line="river"/>
-<edge at="5628:s" line="river"/>
-<edge at="5629:s" line="river"/>
-<edge at="5630:s" line="river"/>
-<!-- 1451 edges -->
-  <!-- rail and road, centre to centre, traced from the scan -->
-<link kind="rail" line="rail" hexes="0109 0209"/>
-<link kind="rail" line="rail" hexes="0112 0212"/>
-<link kind="road" line="road" hexes="0112 0113"/>
-<link kind="road" line="road" hexes="0113 0212"/>
-<link kind="rail" line="rail" hexes="0210 0311"/>
-<link kind="road" line="road" hexes="0212 0213"/>
-<link kind="rail" line="rail" hexes="0212 0312"/>
-<link kind="rail" line="rail" hexes="0219 0320"/>
-<link kind="rail" line="rail" hexes="0228 0229"/>
-<link kind="rail" line="rail" hexes="0228 0328"/>
-<link kind="road" line="road" hexes="0309 0408"/>
-<link kind="rail" line="rail" hexes="0311 0411"/>
-<link kind="road" line="road" hexes="0312 0412"/>
-<link kind="road" line="road" hexes="0312 0313"/>
-<link kind="rail" line="rail" hexes="0313 0412"/>
-<link kind="rail" line="rail" hexes="0319 0320"/>
-<link kind="rail" line="rail" hexes="0320 0420"/>
-<link kind="rail" line="rail" hexes="0320 0419"/>
-<link kind="rail" line="rail" hexes="0321 0420"/>
-<link kind="rail" line="rail" hexes="0324 0424"/>
-<link kind="rail" line="rail" hexes="0325 0424"/>
-<link kind="road" line="road" hexes="0326 0426"/>
-<link kind="rail" line="rail" hexes="0411 0412"/>
-<link kind="rail" line="rail" hexes="0412 0513"/>
-<link kind="road" line="road" hexes="0412 0512"/>
-<link kind="road" line="road" hexes="0419 0520"/>
-<link kind="rail" line="rail" hexes="0419 0519"/>
-<link kind="rail" line="rail" hexes="0420 0521"/>
-<link kind="rail" line="rail" hexes="0423 0424"/>
-<link kind="rail" line="rail" hexes="0424 0525"/>
-<link kind="rail" line="rail" hexes="0425 0525"/>
-<link kind="road" line="road" hexes="0507 0606"/>
-<link kind="rail" line="rail" hexes="0512 0513"/>
-<link kind="rail" line="rail" hexes="0513 0613"/>
-<link kind="rail" line="rail" hexes="0513 0514"/>
-<link kind="rail" line="rail" hexes="0519 0618"/>
-<link kind="rail" line="rail" hexes="0521 0621"/>
-<link kind="rail" line="rail" hexes="0524 0624"/>
-<link kind="rail" line="rail" hexes="0524 0525"/>
-<link kind="rail" line="rail" hexes="0525 0526"/>
-<link kind="rail" line="rail" hexes="0525 0624"/>
-<link kind="road" line="road" hexes="0527 0528"/>
-<link kind="road" line="road" hexes="0601 0702"/>
-<link kind="road" line="road" hexes="0603 0703"/>
-<link kind="road" line="road" hexes="0610 0611"/>
-<link kind="rail" line="rail" hexes="0612 0713"/>
-<link kind="rail" line="rail" hexes="0612 0613"/>
-<link kind="rail" line="rail" hexes="0613 0714"/>
-<link kind="rail" line="rail" hexes="0615 0716"/>
-<link kind="rail" line="rail" hexes="0618 0718"/>
-<link kind="rail" line="rail" hexes="0621 0722"/>
-<link kind="rail" line="rail" hexes="0623 0624"/>
-<link kind="rail" line="rail" hexes="0624 0625"/>
-<link kind="rail" line="rail" hexes="0624 0724"/>
-<link kind="rail" line="rail" hexes="0625 0725"/>
-<link kind="road" line="road" hexes="0702 0703"/>
-<link kind="rail" line="rail" hexes="0708 0808"/>
-<link kind="rail" line="rail" hexes="0708 0709"/>
-<link kind="road" line="road" hexes="0710 0711"/>
-<link kind="rail" line="rail" hexes="0712 0713"/>
-<link kind="road" line="road" hexes="0712 0811"/>
-<link kind="rail" line="rail" hexes="0714 0814"/>
-<link kind="rail" line="rail" hexes="0718 0817"/>
-<link kind="road" line="road" hexes="0722 0822"/>
-<link kind="rail" line="rail" hexes="0725 0825"/>
-<link kind="road" line="road" hexes="0801 0901"/>
-<link kind="road" line="road" hexes="0803 0804"/>
-<link kind="rail" line="rail" hexes="0807 0808"/>
-<link kind="road" line="road" hexes="0811 0911"/>
-<link kind="rail" line="rail" hexes="0814 0915"/>
-<link kind="road" line="road" hexes="0816 0917"/>
-<link kind="rail" line="rail" hexes="0817 0917"/>
-<link kind="rail" line="rail" hexes="0822 0923"/>
-<link kind="rail" line="rail" hexes="0825 0925"/>
-<link kind="road" line="road" hexes="0829 0930"/>
-<link kind="road" line="road" hexes="0830 0831"/>
-<link kind="road" line="road" hexes="0906 1006"/>
-<link kind="road" line="road" hexes="0906 0907"/>
-<link kind="road" line="road" hexes="0907 1007"/>
-<link kind="road" line="road" hexes="0907 1006"/>
-<link kind="road" line="road" hexes="0911 0912"/>
-<link kind="rail" line="rail" hexes="0915 1015"/>
-<link kind="rail" line="rail" hexes="0923 1023"/>
-<link kind="rail" line="rail" hexes="0925 1025"/>
-<link kind="rail" line="rail" hexes="0925 0926"/>
-<link kind="road" line="road" hexes="0929 1029"/>
-<link kind="road" line="road" hexes="0929 0930"/>
-<link kind="rail" line="rail" hexes="1005 1006"/>
-<link kind="road" line="road" hexes="1006 1107"/>
-<link kind="road" line="road" hexes="1006 1007"/>
-<link kind="road" line="road" hexes="1007 1008"/>
-<link kind="road" line="road" hexes="1008 1009"/>
-<link kind="road" line="road" hexes="1009 1110"/>
-<link kind="road" line="road" hexes="1009 1010"/>
-<link kind="rail" line="rail" hexes="1015 1115"/>
-<link kind="road" line="road" hexes="1016 1116"/>
-<link kind="rail" line="rail" hexes="1023 1024"/>
-<link kind="rail" line="rail" hexes="1024 1125"/>
-<link kind="rail" line="rail" hexes="1025 1125"/>
-<link kind="road" line="road" hexes="1104 1203"/>
-<link kind="rail" line="rail" hexes="1106 1107"/>
-<link kind="road" line="road" hexes="1107 1207"/>
-<link kind="road" line="road" hexes="1109 1209"/>
-<link kind="road" line="road" hexes="1109 1110"/>
-<link kind="rail" line="rail" hexes="1115 1215"/>
-<link kind="rail" line="rail" hexes="1116 1117"/>
-<link kind="road" line="road" hexes="1118 1217"/>
-<link kind="rail" line="rail" hexes="1125 1225"/>
-<link kind="road" line="road" hexes="1128 1228"/>
-<link kind="road" line="road" hexes="1128 1129"/>
-<link kind="road" line="road" hexes="1203 1304"/>
-<link kind="road" line="road" hexes="1205 1305"/>
-<link kind="road" line="road" hexes="1208 1209"/>
-<link kind="rail" line="rail" hexes="1215 1315"/>
-<link kind="rail" line="rail" hexes="1225 1326"/>
-<link kind="road" line="road" hexes="1309 1409"/>
-<link kind="rail" line="rail" hexes="1315 1415"/>
-<link kind="rail" line="rail" hexes="1315 1316"/>
-<link kind="rail" line="rail" hexes="1325 1326"/>
-<link kind="rail" line="rail" hexes="1326 1327"/>
-<link kind="rail" line="rail" hexes="1327 1427"/>
-<link kind="rail" line="rail" hexes="1328 1427"/>
-<link kind="road" line="road" hexes="1329 1429"/>
-<link kind="road" line="road" hexes="1401 1402"/>
-<link kind="road" line="road" hexes="1408 1509"/>
-<link kind="road" line="road" hexes="1408 1409"/>
-<link kind="road" line="road" hexes="1409 1509"/>
-<link kind="rail" line="rail" hexes="1415 1515"/>
-<link kind="rail" line="rail" hexes="1416 1516"/>
-<link kind="rail" line="rail" hexes="1423 1524"/>
-<link kind="rail" line="rail" hexes="1423 1424"/>
-<link kind="rail" line="rail" hexes="1424 1524"/>
-<link kind="rail" line="rail" hexes="1427 1428"/>
+<edge at="5519:s" line="river"/>
+<edge at="5605:s" line="river"/>
+<edge at="5616:s" line="river"/>
+<edge at="5618:s" line="river"/>
+<!-- 495 edges -->
+  <!-- rail and road, centre to centre, traced from the scan, then tidied by tools/tidy_networks.py -->
+<link kind="road" line="road" hexes="0420 0419 0418 0417 0416 0415 0414 0413 0513 0612 0712 0811 0911 1010 1110 1209 1309 1409"/>
+<link kind="road" line="road" hexes="0420 0421 0422 0423 0424"/>
+<link kind="road" line="road" hexes="0420 0520 0619 0719 0818 0918 1017 1118 1217 1317 1416 1516 1615 1715 1815 1916 2016"/>
+<link kind="road" line="road" hexes="1409 1410 1411 1512 1612 1713 1813 1914 2014 2015 2016"/>
+<link kind="road" line="road" hexes="1409 1509 1508 1507 1506 1605 1705 1704 1703 1602 1601"/>
+<link kind="road" line="road" hexes="1427 1527 1526 1525 1524 1523 1522 1521 1520 1619 1719"/>
 <link kind="road" line="road" hexes="1501 1601"/>
-<link kind="rail" line="rail" hexes="1515 1516"/>
-<link kind="road" line="road" hexes="1516 1615"/>
-<link kind="road" line="road" hexes="1523 1524"/>
-<link kind="rail" line="rail" hexes="1524 1624"/>
-<link kind="road" line="road" hexes="1526 1527"/>
-<link kind="rail" line="rail" hexes="1528 1529"/>
-<link kind="road" line="road" hexes="1601 1602"/>
-<link kind="road" line="road" hexes="1601 1701"/>
-<link kind="road" line="road" hexes="1611 1712"/>
-<link kind="road" line="road" hexes="1612 1713"/>
-<link kind="rail" line="rail" hexes="1612 1613"/>
-<link kind="rail" line="rail" hexes="1613 1614"/>
-<link kind="rail" line="rail" hexes="1614 1715"/>
-<link kind="road" line="road" hexes="1615 1716"/>
-<link kind="rail" line="rail" hexes="1624 1725"/>
-<link kind="road" line="road" hexes="1701 1801"/>
-<link kind="road" line="road" hexes="1702 1703"/>
-<link kind="road" line="road" hexes="1702 1801"/>
-<link kind="road" line="road" hexes="1703 1704"/>
-<link kind="road" line="road" hexes="1705 1804"/>
-<link kind="road" line="road" hexes="1713 1813"/>
-<link kind="rail" line="rail" hexes="1715 1815"/>
-<link kind="rail" line="rail" hexes="1724 1725"/>
-<link kind="rail" line="rail" hexes="1725 1824"/>
-<link kind="rail" line="rail" hexes="1730 1731"/>
-<link kind="rail" line="rail" hexes="1731 1831"/>
-<link kind="rail" line="rail" hexes="1803 1804"/>
-<link kind="rail" line="rail" hexes="1804 1905"/>
-<link kind="rail" line="rail" hexes="1804 1805"/>
-<link kind="rail" line="rail" hexes="1805 1905"/>
-<link kind="road" line="road" hexes="1806 1906"/>
-<link kind="road" line="road" hexes="1813 1914"/>
-<link kind="road" line="road" hexes="1815 1915"/>
-<link kind="rail" line="rail" hexes="1816 1917"/>
-<link kind="rail" line="rail" hexes="1817 1917"/>
-<link kind="rail" line="rail" hexes="1824 1925"/>
-<link kind="rail" line="rail" hexes="1824 1825"/>
-<link kind="road" line="road" hexes="1902 2002"/>
-<link kind="road" line="road" hexes="1902 1903"/>
-<link kind="road" line="road" hexes="1902 2001"/>
-<link kind="rail" line="rail" hexes="1904 1905"/>
-<link kind="road" line="road" hexes="1908 2008"/>
-<link kind="road" line="road" hexes="1914 2014"/>
-<link kind="rail" line="rail" hexes="1917 2017"/>
-<link kind="rail" line="rail" hexes="1917 2016"/>
-<link kind="rail" line="rail" hexes="1925 2025"/>
-<link kind="road" line="road" hexes="2001 2002"/>
-<link kind="road" line="road" hexes="2014 2115"/>
-<link kind="road" line="road" hexes="2015 2016"/>
-<link kind="rail" line="rail" hexes="2016 2117"/>
-<link kind="rail" line="rail" hexes="2016 2017"/>
-<link kind="rail" line="rail" hexes="2017 2117"/>
-<link kind="rail" line="rail" hexes="2025 2126"/>
-<link kind="road" line="road" hexes="2111 2210"/>
-<link kind="rail" line="rail" hexes="2116 2216"/>
-<link kind="rail" line="rail" hexes="2116 2117"/>
-<link kind="rail" line="rail" hexes="2126 2225"/>
-<link kind="road" line="road" hexes="2127 2227"/>
-<link kind="road" line="road" hexes="2201 2302"/>
-<link kind="road" line="road" hexes="2201 2202"/>
-<link kind="road" line="road" hexes="2201 2301"/>
-<link kind="road" line="road" hexes="2202 2302"/>
-<link kind="road" line="road" hexes="2207 2308"/>
-<link kind="road" line="road" hexes="2210 2310"/>
-<link kind="rail" line="rail" hexes="2215 2216"/>
-<link kind="rail" line="rail" hexes="2216 2317"/>
-<link kind="rail" line="rail" hexes="2216 2217"/>
-<link kind="rail" line="rail" hexes="2216 2316"/>
-<link kind="rail" line="rail" hexes="2217 2318"/>
-<link kind="rail" line="rail" hexes="2217 2218"/>
-<link kind="rail" line="rail" hexes="2217 2317"/>
-<link kind="rail" line="rail" hexes="2225 2326"/>
-<link kind="rail" line="rail" hexes="2225 2226"/>
-<link kind="road" line="road" hexes="2227 2228"/>
-<link kind="road" line="road" hexes="2301 2302"/>
-<link kind="road" line="road" hexes="2302 2401"/>
-<link kind="road" line="road" hexes="2305 2404"/>
-<link kind="rail" line="rail" hexes="2317 2417"/>
-<link kind="rail" line="rail" hexes="2317 2416"/>
-<link kind="rail" line="rail" hexes="2319 2320"/>
-<link kind="road" line="road" hexes="2324 2424"/>
-<link kind="rail" line="rail" hexes="2325 2326"/>
-<link kind="rail" line="rail" hexes="2326 2425"/>
-<link kind="road" line="road" hexes="2401 2502"/>
-<link kind="road" line="road" hexes="2404 2505"/>
-<link kind="rail" line="rail" hexes="2416 2516"/>
-<link kind="rail" line="rail" hexes="2417 2518"/>
-<link kind="rail" line="rail" hexes="2421 2422"/>
-<link kind="rail" line="rail" hexes="2425 2526"/>
-<link kind="rail" line="rail" hexes="2425 2426"/>
-<link kind="rail" line="rail" hexes="2426 2526"/>
-<link kind="road" line="road" hexes="2502 2602"/>
-<link kind="road" line="road" hexes="2502 2503"/>
-<link kind="road" line="road" hexes="2503 2603"/>
-<link kind="road" line="road" hexes="2503 2602"/>
-<link kind="road" line="road" hexes="2504 2505"/>
-<link kind="rail" line="rail" hexes="2516 2615"/>
-<link kind="road" line="road" hexes="2517 2518"/>
-<link kind="rail" line="rail" hexes="2518 2618"/>
-<link kind="rail" line="rail" hexes="2518 2519"/>
-<link kind="rail" line="rail" hexes="2524 2525"/>
-<link kind="rail" line="rail" hexes="2525 2625"/>
-<link kind="rail" line="rail" hexes="2525 2526"/>
-<link kind="rail" line="rail" hexes="2526 2527"/>
-<link kind="rail" line="rail" hexes="2526 2625"/>
-<link kind="rail" line="rail" hexes="2527 2626"/>
-<link kind="road" line="road" hexes="2602 2703"/>
-<link kind="road" line="road" hexes="2602 2603"/>
-<link kind="rail" line="rail" hexes="2603 2604"/>
-<link kind="road" line="road" hexes="2606 2706"/>
-<link kind="rail" line="rail" hexes="2615 2715"/>
-<link kind="rail" line="rail" hexes="2618 2719"/>
-<link kind="rail" line="rail" hexes="2626 2627"/>
-<link kind="road" line="road" hexes="2626 2726"/>
-<link kind="road" line="road" hexes="2628 2728"/>
-<link kind="road" line="road" hexes="2630 2631"/>
-<link kind="road" line="road" hexes="2703 2802"/>
-<link kind="road" line="road" hexes="2705 2805"/>
-<link kind="road" line="road" hexes="2705 2706"/>
-<link kind="road" line="road" hexes="2706 2805"/>
-<link kind="road" line="road" hexes="2715 2814"/>
-<link kind="road" line="road" hexes="2716 2717"/>
-<link kind="road" line="road" hexes="2717 2816"/>
-<link kind="rail" line="rail" hexes="2719 2819"/>
-<link kind="rail" line="rail" hexes="2728 2729"/>
-<link kind="road" line="road" hexes="2803 2904"/>
-<link kind="road" line="road" hexes="2804 2805"/>
-<link kind="road" line="road" hexes="2804 2904"/>
-<link kind="road" line="road" hexes="2816 2817"/>
-<link kind="rail" line="rail" hexes="2819 2920"/>
-<link kind="road" line="road" hexes="2902 3002"/>
-<link kind="road" line="road" hexes="2903 2904"/>
-<link kind="road" line="road" hexes="2903 3002"/>
-<link kind="road" line="road" hexes="2904 2905"/>
-<link kind="rail" line="rail" hexes="2905 3005"/>
-<link kind="rail" line="rail" hexes="2905 2906"/>
-<link kind="rail" line="rail" hexes="2905 3004"/>
-<link kind="road" line="road" hexes="2912 3012"/>
-<link kind="road" line="road" hexes="2915 3014"/>
-<link kind="rail" line="rail" hexes="2920 3020"/>
-<link kind="road" line="road" hexes="3001 3002"/>
-<link kind="rail" line="rail" hexes="3004 3005"/>
-<link kind="road" line="road" hexes="3010 3110"/>
-<link kind="road" line="road" hexes="3011 3012"/>
-<link kind="road" line="road" hexes="3014 3115"/>
-<link kind="rail" line="rail" hexes="3020 3021"/>
-<link kind="rail" line="rail" hexes="3021 3122"/>
-<link kind="road" line="road" hexes="3026 3127"/>
-<link kind="rail" line="rail" hexes="3029 3030"/>
-<link kind="rail" line="rail" hexes="3030 3131"/>
-<link kind="rail" line="rail" hexes="3102 3201"/>
-<link kind="road" line="road" hexes="3104 3105"/>
-<link kind="road" line="road" hexes="3113 3212"/>
-<link kind="road" line="road" hexes="3115 3214"/>
-<link kind="road" line="road" hexes="3117 3217"/>
-<link kind="rail" line="rail" hexes="3122 3123"/>
-<link kind="rail" line="rail" hexes="3201 3202"/>
-<link kind="rail" line="rail" hexes="3222 3223"/>
-<link kind="road" line="road" hexes="3225 3325"/>
-<link kind="road" line="road" hexes="3304 3404"/>
-<link kind="road" line="road" hexes="3309 3408"/>
-<link kind="road" line="road" hexes="3315 3414"/>
-<link kind="road" line="road" hexes="3319 3419"/>
-<link kind="rail" line="rail" hexes="3323 3423"/>
-<link kind="road" line="road" hexes="3325 3424"/>
-<link kind="road" line="road" hexes="3331 3430"/>
-<link kind="road" line="road" hexes="3403 3504"/>
-<link kind="road" line="road" hexes="3403 3404"/>
-<link kind="road" line="road" hexes="3403 3503"/>
-<link kind="road" line="road" hexes="3411 3512"/>
-<link kind="road" line="road" hexes="3411 3511"/>
-<link kind="road" line="road" hexes="3414 3515"/>
-<link kind="rail" line="rail" hexes="3415 3416"/>
-<link kind="rail" line="rail" hexes="3416 3417"/>
-<link kind="rail" line="rail" hexes="3423 3524"/>
-<link kind="road" line="road" hexes="3503 3603"/>
-<link kind="road" line="road" hexes="3503 3504"/>
-<link kind="road" line="road" hexes="3503 3602"/>
-<link kind="road" line="road" hexes="3507 3606"/>
-<link kind="rail" line="rail" hexes="3515 3615"/>
-<link kind="road" line="road" hexes="3515 3614"/>
-<link kind="road" line="road" hexes="3522 3622"/>
-<link kind="road" line="road" hexes="3529 3629"/>
-<link kind="road" line="road" hexes="3602 3603"/>
-<link kind="road" line="road" hexes="3606 3707"/>
-<link kind="road" line="road" hexes="3607 3708"/>
-<link kind="rail" line="rail" hexes="3607 3608"/>
-<link kind="road" line="road" hexes="3607 3707"/>
-<link kind="road" line="road" hexes="3608 3708"/>
-<link kind="rail" line="rail" hexes="3623 3624"/>
-<link kind="road" line="road" hexes="3624 3724"/>
-<link kind="rail" line="rail" hexes="3715 3716"/>
-<link kind="rail" line="rail" hexes="3724 3725"/>
-<link kind="road" line="road" hexes="3724 3823"/>
-<link kind="rail" line="rail" hexes="3814 3915"/>
-<link kind="rail" line="rail" hexes="3815 3916"/>
-<link kind="rail" line="rail" hexes="3815 3915"/>
-<link kind="road" line="road" hexes="3822 3922"/>
-<link kind="rail" line="rail" hexes="3824 3925"/>
-<link kind="rail" line="rail" hexes="3901 4001"/>
-<link kind="rail" line="rail" hexes="3901 3902"/>
-<link kind="rail" line="rail" hexes="3902 4002"/>
-<link kind="road" line="road" hexes="3906 4006"/>
-<link kind="road" line="road" hexes="3906 3907"/>
-<link kind="road" line="road" hexes="3914 4014"/>
-<link kind="rail" line="rail" hexes="3914 3915"/>
-<link kind="rail" line="rail" hexes="3915 4015"/>
-<link kind="rail" line="rail" hexes="3915 3916"/>
-<link kind="rail" line="rail" hexes="3915 4014"/>
-<link kind="rail" line="rail" hexes="3916 4015"/>
-<link kind="road" line="road" hexes="3922 4021"/>
-<link kind="rail" line="rail" hexes="3925 4025"/>
-<link kind="rail" line="rail" hexes="4001 4102"/>
-<link kind="rail" line="rail" hexes="4001 4101"/>
-<link kind="road" line="road" hexes="4014 4015"/>
-<link kind="rail" line="rail" hexes="4015 4116"/>
-<link kind="rail" line="rail" hexes="4015 4016"/>
-<link kind="rail" line="rail" hexes="4015 4115"/>
-<link kind="road" line="road" hexes="4020 4121"/>
-<link kind="rail" line="rail" hexes="4025 4125"/>
-<link kind="road" line="road" hexes="4029 4030"/>
-<link kind="road" line="road" hexes="4105 4106"/>
-<link kind="rail" line="rail" hexes="4111 4112"/>
-<link kind="road" line="road" hexes="4113 4212"/>
-<link kind="road" line="road" hexes="4117 4118"/>
-<link kind="road" line="road" hexes="4118 4119"/>
-<link kind="road" line="road" hexes="4121 4221"/>
-<link kind="road" line="road" hexes="4122 4123"/>
-<link kind="rail" line="rail" hexes="4125 4126"/>
-<link kind="rail" line="rail" hexes="4130 4131"/>
-<link kind="rail" line="rail" hexes="4210 4310"/>
-<link kind="rail" line="rail" hexes="4220 4321"/>
-<link kind="rail" line="rail" hexes="4225 4326"/>
-<link kind="rail" line="rail" hexes="4225 4226"/>
-<link kind="rail" line="rail" hexes="4229 4329"/>
-<link kind="road" line="road" hexes="4302 4303"/>
-<link kind="rail" line="rail" hexes="4309 4310"/>
-<link kind="rail" line="rail" hexes="4309 4408"/>
-<link kind="road" line="road" hexes="4311 4410"/>
-<link kind="road" line="road" hexes="4401 4402"/>
-<link kind="rail" line="rail" hexes="4408 4508"/>
-<link kind="road" line="road" hexes="4410 4510"/>
-<link kind="road" line="road" hexes="4421 4521"/>
-<link kind="road" line="road" hexes="4505 4506"/>
-<link kind="road" line="road" hexes="4510 4609"/>
-<link kind="road" line="road" hexes="4516 4616"/>
-<link kind="rail" line="rail" hexes="4526 4527"/>
-<link kind="rail" line="rail" hexes="4529 4628"/>
-<link kind="rail" line="rail" hexes="4606 4707"/>
-<link kind="rail" line="rail" hexes="4606 4607"/>
-<link kind="rail" line="rail" hexes="4607 4708"/>
-<link kind="rail" line="rail" hexes="4607 4707"/>
-<link kind="rail" line="rail" hexes="4626 4627"/>
-<link kind="rail" line="rail" hexes="4628 4728"/>
-<link kind="rail" line="rail" hexes="4706 4707"/>
-<link kind="rail" line="rail" hexes="4707 4807"/>
-<link kind="rail" line="rail" hexes="4707 4806"/>
-<link kind="rail" line="rail" hexes="4708 4808"/>
-<link kind="rail" line="rail" hexes="4727 4728"/>
-<link kind="rail" line="rail" hexes="4728 4827"/>
-<link kind="rail" line="rail" hexes="4808 4908"/>
-<link kind="rail" line="rail" hexes="4816 4917"/>
-<link kind="rail" line="rail" hexes="4827 4828"/>
-<link kind="rail" line="rail" hexes="4827 4927"/>
-<link kind="road" line="road" hexes="4905 5004"/>
-<link kind="rail" line="rail" hexes="4908 5008"/>
-<link kind="rail" line="rail" hexes="4908 4909"/>
-<link kind="rail" line="rail" hexes="4917 5017"/>
-<link kind="road" line="road" hexes="4926 5026"/>
-<link kind="rail" line="rail" hexes="4927 5026"/>
-<link kind="rail" line="rail" hexes="4928 4929"/>
-<link kind="rail" line="rail" hexes="5008 5108"/>
-<link kind="rail" line="rail" hexes="5026 5126"/>
-<link kind="rail" line="rail" hexes="5028 5029"/>
-<link kind="rail" line="rail" hexes="5108 5208"/>
-<link kind="road" line="road" hexes="5119 5120"/>
-<link kind="rail" line="rail" hexes="5126 5225"/>
-<link kind="rail" line="rail" hexes="5208 5309"/>
-<link kind="rail" line="rail" hexes="5217 5318"/>
-<link kind="road" line="road" hexes="5219 5220"/>
-<link kind="road" line="road" hexes="5220 5320"/>
-<link kind="rail" line="rail" hexes="5224 5225"/>
-<link kind="rail" line="rail" hexes="5224 5324"/>
-<link kind="rail" line="rail" hexes="5229 5230"/>
-<link kind="rail" line="rail" hexes="5309 5408"/>
-<link kind="rail" line="rail" hexes="5318 5418"/>
-<link kind="rail" line="rail" hexes="5324 5423"/>
-<link kind="rail" line="rail" hexes="5330 5331"/>
-<link kind="rail" line="rail" hexes="5408 5508"/>
-<link kind="rail" line="rail" hexes="5418 5519"/>
-<link kind="rail" line="rail" hexes="5423 5523"/>
-<link kind="road" line="road" hexes="5426 5526"/>
-<link kind="rail" line="rail" hexes="5430 5431"/>
-<link kind="rail" line="rail" hexes="5508 5607"/>
-<link kind="road" line="road" hexes="5511 5610"/>
-<link kind="rail" line="rail" hexes="5519 5619"/>
-<link kind="rail" line="rail" hexes="5523 5622"/>
-<link kind="road" line="road" hexes="5526 5626"/>
-<!-- 432 links -->
+<link kind="road" line="road" hexes="1601 1701 1801 1902 2002 2102 2201 2302 2401 2502 2602 2703 2802 2903"/>
+<link kind="road" line="road" hexes="1719 1818 1918 2017 2117"/>
+<link kind="road" line="road" hexes="1719 1819 1920 2020 2121 2221 2322 2422 2523 2623"/>
+<link kind="road" line="road" hexes="2016 2117"/>
+<link kind="road" line="road" hexes="2117 2217 2317 2416 2516 2615 2715 2814 2915 3014 3115 3214 3315 3414 3515 3614 3714 3814 3915"/>
+<link kind="road" line="road" hexes="2623 2622 2621 2721 2820 2920 3019 3119 3218 3318 3417 3517 3616 3716 3815 3915"/>
+<link kind="road" line="road" hexes="2623 2624 2625"/>
+<link kind="road" line="road" hexes="2903 2904 2905 3005 3105 3204 3304 3403 3503 3602 3702 3801"/>
+<link kind="road" line="road" hexes="2903 3002 3001"/>
+<link kind="road" line="road" hexes="3801 3901 3902"/>
+<link kind="road" line="road" hexes="3801 3902"/>
+<link kind="road" line="road" hexes="3902 3903 3904 3905 3906 3907 3908 3909 3910 3911 4011 4012 4013"/>
+<link kind="road" line="road" hexes="3902 4002 4103 4203 4304 4404 4505 4605 4606 4607 4608 4609 4510 4410 4311 4312 4212"/>
+<link kind="road" line="road" hexes="3915 3914 4013"/>
+<link kind="road" line="road" hexes="3915 4014 4013"/>
+<link kind="road" line="road" hexes="4013 4113 4212"/>
+<link kind="road" line="road" hexes="4212 4313 4413 4514 4614 4715 4815 4916 5016 5117 5217 5318 5418 5519 5619"/>
+<link kind="rail" line="rail" hexes="0424 0324 0323 0322 0321 0420 0419 0519 0618 0718"/>
+<link kind="rail" line="rail" hexes="0513 0613 0714"/>
+<link kind="rail" line="rail" hexes="0714 0715 0716 0717 0718"/>
+<link kind="rail" line="rail" hexes="0714 0814 0915 1015 1115 1215"/>
+<link kind="rail" line="rail" hexes="0718 0817 0917 1016 1116 1215"/>
+<link kind="rail" line="rail" hexes="1215 1315 1415 1515 1614 1715 1815 1916 2016 2117 2217 2318"/>
+<link kind="rail" line="rail" hexes="2318 2319 2320 2420 2421 2422 2523"/>
+<link kind="rail" line="rail" hexes="2318 2417 2518 2618 2719 2819 2920"/>
+<link kind="rail" line="rail" hexes="2523 2522 2621 2721 2820 2920"/>
+<link kind="rail" line="rail" hexes="2523 2524 2525 2625"/>
+<link kind="rail" line="rail" hexes="2920 3019 3119 3218 3318 3417 3517 3616 3716 3815 3915"/>
+<link kind="rail" line="rail" hexes="3901 4001 4102"/>
+<link kind="rail" line="rail" hexes="3915 4014 4114 4113 4112 4111"/>
+<link kind="rail" line="rail" hexes="3915 4015 4116 4215 4315 4414 4515 4615 4716 4816 4917 5017 5118 5218 5319 5418"/>
+<link kind="rail" line="rail" hexes="4102 4103 4104 4105 4106 4107 4108 4109 4110 4111"/>
+<link kind="rail" line="rail" hexes="4102 4202 4303 4403 4504 4604 4605 4606 4607"/>
+<link kind="rail" line="rail" hexes="4111 4210 4310 4309 4408 4508 4607"/>
+<link kind="rail" line="rail" hexes="4607 4708 4808 4908 5008 5108 5208 5309 5408"/>
+<link kind="rail" line="rail" hexes="5408 5409 5410 5411 5412 5413 5414 5415 5416 5417 5418"/>
+<link kind="rail" line="rail" hexes="5408 5508 5607"/>
+<link kind="rail" line="rail" hexes="5418 5519 5619 5620 5621 5622"/>
+<!-- 45 links -->
   <!-- cities and towns, placed by hand -->
   <hex id="3901" name="РЖЕВ"><glyph symbol="city-major" color="ink"/></hex>
   <label text="РЖЕВ" at="3901" slot="s" size="34" weight="bold"/>

@@ -7,7 +7,8 @@
 // ----------------------------------------------
 #include "TrcTestFixture.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <gtest/gtest.h>
 
@@ -46,7 +47,7 @@ TEST(TrcSequenceTest, WeatherIsRolledOnEnteringTheWeatherPhase)
   EXPECT_EQ(3, session.prompt().turn);
   EXPECT_EQ(definition->rules->phase("weather-phase"), session.prompt().phase);
   EXPECT_EQ(1u, session.streams().draws(HexEngine::StreamTag::Weather));
-  EXPECT_TRUE(session.position().flag(set.facts().axis(), Trc::Flags::kWeather).has_value());
+  EXPECT_TRUE(Trc::stateOf(session.position()).weather.has_value());
 }
 
 TEST(TrcSequenceTest, UnsuppliedUnitsAreEliminatedInTheirEndPhase)
@@ -116,7 +117,7 @@ TEST(TrcSequenceTest, RailMovementAndCapacity)
         const HexEngine::Reachability field = session.reachable(std::span<const UnitId>(&infantry, 1), facts.railMode());
         EXPECT_NE(field.hexes.end(), std::find(field.hexes.begin(), field.hexes.end(), c));
       }
-      position.setFlag(facts.axis(), Trc::Flags::kRailMoves, "6");
+      Trc::stateOf(position).side(facts.axis()).railMoves = 6;
       HexEngine::Session spent(definition, set.policies(), position, 1ull);
       EXPECT_TRUE(spent.reachable(std::span<const UnitId>(&infantry, 1), facts.railMode()).hexes.empty());
       return;
@@ -146,10 +147,38 @@ TEST(TrcSequenceTest, AutomaticVictory)
   HexModel::Position russian = TrcTest::blank(*definition, 3, "russian-i1-move", "russian");
   russian.place(TrcTest::unit(*definition, "r-gu-1g-armour-2"), TrcTest::neighbour(*definition, target, 0));
   russian.place(TrcTest::unit(*definition, "g-ge-15-infantry"), target);
-  russian.setFlag(set.facts().axis(), Trc::Flags::kWeather, "clear");
+  Trc::stateOf(russian).weather = Trc::Weather::Clear;
   HexEngine::Session early(definition, set.policies(), russian, 1ull);
   EXPECT_THROW((void)early.apply(HexEngine::GameCommand{"av-attack", {"r-gu-1g-armour-2", definition->board->id(target).text}}),
                std::invalid_argument);  // 16.4
+}
+
+TEST(TrcSequenceTest, TheRulesRefuseRailInTheSecondImpulse)
+{
+  const auto definition = TrcTest::definition();
+  const Trc::TrcPolicySet set(*definition);
+  const Trc::TrcFacts& facts = set.facts();
+  const HexModel::LinkNetwork& rail = definition->board->network(facts.railNetwork());
+  for (std::size_t link = 0; link < rail.linkCount(); ++link) {
+    const HexModel::LinkNetwork::Link& ab = rail.links()[link];
+    if (facts.waterP(ab.a) || facts.waterP(ab.b)) {
+      continue;
+    }
+    HexModel::Position position = TrcTest::blank(*definition, 1, "axis-i2-move", "axis");
+    position.setLinkOwner(facts.railNetwork(), link, facts.axis());
+    const UnitId infantry = TrcTest::unit(*definition, "g-ge-1-infantry");
+    position.place(infantry, ab.a);
+    HexEngine::Session session(definition, set.policies(), position, 1ull);
+    try {
+      session.apply(HexEngine::MoveUnit{{infantry}, facts.railMode(), {ab.a, ab.b}});
+      FAIL() << "rail movement was allowed in the second impulse";
+    } catch (const std::invalid_argument& e) {
+      // The axis-i2 phase's own step refuses it, naming the rule, before the engine looks at the move.
+      EXPECT_NE(std::string::npos, std::string(e.what()).find("second-impulse")) << e.what();
+    }
+    return;
+  }
+  FAIL() << "no rail link between two land hexes";
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

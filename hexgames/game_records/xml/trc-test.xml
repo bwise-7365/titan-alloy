@@ -6,7 +6,6 @@
   <sides>
     <side id="axis">
       <register track="turn-track" value="1"/>
-      <flag name="weather-drm" value="0"/>
     </side>
     <side id="russian"/>
   </sides>

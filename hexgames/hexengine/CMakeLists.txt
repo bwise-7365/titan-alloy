@@ -11,10 +11,14 @@ add_library(hexengine STATIC
   DefaultsCombat.cpp
   DefaultsMisc.cpp
   DefaultsGrammar.cpp
+  DefaultsCodecs.cpp
   AdjudicatorsDetail.cpp
   AdjudicatorsMove.cpp
   AdjudicatorsCombat.cpp
-  AdjudicatorsPlan.cpp
+  AdjudicatorsStack.cpp
+  Steps.cpp
+  EngineSteps.cpp
+  Sequence.cpp
   Session.cpp
   Player.cpp)
 target_include_directories(hexengine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)

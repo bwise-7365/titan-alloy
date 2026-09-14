@@ -94,18 +94,8 @@ namespace HexEngine::Adjudicators {
   }
 
   Position
-  advancePhase(const Ctx& ctx, const Policies& policies, const PhaseCursor& cursor, EventSink& sink)
+  advancePhase(const Ctx& ctx, const PhaseCursor::Stop& stop, EventSink& sink)
   {
-    if (nullptr == policies.phases) {
-      throw std::invalid_argument("advancePhase: the policy set has no PhaseGate");
-    }
-    const PhaseCursor::ActiveFilter activeP = [&](PhaseId phase) {
-      return policies.phases->activeP(ctx, phase);
-    };
-    const HexModel::TurnClock& clock = ctx.position.clock();
-    const PhaseCursor::Stop stop =
-        cursor.next(PhaseCursor::Stop{clock.turn, clock.phase, clock.actingSide}, activeP);
-
     Position next = ctx.position;
     next.clock().turn = stop.turn;
     next.clock().phase = stop.phase;

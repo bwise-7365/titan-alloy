@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcPolitics.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 #include "TrcUnits.h"
 
 #include <array>
@@ -33,10 +34,10 @@ namespace Trc {
   {
     Position next = ctx.position;
     const std::string name(nationName(nation));
-    if (Flags::listedP(ctx.position, facts_.axis(), Flags::kSurrendered, name)) {
+    if (stateOf(ctx.position).surrendered.contains(nation)) {
       return next;
     }
-    Flags::add(next, facts_.axis(), Flags::kSurrendered, name);
+    stateOf(next).surrendered.insert(nation);
     sink.onEvent(HexEngine::GameEvent{"surrender", name});
     for (UnitId unit : ctx.roster.ofSide(facts_.axis())) {
       if (nation == facts_.nation(unit) && !Units::inSpaceP(next, unit, facts_.surrendered(facts_.axis()))) {
@@ -82,8 +83,8 @@ namespace Trc {
       return ctx.position;
     }
     Position next = surrender(ctx, Nation::Finnish, sink);
-    if (!next.flag(facts_.axis(), Flags::kHelsinkiRussian)) {
-      next.setFlag(facts_.axis(), Flags::kHelsinkiRussian, "true");
+    if (!stateOf(next).helsinkiRussianP) {
+      stateOf(next).helsinkiRussianP = true;
       const HexIndex helsinki = facts_.named("Helsinki");
       next.setControl(helsinki, facts_.russian());
       sink.onEvent(HexEngine::ControlChanged{helsinki, facts_.russian()});
@@ -135,11 +136,11 @@ namespace Trc {
   {
     Position next = ctx.position;
     if (17 > ctx.position.clock().turn || facts_.russian() != ctx.roster.unit(move.units.front()).side ||
-        next.flag(facts_.axis(), Flags::kGarrisonWarsaw)) {
+        stateOf(next).garrisonWarsaw.has_value()) {
       return next;
     }
     if (Units::withinP(ctx, move.path.back(), facts_.named("Warsaw"), 2)) {
-      next.setFlag(facts_.axis(), Flags::kGarrisonWarsaw, "due");
+      stateOf(next).garrisonWarsaw = WarsawGarrison::Due;
     }
     return next;
   }
@@ -149,10 +150,10 @@ namespace Trc {
   {
     Position next = ctx.position;
     const HexIndex warsaw = facts_.named("Warsaw");
-    if ("due" != ctx.position.flag(facts_.axis(), Flags::kGarrisonWarsaw).value_or("")) {
+    if (WarsawGarrison::Due != stateOf(ctx.position).garrisonWarsaw) {
       return next;
     }
-    next.setFlag(facts_.axis(), Flags::kGarrisonWarsaw, "done");
+    stateOf(next).garrisonWarsaw = WarsawGarrison::Done;
     if (facts_.axis() != ctx.position.control(warsaw)) {
       sink.onEvent(HexEngine::GameEvent{"garrison", "Warsaw is not Axis; the summons lapses"});
       return next;

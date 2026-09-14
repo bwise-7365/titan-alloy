@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcVictory.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <stdexcept>
 
@@ -65,7 +66,7 @@ namespace Trc {
   bool
   TrcVictory::surrenderedP(const Ctx& ctx, std::string_view nation) const
   {
-    return Flags::listedP(ctx.position, facts_.axis(), Flags::kSurrendered, std::string(nation));
+    return stateOf(ctx.position).surrendered.contains(nationNamed(nation));
   }
 
   std::optional<HexEngine::Outcome>
@@ -100,7 +101,7 @@ namespace Trc {
   {
     Position next = ctx.position;
     if (const std::optional<HexEngine::Outcome> met = suddenDeath(ctx)) {
-      next.setFlag(facts_.axis(), Flags::kSuddenDeath, met->condition + " " + ctx.rules.sides()[met->winner->value].id);
+      stateOf(next).suddenDeath = SuddenDeathMet{met->condition, *met->winner};
       sink.onEvent(HexEngine::VictoryDeclared{met->winner, met->condition});
     }
     return next;
@@ -117,12 +118,8 @@ namespace Trc {
     if (facts_.axis() == ctx.position.control(facts_.named("Moscow")) && stalinGoneP) {
       return HexEngine::Outcome{facts_.axis(), "axis-moscow-stalin"};
     }
-    if (const std::optional<std::string> met = ctx.position.flag(facts_.axis(), Flags::kSuddenDeath)) {
-      const std::size_t space = met->find(' ');
-      if (std::string::npos == space) {
-        throw std::invalid_argument("TrcVictory: flag 'sudden-death' holds '" + *met + "', not '<condition> <side>'");
-      }
-      return HexEngine::Outcome{ctx.rules.side(met->substr(space + 1)), met->substr(0, space)};
+    if (const std::optional<SuddenDeathMet>& met = stateOf(ctx.position).suddenDeath) {
+      return HexEngine::Outcome{met->winner, met->condition};
     }
     if (25 < ctx.position.clock().turn) {
       return HexEngine::Outcome{facts_.axis(), "axis-berlin-held"};

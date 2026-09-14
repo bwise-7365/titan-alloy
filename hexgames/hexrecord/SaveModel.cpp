@@ -246,6 +246,60 @@ namespace HexRecord {
     }
 
     void
+    emitAsk(std::string& out, int level, const SaveAsk& k)
+    {
+      AttrList a;
+      a.req("what", k.what);
+      a.opt("side", k.side);
+      a.opt("unit", k.unit);
+      a.optTokens("candidates", k.candidates);
+      a.opt("count", k.count);
+      a.opt("may-stop", k.mayStopP);
+      a.opt("deck", k.deck);
+      a.opt("verb", k.verb);
+      a.optTokens("options", k.options);
+      emitLeaf(out, level, "ask", a, "");
+      return;
+    }
+
+    void
+    emitOwe(std::string& out, int level, const SaveOwe& o)
+    {
+      AttrList a;
+      a.req("kind", o.kind);
+      a.opt("side", o.side);
+      a.opt("count", o.count);
+      a.opt("fewest", o.fewest);
+      a.opt("most", o.most);
+      a.opt("unit", o.unit);
+      a.opt("from", o.from);
+      a.optTokens("path", o.path);
+      a.opt("router", o.router);
+      a.optTokens("involved", o.involved);
+      a.opt("name", o.name);
+      if (o.args.empty() && !o.ask.has_value()) {
+        emitLeaf(out, level, "owe", a, "");
+        return;
+      }
+      out += indentOf(level);
+      out += "<owe";
+      out += a.text();
+      out += ">\n";
+      for (const SaveArg& arg : o.args) {
+        AttrList aa;
+        aa.req("name", arg.name);
+        aa.req("value", arg.value);
+        emitLeaf(out, level + 1, "arg", aa, "");
+      }
+      if (o.ask.has_value()) {
+        emitAsk(out, level + 1, *o.ask);
+      }
+      out += indentOf(level);
+      out += "</owe>\n";
+      return;
+    }
+
+    void
     emitPile(std::string& out, int level, const SavePile& p)
     {
       AttrList a;
@@ -436,6 +490,16 @@ namespace HexRecord {
       }
       out += indentOf(1);
       out += "</regions>\n";
+    }
+
+    if (!m.resolution.empty()) {
+      out += indentOf(1);
+      out += "<resolution>\n";
+      for (const SaveOwe& o : m.resolution) {
+        emitOwe(out, 2, o);
+      }
+      out += indentOf(1);
+      out += "</resolution>\n";
     }
 
     if (!m.piles.empty()) {

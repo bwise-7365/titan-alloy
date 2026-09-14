@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcMovement.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <array>
 #include <stdexcept>
@@ -48,7 +49,7 @@ namespace Trc {
   int
   TrcMovement::railMovesUsed(const Position& position, SideId side) const
   {
-    return Flags::counter(position, side, Flags::kRailMoves);
+    return stateOf(position).side(side).railMoves.value_or(0);
   }
 
   std::optional<Impulse>
@@ -79,8 +80,8 @@ namespace Trc {
   {
     const std::optional<Impulse> impulse = impulseNow(ctx);
     const HexModel::UnitState& state = ctx.position.unit(unit);
-    if (!impulse || state.flags.movedP || Flags::markedP(ctx.position, unit, Flags::kAv) ||
-        Flags::markedP(ctx.position, unit, Flags::kDropped)) {
+    if (!impulse || state.flags.movedP || Markers::markedP(ctx.position, unit, Markers::kAv) ||
+        Markers::markedP(ctx.position, unit, Markers::kDropped)) {
       return 0;
     }
     if (facts_.typeP(unit, "worker") || facts_.typeP(unit, "partisan") || facts_.typeP(unit, "leader")) {
@@ -98,7 +99,7 @@ namespace Trc {
       return 0;  // 8.4: pinned
     }
     const bool leaderNationP = facts_.axis() == spec.side ? Nation::German == facts_.nation(unit) : true;
-    if (leaderNationP && "active" == ctx.position.flag(spec.side, Flags::kLeaderLost).value_or("")) {
+    if (leaderNationP && LeaderLost::Active == stateOf(ctx.position).side(spec.side).leaderLost) {
       return 0;  // 11.3
     }
     return chartAllowance(facts_, unit, weather_.current(ctx.position), *impulse, printed);
@@ -109,7 +110,7 @@ namespace Trc {
   {
     const std::optional<Impulse> impulse = impulseNow(ctx);
     const HexModel::UnitState& state = ctx.position.unit(unit);
-    if (Impulse::First != impulse || state.flags.movedP || Flags::markedP(ctx.position, unit, Flags::kAv)) {
+    if (Impulse::First != impulse || state.flags.movedP || Markers::markedP(ctx.position, unit, Markers::kAv)) {
       return 0;
     }
     if (facts_.typeP(unit, "hq") || facts_.typeP(unit, "worker") || facts_.typeP(unit, "partisan")) {
@@ -158,7 +159,7 @@ namespace Trc {
     if (intoZocP && zoc_.enemyZocP(ctx, from, side, true)) {
       return kProhibited;  // 8.3: no zone to zone
     }
-    if (intoZocP && Flags::markedP(ctx.position, unit, Flags::kAvFirst)) {
+    if (intoZocP && Markers::markedP(ctx.position, unit, Markers::kAvFirst)) {
       return kProhibited;  // 16.2
     }
     if (intoZocP && facts_.typeP(unit, "hq")) {
@@ -170,7 +171,7 @@ namespace Trc {
         return kProhibited;  // 11.1
       }
     }
-    if (ctx.position.flag(facts_.axis(), Flags::kHelsinkiRussian) && facts_.inCountryP(to, "finland")) {
+    if (stateOf(ctx.position).helsinkiRussianP && facts_.inCountryP(to, "finland")) {
       return kProhibited;  // 24.0: nobody enters Finland after it surrenders
     }
     return HexEngine::EntryVerdict{MovementPoints::whole(1), stopsInP(ctx, unit, to, facts_.normalMode())};

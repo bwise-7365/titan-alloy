@@ -7,6 +7,7 @@
 // ----------------------------------------------
 #include "hexrecord/GoldenCompare.h"
 #include "hexrecord/Record.h"
+#include "hexrecord/RecordResolution.h"
 #include "hexrecord/SaveModel.h"
 
 #include "hexengine/Defaults.h"
@@ -211,7 +212,20 @@ namespace HexRecord {
         doc.regions.push_back(HexXml::SaveRegionDoc{region.layer, region.id, region.status,
                                                      region.alignment, region.posture, region.owner});
       }
+      for (const SaveOwe& owe : model.resolution) {
+        doc.resolution.push_back(Detail::asOweDoc(owe));
+      }
       return doc;
+    }
+
+    void
+    requireCodecs(const HexEngine::Policies& policies, const char* who)
+    {
+      if (nullptr == policies.grammar || nullptr == policies.state || nullptr == policies.obligationCodec) {
+        throw std::invalid_argument(std::string(who) +
+                                    ": the policy set needs a CommandGrammar, a GameStateCodec and an ObligationCodec");
+      }
+      return;
     }
 
     // A script carries commands but no position: its @scenario names one in the package manifest.
@@ -297,8 +311,10 @@ namespace HexRecord {
 
   Record
   readRecord(const std::filesystem::path& path, const HexRules::GameDefinition& definition,
-             const HexEngine::CommandGrammar& grammar)
+             const HexEngine::Policies& policies)
   {
+    requireCodecs(policies, "readRecord");
+    const HexEngine::CommandGrammar& grammar = *policies.grammar;
     const SaveModel doc = SaveModel::read(path);
 
     Record record;
@@ -311,7 +327,8 @@ namespace HexRecord {
 
     const SaveModel source = positionSource(doc, definition, path);
     record.position = HexModel::PositionBuilder::build(asSaveDoc(source), *definition.board,
-                                                        *definition.roster, *definition.rules);
+                                                        *definition.roster, *definition.rules, *policies.state,
+                                                        *policies.obligationCodec);
 
     for (const SaveMove& move : doc.log) {
       ScriptedMove scripted;
@@ -387,10 +404,17 @@ namespace HexRecord {
         sides[owner].registers.push_back(
             SaveRegister{names.space(space), std::to_string(position.track(*track))});
       }
-      for (std::size_t i = 0; i < sides.size(); ++i) {
-        const HexModel::SideId sideId{static_cast<std::uint32_t>(i)};
-        for (const auto& [name, value] : position.flags(sideId)) {
-          sides[i].flags.push_back(SaveFlag{name, value});
+      requireCodecs(session.policies(), "writeRecord");
+      if (position.heldGameState().holdsP()) {
+        const HexModel::SideFlags flags = session.policies().state->encode(position.heldGameState().base());
+        if (flags.size() != sides.size()) {
+          throw std::invalid_argument("writeRecord: the game state codec wrote " + std::to_string(flags.size()) +
+                                      " sides of flags for " + std::to_string(sides.size()) + " rules sides");
+        }
+        for (std::size_t i = 0; i < sides.size(); ++i) {
+          for (const HexModel::SideFlag& flag : flags[i]) {
+            sides[i].flags.push_back(SaveFlag{flag.name, flag.value});
+          }
         }
       }
       for (SaveSide& side : sides) {
@@ -448,6 +472,8 @@ namespace HexRecord {
                                                     names.side(*owner)});
       }
     }
+
+    doc.resolution = Detail::resolutionOf(position, names, *session.policies().obligationCodec);
 
     for (int i = 0; i < HexEngine::kStreamCount; ++i) {
       const HexEngine::StreamTag tag = static_cast<HexEngine::StreamTag>(i);
@@ -552,7 +578,7 @@ namespace HexRecord {
                      std::shared_ptr<const HexRules::GameDefinition> definition, const HexEngine::Policies& policies,
                      const HexEngine::CommandGrammar& grammar)
   {
-    const Record record = readRecord(script, *definition, grammar);
+    const Record record = readRecord(script, *definition, policies);
     HexEngine::Session session = sessionFor(record, definition, policies);
     const std::vector<ScriptedMove> played = playRecord(session, record);
 

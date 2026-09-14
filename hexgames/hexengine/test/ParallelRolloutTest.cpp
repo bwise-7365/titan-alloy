@@ -35,7 +35,7 @@ namespace {
 TEST(ParallelRolloutTest, ForksAgreeWithSerial)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   const HexEngine::Session root(definition, defaults.policies(), TrcFixture::scenario(*definition),
                                  20260912ull);
 

@@ -9,8 +9,8 @@
     </side>
   </sides>
   <units>
-    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" space="axis-pool" face="front" moved="false"/>
-    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V16" face="front" moved="false"/>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="F31" face="front" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="W15" face="front" moved="false"/>
     <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31" face="front" moved="false"/>
     <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16" face="front" moved="false"/>
     <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="Y13" face="front" moved="false"/>
@@ -20,19 +20,26 @@
   <control>
     <hex id="AA14" side="russian"/>
     <hex id="E31" side="axis"/>
-    <hex id="MM28" side="axis"/>
-    <hex id="NN28" side="axis"/>
-    <hex id="PP28" side="axis"/>
-    <hex id="QQ27" side="axis"/>
+    <hex id="H26" side="axis"/>
+    <hex id="I25" side="axis"/>
     <hex id="W19" side="axis"/>
     <hex id="X13" side="russian"/>
-    <link network="rail" hexes="MM28 NN28" side="axis"/>
-    <link network="rail" hexes="NN28 OO27" side="axis"/>
-    <link network="rail" hexes="OO28 OO27" side="axis"/>
-    <link network="rail" hexes="OO28 PP28" side="axis"/>
-    <link network="rail" hexes="PP28 QQ27" side="axis"/>
-    <link network="rail" hexes="QQ28 QQ27" side="axis"/>
-    <link network="rail" hexes="X20 W19" side="axis"/>
+    <link network="rail" hexes="E31 F31" side="axis"/>
+    <link network="rail" hexes="F31 G30" side="axis"/>
+    <link network="rail" hexes="G30 H30" side="axis"/>
+    <link network="rail" hexes="H30 H29" side="axis"/>
+    <link network="rail" hexes="H29 H28" side="axis"/>
+    <link network="rail" hexes="H28 H27" side="axis"/>
+    <link network="rail" hexes="H27 H26" side="axis"/>
+    <link network="rail" hexes="H26 I25" side="axis"/>
+    <link network="rail" hexes="V20 W19" side="axis"/>
+    <link network="rail" hexes="W19 X20" side="axis"/>
+    <link network="rail" hexes="BB14 AA14" side="russian"/>
+    <link network="rail" hexes="AA14 Z14" side="russian"/>
+    <link network="rail" hexes="Z14 Y13" side="russian"/>
+    <link network="rail" hexes="Y13 X13" side="russian"/>
+    <link network="rail" hexes="X13 W13" side="russian"/>
+    <link network="rail" hexes="AA14 AA13" side="russian"/>
   </control>
   <streams>
     <stream tag="combat" draws="1"/>
@@ -41,22 +48,21 @@
   <log>
     <move n="1" turn="2" phase="russian-end" side="russian" by="script" cmd="end-phase">
       <draw stream="weather" n="1" value="1"/>
+      <event kind="rail-converted">russian BB14-AA14 AA14-Z14 AA14-AA13</event>
       <event kind="phase" side="axis" value="weather-phase">turn 3</event>
       <event kind="die" value="1">weather</event>
       <event kind="weather">clear (die 1, drm 1, row 2)</event>
-      <event kind="control" hex="MM28" side="axis"/>
-      <event kind="control" hex="NN28" side="axis"/>
+      <event kind="control" hex="H26" side="axis"/>
+      <event kind="control" hex="I25" side="axis"/>
     </move>
     <move n="2" turn="3" phase="weather-phase" side="axis" by="script" cmd="end-phase">
       <event kind="phase" side="axis" value="axis-i1-move">turn 3</event>
     </move>
-    <move n="3" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28" mode="rail-move">
-      <event kind="moved" unit="g-ge-1-infantry" hex="QQ28" value="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28"/>
-      <event kind="control" hex="PP28" side="axis"/>
-      <event kind="control" hex="QQ27" side="axis"/>
+    <move n="3" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="H26 H27 H28 H29 H30 G30 F31" mode="rail-move">
+      <event kind="moved" unit="g-ge-1-infantry" hex="F31" value="H26 H27 H28 H29 H30 G30 F31"/>
     </move>
-    <move n="4" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="V17 V16" mode="normal">
-      <event kind="moved" unit="g-ge-41-armour" hex="V16" value="V17 V16"/>
+    <move n="4" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="W16 W15" mode="normal">
+      <event kind="moved" unit="g-ge-41-armour" hex="W15" value="W16 W15"/>
     </move>
     <move n="5" turn="3" phase="axis-i1-move" side="axis" by="script" cmd="end-phase">
       <event kind="phase" side="axis" value="axis-i1-combat">turn 3</event>
@@ -79,9 +85,9 @@
       <event kind="phase" side="axis" value="axis-end">turn 3</event>
     </move>
     <move n="10" turn="3" phase="axis-end" side="axis" by="script" cmd="end-phase">
-      <event kind="rail-converted">axis X20-W19</event>
-      <event kind="supply" unit="g-ge-1-infantry" value="isolated"/>
-      <event kind="eliminated" unit="g-ge-1-infantry" value="axis-pool"/>
+      <event kind="rail-converted">axis E31-F31</event>
+      <event kind="rail-converted">axis H26-I25</event>
+      <event kind="rail-converted">axis V20-W19 W19-X20</event>
       <event kind="phase" side="russian" value="russian-i1-move">turn 3</event>
       <event kind="replacement-points">2</event>
     </move>
@@ -103,6 +109,9 @@
     </move>
     <move n="16" turn="3" phase="russian-end" side="russian" by="script" cmd="end-phase">
       <draw stream="weather" n="2" value="4"/>
+      <event kind="rail-converted">russian Y13-X13</event>
+      <event kind="rail-converted">russian X13-W13</event>
+      <event kind="rail-converted">russian Z14-Y13</event>
       <event kind="phase" side="axis" value="weather-phase">turn 4</event>
       <event kind="die" value="4">weather</event>
       <event kind="weather">snow (die 4, drm 2, row 6)</event>

@@ -18,12 +18,14 @@
   </units>
   <control>
     <hex id="E31" side="axis"/>
+    <link network="rail" hexes="E31 F31" side="axis"/>
   </control>
   <log>
     <move n="1" turn="1" phase="axis-i2-combat" side="axis" by="script" cmd="end-phase">
       <event kind="phase" side="axis" value="axis-end">turn 1</event>
     </move>
     <move n="2" turn="1" phase="axis-end" side="axis" by="script" cmd="end-phase">
+      <event kind="rail-converted">axis E31-F31</event>
       <event kind="supply" unit="g-ge-41-armour" value="isolated"/>
       <event kind="eliminated" unit="g-ge-41-armour" value="axis-pool"/>
       <event kind="phase" side="russian" value="russian-i1-move">turn 1</event>

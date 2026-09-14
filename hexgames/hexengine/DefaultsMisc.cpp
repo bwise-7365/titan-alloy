@@ -140,48 +140,6 @@ namespace HexEngine {
     return RetreatFate::Walk;
   }
 
-  // ---- the game's sequence of play ---------------------------------------------------------------
-
-  std::span<const std::string_view>
-  NoGameAdjudicator::claims() const
-  {
-    return {};
-  }
-
-  void
-  NoGameAdjudicator::check(const Ctx&, const Command&) const
-  {
-    return;
-  }
-
-  Position
-  NoGameAdjudicator::apply(const Ctx&, const Command& command, PrngStreams&, EventSink&) const
-  {
-    if (std::holds_alternative<Place>(command)) {
-      throw std::invalid_argument("Session::apply: placing a counter needs the game's own arrival "
-                                  "schedule, which this policy set does not have");
-    }
-    throw std::invalid_argument("Session::apply: the engine has no default for this game command");
-  }
-
-  Position
-  NoGameAdjudicator::settle(const Ctx& ctx, const Command&, EventSink&) const
-  {
-    return ctx.position;
-  }
-
-  Position
-  NoGameAdjudicator::endPhase(const Ctx& ctx, HexSearch::SearchScratch&, EventSink&) const
-  {
-    return ctx.position;
-  }
-
-  Position
-  NoGameAdjudicator::enterPhase(const Ctx& ctx, PrngStreams&, EventSink&) const
-  {
-    return ctx.position;
-  }
-
   // ---- stacking ----------------------------------------------------------------------------------
 
   CountStacking::CountStacking(const HexRules::RuleSet& rules) : rules_(rules)
@@ -267,7 +225,7 @@ namespace HexEngine {
 
   // ---- the set -----------------------------------------------------------------------------------
 
-  DefaultPolicySet::DefaultPolicySet(const HexRules::GameDefinition& definition)
+  DefaultPolicySet::DefaultPolicySet(const HexRules::GameDefinition& definition, GameSteps gameSteps)
     : names_(*definition.board, *definition.roster, *definition.rules),
       zoc_(*definition.rules),
       movement_(movementFor(*definition.rules)),
@@ -276,7 +234,8 @@ namespace HexEngine {
       retreat_(*definition.rules, zoc_),
       stacking_(*definition.rules),
       phases_(*definition.rules),
-      grammar_(names_)
+      grammar_(names_),
+      state_(*definition.rules)
   {
     policies_.zoc = &zoc_;
     policies_.movement = movement_.get();
@@ -287,7 +246,17 @@ namespace HexEngine {
     policies_.victory = &victory_;
     policies_.phases = &phases_;
     policies_.grammar = &grammar_;
-    policies_.game = &game_;
+    registerEngineSteps(steps_);
+    switch (gameSteps) {
+      case GameSteps::Required:
+        break;
+      case GameSteps::Withheld:
+        withholdUnregistered(steps_, *definition.rules, grammar_, "the engine's default policy set runs no game module");
+        break;
+    }
+    policies_.steps = &steps_;
+    policies_.state = &state_;
+    policies_.obligationCodec = &obligationCodec_;
   }
 
 }  // namespace HexEngine

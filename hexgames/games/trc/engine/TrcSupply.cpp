@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcSupply.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <array>
 
@@ -77,7 +78,7 @@ namespace Trc {
   TrcSupply::exemptP(const Ctx& ctx, UnitId unit) const
   {
     return facts_.typeP(unit, "paratroop") || facts_.typeP(unit, "partisan") ||
-           Flags::markedP(ctx.position, unit, Flags::kInvaded);
+           Markers::markedP(ctx.position, unit, Markers::kInvaded);
   }
 
   bool

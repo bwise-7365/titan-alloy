@@ -3,7 +3,8 @@
 // ----------------------------------------------
 // TRC weather (4.1.1): May/June and July/August are clear and January/February snow; the other
 // three turns roll one die plus a running DRM, clamped to 0-7, on a chart indexed by months. The
-// state and the DRM are Axis side flags "weather" and "weather-drm" (the Axis rolls for both).
+// state and the DRM are TrcState::weather and weatherDrm (saved as the Axis flags "weather" and
+// "weather-drm": the Axis rolls for both).
 // ----------------------------------------------
 #pragma once
 #include "TrcCalendar.h"

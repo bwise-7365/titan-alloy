@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <stdexcept>
 
 namespace {
 
@@ -53,15 +54,71 @@ namespace {
     return Fixture{std::move(rules), std::move(board), std::move(roster)};
   }
 
+  struct TestState : HexModel::Cloneable<TestState, HexModel::GameState> {
+    void appendDigest(std::string& s) const override { s += "test;"; }
+  };
+
+  struct OtherState : HexModel::Cloneable<OtherState, HexModel::GameState> {
+    void appendDigest(std::string& s) const override { s += "other;"; }
+  };
+
+  // A test game's codecs: a TestState from a document with no flags, and no game obligations.
+  class FlaglessCodec : public HexModel::GameStateCodec {
+  public:
+    HexModel::Polymorphic<HexModel::GameState>
+    decode(const HexModel::SideFlags& flags) const override
+    {
+      for (const std::vector<HexModel::SideFlag>& side : flags) {
+        if (!side.empty()) {
+          throw std::invalid_argument("PositionTest: flag '" + side.front().name + "'");
+        }
+      }
+      return HexModel::makePolymorphic<HexModel::GameState, TestState>();
+    }
+    HexModel::SideFlags encode(const HexModel::GameState&) const override { return HexModel::SideFlags(2); }
+  };
+
+  class NoObligations : public HexModel::ObligationCodec {
+  public:
+    HexModel::Polymorphic<HexModel::GameObligation>
+    decode(const std::string& name, const std::vector<HexModel::ObligationArg>&) const override
+    {
+      throw std::invalid_argument("PositionTest: obligation '" + name + "'");
+    }
+    std::vector<HexModel::ObligationArg>
+    encode(const HexModel::GameObligation& owed) const override
+    {
+      throw std::invalid_argument("PositionTest: obligation '" + std::string(owed.kind()) + "'");
+    }
+  };
+
   HexModel::Position
   buildPosition(const Fixture& fx)
   {
     const HexXml::SaveDoc save =
         HexXml::SaveDoc::parse(HexXml::XmlDocument::load(root() / "game_records" / "xml" / "trc-test.xml"));
-    return HexModel::PositionBuilder::build(save, fx.board, fx.roster, fx.rules);
+    const FlaglessCodec state;
+    const NoObligations obligations;
+    return HexModel::PositionBuilder::build(save, fx.board, fx.roster, fx.rules, state, obligations);
   }
 
 }  // namespace
+
+TEST(PositionTest, GameStateIsCheckedCopiedAndDigested)
+{
+  const Fixture fx = buildFixture();
+  HexModel::Position pos = buildPosition(fx);
+
+  EXPECT_NO_THROW((void)pos.gameState<TestState>());
+  EXPECT_THROW((void)pos.gameState<OtherState>(), std::invalid_argument);
+  EXPECT_THROW((void)HexModel::Position().gameState<TestState>(), std::invalid_argument);
+
+  const HexModel::Position copy = pos;
+  EXPECT_EQ(pos.digest(), copy.digest());
+  pos.setGameState(HexModel::makePolymorphic<HexModel::GameState, OtherState>());
+  EXPECT_NE(pos.digest(), copy.digest());
+  EXPECT_NO_THROW((void)copy.gameState<TestState>());
+}
 
 TEST(PositionTest, PlaceKeepsStacksInStep)
 {
@@ -137,23 +194,32 @@ TEST(PositionTest, PendingDecisionRoundTrip)
   const HexModel::UnitId armour41 = *fx.roster.find(HexModel::CounterId{"g-ge-41-armour"});
   const HexModel::HexIndex hexA = fx.board.indexOf(HexCoord::HexId{"F27"});
 
-  pos.setPending(HexModel::NoDecision{});
+  // Nothing owed: nothing pending, and asking has nowhere to go.
   EXPECT_TRUE(std::holds_alternative<HexModel::NoDecision>(pos.pending()));
+  EXPECT_THROW(pos.ask(HexModel::NoDecision{}), std::invalid_argument);
+  EXPECT_THROW(pos.pop(), std::invalid_argument);
 
-  pos.setPending(HexModel::ChooseLoss{HexModel::SideId{0}, {armour41}, 1});
+  const HexModel::Battle battle{std::nullopt, {armour41}};
+  pos.push(HexModel::OwedLoss{battle, HexModel::SideId{0}, 1});
+  EXPECT_TRUE(std::holds_alternative<HexModel::NoDecision>(pos.pending()));
+  pos.ask(HexModel::ChooseLoss{HexModel::SideId{0}, {armour41}, 1});
   ASSERT_TRUE(std::holds_alternative<HexModel::ChooseLoss>(pos.pending()));
   EXPECT_EQ(1, std::get<HexModel::ChooseLoss>(pos.pending()).count);
 
-  pos.setPending(HexModel::ChooseRetreat{HexModel::SideId{0}, armour41, {hexA}, false});
+  // A new top hides the decision below it until it is popped.
+  pos.push(HexModel::UnitRetreat{battle, armour41, hexA, 2, 2, {}});
+  EXPECT_TRUE(std::holds_alternative<HexModel::NoDecision>(pos.pending()));
+  pos.ask(HexModel::ChooseRetreat{HexModel::SideId{0}, armour41, {hexA}, false});
   ASSERT_TRUE(std::holds_alternative<HexModel::ChooseRetreat>(pos.pending()));
   EXPECT_EQ(armour41, std::get<HexModel::ChooseRetreat>(pos.pending()).unit);
 
-  pos.setPending(HexModel::ChooseCard{HexModel::RandomizerId{0}, {"card-a"}});
-  ASSERT_TRUE(std::holds_alternative<HexModel::ChooseCard>(pos.pending()));
-
-  pos.setPending(HexModel::GameChoice{"weather", {"clear", "mud"}});
-  ASSERT_TRUE(std::holds_alternative<HexModel::GameChoice>(pos.pending()));
-  EXPECT_EQ("weather", std::get<HexModel::GameChoice>(pos.pending()).verb);
+  const HexModel::Position copy = pos;
+  EXPECT_EQ(pos.digest(), copy.digest());
+  pos.pop();
+  EXPECT_TRUE(std::holds_alternative<HexModel::ChooseLoss>(pos.pending()));
+  EXPECT_NE(pos.digest(), copy.digest());
+  pos.pop();
+  EXPECT_TRUE(pos.resolution().empty());
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

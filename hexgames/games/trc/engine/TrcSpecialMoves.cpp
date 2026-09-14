@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcSpecialMoves.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 #include "TrcUnits.h"
 
 #include <array>
@@ -22,20 +23,6 @@ namespace Trc {
     refuse(const std::string& why)
     {
       throw std::invalid_argument("TrcSpecialMoves: " + why);
-    }
-
-    std::string_view
-    areaName(SeaArea area)
-    {
-      switch (area) {
-        case SeaArea::Baltic:
-          return "baltic";
-        case SeaArea::BlackSea:
-          return "black-sea";
-        case SeaArea::Caspian:
-          return "caspian";
-      }
-      throw std::invalid_argument("Trc::areaName: sea area outside the three");
     }
 
   }  // namespace
@@ -163,8 +150,8 @@ namespace Trc {
     if (SeaArea::Baltic == *area && invasionP) {
       refuse("there are no invasions in the Baltic (the sheet's Baltic panel)");
     }
-    const std::string areaText(areaName(*area));
-    if (Flags::listedP(ctx.position, side, Flags::kSeaUsed, areaText)) {
+    const std::string areaText(seaAreaName(*area));
+    if (stateOf(ctx.position).side(side).seaUsed.contains(*area)) {
       refuse("the side has already moved by sea in the " + areaText + " this turn (10.0)");
     }
 
@@ -174,7 +161,7 @@ namespace Trc {
     const int modified = die - portsHeld(ctx, side, *area) + (evacuationP ? 1 : 0) + (russianBalticP ? 2 : 0);
     const int needed = SeaArea::Baltic == *area ? 2 : 3;
     Position next = ctx.position;
-    Flags::add(next, side, Flags::kSeaUsed, areaText);
+    stateOf(next).side(side).seaUsed.insert(*area);
     sink.onEvent(HexEngine::DieRolled{HexEngine::StreamTag::SeaMove, die});
     const bool successP = needed >= modified;
     sink.onEvent(HexEngine::GameEvent{"sea-move", areaText + " roll " + std::to_string(modified) + (successP ? " succeeds" : " fails")});
@@ -190,7 +177,7 @@ namespace Trc {
     }
     next.state(unit).flags.movedP = true;
     if (invasionP) {
-      Flags::mark(next, unit, Flags::kInvaded);
+      Markers::mark(next, unit, Markers::kInvaded);
     }
     return next;
   }
@@ -219,12 +206,12 @@ namespace Trc {
     }
     Position next = ctx.position;
     for (UnitId unit : units) {
-      if (!facts_.typeP(unit, "paratroop") || Flags::markedP(ctx.position, unit, Flags::kDropped)) {
+      if (!facts_.typeP(unit, "paratroop") || Markers::markedP(ctx.position, unit, Markers::kDropped)) {
         refuse("counter '" + ctx.roster.unit(unit).counter.text + "' is not a paratroop corps that has yet to drop");
       }
       Units::place(next, unit, to, sink);
       next.state(unit).flags.movedP = true;
-      Flags::mark(next, unit, Flags::kDropped);
+      Markers::mark(next, unit, Markers::kDropped);
     }
     return next;
   }
@@ -261,7 +248,7 @@ namespace Trc {
     }
     for (UnitId unit : attackers) {
       const std::optional<HexIndex> hex = Units::hexOf(ctx.position, unit);
-      if (!hex || 1 != ctx.board.distance(*hex, target) || Flags::markedP(ctx.position, unit, Flags::kAv)) {
+      if (!hex || 1 != ctx.board.distance(*hex, target) || Markers::markedP(ctx.position, unit, Markers::kAv)) {
         refuse("counter '" + ctx.roster.unit(unit).counter.text + "' is not adjacent to the target or has fought an automatic victory this impulse");
       }
     }
@@ -278,9 +265,9 @@ namespace Trc {
       Units::remove(next, unit, facts_.pool(ctx.roster.unit(unit).side), sink);
     }
     for (UnitId unit : attackers) {
-      Flags::mark(next, unit, Flags::kAv);
+      Markers::mark(next, unit, Markers::kAv);
       if (Impulse::First == phase.impulse) {
-        Flags::mark(next, unit, Flags::kAvFirst);
+        Markers::mark(next, unit, Markers::kAvFirst);
       }
     }
     return next;

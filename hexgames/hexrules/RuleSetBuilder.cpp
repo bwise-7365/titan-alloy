@@ -236,8 +236,52 @@ namespace HexRules {
 
   namespace {
 
+    StepAt
+    stepAtOf(const HexXml::StepDoc& s)
+    {
+      if ("enter" == s.at) {
+        return StepAt::Enter;
+      }
+      if ("before-command" == s.at) {
+        return StepAt::BeforeCommand;
+      }
+      if ("after-command" == s.at) {
+        return StepAt::AfterCommand;
+      }
+      if ("end" == s.at) {
+        return StepAt::End;
+      }
+      throw std::invalid_argument("rules line " + std::to_string(s.line) + ": step '" + s.id + "' has at '" + s.at +
+                                  "'");
+    }
+
+    Step
+    mintStep(const HexXml::StepDoc& s, const std::vector<std::string>& ruleIds)
+    {
+      Step out;
+      out.id = s.id;
+      out.does = s.does;
+      out.at = stepAtOf(s);
+      out.commands = s.commands;
+      for (const std::string& rule : s.rules) {
+        bool knownP = false;
+        for (const std::string& id : ruleIds) {
+          knownP = knownP || id == rule;
+        }
+        if (!knownP) {
+          throw std::invalid_argument("rules line " + std::to_string(s.line) + ": step '" + s.id + "' names '" + rule +
+                                      "' in @rules, which is not a <rule>");
+        }
+        out.rules.push_back(RuleId{rule});
+      }
+      out.turns = parseTurnsOr(s.turns, TurnSelector::all());
+      out.text = s.text;
+      out.line = s.line;
+      return out;
+    }
+
     PhaseNode
-    mintPhase(const HexXml::PhaseDoc& p, RuleSetBuildContext& ctx)
+    mintPhase(const HexXml::PhaseDoc& p, const std::vector<std::string>& ruleIds, RuleSetBuildContext& ctx)
     {
       PhaseNode node;
       node.id = PhaseId{static_cast<std::uint32_t>(ctx.phaseByName.size())};
@@ -247,8 +291,11 @@ namespace HexRules {
       node.turns = parseTurnsOr(p.turns, TurnSelector::all());
       node.condition = p.condition;
       node.optionalP = p.optionalFlag;
+      for (const HexXml::StepDoc& s : p.steps) {
+        node.steps.push_back(mintStep(s, ruleIds));
+      }
       for (const HexXml::PhaseDoc& c : p.children) {
-        node.children.push_back(mintPhase(c, ctx));
+        node.children.push_back(mintPhase(c, ruleIds, ctx));
       }
       return node;
     }
@@ -258,8 +305,12 @@ namespace HexRules {
   void
   RuleSetBuilder::buildPhases(RuleSet& rs, const HexXml::RulesDoc& doc, BuildContext& ctx)
   {
+    std::vector<std::string> ruleIds;
+    for (const HexXml::RuleAnnex& r : doc.allRules) {
+      ruleIds.push_back(r.id);
+    }
     for (const HexXml::PhaseDoc& p : doc.phases) {
-      rs.phases_.push_back(mintPhase(p, ctx));
+      rs.phases_.push_back(mintPhase(p, ruleIds, ctx));
     }
     rs.phaseByName_ = ctx.phaseByName;
     return;

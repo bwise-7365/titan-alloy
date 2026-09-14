@@ -20,6 +20,7 @@ namespace Trc {
     HexEngine::Command parse(const std::string& verb,
                              const std::vector<std::pair<std::string, std::string>>& args) const override;
     std::vector<std::pair<std::string, std::string>> arguments(const HexEngine::Command&) const override;
+    std::vector<std::string> verbs() const override;  // the engine's, plus rail-move and the three TRC verbs
 
   private:
     const TrcFacts& facts_;

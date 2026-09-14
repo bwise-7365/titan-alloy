@@ -13,8 +13,8 @@
   <units>
     <unit id="g-ge-hitler-hitler" counter="g-ge-hitler-hitler" type="leader" owner="axis" hex="E31">Berlin</unit>
     <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16"/>
-    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V17"/>
-    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="MM28"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="W16"/>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="H26"/>
     <unit id="r-ru-52-infantry" counter="r-ru-52-infantry" type="infantry" owner="russian" hex="V15"/>
     <unit id="r-ru-11-infantry" counter="r-ru-11-infantry" type="infantry" owner="russian" hex="AA13"/>
     <unit id="r-wo-kharkov-worker" counter="r-wo-kharkov-worker" type="worker" owner="russian" hex="AA14">Kharkov</unit>
@@ -23,20 +23,20 @@
     <hex id="E31" side="axis"/>
     <hex id="W19" side="axis"/>
     <hex id="AA14" side="russian"/>
-    <link network="rail" hexes="MM28 NN28" side="axis"/>
-    <link network="rail" hexes="NN28 OO27" side="axis"/>
-    <link network="rail" hexes="OO27 OO28" side="axis"/>
-    <link network="rail" hexes="OO28 PP28" side="axis"/>
-    <link network="rail" hexes="PP28 QQ27" side="axis"/>
-    <link network="rail" hexes="QQ27 QQ28" side="axis"/>
+    <link network="rail" hexes="H26 H27" side="axis"/>
+    <link network="rail" hexes="H27 H28" side="axis"/>
+    <link network="rail" hexes="H28 H29" side="axis"/>
+    <link network="rail" hexes="H29 H30" side="axis"/>
+    <link network="rail" hexes="H30 G30" side="axis"/>
+    <link network="rail" hexes="G30 F31" side="axis"/>
   </control>
   <log>
     <move n="1" turn="2" phase="russian-end" side="russian" cmd="end-phase"/>
     <move n="2" turn="3" phase="weather-phase" side="axis" cmd="end-phase"/>
     <move n="3" turn="3" phase="axis-i1-move" side="axis" cmd="rail-move" units="g-ge-1-infantry"
-          path="MM28 NN28 OO27 OO28 PP28 QQ27 QQ28"/>
+          path="H26 H27 H28 H29 H30 G30 F31"/>
     <move n="4" turn="3" phase="axis-i1-move" side="axis" cmd="move" units="g-ge-41-armour" mode="normal"
-          path="V17 V16"/>
+          path="W16 W15"/>
     <move n="5" turn="3" phase="axis-i1-move" side="axis" cmd="end-phase"/>
     <move n="6" turn="3" phase="axis-i1-combat" side="axis" cmd="attack" units="g-ge-41-armour" target="V15"/>
     <move n="7" turn="3" phase="axis-i1-combat" side="axis" cmd="end-phase"/>

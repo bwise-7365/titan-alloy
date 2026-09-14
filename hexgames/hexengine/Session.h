@@ -20,6 +20,10 @@
 
 namespace HexEngine {
 
+  namespace Sequence {
+    struct Env;
+  }
+
   struct Prompt {
     int turn = 1;
     PhaseId phase;
@@ -42,6 +46,9 @@ namespace HexEngine {
 
   class Session {
   public:
+    // Throws std::invalid_argument when the policy set has no StepRegistry or CommandGrammar, when
+    // rules steps name command verbs the grammar lacks (all of them, each with its step), or when a
+    // step names a behaviour the registry does not hold for its kind (naming the step and its does).
     Session(std::shared_ptr<const HexRules::GameDefinition>, const Policies&, Position start, std::uint64_t seed);
 
     const HexRules::GameDefinition& definition() const { return *definition_; }
@@ -73,11 +80,12 @@ namespace HexEngine {
   private:
     // Added in M4: validate the command, then build the next Position through the adjudicators,
     // writing every event into `sink`. Throws before touching anything on an illegal command, which
-    // is what leaves position_ untouched.
+    // is what leaves position_ untouched. Since M6b: the rules' before-command steps, the engine's
+    // adjudication, then the rules' after-command steps (Sequence.h).
     Position adjudicate(const Command&, EventSink&);
-    // Added in M6: the engine's own adjudication of one command, between the GameAdjudicator's
-    // check() before it and settle() after it.
-    Position adjudicateCommand(const Command&, EventSink&);
+    // The engine's own adjudication of one command; an EndPhase runs the phase boundary's steps and
+    // Place or a game verb goes to the command the StepRegistry holds for its verb.
+    Position adjudicateCommand(const Command&, const std::string& verb, const Sequence::Env&);
 
     std::shared_ptr<const HexRules::GameDefinition> definition_;
     Policies policies_;

@@ -22,8 +22,13 @@ namespace HexModel {
   public:
     // Throws std::invalid_argument naming the offending id (a unit's counter, a hex, a space, a
     // side, a network, a layer or a region) on any reference the save document makes that the
-    // board, roster or rules do not recognise. Flags on a <side> become Position::flag (M6).
-    static Position build(const HexXml::SaveDoc&, const Board&, const Roster&, const HexRules::RuleSet&);
+    // board, roster or rules do not recognise. The flags on every <side> go to the game's state codec,
+    // whose state the position holds (M6b); the codec throws naming a flag it cannot read. The
+    // <resolution> entries are pushed bottom first with the decision each asked (M6b review); a
+    // game entry goes to the ObligationCodec, and an entry missing an attribute its kind needs is
+    // refused, naming the entry and the attribute.
+    static Position build(const HexXml::SaveDoc&, const Board&, const Roster&, const HexRules::RuleSet&,
+                          const GameStateCodec&, const ObligationCodec&);
 
   private:
     PositionBuilder() = delete;

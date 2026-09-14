@@ -483,25 +483,79 @@ class Renderer:
             parts.append(cur)
         return " ".join(self.pathd(p) for p in parts if len(p) >= 2)
 
+    def link_strokes(self, chains, ctx):
+        """Smoothed strokes for one network, after panj/tempest/src/hxsvg.cpp. A hex the network passes
+        through (exactly two neighbours on it) is crossed from one hexside midpoint to the other, so a
+        bend cuts the corner instead of zigzagging through the centre; at a line end or a junction each
+        branch runs from its hexside midpoint to the centre. The pieces are joined into polylines from
+        one end or junction to the next (or round a closed loop), so dashes and ticks run on unbroken."""
+        centre = {}
+        nbrs = {}
+        for hexes in chains:
+            for pid in hexes:
+                if pid not in centre:
+                    f = self.find_or_warn(pid, ctx)
+                    centre[pid] = f[0].centre(*f[1]) if f else None
+            known = [pid for pid in hexes if centre[pid] is not None]
+            for a, b in zip(known, known[1:]):
+                if a == b:
+                    continue
+                nbrs.setdefault(a, [])
+                nbrs.setdefault(b, [])
+                if b not in nbrs[a]:
+                    nbrs[a].append(b)
+                    nbrs[b].append(a)
+
+        def mid(a, b):
+            return ((centre[a][0] + centre[b][0]) / 2, (centre[a][1] + centre[b][1]) / 2)
+
+        done = set()
+
+        def walk(prev, cur, pts):
+            done.add(frozenset((prev, cur)))
+            pts.append(mid(prev, cur))
+            while len(nbrs[cur]) == 2:
+                nxt = nbrs[cur][0] if nbrs[cur][1] == prev else nbrs[cur][1]
+                if frozenset((cur, nxt)) in done:
+                    return pts  # back where a closed loop started
+                done.add(frozenset((cur, nxt)))
+                pts.append(mid(cur, nxt))
+                prev, cur = cur, nxt
+            pts.append(centre[cur])
+            return pts
+
+        lines = []
+        for pid, ns in nbrs.items():
+            if len(ns) != 2:
+                for n in ns:
+                    if frozenset((pid, n)) not in done:
+                        lines.append(walk(pid, n, [centre[pid]]))
+        for pid, ns in nbrs.items():  # loops made only of pass-through hexes
+            for n in ns:
+                if frozenset((pid, n)) not in done:
+                    pts = walk(pid, n, [])
+                    lines.append(pts + [pts[0]])
+        return lines
+
     def layer_links(self):
+        # Links of the same kind, line style, owner and name form one network and are drawn together.
         o = ['<g class="layer links">']
+        groups = {}
         for lk in self.root.findall("link"):
-            attrs, l = self.line_attrs(lk.get("line"))
-            pts = []
-            for pid in lk.get("hexes").split():
-                f = self.find_or_warn(pid, "link %s" % (lk.get("name") or lk.get("kind")))
-                if f:
-                    g, (c, r) = f
-                    pts.append(g.centre(c, r))
-            if len(pts) < 2:
+            k = (lk.get("kind"), lk.get("line"), lk.get("owner") or "", lk.get("name") or "")
+            groups.setdefault(k, []).append(lk.get("hexes").split())
+        for (kind, line, owner_id, name), chains in groups.items():
+            attrs, l = self.line_attrs(line)
+            parts = [p for p in self.link_strokes(chains, "link %s" % (name or kind)) if len(p) >= 2]
+            if not parts:
                 continue
-            d = self.pathd(pts)
-            owner = ' data-owner="%s"' % escape(lk.get("owner")) if lk.get("owner") else ""
+            d = " ".join(self.pathd(p) for p in parts)
+            owner = ' data-owner="%s"' % escape(owner_id) if owner_id else ""
             cas = self.casing_attrs(l)
             if cas:
                 o.append('<path d="%s" %s/>' % (d, cas))
             o.append('<path class="link %s"%s data-name="%s" d="%s" %s/>' % (
-                escape(lk.get("kind")), owner, escape(lk.get("name") or ""), d, attrs))
+                escape(kind), owner, escape(name), d, attrs))
             if l is not None and (l.get("ticks") or "false") == "true":
                 w = float(l.get("width"))
                 o.append('<path d="%s" stroke="%s" stroke-width="%.2f" fill="none" stroke-dasharray="%.2f %.2f"/>' % (

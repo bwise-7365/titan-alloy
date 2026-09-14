@@ -8,7 +8,9 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <initializer_list>
 #include <optional>
+#include <string>
 #include <span>
 #include <stdexcept>
 #include <vector>
@@ -29,7 +31,7 @@ namespace {
 TEST(SessionTest, MoveThroughReachable)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   HexEngine::Session session(definition, defaults.policies(), TrcFixture::scenario(*definition), 20260912ull);
 
   const UnitId armour = TrcFixture::unitOf(*definition, "g-ge-41-armour");
@@ -69,7 +71,7 @@ TEST(SessionTest, MoveThroughReachable)
 TEST(SessionTest, IllegalCommandLeavesPositionUntouched)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   HexEngine::Session session(definition, defaults.policies(), TrcFixture::scenario(*definition), 20260912ull);
 
   const std::uint64_t before = session.position().digest();
@@ -97,7 +99,7 @@ TEST(SessionTest, IllegalCommandLeavesPositionUntouched)
 TEST(SessionTest, PromptAndPhaseEnd)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   HexEngine::Session session(definition, defaults.policies(), TrcFixture::scenario(*definition), 20260912ull);
 
   const HexEngine::Prompt start = session.prompt();
@@ -120,7 +122,7 @@ TEST(SessionTest, PromptAndPhaseEnd)
 TEST(SessionTest, PendingDecisionGate)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   HexModel::Position position = TrcFixture::scenario(*definition);
 
   // Two German corps against one Russian, so that an attacker's loss is a choice rather than a
@@ -167,19 +169,124 @@ TEST(SessionTest, PendingDecisionGate)
     }
     session.apply(legal.front());
   }
-  EXPECT_FALSE(session.position().combatPlan().has_value());
+  EXPECT_TRUE(session.position().resolution().empty());
 }
 
 TEST(SessionTest, ForkIsIndependent)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   HexEngine::Session session(definition, defaults.policies(), TrcFixture::scenario(*definition), 20260912ull);
 
   HexEngine::Session forked = session.fork();
   EXPECT_EQ(session.position().digest(), forked.position().digest());
   forked.apply(HexEngine::EndPhase{});
   EXPECT_NE(session.position().digest(), forked.position().digest());
+  EXPECT_EQ(0u, session.events().size());
+}
+
+namespace {
+
+  // The engine's grammar plus TRC's verbs, so that TRC's rules pass the verb check.
+  class WithTrcVerbs : public HexEngine::CommandGrammar {
+  public:
+    explicit WithTrcVerbs(const HexEngine::CommandGrammar& base) : base_(base) {}
+    std::string verb(const HexEngine::Command& command) const override { return base_.verb(command); }
+    HexEngine::Command
+    parse(const std::string& verb, const std::vector<std::pair<std::string, std::string>>& args) const override
+    {
+      return base_.parse(verb, args);
+    }
+    std::vector<std::pair<std::string, std::string>>
+    arguments(const HexEngine::Command& command) const override
+    {
+      return base_.arguments(command);
+    }
+    std::vector<std::string>
+    verbs() const override
+    {
+      std::vector<std::string> out = base_.verbs();
+      for (const char* extra : {"rail-move", "sea-move", "paradrop", "av-attack"}) {
+        out.push_back(extra);
+      }
+      return out;
+    }
+
+  private:
+    const HexEngine::CommandGrammar& base_;
+  };
+
+}  // namespace
+
+TEST(SessionTest, UnknownStepVerbsAreAllReportedAtBuild)
+{
+  const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
+  const HexEngine::DefaultPolicySet strict(*definition, HexEngine::GameSteps::Required);
+  try {
+    const HexEngine::Session session(definition, strict.policies(), TrcFixture::scenario(*definition), 1ull);
+    FAIL() << "a session was built on rules steps naming verbs the engine grammar lacks";
+  } catch (const std::invalid_argument& e) {
+    const std::string what = e.what();
+    for (const char* step : {"turn-rail-moves", "turn-rail-touched", "turn-warsaw", "axis-i2-no-rail", "russian-i2-no-rail"}) {
+      EXPECT_NE(std::string::npos, what.find(std::string("step '") + step + "'")) << what;
+    }
+    EXPECT_NE(std::string::npos, what.find("'rail-move'")) << what;
+    EXPECT_EQ(std::string::npos, what.find("does '")) << what;  // nothing further is checked
+  }
+}
+
+TEST(SessionTest, UnregisteredStepBehaviourIsRefusedAtBuild)
+{
+  const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
+  const HexEngine::DefaultPolicySet strict(*definition, HexEngine::GameSteps::Required);
+  const WithTrcVerbs grammar(*strict.policies().grammar);
+  HexEngine::Policies policies = strict.policies();
+  policies.grammar = &grammar;
+  try {
+    const HexEngine::Session session(definition, policies, TrcFixture::scenario(*definition), 1ull);
+    FAIL() << "a session was built on rules steps nobody registered";
+  } catch (const std::invalid_argument& e) {
+    const std::string what = e.what();
+    EXPECT_NE(std::string::npos, what.find("step 'turn-check-attack'")) << what;
+    EXPECT_NE(std::string::npos, what.find("does 'check-attack'")) << what;
+  }
+}
+
+TEST(SessionTest, BeforeCommandStepRefusesACommand)
+{
+  const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
+  HexEngine::StepRegistry steps;
+  steps.addCheck("check-attack", [](const HexEngine::CheckCall& call) {
+    throw std::invalid_argument("SessionTest: step '" + call.step.id + "' refuses every attack");
+  });
+  HexEngine::registerEngineSteps(steps);
+  HexEngine::withholdUnregistered(steps, *definition->rules, *defaults.policies().grammar,
+                                  "SessionTest: TRC's own module is not loaded");
+  HexEngine::Policies policies = defaults.policies();
+  policies.steps = &steps;
+
+  // One German corps next to one Russian in the Axis combat phase; the game-turn phase's
+  // before-command step reaches the command issued in its grandchild.
+  HexModel::Position position = TrcFixture::scenario(*definition);
+  const UnitId armour = TrcFixture::unitOf(*definition, "g-ge-41-armour");
+  const UnitId target = TrcFixture::unitOf(*definition, "r-ru-11-infantry");
+  const HexIndex defended = TrcFixture::hexOf(*definition, "F25");
+  const std::optional<HexIndex> beside = definition->board->neighbour(defended, static_cast<HexModel::Direction>(0));
+  ASSERT_TRUE(beside.has_value());
+  position.place(armour, *beside);
+  position.place(target, defended);
+  position.clock().phase = definition->rules->phase("axis-i1-combat");
+  HexEngine::Session session(definition, policies, position, 1ull);
+
+  const std::uint64_t before = session.position().digest();
+  try {
+    session.apply(HexEngine::DeclareAttack{{armour}, defended, {}});
+    FAIL() << "the before-command step did not refuse the attack";
+  } catch (const std::invalid_argument& e) {
+    EXPECT_NE(std::string::npos, std::string(e.what()).find("turn-check-attack")) << e.what();
+  }
+  EXPECT_EQ(before, session.position().digest());
   EXPECT_EQ(0u, session.events().size());
 }
 // ----------------------------------------------

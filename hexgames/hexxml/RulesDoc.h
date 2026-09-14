@@ -155,6 +155,17 @@ namespace HexXml {
     std::string text;
   };
 
+  struct StepDoc {  // added in M6b: phase/step
+    std::string id;
+    std::string does;
+    std::string at;  // enter|before-command|after-command|end
+    std::vector<std::string> commands;
+    std::vector<std::string> rules;
+    std::optional<std::string> turns;
+    std::string text;
+    int line = 0;
+  };
+
   struct PhaseDoc {
     std::string id;
     std::string name;
@@ -162,6 +173,7 @@ namespace HexXml {
     std::optional<std::string> turns;
     std::optional<std::string> condition;
     bool optionalFlag = false;
+    std::vector<StepDoc> steps;  // document order
     std::vector<PhaseDoc> children;
     int line = 0;
   };

@@ -6,10 +6,75 @@ Approved 2026-09-12 from `2026-09-12-2002-plan-request.txt`. Dated snapshots: `d
 The coordinator (Fable) rewrites RESUME HERE before every delegation and after every hand-off, ticks
 milestone boxes, and appends to the decision log. Workers write only their own `tasks/NN-slug.md`.
 
+## Terms
+
+People and agents
+- **Ben**: the author and reviewer; approves plans, XSD changes and commits.
+- **Coordinator** (also "Fable" in the approved plan): the main Claude Code session Ben talks to. It
+  writes contracts, XSD changes, task files and this plan, reviews workers' results, and makes small
+  fixes. It is the only writer of PLAN.md.
+- **Worker, W1-W6**: a background Claude agent launched by the coordinator to do one task. The
+  number names a lane of work, not a persistent agent: every launch starts with no memory, and its
+  only continuity is its task file. Opus and Sonnet are the Claude models a worker runs on.
+  W1 (Opus) hexcoord, hexsearch, hexengine; W2 (Sonnet) hexxml, hexmodel, package loader; W3 (Sonnet)
+  hexrecord; W4 (Opus) the TRC module, the M6b engine API, then DS; W5 the PGG digest (Sonnet), the M6c map
+  networks (Opus), then the PGG and DDaT modules; W6 (Sonnet, later) hexview and hexqt. At most five run at once.
+
+Work tracking
+- **M0-M14**: the milestones listed below; M6b and M7a/M7b split a milestone in two.
+- **Phase 1 / 2 / 3**: core libraries (M2-M5), game modules (M6-M9), GUI (M10-M12).
+- **Task file** `tasks/NN-slug.md`: one per delegated task; its inputs, outputs, acceptance tests,
+  the worker's brief, and the worker's report. **status**: assigned, in-progress, blocked, review, done.
+  **resume line**: the worker's one-line note of where it stopped, rewritten after every green build,
+  so a relaunched worker can continue.
+- **RESUME HERE**: the block below; the state of the work for whoever picks it up next.
+- **Review gate**: a change that waits for Ben's approval before it lands (every XSD edit).
+- **TODO(decide)**: a marker in code for an open design decision; each is also listed here.
+
+Games
+- **TRC** The Russian Campaign; **PGG** Panzergruppe Guderian; **DS** Axis Empires: Dai Senso!;
+  **DDaT** D-Day at Tarawa.
+- **Digest**: a plain-English summary of a game's rules with rule references (`game_rules/*.md`),
+  written before the rules XML.
+
+Engine and records
+- **ABC coordinates**: Ben's hex coordinate system (from `panj\hexmap\tricoord`), implemented in
+  `hexcoord`; printed hex ids like "KK19" are the identity everywhere else.
+- **Rules / sheet / counters / package / hexsave**: the five XML languages (`hexrules.xsd`,
+  `hexsheet.xsd`, `hexcounters.xsd`, `hexpackage.xsd`, `hexsave.xsd`); a package ties one game's rules,
+  sheet and counters together.
+- **Policy**: a pluggable rule component a game can replace (ZOC, movement, supply, combat ...).
+  **Adjudicator**: a pure function that turns a position and a command into the next position.
+  **PendingDecision**: a choice the rules need from a player before play can continue.
+- **Golden**: a recorded game (`*.golden.xml`) that a replay must reproduce byte for byte. **Bless /
+  re-record**: regenerate a golden with `hexgames_cli --record`, never by hand.
+- **Ledger**: the per-game list accounting for every prose `<rule>` as Implemented, Common (engine
+  default), OutOfScope or OptionalNotImplemented; `<game>_ledger_test` enforces it.
+- **ctest labels**: groups of tests (`core`, `trc`, `golden`, `long` ...); `-LE long` is the fast set.
+
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
-- in-flight tasks: none
+- in-flight tasks: tasks/08-map-networks.md (M6c, W5, opus): connected rail, road and river networks on
+  the TRC and PGG sheets, SVG/PNG regenerated, TRC scenario rail and goldens re-recorded to match.
+  2026-09-14: networks done (network_check 0 broken on both sheets; ctest 185/185; goldens supply,
+  rail-move, full-turn re-recorded, two golden scripts moved off removed rail; 5 tests updated, 3 of them
+  outside games/trc). Borders done too: TRC border 153 hexsides in 3 pieces, matching the TRC v5
+  deluxe map (which also shows the German frontier, a Kaunas-Baltic line and Bulgaria's edges; kept);
+  goldens unchanged by the borders. Coordinator re-checked: network_check 0 broken on both sheets,
+  only supply/rail-move/full-turn goldens changed, XML valid, banners 0. status: review, W5 432k+374k
+  tokens. Waiting on Ben: local ctest (185 full), the seven open questions in tasks/08, then commit.
+  M6b is staged (105 files) for Ben's commit; W5 makes no git writes, so the index stays M6b only.
+- M6b: tasks/07-engine-api.md (W4, opus, 575k tokens) was at status: review
+  (2026-09-14): W4 full ctest 180/180 with one skip (PendingSaveTest, waits for the hexsave proposal);
+  goldens byte-identical (0 golden files changed); style clean; 11 XML valid; banners 0 failures.
+  Coordinator review done; Ben answered 2026-09-14 (decision log "M6b review"). W4 applied them
+  (review round 1, +719k tokens): ctest full 184/184, -LE long 182/182, no skips; only
+  trc-test.golden.xml re-recorded (one line: the weather-drm flag; cite "M6b review: no side flags
+  without a game module"); hexsave.xsd <resolution> applied; 11 XML valid; banners 0 failures.
+  Open for Ben: on engine defaults, steps whose @commands verb the default grammar lacks (TRC's
+  rail-move, 5 steps) are withheld and listed rather than refused. Then Ben builds, commit M6b,
+  write tasks/08 (DS) and 09 (PGG).
 - in review: tasks/05-trc-engine.md (W4, opus) -- status: review 2026-09-14, W4 ctest 165/165
   (683k tokens). Coordinator review: scope and style clean (no unordered_/assert/default:/mutable
   statics in new code); golden diff consistent with a re-record (rules 13.3). Engine API grew more
@@ -61,6 +126,8 @@ milestone boxes, and appends to the decision log. Workers write only their own `
           165/165. Provisional data marked TODO(decide); see tasks/05 open questions
 - [ ] M6b Engine API after M6 (W4): phase steps declared in the rules XML, game-owned typed state,
           one resolution stack; TRC goldens byte-identical (tasks/07-engine-api.md)
+- [ ] M6c Map networks (W5): connected road, rail and river networks on the TRC and PGG sheets; network_check
+          in ctest; TRC scenario rail and goldens re-recorded to match (tasks/08-map-networks.md)
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module (W5)
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
@@ -147,7 +214,32 @@ milestone boxes, and appends to the decision log. Workers write only their own `
   stack in Position whose step kinds games extend (combat losses and retreats first; DS card effects,
   Tarawa reveal-and-consult-again later); PendingDecision comes from its top. (1) per-side flags:
   a game-owned typed state struct held by Position (option C); strings only in the hexsave codec.
-  Implementation: tasks/07-engine-api.md (M6b, W4), before M8 and M7b. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
+  Implementation: tasks/07-engine-api.md (M6b, W4), before M8 and M7b.
+- 2026-09-14 M6b review (Ben, answers to tasks/07 open questions): (1) the explicit, listed withhold
+  of a game's step behaviours on engine defaults is acceptable. (5) Session build reports every
+  @commands verb the grammar does not know, and goes no further unless there are none. (6) No
+  bending: side flags are refused when no game module is loaded (VerbatimFlagCodec and
+  UninterpretedFlags go); the engine smoke golden is re-recorded accordingly. hexsave.xsd
+  <resolution> proposal APPROVED as written in tasks/07 "XSD proposals".
+- 2026-09-14 M6b review round 2 (Ben): ctest -LE long 182/182. On engine defaults, a step whose
+  @commands verb only a game's grammar knows (TRC's rail-move) is withheld and listed; strict in
+  Required mode -- accepted. M6b staged for Ben's commit.
+- 2026-09-14 Maps (Ben): the TRC and PGG sheets carry the right element kinds but have broken
+  networks: road gaps, short disconnected river and rail pieces. Fix them so the road network is
+  connected with no gaps and no short isolated river or rail pieces remain; physically plausible and
+  pleasing, not a faithful copy of either game. Validate against hexsheet.xsd; regenerate SVG and PNG.
+- 2026-09-14 TRC country borders (Ben; he first called them fortification lines): the sheet's "border"
+  line (rules country-border) must be connected and match the borders drawn in the three PNG maps of
+  C:\Library\War-Games\The Russian Campaign\TRC v5 deluxe: one surrounds Warsaw and divides Poland into
+  two sectors, one surrounds Hungary along its mountains, one covers two edges of Rumania. Added to M6c
+  (W5). Deriving country <region> membership from them is NOT in scope (it would activate four inert
+  TRC rules and change play); a separate decision for Ben.
+- 2026-09-14 Smoothed roads and railways (Ben): hexsheet2svg.py draws <link> networks as panj/tempest
+  (src/hxsvg.cpp) does: through a hex, hexside midpoint to midpoint; at ends and junctions, midpoint to
+  centre; joined into polylines between ends/junctions. Rendering only, the XML is unchanged; the C++
+  renderer (M10) reproduces it. Also noted: Ben likes tempest's terrain colours (paleBeige 255,255,227;
+  paleGreen 198,255,198; paleBlue 128,198,255; paleGray 227,227,227; paleBrown 178,161,144) and will
+  adapt tempest's terrain synthesis later to generate new terrain with road, river and rail networks. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
 
 ## XSD proposals awaiting review
 

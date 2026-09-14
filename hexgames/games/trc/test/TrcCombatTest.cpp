@@ -72,7 +72,7 @@ TEST(TrcCombatTest, WoodsTurnDrIntoContact)
 {
   const auto definition = TrcTest::definition();
   const Trc::TrcPolicySet set(*definition);
-  const HexIndex woods = TrcTest::hex(*definition, "J24");
+  const HexIndex woods = TrcTest::hex(*definition, "O22");
   ASSERT_EQ("woods", definition->rules->hexTerrain()[definition->board->terrain(woods).value].id);
   HexIndex from = woods;
   for (int d = 0; d < HexCoord::kDirections; ++d) {
@@ -95,7 +95,7 @@ TEST(TrcCombatTest, WoodsTurnDrIntoContact)
   combat.defenders = {defender};
   combat.target = woods;
   if (set.combat().doubledP(ctx, combat.attackers, woods)) {
-    GTEST_SKIP() << "J24's neighbour puts the attack on a river";
+    GTEST_SKIP() << "O22's neighbour puts the attack on a river";
   }
   HexEngine::PrngStreams streams(TrcTest::seedRolling(HexEngine::StreamTag::Combat, 4));  // 3-1, die 4: DR
   const HexEngine::CombatReport report = set.combat().report(ctx, combat, streams);
@@ -138,7 +138,7 @@ TEST(TrcCombatTest, DefenderChoosesAttackerRoutes)
   for (std::size_t i = 2; i < askedOf.size(); ++i) {
     EXPECT_EQ("retreat:axis", askedOf[i]);
   }
-  EXPECT_FALSE(session.position().combatPlan().has_value());
+  EXPECT_TRUE(session.position().resolution().empty());
   EXPECT_TRUE(session.position().unitsAt(target).empty());
 }
 // ----------------------------------------------

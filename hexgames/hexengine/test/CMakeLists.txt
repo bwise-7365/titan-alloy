@@ -3,7 +3,8 @@
 # HEXGAMES_SOURCE_DIR and the test directory on its include path for TrcFixture.h.
 hexgames_add_gtest(hexengine_prng_test SOURCES PrngStreamsTest.cpp LIBS hexengine LABELS core)
 
-foreach(_suite PhaseCursorTest OddsTableResolverTest SessionTest TextEventEncoderTest DeterminismTest)
+foreach(_suite PhaseCursorTest OddsTableResolverTest SessionTest TextEventEncoderTest DeterminismTest
+        ResolutionStackTest SequenceTest)
   string(TOLOWER ${_suite} _lower)
   hexgames_add_gtest(hexengine_${_lower} SOURCES ${_suite}.cpp LIBS hexengine LABELS core)
   target_compile_definitions(hexengine_${_lower} PRIVATE HEXGAMES_SOURCE_DIR="${CMAKE_SOURCE_DIR}")

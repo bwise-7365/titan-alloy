@@ -52,724 +52,661 @@
 <hexes terrain="clear" ids="NN33 QQ33 NN32 QQ32 NN31 NN30 QQ30 QQ29 PP27 QQ27 QQ26 QQ25 B24 QQ24 PP23 QQ23 B21"/>
 <hexes terrain="sea" ids="A28 A27 B27 A26 B26 A25 B25 A24 PP22 QQ22 OO21 PP21 QQ21 PP20 QQ20 PP19 QQ19"/>
 <!-- 1441 hexes classified -->
-  <!-- rivers and country borders along hexsides, traced from the scan -->
-<edge at="D33:se" line="border"/>
-<edge at="BB33:sw" line="river"/>
-<edge at="JJ33:e" line="river"/>
+  <!-- rivers and country borders along hexsides, traced from the scan, then tidied by tools/tidy_networks.py -->
+<edge at="P33:se" line="border"/>
+<edge at="P33:sw" line="border"/>
+<edge at="V33:e" line="border"/>
+<edge at="V33:se" line="border"/>
+<edge at="V33:sw" line="border"/>
+<edge at="CC33:se" line="border"/>
+<edge at="DD33:e" line="border"/>
+<edge at="DD33:ne" line="border"/>
+<edge at="HH33:se" line="border"/>
+<edge at="HH33:sw" line="border"/>
+<edge at="P32:se" line="border"/>
+<edge at="P32:sw" line="border"/>
+<edge at="U32:se" line="border"/>
+<edge at="V32:ne" line="border"/>
+<edge at="DD32:se" line="border"/>
+<edge at="DD32:sw" line="border"/>
+<edge at="HH32:sw" line="border"/>
+<edge at="II32:e" line="border"/>
+<edge at="JJ32:ne" line="border"/>
+<edge at="H31:e" line="border"/>
+<edge at="P31:se" line="border"/>
+<edge at="P31:sw" line="border"/>
+<edge at="U31:se" line="border"/>
+<edge at="V31:e" line="border"/>
+<edge at="V31:ne" line="border"/>
+<edge at="DD31:se" line="border"/>
+<edge at="DD31:sw" line="border"/>
+<edge at="II31:se" line="border"/>
+<edge at="F30:se" line="border"/>
+<edge at="G30:e" line="border"/>
+<edge at="G30:se" line="border"/>
+<edge at="H30:sw" line="border"/>
+<edge at="I30:e" line="border"/>
+<edge at="J30:e" line="border"/>
+<edge at="J30:ne" line="border"/>
+<edge at="L30:e" line="border"/>
+<edge at="P30:sw" line="border"/>
+<edge at="Q30:e" line="border"/>
+<edge at="R30:ne" line="border"/>
+<edge at="V30:sw" line="border"/>
+<edge at="W30:e" line="border"/>
+<edge at="X30:e" line="border"/>
+<edge at="X30:ne" line="border"/>
+<edge at="DD30:sw" line="border"/>
+<edge at="EE30:e" line="border"/>
+<edge at="FF30:e" line="border"/>
+<edge at="FF30:ne" line="border"/>
+<edge at="F29:se" line="border"/>
+<edge at="F29:sw" line="border"/>
+<edge at="J29:sw" line="border"/>
+<edge at="K29:e" line="border"/>
+<edge at="K29:se" line="border"/>
+<edge at="L29:sw" line="border"/>
+<edge at="M29:e" line="border"/>
+<edge at="N29:e" line="border"/>
+<edge at="N29:se" line="border"/>
+<edge at="N29:ne" line="border"/>
+<edge at="O29:e" line="border"/>
+<edge at="P29:e" line="border"/>
+<edge at="P29:ne" line="border"/>
+<edge at="Q29:se" line="border"/>
+<edge at="R29:e" line="border"/>
+<edge at="R29:ne" line="border"/>
+<edge at="X29:sw" line="border"/>
+<edge at="Y29:e" line="border"/>
+<edge at="Z29:ne" line="border"/>
+<edge at="FF29:sw" line="border"/>
+<edge at="GG29:e" line="border"/>
+<edge at="F28:se" line="border"/>
+<edge at="F28:sw" line="border"/>
+<edge at="P28:sw" line="border"/>
+<edge at="Q28:e" line="border"/>
+<edge at="R28:e" line="border"/>
+<edge at="R28:se" line="border"/>
+<edge at="R28:sw" line="border"/>
+<edge at="R28:ne" line="border"/>
+<edge at="S28:e" line="border"/>
+<edge at="T28:e" line="border"/>
+<edge at="T28:se" line="border"/>
+<edge at="T28:ne" line="border"/>
+<edge at="U28:e" line="border"/>
+<edge at="V28:e" line="border"/>
+<edge at="V28:se" line="border"/>
+<edge at="V28:ne" line="border"/>
+<edge at="W28:e" line="border"/>
+<edge at="X28:e" line="border"/>
+<edge at="X28:se" line="border"/>
+<edge at="X28:ne" line="border"/>
+<edge at="Y28:e" line="border"/>
+<edge at="Y28:se" line="border"/>
+<edge at="F27:se" line="border"/>
+<edge at="F27:sw" line="border"/>
+<edge at="Q27:se" line="border"/>
+<edge at="R27:ne" line="border"/>
+<edge at="V27:se" line="border"/>
+<edge at="V27:sw" line="border"/>
+<edge at="DD27:e" line="border"/>
+<edge at="F26:se" line="border"/>
+<edge at="F26:sw" line="border"/>
+<edge at="H26:e" line="border"/>
+<edge at="Q26:se" line="border"/>
+<edge at="R26:ne" line="border"/>
+<edge at="V26:sw" line="border"/>
+<edge at="W26:e" line="border"/>
+<edge at="X26:e" line="border"/>
+<edge at="X26:se" line="border"/>
+<edge at="X26:ne" line="border"/>
+<edge at="Y26:e" line="border"/>
+<edge at="Z26:e" line="border"/>
+<edge at="Z26:se" line="border"/>
+<edge at="Z26:ne" line="border"/>
+<edge at="AA26:e" line="border"/>
+<edge at="BB26:e" line="border"/>
+<edge at="BB26:se" line="border"/>
+<edge at="BB26:ne" line="border"/>
+<edge at="CC26:e" line="border"/>
+<edge at="CC26:se" line="border"/>
+<edge at="DD26:sw" line="border"/>
+<edge at="EE26:e" line="border"/>
+<edge at="G25:e" line="border"/>
+<edge at="G25:se" line="border"/>
+<edge at="H25:sw" line="border"/>
+<edge at="I25:e" line="border"/>
+<edge at="J25:e" line="border"/>
+<edge at="J25:ne" line="border"/>
+<edge at="P25:e" line="border"/>
+<edge at="P25:se" line="border"/>
+<edge at="Q25:e" line="border"/>
+<edge at="Q25:se" line="border"/>
+<edge at="J24:se" line="border"/>
+<edge at="J24:sw" line="border"/>
+<edge at="L24:e" line="border"/>
+<edge at="N24:e" line="border"/>
+<edge at="N24:se" line="border"/>
+<edge at="O24:e" line="border"/>
+<edge at="O24:se" line="border"/>
+<edge at="J23:e" line="border"/>
+<edge at="J23:se" line="border"/>
+<edge at="J23:sw" line="border"/>
+<edge at="K23:e" line="border"/>
+<edge at="K23:se" line="border"/>
+<edge at="L23:sw" line="border"/>
+<edge at="M23:e" line="border"/>
+<edge at="M23:se" line="border"/>
+<edge at="I22:se" line="border"/>
+<edge at="J22:ne" line="border"/>
+<edge at="H21:e" line="border"/>
+<edge at="H21:se" line="border"/>
+<edge at="I21:e" line="border"/>
+<edge at="I21:se" line="border"/>
+<edge at="F20:sw" line="border"/>
+<edge at="G20:e" line="border"/>
+<edge at="G20:se" line="border"/>
+<edge at="CC33:e" line="river"/>
+<edge at="DD33:ne" line="river"/>
+<edge at="CC32:se" line="river"/>
+<edge at="DD32:ne" line="river"/>
+<edge at="CC31:se" line="river"/>
+<edge at="DD31:e" line="river"/>
+<edge at="DD31:ne" line="river"/>
+<edge at="P30:e" line="river"/>
+<edge at="P30:se" line="river"/>
+<edge at="P30:sw" line="river"/>
+<edge at="X30:e" line="river"/>
+<edge at="X30:se" line="river"/>
+<edge at="Y30:e" line="river"/>
+<edge at="Z30:e" line="river"/>
+<edge at="Z30:ne" line="river"/>
+<edge at="BB30:e" line="river"/>
+<edge at="BB30:se" line="river"/>
+<edge at="CC30:e" line="river"/>
+<edge at="DD30:e" line="river"/>
+<edge at="DD30:sw" line="river"/>
+<edge at="DD30:ne" line="river"/>
+<edge at="EE30:e" line="river"/>
+<edge at="FF30:e" line="river"/>
+<edge at="FF30:ne" line="river"/>
+<edge at="H29:e" line="river"/>
+<edge at="H29:se" line="river"/>
+<edge at="I29:e" line="river"/>
+<edge at="J29:e" line="river"/>
+<edge at="J29:ne" line="river"/>
+<edge at="N29:e" line="river"/>
+<edge at="N29:se" line="river"/>
+<edge at="O29:e" line="river"/>
+<edge at="O29:se" line="river"/>
+<edge at="W29:se" line="river"/>
+<edge at="Z29:sw" line="river"/>
+<edge at="AA29:e" line="river"/>
+<edge at="AA29:se" line="river"/>
+<edge at="DD29:sw" line="river"/>
+<edge at="EE29:e" line="river"/>
+<edge at="EE29:se" line="river"/>
+<edge at="FF29:se" line="river"/>
+<edge at="FF29:sw" line="river"/>
+<edge at="F28:e" line="river"/>
+<edge at="F28:se" line="river"/>
+<edge at="G28:e" line="river"/>
+<edge at="G28:se" line="river"/>
+<edge at="J28:sw" line="river"/>
+<edge at="K28:e" line="river"/>
+<edge at="L28:e" line="river"/>
+<edge at="L28:se" line="river"/>
+<edge at="L28:ne" line="river"/>
+<edge at="M28:e" line="river"/>
+<edge at="M28:se" line="river"/>
+<edge at="V28:e" line="river"/>
+<edge at="V28:ne" line="river"/>
+<edge at="FF28:sw" line="river"/>
+<edge at="E27:e" line="river"/>
+<edge at="E27:se" line="river"/>
+<edge at="R27:e" line="river"/>
+<edge at="R27:se" line="river"/>
+<edge at="R27:sw" line="river"/>
+<edge at="V27:sw" line="river"/>
+<edge at="W27:e" line="river"/>
+<edge at="X27:e" line="river"/>
+<edge at="X27:ne" line="river"/>
+<edge at="H26:e" line="river"/>
+<edge at="P26:e" line="river"/>
+<edge at="P26:se" line="river"/>
+<edge at="Q26:e" line="river"/>
+<edge at="Q26:se" line="river"/>
+<edge at="X26:sw" line="river"/>
+<edge at="Y26:e" line="river"/>
+<edge at="Z26:e" line="river"/>
+<edge at="Z26:ne" line="river"/>
+<edge at="DD26:e" line="river"/>
+<edge at="DD26:se" line="river"/>
+<edge at="EE26:e" line="river"/>
+<edge at="G25:e" line="river"/>
+<edge at="G25:se" line="river"/>
+<edge at="H25:sw" line="river"/>
+<edge at="I25:e" line="river"/>
+<edge at="J25:e" line="river"/>
+<edge at="J25:ne" line="river"/>
+<edge at="N25:e" line="river"/>
+<edge at="N25:se" line="river"/>
+<edge at="O25:e" line="river"/>
+<edge at="O25:se" line="river"/>
+<edge at="P25:ne" line="river"/>
+<edge at="Z25:sw" line="river"/>
+<edge at="AA25:e" line="river"/>
+<edge at="BB25:e" line="river"/>
+<edge at="BB25:se" line="river"/>
+<edge at="BB25:ne" line="river"/>
+<edge at="CC25:e" line="river"/>
+<edge at="CC25:se" line="river"/>
+<edge at="J24:sw" line="river"/>
+<edge at="K24:e" line="river"/>
+<edge at="L24:e" line="river"/>
+<edge at="L24:se" line="river"/>
+<edge at="L24:ne" line="river"/>
+<edge at="M24:e" line="river"/>
+<edge at="M24:se" line="river"/>
+<edge at="O24:se" line="river"/>
+<edge at="P24:e" line="river"/>
+<edge at="P24:ne" line="river"/>
+<edge at="H23:e" line="river"/>
+<edge at="H23:se" line="river"/>
+<edge at="I23:e" line="river"/>
+<edge at="J23:e" line="river"/>
+<edge at="J23:ne" line="river"/>
+<edge at="P23:sw" line="river"/>
+<edge at="Q23:e" line="river"/>
+<edge at="R23:ne" line="river"/>
+<edge at="FF23:ne" line="river"/>
+<edge at="J22:sw" line="river"/>
+<edge at="K22:e" line="river"/>
+<edge at="L22:e" line="river"/>
+<edge at="L22:ne" line="river"/>
+<edge at="Q22:se" line="river"/>
+<edge at="R22:e" line="river"/>
+<edge at="R22:ne" line="river"/>
+<edge at="X22:se" line="river"/>
+<edge at="Y22:e" line="river"/>
+<edge at="Z22:e" line="river"/>
+<edge at="Z22:ne" line="river"/>
+<edge at="DD22:e" line="river"/>
+<edge at="DD22:se" line="river"/>
+<edge at="EE22:e" line="river"/>
+<edge at="EE22:se" line="river"/>
+<edge at="L21:sw" line="river"/>
+<edge at="M21:e" line="river"/>
+<edge at="N21:e" line="river"/>
+<edge at="N21:ne" line="river"/>
+<edge at="R21:sw" line="river"/>
+<edge at="S21:e" line="river"/>
+<edge at="T21:e" line="river"/>
+<edge at="T21:ne" line="river"/>
+<edge at="Z21:sw" line="river"/>
+<edge at="AA21:e" line="river"/>
+<edge at="BB21:e" line="river"/>
+<edge at="BB21:se" line="river"/>
+<edge at="BB21:ne" line="river"/>
+<edge at="CC21:e" line="river"/>
+<edge at="CC21:se" line="river"/>
+<edge at="N20:sw" line="river"/>
+<edge at="O20:e" line="river"/>
+<edge at="P20:e" line="river"/>
+<edge at="P20:ne" line="river"/>
+<edge at="T20:sw" line="river"/>
+<edge at="U20:e" line="river"/>
+<edge at="V20:e" line="river"/>
+<edge at="V20:ne" line="river"/>
+<edge at="X20:e" line="river"/>
+<edge at="X20:se" line="river"/>
+<edge at="Y20:e" line="river"/>
+<edge at="Z20:e" line="river"/>
+<edge at="Z20:ne" line="river"/>
+<edge at="BB20:e" line="river"/>
+<edge at="V19:e" line="river"/>
+<edge at="V19:se" line="river"/>
+<edge at="W19:e" line="river"/>
+<edge at="W19:se" line="river"/>
+<edge at="Z19:sw" line="river"/>
+<edge at="AA19:e" line="river"/>
+<edge at="AA19:se" line="river"/>
+<edge at="BB19:sw" line="river"/>
+<edge at="CC19:e" line="river"/>
+<edge at="DD19:e" line="river"/>
+<edge at="DD19:ne" line="river"/>
+<edge at="FF19:e" line="river"/>
+<edge at="FF19:se" line="river"/>
+<edge at="GG19:e" line="river"/>
+<edge at="GG19:se" line="river"/>
+<edge at="U18:se" line="river"/>
+<edge at="V18:se" line="river"/>
+<edge at="V18:sw" line="river"/>
+<edge at="V18:ne" line="river"/>
+<edge at="DD18:sw" line="river"/>
+<edge at="EE18:e" line="river"/>
+<edge at="EE18:se" line="river"/>
+<edge at="LL18:e" line="river"/>
+<edge at="G17:e" line="river"/>
+<edge at="H17:e" line="river"/>
+<edge at="H17:ne" line="river"/>
+<edge at="T17:e" line="river"/>
+<edge at="T17:se" line="river"/>
+<edge at="U17:e" line="river"/>
+<edge at="U17:se" line="river"/>
+<edge at="V17:e" line="river"/>
+<edge at="V17:se" line="river"/>
+<edge at="V17:sw" line="river"/>
+<edge at="LL17:sw" line="river"/>
+<edge at="MM17:e" line="river"/>
+<edge at="NN17:ne" line="river"/>
+<edge at="H16:sw" line="river"/>
+<edge at="I16:e" line="river"/>
+<edge at="J16:e" line="river"/>
+<edge at="J16:ne" line="river"/>
+<edge at="R16:e" line="river"/>
+<edge at="R16:se" line="river"/>
+<edge at="S16:e" line="river"/>
+<edge at="S16:se" line="river"/>
+<edge at="T16:se" line="river"/>
+<edge at="U16:e" line="river"/>
+<edge at="U16:se" line="river"/>
+<edge at="MM16:se" line="river"/>
+<edge at="NN16:ne" line="river"/>
+<edge at="J15:sw" line="river"/>
+<edge at="K15:e" line="river"/>
+<edge at="L15:e" line="river"/>
+<edge at="L15:ne" line="river"/>
+<edge at="P15:e" line="river"/>
+<edge at="P15:se" line="river"/>
+<edge at="Q15:e" line="river"/>
+<edge at="Q15:se" line="river"/>
+<edge at="T15:e" line="river"/>
+<edge at="T15:se" line="river"/>
+<edge at="T15:sw" line="river"/>
+<edge at="HH15:se" line="river"/>
+<edge at="MM15:se" line="river"/>
+<edge at="NN15:e" line="river"/>
+<edge at="NN15:ne" line="river"/>
+<edge at="L14:se" line="river"/>
+<edge at="L14:sw" line="river"/>
+<edge at="N14:e" line="river"/>
+<edge at="N14:se" line="river"/>
+<edge at="O14:e" line="river"/>
+<edge at="O14:se" line="river"/>
+<edge at="R14:se" line="river"/>
+<edge at="S14:e" line="river"/>
+<edge at="S14:se" line="river"/>
+<edge at="BB14:e" line="river"/>
+<edge at="FF14:e" line="river"/>
+<edge at="HH14:se" line="river"/>
+<edge at="HH14:sw" line="river"/>
+<edge at="NN14:se" line="river"/>
+<edge at="NN14:sw" line="river"/>
+<edge at="L13:se" line="river"/>
+<edge at="L13:sw" line="river"/>
+<edge at="M13:se" line="river"/>
+<edge at="N13:se" line="river"/>
+<edge at="N13:ne" line="river"/>
+<edge at="V13:e" line="river"/>
+<edge at="V13:se" line="river"/>
+<edge at="Z13:e" line="river"/>
+<edge at="Z13:se" line="river"/>
+<edge at="AA13:e" line="river"/>
+<edge at="AA13:se" line="river"/>
+<edge at="BB13:sw" line="river"/>
+<edge at="CC13:e" line="river"/>
+<edge at="DD13:e" line="river"/>
+<edge at="DD13:se" line="river"/>
+<edge at="DD13:ne" line="river"/>
+<edge at="EE13:e" line="river"/>
+<edge at="EE13:se" line="river"/>
+<edge at="FF13:sw" line="river"/>
+<edge at="GG13:e" line="river"/>
+<edge at="HH13:e" line="river"/>
+<edge at="HH13:se" line="river"/>
+<edge at="HH13:sw" line="river"/>
+<edge at="HH13:ne" line="river"/>
+<edge at="NN13:se" line="river"/>
+<edge at="NN13:sw" line="river"/>
+<edge at="L12:sw" line="river"/>
+<edge at="M12:e" line="river"/>
+<edge at="N12:e" line="river"/>
+<edge at="N12:se" line="river"/>
+<edge at="N12:sw" line="river"/>
+<edge at="N12:ne" line="river"/>
+<edge at="T12:se" line="river"/>
+<edge at="U12:e" line="river"/>
+<edge at="U12:se" line="river"/>
+<edge at="X12:se" line="river"/>
+<edge at="Y12:e" line="river"/>
+<edge at="Y12:se" line="river"/>
+<edge at="HH12:se" line="river"/>
+<edge at="HH12:sw" line="river"/>
+<edge at="NN12:se" line="river"/>
+<edge at="NN12:sw" line="river"/>
+<edge at="H11:e" line="river"/>
+<edge at="H11:se" line="river"/>
+<edge at="P11:sw" line="river"/>
+<edge at="Q11:e" line="river"/>
+<edge at="R11:ne" line="river"/>
+<edge at="T11:se" line="river"/>
+<edge at="T11:sw" line="river"/>
+<edge at="HH11:e" line="river"/>
+<edge at="HH11:se" line="river"/>
+<edge at="HH11:sw" line="river"/>
+<edge at="NN11:se" line="river"/>
+<edge at="NN11:sw" line="river"/>
+<edge at="F10:e" line="river"/>
+<edge at="F10:se" line="river"/>
+<edge at="G10:e" line="river"/>
+<edge at="G10:se" line="river"/>
+<edge at="P10:e" line="river"/>
+<edge at="P10:se" line="river"/>
+<edge at="Q10:se" line="river"/>
+<edge at="R10:ne" line="river"/>
+<edge at="T10:se" line="river"/>
+<edge at="T10:sw" line="river"/>
+<edge at="X10:e" line="river"/>
+<edge at="Z10:e" line="river"/>
+<edge at="Z10:se" line="river"/>
+<edge at="AA10:e" line="river"/>
+<edge at="BB10:e" line="river"/>
+<edge at="BB10:ne" line="river"/>
+<edge at="FF10:e" line="river"/>
+<edge at="FF10:se" line="river"/>
+<edge at="GG10:e" line="river"/>
+<edge at="GG10:se" line="river"/>
+<edge at="N9:se" line="river"/>
+<edge at="O9:e" line="river"/>
+<edge at="O9:se" line="river"/>
+<edge at="Q9:se" line="river"/>
+<edge at="R9:e" line="river"/>
+<edge at="R9:ne" line="river"/>
+<edge at="T9:se" line="river"/>
+<edge at="T9:sw" line="river"/>
+<edge at="V9:se" line="river"/>
+<edge at="W9:e" line="river"/>
+<edge at="W9:se" line="river"/>
+<edge at="X9:sw" line="river"/>
+<edge at="Y9:e" line="river"/>
+<edge at="Y9:se" line="river"/>
+<edge at="BB9:sw" line="river"/>
+<edge at="CC9:e" line="river"/>
+<edge at="DD9:e" line="river"/>
+<edge at="DD9:se" line="river"/>
+<edge at="DD9:ne" line="river"/>
+<edge at="EE9:e" line="river"/>
+<edge at="EE9:se" line="river"/>
+<edge at="N8:se" line="river"/>
+<edge at="N8:sw" line="river"/>
+<edge at="R8:sw" line="river"/>
+<edge at="S8:e" line="river"/>
+<edge at="T8:e" line="river"/>
+<edge at="T8:se" line="river"/>
+<edge at="T8:sw" line="river"/>
+<edge at="T8:ne" line="river"/>
+<edge at="JJ8:e" line="river"/>
+<edge at="N7:e" line="river"/>
+<edge at="N7:se" line="river"/>
+<edge at="N7:sw" line="river"/>
+<edge at="T7:se" line="river"/>
+<edge at="T7:sw" line="river"/>
+<edge at="HH7:e" line="river"/>
+<edge at="HH7:se" line="river"/>
+<edge at="II7:e" line="river"/>
+<edge at="II7:se" line="river"/>
+<edge at="JJ7:sw" line="river"/>
+<edge at="KK7:e" line="river"/>
+<edge at="LL7:e" line="river"/>
+<edge at="LL7:ne" line="river"/>
+<edge at="M6:se" line="river"/>
+<edge at="N6:e" line="river"/>
+<edge at="T6:se" line="river"/>
+<edge at="T6:sw" line="river"/>
+<edge at="FF6:e" line="river"/>
+<edge at="FF6:se" line="river"/>
+<edge at="GG6:e" line="river"/>
+<edge at="GG6:se" line="river"/>
+<edge at="LL6:sw" line="river"/>
+<edge at="MM6:e" line="river"/>
+<edge at="NN6:e" line="river"/>
+<edge at="NN6:ne" line="river"/>
+<edge at="PP6:e" line="river"/>
+<edge at="N5:sw" line="river"/>
+<edge at="O5:e" line="river"/>
+<edge at="P5:e" line="river"/>
+<edge at="P5:ne" line="river"/>
+<edge at="T5:se" line="river"/>
+<edge at="T5:sw" line="river"/>
+<edge at="DD5:e" line="river"/>
+<edge at="DD5:se" line="river"/>
+<edge at="EE5:e" line="river"/>
+<edge at="EE5:se" line="river"/>
+<edge at="NN5:sw" line="river"/>
+<edge at="OO5:e" line="river"/>
+<edge at="OO5:se" line="river"/>
+<edge at="PP5:sw" line="river"/>
+<edge at="F4:e" line="river"/>
+<edge at="I4:e" line="river"/>
+<edge at="J4:ne" line="river"/>
+<edge at="P4:sw" line="river"/>
+<edge at="Q4:e" line="river"/>
+<edge at="R4:e" line="river"/>
+<edge at="R4:ne" line="river"/>
+<edge at="T4:se" line="river"/>
+<edge at="T4:sw" line="river"/>
+<edge at="BB4:e" line="river"/>
+<edge at="BB4:se" line="river"/>
+<edge at="CC4:e" line="river"/>
+<edge at="CC4:se" line="river"/>
+<edge at="D3:e" line="river"/>
+<edge at="D3:se" line="river"/>
+<edge at="E3:e" line="river"/>
+<edge at="E3:se" line="river"/>
+<edge at="F3:sw" line="river"/>
+<edge at="G3:e" line="river"/>
+<edge at="H3:e" line="river"/>
+<edge at="H3:se" line="river"/>
+<edge at="H3:ne" line="river"/>
+<edge at="I3:e" line="river"/>
+<edge at="I3:se" line="river"/>
+<edge at="R3:sw" line="river"/>
+<edge at="S3:e" line="river"/>
+<edge at="T3:e" line="river"/>
+<edge at="T3:se" line="river"/>
+<edge at="T3:sw" line="river"/>
+<edge at="T3:ne" line="river"/>
+<edge at="U3:e" line="river"/>
+<edge at="V3:e" line="river"/>
+<edge at="V3:ne" line="river"/>
+<edge at="Z3:e" line="river"/>
+<edge at="Z3:se" line="river"/>
+<edge at="AA3:e" line="river"/>
+<edge at="AA3:se" line="river"/>
+<edge at="C2:e" line="river"/>
+<edge at="C2:se" line="river"/>
+<edge at="V2:sw" line="river"/>
+<edge at="W2:e" line="river"/>
+<edge at="X2:ne" line="river"/>
+<edge at="Y2:se" line="river"/>
+<edge at="Z2:ne" line="river"/>
+<edge at="W1:se" line="river"/>
+<edge at="Y1:se" line="river"/>
 <edge at="KK33:e" line="blocked"/>
-<edge at="D32:sw" line="border"/>
-<edge at="HH32:e" line="river"/>
-<edge at="HH32:se" line="river"/>
-<edge at="HH32:ne" line="river"/>
-<edge at="JJ32:e" line="river"/>
-<edge at="JJ32:ne" line="river"/>
 <edge at="KK32:e" line="blocked"/>
 <edge at="KK32:se" line="blocked"/>
 <edge at="LL32:ne" line="blocked"/>
-<edge at="QQ32:e" line="river"/>
 <edge at="K31:e" line="blocked"/>
 <edge at="L31:ne" line="blocked"/>
-<edge at="N31:ne" line="river"/>
-<edge at="DD31:se" line="river"/>
-<edge at="GG31:se" line="river"/>
-<edge at="HH31:sw" line="river"/>
-<edge at="HH31:ne" line="river"/>
-<edge at="II31:e" line="river"/>
-<edge at="II31:se" line="river"/>
-<edge at="JJ31:e" line="river"/>
-<edge at="JJ31:se" line="river"/>
-<edge at="JJ31:ne" line="river"/>
 <edge at="KK31:e" line="blocked"/>
 <edge at="KK31:se" line="blocked"/>
 <edge at="LL31:sw" line="blocked"/>
 <edge at="NN31:se" line="blocked"/>
-<edge at="OO31:se" line="river"/>
-<edge at="PP31:sw" line="river"/>
-<edge at="PP31:ne" line="river"/>
-<edge at="QQ31:e" line="river"/>
-<edge at="A30:e" line="river"/>
-<edge at="A30:se" line="river"/>
-<edge at="B30:e" line="river"/>
-<edge at="B30:ne" line="river"/>
-<edge at="E30:se" line="river"/>
-<edge at="F30:sw" line="river"/>
-<edge at="G30:se" line="river"/>
-<edge at="H30:sw" line="river"/>
-<edge at="I30:se" line="river"/>
-<edge at="L30:sw" line="river"/>
-<edge at="GG30:e" line="river"/>
-<edge at="GG30:se" line="river"/>
-<edge at="JJ30:sw" line="river"/>
 <edge at="KK30:e" line="blocked"/>
 <edge at="PP30:e" line="blocked"/>
 <edge at="B29:e" line="blocked"/>
-<edge at="B29:se" line="river"/>
-<edge at="B29:sw" line="river"/>
-<edge at="D29:sw" line="river"/>
-<edge at="D29:ne" line="river"/>
-<edge at="K29:e" line="border"/>
-<edge at="M29:e" line="border"/>
-<edge at="N29:e" line="border"/>
-<edge at="P29:e" line="border"/>
-<edge at="R29:e" line="border"/>
-<edge at="GG29:se" line="river"/>
-<edge at="HH29:ne" line="river"/>
 <edge at="JJ29:e" line="blocked"/>
 <edge at="LL29:e" line="blocked"/>
 <edge at="LL29:sw" line="blocked"/>
 <edge at="PP29:sw" line="blocked"/>
-<edge at="A28:e" line="river"/>
-<edge at="C28:e" line="river"/>
-<edge at="C28:se" line="river"/>
-<edge at="D28:e" line="river"/>
-<edge at="D28:ne" line="river"/>
-<edge at="Q28:e" line="border"/>
-<edge at="DD28:sw" line="river"/>
-<edge at="FF28:e" line="river"/>
-<edge at="FF28:se" line="river"/>
-<edge at="FF28:sw" line="river"/>
-<edge at="GG28:e" line="river"/>
-<edge at="GG28:se" line="river"/>
-<edge at="LL28:e" line="river"/>
-<edge at="LL28:sw" line="river"/>
-<edge at="MM28:se" line="river"/>
-<edge at="NN28:sw" line="river"/>
-<edge at="OO28:se" line="river"/>
-<edge at="PP28:sw" line="river"/>
-<edge at="QQ28:e" line="river"/>
-<edge at="A27:se" line="border"/>
-<edge at="B27:e" line="river"/>
-<edge at="B27:sw" line="border"/>
-<edge at="D27:se" line="river"/>
-<edge at="D27:sw" line="river"/>
-<edge at="H27:e" line="river"/>
-<edge at="I27:se" line="river"/>
-<edge at="J27:se" line="river"/>
-<edge at="P27:sw" line="river"/>
-<edge at="P27:ne" line="river"/>
-<edge at="Z27:e" line="river"/>
-<edge at="FF27:e" line="river"/>
-<edge at="FF27:se" line="river"/>
-<edge at="FF27:sw" line="river"/>
-<edge at="FF27:ne" line="river"/>
-<edge at="NN27:se" line="river"/>
-<edge at="NN27:sw" line="river"/>
-<edge at="PP27:se" line="border"/>
-<edge at="A26:e" line="river"/>
-<edge at="A26:se" line="river"/>
-<edge at="B26:e" line="river"/>
-<edge at="B26:ne" line="river"/>
-<edge at="D26:se" line="river"/>
-<edge at="D26:sw" line="river"/>
-<edge at="E26:e" line="river"/>
-<edge at="H26:ne" line="river"/>
-<edge at="M26:se" line="river"/>
-<edge at="N26:sw" line="river"/>
-<edge at="EE26:se" line="river"/>
-<edge at="FF26:ne" line="river"/>
-<edge at="PP26:sw" line="border"/>
-<edge at="A25:e" line="river"/>
-<edge at="A25:se" line="river"/>
-<edge at="B25:e" line="river"/>
-<edge at="B25:ne" line="river"/>
-<edge at="D25:sw" line="river"/>
-<edge at="E25:e" line="river"/>
-<edge at="L25:se" line="border"/>
-<edge at="EE25:e" line="river"/>
-<edge at="EE25:se" line="river"/>
-<edge at="A24:e" line="river"/>
-<edge at="A24:se" line="river"/>
 <edge at="B24:se" line="blocked"/>
-<edge at="C24:se" line="river"/>
-<edge at="F24:se" line="river"/>
-<edge at="F24:sw" line="river"/>
-<edge at="G24:e" line="river"/>
-<edge at="H24:ne" line="river"/>
-<edge at="DD24:sw" line="river"/>
-<edge at="FF24:e" line="river"/>
-<edge at="HH24:e" line="river"/>
-<edge at="KK24:e" line="river"/>
-<edge at="NN24:e" line="river"/>
-<edge at="PP24:e" line="river"/>
 <edge at="A23:e" line="blocked"/>
-<edge at="B23:e" line="river"/>
-<edge at="F23:sw" line="river"/>
-<edge at="G23:e" line="river"/>
-<edge at="H23:ne" line="river"/>
-<edge at="J23:e" line="border"/>
-<edge at="K23:e" line="border"/>
-<edge at="M23:e" line="border"/>
-<edge at="V23:se" line="river"/>
-<edge at="X23:se" line="river"/>
-<edge at="X23:ne" line="river"/>
 <edge at="DD23:se" line="blocked"/>
-<edge at="EE23:se" line="river"/>
-<edge at="FF23:se" line="river"/>
-<edge at="GG23:se" line="river"/>
-<edge at="HH23:sw" line="river"/>
-<edge at="HH23:ne" line="river"/>
-<edge at="II23:e" line="river"/>
-<edge at="JJ23:ne" line="river"/>
-<edge at="KK23:e" line="river"/>
-<edge at="NN23:ne" line="river"/>
-<edge at="PP23:e" line="river"/>
-<edge at="PP23:sw" line="border"/>
-<edge at="A22:e" line="river"/>
-<edge at="B22:ne" line="river"/>
-<edge at="F22:se" line="river"/>
-<edge at="G22:e" line="river"/>
-<edge at="G22:se" line="river"/>
-<edge at="L22:se" line="river"/>
-<edge at="L22:ne" line="river"/>
-<edge at="Y22:se" line="river"/>
-<edge at="FF22:sw" line="river"/>
-<edge at="GG22:e" line="river"/>
-<edge at="GG22:se" line="river"/>
-<edge at="HH22:ne" line="river"/>
-<edge at="JJ22:se" line="river"/>
-<edge at="JJ22:sw" line="river"/>
-<edge at="PP22:se" line="river"/>
 <edge at="PP22:ne" line="blocked"/>
-<edge at="A21:e" line="river"/>
-<edge at="B21:e" line="border"/>
-<edge at="B21:ne" line="river"/>
-<edge at="F21:e" line="river"/>
-<edge at="F21:se" line="river"/>
-<edge at="F21:sw" line="river"/>
-<edge at="M21:se" line="river"/>
-<edge at="N21:sw" line="river"/>
-<edge at="O21:se" line="river"/>
-<edge at="P21:e" line="river"/>
-<edge at="FF21:se" line="river"/>
-<edge at="GG21:e" line="river"/>
-<edge at="GG21:se" line="river"/>
-<edge at="HH21:ne" line="river"/>
-<edge at="JJ21:e" line="river"/>
-<edge at="JJ21:se" line="river"/>
-<edge at="JJ21:sw" line="river"/>
-<edge at="JJ21:ne" line="river"/>
-<edge at="PP21:e" line="river"/>
-<edge at="PP21:sw" line="river"/>
 <edge at="PP21:ne" line="blocked"/>
-<edge at="A20:se" line="river"/>
 <edge at="B20:e" line="blocked"/>
 <edge at="B20:se" line="blocked"/>
 <edge at="B20:sw" line="blocked"/>
-<edge at="B20:ne" line="river"/>
-<edge at="D20:se" line="river"/>
-<edge at="E20:e" line="river"/>
-<edge at="E20:se" line="river"/>
-<edge at="V20:sw" line="river"/>
-<edge at="CC20:se" line="river"/>
-<edge at="FF20:sw" line="river"/>
-<edge at="GG20:e" line="river"/>
-<edge at="HH20:e" line="river"/>
-<edge at="HH20:sw" line="river"/>
-<edge at="HH20:ne" line="river"/>
-<edge at="JJ20:se" line="river"/>
-<edge at="JJ20:sw" line="river"/>
-<edge at="KK20:e" line="river"/>
-<edge at="LL20:ne" line="river"/>
 <edge at="OO20:se" line="blocked"/>
-<edge at="PP20:ne" line="border"/>
-<edge at="A19:se" line="river"/>
 <edge at="B19:e" line="blocked"/>
 <edge at="B19:se" line="blocked"/>
 <edge at="B19:sw" line="blocked"/>
-<edge at="B19:ne" line="river"/>
-<edge at="D19:e" line="river"/>
-<edge at="D19:se" line="river"/>
-<edge at="D19:sw" line="river"/>
-<edge at="HH19:e" line="river"/>
-<edge at="HH19:se" line="river"/>
-<edge at="HH19:sw" line="river"/>
-<edge at="II19:se" line="river"/>
-<edge at="JJ19:ne" line="river"/>
-<edge at="LL19:sw" line="river"/>
-<edge at="MM19:e" line="river"/>
-<edge at="NN19:e" line="river"/>
-<edge at="NN19:ne" line="river"/>
-<edge at="OO19:e" line="border"/>
-<edge at="OO19:se" line="border"/>
-<edge at="PP19:sw" line="river"/>
-<edge at="PP19:ne" line="border"/>
-<edge at="A18:se" line="river"/>
 <edge at="B18:se" line="blocked"/>
 <edge at="B18:sw" line="blocked"/>
-<edge at="B18:ne" line="river"/>
-<edge at="C18:se" line="river"/>
-<edge at="D18:e" line="river"/>
-<edge at="D18:se" line="river"/>
-<edge at="D18:ne" line="river"/>
-<edge at="E18:e" line="river"/>
-<edge at="F18:e" line="river"/>
-<edge at="F18:ne" line="river"/>
-<edge at="O18:se" line="border"/>
-<edge at="HH18:se" line="river"/>
-<edge at="HH18:sw" line="river"/>
-<edge at="II18:se" line="river"/>
-<edge at="MM18:se" line="river"/>
-<edge at="NN18:se" line="river"/>
-<edge at="NN18:sw" line="river"/>
-<edge at="D17:e" line="river"/>
-<edge at="E17:se" line="river"/>
-<edge at="F17:ne" line="river"/>
-<edge at="H17:se" line="river"/>
-<edge at="H17:ne" line="river"/>
-<edge at="HH17:se" line="river"/>
-<edge at="HH17:sw" line="river"/>
-<edge at="II17:se" line="river"/>
-<edge at="JJ17:se" line="river"/>
-<edge at="JJ17:sw" line="river"/>
-<edge at="JJ17:ne" line="river"/>
-<edge at="OO17:se" line="river"/>
-<edge at="PP17:sw" line="river"/>
-<edge at="A16:e" line="river"/>
-<edge at="B16:e" line="river"/>
-<edge at="B16:se" line="river"/>
-<edge at="B16:ne" line="river"/>
-<edge at="C16:e" line="river"/>
-<edge at="C16:se" line="river"/>
-<edge at="D16:sw" line="river"/>
-<edge at="E16:e" line="river"/>
-<edge at="E16:se" line="river"/>
-<edge at="I16:se" line="river"/>
-<edge at="J16:sw" line="river"/>
-<edge at="P16:sw" line="river"/>
-<edge at="P16:ne" line="river"/>
-<edge at="HH16:se" line="river"/>
-<edge at="HH16:sw" line="river"/>
-<edge at="JJ16:ne" line="river"/>
-<edge at="A15:se" line="river"/>
-<edge at="B15:e" line="river"/>
-<edge at="B15:se" line="river"/>
-<edge at="B15:sw" line="river"/>
-<edge at="C15:e" line="river"/>
-<edge at="D15:ne" line="river"/>
-<edge at="F15:e" line="river"/>
-<edge at="F15:se" line="river"/>
-<edge at="F15:ne" line="river"/>
-<edge at="G15:e" line="river"/>
-<edge at="H15:e" line="river"/>
-<edge at="H15:ne" line="river"/>
-<edge at="HH15:sw" line="river"/>
-<edge at="II15:se" line="river"/>
-<edge at="B14:e" line="river"/>
-<edge at="B14:se" line="river"/>
-<edge at="B14:sw" line="river"/>
-<edge at="C14:se" line="river"/>
-<edge at="D14:e" line="river"/>
-<edge at="D14:ne" line="river"/>
-<edge at="E14:se" line="river"/>
-<edge at="F14:e" line="river"/>
-<edge at="F14:se" line="river"/>
-<edge at="F14:ne" line="river"/>
-<edge at="G14:e" line="river"/>
-<edge at="G14:se" line="river"/>
-<edge at="M14:e" line="river"/>
-<edge at="P14:e" line="river"/>
-<edge at="P14:ne" line="river"/>
-<edge at="DD14:se" line="river"/>
-<edge at="PP14:ne" line="river"/>
-<edge at="B13:e" line="river"/>
-<edge at="B13:se" line="river"/>
-<edge at="B13:sw" line="river"/>
-<edge at="C13:se" line="river"/>
-<edge at="D13:e" line="river"/>
-<edge at="D13:ne" line="river"/>
-<edge at="E13:e" line="river"/>
-<edge at="M13:e" line="river"/>
-<edge at="Z13:ne" line="river"/>
-<edge at="B12:se" line="river"/>
-<edge at="B12:sw" line="river"/>
-<edge at="C12:se" line="river"/>
-<edge at="D12:e" line="river"/>
-<edge at="D12:se" line="river"/>
-<edge at="D12:sw" line="river"/>
-<edge at="D12:ne" line="river"/>
-<edge at="H12:se" line="river"/>
-<edge at="I12:e" line="river"/>
-<edge at="J12:ne" line="river"/>
-<edge at="JJ12:e" line="river"/>
-<edge at="B11:sw" line="river"/>
-<edge at="C11:e" line="river"/>
-<edge at="D11:e" line="river"/>
-<edge at="D11:se" line="river"/>
-<edge at="D11:sw" line="river"/>
-<edge at="D11:ne" line="river"/>
-<edge at="H11:e" line="river"/>
-<edge at="H11:sw" line="river"/>
-<edge at="I11:e" line="river"/>
-<edge at="I11:se" line="river"/>
 <edge at="A10:e" line="blocked"/>
-<edge at="B10:e" line="border"/>
-<edge at="B10:se" line="border"/>
-<edge at="D10:e" line="river"/>
-<edge at="D10:se" line="river"/>
-<edge at="E10:e" line="river"/>
-<edge at="F10:ne" line="river"/>
-<edge at="M10:se" line="river"/>
-<edge at="DD10:se" line="river"/>
-<edge at="DD10:ne" line="river"/>
-<edge at="B9:e" line="river"/>
-<edge at="B9:se" line="river"/>
-<edge at="B9:sw" line="river"/>
-<edge at="C9:se" line="river"/>
-<edge at="D9:e" line="river"/>
-<edge at="E9:e" line="river"/>
-<edge at="F9:ne" line="river"/>
-<edge at="T9:e" line="river"/>
-<edge at="W9:se" line="river"/>
-<edge at="X9:sw" line="river"/>
-<edge at="Y9:se" line="river"/>
-<edge at="EE9:se" line="river"/>
-<edge at="B8:sw" line="river"/>
-<edge at="C8:e" line="river"/>
-<edge at="D8:e" line="river"/>
-<edge at="D8:se" line="river"/>
-<edge at="D8:ne" line="river"/>
-<edge at="E8:e" line="river"/>
-<edge at="E8:se" line="river"/>
-<edge at="T8:se" line="river"/>
-<edge at="T8:sw" line="river"/>
-<edge at="O7:e" line="river"/>
-<edge at="D6:e" line="river"/>
-<edge at="D6:ne" line="river"/>
-<edge at="L6:e" line="river"/>
-<edge at="L6:se" line="river"/>
-<edge at="L6:sw" line="river"/>
-<edge at="M6:e" line="river"/>
-<edge at="N6:sw" line="river"/>
-<edge at="N6:ne" line="river"/>
-<edge at="HH6:sw" line="river"/>
-<edge at="KK6:se" line="river"/>
-<edge at="LL6:sw" line="river"/>
-<edge at="C5:e" line="river"/>
-<edge at="C5:se" line="river"/>
-<edge at="D5:se" line="river"/>
-<edge at="D5:sw" line="river"/>
-<edge at="D5:ne" line="river"/>
-<edge at="E5:e" line="river"/>
-<edge at="E5:se" line="river"/>
-<edge at="F5:se" line="river"/>
-<edge at="F5:ne" line="river"/>
-<edge at="H5:e" line="river"/>
-<edge at="L5:sw" line="river"/>
-<edge at="M5:e" line="river"/>
-<edge at="M5:se" line="river"/>
-<edge at="EE5:e" line="river"/>
-<edge at="QQ5:e" line="river"/>
-<edge at="A4:e" line="river"/>
-<edge at="B4:e" line="river"/>
-<edge at="B4:ne" line="river"/>
-<edge at="C4:se" line="river"/>
-<edge at="D4:sw" line="river"/>
-<edge at="G4:se" line="river"/>
-<edge at="H4:e" line="river"/>
-<edge at="H4:se" line="river"/>
-<edge at="H4:sw" line="river"/>
-<edge at="H4:ne" line="river"/>
-<edge at="O4:e" line="river"/>
-<edge at="PP4:se" line="river"/>
-<edge at="PP4:sw" line="river"/>
-<edge at="A3:se" line="river"/>
-<edge at="B3:e" line="river"/>
-<edge at="B3:se" line="river"/>
-<edge at="B3:ne" line="river"/>
-<edge at="G3:se" line="river"/>
-<edge at="T3:se" line="river"/>
-<edge at="PP3:se" line="river"/>
-<edge at="PP3:sw" line="river"/>
-<edge at="A2:e" line="river"/>
-<edge at="B2:e" line="river"/>
-<edge at="B2:se" line="river"/>
-<edge at="B2:sw" line="river"/>
-<edge at="C2:e" line="river"/>
-<edge at="Z2:e" line="river"/>
-<edge at="PP2:se" line="river"/>
-<edge at="PP2:sw" line="river"/>
-<edge at="A1:se" line="river"/>
-<edge at="PP1:sw" line="river"/>
-<!-- 437 edges -->
-  <!-- railroads, centre to centre, traced from the scan -->
-<link kind="rail" line="rail" hexes="D33 E32"/>
-<link kind="rail" line="rail" hexes="L33 M32"/>
-<link kind="rail" line="rail" hexes="L33 K32"/>
-<link kind="rail" line="rail" hexes="JJ33 KK33"/>
-<link kind="rail" line="rail" hexes="PP33 QQ32"/>
-<link kind="rail" line="rail" hexes="PP33 QQ33"/>
-<link kind="rail" line="rail" hexes="JJ32 II31"/>
-<link kind="rail" line="rail" hexes="LL32 LL31"/>
-<link kind="rail" line="rail" hexes="PP32 QQ31"/>
-<link kind="rail" line="rail" hexes="N31 M30"/>
-<link kind="rail" line="rail" hexes="DD31 EE30"/>
-<link kind="rail" line="rail" hexes="II31 JJ31"/>
-<link kind="rail" line="rail" hexes="JJ31 KK30"/>
-<link kind="rail" line="rail" hexes="JJ31 II30"/>
-<link kind="rail" line="rail" hexes="LL31 LL30"/>
-<link kind="rail" line="rail" hexes="OO31 PP31"/>
-<link kind="rail" line="rail" hexes="PP31 QQ31"/>
-<link kind="rail" line="rail" hexes="PP31 OO30"/>
-<link kind="rail" line="rail" hexes="QQ31 QQ30"/>
-<link kind="rail" line="rail" hexes="F30 G30"/>
-<link kind="rail" line="rail" hexes="G30 H30"/>
-<link kind="rail" line="rail" hexes="H30 I30"/>
-<link kind="rail" line="rail" hexes="I30 J30"/>
-<link kind="rail" line="rail" hexes="K30 L30"/>
-<link kind="rail" line="rail" hexes="L30 M30"/>
-<link kind="rail" line="rail" hexes="DD30 EE30"/>
-<link kind="rail" line="rail" hexes="EE30 EE29"/>
-<link kind="rail" line="rail" hexes="II30 JJ30"/>
-<link kind="rail" line="rail" hexes="JJ30 KK30"/>
-<link kind="rail" line="rail" hexes="JJ30 II29"/>
-<link kind="rail" line="rail" hexes="LL30 LL29"/>
-<link kind="rail" line="rail" hexes="LL30 MM29"/>
-<link kind="rail" line="rail" hexes="LL30 KK29"/>
-<link kind="rail" line="rail" hexes="PP30 OO29"/>
-<link kind="rail" line="rail" hexes="O29 O28"/>
-<link kind="rail" line="rail" hexes="Y29 Y28"/>
-<link kind="rail" line="rail" hexes="Z29 AA29"/>
-<link kind="rail" line="rail" hexes="EE29 EE28"/>
-<link kind="rail" line="rail" hexes="NN29 NN28"/>
-<link kind="rail" line="rail" hexes="A28 A27"/>
-<link kind="rail" line="rail" hexes="C28 D28"/>
-<link kind="rail" line="rail" hexes="D28 D27"/>
-<link kind="rail" line="rail" hexes="O28 O27"/>
-<link kind="rail" line="rail" hexes="R28 S27"/>
-<link kind="rail" line="rail" hexes="R28 S28"/>
-<link kind="rail" line="rail" hexes="R28 Q27"/>
-<link kind="rail" line="rail" hexes="V28 W27"/>
-<link kind="rail" line="rail" hexes="X28 W27"/>
-<link kind="rail" line="rail" hexes="DD28 EE27"/>
-<link kind="rail" line="rail" hexes="DD28 EE28"/>
-<link kind="rail" line="rail" hexes="FF28 FF27"/>
-<link kind="rail" line="rail" hexes="FF28 GG28"/>
-<link kind="rail" line="rail" hexes="JJ28 KK28"/>
-<link kind="rail" line="rail" hexes="KK28 LL28"/>
-<link kind="rail" line="rail" hexes="LL28 MM28"/>
-<link kind="rail" line="rail" hexes="MM28 MM27"/>
-<link kind="rail" line="rail" hexes="MM28 NN28"/>
-<link kind="rail" line="rail" hexes="NN28 OO27"/>
-<link kind="rail" line="rail" hexes="NN28 OO28"/>
-<link kind="rail" line="rail" hexes="NN28 MM27"/>
-<link kind="rail" line="rail" hexes="OO28 OO27"/>
-<link kind="rail" line="rail" hexes="OO28 PP28"/>
-<link kind="rail" line="rail" hexes="PP28 QQ27"/>
-<link kind="rail" line="rail" hexes="PP28 QQ28"/>
-<link kind="rail" line="rail" hexes="QQ28 QQ27"/>
-<link kind="rail" line="rail" hexes="A27 B27"/>
-<link kind="rail" line="rail" hexes="B27 C27"/>
-<link kind="rail" line="rail" hexes="H27 H26"/>
-<link kind="rail" line="rail" hexes="J27 K26"/>
-<link kind="rail" line="rail" hexes="P27 Q27"/>
-<link kind="rail" line="rail" hexes="P27 O26"/>
-<link kind="rail" line="rail" hexes="MM27 NN27"/>
-<link kind="rail" line="rail" hexes="NN27 OO26"/>
-<link kind="rail" line="rail" hexes="NN27 OO27"/>
-<link kind="rail" line="rail" hexes="NN27 MM26"/>
-<link kind="rail" line="rail" hexes="PP27 QQ27"/>
-<link kind="rail" line="rail" hexes="PP27 OO26"/>
-<link kind="rail" line="rail" hexes="K26 L26"/>
-<link kind="rail" line="rail" hexes="M26 N26"/>
-<link kind="rail" line="rail" hexes="MM26 NN26"/>
-<link kind="rail" line="rail" hexes="NN26 OO26"/>
-<link kind="rail" line="rail" hexes="NN26 MM25"/>
-<link kind="rail" line="rail" hexes="PP26 QQ26"/>
-<link kind="rail" line="rail" hexes="A25 A24"/>
-<link kind="rail" line="rail" hexes="D25 C24"/>
-<link kind="rail" line="rail" hexes="E25 E24"/>
-<link kind="rail" line="rail" hexes="G25 G24"/>
-<link kind="rail" line="rail" hexes="L25 M24"/>
-<link kind="rail" line="rail" hexes="V25 W24"/>
-<link kind="rail" line="rail" hexes="AA25 AA24"/>
-<link kind="rail" line="rail" hexes="BB25 CC24"/>
-<link kind="rail" line="rail" hexes="BB25 AA24"/>
-<link kind="rail" line="rail" hexes="MM25 NN25"/>
-<link kind="rail" line="rail" hexes="NN25 MM24"/>
-<link kind="rail" line="rail" hexes="PP25 QQ25"/>
-<link kind="rail" line="rail" hexes="A24 A23"/>
-<link kind="rail" line="rail" hexes="A24 B24"/>
-<link kind="rail" line="rail" hexes="C24 D24"/>
-<link kind="rail" line="rail" hexes="D24 C23"/>
-<link kind="rail" line="rail" hexes="G24 G23"/>
-<link kind="rail" line="rail" hexes="H24 G23"/>
-<link kind="rail" line="rail" hexes="L24 M24"/>
-<link kind="rail" line="rail" hexes="MM24 NN24"/>
-<link kind="rail" line="rail" hexes="NN24 MM23"/>
-<link kind="rail" line="rail" hexes="PP24 QQ23"/>
-<link kind="rail" line="rail" hexes="PP24 QQ24"/>
-<link kind="rail" line="rail" hexes="QQ24 QQ23"/>
-<link kind="rail" line="rail" hexes="A23 A22"/>
-<link kind="rail" line="rail" hexes="A23 B23"/>
-<link kind="rail" line="rail" hexes="B23 B22"/>
-<link kind="rail" line="rail" hexes="C23 D23"/>
-<link kind="rail" line="rail" hexes="D23 C22"/>
-<link kind="rail" line="rail" hexes="K23 L23"/>
-<link kind="rail" line="rail" hexes="N23 O22"/>
-<link kind="rail" line="rail" hexes="V23 W22"/>
-<link kind="rail" line="rail" hexes="X23 W22"/>
-<link kind="rail" line="rail" hexes="JJ23 II22"/>
-<link kind="rail" line="rail" hexes="MM23 NN23"/>
-<link kind="rail" line="rail" hexes="NN23 NN22"/>
-<link kind="rail" line="rail" hexes="NN23 OO23"/>
-<link kind="rail" line="rail" hexes="NN23 MM22"/>
-<link kind="rail" line="rail" hexes="OO23 PP23"/>
-<link kind="rail" line="rail" hexes="PP23 PP22"/>
-<link kind="rail" line="rail" hexes="PP23 QQ22"/>
-<link kind="rail" line="rail" hexes="PP23 QQ23"/>
-<link kind="rail" line="rail" hexes="PP23 OO22"/>
-<link kind="rail" line="rail" hexes="A22 A21"/>
-<link kind="rail" line="rail" hexes="A22 B22"/>
-<link kind="rail" line="rail" hexes="B22 B21"/>
-<link kind="rail" line="rail" hexes="B22 A21"/>
-<link kind="rail" line="rail" hexes="D22 C21"/>
-<link kind="rail" line="rail" hexes="L22 M21"/>
-<link kind="rail" line="rail" hexes="N22 N21"/>
-<link kind="rail" line="rail" hexes="N22 O21"/>
-<link kind="rail" line="rail" hexes="N22 O22"/>
-<link kind="rail" line="rail" hexes="O22 P22"/>
-<link kind="rail" line="rail" hexes="P22 O21"/>
-<link kind="rail" line="rail" hexes="X22 Y22"/>
-<link kind="rail" line="rail" hexes="Y22 Z22"/>
-<link kind="rail" line="rail" hexes="Z22 AA22"/>
-<link kind="rail" line="rail" hexes="BB22 CC22"/>
-<link kind="rail" line="rail" hexes="HH22 GG21"/>
-<link kind="rail" line="rail" hexes="PP22 OO21"/>
-<link kind="rail" line="rail" hexes="A21 A20"/>
-<link kind="rail" line="rail" hexes="A21 B21"/>
-<link kind="rail" line="rail" hexes="B21 B20"/>
-<link kind="rail" line="rail" hexes="B21 A20"/>
-<link kind="rail" line="rail" hexes="C21 D21"/>
-<link kind="rail" line="rail" hexes="I21 I20"/>
-<link kind="rail" line="rail" hexes="J21 K21"/>
-<link kind="rail" line="rail" hexes="J21 I20"/>
-<link kind="rail" line="rail" hexes="M21 N21"/>
+<!-- 613 edges -->
+  <!-- railroads, centre to centre, traced from the scan, then tidied by tools/tidy_networks.py -->
+<link kind="rail" line="rail" hexes="E31 F31 G30 H30 H29 H28 H27 H26"/>
+<link kind="rail" line="rail" hexes="BB31 CC30 DD30"/>
+<link kind="rail" line="rail" hexes="DD30 DD31 DD32 EE32 FF33 GG32 HH32 II31 JJ31 KK30 LL30 MM29 NN29 OO28 PP28 QQ28"/>
+<link kind="rail" line="rail" hexes="DD30 EE29 EE28 DD28 DD27 DD26 DD25 DD24"/>
+<link kind="rail" line="rail" hexes="O28 O27 O26"/>
+<link kind="rail" line="rail" hexes="H26 G25 G24 G23 H23 I22 J22 K21"/>
+<link kind="rail" line="rail" hexes="H26 I25"/>
+<link kind="rail" line="rail" hexes="O26 P27 Q26 R26 S25"/>
+<link kind="rail" line="rail" hexes="O26 O25 O24 O23 N23 N22 N21"/>
+<link kind="rail" line="rail" hexes="DD24 CC23 BB23 AA22 Z22 Y22 X22 X21 X20"/>
+<link kind="rail" line="rail" hexes="DD24 DD23 DD22 EE21 FF21"/>
+<link kind="rail" line="rail" hexes="KK23 JJ23 II22 HH22 GG21 FF21"/>
+<link kind="rail" line="rail" hexes="K21 L22 M21 N21"/>
+<link kind="rail" line="rail" hexes="K21 J21 I20 H20 G19 F19 F18"/>
 <link kind="rail" line="rail" hexes="N21 O20"/>
-<link kind="rail" line="rail" hexes="O21 P21"/>
-<link kind="rail" line="rail" hexes="P21 P20"/>
-<link kind="rail" line="rail" hexes="P21 O20"/>
-<link kind="rail" line="rail" hexes="DD21 CC20"/>
-<link kind="rail" line="rail" hexes="PP21 QQ21"/>
-<link kind="rail" line="rail" hexes="A20 B20"/>
-<link kind="rail" line="rail" hexes="B20 B19"/>
-<link kind="rail" line="rail" hexes="B20 A19"/>
-<link kind="rail" line="rail" hexes="O20 P20"/>
-<link kind="rail" line="rail" hexes="X20 W19"/>
-<link kind="rail" line="rail" hexes="DD20 CC19"/>
-<link kind="rail" line="rail" hexes="EE20 EE19"/>
-<link kind="rail" line="rail" hexes="KK20 KK19"/>
-<link kind="rail" line="rail" hexes="OO20 PP20"/>
-<link kind="rail" line="rail" hexes="PP20 OO19"/>
-<link kind="rail" line="rail" hexes="A19 B19"/>
-<link kind="rail" line="rail" hexes="B19 B18"/>
-<link kind="rail" line="rail" hexes="B19 A18"/>
-<link kind="rail" line="rail" hexes="Y19 Z19"/>
-<link kind="rail" line="rail" hexes="DD19 CC18"/>
-<link kind="rail" line="rail" hexes="EE19 EE18"/>
-<link kind="rail" line="rail" hexes="OO19 OO18"/>
-<link kind="rail" line="rail" hexes="OO19 PP19"/>
-<link kind="rail" line="rail" hexes="PP19 OO18"/>
-<link kind="rail" line="rail" hexes="A18 B18"/>
-<link kind="rail" line="rail" hexes="B18 B17"/>
-<link kind="rail" line="rail" hexes="B18 A17"/>
-<link kind="rail" line="rail" hexes="F18 F17"/>
-<link kind="rail" line="rail" hexes="O18 P18"/>
-<link kind="rail" line="rail" hexes="AA18 BB18"/>
-<link kind="rail" line="rail" hexes="DD18 EE18"/>
-<link kind="rail" line="rail" hexes="DD18 CC17"/>
-<link kind="rail" line="rail" hexes="LL18 MM17"/>
-<link kind="rail" line="rail" hexes="H17 I16"/>
-<link kind="rail" line="rail" hexes="H17 G16"/>
-<link kind="rail" line="rail" hexes="R17 Q16"/>
-<link kind="rail" line="rail" hexes="JJ17 KK17"/>
-<link kind="rail" line="rail" hexes="MM17 NN17"/>
-<link kind="rail" line="rail" hexes="NN17 NN16"/>
-<link kind="rail" line="rail" hexes="I16 J16"/>
-<link kind="rail" line="rail" hexes="P16 Q16"/>
-<link kind="rail" line="rail" hexes="B15 C15"/>
-<link kind="rail" line="rail" hexes="C15 C14"/>
-<link kind="rail" line="rail" hexes="K15 L15"/>
-<link kind="rail" line="rail" hexes="FF15 EE14"/>
-<link kind="rail" line="rail" hexes="NN15 NN14"/>
-<link kind="rail" line="rail" hexes="L14 M14"/>
-<link kind="rail" line="rail" hexes="M14 M13"/>
-<link kind="rail" line="rail" hexes="P14 P13"/>
-<link kind="rail" line="rail" hexes="T14 U13"/>
-<link kind="rail" line="rail" hexes="BB14 CC14"/>
-<link kind="rail" line="rail" hexes="DD14 EE13"/>
-<link kind="rail" line="rail" hexes="D13 D12"/>
-<link kind="rail" line="rail" hexes="E13 E12"/>
-<link kind="rail" line="rail" hexes="M13 M12"/>
-<link kind="rail" line="rail" hexes="P13 P12"/>
-<link kind="rail" line="rail" hexes="P12 Q11"/>
-<link kind="rail" line="rail" hexes="R12 Q11"/>
-<link kind="rail" line="rail" hexes="JJ12 JJ11"/>
-<link kind="rail" line="rail" hexes="D11 E10"/>
-<link kind="rail" line="rail" hexes="D11 C10"/>
-<link kind="rail" line="rail" hexes="H11 H10"/>
-<link kind="rail" line="rail" hexes="L11 M10"/>
+<link kind="rail" line="rail" hexes="FF21 EE20 EE19 EE18 DD18"/>
+<link kind="rail" line="rail" hexes="O20 P21 Q21 R22 S21 T21 U20 V20 W19 X20"/>
+<link kind="rail" line="rail" hexes="O20 O19 O18 P18 P17 P16 P15 P14"/>
+<link kind="rail" line="rail" hexes="X20 Y19 Z19 AA18 BB18 CC17 DD18"/>
+<link kind="rail" line="rail" hexes="F18 F17 F16 E15"/>
+<link kind="rail" line="rail" hexes="F18 G17 H17 I16 J16 K15 L15 M14 N14 O13 P14"/>
+<link kind="rail" line="rail" hexes="DD18 DD17 EE16 FF16"/>
+<link kind="rail" line="rail" hexes="FF16 FF15 EE14 DD14 CC14 BB14 AA14"/>
+<link kind="rail" line="rail" hexes="FF16 GG15 HH15 II14 JJ14"/>
+<link kind="rail" line="rail" hexes="E15 D15 C14"/>
+<link kind="rail" line="rail" hexes="E15 E14 E13 E12 E11 E10 D10 C10 B10 B9 B8 C7 D7 E6 E5 F5 F4 E3 D3 C2 C1"/>
+<link kind="rail" line="rail" hexes="P14 P13 P12 Q11"/>
+<link kind="rail" line="rail" hexes="AA14 Z14 Y13 X13 W13 V13 U13 T14 T13 S12 R12 Q11"/>
+<link kind="rail" line="rail" hexes="AA14 AA13 AA12 AA11 AA10 AA9"/>
+<link kind="rail" line="rail" hexes="JJ14 JJ13 JJ12 JJ11 JJ10 JJ9 JJ8"/>
+<link kind="rail" line="rail" hexes="JJ14 KK13 LL13 MM13 NN14 OO14"/>
 <link kind="rail" line="rail" hexes="Q11 R11"/>
-<link kind="rail" line="rail" hexes="M10 N10"/>
-<link kind="rail" line="rail" hexes="N10 O9"/>
-<link kind="rail" line="rail" hexes="S10 T10"/>
-<link kind="rail" line="rail" hexes="DD10 EE9"/>
-<link kind="rail" line="rail" hexes="DD10 EE10"/>
-<link kind="rail" line="rail" hexes="DD10 CC9"/>
-<link kind="rail" line="rail" hexes="B9 B8"/>
-<link kind="rail" line="rail" hexes="O9 O8"/>
-<link kind="rail" line="rail" hexes="U9 V9"/>
-<link kind="rail" line="rail" hexes="V9 W9"/>
-<link kind="rail" line="rail" hexes="W9 X9"/>
-<link kind="rail" line="rail" hexes="Y9 Z9"/>
-<link kind="rail" line="rail" hexes="BB9 CC9"/>
-<link kind="rail" line="rail" hexes="EE9 FF9"/>
-<link kind="rail" line="rail" hexes="FF9 FF8"/>
-<link kind="rail" line="rail" hexes="P8 Q8"/>
-<link kind="rail" line="rail" hexes="R8 Q7"/>
-<link kind="rail" line="rail" hexes="T8 U8"/>
-<link kind="rail" line="rail" hexes="FF8 GG7"/>
-<link kind="rail" line="rail" hexes="JJ8 JJ7"/>
-<link kind="rail" line="rail" hexes="E7 E6"/>
-<link kind="rail" line="rail" hexes="Q7 R7"/>
-<link kind="rail" line="rail" hexes="U7 V7"/>
-<link kind="rail" line="rail" hexes="HH7 II6"/>
-<link kind="rail" line="rail" hexes="II7 JJ7"/>
-<link kind="rail" line="rail" hexes="JJ7 KK7"/>
-<link kind="rail" line="rail" hexes="LL7 LL6"/>
-<link kind="rail" line="rail" hexes="E6 E5"/>
-<link kind="rail" line="rail" hexes="F6 E5"/>
-<link kind="rail" line="rail" hexes="L6 M6"/>
-<link kind="rail" line="rail" hexes="N6 O6"/>
-<link kind="rail" line="rail" hexes="S6 T6"/>
-<link kind="rail" line="rail" hexes="FF6 GG6"/>
-<link kind="rail" line="rail" hexes="FF6 EE5"/>
-<link kind="rail" line="rail" hexes="KK6 LL6"/>
-<link kind="rail" line="rail" hexes="LL6 MM6"/>
-<link kind="rail" line="rail" hexes="MM6 NN6"/>
-<link kind="rail" line="rail" hexes="NN6 OO5"/>
-<link kind="rail" line="rail" hexes="C5 C4"/>
-<link kind="rail" line="rail" hexes="E5 F5"/>
-<link kind="rail" line="rail" hexes="F5 G4"/>
-<link kind="rail" line="rail" hexes="N5 O4"/>
-<link kind="rail" line="rail" hexes="W5 W4"/>
-<link kind="rail" line="rail" hexes="DD5 EE4"/>
-<link kind="rail" line="rail" hexes="DD5 CC4"/>
-<link kind="rail" line="rail" hexes="A4 A3"/>
-<link kind="rail" line="rail" hexes="B4 B3"/>
-<link kind="rail" line="rail" hexes="C4 D4"/>
-<link kind="rail" line="rail" hexes="O4 O3"/>
-<link kind="rail" line="rail" hexes="BB4 BB3"/>
-<link kind="rail" line="rail" hexes="B3 B2"/>
-<link kind="rail" line="rail" hexes="D3 C2"/>
-<link kind="rail" line="rail" hexes="T3 U2"/>
-<link kind="rail" line="rail" hexes="OO3 PP3"/>
-<link kind="rail" line="rail" hexes="C2 C1"/>
-<link kind="rail" line="rail" hexes="Q2 R2"/>
-<link kind="rail" line="rail" hexes="R2 S2"/>
-<link kind="rail" line="rail" hexes="Z2 Z1"/>
-<link kind="rail" line="rail" hexes="Z2 AA2"/>
-<link kind="rail" line="rail" hexes="U1 V1"/>
-<!-- 277 links -->
+<link kind="rail" line="rail" hexes="R11 R10 R9 Q8 P8"/>
+<link kind="rail" line="rail" hexes="R11 S10 T10 U9 V9 W9 X10 Y9 Z9 AA9"/>
+<link kind="rail" line="rail" hexes="AA9 BB9 CC8 CC7 CC6 CC5 CC4"/>
+<link kind="rail" line="rail" hexes="O8 P8"/>
+<link kind="rail" line="rail" hexes="P8 Q7 R7 S6 T6 T5 T4 T3 U2 U3 V4 W4 X5 Y5 Z6 AA5 BB5 CC4"/>
+<link kind="rail" line="rail" hexes="JJ8 II7 HH7 GG6 FF6 EE5 DD5 CC4"/>
+<link kind="rail" line="rail" hexes="JJ8 KK7 LL7 MM6 NN6 OO5 PP6 QQ5"/>
+<!-- 39 links -->
   <!-- the Kerch Strait: one hexside carrying five rule effects -->
   <edge at="KK20:e" symbol="strait" color="white" label="Kerch Strait"/>
   <!-- cities: cream ring, square for major, circle for minor; port anchors on the water side -->

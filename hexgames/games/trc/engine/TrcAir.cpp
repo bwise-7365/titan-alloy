@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcAir.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <array>
 #include <stdexcept>
@@ -65,7 +66,7 @@ namespace Trc {
   int
   TrcAir::used(const Position& position, SideId side)
   {
-    return Flags::counter(position, side, Flags::kAirUsed);
+    return stateOf(position).side(side).airUsed.value_or(0);
   }
 
   bool

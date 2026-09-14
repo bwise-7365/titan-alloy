@@ -146,19 +146,17 @@ namespace HexEngine {
     virtual std::vector<std::string> order() const = 0;  // for hexsave piles
   };
 
-  // Added in M6: the game's own sequence of play, around the engine's adjudicators. The Session
-  // calls check() before it adjudicates any command, apply() for the commands the engine has no
-  // adjudicator of its own for (Place and GameCommand), settle() after every command it applied,
-  // endPhase() before an EndPhase moves the clock and enterPhase() once it has. Every member is
-  // pure: it returns the next Position and writes what happened into the sink.
-  class GameAdjudicator : public Policy {
+  class StepRegistry;  // Steps.h: the behaviours the rules document's phase steps name (M6b)
+
+  // Added in M6b: settles the obligations a game pushes on the resolution stack (Resolution.h). The
+  // engine calls settle() when one of them is the top entry and asks nothing, and answer() when the
+  // decision it asked is answered; the engine has already checked a GameChoice answer against the
+  // verb and options. Each returns the next Position: the obligation popped or replaced, or a
+  // decision asked on it. Both are pure and write what happened into the sink.
+  class ObligationPolicy : public Policy {
   public:
-    // Throws std::invalid_argument, naming the rule, when the game forbids the command here.
-    virtual void check(const Ctx&, const Command&) const = 0;
-    virtual Position apply(const Ctx&, const Command&, PrngStreams&, EventSink&) const = 0;
-    virtual Position settle(const Ctx&, const Command&, EventSink&) const = 0;
-    virtual Position endPhase(const Ctx&, HexSearch::SearchScratch&, EventSink&) const = 0;
-    virtual Position enterPhase(const Ctx&, PrngStreams&, EventSink&) const = 0;
+    virtual Position settle(const Ctx&, PrngStreams&, EventSink&) const = 0;
+    virtual Position answer(const Ctx&, const DecisionAnswer&, PrngStreams&, EventSink&) const = 0;
   };
 
   // The set a game hands the engine; unset members use the engine defaults.
@@ -172,7 +170,10 @@ namespace HexEngine {
     const VictoryCheck* victory = nullptr;
     const PhaseGate* phases = nullptr;
     const CommandGrammar* grammar = nullptr;
-    const GameAdjudicator* game = nullptr;
+    const StepRegistry* steps = nullptr;            // M6b: required; a Session verifies it against the rules
+    const ObligationPolicy* obligations = nullptr;  // nullptr: a game obligation on the stack throws
+    const HexModel::GameStateCodec* state = nullptr;  // M6b: hexsave flags <-> the game's own state
+    const HexModel::ObligationCodec* obligationCodec = nullptr;  // hexsave <owe kind="game"> <-> a game obligation
   };
 
 }  // namespace HexEngine

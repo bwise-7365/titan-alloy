@@ -48,7 +48,10 @@ namespace TrcTest {
     axis.id = "axis";
     axis.flags.push_back(HexXml::SaveFlagDoc{"weather-drm", "0"});
     doc.sides.push_back(axis);
-    return HexModel::PositionBuilder::build(doc, *definition.board, *definition.roster, *definition.rules);
+    const Trc::TrcStateCodec codec(*definition.rules);
+    const HexEngine::NoObligationCodec obligations;
+    return HexModel::PositionBuilder::build(doc, *definition.board, *definition.roster, *definition.rules, codec,
+                                            obligations);
   }
 
   inline HexModel::UnitId

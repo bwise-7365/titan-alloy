@@ -29,7 +29,7 @@ namespace {
 TEST(DeterminismTest, SameSeedSameScript)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   const HexEngine::GameNames& names = defaults.names();
 
   const HexModel::UnitId armour = TrcFixture::unitOf(*definition, "g-ge-41-armour");
@@ -67,7 +67,7 @@ TEST(DeterminismTest, SameSeedSameScript)
 TEST(DeterminismTest, SameSeedSameRandomRollout)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcFixture::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
 
   const auto run = [&]() {
     HexEngine::Session session(definition, defaults.policies(), TrcFixture::scenario(*definition),

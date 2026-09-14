@@ -42,7 +42,10 @@ namespace TrcFixture {
   {
     const HexXml::SaveDoc save = HexXml::SaveDoc::parse(
         HexXml::XmlDocument::load(root() / "game_records" / "xml" / "trc-test.xml"));
-    return HexModel::PositionBuilder::build(save, *definition.board, *definition.roster, *definition.rules);
+    const HexEngine::NoGameStateCodec state(*definition.rules);
+    const HexEngine::NoObligationCodec obligations;
+    return HexModel::PositionBuilder::build(save, *definition.board, *definition.roster, *definition.rules, state,
+                                            obligations);
   }
 
   inline HexModel::UnitId

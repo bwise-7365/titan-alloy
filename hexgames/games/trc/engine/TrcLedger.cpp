@@ -33,7 +33,7 @@ namespace Trc {
         // ---- movement ----
         {"hq-movement", Implemented{"Trc::TrcMovement"}},
         {"leader-movement", Implemented{"Trc::TrcMovement"}},
-        {"leader-loss", Implemented{"Trc::TrcMovement, Trc::TrcGame::noteLeaders"}},
+        {"leader-loss", Implemented{"Trc::TrcMovement, steps note-leaders, wake-leader-freeze, spend-leader-freeze"}},
         {"national-rows", OptionalNotImplemented{}},
         {"strategic-movement", OptionalNotImplemented{}},
         // ---- supply ----
@@ -42,14 +42,14 @@ namespace Trc {
         {"combat-supply-halving", Implemented{"Trc::TrcCombat, Trc::TrcSupply::combatSuppliedP"}},
         // ---- combat ----
         {"eliminate-vs-surrender", Common{EngineFeature::Spaces}},
-        {"control-frozen-ex", Implemented{"Trc::TrcControl, HexEngine::CombatPlan"}},
+        {"control-frozen-ex", Implemented{"Trc::TrcControl, HexModel::Position::resolution"}},
         {"av-trap", Implemented{"Trc::TrcMandatory"}},
         {"av-russian-date", Implemented{"Trc::TrcSpecialMoves::automaticVictory"}},
         {"air-range", Implemented{"Trc::TrcAir"}},
         {"fortress-cities", OptionalNotImplemented{}},
         // ---- retreat ----
         {"retreat-woods", Implemented{"Trc::TrcRetreat::fate, Trc::TrcCombat (AR/DR to C)"}},
-        {"retreat-leaders-workers", Implemented{"Trc::TrcRetreat::fate, Trc::TrcGame::workersSurrender"}},
+        {"retreat-leaders-workers", Implemented{"Trc::TrcRetreat::fate, step workers-surrender"}},
         // ---- weather ----
         {"weather-fixed-turns", Implemented{"Trc::TrcWeather"}},
         {"weather-drm", Implemented{"Trc::TrcWeather"}},
@@ -87,8 +87,8 @@ namespace Trc {
         {"battlegroups", OptionalNotImplemented{}},
         {"bidding", OptionalNotImplemented{}},
         // ---- ordering hazards ----
-        {"order-railheads-before-supply", Implemented{"Trc::TrcGame::closeSideTurn"}},
-        {"order-partisan-removal", Implemented{"Trc::TrcGame::endPhase, Trc::TrcPolitics"}},
+        {"order-railheads-before-supply", Implemented{"rules steps convert-rail then eliminate-unsupplied (end phases)"}},
+        {"order-partisan-removal", Implemented{"rules step remove-exposed-partisans (Axis movement phases), Trc::TrcPolitics"}},
     }};
 
   }  // namespace

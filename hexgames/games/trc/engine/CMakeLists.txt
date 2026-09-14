@@ -3,7 +3,9 @@
 add_library(trc_game STATIC
   TrcCalendar.cpp
   TrcFacts.cpp
-  TrcFlags.cpp
+  TrcMarkers.cpp
+  TrcState.cpp
+  TrcStateCodec.cpp
   TrcUnits.cpp
   TrcBinding.cpp
   TrcZoc.cpp
@@ -23,8 +25,9 @@ add_library(trc_game STATIC
   TrcSpecialMoves.cpp
   TrcPolitics.cpp
   TrcPhaseGate.cpp
-  TrcGame.cpp
-  TrcGamePhases.cpp
+  TrcStepsCommand.cpp
+  TrcStepsPhase.cpp
+  TrcStepsVerbs.cpp
   TrcCommandGrammar.cpp
   TrcPolicySet.cpp
   TrcLedger.cpp)

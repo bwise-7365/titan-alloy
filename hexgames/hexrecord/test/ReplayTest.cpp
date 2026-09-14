@@ -12,9 +12,9 @@
 TEST(ReplayTest, ScriptAppliesInOrder)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcRecord::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
   const HexRecord::Record record =
-      HexRecord::readRecord(TrcRecord::script(), *definition, *defaults.policies().grammar);
+      HexRecord::readRecord(TrcRecord::script(), *definition, defaults.policies());
 
   EXPECT_EQ(HexRecord::Kind::Script, record.kind);
   EXPECT_EQ("trc", record.game);
@@ -56,14 +56,14 @@ TEST(ReplayTest, ScriptAppliesInOrder)
 TEST(ReplayTest, StrictModeFindsFirstDivergence)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcRecord::definition();
-  const HexEngine::DefaultPolicySet defaults(*definition);
+  const HexEngine::DefaultPolicySet defaults(*definition, HexEngine::GameSteps::Withheld);
 
   // The golden replays cleanly against itself.
   {
     HexRecord::Record record =
-        HexRecord::readRecord(TrcRecord::golden(), *definition, *defaults.policies().grammar);
+        HexRecord::readRecord(TrcRecord::golden(), *definition, defaults.policies());
     record.position = HexRecord::readRecord(TrcRecord::script(), *definition,
-                                             *defaults.policies().grammar)
+                                             defaults.policies())
                            .position;
     HexEngine::Session session = HexRecord::sessionFor(record, definition, defaults.policies());
     EXPECT_FALSE(HexRecord::replay(session, record, true).has_value());
@@ -72,9 +72,9 @@ TEST(ReplayTest, StrictModeFindsFirstDivergence)
   // A golden whose fourth move records a different die is caught on that move.
   {
     HexRecord::Record record =
-        HexRecord::readRecord(TrcRecord::golden(), *definition, *defaults.policies().grammar);
+        HexRecord::readRecord(TrcRecord::golden(), *definition, defaults.policies());
     record.position = HexRecord::readRecord(TrcRecord::script(), *definition,
-                                             *defaults.policies().grammar)
+                                             defaults.policies())
                            .position;
     ASSERT_EQ(6u, record.log.size());
     ASSERT_EQ(1u, record.log[3].draws.size());

@@ -43,11 +43,23 @@ namespace {
       if (!defaultsP && "trc" == definition.rules->gameId()) {
         trc_ = std::make_unique<Trc::TrcPolicySet>(definition);
       } else {
-        defaults_ = std::make_unique<HexEngine::DefaultPolicySet>(definition);
+        defaults_ = std::make_unique<HexEngine::DefaultPolicySet>(definition, HexEngine::GameSteps::Withheld);
       }
     }
     const HexEngine::Policies& policies() const { return trc_ ? trc_->policies() : defaults_->policies(); }
     const HexEngine::GameNames& names() const { return trc_ ? trc_->names() : defaults_->names(); }
+
+    // A run on engine defaults names every step behaviour of the rules it withheld (M6b).
+    void
+    reportWithheld() const
+    {
+      if (defaults_) {
+        for (const auto& [does, why] : defaults_->steps().withheld()) {
+          std::cerr << "hexgames_cli: withheld step behaviour '" << does << "': " << why << "\n";
+        }
+      }
+      return;
+    }
 
   private:
     std::unique_ptr<Trc::TrcPolicySet> trc_;
@@ -83,6 +95,7 @@ namespace {
   {
     const std::shared_ptr<const HexRules::GameDefinition> definition = definitionOf(script);
     const PolicyChoice choice(*definition, defaultsP);
+    choice.reportWithheld();
 
     if (goldenGivenP) {
       const HexRecord::GoldenReport report = HexRecord::compareWithGolden(
@@ -93,7 +106,7 @@ namespace {
     }
 
     const HexRecord::Record record =
-        HexRecord::readRecord(script, *definition, *choice.policies().grammar);
+        HexRecord::readRecord(script, *definition, choice.policies());
     HexEngine::Session session =
         HexRecord::sessionFor(record, definition, choice.policies());
     HexRecord::playRecord(session, record);
@@ -119,8 +132,9 @@ namespace {
   {
     const std::shared_ptr<const HexRules::GameDefinition> definition = definitionOf(script);
     const PolicyChoice choice(*definition, defaultsP);
+    choice.reportWithheld();
     const HexRecord::Record read =
-        HexRecord::readRecord(script, *definition, *choice.policies().grammar);
+        HexRecord::readRecord(script, *definition, choice.policies());
     HexEngine::Session session = HexRecord::sessionFor(read, definition, choice.policies());
     const std::vector<HexRecord::ScriptedMove> played = HexRecord::playRecord(session, read);
     HexRecord::writeRecord(out, HexRecord::Kind::Golden, session, played,

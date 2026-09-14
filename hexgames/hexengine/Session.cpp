@@ -10,6 +10,8 @@
 #include "hexengine/Defaults.h"
 #include "hexengine/GameNames.h"
 #include "hexengine/PhaseCursor.h"
+#include "hexengine/Sequence.h"
+#include "hexengine/Steps.h"
 
 #include <algorithm>
 #include <set>
@@ -71,6 +73,13 @@ namespace HexEngine {
     if (nullptr == definition_) {
       throw std::invalid_argument("Session: a session needs a game definition");
     }
+    if (nullptr == policies_.steps) {
+      throw std::invalid_argument("Session: the policy set has no StepRegistry");
+    }
+    if (nullptr == policies_.grammar) {
+      throw std::invalid_argument("Session: the policy set has no CommandGrammar");
+    }
+    policies_.steps->verify(*definition_->rules, *policies_.grammar);
   }
 
   Ctx
@@ -301,24 +310,26 @@ namespace HexEngine {
   Position
   Session::adjudicate(const Command& command, EventSink& sink)
   {
-    if (nullptr == policies_.game) {
-      throw std::invalid_argument("Session::apply: the policy set has no GameAdjudicator");
-    }
-    const Ctx ctx = context();
     if (!std::holds_alternative<HexModel::NoDecision>(position_.pending()) &&
         !std::holds_alternative<DecisionAnswer>(command)) {
       throw std::invalid_argument("Session::apply: a decision pending on this position must be "
                                   "answered before any other command");
     }
-    policies_.game->check(ctx, command);
-    const Position next = adjudicateCommand(command, sink);
-    const Ctx settling{*definition_->board, *definition_->rules, *definition_->roster, next};
-    return policies_.game->settle(settling, command, sink);
+    if (nullptr == policies_.grammar) {
+      throw std::invalid_argument("Session::apply: the policy set has no CommandGrammar to name the command");
+    }
+    const std::string verb = policies_.grammar->verb(command);
+    const Sequence::Env env{*definition_, policies_, streams_, scratch_, sink};
+    Sequence::check(env, position_, command, verb);
+    const HexModel::TurnClock issued = position_.clock();
+    const Position applied = adjudicateCommand(command, verb, env);
+    return Sequence::afterCommand(env, applied, command, verb, issued);
   }
 
   Position
-  Session::adjudicateCommand(const Command& command, EventSink& sink)
+  Session::adjudicateCommand(const Command& command, const std::string& verb, const Sequence::Env& env)
   {
+    EventSink& sink = env.sink;
     const Ctx ctx = context();
     const GameNames names(*definition_->board, *definition_->roster, *definition_->rules);
     const bool pendingP = !std::holds_alternative<HexModel::NoDecision>(position_.pending());
@@ -385,24 +396,11 @@ namespace HexEngine {
       if (!pendingP) {
         throw std::invalid_argument("Session::apply: no decision is pending on this position");
       }
-      return Adjudicators::applyDecision(ctx, policies_, *answer, names, sink);
+      return Adjudicators::applyDecision(ctx, policies_, *answer, names, streams_, sink);
     }
 
     if (std::holds_alternative<EndPhase>(command)) {
-      Position next = policies_.game->endPhase(ctx, scratch_, sink);
-      if (caps.test(static_cast<std::size_t>(Cap::Supply)) && acting) {
-        const Ctx checking{*definition_->board, *definition_->rules, *definition_->roster, next};
-        next = Adjudicators::applySupplyCheck(checking, policies_, scratch_, *acting, sink);
-      }
-      {
-        const Ctx repairing{*definition_->board, *definition_->rules, *definition_->roster, next};
-        next = Adjudicators::applyStackingRepair(repairing, policies_, sink);
-      }
-      const Ctx turning{*definition_->board, *definition_->rules, *definition_->roster, next};
-      const PhaseCursor cursor(*definition_->rules);
-      next = Adjudicators::advancePhase(turning, policies_, cursor, sink);
-      const Ctx entering{*definition_->board, *definition_->rules, *definition_->roster, next};
-      return policies_.game->enterPhase(entering, streams_, sink);
+      return Sequence::endPhase(env, position_, command);
     }
 
     if (std::holds_alternative<ResolveNextAttack>(command)) {
@@ -410,7 +408,7 @@ namespace HexEngine {
                                   "engine resolves an attack as it is declared");
     }
     // Place and the game's own verbs: only the game knows what they mean.
-    return policies_.game->apply(ctx, command, streams_, sink);
+    return policies_.steps->commandFor(verb)(CommandCall{ctx, policies_, streams_, scratch_, sink, command});
   }
 
   Session

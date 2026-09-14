@@ -25,9 +25,12 @@ namespace Trc {
       politics_(facts_, zoc_),
       phases_(facts_),
       grammar_(facts_, names_),
-      game_(TrcParts{facts_, zoc_, weather_, stacking_, supply_, combat_, air_, control_, rail_, victory_, mandatory_,
-                     arrivals_, special_, politics_})
+      state_(*definition.rules)
   {
+    HexEngine::registerEngineSteps(steps_);
+    registerTrcSteps(steps_, TrcParts{facts_, zoc_, weather_, stacking_, supply_, combat_, air_, control_, rail_, victory_,
+                                      mandatory_, arrivals_, special_, politics_});
+    policies_.steps = &steps_;
     policies_.zoc = &zoc_;
     policies_.movement = &movement_;
     policies_.supply = &supply_;
@@ -37,7 +40,8 @@ namespace Trc {
     policies_.victory = &victory_;
     policies_.phases = &phases_;
     policies_.grammar = &grammar_;
-    policies_.game = &game_;
+    policies_.state = &state_;
+    policies_.obligationCodec = &obligationCodec_;
   }
 
   std::vector<std::string_view>
@@ -64,7 +68,8 @@ namespace Trc {
     add(TrcSpecialMoves::claims());
     add(TrcPolitics::claims());
     add(phases_.claims());
-    add(game_.claims());
+    const std::vector<std::string_view> stepRules = steps_.claims(*facts_.definition().rules);
+    out.insert(out.end(), stepRules.begin(), stepRules.end());
     return out;
   }
 

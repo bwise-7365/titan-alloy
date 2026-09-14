@@ -114,6 +114,37 @@ namespace HexRecord {
     bool operator==(const SaveArg&) const = default;
   };
 
+  // Added in M6b review: hexsave <resolution><owe>, each with the decision it asked.
+  struct SaveAsk {
+    std::string what;  // loss | retreat | card | choice
+    std::optional<std::string> side;
+    std::optional<std::string> unit;
+    std::vector<std::string> candidates;
+    std::optional<int> count;
+    std::optional<bool> mayStopP;
+    std::optional<std::string> deck;
+    std::optional<std::string> verb;
+    std::vector<std::string> options;
+    bool operator==(const SaveAsk&) const = default;
+  };
+
+  struct SaveOwe {
+    std::string kind;  // loss | retreat | unit-retreat | game
+    std::optional<std::string> side;
+    std::optional<int> count;
+    std::optional<int> fewest;
+    std::optional<int> most;
+    std::optional<std::string> unit;
+    std::optional<std::string> from;
+    std::vector<std::string> path;
+    std::optional<std::string> router;
+    std::vector<std::string> involved;
+    std::optional<std::string> name;
+    std::vector<SaveArg> args;
+    std::optional<SaveAsk> ask;
+    bool operator==(const SaveOwe&) const = default;
+  };
+
   struct SaveResult {
     std::string outcome;
     std::optional<std::string> odds;
@@ -194,6 +225,7 @@ namespace HexRecord {
     std::vector<SaveControlHex> controlHexes;
     std::vector<SaveControlLink> controlLinks;
     std::vector<SaveRegion> regions;
+    std::vector<SaveOwe> resolution;  // bottom first; omitted when nothing is owed
     std::vector<SavePile> piles;
     std::vector<SaveStream> streams;
     std::vector<SaveMove> log;

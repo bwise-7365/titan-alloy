@@ -3,7 +3,8 @@
 // ----------------------------------------------
 #include "TrcRail.h"
 
-#include "TrcFlags.h"
+#include "TrcMarkers.h"
+#include "TrcState.h"
 
 #include <array>
 
@@ -97,7 +98,7 @@ namespace Trc {
     for (std::size_t i = 1; i < move.path.size(); ++i) {
       const HexIndex hex = move.path[i];
       if (facts_.railHexP(hex) && traceBack(ctx, scratch, hex, side)) {
-        Flags::add(next, side, Flags::kRailTouched, ctx.board.id(hex).text);
+        stateOf(next).side(side).railTouched.insert(ctx.board.id(hex));
       }
     }
     return next;
@@ -127,14 +128,13 @@ namespace Trc {
   TrcRail::convert(const Ctx& ctx, SideId side, HexSearch::SearchScratch& scratch, HexEngine::EventSink& sink) const
   {
     Position next = ctx.position;
-    for (const std::string& id : Flags::list(ctx.position, side, Flags::kRailTouched)) {
+    for (const HexCoord::HexId& id : stateOf(ctx.position).side(side).railTouched) {
       const Ctx now{ctx.board, ctx.rules, ctx.roster, next};
-      if (const std::optional<std::vector<std::size_t>> path =
-              traceBack(now, scratch, ctx.board.indexOf(HexCoord::HexId{id}), side)) {
+      if (const std::optional<std::vector<std::size_t>> path = traceBack(now, scratch, ctx.board.indexOf(id), side)) {
         next = own(now, *path, side, sink);
       }
     }
-    next.setFlag(side, Flags::kRailTouched, std::nullopt);
+    stateOf(next).side(side).railTouched.clear();
 
     const Board& board = ctx.board;
     const NetworkId rail = facts_.railNetwork();

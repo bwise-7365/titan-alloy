@@ -11,6 +11,7 @@
 #include "hexengine/Command.h"
 #include "hexengine/GameNames.h"
 #include "hexengine/Policies.h"
+#include "hexengine/Steps.h"
 #include "hexrules/Package.h"
 
 #include <memory>
@@ -191,33 +192,51 @@ namespace HexEngine {
     Command parse(const std::string& verb,
                    const std::vector<std::pair<std::string, std::string>>& args) const override;
     std::vector<std::pair<std::string, std::string>> arguments(const Command&) const override;
+    // move, attack, resolve, answer, place, end-phase. A game's own "game:<verb>" is open-ended and
+    // so is not listed: a rules step cannot name one.
+    std::vector<std::string> verbs() const override;
 
   private:
     const GameNames& names_;
   };
 
-  // ---- the game's sequence of play --------------------------------------------------------------
-  // A game with no sequence of its own: every command the engine adjudicates is allowed, settle,
-  // endPhase and enterPhase change nothing, and a Place or GameCommand throws, because only a game
-  // knows where a counter may arrive or what its own verbs mean.
-  class NoGameAdjudicator : public GameAdjudicator {
+  // ---- codecs for a game with no module (M6b review) -------------------------------------------
+  // No game module, no game state: a document carrying any side flag is refused, naming every flag
+  // and its side. The position then holds no game state and writes no flags.
+  class NoGameStateCodec : public HexModel::GameStateCodec {
   public:
-    std::span<const std::string_view> claims() const override;
-    void check(const Ctx&, const Command&) const override;
-    Position apply(const Ctx&, const Command&, PrngStreams&, EventSink&) const override;
-    Position settle(const Ctx&, const Command&, EventSink&) const override;
-    Position endPhase(const Ctx&, HexSearch::SearchScratch&, EventSink&) const override;
-    Position enterPhase(const Ctx&, PrngStreams&, EventSink&) const override;
+    explicit NoGameStateCodec(const HexRules::RuleSet&);
+    HexModel::Polymorphic<HexModel::GameState> decode(const HexModel::SideFlags&) const override;
+    HexModel::SideFlags encode(const HexModel::GameState&) const override;  // throws: nothing to encode
+
+  private:
+    const HexRules::RuleSet& rules_;
+  };
+
+  // No game module, no game obligations: reading or writing one throws, naming it.
+  class NoObligationCodec : public HexModel::ObligationCodec {
+  public:
+    HexModel::Polymorphic<HexModel::GameObligation> decode(const std::string& name,
+                                                           const std::vector<HexModel::ObligationArg>&) const override;
+    std::vector<HexModel::ObligationArg> encode(const HexModel::GameObligation&) const override;
   };
 
   // ---- the set ----------------------------------------------------------------------------------
+  // What the engine's own set does with rules steps whose behaviour only a game module registers
+  // (M6b). Required: building a Session on such a document throws, naming the step. Withheld: each
+  // such behaviour is registered as withheld -- its steps do nothing -- and steps().withheld() lists
+  // it with the reason, so a run of a game's document on engine defaults says what it left out.
+  enum class GameSteps : std::uint8_t { Required, Withheld };
+
   // Owns one of each and hands out the Policies a Session wants. A game builds one, then replaces
-  // the members it disagrees with before handing the set to a Session.
+  // the members it disagrees with before handing the set to a Session. There is no Place and no
+  // game verb: only a game knows where a counter may arrive or what its own verbs mean.
   class DefaultPolicySet {
   public:
-    explicit DefaultPolicySet(const HexRules::GameDefinition&);
+    DefaultPolicySet(const HexRules::GameDefinition&, GameSteps);
     const Policies& policies() const { return policies_; }
     const GameNames& names() const { return names_; }
+    const StepRegistry& steps() const { return steps_; }
 
   private:
     GameNames names_;
@@ -230,7 +249,9 @@ namespace HexEngine {
     DefaultVictory victory_;
     DefaultPhaseGate phases_;
     DefaultCommandGrammar grammar_;
-    NoGameAdjudicator game_;
+    StepRegistry steps_;
+    NoGameStateCodec state_;
+    NoObligationCodec obligationCodec_;
     Policies policies_;
   };
 

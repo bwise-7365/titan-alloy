@@ -3,6 +3,8 @@
 // ----------------------------------------------
 #include "TrcWeather.h"
 
+#include "TrcState.h"
+
 #include <algorithm>
 #include <array>
 #include <stdexcept>
@@ -25,9 +27,6 @@ namespace Trc {
     // rules roll that turn; this row is the engine's placeholder until the chart is transcribed.
     constexpr Row kNovDec{Weather::LightMud, Weather::LightMud, Weather::Mud, Weather::Mud,
                           Weather::Snow, Weather::Snow, Weather::Snow, Weather::Snow};
-
-    const std::string kWeather = "weather";
-    const std::string kDrm = "weather-drm";
 
     std::string
     describe(Weather weather, int die, int drm, int modified)
@@ -100,22 +99,22 @@ namespace Trc {
       case Months::MarApr:
         break;
     }
-    const std::optional<std::string> flag = position.flag(facts_.axis(), kWeather);
-    if (!flag) {
+    const std::optional<Weather>& rolled = stateOf(position).weather;
+    if (!rolled) {
       throw std::invalid_argument("TrcWeather: turn " + std::to_string(position.clock().turn) +
                                    " rolls its weather, and the position records no roll (axis flag 'weather')");
     }
-    return weatherNamed(*flag);
+    return *rolled;
   }
 
   int
   TrcWeather::drm(const Position& position) const
   {
-    const std::optional<std::string> flag = position.flag(facts_.axis(), kDrm);
-    if (!flag) {
+    const std::optional<int>& running = stateOf(position).weatherDrm;
+    if (!running) {
       throw std::invalid_argument("TrcWeather: the position records no weather DRM (axis flag 'weather-drm')");
     }
-    return std::stoi(*flag);
+    return *running;
   }
 
   Position
@@ -125,7 +124,7 @@ namespace Trc {
     const Months months = monthsOf(ctx.position.clock().turn);
     if (Months::MayJun == months || Months::JulAug == months || Months::JanFeb == months) {
       const Weather fixed = chart(months, 0);
-      next.setFlag(facts_.axis(), kWeather, std::string(weatherName(fixed)));
+      stateOf(next).weather = fixed;
       sink.onEvent(HexEngine::GameEvent{"weather", std::string(weatherName(fixed)) + " (fixed)"});
       return next;
     }
@@ -133,8 +132,8 @@ namespace Trc {
     const int die = HexEngine::rollDie(streams, HexEngine::StreamTag::Weather, 6);
     const int modified = std::clamp(die + running, 0, 7);
     const Weather rolled = chart(months, modified);
-    next.setFlag(facts_.axis(), kWeather, std::string(weatherName(rolled)));
-    next.setFlag(facts_.axis(), kDrm, std::to_string(running + drmChange(rolled)));
+    stateOf(next).weather = rolled;
+    stateOf(next).weatherDrm = running + drmChange(rolled);
     sink.onEvent(HexEngine::DieRolled{HexEngine::StreamTag::Weather, die});
     sink.onEvent(HexEngine::GameEvent{"weather", describe(rolled, die, running, modified)});
     return next;
