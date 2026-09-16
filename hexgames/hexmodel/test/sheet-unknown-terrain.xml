@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sheet id="synthetic" title="Synthetic" width="100" height="100" background="frame">
+<sheet id="synthetic" title="Synthetic" width="100" height="100" background="frame" urban="symbol">
   <grid orientation="pointy" offset="odd" cols="2" rows="2" size="10" ox="0" oy="0" id-format="{col}{row}" terrain="clear"/>
   <palette>
     <color id="frame" value="#ffffff"/>

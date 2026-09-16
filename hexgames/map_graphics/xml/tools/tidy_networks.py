@@ -1021,6 +1021,7 @@ def authored_borders(sheet, cfg):
 
 
 def main(argv):
+    N.utf8_output()
     paths = [a for a in argv[1:] if not a.startswith("--")]
     if len(paths) != 1:
         print(__doc__)

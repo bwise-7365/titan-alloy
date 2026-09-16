@@ -218,6 +218,7 @@ namespace HexXml {
     double height = 0.0;
     std::string background;
     std::string font = "Arial, Helvetica, sans-serif";
+    std::string urban;  // buildings | symbol: how city hexes are drawn (required)
 
     std::vector<SheetGridDoc> grids;
     std::vector<SheetColorDoc> palette;

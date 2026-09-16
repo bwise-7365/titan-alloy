@@ -58,13 +58,19 @@ TEST(PggPackageTest, FactsReadOffTheDocuments)
   const Pgg::PggPolicySet set(*definition);
   const Pgg::PggFacts& facts = set.facts();
 
-  EXPECT_TRUE(facts.majorCityP(facts.hex("2117")));
+  // The printed map (maps: PGG accuracy): Smolensk's blocks fill 2216 and 2217, its name is printed over 2117;
+  // Kaluga is 5921 on the east edge (column 59); the railway from the west and the road from the north end in 2216.
+  EXPECT_TRUE(facts.majorCityP(facts.hex("2216")));
+  EXPECT_TRUE(facts.majorCityP(facts.hex("2217")));
+  EXPECT_FALSE(facts.majorCityP(facts.hex("2117")));
   EXPECT_TRUE(facts.minorCityP(facts.hex("1509")));
   EXPECT_TRUE(facts.lakeP(facts.hex("1401")));
   EXPECT_TRUE(facts.westEdgeP(facts.hex("0120")));
-  EXPECT_TRUE(facts.eastEdgeP(facts.hex("5619")));
-  EXPECT_TRUE(facts.roadP(facts.hex("2016"), facts.hex("2117")));
-  EXPECT_TRUE(facts.railLink(facts.hex("2016"), facts.hex("2117")).has_value());
+  EXPECT_TRUE(facts.eastEdgeP(facts.hex("5921")));
+  EXPECT_TRUE(facts.majorCityP(facts.hex("5921")));
+  EXPECT_TRUE(facts.roadP(facts.hex("2215"), facts.hex("2216")));
+  EXPECT_TRUE(facts.railLink(facts.hex("2116"), facts.hex("2216")).has_value());
+  EXPECT_TRUE(facts.roadP(facts.hex("0120"), facts.hex("0219")));  // the road reaches the German supply hex (11.11)
 
   EXPECT_EQ(3, facts.leaderRating(PggTest::unit(set, "s1-lukin-16th-army-hq-3-10")));
   EXPECT_EQ(Pgg::MoveClass::Leader, facts.moveClass(PggTest::unit(set, "s1-lukin-16th-army-hq-3-10")));
@@ -76,7 +82,7 @@ TEST(PggPackageTest, FactsReadOffTheDocuments)
   EXPECT_EQ(PggTest::unit(set, "s2-6-inf-2-7"), facts.successor(PggTest::unit(set, "s2-6-inf-9-7")));
   EXPECT_TRUE(facts.independentRegimentP(PggTest::unit(set, "s2-gd-mot-4-10")));
 
-  ASSERT_EQ(10u, facts.victoryHexes().size());  // 5907 and 5915 are off the sheet (data gaps)
+  ASSERT_EQ(12u, facts.victoryHexes().size());  // ten cities and the printed "(20 ПО)" hexes 5907 and 5915
   const auto smolensk = std::find_if(facts.victoryHexes().begin(), facts.victoryHexes().end(),
                                      [&](const Pgg::VictoryHex& vp) { return vp.hex == facts.smolensk(); });
   ASSERT_NE(facts.victoryHexes().end(), smolensk);
@@ -125,18 +131,17 @@ TEST(PggPackageTest, The1941ScenarioLoadsLegally)
   EXPECT_EQ(set.facts().phaseNamed("set-up"), position.clock().phase);
 }
 
-// The gaps are data, not code: the day the sheet or the rules carry the entrance areas, this test
-// fails and the provisional table goes.
+// The gaps are data, not code. The sheet rebuilt from the print (maps: PGG accuracy) carries a road into 0120,
+// railways to the south edge and the Victory Point hexes 5907 and 5915, and the entrance areas are the printed
+// ones, so nothing is missing; a gap reappearing means the sheet lost a printed feature.
 TEST(PggPackageTest, DataGapsAreReportedNotHidden)
 {
   const auto definition = PggTest::definition();
   const Pgg::PggFacts facts(*definition);
-  ASSERT_EQ(5u, facts.dataGaps().size());
-  EXPECT_NE(std::string::npos, facts.dataGaps()[0].find("entrance areas"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[1].find("South-Western Front"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[2].find("0120"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[3].find("5907"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[4].find("5915"));
+  EXPECT_TRUE(facts.dataGaps().empty()) << (facts.dataGaps().empty() ? "" : facts.dataGaps().front());
+  EXPECT_TRUE(facts.inAreaP(Pgg::Area::X, facts.hex("5907")));
+  EXPECT_TRUE(facts.inAreaP(Pgg::Area::P6, facts.hex("1831")));
+  EXPECT_TRUE(facts.railHexP(facts.hex("1831")));  // provisional area 6 is a south-edge Railroad hex
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

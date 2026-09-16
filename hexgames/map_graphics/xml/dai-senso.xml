@@ -2,7 +2,7 @@
 <sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"
        id="dai-senso" title="Axis Empires: Dai Senso!"
        source="Dai Senso game map adjusted.png, 3990 x 3198; Decision Games 2011. West Map and East Map side by side."
-       width="3990" height="3198" background="paper" font="Georgia, Times New Roman, serif">
+       width="3990" height="3198" background="paper" font="Georgia, Times New Roman, serif" urban="symbol">
   <grid id="west" orientation="pointy" offset="odd" cols="27" rows="53" size="40.95" ox="62.54" oy="-8.05"
         id-format="w{row:02}{col:02}" col-start="1" row-start="61" row-step="-1" terrain="sea" id-side="w"/>
   <grid id="east" orientation="pointy" offset="odd" cols="29" rows="53" size="40.95" ox="1977.63" oy="-8.05"

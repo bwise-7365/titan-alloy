@@ -580,6 +580,47 @@ def ds_place_problems(sheet):
     return out
 
 
+# ---------------------------------------------------------------- PGG printed exceptions
+# The PGG sheet is built from the print by map_graphics/xml/tools/image2sheet (tasks/12-pgg-map.md). A broken
+# rule that the print itself shows is named here with its reason, and reported as EXCEPTED; an exception that
+# no longer occurs is itself a broken rule, so the list stays exact.
+PGG_EXCEPTED = {
+    "river hexside 5802:se lies in water or on the map edge":
+        "printed: the river loops round 5903 from the east edge along the lake hex 5802's se hexside, 45 px from "
+        "the lake outline (look/res/r-5802.jpg)",
+    "river piece of 4 hexsides at 5902:s is short": "printed: the short loop round 5903 at the east edge",
+    "river hexside 1601:s lies in water or on the map edge":
+        "printed: the river leaves the lake down the shore of 1602, lake by Ben's label (fill 0.34)",
+    "river hexside 1602:ne lies in water or on the map edge":
+        "printed: the river leaves the lake down the shore of 1602, lake by Ben's label (fill 0.34)",
+    "river hexside 1602:se lies in water or on the map edge":
+        "printed: the river leaves the lake down the shore of 1602, lake by Ben's label (fill 0.34)",
+    "rail misses major city 0424": "printed: the railway reaches Mogilev's other hex 0525, not 0424",
+    "road has 11 pieces, not one": "printed: roads end at a dot beside rivers and cities; no road crosses a river",
+    "road misses named place 0412": "printed: Vitebsk's road reaches its other hex 0513",
+    "road misses named place 0424": "printed: no road reaches Mogilev",
+    "road misses named place 0525": "printed: no road reaches Mogilev",
+    "road misses named place 1427": "printed: no road reaches the town Кричев",
+    "road misses named place 1524": "printed: no road reaches the town Мстиславль",
+    "road misses named place 3005": "printed: no road reaches the town Белый",
+    "road misses named place 3901": "printed: no road reaches Rzhev (railway only)",
+    "road misses named place 4607": "printed: Gzhatsk's road ends at a dot short of its blocks",
+    "road misses named place 5921": "printed: no road reaches Kaluga (railway only)",
+}
+
+
+def pgg_excepted(problems, emit):
+    """Drop the named printed exceptions, and report any named exception that no longer occurs."""
+    out = []
+    for p in problems:
+        if p in PGG_EXCEPTED:
+            emit("EXCEPTED: %s (%s)" % (p, PGG_EXCEPTED[p]))
+        else:
+            out.append(p)
+    out += ["named exception no longer occurs: %s" % p for p in PGG_EXCEPTED if p not in problems]
+    return out
+
+
 # ---------------------------------------------------------------- profiles
 PROFILES = {
     "trc": dict(offmap="", steps=link_problems, whole=(),
@@ -587,7 +628,8 @@ PROFILES = {
                 links={"rail": rail_problems}),
     "pgg": dict(offmap="", steps=link_problems, whole=(),
                 lines={"river": river_problems},
-                links={"rail": rail_problems, "road": road_problems}),
+                links={"rail": rail_problems, "road": road_problems},
+                excepted=pgg_excepted),
     "dai-senso": dict(offmap=DS_OFFMAP, steps=ds_link_problems,
                       whole=(ds_required_problems, ds_network_problems, ds_place_problems),
                       lines={"border": ds_boundary_problems, "zone": ds_boundary_problems,
@@ -639,13 +681,23 @@ def check(sheet, quiet=False, emit=print):
             problems += rule(sheet, kind, pieces, adj)
     for rule in rules["whole"]:
         problems += rule(sheet)
+    if "excepted" in rules:
+        problems = rules["excepted"](problems, emit)
     for p in problems:
         emit("BROKEN: " + p)
     emit("%s: %d broken rules" % (os.path.basename(sheet.path), len(problems)))
     return problems
 
 
+def utf8_output():
+    """Say our output is UTF-8. ctest takes it through a pipe, and Windows then encodes it as the console
+    code page, which has no Cyrillic: the PGG sheet's place names threw UnicodeEncodeError."""
+    sys.stdout.reconfigure(encoding="utf-8")
+    return
+
+
 def main(argv):
+    utf8_output()
     paths = [a for a in argv[1:] if not a.startswith("--")]
     if not paths:
         print(__doc__)

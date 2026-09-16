@@ -12,25 +12,25 @@
     </side>
   </sides>
   <units>
-    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0610"/>
-    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
-    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
-    <unit id="s1-2-inf-0-0-6" counter="s1-2-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="0611" revealed="false"/>
-    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611" revealed="false"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="2410"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="2410"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="2410"/>
+    <unit id="s1-2-inf-0-0-6" counter="s1-2-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="2411" revealed="false"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="2411" revealed="false"/>
   </units>
   <log>
-    <move n="1" turn="3" phase="german-combat" side="german" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611"/>
+    <move n="1" turn="3" phase="german-combat" side="german" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="2411"/>
     <move n="2" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="result"/>
       <arg name="answer" value="retreat"/>
     </move>
     <move n="3" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0712"/>
+      <arg name="answer" value="2512"/>
     </move>
     <move n="4" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0811"/>
+      <arg name="answer" value="2611"/>
     </move>
     <move n="5" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="advance"/>
@@ -38,7 +38,7 @@
     </move>
     <move n="6" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="advance-on"/>
-      <arg name="answer" value="0712"/>
+      <arg name="answer" value="2512"/>
     </move>
     <move n="7" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="advance"/>
@@ -46,8 +46,11 @@
     </move>
   </log>
   <notes>
-    <note>The whole 7th Panzer Division stands together in 0610 (7.3: 8 doubled to 16). Both Soviet divisions are
+    <note>The whole 7th Panzer Division stands together in 2410 (7.3: 8 doubled to 16). Both Soviet divisions are
       Untried; the attack reveals them at the instant of combat (12.2). The 0-0-6 leaves play for the dead pile, face
       down (12.3, 12.4), and adds nothing to the defence: 16 against the 2-4-6's 4 is 4-1.</note>
+    <note>Moved from 0610-0811 to 2410-2611 (18 columns east) when the sheet was rebuilt from the print (maps: PGG
+      accuracy): the old hexes now have a river between 0610 and 0611. Every hex used here is clear, with no river,
+      railway or road.</note>
   </notes>
 </save>

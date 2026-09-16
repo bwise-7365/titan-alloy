@@ -157,6 +157,7 @@
 <polygon class="hex terr-clear" data-hex="C31" points="111.69,227.67 93.80,238.00 75.92,227.67 75.92,207.03 93.80,196.70 111.69,207.02" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="D31" points="129.57,258.65 111.69,268.97 93.80,258.65 93.80,238.00 111.69,227.67 129.57,238.00" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="E31" points="111.69,289.62 93.80,299.95 75.92,289.62 75.92,268.98 93.80,258.65 111.69,268.98" fill="#d5d59b"/>
+<polygon class="urban-tint" points="111.69,289.62 93.80,299.95 75.92,289.62 75.92,268.98 93.80,258.65 111.69,268.98" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="F31" points="129.57,320.60 111.69,330.92 93.80,320.60 93.80,299.95 111.69,289.62 129.57,299.95" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="G31" points="111.69,351.57 93.80,361.90 75.92,351.57 75.92,330.93 93.80,320.60 111.69,330.93" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="H31" points="129.57,382.55 111.69,392.88 93.80,382.55 93.80,361.90 111.69,351.58 129.57,361.90" fill="#d5d59b"/>
@@ -190,6 +191,7 @@
 <polygon points="129.57,940.10 111.69,950.42 93.80,940.10 93.80,919.45 111.69,909.12 129.57,919.45" fill="url(#pat-mottle)"/>
 <polygon class="hex terr-clear" data-hex="AA31" points="111.69,971.07 93.80,981.40 75.92,971.07 75.92,950.42 93.80,940.10 111.69,950.42" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="BB31" points="129.57,1002.05 111.69,1012.37 93.80,1002.05 93.80,981.40 111.69,971.07 129.57,981.40" fill="#d5d59b"/>
+<polygon class="urban-tint" points="129.57,1002.05 111.69,1012.37 93.80,1002.05 93.80,981.40 111.69,971.07 129.57,981.40" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="CC31" points="111.69,1033.02 93.80,1043.35 75.92,1033.02 75.92,1012.37 93.80,1002.05 111.69,1012.37" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="DD31" points="129.57,1064.00 111.69,1074.33 93.80,1064.00 93.80,1043.35 111.69,1033.02 129.57,1043.35" fill="#d5d59b"/>
 <polygon class="hex terr-mountain" data-hex="EE31" points="111.69,1094.97 93.80,1105.30 75.92,1094.97 75.92,1074.32 93.80,1064.00 111.69,1074.32" fill="#97915b"/>
@@ -549,6 +551,7 @@
 <polygon class="hex terr-clear" data-hex="BB24" points="379.94,1002.05 362.06,1012.37 344.17,1002.05 344.17,981.40 362.06,971.07 379.94,981.40" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="CC24" points="362.06,1033.02 344.17,1043.35 326.29,1033.02 326.29,1012.37 344.17,1002.05 362.06,1012.37" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="DD24" points="379.94,1064.00 362.06,1074.33 344.17,1064.00 344.17,1043.35 362.06,1033.02 379.94,1043.35" fill="#d5d59b"/>
+<polygon class="urban-tint" points="379.94,1064.00 362.06,1074.33 344.17,1064.00 344.17,1043.35 362.06,1033.02 379.94,1043.35" fill="#e3e3e3"/>
 <polygon class="hex terr-sea" data-hex="EE24" points="362.06,1094.97 344.17,1105.30 326.29,1094.97 326.29,1074.32 344.17,1064.00 362.06,1074.32" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="FF24" points="379.94,1125.95 362.06,1136.28 344.17,1125.95 344.17,1105.30 362.06,1094.97 379.94,1105.30" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="GG24" points="362.06,1156.92 344.17,1167.25 326.29,1156.92 326.29,1136.27 344.17,1125.95 362.06,1136.27" fill="#206f93"/>
@@ -605,6 +608,7 @@
 <polygon class="hex terr-swamp" data-hex="JJ23" points="415.71,1249.85 397.82,1260.18 379.94,1249.85 379.94,1229.20 397.82,1218.88 415.71,1229.20" fill="#b6c495"/>
 <polygon points="415.71,1249.85 397.82,1260.18 379.94,1249.85 379.94,1229.20 397.82,1218.88 415.71,1229.20" fill="url(#pat-dots)"/>
 <polygon class="hex terr-sea" data-hex="KK23" points="397.82,1280.83 379.94,1291.15 362.06,1280.83 362.06,1260.17 379.94,1249.85 397.82,1260.17" fill="#206f93"/>
+<polygon class="urban-tint" points="397.82,1280.83 379.94,1291.15 362.06,1280.83 362.06,1260.17 379.94,1249.85 397.82,1260.17" fill="#e3e3e3"/>
 <polygon class="hex terr-sea" data-hex="LL23" points="415.71,1311.80 397.82,1322.12 379.94,1311.80 379.94,1291.15 397.82,1280.82 415.71,1291.15" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="MM23" points="397.82,1342.78 379.94,1353.10 362.06,1342.78 362.06,1322.12 379.94,1311.80 397.82,1322.12" fill="#206f93"/>
 <polygon class="hex terr-clear" data-hex="NN23" points="415.71,1373.75 397.82,1384.08 379.94,1373.75 379.94,1353.10 397.82,1342.77 415.71,1353.10" fill="#d5d59b"/>
@@ -679,6 +683,7 @@
 <polygon points="469.36,599.38 451.47,609.70 433.59,599.38 433.59,578.72 451.47,568.40 469.36,578.72" fill="url(#pat-mottle)"/>
 <polygon class="hex terr-swamp" data-hex="P21" points="487.24,630.35 469.36,640.67 451.47,630.35 451.47,609.70 469.36,599.38 487.24,609.70" fill="#b6c495"/>
 <polygon points="487.24,630.35 469.36,640.67 451.47,630.35 451.47,609.70 469.36,599.38 487.24,609.70" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="487.24,630.35 469.36,640.67 451.47,630.35 451.47,609.70 469.36,599.38 487.24,609.70" fill="#e3e3e3"/>
 <polygon class="hex terr-swamp" data-hex="Q21" points="469.36,661.33 451.47,671.65 433.59,661.33 433.59,640.67 451.47,630.35 469.36,640.67" fill="#b6c495"/>
 <polygon points="469.36,661.33 451.47,671.65 433.59,661.33 433.59,640.67 451.47,630.35 469.36,640.67" fill="url(#pat-dots)"/>
 <polygon class="hex terr-swamp" data-hex="R21" points="487.24,692.30 469.36,702.62 451.47,692.30 451.47,671.65 469.36,661.32 487.24,671.65" fill="#b6c495"/>
@@ -778,6 +783,7 @@
 <polygon class="hex terr-woods" data-hex="N19" points="558.77,568.40 540.89,578.72 523.01,568.40 523.01,547.75 540.89,537.42 558.77,547.75" fill="#6f9a4f"/>
 <polygon points="558.77,568.40 540.89,578.72 523.01,568.40 523.01,547.75 540.89,537.42 558.77,547.75" fill="url(#pat-mottle)"/>
 <polygon class="hex terr-clear" data-hex="O19" points="540.89,599.38 523.01,609.70 505.12,599.38 505.12,578.72 523.01,568.40 540.89,578.72" fill="#d5d59b"/>
+<polygon class="urban-tint" points="540.89,599.38 523.01,609.70 505.12,599.38 505.12,578.72 523.01,568.40 540.89,578.72" fill="#e3e3e3"/>
 <polygon class="hex terr-swamp" data-hex="P19" points="558.77,630.35 540.89,640.67 523.01,630.35 523.01,609.70 540.89,599.38 558.77,609.70" fill="#b6c495"/>
 <polygon points="558.77,630.35 540.89,640.67 523.01,630.35 523.01,609.70 540.89,599.38 558.77,609.70" fill="url(#pat-dots)"/>
 <polygon class="hex terr-swamp" data-hex="Q19" points="540.89,661.33 523.01,671.65 505.12,661.33 505.12,640.67 523.01,630.35 540.89,640.67" fill="#b6c495"/>
@@ -793,6 +799,7 @@
 <polygon class="hex terr-swamp" data-hex="V19" points="558.77,816.20 540.89,826.52 523.01,816.20 523.01,795.55 540.89,785.22 558.77,795.55" fill="#b6c495"/>
 <polygon points="558.77,816.20 540.89,826.52 523.01,816.20 523.01,795.55 540.89,785.22 558.77,795.55" fill="url(#pat-dots)"/>
 <polygon class="hex terr-clear" data-hex="W19" points="540.89,847.17 523.01,857.50 505.12,847.17 505.12,826.52 523.01,816.20 540.89,826.52" fill="#d5d59b"/>
+<polygon class="urban-tint" points="540.89,847.17 523.01,857.50 505.12,847.17 505.12,826.52 523.01,816.20 540.89,826.52" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="X19" points="558.77,878.15 540.89,888.47 523.01,878.15 523.01,857.50 540.89,847.17 558.77,857.50" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="Y19" points="540.89,909.12 523.01,919.45 505.12,909.12 505.12,888.47 523.01,878.15 540.89,888.47" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="Z19" points="558.77,940.10 540.89,950.42 523.01,940.10 523.01,919.45 540.89,909.12 558.77,919.45" fill="#d5d59b"/>
@@ -851,6 +858,7 @@
 <polygon class="hex terr-clear" data-hex="BB18" points="594.54,1002.05 576.66,1012.37 558.77,1002.05 558.77,981.40 576.66,971.07 594.54,981.40" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="CC18" points="576.66,1033.02 558.77,1043.35 540.89,1033.02 540.89,1012.37 558.77,1002.05 576.66,1012.37" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="DD18" points="594.54,1064.00 576.66,1074.33 558.77,1064.00 558.77,1043.35 576.66,1033.02 594.54,1043.35" fill="#d5d59b"/>
+<polygon class="urban-tint" points="594.54,1064.00 576.66,1074.33 558.77,1064.00 558.77,1043.35 576.66,1033.02 594.54,1043.35" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="EE18" points="576.66,1094.97 558.77,1105.30 540.89,1094.97 540.89,1074.32 558.77,1064.00 576.66,1074.32" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="FF18" points="594.54,1125.95 576.66,1136.28 558.77,1125.95 558.77,1105.30 576.66,1094.97 594.54,1105.30" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="GG18" points="576.66,1156.92 558.77,1167.25 540.89,1156.92 540.89,1136.27 558.77,1125.95 576.66,1136.27" fill="#d5d59b"/>
@@ -872,6 +880,7 @@
 <polygon class="hex terr-sea" data-hex="D17" points="630.31,258.65 612.42,268.97 594.54,258.65 594.54,238.00 612.42,227.67 630.31,238.00" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="E17" points="612.42,289.62 594.54,299.95 576.66,289.62 576.66,268.98 594.54,258.65 612.42,268.98" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="F17" points="630.31,320.60 612.42,330.92 594.54,320.60 594.54,299.95 612.42,289.62 630.31,299.95" fill="#206f93"/>
+<polygon class="urban-tint" points="630.31,320.60 612.42,330.92 594.54,320.60 594.54,299.95 612.42,289.62 630.31,299.95" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="G17" points="612.42,351.57 594.54,361.90 576.66,351.57 576.66,330.93 594.54,320.60 612.42,330.93" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="H17" points="630.31,382.55 612.42,392.88 594.54,382.55 594.54,361.90 612.42,351.58 630.31,361.90" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="I17" points="612.42,413.52 594.54,423.85 576.66,413.52 576.66,392.88 594.54,382.55 612.42,392.88" fill="#d5d59b"/>
@@ -948,6 +957,7 @@
 <polygon class="hex terr-clear" data-hex="DD16" points="666.07,1064.00 648.19,1074.33 630.31,1064.00 630.31,1043.35 648.19,1033.02 666.07,1043.35" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="EE16" points="648.19,1094.97 630.31,1105.30 612.42,1094.97 612.42,1074.32 630.31,1064.00 648.19,1074.32" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="FF16" points="666.07,1125.95 648.19,1136.28 630.31,1125.95 630.31,1105.30 648.19,1094.97 666.07,1105.30" fill="#d5d59b"/>
+<polygon class="urban-tint" points="666.07,1125.95 648.19,1136.28 630.31,1125.95 630.31,1105.30 648.19,1094.97 666.07,1105.30" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="GG16" points="648.19,1156.92 630.31,1167.25 612.42,1156.92 612.42,1136.27 630.31,1125.95 648.19,1136.27" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="HH16" points="666.07,1187.90 648.19,1198.23 630.31,1187.90 630.31,1167.25 648.19,1156.92 666.07,1167.25" fill="#d5d59b"/>
 <polygon class="hex terr-sea" data-hex="II16" points="648.19,1218.88 630.31,1229.20 612.42,1218.88 612.42,1198.22 630.31,1187.90 648.19,1198.22" fill="#206f93"/>
@@ -1011,6 +1021,7 @@
 <polygon class="hex terr-clear" data-hex="A14" points="719.72,165.72 701.84,176.05 683.96,165.72 683.96,145.08 701.84,134.75 719.72,145.07" fill="#d5d59b"/>
 <polygon class="hex terr-sea" data-hex="B14" points="737.61,196.70 719.72,207.03 701.84,196.70 701.84,176.05 719.72,165.72 737.61,176.05" fill="#206f93"/>
 <polygon class="hex terr-sea" data-hex="C14" points="719.72,227.67 701.84,238.00 683.96,227.67 683.96,207.03 701.84,196.70 719.72,207.02" fill="#206f93"/>
+<polygon class="urban-tint" points="719.72,227.67 701.84,238.00 683.96,227.67 683.96,207.03 701.84,196.70 719.72,207.02" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="D14" points="737.61,258.65 719.72,268.97 701.84,258.65 701.84,238.00 719.72,227.67 737.61,238.00" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="E14" points="719.72,289.62 701.84,299.95 683.96,289.62 683.96,268.98 701.84,258.65 719.72,268.98" fill="#d5d59b"/>
 <polygon class="hex terr-sea" data-hex="F14" points="737.61,320.60 719.72,330.92 701.84,320.60 701.84,299.95 719.72,289.62 737.61,299.95" fill="#206f93"/>
@@ -1038,6 +1049,7 @@
 <polygon class="hex terr-clear" data-hex="Y14" points="719.72,909.12 701.84,919.45 683.96,909.12 683.96,888.47 701.84,878.15 719.72,888.47" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="Z14" points="737.61,940.10 719.72,950.42 701.84,940.10 701.84,919.45 719.72,909.12 737.61,919.45" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="AA14" points="719.72,971.07 701.84,981.40 683.96,971.07 683.96,950.42 701.84,940.10 719.72,950.42" fill="#d5d59b"/>
+<polygon class="urban-tint" points="719.72,971.07 701.84,981.40 683.96,971.07 683.96,950.42 701.84,940.10 719.72,950.42" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="BB14" points="737.61,1002.05 719.72,1012.37 701.84,1002.05 701.84,981.40 719.72,971.07 737.61,981.40" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="CC14" points="719.72,1033.02 701.84,1043.35 683.96,1033.02 683.96,1012.37 701.84,1002.05 719.72,1012.37" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="DD14" points="737.61,1064.00 719.72,1074.33 701.84,1064.00 701.84,1043.35 719.72,1033.02 737.61,1043.35" fill="#d5d59b"/>
@@ -1047,6 +1059,7 @@
 <polygon class="hex terr-clear" data-hex="HH14" points="737.61,1187.90 719.72,1198.23 701.84,1187.90 701.84,1167.25 719.72,1156.92 737.61,1167.25" fill="#d5d59b"/>
 <polygon class="hex terr-swamp" data-hex="II14" points="719.72,1218.88 701.84,1229.20 683.96,1218.88 683.96,1198.22 701.84,1187.90 719.72,1198.22" fill="#b6c495"/>
 <polygon points="719.72,1218.88 701.84,1229.20 683.96,1218.88 683.96,1198.22 701.84,1187.90 719.72,1198.22" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="719.72,1218.88 701.84,1229.20 683.96,1218.88 683.96,1198.22 701.84,1187.90 719.72,1198.22" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="JJ14" points="737.61,1249.85 719.72,1260.18 701.84,1249.85 701.84,1229.20 719.72,1218.88 737.61,1229.20" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="KK14" points="719.72,1280.83 701.84,1291.15 683.96,1280.83 683.96,1260.17 701.84,1249.85 719.72,1260.17" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="LL14" points="737.61,1311.80 719.72,1322.12 701.84,1311.80 701.84,1291.15 719.72,1280.82 737.61,1291.15" fill="#d5d59b"/>
@@ -1210,6 +1223,7 @@
 <polygon class="hex terr-clear" data-hex="D10" points="880.67,258.65 862.79,268.97 844.91,258.65 844.91,238.00 862.79,227.67 880.67,238.00" fill="#d5d59b"/>
 <polygon class="hex terr-swamp" data-hex="E10" points="862.79,289.62 844.91,299.95 827.02,289.62 827.02,268.98 844.91,258.65 862.79,268.98" fill="#b6c495"/>
 <polygon points="862.79,289.62 844.91,299.95 827.02,289.62 827.02,268.98 844.91,258.65 862.79,268.98" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="862.79,289.62 844.91,299.95 827.02,289.62 827.02,268.98 844.91,258.65 862.79,268.98" fill="#e3e3e3"/>
 <polygon class="hex terr-swamp" data-hex="F10" points="880.67,320.60 862.79,330.92 844.91,320.60 844.91,299.95 862.79,289.62 880.67,299.95" fill="#b6c495"/>
 <polygon points="880.67,320.60 862.79,330.92 844.91,320.60 844.91,299.95 862.79,289.62 880.67,299.95" fill="url(#pat-dots)"/>
 <polygon class="hex terr-swamp" data-hex="G10" points="862.79,351.57 844.91,361.90 827.02,351.57 827.02,330.93 844.91,320.60 862.79,330.93" fill="#b6c495"/>
@@ -1281,6 +1295,7 @@
 <polygon class="hex terr-clear" data-hex="Q9" points="898.56,661.33 880.67,671.65 862.79,661.33 862.79,640.67 880.67,630.35 898.56,640.67" fill="#d5d59b"/>
 <polygon class="hex terr-swamp" data-hex="R9" points="916.44,692.30 898.56,702.62 880.67,692.30 880.67,671.65 898.56,661.32 916.44,671.65" fill="#b6c495"/>
 <polygon points="916.44,692.30 898.56,702.62 880.67,692.30 880.67,671.65 898.56,661.32 916.44,671.65" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="916.44,692.30 898.56,702.62 880.67,692.30 880.67,671.65 898.56,661.32 916.44,671.65" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="S9" points="898.56,723.27 880.67,733.60 862.79,723.27 862.79,702.62 880.67,692.30 898.56,702.62" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="T9" points="916.44,754.25 898.56,764.57 880.67,754.25 880.67,733.60 898.56,723.27 916.44,733.60" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="U9" points="898.56,785.23 880.67,795.55 862.79,785.23 862.79,764.57 880.67,754.25 898.56,764.57" fill="#d5d59b"/>
@@ -1291,6 +1306,7 @@
 <polygon class="hex terr-clear" data-hex="Z9" points="916.44,940.10 898.56,950.42 880.67,940.10 880.67,919.45 898.56,909.12 916.44,919.45" fill="#d5d59b"/>
 <polygon class="hex terr-swamp" data-hex="AA9" points="898.56,971.07 880.67,981.40 862.79,971.07 862.79,950.42 880.67,940.10 898.56,950.42" fill="#b6c495"/>
 <polygon points="898.56,971.07 880.67,981.40 862.79,971.07 862.79,950.42 880.67,940.10 898.56,950.42" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="898.56,971.07 880.67,981.40 862.79,971.07 862.79,950.42 880.67,940.10 898.56,950.42" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="BB9" points="916.44,1002.05 898.56,1012.37 880.67,1002.05 880.67,981.40 898.56,971.07 916.44,981.40" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="CC9" points="898.56,1033.02 880.67,1043.35 862.79,1033.02 862.79,1012.37 880.67,1002.05 898.56,1012.37" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="DD9" points="916.44,1064.00 898.56,1074.33 880.67,1064.00 880.67,1043.35 898.56,1033.02 916.44,1043.35" fill="#d5d59b"/>
@@ -1392,6 +1408,7 @@
 <polygon class="hex terr-clear" data-hex="GG7" points="970.09,1156.92 952.21,1167.25 934.32,1156.92 934.32,1136.27 952.21,1125.95 970.09,1136.27" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="HH7" points="987.97,1187.90 970.09,1198.23 952.21,1187.90 952.21,1167.25 970.09,1156.92 987.97,1167.25" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="II7" points="970.09,1218.88 952.21,1229.20 934.32,1218.88 934.32,1198.22 952.21,1187.90 970.09,1198.22" fill="#d5d59b"/>
+<polygon class="urban-tint" points="970.09,1218.88 952.21,1229.20 934.32,1218.88 934.32,1198.22 952.21,1187.90 970.09,1198.22" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="JJ7" points="987.97,1249.85 970.09,1260.18 952.21,1249.85 952.21,1229.20 970.09,1218.88 987.97,1229.20" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="KK7" points="970.09,1280.83 952.21,1291.15 934.32,1280.83 934.32,1260.17 952.21,1249.85 970.09,1260.17" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="LL7" points="987.97,1311.80 970.09,1322.12 952.21,1311.80 952.21,1291.15 970.09,1280.82 987.97,1291.15" fill="#d5d59b"/>
@@ -1497,6 +1514,7 @@
 <polygon class="hex terr-swamp" data-hex="PP5" points="1059.51,1435.70 1041.63,1446.03 1023.74,1435.70 1023.74,1415.05 1041.63,1404.72 1059.51,1415.05" fill="#b6c495"/>
 <polygon points="1059.51,1435.70 1041.63,1446.03 1023.74,1435.70 1023.74,1415.05 1041.63,1404.72 1059.51,1415.05" fill="url(#pat-dots)"/>
 <polygon class="hex terr-clear" data-hex="QQ5" points="1041.63,1466.67 1023.74,1477.00 1005.86,1466.67 1005.86,1446.02 1023.74,1435.70 1041.63,1446.02" fill="#d5d59b"/>
+<polygon class="urban-tint" points="1041.63,1466.67 1023.74,1477.00 1005.86,1466.67 1005.86,1446.02 1023.74,1435.70 1041.63,1446.02" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="A4" points="1077.39,165.72 1059.51,176.05 1041.63,165.72 1041.63,145.08 1059.51,134.75 1077.39,145.07" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="B4" points="1095.28,196.70 1077.39,207.03 1059.51,196.70 1059.51,176.05 1077.39,165.72 1095.28,176.05" fill="#d5d59b"/>
 <polygon class="hex terr-lake" data-hex="C4" points="1077.39,227.67 1059.51,238.00 1041.63,227.67 1041.63,207.03 1059.51,196.70 1077.39,207.02" fill="#206f93"/>
@@ -1529,6 +1547,7 @@
 <polygon points="1077.39,971.07 1059.51,981.40 1041.63,971.07 1041.63,950.42 1059.51,940.10 1077.39,950.42" fill="url(#pat-mottle)"/>
 <polygon class="hex terr-clear" data-hex="BB4" points="1095.28,1002.05 1077.39,1012.37 1059.51,1002.05 1059.51,981.40 1077.39,971.07 1095.28,981.40" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="CC4" points="1077.39,1033.02 1059.51,1043.35 1041.63,1033.02 1041.63,1012.37 1059.51,1002.05 1077.39,1012.37" fill="#d5d59b"/>
+<polygon class="urban-tint" points="1077.39,1033.02 1059.51,1043.35 1041.63,1033.02 1041.63,1012.37 1059.51,1002.05 1077.39,1012.37" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="DD4" points="1095.28,1064.00 1077.39,1074.33 1059.51,1064.00 1059.51,1043.35 1077.39,1033.02 1095.28,1043.35" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="EE4" points="1077.39,1094.97 1059.51,1105.30 1041.63,1094.97 1041.63,1074.32 1059.51,1064.00 1077.39,1074.32" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="FF4" points="1095.28,1125.95 1077.39,1136.28 1059.51,1125.95 1059.51,1105.30 1077.39,1094.97 1095.28,1105.30" fill="#d5d59b"/>
@@ -1617,6 +1636,7 @@
 <polygon class="hex terr-clear" data-hex="S2" points="1148.93,723.27 1131.04,733.60 1113.16,723.27 1113.16,702.62 1131.04,692.30 1148.93,702.62" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="T2" points="1166.81,754.25 1148.93,764.57 1131.04,754.25 1131.04,733.60 1148.93,723.27 1166.81,733.60" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="U2" points="1148.93,785.23 1131.04,795.55 1113.16,785.23 1113.16,764.57 1131.04,754.25 1148.93,764.57" fill="#d5d59b"/>
+<polygon class="urban-tint" points="1148.93,785.23 1131.04,795.55 1113.16,785.23 1113.16,764.57 1131.04,754.25 1148.93,764.57" fill="#e3e3e3"/>
 <polygon class="hex terr-clear" data-hex="V2" points="1166.81,816.20 1148.93,826.52 1131.04,816.20 1131.04,795.55 1148.93,785.22 1166.81,795.55" fill="#d5d59b"/>
 <polygon class="hex terr-clear" data-hex="W2" points="1148.93,847.17 1131.04,857.50 1113.16,847.17 1113.16,826.52 1131.04,816.20 1148.93,826.52" fill="#d5d59b"/>
 <polygon class="hex terr-mountain" data-hex="X2" points="1166.81,878.15 1148.93,888.47 1131.04,878.15 1131.04,857.50 1148.93,847.17 1166.81,857.50" fill="#97915b"/>
@@ -1646,6 +1666,7 @@
 <polygon points="1202.58,196.70 1184.69,207.03 1166.81,196.70 1166.81,176.05 1184.69,165.72 1202.58,176.05" fill="url(#pat-dots)"/>
 <polygon class="hex terr-swamp" data-hex="C1" points="1184.69,227.67 1166.81,238.00 1148.93,227.67 1148.93,207.03 1166.81,196.70 1184.69,207.02" fill="#b6c495"/>
 <polygon points="1184.69,227.67 1166.81,238.00 1148.93,227.67 1148.93,207.03 1166.81,196.70 1184.69,207.02" fill="url(#pat-dots)"/>
+<polygon class="urban-tint" points="1184.69,227.67 1166.81,238.00 1148.93,227.67 1148.93,207.03 1166.81,196.70 1184.69,207.02" fill="#e3e3e3"/>
 <polygon class="hex terr-swamp" data-hex="D1" points="1202.58,258.65 1184.69,268.97 1166.81,258.65 1166.81,238.00 1184.69,227.67 1202.58,238.00" fill="#b6c495"/>
 <polygon points="1202.58,258.65 1184.69,268.97 1166.81,258.65 1166.81,238.00 1184.69,227.67 1202.58,238.00" fill="url(#pat-dots)"/>
 <polygon class="hex terr-swamp" data-hex="E1" points="1184.69,289.62 1166.81,299.95 1148.93,289.62 1148.93,268.98 1166.81,258.65 1184.69,268.98" fill="#b6c495"/>
@@ -3347,33 +3368,33 @@
 <polygon points="1003.71,1465.44 987.97,1474.52 972.24,1465.44 972.24,1447.26 987.97,1438.18 1003.71,1447.26" stroke="#f3edc0" stroke-width="2.48" stroke-linejoin="round"/>
 </g>
 <g class="layer hexglyphs">
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(93.80,279.30) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(469.36,620.02) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(612.42,310.27) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="96.77" y="274.29" width="9.09" height="4.96"/><rect x="94.69" y="280.77" width="9.09" height="4.96"/><rect x="81.77" y="270.76" width="7.85" height="4.13"/><rect x="88.94" y="270.05" width="9.09" height="4.96"/><rect x="86.58" y="286.26" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="470.86" y="608.96" width="6.20" height="6.19"/><rect x="471.78" y="619.21" width="9.09" height="4.96"/><rect x="461.85" y="626.01" width="7.85" height="4.13"/><rect x="459.55" y="610.31" width="6.61" height="4.54"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="618.97" y="308.52" width="7.85" height="4.13"/><rect x="606.80" y="316.46" width="9.09" height="4.96"/><rect x="601.93" y="305.67" width="9.09" height="4.96"/><rect x="612.42" y="299.76" width="6.19" height="6.20"/><rect x="601.00" y="314.65" width="7.85" height="4.13"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(612.42,299.95) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(701.84,217.35) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="709.23" y="208.44" width="7.85" height="4.13"/><rect x="691.23" y="206.42" width="6.61" height="4.54"/><rect x="696.42" y="213.78" width="4.54" height="4.54"/><rect x="693.03" y="221.63" width="7.85" height="4.13"/><rect x="701.48" y="220.02" width="9.09" height="4.96"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(701.84,227.67) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(844.91,279.30) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="836.24" y="271.08" width="9.09" height="4.96"/><rect x="844.34" y="279.46" width="4.54" height="4.54"/><rect x="834.63" y="282.90" width="7.85" height="4.13"/><rect x="847.15" y="269.30" width="4.54" height="4.54"/><rect x="849.52" y="274.87" width="6.61" height="4.54"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(834.58,279.30) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(523.01,589.05) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(898.56,681.97) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(523.01,836.85) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(701.84,960.75) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(880.67,960.75) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(1059.51,1022.70) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(952.21,1208.55) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(576.66,1053.67) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(362.06,1053.67) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="529.45" y="587.98" width="7.85" height="4.13"/><rect x="517.88" y="589.99" width="7.85" height="4.13"/><rect x="518.26" y="579.21" width="7.85" height="4.13"/><rect x="526.71" y="594.07" width="7.85" height="4.13"/><rect x="510.48" y="592.76" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="905.77" y="683.78" width="4.54" height="4.54"/><rect x="906.52" y="676.84" width="6.19" height="6.19"/><rect x="885.92" y="674.15" width="9.09" height="4.96"/><rect x="898.12" y="673.42" width="6.61" height="4.54"/><rect x="887.25" y="688.87" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="527.13" y="823.54" width="4.96" height="7.85"/><rect x="524.51" y="834.50" width="9.09" height="4.96"/><rect x="516.34" y="839.05" width="6.61" height="4.54"/><rect x="523.83" y="842.00" width="4.96" height="7.85"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="700.75" y="954.79" width="7.85" height="4.13"/><rect x="706.40" y="960.67" width="7.85" height="4.13"/><rect x="702.40" y="965.78" width="9.09" height="4.96"/><rect x="693.41" y="964.34" width="4.96" height="7.85"/><rect x="692.31" y="957.42" width="6.19" height="6.19"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="881.99" y="949.24" width="6.61" height="4.54"/><rect x="869.67" y="965.96" width="6.61" height="4.54"/><rect x="868.37" y="953.82" width="6.19" height="6.19"/><rect x="876.58" y="953.80" width="7.85" height="4.13"/><rect x="887.63" y="951.57" width="4.96" height="7.85"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="1066.70" y="1016.82" width="4.96" height="7.85"/><rect x="1063.47" y="1011.80" width="6.61" height="4.54"/><rect x="1049.32" y="1023.70" width="4.54" height="4.54"/><rect x="1058.89" y="1028.40" width="6.20" height="6.20"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="949.65" y="1199.91" width="4.96" height="7.85"/><rect x="942.15" y="1205.99" width="4.54" height="4.54"/><rect x="959.88" y="1207.96" width="4.54" height="4.54"/><rect x="950.64" y="1213.46" width="6.19" height="6.20"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="567.57" y="1043.49" width="7.85" height="4.13"/><rect x="574.61" y="1058.77" width="6.61" height="4.54"/><rect x="582.35" y="1055.18" width="7.85" height="4.13"/><rect x="575.79" y="1049.96" width="4.54" height="4.54"/><rect x="582.39" y="1048.62" width="4.54" height="4.54"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="358.47" y="1040.28" width="4.96" height="7.85"/><rect x="361.76" y="1050.97" width="6.20" height="6.20"/><rect x="359.30" y="1058.82" width="4.96" height="7.85"/><rect x="352.14" y="1061.15" width="4.54" height="4.54"/><rect x="351.38" y="1045.88" width="6.20" height="6.20"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(362.06,1064.00) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(379.94,1270.50) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="371.16" y="1266.70" width="6.61" height="4.54"/><rect x="367.06" y="1271.99" width="4.54" height="4.54"/><rect x="377.38" y="1263.98" width="9.09" height="4.96"/><rect x="375.74" y="1275.84" width="9.09" height="4.96"/><rect x="387.36" y="1266.60" width="4.96" height="7.85"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(379.94,1280.83) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(701.84,1208.55) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="698.87" y="1201.51" width="4.96" height="7.85"/><rect x="695.28" y="1196.39" width="4.54" height="4.54"/><rect x="708.19" y="1205.15" width="4.96" height="7.85"/><rect x="686.41" y="1199.71" width="9.09" height="4.96"/><rect x="709.40" y="1198.16" width="6.19" height="6.20"/></g>
 <use xlink:href="#sym-port" class="glyph port" transform="translate(701.84,1218.88) rotate(0.0) scale(14.45)" style="color:#ffffff"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(648.19,1115.62) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(1023.74,1456.35) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(111.69,991.72) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(1166.81,217.35) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
-<use xlink:href="#sym-city-major" class="glyph city-major" transform="translate(1131.04,774.90) rotate(0.0) scale(20.65)" style="color:#8a8a8a"/>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="638.55" y="1110.88" width="6.61" height="4.54"/><rect x="650.25" y="1108.55" width="7.85" height="4.13"/><rect x="644.42" y="1116.88" width="6.19" height="6.20"/><rect x="654.48" y="1113.14" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="1027.01" y="1447.72" width="9.09" height="4.96"/><rect x="1022.79" y="1451.39" width="6.61" height="4.54"/><rect x="1015.72" y="1449.97" width="4.96" height="7.85"/><rect x="1021.04" y="1457.53" width="4.96" height="7.85"/><rect x="1027.84" y="1462.53" width="4.54" height="4.54"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="115.07" y="982.76" width="4.54" height="4.54"/><rect x="115.40" y="995.79" width="9.09" height="4.96"/><rect x="105.02" y="989.15" width="9.09" height="4.96"/><rect x="117.10" y="989.63" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="1173.52" y="210.91" width="9.09" height="4.96"/><rect x="1162.29" y="213.89" width="6.61" height="4.54"/><rect x="1155.22" y="211.63" width="7.85" height="4.13"/><rect x="1166.13" y="224.45" width="7.85" height="4.13"/></g>
+<g class="glyph city-major buildings" fill="#8a8a8a"><rect x="1128.90" y="778.26" width="6.20" height="6.19"/><rect x="1129.11" y="772.07" width="6.61" height="4.54"/><rect x="1138.28" y="764.80" width="4.96" height="7.85"/><rect x="1126.26" y="765.45" width="4.54" height="4.54"/></g>
 <use xlink:href="#sym-city-minor" class="glyph city-minor" transform="translate(308.40,403.20) rotate(0.0) scale(20.65)" style="color:#333"/>
 <use xlink:href="#sym-city-minor" class="glyph city-minor" transform="translate(201.10,589.05) rotate(0.0) scale(20.65)" style="color:#333"/>
 <use xlink:href="#sym-city-minor" class="glyph city-minor" transform="translate(379.94,589.05) rotate(0.0) scale(20.65)" style="color:#333"/>

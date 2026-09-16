@@ -38,7 +38,7 @@ x.append('<?xml version="1.0" encoding="UTF-8"?>')
 x.append('<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"')
 x.append('       id="pgg" title="Panzergruppe Guderian: The Battle of Smolensk, July 1941"')
 x.append('       source="PGG - Cyrillic.png, 5615 x 3727; Russian-language redesign of the 1976 SPI map"')
-x.append('       width="5615" height="3727" background="margin" font="Arial, Helvetica, sans-serif">')
+x.append('       width="5615" height="3727" background="margin" font="Arial, Helvetica, sans-serif" urban="buildings">')
 x.append('  <grid id="main" orientation="flat" offset="odd" cols="56" rows="31" size="61.65" ox="138.13" oy="125.02"')
 x.append('        id-format="{col:02}{row:02}" col-start="1" row-start="1" terrain="clear" id-side="n"/>')
 x.append('''  <palette>

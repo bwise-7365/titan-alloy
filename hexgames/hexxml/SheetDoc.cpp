@@ -330,6 +330,8 @@ namespace HexXml {
     s.height = root.requiredAs<double>("height");
     s.background = root.required("background");
     s.font = root.optional("font").value_or(s.font);
+    s.urban = root.required("urban");
+    checkEnum(root, "urban", s.urban, {"buildings", "symbol"});
 
     for (const XmlNode& g : root.children("grid")) {
       s.grids.push_back(parseGrid(g));

@@ -198,17 +198,17 @@
       <arg name="target" value="2625"/>
     </move>
     <move n="4" turn="1" phase="set-up" side="german" cmd="end-phase"/>
-    <move n="5" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-31-arm-5-10" mode="normal" path="0108 0207 0307 0406 0506 0605 0705 0804 0904"/>
-    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-kurchkin-20th-army-hq-4-10" mode="normal" path="0108 0207 0307 0406 0506 0605 0705 0804 0904 1003 1103"/>
+    <move n="5" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-31-arm-5-10" mode="normal" path="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-kurchkin-20th-army-hq-4-10" mode="normal" path="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904"/>
     <move n="7" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-8mos-inf-3-4-6" mode="normal" path="0108 0207 0307 0406 0506 0605 0705"/>
-    <move n="8" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-26-arm-5-10" mode="normal" path="0109 0208 0308 0407 0507 0606 0706 0805 0905"/>
+    <move n="8" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-26-arm-5-10" mode="normal" path="0109 0208 0308 0408 0508 0607 0707 0806 0906 1006 1107"/>
     <move n="9" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-167-inf-3-5-6" mode="normal" path="0109 0208 0308 0407 0507 0606 0706"/>
     <move n="10" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-13mos-inf-2-4-6" mode="normal" path="0110 0209 0309 0408 0508 0607 0707"/>
-    <move n="11" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-50-inf-9-8-6" mode="normal" path="0111 0210 0310 0409 0509 0608 0708"/>
+    <move n="11" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-50-inf-9-8-6" mode="normal" path="0111 0211 0311 0410 0510 0610 0710"/>
     <move n="12" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-65-inf-2-6-6" mode="normal" path="0112 0211 0311 0410 0510 0609 0709"/>
     <move n="13" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s2-2mos-sinf-0-0-6" mode="normal" path="0113 0212 0312"/>
-    <move n="14" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-27-arm-4-10" mode="normal" path="0114 0213 0313 0412"/>
-    <move n="15" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-57-mot-8-10" mode="normal" path="0115 0214 0314 0413 0513 0613"/>
+    <move n="14" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-27-arm-4-10" mode="normal" path="0114 0214 0314 0413 0412"/>
+    <move n="15" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-57-mot-8-10" mode="normal" path="0115 0214 0314 0413 0513"/>
     <move n="16" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-remezov-13th-army-hq-4-10" mode="normal" path="0123 0222 0322 0421 0521 0620 0720 0819 0919 1018"/>
     <move n="17" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-143-inf-5-5-6 s1-258-inf-6-8-6" mode="normal" path="0123 0222 0322 0421 0521 0620"/>
     <move n="18" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-2-inf-0-0-6 s1-145-inf-0-0-6" mode="normal" path="0124 0223 0323 0422 0522 0621"/>
@@ -220,25 +220,25 @@
     <move n="24" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-56-inf-3-3-6 s1-49-inf-5-8-6 s1-48-inf-1-4-6" mode="normal" path="4015 4115"/>
     <move n="25" turn="1" phase="soviet-move" side="soviet" cmd="place">
       <arg name="units" value="s1-rokovski-reserve-hq-5-10"/>
-      <arg name="where" value="5614"/>
+      <arg name="where" value="5907"/>
     </move>
     <move n="26" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="5614"/>
+      <arg name="where" value="5907"/>
       <arg name="source" value="scheduled"/>
     </move>
     <move n="27" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="5615"/>
+      <arg name="where" value="5907"/>
       <arg name="source" value="scheduled"/>
     </move>
     <move n="28" turn="1" phase="soviet-move" side="soviet" cmd="place">
       <arg name="units" value="s1-yrshakov-22nd-army-hq-3-10"/>
-      <arg name="where" value="1101"/>
+      <arg name="where" value="2101"/>
     </move>
     <move n="29" turn="1" phase="soviet-move" side="soviet" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="1101"/>
+      <arg name="where" value="2101"/>
       <arg name="source" value="scheduled"/>
     </move>
     <move n="30" turn="1" phase="soviet-move" side="soviet" cmd="end-phase"/>
@@ -283,19 +283,19 @@
     </move>
     <move n="43" turn="1" phase="german-move1" side="german" cmd="place">
       <arg name="units" value="s2-11-14-mot-3-10"/>
-      <arg name="where" value="0116"/>
+      <arg name="where" value="0112"/>
     </move>
     <move n="44" turn="1" phase="german-move1" side="german" cmd="place">
       <arg name="units" value="s2-53-14-mot-3-10"/>
-      <arg name="where" value="0116"/>
+      <arg name="where" value="0112"/>
     </move>
     <move n="45" turn="1" phase="german-move1" side="german" cmd="place">
       <arg name="units" value="s2-76-20-mot-3-10"/>
-      <arg name="where" value="0117"/>
+      <arg name="where" value="0111"/>
     </move>
     <move n="46" turn="1" phase="german-move1" side="german" cmd="place">
       <arg name="units" value="s2-90-20-mot-3-10"/>
-      <arg name="where" value="0117"/>
+      <arg name="where" value="0111"/>
     </move>
     <move n="47" turn="1" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="0113 0213 0313"/>
     <move n="48" turn="1" phase="german-move1" side="german" cmd="end-phase"/>
@@ -318,5 +318,17 @@
       the Provisional Reinforcement, the 13th and 20th Armies marching east on their whole allowance (5.23),
       the overstacked set-up hexes thinned, scheduled Soviet arrivals, the 39th Panzer Corps entering Area C,
       and the markers of the German Air Interdiction Phase.</note>
+    <note>Four Soviet marches changed when the sheet was rebuilt from the print (maps: PGG accuracy), where the printed
+      woods of 0406, 0506, 0606 and 0706, the river 0705-0804 and the swamp 0708 made the old paths cost more than the
+      allowance. Each new path still spends the whole allowance (5.23): the 31st Armoured goes round the woods by
+      0407-0508-0607-0707-0806 to 0904 (10 points), the 20th Army HQ follows it (1103 now costs 12), the 26th Armoured
+      takes 0208-0308-0408-0508-0607-0707-0806 to 1107 (10; 0309 became woods when the terrain thresholds were calibrated
+      on Ben's labelled hexes), and the 50th Rifle marches to 0710 (6; 0708 now costs 7). Two units beyond Kurochkin's
+      radius move on half their allowance (6.55), and the print's rivers changed what that buys: the 27th Armoured goes
+      0214-0314-0413 and across the river into 0412 (5 points; 0213 is now woods), and the 57th Motorised stops in 0513
+      (5; 0613 now costs 6). The 2nd Moscow Rifle's march is unchanged. The scheduled
+      arrivals enter in the printed entrance areas: the Reserve Front HQ and two rifle divisions at X (5907, was 5614 and
+      5615 of the provisional area), the 22nd Army HQ and a rifle division at V (2101, was 1101). The 39th Panzer Corps' motorized divisions
+      enter in printed area C (0108-0115): the 14th in 0112 (was 0116) and the 20th in 0111 (was 0117).</note>
   </notes>
 </save>

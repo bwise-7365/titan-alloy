@@ -30,8 +30,8 @@ def font(px):
 
 
 def label_offset(grid):
-    """Where our id label goes: toward the hexside opposite the printed id (grid id-side)."""
-    ang = math.radians(grid.edge_angle(C.H.OPPOSITE[grid.id_side]))
+    """Where our id label goes: toward the hexside opposite the printed id (config grid printed-id-side)."""
+    ang = math.radians(grid.edge_angle(C.H.OPPOSITE[grid.printed_id_side]))
     return 0.42 * grid.size * math.cos(ang), 0.42 * grid.size * math.sin(ang)
 
 

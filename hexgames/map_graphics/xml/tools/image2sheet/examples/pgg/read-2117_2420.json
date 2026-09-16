@@ -1,0 +1,37 @@
+{
+ "tile": "2117_2420",
+ "reader": "opus (W5), worked example 2",
+ "hexes": {
+  "2016": {"terrain": "clear"}, "2017": {"terrain": "clear"}, "2018": {"terrain": "clear"},
+  "2019": {"terrain": "clear"}, "2020": {"terrain": "clear"}, "2021": {"terrain": "clear"},
+  "2116": {"terrain": "clear"}, "2117": {"terrain": "clear"}, "2118": {"terrain": "clear"},
+  "2119": {"terrain": "clear"}, "2120": {"terrain": "clear"}, "2121": {"terrain": "clear"},
+  "2216": {"terrain": "clear", "place": {"glyph": "city-major", "name": "СМОЛЕНСК", "vp": 25}},
+  "2217": {"terrain": "clear", "place": {"glyph": "city-major", "name": "СМОЛЕНСК", "vp": 25}},
+  "2218": {"terrain": "clear"}, "2219": {"terrain": "clear"}, "2220": {"terrain": "clear"},
+  "2221": {"terrain": "clear"},
+  "2316": {"terrain": "clear"}, "2317": {"terrain": "clear"}, "2318": {"terrain": "clear"},
+  "2319": {"terrain": "clear"}, "2320": {"terrain": "clear"}, "2321": {"terrain": "clear"},
+  "2416": {"terrain": "clear"}, "2417": {"terrain": "clear"}, "2418": {"terrain": "clear"},
+  "2419": {"terrain": "clear"}, "2420": {"terrain": "clear"}, "2421": {"terrain": "clear"},
+  "2516": {"terrain": "clear"}, "2517": {"terrain": "clear"}, "2518": {"terrain": "swamp"},
+  "2519": {"terrain": "clear"}, "2520": {"terrain": "clear"}, "2521": {"terrain": "clear"}
+ },
+ "rivers": ["2016-2116", "2116-2117", "2117-2216", "2216-2217", "2217-2317", "2317-2318", "2318-2417",
+            "2318-2418", "2319-2418", "2418-2419", "2418-2519", "2418-2518", "2417-2518", "2517-2518"],
+ "rail": ["2116-2216", "2216-2317", "2317-2417", "2417-2518", "2317-2416", "2416-2516", "2216-2217",
+          "2217-2318", "2318-2319", "2319-2320", "2320-2420", "2420-2421"],
+ "road": ["2217-2218", "2218-2219", "2219-2320", "2320-2321", "2321-2421"],
+ "markers": [],
+ "unclear": [],
+ "notes": [
+  "СМОЛЕНСК is one city of two hexes: grey blocks fill 2216 and 2217 (the river runs between them); the name and '(25 ПО)' are printed over 2016-2117, which hold no blocks. The rules and the old sheet name 2117: that is the label's hex",
+  "rail: three lines meet at one point inside 2216 (north-west to 2116, east-south-east to 2317, south-south-east to 2217); the north-east line branches off the east line inside 2317 (2317-2416)",
+  "rail 2420-2421: the draft flagged a corner crossing; the line crosses the s hexside of 2420 7 px east of its west end, a real step. 2321-2420 was a corner clip of 2321 (rule 3)",
+  "road: the north road (from 2215) ends at a dot inside 2216; the south road starts at a dot inside 2217; no road crosses the river hexside 2216-2217 (focused crop look-2216-2217.jpg). So the printed road network is broken at Smolensk: a question for network_check, not a feature to invent",
+  "road 2218-2219: the road passes 4 px west of the vertex of 2218, 2219 and 2119 (rule 2: step 2218-2219; 2119 only touched)",
+  "road 2219-2320: the road passes through the vertex of 2219, 2220 and 2320 (draft corner crossing), from 2219 into 2320",
+  "rivers: all fourteen proposed hexsides confirmed; the short river at the tile's bottom-left edge lies on hexsides of column 19, outside this area",
+  "terrain: 2518 swamp (the hatch symbol sits inside it)"
+ ]
+}

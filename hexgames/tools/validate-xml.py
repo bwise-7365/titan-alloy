@@ -26,6 +26,9 @@ def extra_checks(doc):
 
 
 def main(dirs):
+    # ctest takes our output through a pipe, and Windows then encodes it as the console code page: a
+    # validation message quoting a sheet's Cyrillic place name would throw UnicodeEncodeError.
+    sys.stdout.reconfigure(encoding="utf-8")
     schemas = {}
     ok = True
     total = 0

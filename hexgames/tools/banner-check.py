@@ -28,7 +28,8 @@ EXEMPT = {
     "validate.py": "game_rules/xml/validate.py, the pre-project validator tools/validate-xml.py replaces",
 }
 SKIP_DIRS = {"cmake-build-debug", "cmake-build-release", "cmake-build-headless", "build", "out",
-             "__pycache__", ".idea", ".vs", "_deps", "CMakeFiles", "golden"}
+             "__pycache__", ".idea", ".vs", "_deps", "CMakeFiles", "golden",
+             "work"}  # image2sheet scratch (gitignored): overlays, tiles, catalogues, reader prompts
 
 
 def nonempty(lines):

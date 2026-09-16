@@ -12,25 +12,25 @@
     </side>
   </sides>
   <units>
-    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0610"/>
-    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
-    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0610"/>
-    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611"/>
-    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="2410"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="2410"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="2410"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="2411"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="2411"/>
   </units>
   <log>
-    <move n="1" turn="3" phase="german-combat" side="german" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611"/>
+    <move n="1" turn="3" phase="german-combat" side="german" cmd="attack" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="2411"/>
     <move n="2" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="result"/>
       <arg name="answer" value="retreat"/>
     </move>
     <move n="3" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0712"/>
+      <arg name="answer" value="2512"/>
     </move>
     <move n="4" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0612"/>
+      <arg name="answer" value="2412"/>
     </move>
     <move n="5" turn="3" phase="german-combat" side="german" cmd="answer">
       <arg name="what" value="result"/>
@@ -50,5 +50,8 @@
       result the defender's half comes first (9.66): the Soviet Player retreats both divisions, each walk routed
       by the German Player (9.72) and preferring vacant hexes (9.73); then the German Player takes his step loss,
       the panzer regiment turning over, and advances a regiment into the vacated hex (9.81).</note>
+    <note>Moved from 0610-0712 to 2410-2512 (18 columns east) when the sheet was rebuilt from the print (maps: PGG
+      accuracy): the old hexes now have a river between 0610 and 0611. Every hex used here is clear, with no river,
+      railway or road.</note>
   </notes>
 </save>

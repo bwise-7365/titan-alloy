@@ -23,10 +23,11 @@ namespace Pgg {
     constexpr std::array<std::string_view, 18> kAreaNames{"A", "B", "C", "D", "E", "F", "G", "H", "V",
                                                           "W", "X", "Z", "1", "2", "3", "4", "5", "6"};
 
-    // TODO(decide): PROVISIONAL. The printed map marks the entrance areas; no input carries their
-    // hexes except area B (14.3: 0101-0110 and 0112). Until the sheet or the rules name them, the
-    // German areas run down the west edge, V and W sit on the north edge, X on the east edge toward
-    // Moscow, Z on the south edge, and the provisional areas 1-6 round the north, east and south edges.
+    // The entrance areas as the printed map marks them (Russian redesign, read in the image2sheet edge-marker
+    // pass: map_graphics/xml/tools/image2sheet/work/pgg/catalogue/markers.json). Brackets span edge hexes;
+    // boxes point at one hex. V shares its bracket with provisional area 1 ("V,1"), Z its box with 5 ("Z,5");
+    // W's box is printed "W,1" on the Russian map and "W, 2" on the English map, so W is provisional area 2.
+    // C and G are blue lines drawn inside column 01, the other German areas black brackets beside the map.
     struct AreaHexes {
       Area area;
       std::vector<std::string_view> hexes;
@@ -35,24 +36,24 @@ namespace Pgg {
     areaTable()
     {
       static const std::vector<AreaHexes> table{
-          {Area::A, {"0301", "0401", "0501", "0601"}},
-          {Area::B, {"0101", "0102", "0103", "0104", "0105", "0106", "0107", "0108", "0109", "0110", "0112"}},
-          {Area::C, {"0113", "0114", "0115", "0116", "0117", "0118"}},
-          {Area::D, {"0119", "0120", "0121"}},
-          {Area::E, {"0122", "0123", "0124", "0125", "0126"}},
-          {Area::F, {"0127", "0128", "0129"}},
-          {Area::G, {"0130", "0131"}},
-          {Area::H, {"0231", "0331", "0431", "0531"}},
-          {Area::V, {"1001", "1101", "1201", "1301"}},
-          {Area::W, {"2601", "2701", "2801", "2901"}},
-          {Area::X, {"5612", "5613", "5614", "5615", "5616", "5617"}},
-          {Area::Z, {"3031"}},
-          {Area::P1, {"2001"}},
-          {Area::P2, {"3601"}},
-          {Area::P3, {"5601"}},
-          {Area::P4, {"5625"}},
-          {Area::P5, {"4531"}},
-          {Area::P6, {"2531"}},
+          {Area::A, {"0101", "0201", "0301", "0401", "0501"}},
+          {Area::B, {"0101", "0102", "0103", "0104", "0105", "0106", "0107", "0108", "0109", "0110", "0111", "0112"}},
+          {Area::C, {"0108", "0109", "0110", "0111", "0112", "0113", "0114", "0115"}},
+          {Area::D, {"0113", "0114", "0115", "0116", "0117"}},
+          {Area::E, {"0118", "0119", "0120", "0121", "0122"}},
+          {Area::F, {"0123", "0124", "0125", "0126"}},
+          {Area::G, {"0124", "0125", "0126", "0127", "0128"}},
+          {Area::H, {"0128", "0129", "0130", "0131"}},
+          {Area::V, {"1901", "2001", "2101", "2201", "2301", "2401", "2501", "2601", "2701"}},
+          {Area::W, {"3901"}},
+          {Area::X, {"5907"}},
+          {Area::Z, {"3131"}},
+          {Area::P1, {"1901", "2001", "2101", "2201", "2301", "2401", "2501", "2601", "2701"}},
+          {Area::P2, {"3901"}},
+          {Area::P3, {"5101"}},
+          {Area::P4, {"4331"}},
+          {Area::P5, {"3131"}},
+          {Area::P6, {"1831"}},
       };
       return table;
     }
@@ -181,10 +182,16 @@ namespace Pgg {
     riverEdge_ = rules.edgeTerrain("river");
     supplyRoad_ = hex("0120");
     smolensk_ = hex("2117");
-    gaps_.push_back("entrance areas A and C-H, V, W, X, Z and 1-6: the printed map marks them and no input carries "
-                    "their hexes, so they are provisional (PggFactsMap.cpp)");
-    gaps_.push_back("no Railroad hex lies on the south edge, so South-Western Front divisions (14.22) enter on any "
-                    "south-edge hex at or east of entrance hex Z");
+    const HexModel::LinkNetwork& rail = board.network(board.networkId("rail"));
+    bool southRailP = false;
+    for (std::size_t h = 0; h < count; ++h) {
+      const HexIndex hex{static_cast<std::uint32_t>(h)};
+      southRailP = southRailP || (southEdgeP(hex) && !rail.linksAt(hex).empty());
+    }
+    if (!southRailP) {
+      gaps_.push_back("no Railroad hex lies on the south edge, so South-Western Front divisions (14.22) enter on any "
+                      "south-edge hex at or east of entrance hex Z");
+    }
     if (board.network(board.networkId("road-net")).linksAt(supplyRoad_).empty()) {
       gaps_.push_back("the sheet draws no road into hex 0120, so no road leads there and German supply comes only "
                       "from the twenty-point trace to the west edge (11.11, 11.12)");

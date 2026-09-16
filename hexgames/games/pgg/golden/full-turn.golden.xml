@@ -11,12 +11,12 @@
       <flag name="army-16" value="s1-lukin-16th-army-hq-3-10 s1-153-inf-4-5-6 s1-181-inf-4-5-6 s1-154-inf-4-7-6 s1-102-inf-2-3-6 s1-158-inf-2-3-6 s1-45-inf-1-2-6"/>
       <flag name="army-19" value="s1-konev-19th-army-hq-5-10 s1-91-inf-2-2-6 s1-46-inf-2-1-6 s1-27-inf-0-0-6 s1-60-inf-0-0-6"/>
       <flag name="army-20" value="s1-kurchkin-20th-army-hq-4-10 s1-13mos-inf-2-4-6 s1-167-inf-3-5-6 s1-65-inf-2-6-6 s1-50-inf-9-8-6 s1-8mos-inf-3-4-6 s1-57-mot-8-10 s1-31-arm-5-10 s1-26-arm-5-10 s1-27-arm-4-10 s2-2mos-sinf-0-0-6"/>
-      <flag name="beyond-radius" value="s1-13mos-inf-2-4-6 s1-167-inf-3-5-6 s1-65-inf-2-6-6 s1-50-inf-9-8-6 s1-133-inf-3-4-6 s1-172-inf-1-3-6 s1-19-inf-1-3-6 s1-110-inf-1-1-6 s1-2-inf-0-0-6 s1-145-inf-0-0-6 s1-57-mot-8-10 s1-1prgd-mot-8-10 s1-27-arm-4-10 s2-2mos-sinf-0-0-6"/>
+      <flag name="beyond-radius" value="s1-65-inf-2-6-6 s1-50-inf-9-8-6 s1-133-inf-3-4-6 s1-19-inf-1-3-6 s1-110-inf-1-1-6 s1-2-inf-0-0-6 s1-145-inf-0-0-6 s1-57-mot-8-10 s1-1prgd-mot-8-10 s1-27-arm-4-10 s2-2mos-sinf-0-0-6"/>
       <flag name="entered" value="s1-123-inf-8-8-6"/>
       <flag name="frozen" value="19"/>
       <flag name="owed" value="V:4:0 W:3:1 X:8:0"/>
       <flag name="spent" value="s1-123-inf-8-8-6:2"/>
-      <flag name="unsupplied" value="s1-13mos-inf-2-4-6 s1-167-inf-3-5-6 s1-65-inf-2-6-6 s1-50-inf-9-8-6 s1-133-inf-3-4-6 s1-172-inf-1-3-6 s1-19-inf-1-3-6 s1-110-inf-1-1-6 s1-2-inf-0-0-6 s1-145-inf-0-0-6 s1-57-mot-8-10 s1-1prgd-mot-8-10 s1-27-arm-4-10 s2-2mos-sinf-0-0-6"/>
+      <flag name="unsupplied" value="s1-65-inf-2-6-6 s1-50-inf-9-8-6 s1-133-inf-3-4-6 s1-19-inf-1-3-6 s1-110-inf-1-1-6 s1-2-inf-0-0-6 s1-145-inf-0-0-6 s1-57-mot-8-10 s1-1prgd-mot-8-10 s1-27-arm-4-10 s2-2mos-sinf-0-0-6"/>
     </side>
   </sides>
   <units>
@@ -32,14 +32,14 @@
     <unit id="s1-117-inf-3-7-6" counter="s1-117-inf-3-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-118-inf-4-4-6" counter="s1-118-inf-4-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-121-inf-1-3-6" counter="s1-121-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
-    <unit id="s1-123-inf-8-8-6" counter="s1-123-inf-8-8-6" type="soviet-rifle" owner="soviet" hex="2001" face="front" revealed="false" moved="false"/>
+    <unit id="s1-123-inf-8-8-6" counter="s1-123-inf-8-8-6" type="soviet-rifle" owner="soviet" hex="1901" face="front" revealed="false" moved="false"/>
     <unit id="s1-126-inf-7-7-6" counter="s1-126-inf-7-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-127-inf-5-5-6" counter="s1-127-inf-5-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-13-inf-1-1-6" counter="s1-13-inf-1-1-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-133-inf-3-4-6" counter="s1-133-inf-3-4-6" type="soviet-rifle" owner="soviet" hex="0622" face="front" revealed="false" moved="false"/>
     <unit id="s1-134-inf-3-3-6" counter="s1-134-inf-3-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
-    <unit id="s1-137-inf-5-8-6" counter="s1-137-inf-5-8-6" type="soviet-rifle" owner="soviet" hex="1101" face="front" revealed="false" moved="false"/>
-    <unit id="s1-138-inf-3-5-6" counter="s1-138-inf-3-5-6" type="soviet-rifle" owner="soviet" hex="5615" face="front" revealed="false" moved="false"/>
+    <unit id="s1-137-inf-5-8-6" counter="s1-137-inf-5-8-6" type="soviet-rifle" owner="soviet" hex="2101" face="front" revealed="false" moved="false"/>
+    <unit id="s1-138-inf-3-5-6" counter="s1-138-inf-3-5-6" type="soviet-rifle" owner="soviet" hex="5907" face="front" revealed="false" moved="false"/>
     <unit id="s1-13mos-inf-2-4-6" counter="s1-13mos-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0707" face="front" revealed="false" moved="false"/>
     <unit id="s1-143-inf-1-3-6" counter="s1-143-inf-1-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-143-inf-5-5-6" counter="s1-143-inf-5-5-6" type="soviet-rifle" owner="soviet" hex="0620" face="front" revealed="false" moved="false"/>
@@ -54,7 +54,7 @@
     <unit id="s1-167-inf-3-5-6" counter="s1-167-inf-3-5-6" type="soviet-rifle" owner="soviet" hex="0706" face="front" revealed="false" moved="false"/>
     <unit id="s1-17-inf-4-4-6" counter="s1-17-inf-4-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-171-inf-3-8-6" counter="s1-171-inf-3-8-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
-    <unit id="s1-172-inf-1-3-6" counter="s1-172-inf-1-3-6" type="soviet-rifle" owner="soviet" hex="2001" face="front" revealed="false" moved="false"/>
+    <unit id="s1-172-inf-1-3-6" counter="s1-172-inf-1-3-6" type="soviet-rifle" owner="soviet" hex="1901" face="front" revealed="false" moved="false"/>
     <unit id="s1-172-inf-2-3-6" counter="s1-172-inf-2-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-174-inf-6-7-6" counter="s1-174-inf-6-7-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-178-inf-2-5-6" counter="s1-178-inf-2-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
@@ -80,7 +80,7 @@
     <unit id="s1-232-inf-4-5-6" counter="s1-232-inf-4-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-25-inf-3-4-6" counter="s1-25-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-258-inf-6-8-6" counter="s1-258-inf-6-8-6" type="soviet-rifle" owner="soviet" hex="0620" face="front" revealed="false" moved="false"/>
-    <unit id="s1-26-arm-5-10" counter="s1-26-arm-5-10" type="soviet-armour" owner="soviet" hex="0905" face="front" revealed="false" moved="false"/>
+    <unit id="s1-26-arm-5-10" counter="s1-26-arm-5-10" type="soviet-armour" owner="soviet" hex="1107" face="front" revealed="false" moved="false"/>
     <unit id="s1-260-inf-4-5-6" counter="s1-260-inf-4-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-27-arm-4-10" counter="s1-27-arm-4-10" type="soviet-armour" owner="soviet" hex="0412" face="front" revealed="false" moved="false"/>
     <unit id="s1-27-inf-0-0-6" counter="s1-27-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="1414" face="front" revealed="false" moved="false"/>
@@ -95,13 +95,13 @@
     <unit id="s1-46-inf-2-1-6" counter="s1-46-inf-2-1-6" type="soviet-rifle" owner="soviet" hex="1414" face="front" revealed="false" moved="false"/>
     <unit id="s1-48-inf-1-4-6" counter="s1-48-inf-1-4-6" type="soviet-rifle" owner="soviet" hex="4115" face="front" revealed="false" moved="false"/>
     <unit id="s1-49-inf-5-8-6" counter="s1-49-inf-5-8-6" type="soviet-rifle" owner="soviet" hex="4115" face="front" revealed="false" moved="false"/>
-    <unit id="s1-50-inf-9-8-6" counter="s1-50-inf-9-8-6" type="soviet-rifle" owner="soviet" hex="0708" face="front" revealed="false" moved="false"/>
+    <unit id="s1-50-inf-9-8-6" counter="s1-50-inf-9-8-6" type="soviet-rifle" owner="soviet" hex="0710" face="front" revealed="false" moved="false"/>
     <unit id="s1-53-inf-0-0-6" counter="s1-53-inf-0-0-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-55-inf-4-3-6" counter="s1-55-inf-4-3-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-56-inf-3-3-6" counter="s1-56-inf-3-3-6" type="soviet-rifle" owner="soviet" hex="4115" face="front" revealed="false" moved="false"/>
     <unit id="s1-57-inf-3-4-6" counter="s1-57-inf-3-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
-    <unit id="s1-57-mot-8-10" counter="s1-57-mot-8-10" type="soviet-armour" owner="soviet" hex="0613" face="front" revealed="false" moved="false"/>
-    <unit id="s1-5mos-inf-2-1-6" counter="s1-5mos-inf-2-1-6" type="soviet-rifle" owner="soviet" hex="5614" face="front" revealed="false" moved="false"/>
+    <unit id="s1-57-mot-8-10" counter="s1-57-mot-8-10" type="soviet-armour" owner="soviet" hex="0513" face="front" revealed="false" moved="false"/>
+    <unit id="s1-5mos-inf-2-1-6" counter="s1-5mos-inf-2-1-6" type="soviet-rifle" owner="soviet" hex="5907" face="front" revealed="false" moved="false"/>
     <unit id="s1-60-inf-0-0-6" counter="s1-60-inf-0-0-6" type="soviet-rifle" owner="soviet" hex="1514" face="front" revealed="false" moved="false"/>
     <unit id="s1-61-inf-6-5-6" counter="s1-61-inf-6-5-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
@@ -120,19 +120,19 @@
     <unit id="s1-kachalov-28th-army-hq-2-10" counter="s1-kachalov-28th-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="2"/>
     <unit id="s1-khomenko-30th-army-hq-3-10" counter="s1-khomenko-30th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="0"/>
     <unit id="s1-konev-19th-army-hq-5-10" counter="s1-konev-19th-army-hq-5-10" type="soviet-leader" owner="soviet" hex="1414" face="front" moved="false"/>
-    <unit id="s1-kurchkin-20th-army-hq-4-10" counter="s1-kurchkin-20th-army-hq-4-10" type="soviet-leader" owner="soviet" hex="1103" face="front" moved="false"/>
+    <unit id="s1-kurchkin-20th-army-hq-4-10" counter="s1-kurchkin-20th-army-hq-4-10" type="soviet-leader" owner="soviet" hex="0904" face="front" moved="false"/>
     <unit id="s1-lukin-16th-army-hq-3-10" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="2216" face="front" moved="false"/>
     <unit id="s1-maslikev-29th-army-hq-3-10" counter="s1-maslikev-29th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="5"/>
     <unit id="s1-onprenko-33rd-army-hq-2-10" counter="s1-onprenko-33rd-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="9"/>
     <unit id="s1-rakutin-24th-army-hq-2-10" counter="s1-rakutin-24th-army-hq-2-10" type="soviet-leader" owner="soviet" hex="4015" face="front" moved="false"/>
     <unit id="s1-remezov-13th-army-hq-4-10" counter="s1-remezov-13th-army-hq-4-10" type="soviet-leader" owner="soviet" hex="1018" face="front" moved="false"/>
-    <unit id="s1-rokovski-reserve-hq-5-10" counter="s1-rokovski-reserve-hq-5-10" type="soviet-leader" owner="soviet" hex="5614" face="front" moved="false"/>
+    <unit id="s1-rokovski-reserve-hq-5-10" counter="s1-rokovski-reserve-hq-5-10" type="soviet-leader" owner="soviet" hex="5907" face="front" moved="false"/>
     <unit id="s1-vshnvsky-32nd-army-hq-2-10" counter="s1-vshnvsky-32nd-army-hq-2-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="8"/>
-    <unit id="s1-yrshakov-22nd-army-hq-3-10" counter="s1-yrshakov-22nd-army-hq-3-10" type="soviet-leader" owner="soviet" hex="1101" face="front" moved="false"/>
+    <unit id="s1-yrshakov-22nd-army-hq-3-10" counter="s1-yrshakov-22nd-army-hq-3-10" type="soviet-leader" owner="soviet" hex="2101" face="front" moved="false"/>
     <unit id="s1-zkhatkin-49th-army-hq-3-10" counter="s1-zkhatkin-49th-army-hq-3-10" type="soviet-leader" owner="soviet" space="soviet-arrivals" face="front" moved="false" delay="7"/>
     <unit id="s2-1-cav-4-5" counter="s2-1-cav-4-5" type="german-cavalry" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-101-18-inf-2-10" counter="s2-101-18-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
-    <unit id="s2-11-14-mot-3-10" counter="s2-11-14-mot-3-10" type="german-motorized" owner="german" hex="0116" face="front" moved="false"/>
+    <unit id="s2-11-14-mot-3-10" counter="s2-11-14-mot-3-10" type="german-motorized" owner="german" hex="0112" face="front" moved="false"/>
     <unit id="s2-112-20-inf-2-10" counter="s2-112-20-inf-2-10" type="german-motorized" owner="german" hex="0115" face="front" moved="false"/>
     <unit id="s2-12-4-inf-2-10" counter="s2-12-4-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-137-inf-9-7" counter="s2-137-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" face="front" moved="false" delay="3"/>
@@ -172,7 +172,7 @@
     <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-51-18-mot-3-10" counter="s2-51-18-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="0"/>
     <unit id="s2-52-18-inf-2-10" counter="s2-52-18-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
-    <unit id="s2-53-14-mot-3-10" counter="s2-53-14-mot-3-10" type="german-motorized" owner="german" hex="0116" face="front" moved="false"/>
+    <unit id="s2-53-14-mot-3-10" counter="s2-53-14-mot-3-10" type="german-motorized" owner="german" hex="0112" face="front" moved="false"/>
     <unit id="s2-59-20-inf-2-10" counter="s2-59-20-inf-2-10" type="german-motorized" owner="german" hex="0115" face="front" moved="false"/>
     <unit id="s2-6-3-arm-4-10" counter="s2-6-3-arm-4-10" type="german-panzer" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0313" face="front" moved="false"/>
@@ -186,18 +186,20 @@
     <unit id="s2-71-29-mot-3-10" counter="s2-71-29-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-73-19-inf-2-10" counter="s2-73-19-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="0"/>
     <unit id="s2-74-19-inf-2-10" counter="s2-74-19-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="0"/>
-    <unit id="s2-76-20-mot-3-10" counter="s2-76-20-mot-3-10" type="german-motorized" owner="german" hex="0117" face="front" moved="false"/>
+    <unit id="s2-76-20-mot-3-10" counter="s2-76-20-mot-3-10" type="german-motorized" owner="german" hex="0111" face="front" moved="false"/>
     <unit id="s2-78-inf-9-7" counter="s2-78-inf-9-7" type="german-infantry" owner="german" space="german-arrivals" face="front" moved="false" delay="6"/>
     <unit id="s2-7mos-sinf-0-0-6" counter="s2-7mos-sinf-0-0-6" type="soviet-rifle" owner="soviet" space="soviet-pool" face="front" revealed="false" moved="false"/>
     <unit id="s2-86-10-inf-2-10" counter="s2-86-10-inf-2-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-86-10-mot-3-10" counter="s2-86-10-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
-    <unit id="s2-90-20-mot-3-10" counter="s2-90-20-mot-3-10" type="german-motorized" owner="german" hex="0117" face="front" moved="false"/>
+    <unit id="s2-90-20-mot-3-10" counter="s2-90-20-mot-3-10" type="german-motorized" owner="german" hex="0111" face="front" moved="false"/>
     <unit id="s2-gd-mot-4-10" counter="s2-gd-mot-4-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="1"/>
     <unit id="s2-lehr-mot-3-10" counter="s2-lehr-mot-3-10" type="german-motorized" owner="german" space="german-arrivals" face="front" moved="false" delay="0"/>
   </units>
   <control>
+    <hex id="0412" side="soviet"/>
     <hex id="0424" side="soviet"/>
     <hex id="0513" side="soviet"/>
+    <hex id="5907" side="soviet"/>
   </control>
   <streams>
     <stream tag="setup" draws="9"/>
@@ -227,19 +229,19 @@
       <event kind="first-turn-army">19 stands</event>
       <event kind="die" value="1">setup</event>
       <event kind="die" value="49">setup</event>
-      <event kind="placed" unit="s1-172-inf-1-3-6" hex="2001"/>
+      <event kind="placed" unit="s1-172-inf-1-3-6" hex="1901"/>
     </move>
-    <move n="5" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-31-arm-5-10" path="0108 0207 0307 0406 0506 0605 0705 0804 0904" mode="normal">
-      <event kind="moved" unit="s1-31-arm-5-10" hex="0904" value="0108 0207 0307 0406 0506 0605 0705 0804 0904"/>
+    <move n="5" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-31-arm-5-10" path="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904" mode="normal">
+      <event kind="moved" unit="s1-31-arm-5-10" hex="0904" value="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904"/>
     </move>
-    <move n="6" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-kurchkin-20th-army-hq-4-10" path="0108 0207 0307 0406 0506 0605 0705 0804 0904 1003 1103" mode="normal">
-      <event kind="moved" unit="s1-kurchkin-20th-army-hq-4-10" hex="1103" value="0108 0207 0307 0406 0506 0605 0705 0804 0904 1003 1103"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-kurchkin-20th-army-hq-4-10" path="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904" mode="normal">
+      <event kind="moved" unit="s1-kurchkin-20th-army-hq-4-10" hex="0904" value="0108 0207 0307 0407 0508 0607 0707 0806 0805 0804 0904"/>
     </move>
     <move n="7" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-8mos-inf-3-4-6" path="0108 0207 0307 0406 0506 0605 0705" mode="normal">
       <event kind="moved" unit="s1-8mos-inf-3-4-6" hex="0705" value="0108 0207 0307 0406 0506 0605 0705"/>
     </move>
-    <move n="8" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-26-arm-5-10" path="0109 0208 0308 0407 0507 0606 0706 0805 0905" mode="normal">
-      <event kind="moved" unit="s1-26-arm-5-10" hex="0905" value="0109 0208 0308 0407 0507 0606 0706 0805 0905"/>
+    <move n="8" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-26-arm-5-10" path="0109 0208 0308 0408 0508 0607 0707 0806 0906 1006 1107" mode="normal">
+      <event kind="moved" unit="s1-26-arm-5-10" hex="1107" value="0109 0208 0308 0408 0508 0607 0707 0806 0906 1006 1107"/>
     </move>
     <move n="9" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-167-inf-3-5-6" path="0109 0208 0308 0407 0507 0606 0706" mode="normal">
       <event kind="moved" unit="s1-167-inf-3-5-6" hex="0706" value="0109 0208 0308 0407 0507 0606 0706"/>
@@ -247,8 +249,8 @@
     <move n="10" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-13mos-inf-2-4-6" path="0110 0209 0309 0408 0508 0607 0707" mode="normal">
       <event kind="moved" unit="s1-13mos-inf-2-4-6" hex="0707" value="0110 0209 0309 0408 0508 0607 0707"/>
     </move>
-    <move n="11" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-50-inf-9-8-6" path="0111 0210 0310 0409 0509 0608 0708" mode="normal">
-      <event kind="moved" unit="s1-50-inf-9-8-6" hex="0708" value="0111 0210 0310 0409 0509 0608 0708"/>
+    <move n="11" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-50-inf-9-8-6" path="0111 0211 0311 0410 0510 0610 0710" mode="normal">
+      <event kind="moved" unit="s1-50-inf-9-8-6" hex="0710" value="0111 0211 0311 0410 0510 0610 0710"/>
     </move>
     <move n="12" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-65-inf-2-6-6" path="0112 0211 0311 0410 0510 0609 0709" mode="normal">
       <event kind="moved" unit="s1-65-inf-2-6-6" hex="0709" value="0112 0211 0311 0410 0510 0609 0709"/>
@@ -256,11 +258,12 @@
     <move n="13" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s2-2mos-sinf-0-0-6" path="0113 0212 0312" mode="normal">
       <event kind="moved" unit="s2-2mos-sinf-0-0-6" hex="0312" value="0113 0212 0312"/>
     </move>
-    <move n="14" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-27-arm-4-10" path="0114 0213 0313 0412" mode="normal">
-      <event kind="moved" unit="s1-27-arm-4-10" hex="0412" value="0114 0213 0313 0412"/>
+    <move n="14" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-27-arm-4-10" path="0114 0214 0314 0413 0412" mode="normal">
+      <event kind="moved" unit="s1-27-arm-4-10" hex="0412" value="0114 0214 0314 0413 0412"/>
+      <event kind="control" hex="0412" side="soviet"/>
     </move>
-    <move n="15" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-57-mot-8-10" path="0115 0214 0314 0413 0513 0613" mode="normal">
-      <event kind="moved" unit="s1-57-mot-8-10" hex="0613" value="0115 0214 0314 0413 0513 0613"/>
+    <move n="15" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-57-mot-8-10" path="0115 0214 0314 0413 0513" mode="normal">
+      <event kind="moved" unit="s1-57-mot-8-10" hex="0513" value="0115 0214 0314 0413 0513"/>
       <event kind="control" hex="0513" side="soviet"/>
     </move>
     <move n="16" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-remezov-13th-army-hq-4-10" path="0123 0222 0322 0421 0521 0620 0720 0819 0919 1018" mode="normal">
@@ -299,36 +302,37 @@
       <event kind="moved" unit="s1-48-inf-1-4-6" hex="4115" value="4015 4115"/>
     </move>
     <move n="25" turn="1" phase="soviet-move" side="soviet" by="script" cmd="place" units="s1-rokovski-reserve-hq-5-10">
-      <arg name="where" value="5614"/>
-      <event kind="placed" unit="s1-rokovski-reserve-hq-5-10" hex="5614"/>
+      <arg name="where" value="5907"/>
+      <event kind="placed" unit="s1-rokovski-reserve-hq-5-10" hex="5907"/>
+      <event kind="control" hex="5907" side="soviet"/>
     </move>
     <move n="26" turn="1" phase="soviet-move" side="soviet" by="script" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="5614"/>
+      <arg name="where" value="5907"/>
       <arg name="source" value="scheduled"/>
       <draw stream="setup" n="5" value="8"/>
       <event kind="die" value="8">setup</event>
-      <event kind="placed" unit="s1-5mos-inf-2-1-6" hex="5614"/>
+      <event kind="placed" unit="s1-5mos-inf-2-1-6" hex="5907"/>
     </move>
     <move n="27" turn="1" phase="soviet-move" side="soviet" by="script" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="5615"/>
+      <arg name="where" value="5907"/>
       <arg name="source" value="scheduled"/>
       <draw stream="setup" n="6" value="10"/>
       <event kind="die" value="10">setup</event>
-      <event kind="placed" unit="s1-138-inf-3-5-6" hex="5615"/>
+      <event kind="placed" unit="s1-138-inf-3-5-6" hex="5907"/>
     </move>
     <move n="28" turn="1" phase="soviet-move" side="soviet" by="script" cmd="place" units="s1-yrshakov-22nd-army-hq-3-10">
-      <arg name="where" value="1101"/>
-      <event kind="placed" unit="s1-yrshakov-22nd-army-hq-3-10" hex="1101"/>
+      <arg name="where" value="2101"/>
+      <event kind="placed" unit="s1-yrshakov-22nd-army-hq-3-10" hex="2101"/>
     </move>
     <move n="29" turn="1" phase="soviet-move" side="soviet" by="script" cmd="reinforce">
       <arg name="type" value="soviet-rifle"/>
-      <arg name="where" value="1101"/>
+      <arg name="where" value="2101"/>
       <arg name="source" value="scheduled"/>
       <draw stream="setup" n="7" value="45"/>
       <event kind="die" value="45">setup</event>
-      <event kind="placed" unit="s1-137-inf-5-8-6" hex="1101"/>
+      <event kind="placed" unit="s1-137-inf-5-8-6" hex="2101"/>
     </move>
     <move n="30" turn="1" phase="soviet-move" side="soviet" by="script" cmd="end-phase">
       <event kind="air-interdiction-removed">2117</event>
@@ -382,20 +386,20 @@
       <event kind="placed" unit="s2-59-20-inf-2-10" hex="0115"/>
     </move>
     <move n="43" turn="1" phase="german-move1" side="german" by="script" cmd="place" units="s2-11-14-mot-3-10">
-      <arg name="where" value="0116"/>
-      <event kind="placed" unit="s2-11-14-mot-3-10" hex="0116"/>
+      <arg name="where" value="0112"/>
+      <event kind="placed" unit="s2-11-14-mot-3-10" hex="0112"/>
     </move>
     <move n="44" turn="1" phase="german-move1" side="german" by="script" cmd="place" units="s2-53-14-mot-3-10">
-      <arg name="where" value="0116"/>
-      <event kind="placed" unit="s2-53-14-mot-3-10" hex="0116"/>
+      <arg name="where" value="0112"/>
+      <event kind="placed" unit="s2-53-14-mot-3-10" hex="0112"/>
     </move>
     <move n="45" turn="1" phase="german-move1" side="german" by="script" cmd="place" units="s2-76-20-mot-3-10">
-      <arg name="where" value="0117"/>
-      <event kind="placed" unit="s2-76-20-mot-3-10" hex="0117"/>
+      <arg name="where" value="0111"/>
+      <event kind="placed" unit="s2-76-20-mot-3-10" hex="0111"/>
     </move>
     <move n="46" turn="1" phase="german-move1" side="german" by="script" cmd="place" units="s2-90-20-mot-3-10">
-      <arg name="where" value="0117"/>
-      <event kind="placed" unit="s2-90-20-mot-3-10" hex="0117"/>
+      <arg name="where" value="0111"/>
+      <event kind="placed" unit="s2-90-20-mot-3-10" hex="0111"/>
     </move>
     <move n="47" turn="1" phase="german-move1" side="german" by="script" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" path="0113 0213 0313" mode="normal">
       <event kind="moved" unit="s2-25-7-arm-4-10" hex="0313" value="0113 0213 0313"/>
@@ -427,12 +431,9 @@
       <draw stream="setup" n="8" value="1"/>
       <draw stream="setup" n="9" value="35"/>
       <event kind="phase" side="soviet" value="soviet-move">turn 2</event>
-      <event kind="supply" unit="s1-13mos-inf-2-4-6" value="isolated"/>
-      <event kind="supply" unit="s1-167-inf-3-5-6" value="isolated"/>
       <event kind="supply" unit="s1-65-inf-2-6-6" value="isolated"/>
       <event kind="supply" unit="s1-50-inf-9-8-6" value="isolated"/>
       <event kind="supply" unit="s1-133-inf-3-4-6" value="isolated"/>
-      <event kind="supply" unit="s1-172-inf-1-3-6" value="isolated"/>
       <event kind="supply" unit="s1-19-inf-1-3-6" value="isolated"/>
       <event kind="supply" unit="s1-110-inf-1-1-6" value="isolated"/>
       <event kind="supply" unit="s1-2-inf-0-0-6" value="isolated"/>
@@ -443,7 +444,7 @@
       <event kind="supply" unit="s2-2mos-sinf-0-0-6" value="isolated"/>
       <event kind="die" value="1">setup</event>
       <event kind="die" value="35">setup</event>
-      <event kind="placed" unit="s1-123-inf-8-8-6" hex="2001"/>
+      <event kind="placed" unit="s1-123-inf-8-8-6" hex="1901"/>
     </move>
   </log>
 </save>

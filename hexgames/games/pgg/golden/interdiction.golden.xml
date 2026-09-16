@@ -15,7 +15,7 @@
   </sides>
   <units>
     <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0909" face="front" moved="false"/>
-    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0715" face="front" moved="false"/>
+    <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0814" face="front" moved="false"/>
     <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="0707" face="front" moved="true"/>
   </units>
   <streams>
@@ -46,8 +46,8 @@
     <move n="5" turn="1" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-64-inf-2-4-6" path="0908 0909" mode="normal">
       <event kind="moved" unit="s1-64-inf-2-4-6" hex="0909" value="0908 0909"/>
     </move>
-    <move n="6" turn="1" phase="soviet-move" side="soviet" by="script" cmd="rail-move" units="s1-f-inf-2-4-6" path="0613 0714 0715" mode="rail-move">
-      <event kind="moved" unit="s1-f-inf-2-4-6" hex="0715" value="0613 0714 0715"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" by="script" cmd="rail-move" units="s1-f-inf-2-4-6" path="0613 0714 0814" mode="rail-move">
+      <event kind="moved" unit="s1-f-inf-2-4-6" hex="0814" value="0613 0714 0814"/>
     </move>
     <move n="7" turn="1" phase="soviet-move" side="soviet" by="script" cmd="end-phase">
       <event kind="air-interdiction-removed">0909</event>

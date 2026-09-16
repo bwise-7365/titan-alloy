@@ -80,7 +80,12 @@ def grid_element(cfg, fit):
 
 
 def make_grid(cfg, fit):
-    return H.Grid(grid_element(cfg, fit))
+    """The renderer's Grid; printed_id_side is where the PRINTED id sits in its hex ("printed-id-side", default
+    the sheet's id-side), which the overlay avoids. The sheet's own id-side is how the renderer draws ids: the
+    renderer turns the text toward that hexside, so "s" draws them upside down."""
+    grid = H.Grid(grid_element(cfg, fit))
+    grid.printed_id_side = cfg["grid"].get("printed-id-side", grid.id_side)
+    return grid
 
 
 def load_fit(cfg, name="primary"):

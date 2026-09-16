@@ -8,7 +8,7 @@
     <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4315"/>
     <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4515"/>
     <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="1715"/>
-    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="3014"/>
+    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="4902"/>
   </units>
   <log>
     <move n="1" turn="1" phase="german-air-interdiction" side="german" cmd="end-phase"/>
@@ -17,13 +17,16 @@
     <move n="4" turn="2" phase="soviet-combat" side="soviet" cmd="end-phase"/>
     <move n="5" turn="2" phase="soviet-disruption-removal" side="soviet" cmd="end-phase"/>
     <move n="6" turn="2" phase="soviet-interdiction" side="soviet" cmd="end-phase"/>
-    <move n="7" turn="2" phase="german-move1" side="german" cmd="move" units="s2-6-inf-9-7" mode="normal" path="3014 2915 2916"/>
+    <move n="7" turn="2" phase="german-move1" side="german" cmd="move" units="s2-6-inf-9-7" mode="normal" path="4902 5002"/>
   </log>
   <notes>
     <note>As the Soviet Movement Phase opens, Lukin (rating 3) in 4015 supplies the division three hexes away in
       4315 but not the one five away in 4515, which is marked out of supply and moves on half its allowance
       (11.22, 11.31). As the German Initial Movement Phase opens, the 5th Infantry Division in 1715 traces twenty
-      points along the Smolensk road to the west edge (11.12); the 6th in 3014 cannot, and no road on the sheet
-      reaches 0120 (a data gap, 11.11), so it moves on three points of its seven. Nothing is eliminated (11.34).</note>
+      points to the west edge (11.12); the 6th in 4902 cannot: it is 23 hexes from the road network that
+      reaches 0120 (east to column 28 on the printed map, whose roads stop at rivers) and far from the west edge, so
+      it moves on three points of its seven. Nothing is eliminated (11.34).</note>
+    <note>The 6th Infantry Division moved from 3014 to 4902 when the sheet was rebuilt from the print (maps: PGG
+      accuracy): 3014 now lies on a road, and 3401 is within sixteen hexes of the road network.</note>
   </notes>
 </save>

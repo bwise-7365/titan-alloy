@@ -57,7 +57,14 @@ def sample(mask, xs, ys):
     return mask[yi, xi]
 
 
-def hex_fractions(grid, masks):
+def hex_fractions(grid, masks, blob_masks=()):
+    """Per hex: the covered share of the (inset) hex for each mask; for each mask in blob_masks also
+    "<mask>_blob": the share of its largest connected blob in the hex that lies inside this hex (1.0 = a blob
+    drawn wholly inside the hex, a one-hex symbol) and "<mask>_blob_cover": that blob's cover of the hex."""
+    labelled = {}
+    for k in blob_masks:
+        labels, n = ndimage.label(masks[k].astype(bool))
+        labelled[k] = (labels, np.bincount(labels.ravel(), minlength=n + 1), n)
     out = {}
     for pid, (c, r) in grid.ids.items():
         poly = grid.polygon(c, r, inset=0.08)
@@ -66,7 +73,14 @@ def hex_fractions(grid, masks):
         stencil = Image.new("L", (x1 - x0, y1 - y0), 0)
         ImageDraw.Draw(stencil).polygon([(x - x0, y - y0) for x, y in poly], fill=1)
         inside = np.asarray(stencil, dtype=bool)
-        out[pid] = {k: round(float(m[y0:y1, x0:x1][inside].mean()), 3) for k, m in masks.items()}
+        rec = {k: round(float(m[y0:y1, x0:x1][inside].mean()), 3) for k, m in masks.items()}
+        for k, (labels, sizes, n) in labelled.items():
+            counts = np.bincount(labels[y0:y1, x0:x1][inside], minlength=n + 1)
+            counts[0] = 0
+            big = int(np.argmax(counts))
+            rec[k + "_blob"] = round(float(counts[big] / sizes[big]), 2) if big else 0.0
+            rec[k + "_blob_cover"] = round(float(counts[big] / inside.sum()), 3) if big else 0.0
+        out[pid] = rec
     return out
 
 
@@ -105,7 +119,8 @@ def measure(cfg):
     grid = C.make_grid(cfg, C.load_fit(cfg))
     rgb = np.asarray(C.open_image(C.source(cfg, "primary")["path"]))
     masks = {k: colour_mask(rgb, v) for k, v in spec["colour_masks"].items()}
-    hexes = hex_fractions(grid, {k: masks[k] for k in spec["hex_masks"]})
+    blob_masks = [rule["mask"] for rule in spec["terrain"].values() if "blob_share" in rule]
+    hexes = hex_fractions(grid, {k: masks[k] for k in spec["hex_masks"]}, blob_masks)
     sides = {}
     band = spec["band"] * grid.size
     for name in C.all_sides(grid):
@@ -128,6 +143,12 @@ def terrain_of(spec, frac):
         f = frac[rule["mask"]]
         if f >= rule["at_least"]:
             return terrain, f < rule["sure"]
+    # only then: a blob drawn mostly inside one hex is that hex's terrain symbol, like a swamp's hatch (after the
+    # coverage rules, so a swamp hatch the woods mask partly counts stays swamp; PGG 0708)
+    for terrain, rule in spec["terrain"].items():
+        if "blob_share" in rule and frac[rule["mask"] + "_blob"] >= rule["blob_share"] \
+                and frac[rule["mask"] + "_blob_cover"] >= rule["blob_cover"]:
+            return terrain, False
     borderline = any(frac[r["mask"]] >= r["maybe"] for r in spec["terrain"].values())
     return cfg_default(spec), borderline
 

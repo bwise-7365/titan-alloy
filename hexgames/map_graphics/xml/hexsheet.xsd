@@ -427,6 +427,15 @@ Conventions
       <xs:attribute name="height" type="xs:decimal" use="required"/>
       <xs:attribute name="background" type="xs:IDREF" use="required"/>
       <xs:attribute name="font" type="xs:string" default="Arial, Helvetica, sans-serif"/>
+      <xs:attribute name="urban" use="required">
+        <xs:annotation><xs:documentation>How hexes carrying a city-major, city or capital glyph are drawn. buildings: the hex is tinted pale grey and the glyph drawn as a few scattered buildings (a sparse map such as PGG or TRC); symbol: the glyph's own symbol (a dense map such as Dai Senso). Every sheet chooses; there is no default.</xs:documentation></xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="buildings"/>
+            <xs:enumeration value="symbol"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
 

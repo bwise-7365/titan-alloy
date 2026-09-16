@@ -156,10 +156,10 @@ namespace Pgg {
         refuse("no scheduled division of that type is owed at hex '" + command.args[1] + "' (16.1)");
       }
     } else if ("south-western" == command.args[2]) {
-      const bool edgeP = facts_.southEdgeP(hex) && facts_.southWesternFrontColumn() <= facts_.column(hex);
+      const bool edgeP = facts_.southEdgeP(hex) && facts_.railHexP(hex) && facts_.southWesternFrontColumn() <= facts_.column(hex);
       if (2 > turn || Arm::SovietRifle != arm || !edgeP || kSwfPerTurn <= state.swfThisTurn || kSwfPerGame <= state.swfUsed) {
-        refuse("a South-Western Front rifle division enters from turn 2, on the south edge at or east of Z, five a "
-               "turn and ten a game (14.21, 14.22)");
+        refuse("a South-Western Front rifle division enters from turn 2, on a south-edge Railroad hex at or east of Z, "
+               "five a turn and ten a game (14.21, 14.22)");
       }
       state.swfThisTurn += 1;
       state.swfUsed += 1;

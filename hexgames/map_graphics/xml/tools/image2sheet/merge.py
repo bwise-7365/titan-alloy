@@ -61,6 +61,27 @@ def check_record(cfg, grid, tile, rec):
     return area, sides
 
 
+def status(cfg, grid, tiles):
+    """--status: which tiles have a complete reader record, which records fail the check, which are missing.
+    Run it before launching readers and after every batch, a drop or a usage limit."""
+    folder = C.work(cfg, "catalogue", "read")
+    complete, bad, missing = [], [], []
+    for t in tiles:
+        path = os.path.join(folder, t["name"] + ".json")
+        if not os.path.exists(path):
+            missing.append(t["name"])
+            continue
+        try:
+            check_record(cfg, grid, t, C.read_json(path))
+            complete.append(t["name"])
+        except (ValueError, KeyError, TypeError) as e:
+            bad.append("%s (%s)" % (t["name"], str(e)[:120]))
+    print("complete %d of %d" % (len(complete), len(tiles)))
+    print("bad %d: %s" % (len(bad), "; ".join(bad)))
+    print("missing %d: %s" % (len(missing), " ".join(missing)))
+    return 0 if not bad and not missing else 1
+
+
 def place_key(h):
     p = h.get("place")
     return None if not p else (p["glyph"], p.get("name"), p.get("vp"))
@@ -73,6 +94,8 @@ def main(argv):
     cfg = C.load_config(argv[1])
     grid = C.make_grid(cfg, C.load_fit(cfg))
     tiles = C.read_json(C.work(cfg, "tiles", "manifest.json"))["tiles"]
+    if "--status" in argv:
+        return status(cfg, grid, tiles)
     # --records DIR reads other records (e.g. the drafts, for a dry run); --out DIR writes the results there
     folder = argv[argv.index("--records") + 1] if "--records" in argv else C.work(cfg, "catalogue", "read")
     out_dir = argv[argv.index("--out") + 1] if "--out" in argv else C.work(cfg, "catalogue")
@@ -81,8 +104,13 @@ def main(argv):
         print("no reader record for %d tiles: %s" % (len(missing), " ".join(missing)))
         return 1
     res_path = C.work(cfg, "catalogue", "resolutions.json")
-    resolutions = {(r["at"] if ":" in r["at"] or r["at"] in grid.ids else C.canonical_side(grid, r["at"], "resolutions"), feature_name(r["feature"])): r
-                   for r in (C.read_json(res_path) if os.path.exists(res_path) else [])}
+    resolutions = {}
+    for r in (C.read_json(res_path) if os.path.exists(res_path) else []):
+        key = (r["at"] if ":" in r["at"] or " " in r["at"] or r["at"] in grid.ids
+               else C.canonical_side(grid, r["at"], "resolutions"), feature_name(r["feature"]))
+        if key in resolutions:
+            raise ValueError("%s: two resolutions for %s %s; keep one" % (res_path, key[1], key[0]))
+        resolutions[key] = r
     terrain = collections.defaultdict(dict)
     place = collections.defaultdict(dict)
     side_votes = {k: collections.defaultdict(dict) for k in kinds(cfg)}
@@ -99,7 +127,11 @@ def main(argv):
             for name in C.all_sides_within(grid, area):
                 side_votes[kind][name][t["name"]] = name in names
         for u in rec.get("unclear", []):
-            at = u["at"] if u["at"] in grid.ids else C.canonical_side(grid, u["at"], "tile %s unclear" % t["name"])
+            # an unclear entry is a question: one naming several options ("3901:nw / 3901:n") stays verbatim
+            try:
+                at = u["at"] if u["at"] in grid.ids else C.canonical_side(grid, u["at"], "tile %s unclear" % t["name"])
+            except ValueError:
+                at = u["at"]
             unclear.append(dict(u, at=at, feature=feature_name(u["feature"]), tile=t["name"]))
         markers += [dict(m, tile=t["name"]) for m in rec.get("markers", [])]
         notes += ["%s: %s" % (t["name"], n) for n in rec.get("notes", [])]

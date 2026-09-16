@@ -55,7 +55,58 @@ Engine and records
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
-- in-flight tasks (2026-09-14, evening): tasks/12-pgg-map.md (M6e, W5, Opus by Ben's choice), the pilot
+- in-flight tasks: none. M6e terrain follow-up DONE (W5b, 2026-09-15, 13:45-19:45; W5 had stalled twice
+  on a 54 MB transcript, so a fresh worker took it with a short brief). From Ben's labelled hexes (water
+  1402 1602; forest 1601 1701 1702 1801 1902 2201 0816 1118 1218 1808 2008) the "at least half" rule was
+  simply wrong for this map: his forests measure 0.266-0.487 and his water 0.308-0.340. Woods and lake
+  thresholds are now 0.24/0.35/0.15 (were 0.50/0.60/0.30 and 0.50/0.60/0.20), swamp is tested before
+  woods, and the lake mask is opened 9 px so the light-blue compass rose in 5527 stops reading as lake.
+  The masks were otherwise sound (a colour census found no beige or green left out). 119 hexes clear ->
+  woods, 4 -> lake (0502 1402 1602 5503), none the other way; sheet now clear 1433, woods 356, lake 15,
+  swamp 25. 0703 is a named exception, kept clear: its lake fill is 0.315 but the printed road runs down
+  its land side. All gates passed: merge 219 resolutions 0 open, render 0 warnings, verify r1 0
+  differences, network_check 0 broken on PGG/TRC/DS (3 new PGG exceptions for the river along 1602's
+  shore), validate-xml 11 valid, banner-check 0. ctest 224/224. Two goldens re-recorded with --record:
+  overrun (spent 12 -> 14, 2409 now woods) and full-turn, whose scenario script needed new paths for the
+  26th and 27th Armoured around the new woods at 0309 and 0213. README lesson added under "Stage 9 -
+  verify". Awaiting Ben: review of the full-turn.script.xml paths, open questions 1-5, and new question 6
+  (nearest misses just under 0.24: woods 5808 0.229 and 4516 0.220 under a railway, lake 0503 0.228).
+- pending (2026-09-15): is image2sheet fit for a Sonnet worker with little guidance? The process is written
+  up in map_graphics/xml/tools/image2sheet/README.md (10 stages, commands, gates, timings, pitfalls). Three
+  gaps closed today: examples/pgg/ now tracks the pilot's filled-in reader and verify prompts, two worked
+  catalogue records and the marker pass (work/ is gitignored, so nothing survived a run); maps/template.json
+  documents every configuration key and check_config.py reports missing or inconsistent keys before stage 1
+  (it errors on a terrain threshold left at exactly 0.5, the mistake behind the follow-up); the ask for the
+  person's labelled hexes moved to stage 0 step 5, ahead of any threshold. The verify prompt now has a
+  template like the reader prompt. What is NOT settled: stage 4 (designing masks and thresholds on a new
+  print) and stage 5a (reading two hard tiles to write the decision rules) are judgment work, and the whole
+  process has run once, on Opus, with the coordinator fixing the renderer and restarting stalled workers.
+  TEST BEFORE TRUSTING IT: give a Sonnet worker the README alone and log every question it has to ask; those
+  questions are the remaining holes. Ben chose the map (2026-09-15): Stalin Moves West (C:/Library/War-Games/
+  Stalin Moves West, map 1650 x 2550), smaller than DDaT and closer to PGG in spirit -- rail, roads, rivers,
+  cities, ports, marsh, forest, rough, national borders -- written as tasks/13-smw-map.md (M6i). His stage-0
+  rulings: the two red dashed line styles (long-long = the start-of-game Soviet front line, which is also the
+  USSR border, as at 1838-1839 west of Brest-Litovsk; long-short = national borders) both become the same
+  `border` element, the front-line distinction dropped on purpose; the part-water city hexes Stettin 2030,
+  Danzig 2234 and Konigsberg 2235 are land with a port glyph, never water; the charts round the playing area
+  are furniture to clip away. His wider point, now principle 9 of the README and a new stage 0 step: there is
+  a BASE process, customised per map after a scan for puzzling elements, not a universal one; each map ends
+  stage 0 with a written decisions list, settled with the person who knows the game. Dai Senso (M6g) still
+  needs two grids on one sheet in the tools first.
+- M6e (tasks/12-pgg-map.md) was at status: review before the follow-up: calibrate 15 control
+  points, worst 0.008 hex, grid 59 x 31; 120/120 tiles; merge 102 resolutions, 0 open; verify 0 differences;
+  terrain audit of 282 near-threshold hexes, 0 corrections; Ben's known errors fixed with before/after crops
+  (work/pgg/report/); network_check 0 on TRC, PGG, DS; W5 ctest 224/224; six PGG goldens re-recorded (full-turn
+  script re-routed on the printed terrain); TRC goldens unchanged; README 346 lines with per-stage timings.
+  Coordinator re-checked network_check, XML, banners, TRC goldens and two crops (Orsha, columns 57-59);
+  staged. OPEN FOR BEN (tasks/12 "Open questions"): (1) VP hex codes in the rules XML name old/label hexes
+  (Smolensk 2216+2217, Vyazma 4015, Kaluga 5921, Gzhatsk 4607, Vitebsk 0412+0513, Mogilev 0424+0525,
+  Roslavl 2626) -- change codes and PggFacts; (2) entrance box "W,1" (Russian) vs "W, 2" (English); (3)
+  terrain rule (b) for one-hex woods symbols (24 hexes) -- agree or keep the half rule alone; (4) the
+  Russian map draws no road across any river, so German road supply cannot reach 0120 -- W5 recommends
+  an engine rule joining a road that ends at a river to the road across; (5) re-place river-name labels
+  (e.g. "Вопь" where no river runs) or leave them as decoration. Plus Ben's own hex-by-hex check today.
+- M6e history: tasks/12-pgg-map.md (W5, Opus by Ben's choice), the pilot
   of the image2sheet process; W5 keeps "Process notes for Sonnet" in the task file and folds them into
   map_graphics/xml/tools/image2sheet/README.md so later maps (TRC, DS, DDaT, out-of-sample) can run on
   Sonnet from the README alone. 2026-09-14 18:xx the laptop's phone hotspot dropped: W5 and its
@@ -363,6 +414,18 @@ Engine and records
   Johnston Island. Boundaries at sea are printed and correct; sent to M6d's worker. Those two regions
   are examples only: the whole map is to be fixed to the same standard (every rail and road line, every
   international and naval zone border, region borders, mountains, places), against pic4573603.png.
+- 2026-09-14 Urban buildings (Ben: now the DEFAULT, "the cities in that PGG map are fine";
+  `--urban-symbols` draws the old city symbol; W5 told to treat city drawing style as deliberate in
+  verify; TRC render refreshed; hexview must reproduce it). EXCEPTION (Ben, same evening): Dai Senso
+  keeps plain city symbols (circles, as pic4573603.png draws them) because the map is already dense;
+  the sheet now says so itself (urban="symbol", XSD entry "sheet/@urban"). hexsheet2svg.py tints each hex carrying a
+  city-major, city or capital glyph pale grey (tempest's paleGray #e3e3e3, in the terrain layer) and
+  draws the glyph as 4-5 scattered black rectangles after panj/tempest's drawBuildings (sizes 0.2-0.44
+  of the hex radius, scattered over +/-0.55 by +/-0.48 of it; a small overlap may join two into an L,
+  but no rectangle more than 15% covered and centres at least 0.30 apart, so they do not lump; seeded
+  by sheet id and hex id so every render is the same). Spread widened after Ben found 35% overlap made lumps. OFF by default so the M6e map pilot's renders and verify pass are unchanged (default
+  render checked byte-identical). Trial render: scratchpad/urban/pgg-blocks.png. After Ben's look and
+  M6e, make it the default (then hexview's SymbolLibrary/MapSceneBuilder must reproduce it too).
 - 2026-09-14 Visual parity (Ben, for the future): the C++ visualization, both the Qt6 GUI (hexqt) and
   the HTML/browser client, must reproduce the graphics now being settled in the Python reference
   renderers' SVG/PNG: smoothed roads and railways (hexside midpoint to midpoint through a hex, midpoint to
@@ -406,6 +469,11 @@ Engine and records
 - APPROVED 2026-09-14 (Ben chose option 2C and reviewed the schema):
   hexrules.xsd phase gains step* (@id @does @at=enter|before-command|after-command|end @commands
   @rules @turns). Optional element, so every existing rules document still validates.
+- APPROVED AND APPLIED 2026-09-14 (Ben: "the XML has to explicitly choose"): hexsheet.xsd `sheet/@urban` =
+  `buildings | symbol`, REQUIRED, no default. Every renderer follows the document (hexsheet2svg.py now;
+  hexview for Qt6 and HTML later); the --urban-symbols flag is gone. TRC and PGG say buildings; Dai
+  Senso and DDaT say symbol; the four C++ test fixture sheets say symbol. HexXml::SheetDoc reads and
+  checks it. W5 told to keep it when assembling the rebuilt PGG sheet.
 - EXPECTED from M6b: a hexsave.xsd proposal to store the resolution stack, so a save taken while a
   decision is pending reloads (hexsave has no element for it today). W4 proposes; not applied.
 - Candidates noted in the plan: `phase/@repeat-per-side`, `phase/@caps`, `panel/@space`.

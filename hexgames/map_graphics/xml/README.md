@@ -26,7 +26,7 @@ python hexsheet2svg.py the-russian-campaign.xml --png --scale 1
 One element per address kind from `..\graphic-element-taxonomy.md`:
 
 ```
-sheet  @id @title @source @width @height @background @font
+sheet  @id @title @source @width @height @background @font @urban=buildings|symbol (required)
   grid+      @orientation=flat|pointy @offset=odd|even @cols @rows @size(circumradius) @ox @oy
              @id-format @col-start @col-step @row-start @row-step @terrain @show-ids @id-side @clip
   palette    color* (@id @value)          -- every colour is a palette id, never a literal

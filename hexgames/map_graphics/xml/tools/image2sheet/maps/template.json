@@ -1,0 +1,90 @@
+{
+ "_note": "Copy to maps/<map>.json and fill in. Every '_note' key is documentation and is ignored by the tools; delete them or keep them, as you like. maps/pgg.json is a complete filled-in example. Run 'python check_config.py <map>' before stage 1: it reports missing and inconsistent keys.",
+ "map": "MAP",
+ "title": "Game title, edition, which printing this image is",
+
+ "sources": {
+  "_note": "'primary' is the image whose pixel frame the sheet follows. Add other editions as further named sources; each needs its own control_points and fit. size_hint is the approximate circumradius in pixels (centre to a corner), read off a ruler crop in stage 0. line_dark is the grey level under which a pixel counts as grid-line ink.",
+  "primary": {
+   "path": "C:/absolute/path/to/scan.png",
+   "note": "pixel size, and any other file that is the same image",
+   "size_hint": 60.0,
+   "line_dark": 60,
+   "control_points": [
+    {"_note": "stage 1 fills this in: at least 12 hexes, one in each of the nine regions (four corners, four edge middles, centre)", "id": "0101", "x": 0.0, "y": 0.0}
+   ]
+  }
+ },
+
+ "grid": {
+  "_note": "orientation 'flat' or 'pointy'; offset 'odd' or 'even' (which printed columns, or rows on a pointy grid, are shifted down); id-format is a Python format over col and row; id-side is the hexside the PRINTED id sits against, so the overlay puts our id opposite it; terrain is the default terrain of a hex nothing else claims; extent names printed ids that must be on the grid.",
+  "id": "main",
+  "orientation": "flat",
+  "offset": "odd",
+  "cols": 1,
+  "rows": 1,
+  "id-format": "{col:02}{row:02}",
+  "col-start": 1,
+  "row-start": 1,
+  "id-side": "s",
+  "terrain": "clear",
+  "extent": {"first": "0101", "last": "0101"}
+ },
+
+ "tiles": {"_note": "a reader's tile: core hexes square, margin hexes all round, scale of the crop", "core": 4, "margin": 1, "scale": 1.5},
+
+ "vocabulary": {
+  "_note": "How THIS print draws each feature, in words a reader can match by eye, colours included. The ids must be the sheet's own terrain, glyph and line ids. Pasted into the reader prompt.",
+  "terrain": {
+   "clear": "how the print draws it, with colours",
+   "woods": "how the print draws it, with colours",
+   "swamp": "how the print draws it, with colours",
+   "lake": "how the print draws it, with colours"
+  },
+  "places": {"city-major": "how the print draws it", "town": "how the print draws it"},
+  "hexside_lines": {"river": "how the print draws it, and what it is NOT (a lake outline of the same colour)"},
+  "links": {"rail": "how the print draws it", "road": "how the print draws it"},
+  "markers": {"entrance": "margin furniture a person reads in the edge pass"}
+ },
+
+ "candidates": {
+  "_note": "Stage 4. colour_masks: per feature either 'rgb' (a list of colours) with 'tol', or a 'green' hue rule {over_r, over_b, min_r}; optional 'open' (drop thin strokes, in px), 'close' (fill mottle), 'grow' (bridge gaps). hex_masks are the masks measured per hex. THRESHOLDS ARE NOT GUESSES: set every 'at_least' from the person's labelled hexes (stage 0 step 5), in a gap of the measured distribution just under the faintest hex they call that terrain. Order matters: a hatch or symbol terrain (swamp) must come before a blob-colour terrain (woods) whose mask its strokes partly match. blob_share and blob_cover catch a symbol drawn wholly inside one hex.",
+  "colour_masks": {
+   "river": {"rgb": [[0, 0, 0]], "tol": 34},
+   "lake": {"rgb": [[0, 0, 0]], "tol": 40},
+   "woods": {"green": {"over_r": 14, "over_b": 22, "min_r": 40}, "close": 5},
+   "swamp": {"rgb": [[0, 0, 0]], "tol": 36},
+   "city": {"rgb": [[0, 0, 0]], "tol": 10},
+   "road": {"rgb": [[0, 0, 0]], "tol": 16, "open": 3, "grow": 2},
+   "rail": {"rgb": [[255, 255, 255]], "tol": 3, "grow": 5}
+  },
+  "hex_masks": ["woods", "lake", "swamp", "city", "river", "rail", "road"],
+  "presence": {"_note": "a link's own coverage a hex needs before a crossing counts as a step", "rail": 0.04, "road": 0.025},
+  "default_terrain": "clear",
+  "terrain": {
+   "swamp": {"mask": "swamp", "at_least": 0.03, "sure": 0.06, "maybe": 0.01},
+   "lake": {"mask": "lake", "at_least": 0.24, "sure": 0.35, "maybe": 0.15},
+   "woods": {"mask": "woods", "at_least": 0.24, "sure": 0.35, "maybe": 0.15, "blob_share": 0.75, "blob_cover": 0.2}
+  },
+  "city_at_least": 0.03,
+  "hexside_lines": ["river"],
+  "band": 0.3,
+  "along_sure": 0.8,
+  "along_maybe": 0.45,
+  "links": ["rail", "road"],
+  "half_width": 2,
+  "along_share": 0.6,
+  "min_run": 0.07,
+  "end": 0.06,
+  "corner": 0.12
+ },
+
+ "sheet": {
+  "_note": "path and png are relative to map_graphics/xml. urban is REQUIRED by hexsheet.xsd: 'buildings' (a pale tint with scattered black rectangles) or 'symbol' (a plain glyph), how the renderer draws cities. keep lists the parts of an existing sheet copied through unchanged.",
+  "path": "sheet-name.xml",
+  "png": "sheet-name.png",
+  "urban": "buildings",
+  "keep": ["palette", "terrains", "lines", "label", "panel"],
+  "place_style": {"city-major": {"size": 34, "weight": "bold"}, "town": {"size": 26, "weight": "normal"}}
+ }
+}

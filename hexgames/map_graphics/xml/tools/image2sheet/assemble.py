@@ -92,12 +92,16 @@ def main(argv):
     missing = [pid for pid in grid.ids if pid not in cat["hexes"]]
     if missing:
         raise ValueError("catalogue has no terrain for %d hexes: %s" % (len(missing), " ".join(sorted(missing)[:20])))
+    urban = sheet_cfg.get("urban")
+    if urban not in ("buildings", "symbol"):
+        raise ValueError("%s: sheet.urban must be 'buildings' or 'symbol' (how the renderer draws cities), not %r"
+                         % (cfg["_path"], urban))
+    carried = [(k, v) for k, v in root.attrib.items() if not k.startswith("{") and "urban" != k]
     x = ['<?xml version="1.0" encoding="UTF-8"?>',
-         '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"',
-         '       %s' % attrs(id=root.get("id"), title=root.get("title")),
-         '       %s' % attrs(source=root.get("source")),
-         '       %s>' % attrs(width=root.get("width"), height=root.get("height"), background=root.get("background"),
-                             font=root.get("font")),
+         '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"']
+    x += ["       %s=%s" % (k, quoteattr(v)) for k, v in carried]
+    x[-1] += " urban=%s>" % quoteattr(urban)
+    x += [
          "  <!-- built by map_graphics/xml/tools/image2sheet/assemble.py from the %s catalogue; fix the catalogue, not this file -->" % cfg["map"],
          "  " + etree.tostring(C.grid_element(cfg, fit), encoding="unicode").strip()]
     keep = set(sheet_cfg["keep"])
@@ -105,9 +109,11 @@ def main(argv):
     by_terrain = collections.defaultdict(list)
     for pid in sorted(cat["hexes"], key=order_key(grid)):
         by_terrain[cat["hexes"][pid]["terrain"]].append(pid)
+    # Every hex is listed, the grid's default terrain included: hexrules' PackageLoader knows a hex only from a
+    # <hexes> list or a <hex> element, not from the grid.
     x.append("  <!-- terrain, one per hex, as read -->")
     for terrain in cfg["vocabulary"]["terrain"]:
-        if terrain != cfg["grid"]["terrain"] and by_terrain[terrain]:
+        if by_terrain[terrain]:
             x.append("  <hexes %s/>" % attrs(terrain=terrain, ids=" ".join(by_terrain[terrain])))
     for line in cfg["vocabulary"]["hexside_lines"]:
         names = cat["rivers" if "river" == line else line]

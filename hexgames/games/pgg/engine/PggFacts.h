@@ -6,8 +6,9 @@
 // division's last two steps, a Leader's rating), the map facts (terrain, rivers, roads, rail, the
 // edges, the westernmost hex-columns, the Victory Point hexes and levels from the rules document's
 // lists, the entrance areas) and the ids of the phases, modes, networks and spaces the rules name.
-// Every id the rules or the prose names is resolved here and throws if absent. Data the rules need
-// and no input carries (the entrance areas' hexes) is provisional and listed by dataGaps().
+// Every id the rules or the prose names is resolved here and throws if absent. The entrance areas' hexes
+// are the printed map's (PggFactsMap.cpp); data the rules need and the sheet does not carry is listed by
+// dataGaps().
 // ----------------------------------------------
 #pragma once
 #include "hexengine/Policies.h"

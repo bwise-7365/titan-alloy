@@ -25,7 +25,7 @@
     </move>
     <move n="4" turn="1" phase="set-up" side="german" cmd="end-phase"/>
     <move n="5" turn="1" phase="soviet-move" side="soviet" cmd="move" units="s1-64-inf-2-4-6" mode="normal" path="0908 0909"/>
-    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="rail-move" units="s1-f-inf-2-4-6" mode="rail-move" path="0613 0714 0715"/>
+    <move n="6" turn="1" phase="soviet-move" side="soviet" cmd="rail-move" units="s1-f-inf-2-4-6" mode="rail-move" path="0613 0714 0814"/>
     <move n="7" turn="1" phase="soviet-move" side="soviet" cmd="end-phase"/>
     <move n="8" turn="1" phase="soviet-combat" side="soviet" cmd="end-phase"/>
     <move n="9" turn="1" phase="soviet-disruption-removal" side="soviet" cmd="end-phase"/>

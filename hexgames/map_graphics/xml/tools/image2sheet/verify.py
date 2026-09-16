@@ -37,6 +37,14 @@ def main(argv):
         return at if at in grid.ids or "*" == at else C.canonical_side(grid, at, ctx)
 
     named = {(key(e["at"], "exceptions"), e["feature"]) for e in exceptions}
+    # a difference whose place has a catalogue resolution is resolved; the focused round (contact.py) re-checks it
+    res_path = C.work(cfg, "catalogue", "resolutions.json")
+    for r in (C.read_json(res_path) if os.path.exists(res_path) else []):
+        if " " in r["at"]:
+            continue
+        feature = "river" if "rivers" == r["feature"] else r["feature"]
+        named.add((key(r["at"], "resolutions"), feature))
+        named.add((key(r["at"], "resolutions"), r["feature"]))
     missing = [t["name"] for t in tiles if not os.path.exists(os.path.join(folder, t["name"] + ".json"))]
     found = collections.OrderedDict()
     excepted = 0

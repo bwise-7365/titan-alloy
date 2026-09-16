@@ -3,7 +3,7 @@
   <cursor turn="2" phase="german-move1" side="german" moves="7" over="false"/>
   <sides>
     <side id="german">
-      <flag name="spent" value="s2-6-inf-9-7:4"/>
+      <flag name="spent" value="s2-6-inf-9-7:2"/>
       <flag name="unsupplied" value="s2-6-inf-9-7"/>
     </side>
     <side id="soviet">
@@ -17,7 +17,7 @@
     <unit id="s1-f-inf-2-4-6" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="4615" face="front" moved="false"/>
     <unit id="s1-lukin-16th-army-hq-3-10" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="4015" face="front" moved="false"/>
     <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="1715" face="front" moved="false"/>
-    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="2916" face="front" moved="true"/>
+    <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="5002" face="front" moved="true"/>
   </units>
   <streams>
     <stream tag="setup" draws="1"/>
@@ -46,8 +46,8 @@
       <event kind="phase" side="german" value="german-move1">turn 2</event>
       <event kind="supply" unit="s2-6-inf-9-7" value="isolated"/>
     </move>
-    <move n="7" turn="2" phase="german-move1" side="german" by="script" cmd="move" units="s2-6-inf-9-7" path="3014 2915 2916" mode="normal">
-      <event kind="moved" unit="s2-6-inf-9-7" hex="2916" value="3014 2915 2916"/>
+    <move n="7" turn="2" phase="german-move1" side="german" by="script" cmd="move" units="s2-6-inf-9-7" path="4902 5002" mode="normal">
+      <event kind="moved" unit="s2-6-inf-9-7" hex="5002" value="4902 5002"/>
     </move>
   </log>
 </save>

@@ -7,14 +7,17 @@
 Validates against hexsheet.xsd (beside this script), writes SVG, and with --png
 rasterises through Inkscape.  Roads and railways are drawn smoothed, hexside midpoint
 to midpoint through each hex; rivers are drawn with rounded corners unless
---straight-rivers asks for plain hexsides.  Layers are emitted in the taxonomy's fixed order:
+--straight-rivers asks for plain hexsides; city hexes follow the sheet's urban
+attribute (buildings: tinted, a few scattered buildings; symbol: the city glyph).  Layers are emitted in the taxonomy's fixed order:
 terrain, regions, grid, edges, links, rings, hex glyphs, side glyphs, labels, panels.
 """
 import math
 import os
+import random
 import re
 import subprocess
 import sys
+import zlib
 from xml.sax.saxutils import escape
 
 from lxml import etree
@@ -226,6 +229,9 @@ SYMBOLS = {
     "text": '',
 }
 DIR_ANGLE = {"e": 0, "se": 45, "s": 90, "sw": 135, "w": 180, "nw": 225, "n": 270, "ne": 315}
+# Glyphs drawn as scattered buildings on a sheet whose urban attribute is "buildings".
+URBAN_SYMBOLS = ("city-major", "city", "capital")
+URBAN_TINT = "#e3e3e3"  # panj/tempest's paleGray (227, 227, 227), laid over an urban hex's terrain
 
 
 # ---------------------------------------------------------------- renderer
@@ -240,6 +246,9 @@ class Renderer:
                 print("XSD: line %d: %s" % (e.line, e.message), file=sys.stderr)
             raise SystemExit("invalid: " + xml_path)
         self.root = self.doc.getroot()
+        # The sheet chooses how city hexes are drawn (hexsheet.xsd sheet/@urban, required): buildings
+        # tints the hex and scatters a few buildings, after panj/tempest; symbol draws the glyph.
+        self.urban_blocks = "buildings" == self.root.get("urban")
         self.colors = {c.get("id"): c.get("value") for c in self.root.iter("color")}
         self.terrains = {t.get("id"): t for t in self.root.iter("terrain")}
         self.lines = {l.get("id"): l for l in self.root.iter("line")}
@@ -357,8 +366,14 @@ class Renderer:
         d.append("</defs>")
         return "\n".join(d)
 
+    def urban_hexes(self):
+        """Ids of the hexes carrying a city glyph, tinted when a render asks for urban blocks."""
+        return {h.get("id") for h in self.root.findall("hex")
+                if any(gl.get("symbol") in URBAN_SYMBOLS for gl in h.findall("glyph"))}
+
     def layer_terrain(self):
         o = ['<g class="layer terrain">']
+        urban = self.urban_hexes() if self.urban_blocks else set()
         for g in self.grids:
             for (c, r), pid in g.cells.items():
                 t = self.terrains.get(self.terrain_of.get(pid))
@@ -370,6 +385,8 @@ class Renderer:
                     t.get("id"), pid, pts, self.col(t.get("fill"))))
                 if (t.get("pattern") or "none") != "none":
                     o.append('<polygon points="%s" fill="url(#pat-%s)"/>' % (pts, t.get("pattern")))
+                if pid in urban:
+                    o.append('<polygon class="urban-tint" points="%s" fill="%s"/>' % (pts, URBAN_TINT))
         o.append("</g>")
         return "\n".join(o)
 
@@ -685,7 +702,9 @@ class Renderer:
                 rot = 0.0
                 if gl.get("dir"):
                     rot = DIR_ANGLE[gl.get("dir")] - 270
-                if sym != "text":
+                if self.urban_blocks and sym in URBAN_SYMBOLS:
+                    o.append(self.buildings(h.get("id"), x, y, g.size, self.col(gl.get("color"), "#111"), sym))
+                elif sym != "text":
                     o.append(self.use(sym, x, y, rot, scale, color, "glyph " + sym))
                 if gl.get("text"):
                     fs = g.size * 0.30 * float(gl.get("scale") or 1)
@@ -694,6 +713,42 @@ class Renderer:
                         x, y, fs, fill, escape(gl.get("text"))))
         o.append("</g>")
         return "\n".join(o)
+
+    def buildings(self, hex_id, x, y, size, color, sym):
+        """An urban hex as a few scattered buildings, after panj/tempest's drawBuildings: 4 or 5
+        axis-aligned rectangles of a few sizes around the glyph point. Rectangles may overlap a little,
+        which makes L-shaped buildings, but none may be mostly hidden by another. The layout is drawn
+        from a generator seeded by the sheet id and the hex id, so every render of a sheet is the same
+        and neighbouring cities differ."""
+        rng = random.Random(zlib.crc32(("%s/%s" % (self.root.get("id"), hex_id)).encode("utf-8")))
+        shapes = [(0.44, 0.24), (0.32, 0.22), (0.24, 0.38), (0.30, 0.30), (0.38, 0.20), (0.22, 0.22)]
+        wanted = rng.choice((4, 5))
+        placed = []
+        for _ in range(200):
+            if len(placed) == wanted:
+                break
+            w, h = (s * size for s in rng.choice(shapes))
+            cx = x + rng.uniform(-0.55, 0.55) * size
+            cy = y + rng.uniform(-0.48, 0.48) * size
+            box = (cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)
+            # A small overlap joins two buildings into an L; centres kept apart stop them lumping.
+            if all(self.covered_fraction(box, b) < 0.15
+                   and math.hypot(cx - (b[0] + b[2]) / 2, cy - (b[1] + b[3]) / 2) >= 0.30 * size
+                   for b in placed):
+                placed.append(box)
+        rects = "".join('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f"/>' % (b[0], b[1], b[2] - b[0], b[3] - b[1])
+                        for b in placed)
+        return '<g class="glyph %s buildings" fill="%s">%s</g>' % (sym, color, rects)
+
+    @staticmethod
+    def covered_fraction(a, b):
+        """How much of the smaller of two boxes (x0, y0, x1, y1) the other one covers, from 0 to 1."""
+        w = min(a[2], b[2]) - max(a[0], b[0])
+        h = min(a[3], b[3]) - max(a[1], b[1])
+        if w <= 0 or h <= 0:
+            return 0.0
+        smaller = min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1]))
+        return (w * h) / smaller
 
     def layer_sideglyphs(self):
         o = ['<g class="layer sideglyphs">']
@@ -738,8 +793,13 @@ class Renderer:
                 k = g.size * 0.70
                 x = cx + k * math.cos(math.radians(ang))
                 y = cy + k * math.sin(math.radians(ang))
+                # The id runs along its hexside; never upside down (an id on the south side of a
+                # flat hex reads left to right, as printed).
+                rot = (ang + 90) % 360
+                if 90 < rot < 270:
+                    rot = (rot + 180) % 360
                 o.append('<text transform="translate(%.2f,%.2f) rotate(%d)" font-size="%.2f" text-anchor="middle" dominant-baseline="central" fill="#444" fill-opacity="0.8">%s</text>' % (
-                    x, y, (ang + 90) % 360, fs, escape(pid)))
+                    x, y, rot, fs, escape(pid)))
         # region labels
         for reg in self.root.findall("region"):
             if reg.get("label") and reg.get("label-at"):

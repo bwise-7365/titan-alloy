@@ -12,32 +12,35 @@
     </side>
   </sides>
   <units>
-    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="0608"/>
-    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="0608"/>
-    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="0608"/>
-    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="0611" revealed="false"/>
+    <unit id="s2-25-7-arm-4-10" counter="s2-25-7-arm-4-10" type="german-panzer" owner="german" hex="2408"/>
+    <unit id="s2-6-7-inf-2-10" counter="s2-6-7-inf-2-10" type="german-motorized" owner="german" hex="2408"/>
+    <unit id="s2-7-7-inf-2-10" counter="s2-7-7-inf-2-10" type="german-motorized" owner="german" hex="2408"/>
+    <unit id="s1-64-inf-2-4-6" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="2411" revealed="false"/>
   </units>
   <log>
-    <move n="1" turn="3" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="0608 0609 0610"/>
-    <move n="2" turn="3" phase="german-move1" side="german" cmd="overrun" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="0611"/>
+    <move n="1" turn="3" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="2408 2409 2410"/>
+    <move n="2" turn="3" phase="german-move1" side="german" cmd="overrun" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" target="2411"/>
     <move n="3" turn="3" phase="german-move1" side="german" cmd="answer">
       <arg name="what" value="result"/>
       <arg name="answer" value="retreat"/>
     </move>
     <move n="4" turn="3" phase="german-move1" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0712"/>
+      <arg name="answer" value="2512"/>
     </move>
     <move n="5" turn="3" phase="german-move1" side="german" cmd="answer">
       <arg name="what" value="retreat"/>
-      <arg name="answer" value="0811"/>
+      <arg name="answer" value="2611"/>
     </move>
-    <move n="6" turn="3" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="0611 0612"/>
+    <move n="6" turn="3" phase="german-move1" side="german" cmd="move" units="s2-25-7-arm-4-10 s2-6-7-inf-2-10 s2-7-7-inf-2-10" mode="normal" path="2411 2412"/>
   </log>
   <notes>
-    <note>The 7th Panzer Division spends two points to reach 0610, beside the untried division, and three more
+    <note>The 7th Panzer Division spends two points to reach 2410, beside the untried division, and three more
       to overrun it (6.51): 16 halved is 8 against 4, 2-1, and the division is revealed (12.2). On a "*" result the
       defender that retreats is Disrupted (6.61); the vacated hex is entered for free and the division may move on
       with the points it has left (6.51).</note>
+    <note>Moved from 0608-0812 to 2408-2611 (18 columns east) when the sheet was rebuilt from the print (maps: PGG
+      accuracy): the old hexes now have a river between 0610 and 0611. Every hex used here is clear, with no river,
+      railway or road.</note>
   </notes>
 </save>

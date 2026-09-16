@@ -41,8 +41,10 @@ TEST(PggRulesTest, TerrainEffectsChart)
   EXPECT_EQ(4, *Pgg::terrainHalves(facts, Pgg::MoveClass::Motor, german, woodsFrom, woodsDirection));
   EXPECT_EQ(2, *Pgg::terrainHalves(facts, Pgg::MoveClass::Leader, soviet, woodsFrom, woodsDirection));
 
+  // The printed map draws no road across a river (roads end at a dot beside it; maps: PGG accuracy), so this is a
+  // plain River hexside into Clear terrain; a road would not change the cost anyway, roads not crossing rivers (6.7).
   const auto [riverFrom, riverDirection] = PggTest::findHexside(set, [&](HexIndex from, Direction d, HexIndex to) {
-    return facts.roadP(from, to) && facts.riverP(from, d) && "clear" == facts.terrainOf(to) && !facts.majorCityP(to);
+    return facts.riverP(from, d) && "clear" == facts.terrainOf(to) && !facts.majorCityP(to) && !facts.lakeP(from);
   });
   EXPECT_EQ(6, *Pgg::terrainHalves(facts, Pgg::MoveClass::Motor, german, riverFrom, riverDirection));  // 11.13
   EXPECT_EQ(4, *Pgg::terrainHalves(facts, Pgg::MoveClass::Motor, soviet, riverFrom, riverDirection));
