@@ -133,12 +133,26 @@ def main(argv):
     x.append("  <!-- places, as read -->")
     style = sheet_cfg["place_style"]
     named = set()
-    for pid in sorted(cat["hexes"], key=order_key(grid)):
-        place = cat["hexes"][pid].get("place")
-        if not place:
+    # Region markers (Soviet/Axis mobilization hexes, resource hexes): a glyph on the hex, same as a place
+    # glyph, from the catalogue's "markers" (kind "region"), never a new catalogue kind of their own.
+    REGION_GLYPH = {"soviet-mobilization": ("star", "soviet"), "axis-mobilization": ("star", "axis"),
+                    "resource": ("oil", "ink")}
+    region_glyphs = {}
+    for m in cat.get("markers", []):
+        if "region" != m.get("kind"):
             continue
-        x.append('  <hex %s><glyph %s/></hex>' % (attrs(id=pid, name=place["name"]), attrs(symbol=place["glyph"], color="ink")))
-        if place["name"] not in named:
+        sym, color = REGION_GLYPH[m["region"]]
+        for pid in m["hexes"]:
+            region_glyphs.setdefault(pid, []).append((sym, color))
+    for pid in sorted(set(cat["hexes"]) | set(region_glyphs), key=order_key(grid)):
+        place = cat["hexes"].get(pid, {}).get("place")
+        glyphs = ([attrs(symbol=place["glyph"], color="ink")] if place else [])
+        glyphs += [attrs(symbol=sym, color=color) for sym, color in region_glyphs.get(pid, [])]
+        if not glyphs:
+            continue
+        hex_attrs = attrs(id=pid, name=place["name"]) if place else attrs(id=pid)
+        x.append("  <hex %s>%s</hex>" % (hex_attrs, "".join("<glyph %s/>" % g for g in glyphs)))
+        if place and place["name"] not in named:
             named.add(place["name"])
             s = style[place["glyph"]]
             x.append("  <label %s/>" % attrs(text=place["name"], at=pid, slot="s", size=s["size"], weight=s["weight"]))

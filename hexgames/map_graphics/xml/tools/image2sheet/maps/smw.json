@@ -1,0 +1,139 @@
+{
+ "map": "smw",
+ "title": "Stalin Moves West (World at War 58, 2018)",
+
+ "sources": {
+  "primary": {
+   "path": "C:/Library/War-Games/Stalin Moves West/Stalin Moves West map.jpg",
+   "note": "1650 x 2550, the un-resampled original; RE-BASED here 2026-09-16 after 'Stalin Moves West map expanded.png' (a 1.5x resample of this same file) disappeared from disk mid-task -- see questions log. Was: expanded.png, 2475x3825. Every control point below is the old expanded-PNG point divided by exactly 1.5.",
+   "size_hint": 53.0,
+   "line_dark": 150,
+   "control_points": [
+    {"id": "2745", "x": 1587.2, "y": 506.7},
+    {"id": "2738", "x": 942.9, "y": 506.7},
+    {"id": "2229", "x": 161.2, "y": 903.5},
+    {"id": "2031", "x": 345.1, "y": 1065.3},
+    {"id": "0840", "x": 1170.4, "y": 2030.8},
+    {"id": "0945", "x": 1584.0, "y": 1951.1},
+    {"id": "0743", "x": 1399.9, "y": 2112.1},
+    {"id": "1637", "x": 895.8, "y": 1388.9},
+    {"id": "1137", "x": 849.9, "y": 1792.5},
+    {"id": "1030", "x": 252.5, "y": 1871.6},
+    {"id": "1531", "x": 299.4, "y": 1468.3},
+    {"id": "1628", "x": 67.8, "y": 1387.0},
+    {"id": "1344", "x": 1492.2, "y": 1632.1}
+   ],
+   "_note": "13 points, one per stage-1 region except NW (no printed hex exists there on this map -- see questions log). Re-derived by exact /1.5 scale from the expanded-PNG fit (residuals there 0.003-0.064 hex, size 80.91) after the re-base; re-fit expected size ~53.9. line_dark and candidate colour masks re-measured on this raster, not carried over (JPEG, different artefacts -- see questions log)."
+  },
+  "rectified": {
+   "path": "C:/Library/War-Games/Stalin Moves West/SMW map rectified.png",
+   "note": "2812 x 3750; Ben's photo of the physical map, warped flat by tools/image2sheet/rectify.py fitted to the printed sheet's own border corners (2026-09-16). Noticeably sharper than the scan. Evaluating as a possible new primary -- see tasks/13-smw-map.md stage log for residuals/affine diagnostic before any swap.",
+   "size_hint": 90.0,
+   "line_dark": 165,
+   "control_points": [
+    {"id": "2745", "x": 2637.9, "y": 905.3},
+    {"id": "1638", "x": 1721.0, "y": 2131.3},
+    {"id": "2028", "x": 276.5, "y": 1739.4},
+    {"id": "2029", "x": 449.9, "y": 1747.1},
+    {"id": "0739", "x": 1839.0, "y": 3187.2},
+    {"id": "0932", "x": 760.1, "y": 3031.0}
+   ]
+  },
+  "detail": {
+   "path": "C:/Library/War-Games/Stalin Moves West/SMW map in detail.jpg",
+   "size_hint": 126.0,
+   "line_dark": 180,
+   "note": "4000 x 3000; Ben's photo of the physical map (2026-09-16), SECONDARY only, no control_points/fit -- sharper per hex but an angled photo with counters on the map, a cable across one edge, uneven lighting, so it cannot be calibrated (perspective is outside calibrate.py's model). Use crop.py smw detail OUT.jpg --box X0 Y0 X1 Y1 (no --grid/--hex/--side: those need a fit this source does not have) to eyeball one place by hand when the primary scan is too coarse to settle a feature; find the rough area by eye against the primary crop first, this source has no shared pixel frame with the grid."
+  }
+ },
+
+ "grid": {
+  "id": "main",
+  "orientation": "pointy",
+  "offset": "even",
+  "cols": 45,
+  "rows": 24,
+  "id-format": "{row:02}{col:02}",
+  "col-start": 1,
+  "row-start": 28,
+  "row-step": -1,
+  "id-side": "w",
+  "clip": "0501-0528 0529-0545 0601-0627 0628-0637 0645 0701-0728 0729-0737 0801-0827 0845 0901-0928 1001-1027 1045 1101-1128 1201-1227 1245 1301-1328 1401-1427 1445 1501-1528 1601-1627 1645 1701-1728 1801-1827 1845 1901-1928 2001-2027 2045 2101-2128 2201-2227 2245 2301-2328 2329-2334 2401-2427 2428-2434 2445 2501-2528 2529-2533 2601-2627 2628-2633 2645 2701-2728 2729-2733 2801-2845",
+  "_clip_note": "0529-0545/0628-0637/0729-0737 added 2026-09-16 after readers on tiles 0828_0628/0829_0532/0745_0545 found the Axis Mobilization Points / Reinforcements / STAVKA Reserve tracks printed WITHIN the declared grid rectangle at rows 5-7 for columns 28-37ish (confirmed by crop: the real south edge is row 8 there, but row 6 at Bucharest's longitude, col 38+ -- an irregular boundary, same as the north edge). This is the exact case calibrate.py fit's 'unprinted' report exists to catch and this worker under-used it for (see questions log): only the geometrically out-of-image hexes were clipped after stage 1, not furniture-within-image-bounds. 3 already-read tiles (0828_0628, 0829_0532, 0745_0545) recorded these ids as placeholder 'clear' terrain with an unclear note rather than being excluded; they need a stage-6 resolution removing those hexes' terrain entries once assemble.py's missing-hex check is re-run against the corrected grid (their hexside/place data for REAL neighbouring hexes is unaffected and stays valid). SECOND ROUND (2026-09-16, after full stage 5 reading): 2329-2334/2428-2434/2529-2533/2628-2633/2729-2733/2828-2833 added after several readers independently found a 'German Reorganization Chart' plus Air Landing/Air Superiority Tables plus page credits printed within the rectangle at rows 23-28, columns 28-34ish, near the NW corner (the same corner that already has no possible NW-region control point -- see questions log). Compiled from every reader's furniture-flagged unclear/notes entries (work/smw/stage0/find_furniture.py), not re-derived from crops by this worker. Migrated via work/smw/stage0/migrate_tiles.py exactly as the first round was. THIRD ROUND (2026-09-16, during stage 6 resolution): a resolver crop-confirmed hex 2837 (and 2836/2838) sit entirely in the grey margin band above the real map's row-27 north edge, no printed content at all; a follow-up wide crop across the full row (source y=429.77, the row-28 centre line) confirmed this is true for the WHOLE of row 28, every column -- row 28 was included in the original grid rectangle purely as a stage-1 'safety margin' guess (see stage log) and should never have held real hexes anywhere. Replaced every remaining row-28 clip token with a single 'row28-full' range covering columns 1-45. This is the strongest evidence yet that the calibrate.py fit's 'unprinted' report should be read in full at stage 1 rather than trusting a rounded-up row/col margin.",
+  "terrain": "clear",
+  "extent": {"first": "0639", "last": "2745"}
+ },
+
+ "tiles": {"core": 4, "margin": 1, "scale": 1.5},
+
+ "vocabulary": {
+  "_note": "read from the map's own Terrain Effects Chart / legend, upper right of the sheet, source px x 1550-1900 y 0-620; colours measured on real hexes (candidates.colour_masks), not the small legend swatches.",
+  "terrain": {
+   "clear": "pale cream/white paper, faint relief hatching only, ~(218,226,213)",
+   "rough": "olive-tan wash over the relief hatching, ~(177,166,61); the hilly band across Germany/Slovakia/Hungary/Romania and pockets elsewhere",
+   "forest": "mottled green blob, ~(150,185,130) with darker mottle, same family as PGG woods but no dark-spot contrast as strong",
+   "marsh": "pale green hex with small dark-green tuft/hatch marks (not yet located on the visible map; may be absent or rare -- confirm during stage 4/5)",
+   "coastal": "a hex the print draws PART water, part land (a light-blue triangle/wedge cutting the hex, the rest paper); distinct TEC terrain from all-sea, OTIH move/defense; port cities on part-water hexes (Stettin 2030, Danzig 2234, Konigsberg 2235 -- Ben's ruling 2) are 'coastal' land terrain with a port glyph, never this triangle rule alone deciding water vs land for a city hex",
+   "sea": "solid light blue fill, ~(197,228,248), 'All-Sea' on the TEC: movement prohibited, blocks supply"
+  },
+  "places": {
+   "city": "cluster of small black rectangle blocks with black edges, bold capital name; 'City' on the TEC (OTIH move/defense, attacker cannot use Mobile CRT)",
+   "port": "a city hex additionally marked with a circled blue anchor glyph beside/inside it; 'Port' on the TEC (OTIH move/defense, see Amphibious Movement)"
+  },
+  "hexside_lines": {
+   "river": "thick light-blue line (~(120,190,225)) along hexsides, rounded bends; 'River/Lake Hexside' on the TEC, +1 move, x2 defense if all attackers cross it. The print draws ONE such line style for both a river and a lake shore; no separate lake FILL terrain exists on this map (no 'lake' hex terrain in the TEC), so any hex-interior blue that is not a coastal/all-sea wedge is read as a river, not a lake.",
+   "border": "TWO printed dash styles, deliberately merged into one sheet element per Ben's stage-0 ruling 1: long-short dashes = 'National Border' (thin, closely spaced dashes on the TEC legend); long-long dashes with an added small red block = 'Front Line (USSR border)', which IS the USSR's western border at game start. The sheet does not distinguish them or record where the front line was."
+  },
+  "links": {
+   "rail": "black hatch-tick line ('Railroad' on the TEC: full cost by rail-movement rule, 0.5 MP if used as a road; roads run alongside railroads per rule 10.6)",
+   "road": "not a separate line the map prints as its own colour where a railroad is present (rule 10.6: 'Railroads are considered to have roads running alongside them'); confirm at stage 4/5 whether any hexes show a road with NO parallel railroad (a distinct thinner grey line) -- if none are found, 'road' may be a dead vocabulary entry for this map, a stage-0 decision to record once confirmed"
+  },
+  "markers": {
+   "mobilization": "a red 5-point star (Soviet Mobilization Hex) or green 5-point star (Axis Mobilization Hex) centred on a hex; a REGION overlay on top of the hex's own terrain, not a terrain of its own",
+   "resource": "a black oil-derrick glyph centred on a hex (Axis Resource Hex on the TEC); also a region overlay",
+   "bridge": "a small yellow tile with a blue lightning/river-crossing glyph, printed ON a hexside where a railroad or road crosses a river; 'Bridge' on the TEC, 0 cost to cross river",
+   "compass_scale": "furniture printed OVER two real hexes near the NE corner (2744: '43.5 Miles / 70 Km' scale bar; 2745: compass rose) -- not map furniture to clip (Ben's ruling 3 is about the charts AROUND the map, not icons printed on real hexes), but ignore the icon itself when reading those two hexes' terrain"
+  }
+ },
+
+ "candidates": {
+  "colour_masks": {
+   "river": {"rgb": [[120, 190, 225]], "tol": 30},
+   "sea": {"rgb": [[197, 228, 248]], "tol": 18},
+   "forest": {"green": {"over_r": 12, "over_b": 20, "min_r": 30}, "close": 5},
+   "rough": {"rgb": [[177, 166, 61]], "tol": 22},
+   "marsh": {"rgb": [[15, 135, 65]], "tol": 36},
+   "city": {"rgb": [[0, 0, 0]], "tol": 40},
+   "road": {"rgb": [[90, 90, 90]], "tol": 20, "open": 3, "grow": 2},
+   "rail": {"rgb": [[0, 0, 0]], "tol": 40, "grow": 3}
+  },
+  "hex_masks": ["forest", "rough", "sea", "city", "river", "rail", "road"],
+  "presence": {"rail": 0.04, "road": 0.025},
+  "default_terrain": "clear",
+  "terrain": {
+   "sea": {"mask": "sea", "at_least": 0.4, "sure": 0.6, "maybe": 0.25},
+   "rough": {"mask": "rough", "at_least": 0.3, "sure": 0.45, "maybe": 0.15},
+   "forest": {"mask": "forest", "at_least": 0.24, "sure": 0.35, "maybe": 0.15, "blob_share": 0.75, "blob_cover": 0.2}
+  },
+  "city_at_least": 0.03,
+  "hexside_lines": ["river"],
+  "band": 0.3,
+  "along_sure": 0.8,
+  "along_maybe": 0.45,
+  "links": ["rail", "road"],
+  "half_width": 2,
+  "along_share": 0.6,
+  "min_run": 0.07,
+  "end": 0.06,
+  "corner": 0.12,
+  "_note": "coastal (part-water, part-land) and marsh have no colour_mask yet: coastal needs a bespoke wedge-shaped presence rule (not a simple share-of-hex threshold), and no marsh hex has been located on the visible map to calibrate against. Both are read by eye at stage 5, not proposed by candidates.py, until stage 4 tuning on real tiles settles this (see questions log)."
+ },
+
+ "sheet": {
+  "path": "stalin-moves-west.xml",
+  "png": "stalin-moves-west.png",
+  "urban": "buildings",
+  "keep": ["palette", "terrains", "lines"],
+  "place_style": {"city": {"size": 30, "weight": "bold"}, "port": {"size": 30, "weight": "bold"}}
+ }
+}

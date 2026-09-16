@@ -39,13 +39,16 @@ def check_grid(cfg, err, note):
         if not isinstance(g.get(k), int) or 1 > g.get(k, 0):
             err("grid: %s must be a whole number of hexes" % k)
     if "id-format" in g and "cols" in g and "rows" in g:
-        first = g["id-format"].format(col=g.get("col-start", 1), row=g.get("row-start", 1))
-        last = g["id-format"].format(col=g.get("col-start", 1) + g["cols"] - 1,
-                                     row=g.get("row-start", 1) + g["rows"] - 1)
-        for want, got, which in ((g.get("extent", {}).get("first"), first, "first"),
-                                 (g.get("extent", {}).get("last"), last, "last")):
-            if want and want != got:
-                err("grid: extent %s is '%s', but the grid's %s printed id is '%s'" % (which, want, which, got))
+        # extent names printed ids that must be ON the grid, as calibrate.py checks them: membership, not
+        # the corners. col-step and row-step may be -1, so walk the ranges rather than adding cols-1.
+        cols = [g.get("col-start", 1) + i * g.get("col-step", 1) for i in range(g["cols"])]
+        rows = [g.get("row-start", 1) + i * g.get("row-step", 1) for i in range(g["rows"])]
+        ids = {g["id-format"].format(col=c, row=r) for c in cols for r in rows}
+        for which in ("first", "last"):
+            want = g.get("extent", {}).get(which)
+            if want and want not in ids:
+                err("grid: extent %s is '%s', which this grid cannot print (columns %d..%d, rows %d..%d)" % (
+                    which, want, cols[0], cols[-1], rows[0], rows[-1]))
     if g.get("terrain") and g["terrain"] not in cfg.get("vocabulary", {}).get("terrain", {}):
         err("grid: default terrain '%s' is not in vocabulary.terrain" % g["terrain"])
     if 12 > len(g.get("control_points", [])) and 12 > len(cfg["sources"].get("primary", {}).get("control_points", [])):

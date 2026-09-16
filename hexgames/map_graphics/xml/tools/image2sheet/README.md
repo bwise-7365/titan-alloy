@@ -32,6 +32,14 @@ number quoted "on PGG" is from the pilot and is a starting point, not a constant
    puzzling elements and what each becomes in the sheet, settled with the person who knows the game. Two
    printed styles may become one sheet element, and a printed style may carry information the sheet does
    not keep. Treat a stage that "does not fit this map" as a decision to record, never as a rule to bend.
+10. **Structure, not pixels (Ben, 2026-09-16).** The output is XML on a grid that is perfect by
+   construction, so nothing has to line up in pixels and no image is ever warped, rectified or retouched.
+   The image only has to ADDRESS: if a reader can see a city in hex 2030 of a crooked photograph, the
+   sheet gets a city at 2030 and it lands correctly. The sheet records which hexes and hexsides carry
+   which feature; it does not reproduce the print's appearance. PGG's rendered rivers are much thinner
+   than the printed ones and that is CORRECT, not a defect to fix. Spend effort on getting the structure
+   right -- the hex, the hexside, the chain, the terrain -- and spend none on matching pixels, line
+   weights or colours. A geometric fit is good enough when every printed hex is unambiguously identified.
 
 ## Requirements and layout
 - Python 3 with lxml, numpy, scipy and Pillow (PyMuPDF only for PDFs and quick looks). On Ben's machine:

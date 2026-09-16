@@ -55,7 +55,29 @@ Engine and records
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
-- in-flight tasks: none. M6e terrain follow-up DONE (W5b, 2026-09-15, 13:45-19:45; W5 had stalled twice
+- IN FLIGHT, STOPPED BY THE SPEND LIMIT (2026-09-16 12:21; HTTP 429, weekly reset Fri 19 Sep 03:00
+  America/New_York): M6i, the SMW process test, tasks/13-smw-map.md -- READ ITS resume: LINE FIRST, it
+  holds the full state and the ordered next steps. Nothing was running at 13:40 and Ben rebooted the
+  machine; no work was lost, every stage writes to disk. Summary: stages 0-8 are DONE and their gates
+  passed, so map_graphics/xml/stalin-moves-west.{xml,svg,png} EXISTS, validates and renders, and is a
+  recognisable Stalin Moves West (Ben's three stage-0 rulings all visible in it). Stage 9 verify round 1
+  was 6 of 34 tiles in when everything died. THE KNOWN DEFECT to fix next: all three networks are in
+  fragments (rail 123 hexes in 13 pieces against PGG's single piece of 260; river 23 pieces; border 26),
+  and every one of the 13 rail pieces is ADJACENT to another, so each break is a one-hex gap, not a real
+  separation. Merge passed with ZERO disagreements, so both overlapping readers made the same omission --
+  the shared mistake the README says a gate cannot see. There is also NO SMW profile in network_check.py
+  (it throws "no network rules for sheet id smw"), so nothing currently tests this. All M6i work to date
+  is staged, not committed. Resuming needs only a worker with the task file; no coordinator state is held
+  in this conversation that is not written down.
+- PENDING, all recorded: M6j (tasks/14-sheet-layers.md, structure/style/layout split, mechanism A chosen
+  2026-09-16, XSD proposals are a review gate, after M6i); the symbol shape/meaning proposal in "XSD
+  proposals awaiting review"; M6f TRC accuracy; M6g Dai Senso round 2; M6h markers option B; M15 card AI.
+  Also proposed and not yet applied: calibrate.py should fit an affine or projective mapping instead of a
+  rigid one, and its gate be restated as "every printed hex unambiguously identified" (decision log
+  2026-09-16); and the README should stop calling network_check report-only -- on the SMW and PGG evidence
+  a broken network invariant is EVIDENCE OF MISREADING and demands a look, presumed a gap until a crop
+  shows a printed end (Ben has not ruled on this last one).
+- M6e terrain follow-up DONE (W5b, 2026-09-15, 13:45-19:45; W5 had stalled twice
   on a 54 MB transcript, so a fresh worker took it with a short brief). From Ben's labelled hexes (water
   1402 1602; forest 1601 1701 1702 1801 1902 2201 0816 1118 1218 1808 2008) the "at least half" rule was
   simply wrong for this map: his forests measure 0.266-0.487 and his water 0.308-0.340. Woods and lake
@@ -93,6 +115,55 @@ Engine and records
   a BASE process, customised per map after a scan for puzzling elements, not a universal one; each map ends
   stage 0 with a written decisions list, settled with the person who knows the game. Dai Senso (M6g) still
   needs two grids on one sheet in the tools first.
+- 2026-09-16 SMW sources, and what rectification was worth. Ben cannot rescan (the sheet is about 18 x 24
+  inches) and deleted the 1.5x "expanded" PNG mid-run, which stopped W6 until it re-based onto "Stalin
+  Moves West map.jpg" (1650 x 2550, stable since May): the process had no account of a SOURCE IMAGE
+  CHANGING under a part-finished map, now a questions-log finding, with W6's own note of what survives a
+  re-base (printed ids, vocabulary, decisions, catalogue records) and what does not (line_dark, colour
+  masks, the fit). Ben then photographed the sheet ("SMW map in detail.jpg", 4000 x 3000), visibly sharper
+  per hex. I wrote tools/image2sheet/rectify.py -- a homography fitted to four corners of a printed
+  rectangle, with --margin to keep what lies outside, added after my first run cut an edge off. VERDICT:
+  not worth it on this map, and I oversold it before measuring. The photograph was already nearly
+  square-on (corner angles 87.1-95.1 deg, opposite sides differing 0.1% and 2.6%), so there was almost
+  nothing to correct, and W6's calibration of the rectified raster gives residuals 0.32-0.70 hex against
+  0.003-0.075 on the scan, with a 1.6 deg rotation and an 8-17% x/y scale mismatch in the affine
+  diagnostic. Causes are mine, not W6's: the corners were read by eye off a downscaled overview, and a
+  magazine sheet has folds, so its border is not a plane and one homography cannot fit it. DECISION: the
+  scan stays primary, the photograph is a secondary source for focused looks, no more effort on
+  rectification during M6i. Two tool findings worth keeping: calibrate.py's rigid fit has no rotation
+  term, so a rotated raster cannot be rescued by better control points; and a curled sheet needs a local
+  or mesh warp, not a homography. rectify.py stays in the toolset for a genuinely angled photograph.
+- 2026-09-16 Ben's correction, and it is the important one: THIS IS AN XML-CONSTRUCTION PROBLEM, NOT AN
+  IMAGE-MANIPULATION PROBLEM. The sheet's hex grid is perfect by construction, so nothing needs to line
+  up in pixels. All the image has to do is ADDRESS: if a reader can see a city in hex 2030 of a distorted
+  photograph, the sheet gets a city at 2030, and it lands correctly because the XML grid is ideal. A
+  warped raster is never required; I spent an hour on rectify.py before seeing this.
+  What follows, measured on SMW's own control points (residual, worst point, in hexes):
+    source              rigid (what calibrate.py fits)   affine (6)   projective (8)
+    scan, 13 points     0.075                            0.023        0.023
+    photo, 6 points     0.701                            0.384        0.174
+  So the photograph the rigid fit could not use is addressable to 0.17 hex under a projective mapping,
+  with no warping of the image at all. The defect is calibrate.py's MODEL (size, ox, oy: isotropic, no
+  rotation, no shear), not the raster; its own affine diagnostic already computes the numbers it then
+  discards. PROPOSED, after M6i (changing the geometry layer under a running worker would invalidate its
+  tiles and candidates): calibrate.py fits an affine, or projective, image mapping; common.py applies it
+  at the boundary as a wrapper over the renderer's ideal Grid, which does NOT change (hexsheet2svg.Grid
+  stays the sheet's geometry, untouched); tile.py, crop.py, candidates.py and overlay.py keep calling
+  grid.centre/polygon and get transformed pixel coordinates. Also reconsider the gate: 0.1 hex per
+  control point is stricter than the work needs. The real requirement is that every printed hex is
+  UNAMBIGUOUSLY identified (about 0.3 hex, since beyond half a hex an id lands in the neighbour) and that
+  crops centre well enough to read; state the gate in those terms, with the tight number kept only where
+  a measurement (terrain coverage) depends on it.
+- 2026-09-16 Ben settles the precision question, and it governs the gate proposal above: STRUCTURE, NOT
+  PIXELS. The old process never matched the print pixel for pixel and that was never a problem -- PGG's
+  rendered rivers are much thinner than the printed ones, deliberately, and Ben's instruction is to leave
+  them alone: "do not try to fix this non-problem". The sheet records which hexes and hexsides carry
+  which feature, not the print's appearance. So drop any effort aimed at precise matching: no warping or
+  retouching of source images, and a geometric fit is good enough once every printed hex is unambiguously
+  identified. Now principle 10 of the image2sheet README. This retires the pixel-accuracy ambition behind
+  calibrate.py's 0.1 hex gate; when the fit model changes after M6i, the gate is restated as identity,
+  and the one place a tight number is still earned is a measurement that feeds a decision (terrain
+  coverage shares), not alignment for its own sake.
 - M6e (tasks/12-pgg-map.md) was at status: review before the follow-up: calibrate 15 control
   points, worst 0.008 hex, grid 59 x 31; 120/120 tiles; merge 102 resolutions, 0 open; verify 0 differences;
   terrain audit of 282 near-threshold hexes, 0 corrections; Ben's known errors fixed with before/after crops
@@ -269,6 +340,20 @@ Engine and records
           adjusted.png) and repair it feature by feature: rivers, rail, borders, terrain, cities. Fold in
           M6c follow-ups 1-3 (out-of-grid ids, land cities, guide data file). Re-record TRC goldens after,
           citing "maps: TRC accuracy".
+- [ ] M6j Structure / style / layout split in the map and counter languages (tasks/14-sheet-layers.md,
+          pending, not started; Ben 2026-09-16). One document mixes three kinds of semantic content, so an
+          image-driven workflow leaked rendering data into structure: `grid/@size @ox @oy` are required and
+          come from the image calibration, so every sheet embeds one scan's pixel frame, and `label/@x @y`
+          are written straight from source-image pixels. Ben's acceptance test: changing a river's width
+          touches ONLY a style file, not layout and never structure. Recommended mechanism: three bound
+          documents (map, style, layout), with the engine reading structure alone. Includes the symbol
+          shape/meaning split, and the counters language's `Tile` fill that encodes a year. First step is
+          an audit of what SheetDoc and BoardBuilder actually consume (not checked). XSD proposals go to
+          Ben first: review gate. After M6i. MECHANISM A CHOSEN BY BEN 2026-09-16: three bound documents.
+          It beat one-document-three-sections on sharing (TRC and PGG can share one operational style),
+          substitution (screen against print, Qt6 against SVG, with no edit to the map), enforcement (the
+          map schema has no concept of a stroke width, so no tool can write one into a map file), and a
+          map git log that carries structural change only. Fixtures may keep an inline style.
 - [ ] M7  PGG digest + rules XML (review gate) + package + scenario; PGG engine module. M7a (digest, rules XML,
           package, test scenario) done 2026-09-14; M7b engine module (W4, not W5 as first planned) in flight,
           tasks/11-pgg-engine.md
@@ -476,6 +561,35 @@ Engine and records
   checks it. W5 told to keep it when assembling the rebuilt PGG sheet.
 - EXPECTED from M6b: a hexsave.xsd proposal to store the resolution stack, so a save taken while a
   decision is pending reloads (hexsave has no element for it today). W4 proposes; not applied.
+- PROPOSED 2026-09-16 (Ben's design, arising from SMW's bridges; NOT applied, awaiting his review):
+  separate SHAPE from MEANING in hexsheet.xsd, so the vocabulary is the product of two small sets
+  instead of one big set. Today `Symbol` is a single flat enumeration of about 30 values that mixes
+  primitives (`star`, `dot`, `arrow`, `text`) with meanings (`city-major`, `capital`, `port`, `oil`,
+  `tank`, `artillery`, `pier-head`, `lvt-wreck`, `fire-intense`, `ice`, `strait`). Every new printed
+  thing forces a new named value: N meanings x M shapes. SMW's bridge, "a yellow rectangle exactly
+  across the hexside", has no value and would otherwise add one.
+  Proposal, in the language's existing declare-then-reference style (as `<palette>`, `<lines>` and
+  `<terrains>` already work):
+    <legend>
+      <mark id="bridge"           shape="rect"    color="bridge-yellow" across="edge" size="0.5 0.12"/>
+      <mark id="mobilize-soviet"  shape="star"    color="red"/>
+      <mark id="resource"         shape="triangle" color="ink"/>
+    </legend>
+  and at the point of use `<edge at="2036-2037" mark="bridge"/>`, `<hex id="2036"><glyph mark=
+  "mobilize-soviet"/></hex>`. `mark` is an IDREF into the sheet's own legend; `shape` is a small closed
+  set of primitives (rect -- hence square, ellipse -- hence circle, star, triangle, diamond, bar, cross,
+  arrow, text); colour, size, orientation and slot stay attributes, as now.
+  One honest limit: some existing symbols are pictures, not primitives (`port`'s anchor, `tank`,
+  `artillery`, `lvt-wreck`, `pier-head`, `ice`). They cannot be expressed as a shape plus a colour, so
+  the proposal keeps a `pictogram` shape whose `mark` id selects the drawing; the split then covers the
+  geometric marks (the growing set) and leaves the drawn ones as a small fixed library.
+  Migration, if approved: hexsheet.xsd; hexsheet2svg.py's SYMBOLS table becomes primitives plus a
+  per-sheet legend; the four sheets and four C++ fixture sheets convert mechanically; HexXml::SheetDoc
+  and the hexview FaceModel contract follow; every SVG and PNG regenerates. No engine goldens carry
+  symbols, so none should change -- to be confirmed. Recommend doing it AFTER the SMW process test
+  (M6i), not during it. Interim, agreed with Ben: SMW writes mobilization hexes as `star` and resource
+  hexes as `oil` (both already in the enumeration and already drawn); bridges stay in the catalogue and
+  out of the sheet until this lands.
 - Candidates noted in the plan: `phase/@repeat-per-side`, `phase/@caps`, `panel/@space`.
 
 ## Open questions
