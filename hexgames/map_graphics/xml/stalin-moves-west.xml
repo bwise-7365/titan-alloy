@@ -46,10 +46,11 @@
   <!-- terrain, one per hex, as read -->
   <hexes terrain="clear" ids="2028 1828 1628 1028 2129 2029 1929 1829 1729 1629 1529 1329 1229 1029 0829 1830 1730 1630 1530 1330 1230 1030 0930 0830 2031 1931 1831 1731 1631 1431 1331 1231 1131 1031 0931 0831 2132 2032 1932 1832 1732 1632 1332 1232 1132 1032 0932 0832 2133 2033 1933 1833 1733 1633 1533 1433 1333 1233 1133 0933 0833 2734 2634 2534 2134 2034 1934 1834 1734 1634 1534 1234 1034 0934 0834 2735 2635 2535 2135 2035 1935 1835 1735 1635 1535 1435 1035 0935 0835 2736 2436 2236 2136 1936 1836 1736 1636 1536 1436 1236 1136 1036 0936 2637 2537 2437 2337 2237 2137 2037 1937 1837 1737 1637 1537 1437 1237 1137 0837 2638 2538 2438 2338 2238 2138 2038 1938 1838 1738 1638 1538 1438 0838 0738 0638 2639 2539 2439 2339 2239 2139 2039 1939 1839 1739 1639 1539 1439 1339 0839 0739 0639 2740 2640 2540 2440 2340 2240 2140 2040 1940 1740 1640 1540 1440 1340 1240 0840 0740 0640 2741 2641 2541 2441 2341 2141 2041 1641 1541 1441 1341 1241 0741 0641 2742 2642 2542 2442 2242 2142 2042 1642 1542 1442 1342 1242 1142 1042 0942 0842 0742 0642 2743 2643 2543 2443 2343 2243 2143 2043 1643 1543 1443 1343 1243 1143 1043 0943 0843 0743 0643 2744 2644 2544 2444 2344 2244 2144 2044 1644 1544 1444 1344 1244 1144 1044 0944 0844 0744 2745 2545 2345 2145 1945 1745 1545 1345 1145"/>
   <hexes terrain="rough" ids="1428 1228 0828 1429 1129 0929 1430 1130 1531 1532 1432 1033 1434 1334 1134 1335 1235 1135 1336 0836 1337 1037 0937 1338 1238 1138 1038 0938 1239 1139 1039 0939 1140 1040 0940 1141 1041 0941 0841"/>
-  <hexes terrain="forest" ids="1930 2036 2739 1840 2241 1941 1841 1741 2342 1942 1842 1742 1943 1843 1743 1944 1844 1744"/>
+  <hexes terrain="forest" ids="1930 2036 2739 2241 2342"/>
+  <hexes terrain="marsh" ids="1840 1941 1841 1741 1942 1842 1742 1943 1843 1743 1944 1844 1744"/>
   <hexes terrain="coastal" ids="2228 2130 2030 2233 2234 2235 2636 2536 2737 0945"/>
   <hexes terrain="sea" ids="2229 2230 2231 2131 2232 2435 2335 2336 2738 0644 0745"/>
-  <!-- river: 131 hexsides -->
+  <!-- river: 135 hexsides -->
   <edge at="1028:ne" line="river"/>
   <edge at="1129:se" line="river"/>
   <edge at="1029:ne" line="river"/>
@@ -60,10 +61,12 @@
   <edge at="1830:ne" line="river"/>
   <edge at="1130:se" line="river"/>
   <edge at="1030:ne" line="river"/>
+  <edge at="1931:se" line="river"/>
   <edge at="1831:ne" line="river"/>
   <edge at="1831:e" line="river"/>
   <edge at="1131:se" line="river"/>
   <edge at="1031:ne" line="river"/>
+  <edge at="1832:sw" line="river"/>
   <edge at="1832:se" line="river"/>
   <edge at="0832:ne" line="river"/>
   <edge at="1833:sw" line="river"/>
@@ -98,6 +101,7 @@
   <edge at="2337:se" line="river"/>
   <edge at="1837:sw" line="river"/>
   <edge at="1737:se" line="river"/>
+  <edge at="1737:e" line="river"/>
   <edge at="2638:se" line="river"/>
   <edge at="2238:ne" line="river"/>
   <edge at="2238:e" line="river"/>
@@ -167,6 +171,7 @@
   <edge at="0943:e" line="river"/>
   <edge at="0843:sw" line="river"/>
   <edge at="0743:se" line="river"/>
+  <edge at="0743:e" line="river"/>
   <edge at="2644:se" line="river"/>
   <edge at="2544:se" line="river"/>
   <edge at="2544:e" line="river"/>
@@ -181,7 +186,11 @@
   <edge at="1144:se" line="river"/>
   <edge at="1044:e" line="river"/>
   <edge at="2345:se" line="river"/>
-  <!-- border: 72 hexsides -->
+  <!-- border: 89 hexsides -->
+  <edge at="0830:e" line="border"/>
+  <edge at="1231:e" line="border"/>
+  <edge at="1031:e" line="border"/>
+  <edge at="1031:se" line="border"/>
   <edge at="0931:se" line="border"/>
   <edge at="0931:e" line="border"/>
   <edge at="0831:sw" line="border"/>
@@ -189,6 +198,7 @@
   <edge at="1232:sw" line="border"/>
   <edge at="1132:se" line="border"/>
   <edge at="1032:sw" line="border"/>
+  <edge at="1433:e" line="border"/>
   <edge at="1834:e" line="border"/>
   <edge at="1834:se" line="border"/>
   <edge at="1734:se" line="border"/>
@@ -196,11 +206,14 @@
   <edge at="1634:sw" line="border"/>
   <edge at="1634:ne" line="border"/>
   <edge at="1534:se" line="border"/>
+  <edge at="1534:e" line="border"/>
   <edge at="1434:sw" line="border"/>
+  <edge at="1434:se" line="border"/>
   <edge at="1334:se" line="border"/>
   <edge at="1935:se" line="border"/>
   <edge at="1835:ne" line="border"/>
   <edge at="1435:sw" line="border"/>
+  <edge at="1435:se" line="border"/>
   <edge at="2436:sw" line="border"/>
   <edge at="2336:e" line="border"/>
   <edge at="2036:e" line="border"/>
@@ -208,13 +221,16 @@
   <edge at="1936:se" line="border"/>
   <edge at="1936:e" line="border"/>
   <edge at="1436:sw" line="border"/>
+  <edge at="1436:se" line="border"/>
   <edge at="1336:se" line="border"/>
   <edge at="1236:ne" line="border"/>
   <edge at="0836:e" line="border"/>
   <edge at="2337:se" line="border"/>
+  <edge at="2237:ne" line="border"/>
   <edge at="2237:e" line="border"/>
   <edge at="2137:se" line="border"/>
   <edge at="2037:ne" line="border"/>
+  <edge at="2037:se" line="border"/>
   <edge at="1937:e" line="border"/>
   <edge at="1537:e" line="border"/>
   <edge at="1437:sw" line="border"/>
@@ -252,23 +268,29 @@
   <edge at="1241:e" line="border"/>
   <edge at="1041:sw" line="border"/>
   <edge at="0841:sw" line="border"/>
+  <edge at="0841:ne" line="border"/>
+  <edge at="0841:e" line="border"/>
+  <edge at="0841:se" line="border"/>
   <edge at="1042:ne" line="border"/>
+  <edge at="0842:e" line="border"/>
+  <edge at="1043:e" line="border"/>
+  <edge at="0943:e" line="border"/>
   <edge at="0844:sw" line="border"/>
-  <!-- rail: 110 steps in 37 chains -->
+  <!-- rail: 122 steps in 36 chains -->
   <!-- rail leaves the map across: 0829:sw 0643:se -->
   <link kind="rail" line="rail" hexes="1828 1829"/>
   <link kind="rail" line="rail" hexes="1028 1029 1030"/>
-  <link kind="rail" line="rail" hexes="1829 1729 1629"/>
-  <link kind="rail" line="rail" hexes="1829 1830 1731"/>
+  <link kind="rail" line="rail" hexes="1829 1729 1629 1530 1630"/>
+  <link kind="rail" line="rail" hexes="1829 1830"/>
+  <link kind="rail" line="rail" hexes="1829 1730 1731"/>
   <link kind="rail" line="rail" hexes="0829 0930 1030"/>
-  <link kind="rail" line="rail" hexes="1630 1530"/>
+  <link kind="rail" line="rail" hexes="1830 1931 2031 2032 2133 2233 2234 2135"/>
+  <link kind="rail" line="rail" hexes="1830 1731"/>
   <link kind="rail" line="rail" hexes="1030 1130 1230 1330 1331 1332"/>
   <link kind="rail" line="rail" hexes="1030 1131 1132 1133 1134 1034"/>
-  <link kind="rail" line="rail" hexes="2031 2032 2133 2233"/>
-  <link kind="rail" line="rail" hexes="1932 1933 1934 2034 2135"/>
-  <link kind="rail" line="rail" hexes="1732 1733 1633"/>
+  <link kind="rail" line="rail" hexes="1831 1932 1933 1934 2034 2135"/>
+  <link kind="rail" line="rail" hexes="1731 1732 1733 1633"/>
   <link kind="rail" line="rail" hexes="1032 1033 1034"/>
-  <link kind="rail" line="rail" hexes="2234 2135"/>
   <link kind="rail" line="rail" hexes="1034 1035 1036 1137"/>
   <link kind="rail" line="rail" hexes="1034 0935"/>
   <link kind="rail" line="rail" hexes="2135 2235 2236 2237 2238 2339"/>
@@ -277,17 +299,16 @@
   <link kind="rail" line="rail" hexes="2637 2537 2436 2437 2438 2339"/>
   <link kind="rail" line="rail" hexes="1637 1738 1739 1839"/>
   <link kind="rail" line="rail" hexes="1137 1237 1338"/>
-  <link kind="rail" line="rail" hexes="1137 1138 1038 1039 1040 0941 0841 0741 0641 0640"/>
+  <link kind="rail" line="rail" hexes="1137 1138 1038 1039 1040 0941 0841 0741 0641"/>
   <link kind="rail" line="rail" hexes="1438 1439"/>
   <link kind="rail" line="rail" hexes="2339 2340 2341"/>
   <link kind="rail" line="rail" hexes="1839 1940 2040 2041 2142 2241 2242 2343 2344 2345"/>
-  <link kind="rail" line="rail" hexes="1439 1339 1340 1240 1141 1041"/>
+  <link kind="rail" line="rail" hexes="1439 1339 1340 1240 1141 1041 0942 0842 0742 0641"/>
   <link kind="rail" line="rail" hexes="1439 1440"/>
   <link kind="rail" line="rail" hexes="1740 1640 1641 1642 1643 1644"/>
-  <link kind="rail" line="rail" hexes="2641 2642 2743"/>
-  <link kind="rail" line="rail" hexes="2542 2442 2443 2444 2345"/>
-  <link kind="rail" line="rail" hexes="0942 0842 0743 0643"/>
-  <link kind="rail" line="rail" hexes="0843 0944"/>
+  <link kind="rail" line="rail" hexes="0640 0641"/>
+  <link kind="rail" line="rail" hexes="2743 2642 2641 2542 2442 2443 2444 2345"/>
+  <link kind="rail" line="rail" hexes="0643 0743 0843 0944"/>
   <link kind="rail" line="rail" hexes="1644 1544"/>
   <link kind="rail" line="rail" hexes="1644 1745"/>
   <link kind="rail" line="rail" hexes="1344 1244 1145 1044 0944"/>
@@ -295,7 +316,7 @@
   <link kind="rail" line="rail" hexes="2345 2244 2144 2044 1945"/>
   <!-- road: 0 steps in 0 chains -->
   <!-- places, as read -->
-  <hex id="1829" name="Berlin"><glyph symbol="city" color="ink"/><glyph symbol="star" color="axis"/><glyph symbol="star" color="axis"/></hex>
+  <hex id="1829" name="Berlin"><glyph symbol="city" color="ink"/><glyph symbol="star" color="axis"/></hex>
   <label text="Berlin" at="1829" slot="s" size="30" weight="bold"/>
   <hex id="2030" name="Stettin"><glyph symbol="port" color="ink"/></hex>
   <label text="Stettin" at="2030" slot="s" size="30" weight="bold"/>
@@ -303,7 +324,7 @@
   <label text="Dresden" at="1530" slot="s" size="30" weight="bold"/>
   <hex id="1330" name="Prague"><glyph symbol="city" color="ink"/></hex>
   <label text="Prague" at="1330" slot="s" size="30" weight="bold"/>
-  <hex id="1030" name="Vienna"><glyph symbol="city" color="ink"/></hex>
+  <hex id="1030" name="Vienna"><glyph symbol="city" color="ink"/><glyph symbol="star" color="axis"/></hex>
   <label text="Vienna" at="1030" slot="s" size="30" weight="bold"/>
   <hex id="1932" name="Posen"><glyph symbol="city" color="ink"/></hex>
   <label text="Posen" at="1932" slot="s" size="30" weight="bold"/>
@@ -337,13 +358,13 @@
   <label text="Bucharest" at="0640" slot="s" size="30" weight="bold"/>
   <hex id="2541" name="Vyazma"><glyph symbol="city" color="ink"/></hex>
   <label text="Vyazma" at="2541" slot="s" size="30" weight="bold"/>
-  <hex id="0741"><glyph symbol="star" color="axis"/><glyph symbol="oil" color="ink"/><glyph symbol="star" color="axis"/><glyph symbol="oil" color="ink"/></hex>
-  <hex id="2142" name="Minsk"><glyph symbol="city" color="ink"/><glyph symbol="star" color="soviet"/><glyph symbol="star" color="soviet"/></hex>
+  <hex id="0741"><glyph symbol="star" color="axis"/><glyph symbol="oil" color="ink"/></hex>
+  <hex id="2142" name="Minsk"><glyph symbol="city" color="ink"/><glyph symbol="star" color="soviet"/></hex>
   <label text="Minsk" at="2142" slot="s" size="30" weight="bold"/>
   <hex id="1644" name="Kiev"><glyph symbol="city" color="ink"/></hex>
   <label text="Kiev" at="1644" slot="s" size="30" weight="bold"/>
   <hex id="2345" name="Smolensk"><glyph symbol="city" color="ink"/></hex>
   <label text="Smolensk" at="2345" slot="s" size="30" weight="bold"/>
-  <hex id="0945" name="Odessa"><glyph symbol="port" color="ink"/><glyph symbol="star" color="soviet"/><glyph symbol="star" color="soviet"/><glyph symbol="star" color="soviet"/><glyph symbol="star" color="soviet"/></hex>
+  <hex id="0945" name="Odessa"><glyph symbol="port" color="ink"/><glyph symbol="star" color="soviet"/></hex>
   <label text="Odessa" at="0945" slot="s" size="30" weight="bold"/>
 </sheet>

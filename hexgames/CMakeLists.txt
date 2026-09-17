@@ -96,6 +96,12 @@ if(_py)
                      "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/the-russian-campaign.xml"
                      "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/panzergruppe-guderian.xml"
                      "${CMAKE_CURRENT_SOURCE_DIR}/map_graphics/xml/dai-senso.xml")
+             # stalin-moves-west.xml is NOT yet added here: network_check.py --quiet
+             # map_graphics/xml/stalin-moves-west.xml still reports 75 broken rules (down from 113;
+             # tasks/13-smw-map.md's stage log has the detail) -- mostly border pieces ending inland and
+             # river pieces that are short or do not drain, not yet individually investigated. Add this
+             # sheet to the COMMAND above once that count reaches zero or every remaining item is a named,
+             # crop-confirmed printed exception (see PGG_EXCEPTED in network_check.py for the pattern).
     set_tests_properties(hygiene_map_networks PROPERTIES LABELS "hygiene")
   endif()
 else()

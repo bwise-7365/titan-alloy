@@ -55,20 +55,25 @@ Engine and records
 ## RESUME HERE
 
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
-- IN FLIGHT, STOPPED BY THE SPEND LIMIT (2026-09-16 12:21; HTTP 429, weekly reset Fri 19 Sep 03:00
-  America/New_York): M6i, the SMW process test, tasks/13-smw-map.md -- READ ITS resume: LINE FIRST, it
-  holds the full state and the ordered next steps. Nothing was running at 13:40 and Ben rebooted the
-  machine; no work was lost, every stage writes to disk. Summary: stages 0-8 are DONE and their gates
-  passed, so map_graphics/xml/stalin-moves-west.{xml,svg,png} EXISTS, validates and renders, and is a
-  recognisable Stalin Moves West (Ben's three stage-0 rulings all visible in it). Stage 9 verify round 1
-  was 6 of 34 tiles in when everything died. THE KNOWN DEFECT to fix next: all three networks are in
-  fragments (rail 123 hexes in 13 pieces against PGG's single piece of 260; river 23 pieces; border 26),
-  and every one of the 13 rail pieces is ADJACENT to another, so each break is a one-hex gap, not a real
-  separation. Merge passed with ZERO disagreements, so both overlapping readers made the same omission --
-  the shared mistake the README says a gate cannot see. There is also NO SMW profile in network_check.py
-  (it throws "no network rules for sheet id smw"), so nothing currently tests this. All M6i work to date
-  is staged, not committed. Resuming needs only a worker with the task file; no coordinator state is held
-  in this conversation that is not written down.
+- M6i PAUSED AT A CLEAN POINT (2026-09-17 00:30), tasks/13-smw-map.md -- READ ITS resume: LINE FIRST.
+  W6 stopped at its time box after the spend-limit stop of 2026-09-16 22:03 and Ben's limit increase.
+  Done in that session: verify round 1 has 31 of 34 records (2734_2536 2737_2540 2741_2544 2745_2545 were
+  never dispatched); network gaps closed by one-hop crops, rail 13 -> 6 pieces, river 23 -> 19, border
+  26 -> 19, broken rules 113 -> 75; two merge.py bugs fixed (resolutions loader ignored HEX:DIR tokens for
+  inner hexsides; markers were never deduplicated, so stars and derricks rendered 2-4 times); SMW profile
+  in network_check.py; roads settled (none printed); stage-10 report in the task file; CMakeLists.txt
+  carries a comment, not the entry, until the sheet is clean. W1 verify reader found MARSH catalogued as
+  forest (Pripyat block, rows 17-19 cols 40-44; smw.json has no marsh rule) and border bulges cut
+  straight; both are in the task file for the next worker. Open: the 4 unread verify tiles, the
+  verify.py feature-name mismatch ("link" vs "rail"), about 40 border/river broken rules, the 3-hex rail
+  piece 1535/1736 (question for Ben). All of it is UNCOMMITTED in the working tree for Ben's review:
+  CMakeLists.txt, stalin-moves-west.{xml,svg,png}, merge.py, network_check.py, tasks/13, PLAN.md, and
+  the new tasks/15. Ben's ruling 2026-09-16: this run is NOT abandoned; it finishes, its output is kept.
+- PENDING, NOT TO BE STARTED BY ANY AGENT: tasks/15-smw-chain-reading.md, the second map-reading process
+  (chains end to end instead of tiles; one worker, no sub-agents; image-read ledger with caps; one stage
+  per session that Ben launches himself). Written 2026-09-16 after the analysis of the tile process.
+  Stage S (two scripts, no images) comes first and needs Ben's go. The tile process's SMW run (task 13)
+  continues to its end and its output is kept; the trial writes only under work/smw/chain/.
 - PENDING, all recorded: M6j (tasks/14-sheet-layers.md, structure/style/layout split, mechanism A chosen
   2026-09-16, XSD proposals are a review gate, after M6i); the symbol shape/meaning proposal in "XSD
   proposals awaiting review"; M6f TRC accuracy; M6g Dai Senso round 2; M6h markers option B; M15 card AI.

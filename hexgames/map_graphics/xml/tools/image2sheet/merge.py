@@ -87,6 +87,23 @@ def place_key(h):
     return None if not p else (p["glyph"], p.get("name"), p.get("vp"))
 
 
+def dedup_markers(markers):
+    """Tiles overlap by one hex/hexside on purpose (principle 4), so two overlapping readers legitimately
+    both record the SAME printed marker (a region star, a bridge glyph) independently. Unlike terrain,
+    place and hexside features, a marker never went through the vote-based agreement system, so every
+    reader's copy landed in the catalogue -- assemble.py then drew one glyph per copy, stacking duplicates
+    on top of each other (and its "spread apart" logic then pushed the stack wide enough to visually spill
+    into a neighbouring hex or the margin). Keep one entry per (kind, region, hexes) key, the first seen."""
+    seen = {}
+    for m in markers:
+        key = (m.get("kind"), m.get("region"), tuple(sorted(m.get("hexes", []))))
+        seen.setdefault(key, m)
+    if len(seen) != len(markers):
+        print("dedup_markers: %d marker entries, %d unique (dropped %d duplicate reader copies)"
+              % (len(markers), len(seen), len(markers) - len(seen)))
+    return list(seen.values())
+
+
 def main(argv):
     if len(argv) < 2:
         print(__doc__)
@@ -135,6 +152,7 @@ def main(argv):
             unclear.append(dict(u, at=at, feature=feature_name(u["feature"]), tile=t["name"]))
         markers += [dict(m, tile=t["name"]) for m in rec.get("markers", [])]
         notes += ["%s: %s" % (t["name"], n) for n in rec.get("notes", [])]
+    markers = dedup_markers(markers)
     open_items = []
     cat = dict(hexes={}, markers=markers)
     for pid in sorted(terrain, key=lambda p: grid.ids[p]):

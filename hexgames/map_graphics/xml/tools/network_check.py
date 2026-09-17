@@ -20,6 +20,14 @@ TRC and PGG (tasks/08-map-networks.md):
   river  no piece of 5 or fewer hexsides; every piece drains (a vertex touches sea or lake or lies on
          the map edge); no river hexside with sea or lake on both sides or on the map edge
   border no hexside in water; a continuous chain whose loose ends lie on sea, a lake or the map edge
+Stalin Moves West (tasks/13-smw-map.md), same rules as PGG minus road (the print has none, rule 10.6:
+roads run alongside railroads, never alone) and minus a major/minor city distinction (SMW's vocabulary has
+only one city symbol, so the "major city on the network" check is vacuous here, not a relaxed rule):
+  links  every step joins neighbouring hexes; no link enters a sea or coastal-water hex except a city hex
+  rail   one piece, except further pieces of at least 8 hexes that run off a map edge
+  river  no piece of 5 or fewer hexsides; every piece drains; no river hexside with sea on both sides or
+         on the map edge
+  border no hexside in water; a continuous chain whose loose ends lie on sea or the map edge
 Dai Senso (tasks/09-ds-map.md). The map edge includes the hexes outside the printed map (DS_OFFMAP); the
 west and east grids are neighbours across their seam.
   links     every step joins neighbouring hexes; no hex in sea or off the map
@@ -630,6 +638,9 @@ PROFILES = {
                 lines={"river": river_problems},
                 links={"rail": rail_problems, "road": road_problems},
                 excepted=pgg_excepted),
+    "smw": dict(offmap="", steps=link_problems, whole=(),
+                lines={"river": river_problems, "border": border_problems},
+                links={"rail": rail_problems}),
     "dai-senso": dict(offmap=DS_OFFMAP, steps=ds_link_problems,
                       whole=(ds_required_problems, ds_network_problems, ds_place_problems),
                       lines={"border": ds_boundary_problems, "zone": ds_boundary_problems,
