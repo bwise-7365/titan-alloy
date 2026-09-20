@@ -30,9 +30,12 @@ def font(px):
 
 
 def label_offset(grid):
-    """Where our id label goes: toward the hexside opposite the printed id (config grid printed-id-side)."""
-    ang = math.radians(grid.edge_angle(C.H.OPPOSITE[grid.printed_id_side]))
-    return 0.42 * grid.size * math.cos(ang), 0.42 * grid.size * math.sin(ang)
+    """Where our id label goes: toward the CORNER just clockwise of the hexside opposite the printed id.
+    A label on the ray from the centre to a hexside midpoint hides every line that crosses that hexside
+    (Ben, 2026-09-17: a horizontal railway through 1831 vanished under the id); a corner lies on none of
+    the six midpoint rays, and only a line through that one vertex passes near it."""
+    ang = math.radians(grid.edge_angle(C.H.OPPOSITE[grid.printed_id_side]) + 30)
+    return 0.62 * grid.size * math.cos(ang), 0.62 * grid.size * math.sin(ang)
 
 
 def hexes_in_box(grid, box):
@@ -62,8 +65,8 @@ def draw_grid(img, grid, box, scale, core=None, ids=True, dots=True):
         cx, cy = grid.centre(c, r)
         if ids:
             colour = CORE if core is None or pid in core else MARGIN
-            d.text(at(cx + lx, cy + ly), pid, font=f, fill=colour, anchor="mm", stroke_width=2,
-                   stroke_fill=(255, 255, 255, 210))
+            d.text(at(cx + lx, cy + ly), pid, font=f, fill=colour[:3] + (170,), anchor="mm", stroke_width=1,
+                   stroke_fill=(255, 255, 255, 110))
         if dots:
             for direction in C.directions(grid):
                 mx, my = at(*grid.edge_mid(c, r, direction))
@@ -84,8 +87,8 @@ def overview(cfg, name):
         d.line(poly + [poly[0]], fill=OUTLINE, width=1)
         if 0 == c % 5 and 0 == r % 5:
             cx, cy = grid.centre(c, r)
-            d.text((cx * scale, cy * scale), pid, font=f, fill=CORE, anchor="mm", stroke_width=2,
-                   stroke_fill=(255, 255, 255, 220))
+            d.text((cx * scale, cy * scale), pid, font=f, fill=CORE[:3] + (170,), anchor="mm", stroke_width=1,
+                   stroke_fill=(255, 255, 255, 110))
     out = C.work(cfg, "overview-%s.jpg" % name)
     C.save_jpeg(small, out, 70)
     print("wrote", out)

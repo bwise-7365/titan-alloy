@@ -69,7 +69,100 @@ Engine and records
   piece 1535/1736 (question for Ben). All of it is UNCOMMITTED in the working tree for Ben's review:
   CMakeLists.txt, stalin-moves-west.{xml,svg,png}, merge.py, network_check.py, tasks/13, PLAN.md, and
   the new tasks/15. Ben's ruling 2026-09-16: this run is NOT abandoned; it finishes, its output is kept.
-- PENDING, NOT TO BE STARTED BY ANY AGENT: tasks/15-smw-chain-reading.md, the second map-reading process
+- 2026-09-19 ANCHORS (coordinator, Ben's go). Printed-id anchors read by eye for 17 of the 22 scans from
+  crops of each scan with the lattice index drawn (three cells per map, a fourth where the offset
+  needed it); the record is tools/reader/anchors.json (batch.py passes them to lattice.py --anchor;
+  every map's note says how its ids are printed). lattice.py numbering now tries both grid offsets
+  ("odd" = the renderer's zigzag pairing, "even" = the other) and both parities, and REQUIRES anchors
+  of both row parities (pointy) or column parities (flat): Tarawa's first four anchors were all odd
+  rows, fitted, and left every even row one column out. Tarawa's ids were unreadable on the scan
+  (5 px); Ben photographed one section and named a unique symbol (yellow F2), and F2 = 1437, A1 =
+  2035, F10 = 1838, F5 = 1638, H = 1538 numbered the whole sheet. Ben: "This is the kind of
+  interaction an editor should support: providing little high-detail sections to supplement the
+  overall map" -- recorded as a requirement in tasks/16. Findings: PGG prints its id in the LOWER half
+  of the hex; Dai Senso has TWO column numberings on one sheet (west col = c-1, east col = c-28, rows
+  shared), and the tool takes one, so the east sheet is mislabelled until numbering by column range
+  exists (the "two grids on one sheet" item); Downfall, Red Dragon, Tarawa, Bagration, PGG, Target
+  Leningrad and Totaler Krieg east pair their printed columns/rows the other way from the lattice
+  index ("even"). Without anchors: Borodino and BFM map 1 (no printed ids), Invasion maps 1 and 2
+  (ids unreadable; need a detail photograph like Tarawa's), The Russian Campaign (letter columns Y23,
+  AA24: the anchor code takes digits only, extension needed). Olympic: the yellow oval written as "2011" in
+  notes.txt sits at lattice (32,12), which the red (1106) and green (1613) ovals make 3211; Ben
+  confirmed 3211 the same day, and it is now the third Olympic anchor. Batch rerun with anchors DONE: 18 of 22 scans numbered
+  (BFM redone joined after 0501 and 0110 were found at hex tops), fits unchanged (1.3-4.6 px, 0 slips;
+  Olympic 8.4-8.8), 20 PASS and the two hinted FAILED as before. Spot check by eye on eight maps at
+  three non-anchor cells each (Tannenberg, Arctic, Downfall, Bagration, Totaler Krieg east, PGG, Red
+  Dragon, SMW): every drawn id matched the printed one. Overlays (work/<map>/overlay.svg) carry
+  printed ids where numbering is known. anchors.json also marks Ben's Tarawa detail photograph
+  "skip": it lives in example maps/ but is not a map scan.
+- 2026-09-19 afternoon (coordinator, after Ben's reboot). Ben asked why Borodino had the worst lattice
+  fit; it had not. The refit and slip count ran over every lattice cell, including the 1239 cells over
+  Borodino's chart panels and set-up maps, which fit at 14 px while the 962 map cells fit at 3.8 px.
+  lattice.py now runs the printed test before the refit, fits printed cells only, places the rest at the
+  fit plus their printed neighbours' median residual, and reports "refit(printed)"; lattice.json records
+  refit.cells = "printed". batch.py (new) runs lattice.py over a folder with --hint NAME=PX. Batch rerun
+  on all 22 scans (Ben trimmed Borodino to "Battle of Borodino main section.png" and added "Olympic map
+  wrinkled.png"): every map fits its printed cells at 1.3-4.6 px with 0 slips, Olympic photographs 8.4-8.8
+  (the wrinkle). Table appended to doc/2026-09-18-lattice-first-run.md. OPEN for Ben: Totaler Krieg west
+  and Invasion map 1 show FAILED because the phase-score gate is applied to a hinted lattice; their
+  fits (2.8 and 2.3 px, 0 slips) and overlays are right. Ben 2026-09-19: he never supplied a period; the
+  hints were the coordinator's. Coordinator's recommendation: keep the gate as it is, so FAILED keeps
+  marking the maps the search does not solve unaided, and let the report line say the period came from
+  --spacing. Also fixed: .gitignore's reader work line had
+  landed after the closing banner (banner-check 0 failures again); README contract block matches the
+  JSON the tool writes. Nothing committed; no agent used.
+- STATE AT SESSION END 2026-09-19 (Ben rebooting). tools/reader/lattice.py is the working lattice
+  finder: autocorrelation candidates at two scales (1600 and 2400 px, merged, scored at the finer scale
+  by outline-minus-interior ink, derived vectors removed, coarser wins on a near tie), growth mode,
+  refit to the recorded cells with slip re-placement, shared-vertex SVG overlays with the fitted ideal
+  lattice in blue, --anchor numbering, --spacing hint. Run over all 21 scans in example maps/: lattice
+  right unaided on 18; three needed a --spacing hint that the COORDINATOR supplied from the tool's own
+  earlier or neighbouring output, not from Ben (Dai Senso 77.2 = the first run's unaided figure; Totaler
+  Krieg west 107.9 = the east sheet's; Invasion map 1 35.3 = the search's rejected second candidate).
+  Table and overlays: tools/reader/work/ (gitignored; batch-table.json, batch-report.txt,
+  <map>/overlay.svg). Ben verified Arctic and Olympic in Inkscape. The three hinted maps stay on
+  --spacing for now; the interactive pinning step in tasks/16 is the intended fix, and no further
+  period-search work is planned unless Ben asks. (An earlier wording here called this a decision to
+  "stop adding lattice heuristics"; that was the coordinator's summary, not Ben's words. Ben's point,
+  stated 2026-09-19: the algorithms get about 90% of a map exactly right in seconds and then struggle
+  with cases that are easy for a human eye, so the editor design (tasks/16) must decide what is best
+  done by eye and what by algorithm, rather than the tool chasing the last cases alone.)
+  NEXT: anchors for every map (two printed ids each), then B2 legend reader, then cells.py on the BFM
+  pair. Uncommitted in the tree: everything under tools/reader/, the four docs of 2026-09-17/18, the
+  test list, uml/reader-modules.puml, tasks/15 and 16, .gitignore, overlay.py and smw.json changes.
+- 2026-09-19 morning, Ben's rulings on the lattice tool, all applied in tools/reader/lattice.py: growth
+  mode (his propagation: seed on sharp cells, grow best-first, predict from placed neighbours, refine
+  locally) replaces the phase field; refit of the perfect lattice to the RECORDED cells with slip
+  detection and re-placement (his experiment; Olympic residual RMS 14.2 -> 11.6 px, slips 166 -> 19);
+  vertices shared by lattice identity; --anchor ID C R fixes numbering from two printed ids (Arctic:
+  rows from 9 downward, columns from 54 eastward); labels zero-padded, printed ids when known; --svg
+  zoomable overlays with the fitted ideal lattice in blue. Ben checked Arctic and Olympic in Inkscape:
+  "perfect". NEXT: anchors for every map (numbering), then six-neighbour voting for the last slips,
+  furniture rectangles, fold lines; then B2 legend reader; then cells.py on the BFM pair.
+- OVERNIGHT 2026-09-18/19, FOR BEN'S REVIEW: design contracts D1-D4 written (tools/reader/README.md,
+  doc/.../test-lists/reader-tests.md, uml/reader-modules.puml, eight XSD proposals below) and tool B1
+  built and run: tools/reader/lattice.py finds the lattice of all eighteen example maps by
+  autocorrelation in seconds, with a least-squares perfect-lattice fit and a per-cell phase field for
+  folded scans; report with the table in doc/2026-09-18-lattice-first-run.md; overlays in the session
+  scratchpad. Not done: numbering, ctest wiring, B2-B5. Three overlays await Ben's eye (Olympic,
+  Arctic, Invasion map 1). No agent, no git, no schema change, no sheet touched.
+- FOR BEN'S REVIEW (2026-09-18): doc/2026-09-18-grammar-first-reading-plan.md, the design/build/test
+  plan for the grammar-first reader: design docs D1-D4 first, five tools B1-B5, seventeen maps in
+  cheap-first order (BFM pair, Target Leningrad, Tallinn, SMW, Red Dragon, then PGG ... Dai Senso last),
+  oracles per map, the round-trip / swap / common-style tests, cost table. Also section 10 of the
+  primitives doc: Ben's rendering-swap test (structure vs rendering separation is the design test).
+- FOR BEN'S REVIEW (2026-09-18): doc/2026-09-18-hexmap-reading-primitives.md, the revised taxonomy from
+  the survey of the eighteen maps in example maps/ (address kinds incl. a new vertex kind; how each
+  primitive is printed across houses; the strip/patch measurement per kind; priors that rank and never
+  invent; lattice and awkward scans; eight XSD proposals; build order). Nothing built. Companion:
+  doc/2026-09-17-map-reading-efficiency.md. Task 15's C-border is stopped mid-stage with a restart recipe.
+- PENDING (2026-09-17, Ben's design): tasks/16-sheet-editor.md -- readers record their doubts; a Qt6
+  sheet editor lets Ben finish maps by hand and saves XSD-valid XML; SMW's railway is its first test.
+- IN FLIGHT (2026-09-17, Ben authorised): tasks/15-smw-chain-reading.md rail stages DONE (one piece, 151 hexes,
+  75 reads, 877k tokens so far; rail left imperfect by Ben's ruling); C-river IN FLIGHT with doubt recording. Ben's rule: at most two agents of any kind
+  in the background, at most two Sonnet agents; the coordinator launches one worker per stage and
+  nothing else, and Ben checks at each stage boundary. Earlier text of this entry follows.
+- (was) PENDING, NOT TO BE STARTED BY ANY AGENT: tasks/15-smw-chain-reading.md, the second map-reading process
   (chains end to end instead of tiles; one worker, no sub-agents; image-read ledger with caps; one stage
   per session that Ben launches himself). Written 2026-09-16 after the analysis of the tile process.
   Stage S (two scripts, no images) comes first and needs Ben's go. The tile process's SMW run (task 13)
@@ -383,6 +476,14 @@ Engine and records
 
 ## Decision log
 
+- 2026-09-19 Ben approved XSD proposals (a) vertex marks, (b) the legend as declared marks, (e) end
+  reasons on links and paths; applied additively to hexsheet.xsd. Corners are named in ABC (A B C -A
+  -B -C), Ben's reason for the system: "the six vectors {A, B, C, -A, -B, -C} are exactly the
+  coordinates of the six corners of the (0, 0, 0) hex ... this is NOT the usual coordinate system."
+  Also 2026-09-19: the pointy ABC frame stays as implemented (flat frame turned 30 degrees clockwise);
+  Ben had asked whether turning it the other way (C due south) would be minor or major -- minor,
+  confined to hexcoord -- and ruled it unnecessary since a rotated frame already exists. B2, the
+  legend reader, is go.
 - 2026-09-12 Graph library: none (hand-rolled over the ABC grid). OGDF rejected (GPL); CXXGraph would be
   the fallback (MPL-2.0).
 - 2026-09-12 ABC re-implemented in `hexcoord`; `panj\hexmap` untouched. One algebra for both orientations;
@@ -595,6 +696,33 @@ Engine and records
   (M6i), not during it. Interim, agreed with Ben: SMW writes mobilization hexes as `star` and resource
   hexes as `oil` (both already in the enumeration and already drawn); bridges stay in the catalogue and
   out of the sheet until this lands.
+- (a), (b) and (e) APPROVED 2026-09-19 by Ben and APPLIED to hexsheet.xsd the same day, additively
+  (every existing document still validates): Corner = A B C -A -B -C (Ben: the six corners of hex h
+  are h+A, h+B, h+C, h-A, h-B, h-C in ABC, which is why the system exists; never compass words),
+  VertexRef HEX:CORNER, <vertex at mark color/>; <legend><mark id name shape color size pictogram
+  across from/></legend> with Shape = rect ellipse star triangle diamond bar cross arrow text
+  pictogram, and glyph/@mark, edge/@mark alongside @symbol (glyph/@symbol now optional; exactly one
+  of the two, checked by the loader); EndReason = edge place junction dot bank sea unexplained and
+  path/@ends, link/@ends as a two-token list. Follow-ups, not yet done: hexsheet2svg.py and
+  HexXml::SheetDoc learn vertex, mark and ends; the four sheets migrate their symbols to marks; (c),
+  (d), (f), (g), (h) remain as written below. Original proposal (from the survey of eighteen maps,
+  doc/2026-09-18-hexmap-reading-primitives.md section 8):
+  (a) hexsheet.xsd: a VERTEX mark, `<vertex at="HEX:CORNER" mark="…"/>` with CORNER from the hex's
+      corner names, for corner-only grids and Arctic Disaster's mountain triangles;
+  (b) the legend as declared marks (the shape/meaning split above), so that reading a legend produces
+      the style declarations and nothing else does;
+  (c) a ring becomes a mark kind on the hex once marks exist (`hex/@ring` retired);
+  (d) a lateral-offset rule per line kind in the renderer for coincident lines on one hexside
+      (Downfall's country borders); no schema change, a renderer contract;
+  (e) `link` gains an end reason at each end: `ends="edge place"` or per-end attributes, values
+      `edge place junction dot bank sea unexplained`, since rules read them (PGG's road cut by a river)
+      and the checker's gate is "every end explained";
+  (f) letter codes printed in hexes (Olympic C/L, Tannenberg H/A) are glyphs of symbol `text` whose
+      meaning is bound in the legend, never terrain;
+  (g) regions stay hex sets; an authored outline is never accepted (no change, a rule);
+  (h) a default style library by house and decade for legend-less maps, and the document records every
+      borrowed declaration as an assumption (`@from` on the declaration, or a comment block until the
+      style document exists).
 - Candidates noted in the plan: `phase/@repeat-per-side`, `phase/@caps`, `panel/@space`.
 
 ## Open questions

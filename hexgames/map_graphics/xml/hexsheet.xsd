@@ -73,6 +73,56 @@ Conventions
     <xs:list itemType="EdgeRef"/>
   </xs:simpleType>
 
+  <xs:simpleType name="Corner">
+    <xs:annotation><xs:documentation>A corner of a hex, named by the ABC vector from the hex centre to that corner: the six corners of hex h are h+A, h+B, h+C, h-A, h-B, h-C (Ben's ABC system; the pixel direction of each follows the grid's orientation through hexcoord's basis, so the names never change between flat and pointy sheets).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A"/>
+      <xs:enumeration value="B"/>
+      <xs:enumeration value="C"/>
+      <xs:enumeration value="-A"/>
+      <xs:enumeration value="-B"/>
+      <xs:enumeration value="-C"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="VertexRef">
+    <xs:annotation><xs:documentation>HEX:CORNER, a printed hex id and one of its six corners. Three hexes meet at every vertex; the document names it through any one of them and the loader canonicalises.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string"><xs:pattern value="[A-Za-z]*[0-9]{2,6}:(-?[ABC])"/></xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EndReason">
+    <xs:annotation><xs:documentation>Why a link or path ends where it does. Rules read these (a road cut by a river at a dot) and the network checker's gate is "every end explained". unexplained is a recorded doubt, never a default.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="edge"/>
+      <xs:enumeration value="place"/>
+      <xs:enumeration value="junction"/>
+      <xs:enumeration value="dot"/>
+      <xs:enumeration value="bank"/>
+      <xs:enumeration value="sea"/>
+      <xs:enumeration value="unexplained"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EndPair">
+    <xs:annotation><xs:documentation>Two EndReason tokens: the reason at the first hex (or hexside) of the chain, then at the last.</xs:documentation></xs:annotation>
+    <xs:restriction>
+      <xs:simpleType><xs:list itemType="EndReason"/></xs:simpleType>
+      <xs:length value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Shape">
+    <xs:annotation><xs:documentation>The closed set of geometric primitives a declared mark can take. rect covers squares, ellipse covers circles; pictogram selects one of the renderer's drawn symbols (the port anchor, tank, artillery ...) by the mark's pictogram attribute, for the few marks that are pictures rather than shapes.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="rect"/>
+      <xs:enumeration value="ellipse"/>
+      <xs:enumeration value="star"/>
+      <xs:enumeration value="triangle"/>
+      <xs:enumeration value="diamond"/>
+      <xs:enumeration value="bar"/>
+      <xs:enumeration value="cross"/>
+      <xs:enumeration value="arrow"/>
+      <xs:enumeration value="text"/>
+      <xs:enumeration value="pictogram"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="RGB">
     <xs:restriction base="xs:string">
       <xs:pattern value="#[0-9a-fA-F]{6}|none"/>
@@ -194,6 +244,22 @@ Conventions
     <xs:attribute name="opacity" type="xs:decimal"/>
   </xs:complexType>
 
+  <xs:complexType name="Mark">
+    <xs:annotation><xs:documentation>A declared mark: MEANING (id, and name as the legend prints it) bound to SHAPE (a primitive, a colour, a size in hex units "w h", and where it sits). The sheet declares its marks once, in its legend, and every glyph, edge and vertex refers to one by id, so the vocabulary is the product of a small set of shapes and the sheet's own meanings instead of one flat enumeration. across="edge" says the mark lies across the hexside it is placed on (SMW's bridge, a yellow rectangle across the hexside). Approved 2026-09-19.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="shape" type="Shape" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
+    <xs:attribute name="size" type="xs:string"/>
+    <xs:attribute name="pictogram" type="Symbol"/>
+    <xs:attribute name="across">
+      <xs:simpleType><xs:restriction base="xs:string"><xs:enumeration value="edge"/></xs:restriction></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="from" type="xs:string">
+      <xs:annotation><xs:documentation>Set when the declaration was borrowed from the style library rather than read from this sheet's printed legend (a legend-less map); the borrowing is an assumption the document records.</xs:documentation></xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
   <!-- ================= map content ================= -->
 
   <xs:complexType name="Hexes">
@@ -204,7 +270,10 @@ Conventions
 
   <xs:complexType name="Glyph">
     <xs:annotation><xs:documentation>A symbol at a slot of its hex. dir orients arrow-like symbols. scale is relative to the hex.</xs:documentation></xs:annotation>
-    <xs:attribute name="symbol" type="Symbol" use="required"/>
+    <xs:attribute name="symbol" type="Symbol"/>
+    <xs:attribute name="mark" type="xs:IDREF">
+      <xs:annotation><xs:documentation>A declared mark from the sheet's legend. Exactly one of symbol and mark is given (the loader checks; XSD 1.0 cannot).</xs:documentation></xs:annotation>
+    </xs:attribute>
     <xs:attribute name="slot" type="Slot" default="c"/>
     <xs:attribute name="color" type="xs:IDREF"/>
     <xs:attribute name="text" type="xs:string"/>
@@ -236,8 +305,16 @@ Conventions
     <xs:attribute name="at" type="EdgeRef" use="required"/>
     <xs:attribute name="line" type="xs:IDREF"/>
     <xs:attribute name="symbol" type="Symbol"/>
+    <xs:attribute name="mark" type="xs:IDREF"/>
     <xs:attribute name="color" type="xs:IDREF"/>
     <xs:attribute name="label" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Vertex">
+    <xs:annotation><xs:documentation>A mark at a hex corner (corner-only grids drawn as small triangles at the vertices; Arctic Disaster's mountain triangles). The corner is addressed in ABC: HEX:CORNER with CORNER one of A B C -A -B -C. Approved 2026-09-19.</xs:documentation></xs:annotation>
+    <xs:attribute name="at" type="VertexRef" use="required"/>
+    <xs:attribute name="mark" type="xs:IDREF" use="required"/>
+    <xs:attribute name="color" type="xs:IDREF"/>
   </xs:complexType>
 
   <xs:complexType name="Path">
@@ -248,6 +325,9 @@ Conventions
     <xs:attribute name="line" type="xs:IDREF" use="required"/>
     <xs:attribute name="edges" type="EdgeList" use="required"/>
     <xs:attribute name="offset" type="xs:decimal" default="0"/>
+    <xs:attribute name="ends" type="EndPair">
+      <xs:annotation><xs:documentation>Why the chain ends at its first and last hexside (a river reaching the sea, the map edge ...). Approved 2026-09-19; optional until the checker's gate requires it.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Link">
@@ -257,6 +337,9 @@ Conventions
     <xs:attribute name="line" type="xs:IDREF" use="required"/>
     <xs:attribute name="hexes" type="HexList" use="required"/>
     <xs:attribute name="owner" type="xs:string"/>
+    <xs:attribute name="ends" type="EndPair">
+      <xs:annotation><xs:documentation>Why the chain ends at its first and last hex: edge place junction dot bank sea unexplained. Approved 2026-09-19; optional until the checker's gate requires it.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Region">
@@ -409,8 +492,17 @@ Conventions
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="legend" minOccurs="0">
+          <xs:annotation><xs:documentation>The sheet's declared marks (see Mark). Reading a printed legend produces this block and nothing else does.</xs:documentation></xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="mark" type="Mark" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="hexes" type="Hexes"/>
+          <xs:element name="vertex" type="Vertex"/>
           <xs:element name="hex" type="Hex"/>
           <xs:element name="edge" type="Edge"/>
           <xs:element name="path" type="Path"/>
