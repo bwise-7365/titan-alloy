@@ -710,6 +710,51 @@ def number_from_anchors(argv, cells, orientation):
     raise ValueError("no numbering with unit steps fits the anchors %s (two of them must differ in both axes)" % [t[0] for t in anchors])
 
 
+def fill_holes(cells, printed, spacing):
+    """Rule of hex grids (Ben, 2026-09-21): the outline may be irregular but there is never a hole
+    inside the grid. Unprinted cells that cannot be reached from the lattice's border through
+    unprinted cells are enclosed by printed cells, so they are printed (lake hexes where the grid is
+    faint over water)."""
+    from scipy.spatial import cKDTree
+    keys = list(cells)
+    xy = [(cells[k][0], cells[k][1]) for k in keys]
+    tree = cKDTree(xy)
+    cols = 1 + max(c for c, _ in keys)
+    rows = 1 + max(r for _, r in keys)
+    unprinted = {k for k in keys if k not in printed}
+    border = [k for k in unprinted if k[0] in (0, cols - 1) or k[1] in (0, rows - 1)]
+    reached = set(border)
+    frontier = list(border)
+    index = {k: i for i, k in enumerate(keys)}
+    while frontier:
+        k = frontier.pop()
+        for j in tree.query_ball_point(xy[index[k]], 1.2 * spacing):
+            m = keys[j]
+            if m in unprinted and m not in reached:
+                reached.add(m)
+                frontier.append(m)
+    return unprinted - reached
+
+
+def printed_by_eye(argv, cells, numbering, cols, rows):
+    """--printed ID ...: printed hexes the printed-cell test missed, named by a person (Target
+    Leningrad's Lake Peipus hexes, where the grid is faint over water). Needs the numbering."""
+    if "--printed" not in argv:
+        return set()
+    i = argv.index("--printed") + 1
+    wanted = set()
+    while i < len(argv) and not argv[i].startswith("--"):
+        wanted.add(argv[i])
+        i += 1
+    if not numbering:
+        raise ValueError("--printed needs the numbering (give anchors)")
+    found = {k for k in cells if cell_label(k, numbering, cols, rows) in wanted}
+    missing = wanted - {cell_label(k, numbering, cols, rows) for k in found}
+    if missing:
+        raise ValueError("--printed: no lattice cell is named %s" % " ".join(sorted(missing)))
+    return found
+
+
 def cell_label(key, numbering, cols, rows):
     """The printed id when the numbering is known, else the zero-padded index (Ben, A.3): 'c17 r1' is
     written 1701, with as many digits per axis as the larger extent needs."""
@@ -790,6 +835,10 @@ def main(argv):
         numbering["orientation"] = orientation
     cols = 1 + max(c for c, _ in cells)
     rows = 1 + max(r for _, r in cells)
+    holes = fill_holes(cells, printed, spacing)
+    printed |= holes
+    extra = printed_by_eye(argv, cells, numbering, cols, rows)
+    printed |= extra
     unprinted = {k for k in cells if k not in printed}
     origin = cells[(0, 0)][:2] if (0, 0) in cells else (cx, cy)
     notes = []
@@ -811,7 +860,8 @@ def main(argv):
         "rotation_deg": rot, "spacing": spacing / f,
         "basis": {"u": [u[0] / f, u[1] / f], "w": [v[0] / f, v[1] / f]},
         "index": {"cols": [0, cols - 1], "rows": [0, rows - 1], "offset": "odd"},
-        "printed": {"count": len(printed), "threshold": thr,
+        "printed": {"count": len(printed), "threshold": thr, "by-eye": sorted(cell_label(k, numbering, cols, rows) for k in extra),
+                    "holes": sorted(cell_label(k, numbering, cols, rows) for k in holes),
                     "cells": sorted("c%dr%d" % k for k in printed)},
         "clip_index": ranges(unprinted, cols, rows),
         "refit": {"lattice": lattice_fit, "rounds": refit_report, "cells": "printed"},

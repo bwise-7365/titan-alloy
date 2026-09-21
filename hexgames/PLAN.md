@@ -54,6 +54,66 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-09-21 evening: TARGET LENINGRAD AND TANNENBERG THROUGH THE WHOLE TRACK, CAPPED. Ben's bar on
+  SMW: "close enough that I could complete it in an editor; the correct type of structures are
+  present". New `tools/reader/sheet.py` writes sheet.xml from the lattice numbering + vocabulary +
+  chains (no image2sheet configuration needed; grid element from the lattice, clip for unprinted
+  cells); all three sheets validate and render (work/<map>/chain/sheet.png). Leningrad: grid and ids
+  right, sea/rough/forest/clear plausible (rough over-read), rivers follow the print plus the
+  coastline, 22 cities vs 14. Tannenberg: grid and ids right (947 hexes), terrain clear/swamp/forest/
+  broken, places over-read (197), line kinds over-read against the grey grid and pale swatch colours;
+  the six line-row swatches were placed by eye (legends.json). Numbers in the README. NEXT: the editor
+  (task 16) is now the critical path: it takes sheet.xml + doubts.json + unexplained ends and lets Ben
+  finish a map; batch.py should chain lattice -> cells -> structure -> sheet per map. Language items
+  raised by these maps: front line (SMW), major river and blocked hexside (Tannenberg), double-track
+  rail, ring kinds by owner (fortress-russian/german): all expressible as line/mark ids today except
+  ring ownership, which is a colour id now. Not to do: tune detectors (Ben, 2026-09-21).
+- 2026-09-21 B4 structure.py FIRST VERSION ON SMW, CAPPED; the reader track now goes scan -> sheet.
+  `tools/reader/structure.py` (terrain, hysteresis chains per line kind with end reasons, places
+  without names, doubts in task 16's schema, --oracle, --overlay) writes work/<map>/chain/; then
+  chain2catalogue.py --chain-dir (new option), assemble.py (place name now optional) and hexsheet2svg.py
+  produce work/Stalin_Moves_West_map/chain/sheet.{xml,svg,png}, valid and rendered. Oracle against the
+  committed SMW sheet: terrain 302/319, river 125/135 (+40), border 79/89 (+front line 147, not in the
+  sheet), rail 47/122 (+34). Rails are the eye's job (dashed grey). NEXT, in order: (1) Ben looks at
+  chain/sheet.png beside the scan and says whether this approximation is the bar; (2) if yes, run the
+  same five commands on Target Leningrad and Tannenberg (vocabularies exist) and put the run in
+  batch.py; (3) the editor (task 16) takes doubts.json + unexplained ends as its worklist; (4) front
+  line needs a place in the language (SMW prints it; the sheet has border only): XSD proposal or a
+  second line id. Ruling from 09-20 (shape probes in cells.py) is closed by Ben's 09-21 goal statement:
+  no.
+- 2026-09-21 B3 SECOND DAY, CAPPED AGAIN. Ben: BFM map 1 is one of the hardest (bland colours); do SMW
+  and Target Leningrad. cells.py gained annulus fills, nearest-class line pixels with texture palettes,
+  textured fill kinds, per-kind glyph scoring in a per-map glyph slot, exemplars by printed id
+  (legends.json entries for Target_Leningrad_map). SMW reads well: fills, rivers, borders, cities;
+  rails under-read (dashed), stars 0, oil over-read (grey = rail dash = id text). Target Leningrad:
+  fills split sea/forest/rough/clear plausibly, 63 river hexsides, 26 fortification hexsides, rails 3.
+  Every exemplar for a legend-less map cost a look on the contact sheet; three rounds for Leningrad.
+  All numbers are in the README. Overlays: work/<map>/cells-overlay.jpg. STOP tuning cells.py: the
+  remaining errors (dashed lines, grey-on-grey glyphs) are shape, not colour. NEXT: B4 structure.py on
+  SMW (fills + river/border chains from cells.json; the two earlier SMW readings are the oracle), with
+  the editor's by-eye corrections for what colour cannot see. Ruling from the 09-20 entry still open.
+- 2026-09-20 B3 cells.py FIRST VERSION, CAPPED. `tools/reader/cells.py` writes cells.json (README shape)
+  from lattice.json + legend/: references measured on the swatches themselves, fills by colour, lines
+  by covered length of line-coloured pixels that are neither fill nor grid outline, glyphs by drawn-on
+  amount x colour; printed cells only; --overlay for the one look. BFM redone: 129 hexes, 453 sides;
+  woods 22, fortification 17 fills (right by eye), river on 50 sides (follows the print), rail on 92
+  spokes (mostly right, some false on woods edges), glyphs weak (cities < 0.5, Moscow 4). BFM map 1:
+  swatches are exemplar hexes placed by eye in legends.json (no legend printed); fills and river NOT
+  separable by colour in that print (river/rail/grid all dark grey, fortification 20 units from paper):
+  river scores > 0.5 on 460 of 467 sides. Ruling needed from Ben before more work here: (i) add weight
+  and waviness probes to cells.py, or (ii) leave cells.py as colour measurement and let structure.py's
+  priors and the editor's eye do the rest. Cap was ~35 tool calls, honoured. NEXT after the ruling: B4
+  structure.py on BFM redone (fills + rivers are good enough to build terrain and river chains).
+- 2026-09-20 LEGENDS (B2) DONE BY THE EYE'S ROUTE. Ben committed the lattice/anchors/XSD pile, then
+  chose the cheaper finish for the legend reader: no more finder tuning. `legends.json` (new, reader dir)
+  holds hand-read swatch centres for BFM redone (7) and SMW (16); `legend.py DIR --placed legends.json`
+  cuts them; contact sheets checked, every swatch on its printed entry; `--finish` wrote vocabulary.json
+  for BFM redone, SMW and Tannenberg (Tannenberg's 9 came from the automatic finder; its rail, river and
+  lake rows are not in the vocabulary). Finding: grid-step growth adds nothing on BFM/SMW because their
+  charts have no repeated step; the finder suits table keys only. Diagnosis of the SMW misses: the old
+  `--panel` stopped at y 340, above Front Line and Forest. NEXT: B3 `cells.py` on the BFM pair (BFM map
+  redone has 7 named swatches; the pair is redone vs the original), then B4 structure.py, B5 compare.py.
+  Budget rule from Ben (2026-09-20): no multi-hour unattended tuning; cap each step and report.
 - phase: 2 (games)                   milestone: M2-M5 done (2026-09-13); M6 (TRC) and M7a (PGG digest) in flight
 - M6i PAUSED AT A CLEAN POINT (2026-09-17 00:30), tasks/13-smw-map.md -- READ ITS resume: LINE FIRST.
   W6 stopped at its time box after the spend-limit stop of 2026-09-16 22:03 and Ben's limit increase.
@@ -475,6 +535,17 @@ Engine and records
           uses the named PRNG streams, and how batch runs report problems.
 
 ## Decision log
+- 2026-09-21 Ben, rule of hex grids: the outside line of a grid can be irregular (Target Leningrad),
+  but there can never be a hole inside the grid where cells are missing. Recorded in hexsheet.xsd's
+  clip documentation and applied by lattice.py (enclosed unprinted cells become printed, listed as
+  "holes").
+- 2026-09-21 Ben, binding on the whole map track: perfect reading of maps and replication is NOT the
+  goal. The goal is a rule language for map elements (what they mean, where they are placed, the
+  attributes relevant to play; not how they are drawn), tested by building close approximations to
+  published games. The example maps are use-cases for approximate construction only. Carefully parsing
+  text in the boxes around maps (charts, tables, tracks, legends' prose) is neither required nor
+  desired. Consequences: reader tools stop at "good enough to build the sheet"; the eye (legends.json,
+  the editor) covers the rest; effort goes to the language and the approximations, not to detectors.
 
 - 2026-09-19 Ben approved XSD proposals (a) vertex marks, (b) the legend as declared marks, (e) end
   reasons on links and paths; applied additively to hexsheet.xsd. Corners are named in ABC (A B C -A

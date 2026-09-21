@@ -150,9 +150,9 @@ def main(argv):
         glyphs += [attrs(symbol=sym, color=color) for sym, color in region_glyphs.get(pid, [])]
         if not glyphs:
             continue
-        hex_attrs = attrs(id=pid, name=place["name"]) if place else attrs(id=pid)
+        hex_attrs = attrs(id=pid, name=place.get("name")) if place else attrs(id=pid)
         x.append("  <hex %s>%s</hex>" % (hex_attrs, "".join("<glyph %s/>" % g for g in glyphs)))
-        if place and place["name"] not in named:
+        if place and place.get("name") and place["name"] not in named:  # a place the reader has not named yet gets its glyph and no label
             named.add(place["name"])
             s = style[place["glyph"]]
             x.append("  <label %s/>" % attrs(text=place["name"], at=pid, slot="s", size=s["size"], weight=s["weight"]))

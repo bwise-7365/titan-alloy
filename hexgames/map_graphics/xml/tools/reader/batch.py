@@ -6,7 +6,7 @@
 
 For each image (png, jpg, jpeg) it runs lattice.py with --overlay --svg into work/<map>/ (the map's
 name with spaces and punctuation as underscores), passing --spacing for any image named in a --hint and --anchor for any image with anchors in the
---anchors file (default anchors.json beside this script: {"maps": [{"file", "anchors": [[id, c, r], ...],
+--anchors file (default anchors.json beside this script: {"maps": [{"file", "anchors": [[id, c, r], ...], "printed": [id, ...] (hexes the printed test missed, by eye),
 "note", "skip"}]}); an entry with "skip": true is not a map scan (a detail photograph) and is left out.
 It appends the tool's one report line to work/batch-report.txt, prefixed with the run time, and
 writes work/batch-table.json: one row per map, [name, orientation, spacing, r0 rms, r0 slips, last rms,
@@ -72,6 +72,7 @@ def main(argv):
         with open(anchors_path, encoding="utf-8") as fh:
             maps = json.load(fh)["maps"]
             anchors = {m["file"]: m["anchors"] for m in maps if m["anchors"]}
+            printed_extra = {m["file"]: m["printed"] for m in maps if m.get("printed")}
             skip = {m["file"] for m in maps if m.get("skip")}
     only = parse_only(argv)
     here = os.path.dirname(os.path.abspath(__file__))
@@ -91,6 +92,8 @@ def main(argv):
                 cmd += ["--spacing", str(hints[f])]
             if f in anchors:
                 cmd += ["--anchor"] + [str(v) for a in anchors[f] for v in a]
+            if f in printed_extra:
+                cmd += ["--printed"] + list(printed_extra[f])
             t0 = time.time()
             proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
             line = (proc.stdout.strip().splitlines() or [proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else "no output"])

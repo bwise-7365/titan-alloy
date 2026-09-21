@@ -3,6 +3,7 @@
 vocabulary (reader tool B2).
 
     python legend.py DIR [--panel X0 Y0 X1 Y1] [--sizes 0.5,0.7,1.0] [--min 3] [--coverage 0.9] [--margin 0.12] [--rotate DEG]
+    python legend.py DIR --placed legends.json          swatches a person placed by eye -> the same outputs
     python legend.py DIR --finish                                            naming.json -> vocabulary.json
 
 DIR is a map's work folder holding lattice.json (from lattice.py). The first form writes
@@ -453,6 +454,48 @@ def finish(out):
     return vocab
 
 
+# ---------------------------------------------------------------- placed by eye
+
+
+def place(d, x, y, size, orientation):
+    """A swatch's centre: given pixels, or a printed hex id on a numbered lattice (an exemplar hex on a
+    legend-less map, named the way the print names it; the lattice supplies the centre and the size)."""
+    if isinstance(x, str):
+        cells = {tuple(int(t) for t in k[1:].split("r")): v for k, v in d["grown"]["cells"].items()}
+        cols = max(c for c, _ in cells) + 1
+        rows = max(r for _, r in cells) + 1
+        hits = [k for k in cells if L.cell_label(k, d.get("numbering"), cols, rows) == x]
+        if 1 != len(hits):
+            raise ValueError("exemplar hex '%s' matches %d lattice cells" % (x, len(hits)))
+        cx, cy, _ = cells[hits[0]]
+        return (float(cx), float(cy), float(d["size"]), d["orientation"], 1.0)
+    return (float(x), float(y), float(size), orientation, 1.0)
+
+
+def placed(folder, d, out, path):
+    """The eye's route (Ben, 2026-09-20: budget over tuning). legends.json holds, per work folder, the
+    legend rectangle and every swatch as [name, kind, sheet, x, y, size] read off a gridded crop of the
+    scan. The swatches, features, contact sheet and a naming.json with every row already named are
+    written exactly as the finder would write them, so --finish and B3 cannot tell the routes apart;
+    each row says "placed": "eye" because a person, not the finder, put it there."""
+    with open(path, encoding="utf-8") as fh:
+        table = json.load(fh)
+    name = os.path.basename(os.path.normpath(folder))
+    if name not in table:
+        raise ValueError("%s has no entry in %s" % (name, path))
+    entry = table[name]
+    rgb_im = Image.open(d["source"]).convert("RGB")
+    panel = [place(d, x, y, size, entry.get("orientation", d["orientation"])) for _, _, _, x, y, size in entry["swatches"]]
+    rows = write_outputs(rgb_im, d, [panel], out, float(entry.get("rotate", 0)))
+    for r, (nm, kind, sheet, *_) in zip(rows, entry["swatches"]):
+        r.update({"name": nm, "kind": kind, "sheet": sheet, "placed": "eye", "score": None,
+                  "rotate": float(entry.get("rotate", 0))})
+    with open(os.path.join(out, "naming.json"), "w", encoding="utf-8") as fh:
+        json.dump(rows, fh, indent=1)
+    print("%s: %d swatches placed by eye from %s, panel %s" % (name, len(rows), path, entry.get("panel")))
+    return 0
+
+
 # ---------------------------------------------------------------- main
 
 
@@ -469,6 +512,8 @@ def main(argv):
         return 0
     with open(os.path.join(folder, "lattice.json"), encoding="utf-8") as fh:
         d = json.load(fh)
+    if "--placed" in argv:
+        return placed(folder, d, out, option(argv, "--placed", "legends.json"))
     fractions = [float(t) for t in option(argv, "--sizes", ",".join("%.2f" % (0.35 + 0.05 * i) for i in range(15))).split(",")]
     min_count = int(option(argv, "--min", 3))
     rotate = float(option(argv, "--rotate", 0))

@@ -21,9 +21,11 @@ contact sheet per thirty doubts. Every tool prints a `--report` a person can che
 ```
 python lattice.py IMAGE --out DIR [--overlay] [--svg] [--anchor ID C R ID C R ...] [--spacing PX]
 python batch.py FOLDER [--hint "NAME=PX" ...] [--only NAME ...]   (lattice.py over every scan)
-python legend.py DIR                 (finds the panel, cuts swatches, writes legend/ for naming)
-python cells.py DIR                  (scores every cell against the named swatches)
-python structure.py DIR              (chains, regions, glyphs, doubts; writes chain files)
+python legend.py DIR [--panel X0 Y0 X1 Y1]   (finds the panel, cuts swatches, writes legend/ for naming)
+python legend.py DIR --placed legends.json   (swatches a person placed by eye; same outputs)
+python legend.py DIR --finish                (naming.json -> vocabulary.json)
+python cells.py DIR [--vocabulary OTHER/legend] [--overlay]   (scores every printed cell against the swatches)
+python structure.py DIR [--oracle SHEET.xml] [--overlay]   (terrain, chains with end reasons, places, doubts)
 python compare.py DIR ...            (difference image; round trip; swap; common style)
 ```
 
@@ -53,7 +55,12 @@ python compare.py DIR ...            (difference image; round trip; swap; common
 element's meaning, so `common.make_grid` builds the same lattice. `index` gives the lattice's cell
 ranges over the image before numbering is known; `numbering` is filled from the anchors (printed ids
 paired with lattice indices, read by a person from crops of the scan with the index drawn; the
-record for the example maps is `anchors.json`) and turns index ranges into printed ids: printed
+Rule of hex grids (Ben, 2026-09-21): the outline may be irregular, as Target Leningrad's coast is, but
+there is never a hole inside the grid; a cell enclosed by printed cells is printed. lattice.py applies
+it after the printed-cell test: unprinted cells that cannot be reached from the lattice's border
+through unprinted cells are holes, marked printed and listed under "holes" in lattice.json (Target
+Leningrad's Lake Peipus hexes). Cells at the outline that the test still misses are the eye's:
+"printed" in anchors.json. The eye's record for the example maps is `anchors.json`, which may also list under "printed" the ids of hexes the printed-cell test missed, passed as `--printed`) and turns index ranges into printed ids: printed
 `col = col-start + col-step * c'` and `row = row-start + row-step * r'`, where `(c', r')` is the
 lattice index re-paired for the sheet's grid `offset` ("odd" = the renderer's pairing, `c' = c`;
 "even" = the other zigzag, `c' = c + ((r + parity) % 2)` for pointy, `r' = r + ((c + parity) % 2)`
@@ -66,8 +73,10 @@ phase score is above the gate. The dense residual per hex is NOT computed; it wa
 pixel habit.
 
 ### legend/ (legend.py)
-`legend/panel.jpg` (the panel as found), `legend/swatch-NN.jpg` (one per swatch, cut and normalised),
-and `legend/vocabulary.json` after naming:
+`legend/panel-N.jpg` (each panel, swatches numbered), `legend/swatch-NN.png` (one per swatch, cut and
+normalised), `legend/contact.jpg` (every swatch with its printed label, for the one naming look),
+`legend/naming.json` (one row per swatch: position, size, interior colour, per-edge and spoke ink, a
+kind guess, and `name`/`kind`/`sheet` to fill in) and `legend/vocabulary.json` after `--finish`:
 ```
 [{"swatch": "swatch-03.jpg", "name": "River hexside", "kind": "side-along", "sheet": "river",
   "shape": "line", "colour": "#78bee1"},
@@ -76,6 +85,17 @@ and `legend/vocabulary.json` after naming:
  {"swatch": null, "name": "town", "kind": "glyph", "sheet": "town", "from": "library/gdw-1986"}]
 ```
 `kind` is one of `hex`, `ring`, `glyph`, `side-along`, `side-across`, `side-mid`, `vertex`, `region`.
+
+Two routes fill naming.json. The finder (`legend.py DIR`) paints the printed hexes out, looks for hex
+outlines at legend sizes with the line's own contrast, and groups them into panels; it is right on
+table-style keys (Tannenberg, 9 of 9 named) and finds nothing on legend-less maps (Tallinn), but on
+charts where the swatches sit in irregular cells (BFM, SMW) it needs `--panel` and still misses or
+over-reads. The eye's route (`--placed legends.json`, Ben's choice of 2026-09-20, budget over tuning)
+reads each swatch's centre and radius off a gridded crop of the scan into `legends.json`, keyed by work
+folder, as `[name, kind, sheet, x, y, size]` with the panel rectangle; legend.py cuts and measures
+those exactly as the finder would, marks each row `"placed": "eye"`, and `--finish` cannot tell the
+routes apart. BFM redone (7) and SMW (16) were done this way. An editor makes the second route a
+rectangle drag and a click per swatch.
 `sheet` is the id the structure document will use. A swatch that came from the style library rather
 than the print carries `from`. The style document (palette, terrains, lines, marks) is derived from this
 file and the swatch colours; until task 14's mechanism A lands it is written as the sheet's declaration
@@ -93,6 +113,41 @@ One row per cell, scores in [0, 1] per sheet id, only kinds the vocabulary decla
 Cell names are printed ids and the hexside names common.py already uses. Nothing in this file is a
 decision; it is measurement.
 
+How the scores are measured (2026-09-20, first version, proved on the BFM pair only). Every reference
+is taken from the legend's own swatch with the probes that measure the cells: a fill is the swatch's
+interior colour; a glyph is the colour of what is drawn over the swatch's fill; a line kind is the
+colour drawn over the fill in the one side band, spoke or side midpoint of the swatch that carries
+drawing. A cell's fill scores by colour similarity (zero at 80 RGB units). A line scores by the fraction
+of its band's length at which some pixel across the band is the line colour and is neither fill nor the
+printed hex outline, so a river that wanders off its hexside still scores by the length it covers, and
+woods green (within tolerance of BFM's tan rail) does not count as rail because it is the fill. A glyph
+scores by how much is drawn in the interior that no line kind explains, times the similarity of its
+colour. Whatever the swatch does not show scores 0; a kind with no swatch (Clear on both BFM printings)
+has no column and is the structure step's default. Only printed cells are scored; the grown lattice's
+other cells are margin and furniture. A map with no legend gets its swatches as exemplar hexes on the
+map itself, placed by eye in `legends.json` (BFM map 1), so nothing is borrowed from another print.
+
+Second day (2026-09-21, SMW and Target Leningrad, Ben's choice over the bland BFM original). Added:
+the fill of a hex is read in an annulus inside the outline and outside any pictogram (a swatch whose
+star covers the centre would otherwise call the star its fill); a pixel counts for a line only when the
+line colour is nearer than every other colour the cell can show (both fills with the palette of their
+printed texture, the outline, the other line kinds), which is what separated SMW's sea from its river
+and rough's speckles from the red front line; a fill swatch with more than 5% drawn over its fill is a
+textured kind and cells score it half by fill colour, half by how much of that texture they show
+(Target Leningrad prints forest and rough as mottle over clear); glyphs score per kind from the drawn
+pixels nearest that kind's colour, in the map's glyph slot (`legends.json` "glyph-slot", Target
+Leningrad draws pictograms in the upper half); exemplar hexes may be named by printed id. SMW: fills
+right by eye (rough 38, marsh 17, sea 16, forest 5, clear the rest), rivers and both borders on the
+printed hexsides, cities 25 (the map has about 20), rails under-read (dashed, 30 spokes), stars 0 and
+oil 104 (the grey derrick colour is also the rail dash and the hex id). Target Leningrad: sea 12,
+forest 11, rough 41, clear 58, rivers 63 hexsides, fortification boxes on 26 hexsides, rails 3.
+
+Known limits after the BFM pair: glyph kinds are told apart by colour only, so BFM redone's cities
+(grey blob on tan roads) never reach 0.5 against their tiny legend rendering; BFM map 1 prints rivers,
+rails and the hex outline in near-identical dark greys and its fortification grey is 20 units from
+paper, so colour alone puts a river on nearly every hexside there. Weight and waviness probes are the
+next step, in structure.py's ranking or here; they were not attempted within the 2026-09-20 cap.
+
 ### structure (structure.py)
 - `terrain.json` `{"1829": "clear", …}` with the runner-up share as the doubt score.
 - `<kind>.json` chain files in chain2catalogue.py's schema, ends with reasons, `todo` empty, and
@@ -100,7 +155,41 @@ decision; it is measurement.
 - `regions.json` `{"country": [{"name": "Poland", "hexes": […]}], "sea-area": […]}`.
 - `places.json` in merge.py's places and markers shape, names filled by the label pass.
 - `doubts.json` in task 16's schema, every entry produced by a score in the middle band.
-Then `chain2catalogue.py` and `assemble.py` run unchanged.
+Then `sheet.py DIR` writes `DIR/chain/sheet.xml` straight from the lattice numbering, the vocabulary
+and the chain files, validated against hexsheet.xsd, and `hexsheet2svg.py` renders it. (For a map that
+has an image2sheet configuration, `chain2catalogue.py MAP --chain-dir DIR/chain` and `assemble.py` are
+the other route; SMW was built both ways on 2026-09-21 and the two agree.) The grid element is the
+lattice: size and origin from the fitted centres, cols, rows, id format and starts from the numbering,
+the stagger measured from the centres, the unprinted cells of the rectangle in clip. Style is what the
+reader measured, each fill and stroke its swatch colour; the document is the structure.
+
+Three maps through the whole track, 2026-09-21, all valid and rendered (`work/<map>/chain/sheet.png`):
+SMW as above; Target Leningrad (exemplar swatches by printed id): terrain sea 12, forest 11, rough 54
+(rough over-read where the print's forest mottle is), clear 60; rivers 85 hexsides in 36 chains, most
+ending at the map edge because the coastline reads as river; cities 22 against 14 printed; the grid
+and every id right. Tannenberg (legend of 15 swatches, the six line rows placed by eye): terrain
+clear 864, swamp 48, forest 15 (the print's forest mottle mostly missed), broken 12; the line kinds are
+over-read against the grey hex grid and the yellow paper (river 710 hexsides, border 443, blocked 136)
+and the swatch line colours are too pale to draw; rails 42 steps in 23 chains, 14 ending at places;
+197 places against about 40 printed. Ben's bar (2026-09-21, SMW): close enough to finish in an editor,
+and the right types of structure present. SMW and Target Leningrad meet it; Tannenberg meets it for
+the grid, terrain and places, not yet for lines.
+
+First version (2026-09-21, SMW). Terrain is the best fill above 0.3, else the default (`--default
+clear`). Chains grow by hysteresis over the hexside scores: seeds at or above `--high` (0.6; rail 0.4),
+continued through hexsides at or above `--low` (0.3; rail 0.2) that share a vertex (rail: a hex), split
+at junctions. Two structural rules, both recorded as doubts rather than applied silently: a lone
+hexside or step with both ends unexplained is not a line, and for rail a hex carrying four or more
+steps is a false star (marsh mottle, text) while a piece of fewer than three steps reaching neither a
+place nor the map edge goes nowhere. End reasons: edge, sea (river beside sea terrain), junction, place
+(rail at a city or port), unexplained. `places.json` carries glyphs only, no names (nothing is
+invented; assemble.py now accepts a place without a name), and other glyph hits go to `glyphs.json`.
+`doubts.json` is in task 16's schema. Against the committed SMW sheet as oracle: terrain agrees on 302
+of 319 hexes (the rest are coastal/clear/sea calls along the Baltic); river hexsides 125 of 135 found
+with 40 extra; border 79 of 89 with the front line's 147 hexsides as the extras (the sheet has no
+front line); rail 47 of 122 steps with 34 extra, the known weak kind. The sheet built from this reading
+validates and renders; that render, `work/<map>/chain/sheet.png`, is the approximation the map track
+is for, and the doubts list plus the unexplained ends are the editor's input.
 
 ### compare (compare.py)
 `diff.png` render against scan; `roundtrip.txt` structure read from the render against the structure

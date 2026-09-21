@@ -213,7 +213,7 @@ Conventions
     <xs:attribute name="show-ids" type="xs:boolean" default="true"/>
     <xs:attribute name="id-side" type="Dir" default="w"/>
     <xs:attribute name="clip" type="xs:string">
-      <xs:annotation><xs:documentation>Optional list of hexes to omit, as ranges "A1-A9 B1-B3", for irregular sheet outlines.</xs:documentation></xs:annotation>
+      <xs:annotation><xs:documentation>Optional list of hexes to omit, as ranges "A1-A9 B1-B3", for irregular sheet outlines. Rule (Ben, 2026-09-21): the outline of a hex grid may be irregular, but there is never a hole inside it; every cell enclosed by cells of the grid is a cell of the grid. A clip list that leaves an enclosed hole is an error of the document, not a feature of the map.</xs:documentation></xs:annotation>
     </xs:attribute>
   </xs:complexType>
 

@@ -1,7 +1,7 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 """chain2catalogue.py -- stage S/A of the chain reading process: the chain files <-> the catalogue schema.
 
-    python chain2catalogue.py MAP
+    python chain2catalogue.py MAP [--chain-dir PATH]
     python chain2catalogue.py MAP --from-catalogue
 
 Default: reads work/MAP/chain/terrain.json ({"hex": "terrain"}), work/MAP/chain/places.json
@@ -32,6 +32,15 @@ import common as C
 
 sys.path.insert(0, os.path.join(C.XML_DIR, "tools"))
 import network_check as N  # noqa: E402
+
+CHAIN_DIR = None  # --chain-dir PATH: read the chain files from there (the reader track's structure.py output) instead of work/MAP/chain/
+
+
+def chain_path(cfg, name):
+    if CHAIN_DIR is not None:
+        return os.path.join(CHAIN_DIR, name)
+    return C.work(cfg, "chain", name)
+
 
 KINDS_HEX = ("rail",)
 KINDS_SIDE = ("river", "border")
@@ -106,7 +115,7 @@ def graph_chains(edges):
 
 # ---------------------------------------------------------------- default mode: chain files -> catalogue
 def flatten_sides(cfg, grid, kind):
-    data = C.read_json(C.work(cfg, "chain", kind + ".json"))
+    data = C.read_json(chain_path(cfg, kind + ".json"))
     if kind != data.get("kind"):
         raise ValueError("chain/%s.json: kind field is %r, not %r" % (kind, data.get("kind"), kind))
     names = set()
@@ -118,7 +127,7 @@ def flatten_sides(cfg, grid, kind):
 
 
 def flatten_hexes(cfg, grid, kind):
-    data = C.read_json(C.work(cfg, "chain", kind + ".json"))
+    data = C.read_json(chain_path(cfg, kind + ".json"))
     if kind != data.get("kind"):
         raise ValueError("chain/%s.json: kind field is %r, not %r" % (kind, data.get("kind"), kind))
     names = set()
@@ -134,7 +143,7 @@ def flatten_hexes(cfg, grid, kind):
 
 
 def build_catalogue(cfg, grid):
-    terrain = C.read_json(C.work(cfg, "chain", "terrain.json"))
+    terrain = C.read_json(chain_path(cfg, "terrain.json"))
     voc_terrain = set(cfg["vocabulary"]["terrain"])
     missing = sorted(pid for pid in grid.ids if pid not in terrain)
     if missing:
@@ -142,7 +151,7 @@ def build_catalogue(cfg, grid):
     bad = sorted({t for t in terrain.values() if t not in voc_terrain})
     if bad:
         raise ValueError("chain/terrain.json: terrain %s is not in the vocabulary" % bad[0])
-    places_data = C.read_json(C.work(cfg, "chain", "places.json"))
+    places_data = C.read_json(chain_path(cfg, "places.json"))
     places, markers = places_data["places"], places_data["markers"]
     cat = {"hexes": {}, "markers": markers}
     for pid in sorted(grid.ids, key=lambda p: grid.ids[p]):
@@ -239,8 +248,11 @@ def main(argv):
     grid = C.make_grid(cfg, C.load_fit(cfg))
     if "--from-catalogue" in argv:
         return reverse(cfg, grid)
+    global CHAIN_DIR
+    if "--chain-dir" in argv:
+        CHAIN_DIR = argv[argv.index("--chain-dir") + 1]
     cat = build_catalogue(cfg, grid)
-    C.write_json(C.work(cfg, "chain", "catalogue.json"), cat)
+    C.write_json(chain_path(cfg, "catalogue.json"), cat)
     counts = {k: len(v) for k, v in cat.items() if k not in ("hexes", "markers")}
     print("wrote chain/catalogue.json: hexes %d; markers %d; %s" % (
         len(cat["hexes"]), len(cat["markers"]), "  ".join("%s %d" % (k, v) for k, v in counts.items())))
