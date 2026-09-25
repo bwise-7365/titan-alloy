@@ -6,7 +6,7 @@
        width="1650"
        height="2550"
        background="margin"
-       font="Arial, Helvetica, sans-serif" urban="buildings">
+       font="Arial, Helvetica, sans-serif" urban="buildings" junctions="implicit">
   <!-- built by map_graphics/xml/tools/image2sheet/assemble.py from the smw catalogue; fix the catalogue, not this file -->
   <grid id="main" orientation="pointy" offset="even" cols="45" rows="24" size="53.291" ox="-2473.02" oy="429.77" id-format="{row:02}{col:02}" col-start="1" row-start="28" terrain="clear" row-step="-1" id-side="w" clip="0501-0528 0529-0545 0601-0627 0628-0637 0645 0701-0728 0729-0737 0801-0827 0845 0901-0928 1001-1027 1045 1101-1128 1201-1227 1245 1301-1328 1401-1427 1445 1501-1528 1601-1627 1645 1701-1728 1801-1827 1845 1901-1928 2001-2027 2045 2101-2128 2201-2227 2245 2301-2328 2329-2334 2401-2427 2428-2434 2445 2501-2528 2529-2533 2601-2627 2628-2633 2645 2701-2728 2729-2733 2801-2845"/>
   <palette xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

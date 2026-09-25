@@ -2,6 +2,12 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
-(none yet)
+--- 2026-09-23 HexMapEd's save dropped the <legend> block and every link/path @ends, because
+    HexXml::SheetDoc had no fields for them (SheetWriter writes only what SheetDoc holds). Found when the
+    hexview SVG golden passed vacuously on Velikiye Luki: the reference SVG it rendered came from the
+    stripped sheet, so neither side drew the 30 legend marks. Fixed: SheetDoc gained legend (SheetMarkDoc)
+    and ends; the writer emits both; velikiye-luki.xml restored. Lesson for the writer tests: round-trip
+    every sheet in map_graphics/xml and compare the parsed documents field for field, not a subset.
+    Comments are still dropped on save (accepted: structure and style, validated).
 
 Copyright Ben Paul Wise. All Rights Reserved.

@@ -8,6 +8,7 @@
 #pragma once
 #include "hexcoord/Direction.h"
 #include "hexcoord/Grid.h"
+#include "hexmodel/Ids.h"
 #include "hexxml/SheetDoc.h"
 
 #include <array>
@@ -39,7 +40,12 @@ namespace HexView {
     const std::vector<HexCoord::Grid>& grids() const;
 
     // Each throws std::invalid_argument naming the id when no grid prints it.
+    const HexCoord::Grid& gridOf(const HexId&) const;
+    // The dense index BoardBuilder gives the hex: grid by grid, each grid's ids() in order.
+    HexModel::HexIndex index(const HexId&) const;
     Pixel centre(const HexId&) const;
+    // In the reference renderer's order: clockwise from the corner at 0 degrees (flat) or 30 degrees
+    // (pointy), screen angles measured clockwise from east.
     std::array<Pixel, 6> corners(const HexId&, double inset = 0.0) const;
     std::pair<Pixel, Pixel> hexsideEnds(const EdgeRef&) const;
     Pixel hexsideMidpoint(const EdgeRef&) const;

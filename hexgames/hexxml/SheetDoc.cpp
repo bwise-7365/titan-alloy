@@ -84,6 +84,22 @@ namespace HexXml {
       return l;
     }
 
+    SheetMarkDoc
+    parseMark(const XmlNode& node)
+    {
+      SheetMarkDoc m;
+      m.id = node.required("id");
+      m.name = node.optional("name");
+      m.shape = node.required("shape");
+      m.color = node.optional("color");
+      m.size = node.optional("size");
+      m.pictogram = node.optional("pictogram");
+      m.across = node.optional("across");
+      m.from = node.optional("from");
+      m.sourceLine = node.line();
+      return m;
+    }
+
     SheetHexesDoc
     parseHexes(const XmlNode& node)
     {
@@ -98,7 +114,12 @@ namespace HexXml {
     parseGlyph(const XmlNode& node)
     {
       SheetGlyphDoc g;
-      g.symbol = node.required("symbol");
+      g.symbol = node.optional("symbol");
+      g.mark = node.optional("mark");
+      if (g.symbol.has_value() == g.mark.has_value()) {
+        throw std::invalid_argument(node.file() + ":" + std::to_string(node.line()) +
+                                     ": glyph needs exactly one of symbol and mark");
+      }
       g.slot = node.optional("slot").value_or("c");
       checkEnum(node, "slot", g.slot, kSlots);
       g.color = node.optional("color");
@@ -148,6 +169,7 @@ namespace HexXml {
       e.at = node.required("at");
       e.line = node.optional("line");
       e.symbol = node.optional("symbol");
+      e.mark = node.optional("mark");
       e.color = node.optional("color");
       e.label = node.optional("label");
       e.sourceLine = node.line();
@@ -164,6 +186,7 @@ namespace HexXml {
       p.line = node.required("line");
       p.edges = splitTokens(node.required("edges"));
       p.offset = node.optionalAs<double>("offset").value_or(0.0);
+      p.ends = node.optional("ends");
       p.sourceLine = node.line();
       return p;
     }
@@ -172,13 +195,35 @@ namespace HexXml {
     parseLink(const XmlNode& node)
     {
       SheetLinkDoc l;
+      l.id = node.optional("id");
       l.kind = node.required("kind");
       l.name = node.optional("name");
       l.line = node.required("line");
       l.hexes = splitTokens(node.required("hexes"));
       l.owner = node.optional("owner");
+      l.ends = node.optional("ends");
       l.sourceLine = node.line();
       return l;
+    }
+
+    SheetJunctionDoc
+    parseJunction(const XmlNode& node)
+    {
+      SheetJunctionDoc j;
+      j.at = node.required("at");
+      if (const std::optional<std::string> links = node.optional("links")) {
+        j.links = splitTokens(*links);
+      }
+      if (const std::optional<std::string> paths = node.optional("paths")) {
+        j.paths = splitTokens(*paths);
+      }
+      j.name = node.optional("name");
+      j.sourceLine = node.line();
+      if (j.links.empty() == j.paths.empty()) {
+        throw std::invalid_argument(node.file() + ":" + std::to_string(node.line()) +
+                                     ": junction at '" + j.at + "' must name links or paths, not both nor neither");
+      }
+      return j;
     }
 
     SheetRegionDoc
@@ -332,6 +377,8 @@ namespace HexXml {
     s.font = root.optional("font").value_or(s.font);
     s.urban = root.required("urban");
     checkEnum(root, "urban", s.urban, {"buildings", "symbol"});
+    s.junctions = root.required("junctions");
+    checkEnum(root, "junctions", s.junctions, {"implicit", "explicit"});
 
     for (const XmlNode& g : root.children("grid")) {
       s.grids.push_back(parseGrid(g));
@@ -352,6 +399,11 @@ namespace HexXml {
         s.lines.push_back(parseLine(l));
       }
     }
+    if (const std::optional<XmlNode> legend = root.child("legend")) {
+      for (const XmlNode& m : legend->children("mark")) {
+        s.legend.push_back(parseMark(m));
+      }
+    }
 
     for (const XmlNode& c : root.children()) {
       const std::string n = c.name();
@@ -365,6 +417,8 @@ namespace HexXml {
         s.paths.push_back(parsePath(c));
       } else if ("link" == n) {
         s.links.push_back(parseLink(c));
+      } else if ("junction" == n) {
+        s.junctionElements.push_back(parseJunction(c));
       } else if ("region" == n) {
         s.regions.push_back(parseRegion(c));
       } else if ("label" == n) {
@@ -374,6 +428,10 @@ namespace HexXml {
       }
     }
 
+    if ("implicit" == s.junctions && !s.junctionElements.empty()) {
+      throw std::invalid_argument(root.file() + ":" + std::to_string(s.junctionElements.front().sourceLine) +
+                                   ": a sheet with junctions=\"implicit\" may not contain junction elements");
+    }
     return s;
   }
 

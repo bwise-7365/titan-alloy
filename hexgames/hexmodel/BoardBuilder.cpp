@@ -226,7 +226,10 @@ namespace HexModel {
         board.terrain_[hi.value] = resolveHexTerrain(bySheetTerrain, *h.terrain, rules);
       }
       for (const HexXml::SheetGlyphDoc& glyph : h.glyphs) {
-        const auto symIt = bySymbol.find(glyph.symbol);
+        if (!glyph.symbol) {
+          continue;  // a legend mark; the package binds symbols only (TODO(decide): bind marks too)
+        }
+        const auto symIt = bySymbol.find(*glyph.symbol);
         if (bySymbol.end() != symIt) {
           Feature f;
           f.terrain = rules.terrain(symIt->second);
@@ -282,13 +285,31 @@ namespace HexModel {
     for (std::size_t i = 0; i < rules.networks().size(); ++i) {
       board.networkByName_[rules.networks()[i].id] = NetworkId{static_cast<std::uint32_t>(i)};
     }
+    const bool explicitP = "explicit" == sheet.junctions;
+    for (LinkNetwork& net : board.networks_) {
+      net.explicit_ = explicitP;
+    }
+    // chain id -> (network, chain index), for the junction elements below
+    std::map<std::string, std::pair<NetworkId, std::size_t>> chainById;
     for (const HexXml::SheetLinkDoc& link : sheet.links) {
       const auto it = networkKindToRules.find(link.kind);
       if (networkKindToRules.end() == it) {
         continue;
       }
+      if (explicitP && !link.id) {
+        throw std::invalid_argument(sheet.id + ":" + std::to_string(link.sourceLine) +
+                                     ": link without id on a sheet with junctions=\"explicit\"");
+      }
       const NetworkId netId = board.networkId(it->second);
       LinkNetwork& net = board.networks_[netId.value];
+      const std::size_t chain = net.chains_.size();
+      net.chains_.push_back(LinkNetwork::Chain{link.id.value_or(""), link.name});
+      if (link.id) {
+        if (!chainById.emplace(*link.id, std::make_pair(netId, chain)).second) {
+          throw std::invalid_argument(sheet.id + ":" + std::to_string(link.sourceLine) +
+                                       ": duplicate link id '" + *link.id + "'");
+        }
+      }
       std::optional<HexIndex> prev;
       for (const std::string& hexIdText : link.hexes) {
         const auto hit = board.byId_.find(HexCoord::HexId{hexIdText});
@@ -298,17 +319,70 @@ namespace HexModel {
         }
         const HexIndex cur = hit->second;
         if (prev) {
-          net.links_.push_back(LinkNetwork::Link{*prev, cur, link.kind});
+          net.links_.push_back(LinkNetwork::Link{*prev, cur, link.kind, chain});
         }
         prev = cur;
       }
     }
     for (LinkNetwork& net : board.networks_) {
       net.byHex_.assign(hexCount, {});
+      net.junctionsByHex_.assign(hexCount, {});
       for (std::size_t li = 0; li < net.links_.size(); ++li) {
         net.byHex_[net.links_[li].a.value].push_back(li);
         net.byHex_[net.links_[li].b.value].push_back(li);
       }
+    }
+    // ---- nodes, from <junction> elements (links only; a path junction is a river confluence, which
+    // the Board's hexside terrain does not model) -------------------------------------------------
+    for (const HexXml::SheetJunctionDoc& j : sheet.junctionElements) {
+      if (j.links.empty()) {
+        continue;
+      }
+      const auto hit = board.byId_.find(HexCoord::HexId{j.at});
+      if (board.byId_.end() == hit) {
+        throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) +
+                                     ": junction at unknown hex '" + j.at + "'");
+      }
+      const HexIndex at = hit->second;
+      std::optional<NetworkId> netId;
+      LinkNetwork::Junction members;
+      for (const std::string& linkId : j.links) {
+        const auto cit = chainById.find(linkId);
+        if (chainById.end() == cit) {
+          throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) +
+                                       ": junction names unknown link '" + linkId + "'");
+        }
+        if (netId && *netId != cit->second.first) {
+          throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) +
+                                       ": junction at '" + j.at + "' mixes networks (link '" + linkId + "')");
+        }
+        netId = cit->second.first;
+        members.push_back(cit->second.second);
+      }
+      LinkNetwork& net = board.networks_[netId->value];
+      std::sort(members.begin(), members.end());
+      members.erase(std::unique(members.begin(), members.end()), members.end());
+      if (members.size() < 2) {
+        throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) +
+                                     ": junction at '" + j.at + "' needs two distinct links");
+      }
+      for (std::size_t chain : members) {
+        bool touchesP = false;
+        for (std::size_t li : net.byHex_[at.value]) {
+          touchesP = touchesP || net.links_[li].chain == chain;
+        }
+        if (!touchesP) {
+          throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) + ": link '" +
+                                       net.chains_[chain].id + "' does not pass through junction hex '" + j.at + "'");
+        }
+        for (const LinkNetwork::Junction& other : net.junctionsByHex_[at.value]) {
+          if (std::binary_search(other.begin(), other.end(), chain)) {
+            throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) + ": link '" +
+                                         net.chains_[chain].id + "' is in two junctions of hex '" + j.at + "'");
+          }
+        }
+      }
+      net.junctionsByHex_[at.value].push_back(members);
     }
 
     // ---- region layers, from <region> elements (may legitimately be empty) ------------------------

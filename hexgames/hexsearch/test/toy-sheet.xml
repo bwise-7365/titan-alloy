@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sheet id="toy" title="Toy 5x5 sheet for the hexsearch tests" width="200" height="200" background="frame" urban="symbol">
+<sheet id="toy" title="Toy 5x5 sheet for the hexsearch tests" width="200" height="200" background="frame" urban="symbol" junctions="implicit">
   <grid orientation="pointy" offset="odd" cols="5" rows="5" size="10" ox="20" oy="20"
         id-format="{colletter}{row}" terrain="clear"/>
   <palette>

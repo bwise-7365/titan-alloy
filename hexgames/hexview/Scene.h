@@ -26,8 +26,17 @@ namespace HexView {
   struct MoveTo { Pixel to; };
   struct LineTo { Pixel to; };
   struct QuadTo { Pixel control; Pixel to; };  // rounded river corners (LineGeometry.h)
+  // An SVG elliptical arc: circles, rounded rectangles and the arcs of the reference symbols.
+  struct ArcTo {
+    double rx = 0.0;
+    double ry = 0.0;
+    double rotationDegrees = 0.0;
+    bool largeArcP = false;
+    bool sweepP = false;
+    Pixel to;
+  };
   struct ClosePath {};
-  using PathCommand = std::variant<MoveTo, LineTo, QuadTo, ClosePath>;
+  using PathCommand = std::variant<MoveTo, LineTo, QuadTo, ArcTo, ClosePath>;
 
   struct PathShape {
     std::vector<PathCommand> commands;
@@ -42,7 +51,11 @@ namespace HexView {
     Font font;
     Color color;
     TextAnchor anchor = TextAnchor::Middle;
+    TextBaseline baseline = TextBaseline::Alphabetic;
     double angleDegrees = 0.0;
+    // An outline painted under the glyphs (SVG paint-order="stroke"): the white halo of an authored
+    // label, the black edge of an edge label. Unset: no outline.
+    std::optional<Stroke> halo;
   };
 
   // A named symbol from the SymbolLibrary, placed, turned and scaled; `color` is its currentColor.

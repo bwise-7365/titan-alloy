@@ -42,7 +42,7 @@ x = ['<?xml version="1.0" encoding="UTF-8"?>',
      '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"',
      '       id="tarawa" title="D-Day at Tarawa"',
      '       source="DDaT-map2.png, 1786 x 1153; Decision Games 2014, map redesign Delphine Echassoux"',
-     '       width="1786" height="1153" background="paper" font="Arial, Helvetica, sans-serif" urban="symbol">',
+     '       width="1786" height="1153" background="paper" font="Arial, Helvetica, sans-serif" urban="symbol" junctions="implicit">',
      '  <grid id="main" orientation="pointy" offset="odd" cols="42" rows="25" size="24.90" ox="8.59" oy="222.10"',
      '        id-format="{row:02}{col:02}" col-start="2" row-start="25" row-step="-1" terrain="water" id-side="w"/>',
      '''  <palette>

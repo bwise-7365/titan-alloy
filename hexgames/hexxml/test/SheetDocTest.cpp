@@ -64,6 +64,31 @@ TEST(SheetDocTest, FourSheetsParse)
   }
 }
 
+TEST(SheetDocTest, VelikiyeLukiHasExplicitJunctions)
+{
+  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(mapGraphics("velikiye-luki.xml")));
+  EXPECT_EQ("explicit", doc.junctions);
+  EXPECT_LE(16u, doc.junctionElements.size());
+  ASSERT_EQ(4u, doc.legend.size());  // lake, german-objective, russian-objective, bridge
+  EXPECT_EQ("bridge", doc.legend[3].id);
+  EXPECT_EQ("bar", doc.legend[3].shape);
+  EXPECT_EQ("edge", doc.legend[3].across.value_or(""));
+  for (const HexXml::SheetLinkDoc& l : doc.links) {
+    EXPECT_TRUE(l.id.has_value()) << l.name.value_or("(unnamed)");
+  }
+  for (const HexXml::SheetJunctionDoc& j : doc.junctionElements) {
+    EXPECT_LE(2u, j.links.size()) << j.at;
+    EXPECT_TRUE(j.paths.empty()) << j.at;
+  }
+}
+
+TEST(SheetDocTest, ImplicitSheetWithJunctionThrows)
+{
+  const std::filesystem::path bad =
+      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-implicit-junction.xml";
+  EXPECT_THROW((void)HexXml::SheetDoc::parse(HexXml::XmlDocument::load(bad)), std::invalid_argument);
+}
+
 TEST(SheetDocTest, BadEnumThrows)
 {
   const std::filesystem::path bad =

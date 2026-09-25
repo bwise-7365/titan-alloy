@@ -2,15 +2,32 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # Task 16: read with doubts, then let Ben finish the map by hand (a graphical sheet editor)
 
-status: pending             recorded 2026-09-17 at Ben's request; not started
-worker: unassigned          started: -
-resume: not started. Step 1 is applied to task 15's running stages from C-river on; steps 2 and 3 wait.
+status: in progress         recorded 2026-09-17 at Ben's request; started 2026-09-21
+worker: coordinator (Fable) started: 2026-09-21
+resume: 2026-09-21 green build. Target is HexMapEd (Ben's name, 2026-09-21; the working name
+  sheet_editor_gui is retired). hexmaped/ holds the Qt-free model (Schema, SheetFrame, SheetWriter,
+  Document; 20 core tests green) and hexmaped/app/ the Qt6 executable (MainWindow, MapView), built by
+  `cmake --build --preset win-msvc-debug --target HexMapEd`, deployed by windeployqt beside the exe
+  in cmake-build-debug/hexmaped/app/. Done: build-order steps 1 (view, pan, zoom, hover id, doubts
+  dock, inspector), 3 (terrain paint, clip a hex out), 4 (hexside lines, toggle), 5 (links: click a
+  chain of neighbours; shift-click removes a step; chains split), 6 partly (glyphs by symbol and slot,
+  names, rings in the model), 10 partly (save in schema order, then tools/validate-xml.py on the
+  folder; undo/redo as whole snapshots). Ben's rule (2026-09-21): the editor allows only what the XSD
+  defines and saves XML that validates and carries structure and style; Document enforces it at every
+  edit, hexmaped_schema_test keeps the vocabularies equal to the XSD. NEXT: Ben opens
+  tools/reader/work/Target_Leningrad_map/chain/sheet.xml in HexMapEd and adds the rail network by hand
+  (step 3 of this task, on TL rather than SMW); then step 2 (lattice pinning), 7 (regions, labels),
+  8 (styles), 9 (panels), the scan underlay, and the gui test suite. 2026-09-21 later: Clip mode also
+  ADDS hexes (Ben: 0801 and others are missing on TL): a click on an empty cell inside the grid's
+  rectangle unclips it, a click just outside grows the grid by one column or row with every old id
+  and place kept (Document::addHexAt, tested).
 inputs:
   map_graphics/xml/hexsheet.xsd, hexsheet2svg.py (the reference renderer: geometry and layer order)
   hexxml/SheetDoc.{h,cpp} (the loader), hexview/ (the Qt-free geometry and face model), hexqt/ (the Qt seam)
   tasks/15-smw-chain-reading.md (the reading process the editor completes)
   map_graphics/xml/tools/image2sheet/work/smw/chain/doubts.json (the reader's marginal calls, step 1)
 outputs:
+  hexmaped/README.md -- how to use HexMapEd (build, run, modes, saving), kept current with the app
   a new Qt6 executable (working name sheet_editor_gui; the only new target allowed to link Qt besides
   hexqt and the existing *_gui), its test list in doc/.../test-lists/, uml/*.puml for its model
 acceptance:
@@ -100,6 +117,9 @@ map_graphics/xml/stalin-moves-west.xml. The chain stages of task 15 (river, bord
 before this with step 1 in force, so the editor's first session has the whole map to finish.
 
 log:
+- 2026-09-21 coordinator: HexMapEd built (see resume). Ben: Qt6, named HexMapEd, Qt debug DLLs and
+  platforms/ beside the executable as irrgo_gui has them (windeployqt does it; the deploy module's
+  empty-argument bug fixed). Ben: only XSD structures, output validates, structure and style both.
 - 2026-09-19 Ben: add interactive lattice pinning (drag, zoom, pin grid hexes to image hexes, choose
   candidates, mark folds) as an editor step, since maps are read one at a time and each party should do
   what it does best.

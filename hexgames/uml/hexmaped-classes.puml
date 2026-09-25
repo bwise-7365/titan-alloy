@@ -1,0 +1,88 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexmaped-classes
+title hexmaped -- the map sheet editor's model (no Qt) and the HexMapEd application [AS BUILT, step 1 + save, 2026-09-21]
+hide empty members
+
+package HexXml {
+  class SheetDoc {
+    +grids, palette, terrains, lines
+    +hexesBulk, hexes, edges, paths, links, regions, labels, panels
+    +parse(XmlDocument) : SheetDoc
+  }
+}
+
+package HexCoord {
+  class Grid
+}
+
+package HexMapEd {
+  class SheetFrame {
+    +of(SheetDoc) : SheetFrame
+    +ids() : vector<string>
+    +centre(id) : Pixel
+    +corners(id, inset) : Pixel[6]
+    +hexsideEnds(Hexside) : pair<Pixel,Pixel>
+    +neighbour(id, Direction) : optional<string>
+    +hexside("HEX:DIR") : Hexside
+    +token(Hexside) : string
+    +canonical(Hexside) : string
+    +hexAt(Pixel) : optional<string>
+    +hexsideAt(Pixel, within) : optional<Hexside>
+  }
+  class Document {
+    +load(path) : Document
+    +save() / saveAs(path)
+    +sheet() : SheetDoc
+    +frame() : SheetFrame
+    +terrainOf(hex), lineOfEdge(side), hexElement(hex)
+    +setTerrain(hex, terrainId)
+    +toggleEdge(Hexside, lineId)
+    +addLinkStep(a, b, kind, lineId) / removeLinkStep(a, b)
+    +setName, addGlyph, removeGlyph, setRing, toggleClip
+    +undo() / redo()
+    -edit(apply) : snapshot, apply, rebuild frame
+  }
+  class "Schema (namespace)" as Schema {
+    +symbolList(), slotList(), dirList(), patternList(), endReasonList()
+    +requireSymbol(), requireSlot(), requireHexId(), requireColourValue()
+  }
+  class "writeSheet()" as SheetWriter {
+    +writeSheet(SheetDoc) : string
+    +writeSheet(path, SheetDoc)
+  }
+}
+
+package HexQt {
+  class MapView {
+    +setDocument(Document*)
+    +rebuild()
+    +centreOnHex(id), highlight(id)
+    +hovered(QPointF) <<signal>>
+    +clicked(QPointF, button, modifiers) <<signal>>
+  }
+  class MainWindow {
+    +open(path)
+    -mode : Select | Terrain | Hexside | Link | Clip | Glyph | Name
+    -onClicked(): one Document edit
+    -save(): writeSheet then tools/validate-xml.py
+  }
+}
+
+SheetFrame --> Grid
+SheetFrame ..> SheetDoc : built from grids
+Document *-- SheetDoc
+Document *-- SheetFrame
+Document ..> Schema : checks values
+Document ..> SheetWriter : save
+MapView --> Document
+MainWindow *-- MapView
+MainWindow *-- Document
+
+note bottom of Document
+  every edit checks ids against the sheet's own
+  declarations and values against the schema's
+  vocabularies, and throws invalid_argument;
+  the document never holds what hexsheet.xsd refuses
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

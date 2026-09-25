@@ -158,7 +158,7 @@ def main(argv):
          '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"',
          '       %s>' % attrs(id=option(argv, "--id", name.lower().replace(" ", "-")), title=option(argv, "--title", name.replace("_", " ")),
                               source=os.path.basename(d["source"]), width=int(d.get("width", 0) or Image_size(d)[0]), height=int(d.get("height", 0) or Image_size(d)[1]),
-                              background="paper", font="Arial, Helvetica, sans-serif", urban="buildings"),
+                              background="paper", font="Arial, Helvetica, sans-serif", urban="buildings", junctions="implicit"),
          "  <!-- built by map_graphics/xml/tools/reader/sheet.py from the reader's structure (cells.json, chain/); fix the reading, not this file -->",
          grid_el, "  <palette>", '    <color id="paper" value="#f4f1e6"/>', '    <color id="grid" value="#6f6f66"/>', '    <color id="ink" value="#111111"/>']
     for v in fills:

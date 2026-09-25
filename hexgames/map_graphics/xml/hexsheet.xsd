@@ -13,6 +13,8 @@ One element per address kind from the map-graphics taxonomy:
   edge     a single hexside: a stroke, or a glyph centred on it and oriented across it
   path     an ordered edge chain: rivers, borders, coastlines, zone boundaries
   link     an ordered hex-centre chain: rail, road, connectors
+  junction a node of ONE network: the links (in a hex) or paths (at a vertex) between
+           which movement may switch; needed when two chains cross a hex without meeting
   region   a set of hexes with a tint and/or an outline; layers may overlap
   label    text at a hex slot, at a point, or along a path
   panel    off-map furniture: a rectangle, optionally rotated, holding text, boxes,
@@ -331,7 +333,8 @@ Conventions
   </xs:complexType>
 
   <xs:complexType name="Link">
-    <xs:annotation><xs:documentation>An ordered chain of hex centres. owner is mutable play state, emitted as a data attribute.</xs:documentation></xs:annotation>
+    <xs:annotation><xs:documentation>An ordered chain of hex centres. owner is mutable play state, emitted as a data attribute. id names the chain for junction elements; the loader requires it when sheet/@junctions is explicit.</xs:documentation></xs:annotation>
+    <xs:attribute name="id" type="xs:ID"/>
     <xs:attribute name="kind" type="xs:string" use="required"/>
     <xs:attribute name="name" type="xs:string"/>
     <xs:attribute name="line" type="xs:IDREF" use="required"/>
@@ -340,6 +343,16 @@ Conventions
     <xs:attribute name="ends" type="EndPair">
       <xs:annotation><xs:documentation>Why the chain ends at its first and last hex: edge place junction dot bank sea unexplained. Approved 2026-09-19; optional until the checker's gate requires it.</xs:documentation></xs:annotation>
     </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Junction">
+    <xs:annotation><xs:documentation>A node of one network: a set of chains of one kind between which movement may switch freely (Ben's briefing "Linear Features", slides 5-8 and 13-22; approved 2026-09-23). For links (road, rail) the junction sits in a hex: at is a HexRef and links names the link ids. For paths (rivers) it sits at the hex corner where the hexsides meet: at is a VertexRef and paths names the path ids. Exactly one of links and paths is given (the loader checks). All members have the same kind: a road and a railway never share a node; a unit that changes from road to rail movement in a hex does so by a rule about the hex, not by a node of the map. A hex or vertex may hold several junctions; a chain is in at most one junction at a given hex or vertex. Several connected intersections drawn inside one hex are one junction (slide 14). Only meaningful when sheet/@junctions is explicit.</xs:documentation></xs:annotation>
+    <xs:attribute name="at" use="required">
+      <xs:simpleType><xs:union memberTypes="HexRef VertexRef"/></xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="links" type="xs:IDREFS"/>
+    <xs:attribute name="paths" type="xs:IDREFS"/>
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="Region">
@@ -507,6 +520,7 @@ Conventions
           <xs:element name="edge" type="Edge"/>
           <xs:element name="path" type="Path"/>
           <xs:element name="link" type="Link"/>
+          <xs:element name="junction" type="Junction"/>
           <xs:element name="region" type="Region"/>
           <xs:element name="label" type="Label"/>
           <xs:element name="panel" type="Panel"/>
@@ -525,6 +539,15 @@ Conventions
           <xs:restriction base="xs:string">
             <xs:enumeration value="buildings"/>
             <xs:enumeration value="symbol"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="junctions" use="required">
+        <xs:annotation><xs:documentation>How chains of one network that share a hex (links) or a vertex (paths) relate. implicit: they meet there, and the document has no junction elements (the five sheets written before 2026-09-23). explicit: they meet only where a junction element says so; a shared hex or vertex without a junction is a crossing without connection (Velikiye Luki 0705, 0403). Every sheet chooses; there is no default.</xs:documentation></xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="implicit"/>
+            <xs:enumeration value="explicit"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

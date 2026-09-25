@@ -100,7 +100,7 @@ def main(argv):
     x = ['<?xml version="1.0" encoding="UTF-8"?>',
          '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"']
     x += ["       %s=%s" % (k, quoteattr(v)) for k, v in carried]
-    x[-1] += " urban=%s>" % quoteattr(urban)
+    x[-1] += " urban=%s junctions=\"implicit\">" % quoteattr(urban)
     x += [
          "  <!-- built by map_graphics/xml/tools/image2sheet/assemble.py from the %s catalogue; fix the catalogue, not this file -->" % cfg["map"],
          "  " + etree.tostring(C.grid_element(cfg, fit), encoding="unicode").strip()]

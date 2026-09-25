@@ -54,6 +54,43 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-09-24 REBOOT NOTE: read doc/2026-09-24-resume.md first (what is staged, the build recipe, where
+  to start). 146 paths staged, uncommitted; nothing in flight.
+- 2026-09-23 (CLion session) M10a LAUNCH: Ben chose option 2, the map half of hexview pulled forward so
+  HexMapEd stops drawing stand-ins (red discs labelled "arrow", square towns, no rail ticks, no
+  bridges). tasks/17-hexview-map.md, W6 (opus): Style, Scene, MapFrame, LineGeometry, SymbolLibrary,
+  MapSceneBuilder, writeSvg, gated by a normalised-SVG golden against hexsheet2svg.py on six sheets
+  (buildings: the C++ generator is the reference). When W6 reports review: rebuild, commit, then the
+  coordinator re-bases HexMapEd's MapView on the Scene (ScenePainter ~150 lines; Scratch waviness as a
+  post-pass; hit testing via Scene::hitAt) and deletes the hand-drawn glyph code. Also done today:
+  junctions applied (XSD + C++ + VL), HexMapEd link smoothing restored, Scratch waviness spinner.
+- 2026-09-23 late: W6 reported review (292/292, six goldens EQUAL) but the VL golden was vacuous: HexMapEd's
+  save had stripped VL's <legend> and @ends (BUGS.txt). Coordinator added legend/ends to SheetDoc + writer,
+  restored VL; the golden now reports 45 mark elements missing; W6 resumed to draw legend marks and drop the
+  comparer's sym-mark- leniency. Then: coordinator rebuild, Ben's commit, HexMapEd re-based on the Scene.
+- 2026-09-24 M10a DONE (W6 review accepted): legend marks drawn, comparer strict, six goldens EQUAL (VL's
+  30 marks included), coordinator rebuild 293/293, banner 576/0. hexview: 19 .cpp, 4311 lines incl. tests.
+  Staged, awaiting Ben's commit. NEXT: HexMapEd paints the Scene (coordinator); W6 spend ~700k tokens.
+- 2026-09-24 M10b DONE: HexMapEd's MapView builds HexView::Scene (MapFrame::of(sheet), MapSceneBuilder with
+  MapStyle::reference() + optional ScratchStyle from the waviness spinner) and paints it with the new
+  app/ScenePainter (paths incl. SVG arcs, texts with anchor/baseline/halo/rotation, symbol uses through
+  Similarity with currentColor replaced; Grid-layer texts skipped when ids are hidden). hexmaped/Scratch moved
+  to hexview/Scratch (+ test); MapLineLayers scratches road/rail links and river chains when the style asks.
+  Debt: hexmaped/SheetFrame and hexview/MapFrame are twins (editor keeps SheetFrame for hit testing).
+  NEXT: Ben looks at HexMapEd on VL; Ben's commit; then M7b/M8 game modules or the next map by eye.
+
+- 2026-09-22 REBOOT NOTE: read doc/2026-09-22-resume-hexmaped.md first (what is staged and
+  uncommitted, the build recipe with vcvars64, HexMapEd's state, Ben's next session). Clip mode now
+  adds hexes (0801 on TL); hexmaped/README.md is the user guide.
+- 2026-09-21 night: HexMapEd (task 16) FIRST GREEN BUILD. New module hexmaped/ (Qt-free: Schema,
+  SheetFrame, SheetWriter, Document; tests label core, 20 green) and hexmaped/app/ (Qt6 HexMapEd:
+  MapView draws the sheet in the renderer's layer order from the Document's frame; MainWindow modes
+  Select/Terrain/Hexside/Link/Clip/Glyph/Name, doubts dock, inspector, undo/redo, save then
+  validate-xml.py). Root CMakeLists adds hexmaped; cmake/HexGamesQtDeploy.cmake fixed (windeployqt got
+  an empty "" argument in Debug). Build: cmake --build --preset win-msvc-debug --target HexMapEd; run
+  cmake-build-debug/hexmaped/app/HexMapEd.exe [sheet.xml]; the Qt debug DLLs and platforms/ are beside
+  it. Ben's rules of the day are in tasks/16 and the decision log. NEXT: Ben's first session on Target
+  Leningrad's reader sheet (rails by hand); then the task's steps 2, 7, 8, 9 and the gui test suite.
 - 2026-09-21 evening: TARGET LENINGRAD AND TANNENBERG THROUGH THE WHOLE TRACK, CAPPED. Ben's bar on
   SMW: "close enough that I could complete it in an editor; the correct type of structures are
   present". New `tools/reader/sheet.py` writes sheet.xml from the lattice numbering + vocabulary +
@@ -517,6 +554,11 @@ Engine and records
           tasks/11-pgg-engine.md
 - [ ] M8  DS engine module (W4)
 - [ ] M9  DDaT engine module (W5)
+- [x] M10a hexview map half (W6, tasks/17, 2026-09-23/24): Style, Scene, MapFrame, LineGeometry,
+          SymbolLibrary, MapSceneBuilder, writeSvg + SVG goldens on six sheets
+- [x] M10b HexMapEd paints the Scene (coordinator, 2026-09-24): app/ScenePainter.cpp, MapView.rebuild = MapFrame +
+          MapSceneBuilder + paintScene; Scratch moved to hexview as MapStyle::scratch; 500 lines of stand-in
+          drawing deleted; 293/293
 - [ ] M10 hexview (W6): geometry, scenes, faces, SVG goldens, InteractionMachine, replay. Must reproduce
           the reference renderers' look (smoothed links, rounded rivers, straight boundaries, casings,
           dashes, ticks, terrain colours) for both Qt6 and HTML; see decision log "Visual parity"
@@ -535,6 +577,14 @@ Engine and records
           uses the named PRNG streams, and how batch runs report problems.
 
 ## Decision log
+- 2026-09-23 Ben, map reading: a model reading the scan by eye and writing hexsheet XML by hand
+  (doc/map-reading-by-eye.md; Velikiye Luki in one evening, junctions and all) is faster and more
+  accurate than the C++/Python detectors. Nothing is removed yet (the reader tools, HexMapEd stay);
+  the next maps are read by eye and the reader track is not extended.
+- 2026-09-21 Ben, the editor: Qt6, named HexMapEd; it allows only structures hexsheet.xsd defines and
+  its output is XML that validates and specifies both the structure and how to render it (the style
+  declarations), from which SVG, HTML or PNG can be produced. Qt runtime DLLs and platforms/ live
+  beside the executable.
 - 2026-09-21 Ben, rule of hex grids: the outside line of a grid can be irregular (Target Leningrad),
   but there can never be a hole inside the grid where cells are missing. Recorded in hexsheet.xsd's
   clip documentation and applied by lattice.py (enclosed unprinted cells become printed, listed as
@@ -795,6 +845,28 @@ Engine and records
       borrowed declaration as an assumption (`@from` on the declaration, or a comment block until the
       style document exists).
 - Candidates noted in the plan: `phase/@repeat-per-side`, `phase/@caps`, `panel/@space`.
+
+- PROPOSED 2026-09-23 (Ben, from Velikiye Luki; NOT applied, awaiting his scheme): network geometry
+  richer than a hex chain. Today `link/@hexes` is an ordered chain of hex centres, so two chains that
+  pass through one hex share it as a node: VL has two roads through 0705 that do not meet
+  (0605-0705-0805 and 0604-0705-0805), three separate junctions in 0805, and two arcs that do not meet
+  in 0403; The Russian Campaign has two hexes beside Leningrad with parallel, non-intersecting roads.
+  Ben's scheme: a network of nodes and arcs, and each hex holds an unordered set of the intersections
+  (nodes) that lie in it, so a hex may contain zero, one or several nodes and arcs may cross a hex
+  without a node. The existing `link` form stays valid (the five older sheets use it). Ben's notes are
+  `doc/Linear Features trimmed.pptx` (slides 5-8, 13-22); the draft XSD addition, engine semantics
+  (candidate-set movement), renderer rule and VL sketch are in `doc/2026-09-23-network-junctions-proposal.md`,
+  DECIDED 2026-09-23 by Ben: no road/rail node in common (junctions are per kind); `junctions` required
+  on sheet, older sheets say implicit; rivers (paths) get vertex junctions too. APPLIED 2026-09-23 on
+  Ben's instruction: hexsheet.xsd (Junction, link/@id, sheet/@junctions), fifteen sheet instances and six
+  generators say implicit, hexsheet2svg.py draws explicit sheets, validate-xml.py checks rules 1-7,
+  HexXml::SheetDoc + HexModel::LinkNetwork (chains, junctionsAt, switchP) + HexMapEd's writer round-trip
+  them; velikiye-luki.xml is the first explicit sheet (17 junctions, three DOUBTs for Ben). Ben's rule
+  from slide 14: connected intersections drawn inside one hex are ONE junction (0604 six roads, 0605
+  five, 0105 three, 0805 five); 0403 and 0705 have crossings without a junction.
+- APPLIED 2026-09-23 without an XSD change: hexsheet2svg.py now draws legend `mark`s (the 2026-09-19
+  Mark element) for `glyph/@mark` and `edge/@mark` (incl. across="edge"); it used to crash on a glyph
+  without `symbol`. The five older sheets render unchanged.
 
 ## Open questions
 

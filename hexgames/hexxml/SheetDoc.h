@@ -2,7 +2,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // A hexsheet document (map_graphics/xml/hexsheet.xsd), mirrored one to one. The sheet body is a
-// mixed-content choice of hexes/hex/edge/path/link/region/label/panel, repeated in any order; parse()
+// mixed-content choice of hexes/hex/edge/path/link/junction/region/label/panel, repeated in any order; parse()
 // keeps each kind in its own vector, in the document order it was written (BoardBuilder needs no
 // cross-kind interleaving: bulk and per-hex terrain, edges, links and regions each write disjoint
 // Board state). Every type here is prefixed Sheet* so it cannot collide with the same-named element
@@ -62,14 +62,32 @@ namespace HexXml {
     std::optional<double> opacity;
   };
 
+  // A declared legend mark (hexsheet.xsd Mark): a meaning (id, name) bound to a shape, colour and size
+  // "w h" in hex units; glyphs and edges refer to it by id. pictogram names a Symbol when shape is
+  // "pictogram"; across "edge" lays the mark across the hexside it sits on.
+  struct SheetMarkDoc {
+    std::string id;
+    std::optional<std::string> name;
+    std::string shape;
+    std::optional<std::string> color;
+    std::optional<std::string> size;
+    std::optional<std::string> pictogram;
+    std::optional<std::string> across;
+    std::optional<std::string> from;
+    int sourceLine = 0;
+  };
+
   struct SheetHexesDoc {  // bulk terrain assignment
     std::string terrain;
     std::vector<std::string> ids;
     int line = 0;
   };
 
+  // Exactly one of symbol (the renderer's fixed vocabulary) and mark (a legend mark id) is set; parse()
+  // throws otherwise (hexsheet.xsd Glyph, Mark approved 2026-09-19).
   struct SheetGlyphDoc {
-    std::string symbol;
+    std::optional<std::string> symbol;
+    std::optional<std::string> mark;
     std::string slot = "c";
     std::optional<std::string> color;
     std::optional<std::string> text;
@@ -98,6 +116,7 @@ namespace HexXml {
     std::string at;  // "HEX:DIR"
     std::optional<std::string> line;
     std::optional<std::string> symbol;
+    std::optional<std::string> mark;  // a legend mark drawn on the hexside (a bridge bar)
     std::optional<std::string> color;
     std::optional<std::string> label;
     int sourceLine = 0;
@@ -110,15 +129,28 @@ namespace HexXml {
     std::string line;
     std::vector<std::string> edges;  // "HEX:DIR" tokens
     double offset = 0.0;
+    std::optional<std::string> ends;  // "first last" EndReason pair (hexsheet.xsd EndPair)
     int sourceLine = 0;
   };
 
   struct SheetLinkDoc {
+    std::optional<std::string> id;  // required by BoardBuilder when the sheet's junctions are explicit
     std::string kind;
     std::optional<std::string> name;
     std::string line;
     std::vector<std::string> hexes;
     std::optional<std::string> owner;
+    std::optional<std::string> ends;  // "first last" EndReason pair (hexsheet.xsd EndPair)
+    int sourceLine = 0;
+  };
+
+  // A node of one network (hexsheet.xsd Junction): links meet in a hex (at = a hex id), paths meet at
+  // a vertex (at = "HEX:CORNER"). Exactly one of links and paths is non-empty; BoardBuilder checks.
+  struct SheetJunctionDoc {
+    std::string at;
+    std::vector<std::string> links;  // link ids
+    std::vector<std::string> paths;  // path ids
+    std::optional<std::string> name;
     int sourceLine = 0;
   };
 
@@ -218,12 +250,14 @@ namespace HexXml {
     double height = 0.0;
     std::string background;
     std::string font = "Arial, Helvetica, sans-serif";
-    std::string urban;  // buildings | symbol: how city hexes are drawn (required)
+    std::string urban;      // buildings | symbol: how city hexes are drawn (required)
+    std::string junctions;  // implicit | explicit: whether chains sharing a hex meet there (required)
 
     std::vector<SheetGridDoc> grids;
     std::vector<SheetColorDoc> palette;
     std::vector<SheetTerrainDoc> terrains;
     std::vector<SheetLineDoc> lines;
+    std::vector<SheetMarkDoc> legend;  // the <legend> block's marks, in document order
 
     // Each in the document order it was written; the eight kinds may be interleaved in the file, but
     // nothing in BoardBuilder needs the cross-kind interleaving, only the order within a kind.
@@ -232,6 +266,7 @@ namespace HexXml {
     std::vector<SheetEdgeDoc> edges;
     std::vector<SheetPathDoc> paths;
     std::vector<SheetLinkDoc> links;
+    std::vector<SheetJunctionDoc> junctionElements;  // <junction> elements; the attribute is `junctions`
     std::vector<SheetRegionDoc> regions;
     std::vector<SheetLabelDoc> labels;
     std::vector<SheetPanelDoc> panels;

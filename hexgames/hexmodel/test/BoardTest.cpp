@@ -69,6 +69,31 @@ TEST(BoardTest, TrcBoardFromSheet)
   EXPECT_GT(net.linkCount(), 0u);
 }
 
+TEST(BoardTest, ImplicitSheetLetsChainsSwitchWhereverTheyShareAHex)
+{
+  const HexModel::Board board = buildTrc();
+  const HexModel::LinkNetwork& net = board.network(board.networkId("rail"));
+  EXPECT_FALSE(net.explicitP());
+  EXPECT_LT(1u, net.chains().size());
+  // find a hex touched by two chains: TRC's rail chains meet at junction cities
+  bool foundP = false;
+  for (std::size_t h = 0; h < board.hexCount() && !foundP; ++h) {
+    const HexModel::HexIndex hex{static_cast<std::uint32_t>(h)};
+    std::optional<std::size_t> first;
+    for (std::size_t li : net.linksAt(hex)) {
+      const std::size_t chain = net.links()[li].chain;
+      if (first && *first != chain) {
+        EXPECT_TRUE(net.switchP(hex, *first, chain));
+        EXPECT_TRUE(net.junctionsAt(hex).empty());
+        foundP = true;
+        break;
+      }
+      first = chain;
+    }
+  }
+  EXPECT_TRUE(foundP);
+}
+
 TEST(BoardTest, EveryPackageAvailableBuilds)
 {
   // Only trc.package.xml exists today; this test automatically covers more games as their

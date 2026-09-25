@@ -3,6 +3,7 @@
 // ----------------------------------------------
 #include "hexmodel/Board.h"
 
+#include <algorithm>
 #include <stdexcept>
 
 namespace HexModel {
@@ -36,6 +37,46 @@ namespace HexModel {
     for (std::size_t idx : linksAt(a)) {
       const Link& link = links_[idx];
       if ((link.a == a && link.b == b) || (link.a == b && link.b == a)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const std::vector<LinkNetwork::Junction>&
+  LinkNetwork::junctionsAt(HexIndex h) const
+  {
+    if (h.value >= junctionsByHex_.size()) {
+      throw std::invalid_argument("LinkNetwork::junctionsAt: hex index out of range");
+    }
+    return junctionsByHex_[h.value];
+  }
+
+  bool
+  LinkNetwork::switchP(HexIndex h, std::size_t from, std::size_t to) const
+  {
+    if (from >= chains_.size() || to >= chains_.size()) {
+      throw std::invalid_argument("LinkNetwork::switchP: chain index out of range");
+    }
+    if (from == to) {
+      return true;
+    }
+    bool fromTouchesP = false;
+    bool toTouchesP = false;
+    for (std::size_t idx : linksAt(h)) {
+      fromTouchesP = fromTouchesP || links_[idx].chain == from;
+      toTouchesP = toTouchesP || links_[idx].chain == to;
+    }
+    if (!fromTouchesP || !toTouchesP) {
+      return false;
+    }
+    if (!explicit_) {
+      return true;
+    }
+    for (const Junction& j : junctionsAt(h)) {
+      const bool hasFromP = std::binary_search(j.begin(), j.end(), from);
+      const bool hasToP = std::binary_search(j.begin(), j.end(), to);
+      if (hasFromP && hasToP) {
         return true;
       }
     }

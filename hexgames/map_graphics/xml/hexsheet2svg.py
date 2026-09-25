@@ -237,7 +237,8 @@ URBAN_TINT = "#e3e3e3"  # panj/tempest's paleGray (227, 227, 227), laid over an 
 # ---------------------------------------------------------------- renderer
 class Renderer:
     def __init__(self, xml_path, smooth_lines=("river",)):
-        # smooth_lines: hexside line ids drawn as rounded chains instead of straight hexsides.
+        # smooth_lines: hexside line ids drawn as rounded chains instead of straight hexsides. Any line
+        # id containing "river" (VL's major-river, minor-river) is smoothed when "river" is in the set.
         self.smooth_lines = set(smooth_lines)
         self.doc = etree.parse(xml_path)
         schema = etree.XMLSchema(etree.parse(os.path.join(HERE, "hexsheet.xsd")))
@@ -252,6 +253,7 @@ class Renderer:
         self.colors = {c.get("id"): c.get("value") for c in self.root.iter("color")}
         self.terrains = {t.get("id"): t for t in self.root.iter("terrain")}
         self.lines = {l.get("id"): l for l in self.root.iter("line")}
+        self.marks = {m.get("id"): m for m in self.root.iter("mark")}   # legend marks (hexsheet.xsd Mark, 2026-09-19)
         self.grids = [Grid(g) for g in self.root.findall("grid")]
         self.font = self.root.get("font") or "Arial, Helvetica, sans-serif"
         self.warnings = []
@@ -455,7 +457,7 @@ class Renderer:
             g, c, r, d = pe
             if e.get("line"):
                 a, b = g.edge_ends(c, r, d)
-                if e.get("line") in self.smooth_lines:
+                if e.get("line") in self.smooth_lines or ("river" in self.smooth_lines and "river" in e.get("line")):
                     smooth.setdefault(e.get("line"), []).append((a, b))
                     continue
                 attrs, l = self.line_attrs(e.get("line"))
@@ -582,20 +584,31 @@ class Renderer:
             parts.append(cur)
         return " ".join(self.pathd(p) for p in parts if len(p) >= 2)
 
-    def link_strokes(self, chains, ctx):
+    def link_strokes(self, chains, ctx, node_of=None):
         """Smoothed strokes for one network, after panj/tempest/src/hxsvg.cpp. A hex the network passes
         through (exactly two neighbours on it) is crossed from one hexside midpoint to the other, so a
         bend cuts the corner instead of zigzagging through the centre; at a line end or a junction each
         branch runs from its hexside midpoint to the centre. The pieces are joined into polylines from
-        one end or junction to the next (or round a closed loop), so dashes and ticks run on unbroken."""
+        one end or junction to the next (or round a closed loop), so dashes and ticks run on unbroken.
+        chains is a list of (chain key, hexes). node_of(key, hex) names the graph node a chain occupies
+        in a hex: the hex itself on an implicit sheet (every shared hex is a node); on an explicit sheet
+        the junction the chain belongs to there, else a node private to the chain, so two chains that
+        cross a hex without a junction cross without joining."""
+        hexcentre = {}
         centre = {}
         nbrs = {}
-        for hexes in chains:
+        for key, hexes in chains:
             for pid in hexes:
-                if pid not in centre:
+                if pid not in hexcentre:
                     f = self.find_or_warn(pid, ctx)
-                    centre[pid] = f[0].centre(*f[1]) if f else None
-            known = [pid for pid in hexes if centre[pid] is not None]
+                    hexcentre[pid] = f[0].centre(*f[1]) if f else None
+            known = []
+            for pid in hexes:
+                if hexcentre[pid] is None:
+                    continue
+                node = node_of(key, pid) if node_of else pid
+                centre[node] = hexcentre[pid]
+                known.append(node)
             for a, b in zip(known, known[1:]):
                 if a == b:
                     continue
@@ -639,13 +652,26 @@ class Renderer:
     def layer_links(self):
         # Links of the same kind, line style, owner and name form one network and are drawn together.
         o = ['<g class="layer links">']
+        explicit = "explicit" == self.root.get("junctions")
+        junction_of = {}  # (hex, link id) -> junction ordinal
+        for n, j in enumerate(self.root.findall("junction")):
+            for lid in (j.get("links") or "").split():
+                junction_of[(j.get("at"), lid)] = n
+
+        def node_of(key, pid):
+            if not explicit:
+                return pid
+            j = junction_of.get((pid, key))
+            return ("J", pid, j) if j is not None else ("C", key, pid)
+
         groups = {}
-        for lk in self.root.findall("link"):
-            k = (lk.get("kind"), lk.get("line"), lk.get("owner") or "", lk.get("name") or "")
-            groups.setdefault(k, []).append(lk.get("hexes").split())
+        for i, lk in enumerate(self.root.findall("link")):
+            # implicit: same-named chains of a kind form one network; explicit: junctions say what meets
+            k = (lk.get("kind"), lk.get("line"), lk.get("owner") or "", "" if explicit else (lk.get("name") or ""))
+            groups.setdefault(k, []).append((lk.get("id") or "link%d" % i, lk.get("hexes").split()))
         for (kind, line, owner_id, name), chains in groups.items():
             attrs, l = self.line_attrs(line)
-            parts = [p for p in self.link_strokes(chains, "link %s" % (name or kind)) if len(p) >= 2]
+            parts = [p for p in self.link_strokes(chains, "link %s" % (name or kind), node_of) if len(p) >= 2]
             if not parts:
                 continue
             d = " ".join(self.pathd(p) for p in parts)
@@ -681,6 +707,36 @@ class Renderer:
         return '<use xlink:href="#sym-%s" class="%s" transform="translate(%.2f,%.2f) rotate(%.1f) scale(%.2f)" style="color:%s"/>' % (
             sym, cls, x, y, rot, scale, color)
 
+    # Legend-mark shapes in the unit frame (hex circumradius = 1, y down), sized by the mark's "w h".
+    MARK_SHAPES = {
+        "rect": '<rect x="%(hw).3f" y="%(hh).3f" width="%(w).3f" height="%(h).3f" fill="currentColor" stroke="#222" stroke-width="0.02"/>',
+        "bar": '<rect x="%(hw).3f" y="%(hh).3f" width="%(w).3f" height="%(h).3f" fill="currentColor"/>',
+        "ellipse": '<ellipse rx="%(rw).3f" ry="%(rh).3f" fill="currentColor" stroke="#222" stroke-width="0.02"/>',
+        "diamond": '<polygon points="0,%(hh).3f %(rw).3f,0 0,%(rh).3f %(hw).3f,0" fill="currentColor" stroke="#222" stroke-width="0.02"/>',
+        "triangle": '<polygon points="0,%(hh).3f %(rw).3f,%(rh).3f %(hw).3f,%(rh).3f" fill="currentColor" stroke="#222" stroke-width="0.02"/>',
+        "cross": '<path d="M%(hw).3f,0 h%(w).3f M0,%(hh).3f v%(h).3f" stroke="currentColor" stroke-width="%(sw).3f" fill="none"/>'
+                 '<path d="M%(hw).3f,0 h%(w).3f M0,%(hh).3f v%(h).3f" stroke="#fff" stroke-width="%(sw2).3f" fill="none" stroke-dasharray="%(dash).3f %(gap).3f"/>',
+        "arrow": '<path d="M0,%(rh).3f L0,%(hh).3f M%(hw).3f,%(ah).3f L0,%(hh).3f L%(rw).3f,%(ah).3f" fill="none" stroke="currentColor" stroke-width="0.06"/>',
+        "star": '<polygon points="0,%(hh).3f %(sa).3f,%(sb).3f %(rw).3f,%(sb).3f %(sc).3f,%(sd).3f %(se).3f,%(rh).3f 0,%(sf).3f %(nse).3f,%(rh).3f %(nsc).3f,%(sd).3f %(hw).3f,%(sb).3f %(nsa).3f,%(sb).3f" fill="currentColor" stroke="#222" stroke-width="0.02"/>',
+    }
+
+    def mark_svg(self, mark, x, y, rot, size, color, cls):
+        """A declared mark drawn at (x, y): the shape scaled by the hex size, rotated by rot degrees."""
+        shape = mark.get("shape")
+        w, h = (float(v) for v in (mark.get("size") or "0.3 0.3").split())
+        if shape == "pictogram":
+            return self.use(mark.get("pictogram") or "dot", x, y, rot, size, color, cls)
+        if shape == "text":
+            return ('<text x="%.2f" y="%.2f" font-size="%.2f" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="%s">%s</text>'
+                    % (x, y, size * h, color, escape(mark.get("name") or mark.get("id"))))
+        v = dict(w=w, h=h, hw=-w / 2, hh=-h / 2, rw=w / 2, rh=h / 2, sw=w * 0.34, sw2=w * 0.08,
+                 dash=w * 0.06, gap=w * 0.2, ah=-h / 2 + w * 0.5,
+                 sa=w * 0.15, nsa=-w * 0.15, sb=-h * 0.16, sc=w * 0.23, nsc=-w * 0.23, sd=h * 0.14,
+                 se=w * 0.3, nse=-w * 0.3, sf=h * 0.25)
+        body = self.MARK_SHAPES[shape] % v
+        return '<g class="%s mark-%s" transform="translate(%.2f,%.2f) rotate(%.1f) scale(%.2f)" style="color:%s">%s</g>' % (
+            cls, mark.get("id"), x, y, rot, size, color, body)
+
     def layer_hexglyphs(self):
         o = ['<g class="layer hexglyphs">']
         for h in self.root.findall("hex"):
@@ -702,6 +758,13 @@ class Renderer:
                 rot = 0.0
                 if gl.get("dir"):
                     rot = DIR_ANGLE[gl.get("dir")] - 270
+                if sym is None and gl.get("mark"):
+                    m = self.marks.get(gl.get("mark"))
+                    if m is None:
+                        self.warn("unknown mark %s in hex %s" % (gl.get("mark"), h.get("id")))
+                        continue
+                    o.append(self.mark_svg(m, x, y, rot, scale, self.col(gl.get("color") or m.get("color"), "#333"), "glyph"))
+                    continue
                 if self.urban_blocks and sym in URBAN_SYMBOLS:
                     o.append(self.buildings(h.get("id"), x, y, g.size, self.col(gl.get("color"), "#111"), sym))
                 elif sym != "text":
@@ -766,14 +829,23 @@ class Renderer:
                 rot = g.edge_angle(d) - 90
                 o.append(self.use(s.get("symbol"), x, y, rot, g.size, self.col(s.get("color"), "#333"), "side " + s.get("symbol")))
         for e in self.root.findall("edge"):
-            if not e.get("symbol"):
+            if not e.get("symbol") and not e.get("mark"):
                 continue
             pe = self.parse_edge(e.get("at"), "edge glyph")
             if pe is None:
                 continue
             g, c, r, d = pe
             x, y = g.edge_mid(c, r, d)
-            o.append(self.use(e.get("symbol"), x, y, g.edge_angle(d), g.size, self.col(e.get("color"), "#fff"), "edgeglyph"))
+            if e.get("symbol"):
+                o.append(self.use(e.get("symbol"), x, y, g.edge_angle(d), g.size, self.col(e.get("color"), "#fff"), "edgeglyph"))
+            else:
+                m = self.marks.get(e.get("mark"))
+                if m is None:
+                    self.warn("unknown mark %s at %s" % (e.get("mark"), e.get("at")))
+                    continue
+                # across="edge": the mark's x axis lies across the hexside (the edge angle points centre-to-midpoint)
+                rot = g.edge_angle(d) if m.get("across") == "edge" else g.edge_angle(d) - 90
+                o.append(self.mark_svg(m, x, y, rot, g.size, self.col(e.get("color") or m.get("color"), "#fff"), "edgeglyph"))
             if e.get("label"):
                 o.append('<text x="%.2f" y="%.2f" font-size="%.2f" font-style="italic" text-anchor="middle" fill="#fff" stroke="#000" stroke-width="0.3" paint-order="stroke">%s</text>' % (
                     x, y + g.size * 0.75, g.size * 0.28, escape(e.get("label"))))

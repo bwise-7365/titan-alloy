@@ -50,7 +50,7 @@ x = ['<?xml version="1.0" encoding="UTF-8"?>',
      '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"',
      '       id="trc" title="The Russian Campaign, Deluxe Fifth Edition"',
      '       source="TRC map v1 adjusted.png, 1224 x 1483; Consim Press / GMT 2022"',
-     '       width="1224" height="1483" background="frame" font="Georgia, Times New Roman, serif" urban="buildings">',
+     '       width="1224" height="1483" background="frame" font="Georgia, Times New Roman, serif" urban="buildings" junctions="implicit">',
      '  <grid id="main" orientation="pointy" offset="odd" cols="33" rows="43" size="20.65" ox="22.27" oy="155.40"',
      '        id-format="{rowletter}{col}" col-start="33" col-step="-1" row-start="1" terrain="clear" id-side="w"/>',
      '''  <palette>

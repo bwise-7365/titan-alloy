@@ -6,7 +6,7 @@
        width="5615"
        height="3727"
        background="margin"
-       font="Arial, Helvetica, sans-serif" urban="buildings">
+       font="Arial, Helvetica, sans-serif" urban="buildings" junctions="implicit">
   <!-- built by map_graphics/xml/tools/image2sheet/assemble.py from the pgg catalogue; fix the catalogue, not this file -->
   <grid id="main" orientation="flat" offset="odd" cols="59" rows="31" size="61.761" ox="133.39" oy="121.34" id-format="{col:02}{row:02}" col-start="1" row-start="1" terrain="clear" id-side="s"/>
   <palette xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

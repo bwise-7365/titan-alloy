@@ -15,7 +15,10 @@
 
 namespace HexView {
 
-  enum class SymbolFrame : std::uint8_t { Hex, Face };
+  // Hex: a map glyph, a <symbol> in the SVG defs. Mark: a legend-mark shape (hexsheet2svg.py
+  // MARK_SHAPES) at the default mark size; a sheet's marks are drawn inline at their declared size,
+  // never as <symbol>s, so writers leave these out of the defs. Face: counter faces.
+  enum class SymbolFrame : std::uint8_t { Hex, Mark, Face };
 
   struct Symbol {
     SymbolFrame frame;

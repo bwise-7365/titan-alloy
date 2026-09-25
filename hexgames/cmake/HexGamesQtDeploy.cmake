@@ -4,7 +4,8 @@
 # Windows only; a no-op elsewhere (system Qt).  Without this step a Qt program on Windows starts,
 # shows an empty error dialog and exits -- which looks exactly like a thrown exception and is not one
 # (see visolver/apps/minppd/plan.md).  The default path runs windeployqt, which chooses the Debug
-# (d-suffixed) or Release DLL set by configuration and also brings platforms/, styles/ and any plugin
+# (d-suffixed) or Release DLL set by configuration (one $<IF> expression: two conditional expressions
+# left an empty "" argument that windeployqt refused, found 2026-09-21) and also brings platforms/, styles/ and any plugin
 # the target's Qt modules need.  The fallback reproduces the minimal hand recipe: Core, Gui, Widgets,
 # Concurrent and platforms/qwindows.
 option(HEXGAMES_USE_WINDEPLOYQT "Deploy Qt with windeployqt (else copy the minimal DLL set)" ON)
@@ -16,7 +17,7 @@ function(hexgames_deploy_qt target)
   if(HEXGAMES_USE_WINDEPLOYQT AND TARGET Qt6::windeployqt)
     add_custom_command(TARGET ${target} POST_BUILD
       COMMAND Qt6::windeployqt
-              $<$<CONFIG:Debug>:--debug> $<$<NOT:$<CONFIG:Debug>>:--release>
+              $<IF:$<CONFIG:Debug>,--debug,--release>
               --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime
               --dir "$<TARGET_FILE_DIR:${target}>" "$<TARGET_FILE:${target}>"
       COMMENT "windeployqt ${target}" VERBATIM)

@@ -28,23 +28,43 @@ namespace HexModel {
     std::optional<std::string> name;  // "Moscow", "Dnieper"
   };
 
-  // A centre-to-centre network: rail, road, position connectors.
+  // A centre-to-centre network: rail, road, position connectors. Arcs (links) come from the sheet's
+  // <link> chains; each remembers its chain. Nodes are the sheet's junctions: in an explicit sheet a
+  // unit may pass from one chain to another in a hex only where a junction there holds both (Ben's
+  // "Linear Features" briefing, 2026-09-23); in an implicit sheet every shared hex is such a node.
   class LinkNetwork {
   public:
     struct Link {
       HexIndex a;
       HexIndex b;
-      std::string kind;  // sheet link kind, e.g. "rail"
+      std::string kind;    // sheet link kind, e.g. "rail"
+      std::size_t chain;   // index into chains()
     };
+    struct Chain {
+      std::string id;                   // link/@id, or "" on an implicit sheet without ids
+      std::optional<std::string> name;  // link/@name
+    };
+    using Junction = std::vector<std::size_t>;  // chain indices, ascending
+
     const std::vector<Link>& links() const { return links_; }           // insertion order
     const std::vector<std::size_t>& linksAt(HexIndex) const;            // indices into links()
     bool connectedP(HexIndex, HexIndex) const;
     std::size_t linkCount() const { return links_.size(); }
 
+    const std::vector<Chain>& chains() const { return chains_; }
+    bool explicitP() const { return explicit_; }
+    const std::vector<Junction>& junctionsAt(HexIndex) const;
+    // May movement pass from chain `from` to chain `to` in hex h? Same chain: yes. Implicit sheet:
+    // yes whenever both chains touch h. Explicit sheet: only if one junction at h holds both.
+    bool switchP(HexIndex h, std::size_t from, std::size_t to) const;
+
   private:
     friend class BoardBuilder;
+    bool explicit_ = false;
     std::vector<Link> links_;
+    std::vector<Chain> chains_;
     std::vector<std::vector<std::size_t>> byHex_;
+    std::vector<std::vector<Junction>> junctionsByHex_;
   };
 
   // One labelling of hexes: a partition (countries) or overlapping (naval zones).

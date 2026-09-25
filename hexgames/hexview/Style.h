@@ -49,6 +49,9 @@ namespace HexView {
 
   enum class FontWeight : std::uint8_t { Normal, Bold };
   enum class TextAnchor : std::uint8_t { Start, Middle, End };
+  // Where the anchor point sits vertically: on the alphabetic baseline (SVG's default), at the glyphs'
+  // centre ("central": ids, glyph text, labels) or middle ("middle": text along a path).
+  enum class TextBaseline : std::uint8_t { Alphabetic, Central, Middle };
 
   struct Font {
     std::string family;
@@ -56,7 +59,6 @@ namespace HexView {
     FontWeight weight = FontWeight::Normal;
     bool italicP = false;
     double letterSpacing = 0.0;
-    bool haloP = false;  // a light outline behind the glyphs, for legibility on busy terrain
   };
 
 }  // namespace HexView
