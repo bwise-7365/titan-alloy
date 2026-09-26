@@ -23,8 +23,8 @@ namespace HexMapEd::Schema {
     constexpr std::array<std::string_view, 5> kPatterns{"none", "dots", "hatch", "mottle", "palms"};
     constexpr std::array<std::string_view, 2> kWeights{"normal", "bold"};
     constexpr std::array<std::string_view, 3> kAnchors{"start", "middle", "end"};
-    constexpr std::array<std::string_view, 7> kEndReasons{"edge",  "place", "junction", "dot",
-                                                          "bank",  "sea",   "unexplained"};
+    constexpr std::array<std::string_view, 8> kEndReasons{"edge", "place", "junction", "dot",
+                                                          "bank", "sea",   "source",   "unexplained"};
 
     bool
     inP(std::span<const std::string_view> list, std::string_view value)

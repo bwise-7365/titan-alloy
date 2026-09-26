@@ -8,6 +8,8 @@
 #include <QAction>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDockWidget>
 #include <QFile>
 #include <QFileDialog>
@@ -23,9 +25,12 @@
 #include <QProcess>
 #include <QSpinBox>
 #include <QStatusBar>
+#include <QTextBrowser>
 #include <QTextEdit>
 #include <QToolBar>
+#include <QVBoxLayout>
 
+#include <filesystem>
 #include <stdexcept>
 
 namespace HexQt {
@@ -93,6 +98,7 @@ namespace HexQt {
     saveAction_ = file->addAction("&Save", QKeySequence::Save, [this] { save(); });
     file->addAction("Save &as...", QKeySequence::SaveAs, [this] { saveAs(); });
     file->addAction("&Validate saved file", [this] { validateSaved(); });
+    file->addAction("&Export SVG...", [this] { exportSvg(); });
     file->addAction("Open &doubts...", [this] {
       const QString path = QFileDialog::getOpenFileName(this, "Open doubts", QString(), "Doubts (*.json)");
       if (!path.isEmpty()) {
@@ -126,6 +132,8 @@ namespace HexQt {
     ids->setCheckable(true);
     ids->setChecked(true);
     connect(ids, &QAction::toggled, view_, &MapView::setIdsVisible);
+    QMenu* help = menuBar()->addMenu("&Help");
+    help->addAction("&About HexMapEd...", QKeySequence::HelpContents, [this] { showAbout(); });
     return;
   }
 
@@ -134,7 +142,7 @@ namespace HexQt {
   {
     QToolBar* bar = addToolBar("Mode");
     bar->addWidget(new QLabel(" Mode "));
-    modeBox_->addItems({"Select (pan)", "Terrain", "Hexside line", "Link", "Clip", "Glyph", "Name"});
+    modeBox_->addItems({"Select (pan)", "Terrain", "Hexside line", "Link", "Junction", "Clip", "Glyph", "Name"});
     bar->addWidget(modeBox_);
     bar->addWidget(new QLabel(" Kind "));
     bar->addWidget(kindBox_);
@@ -150,6 +158,8 @@ namespace HexQt {
     wavinessBox_->setToolTip("Hand-scratched roads, railways and rivers, as irrgo draws its boards: 0 is straight. Presentation only.");
     bar->addWidget(wavinessBox_);
     connect(wavinessBox_, &QSpinBox::valueChanged, view_, &MapView::setWaviness);
+    bar->addSeparator();
+    bar->addAction("About", [this] { showAbout(); });
     connect(modeBox_, &QComboBox::currentIndexChanged, this, [this](int) {
       linkStart_.reset();
       view_->setPanningP(Mode::Select == mode());
@@ -191,6 +201,7 @@ namespace HexQt {
     std::vector<std::string> kinds;
     switch (mode()) {
       case Mode::Select:
+      case Mode::Junction:  // uses the Link kind box
       case Mode::Clip:
       case Mode::Name:
         break;
@@ -385,11 +396,15 @@ namespace HexQt {
         }
         if (!linkStart_.has_value()) {
           linkStart_ = hex;
-          status_->setText("link: from " + q(*hex) + ", now click the next hex (shift-click removes the step)");
+          status_->setText("link: from " + q(*hex) + ", now click the next hex (shift-click removes the step; shift-click this hex deletes its one-hex links)");
           break;
         }
         if (*linkStart_ == *hex) {
           linkStart_.reset();
+          if (shiftP) {  // shift-click on the current hex deletes the one-hex links there
+            const std::string here = *hex;
+            applyEdit([&] { doc_->removeOneHexLinks(here); });
+          }
           break;
         }
         {
@@ -401,6 +416,13 @@ namespace HexQt {
             applyEdit([&] { doc_->addLinkStep(from, *hex, linkKind.empty() ? "rail" : linkKind, kind); });
           }
           linkStart_ = hex;  // the chain continues from here
+        }
+        break;
+      case Mode::Junction:
+        // join every link of the Link kind through the hex, or separate them again
+        if (hex.has_value()) {
+          const std::string linkKind = linkKindBox_->currentText().toStdString();
+          applyEdit([&] { doc_->toggleJunction(*hex, linkKind); });
         }
         break;
       case Mode::Clip:
@@ -477,6 +499,56 @@ namespace HexQt {
     }
     refreshActions();
     validateSaved();
+    return;
+  }
+
+  // The user guide, compiled in from hexmaped/README.md (CMakeLists.txt qt_add_resources), so the
+  // program carries its own instructions wherever it is copied.
+  void
+  MainWindow::showAbout()
+  {
+    QFile guide(":/help/README.md");
+    if (!guide.open(QIODevice::ReadOnly)) {
+      QMessageBox::critical(this, "About HexMapEd", "the built-in guide is missing from this build");
+      return;
+    }
+    QDialog dialog(this);
+    dialog.setWindowTitle("About HexMapEd");
+    dialog.resize(900, 700);
+    QVBoxLayout* layout = new QVBoxLayout(&dialog);
+    QTextBrowser* text = new QTextBrowser(&dialog);
+    text->setOpenExternalLinks(true);
+    text->setMarkdown(QString::fromUtf8(guide.readAll()));
+    layout->addWidget(text);
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    layout->addWidget(buttons);
+    dialog.exec();
+    return;
+  }
+
+  // The map as drawn (the same hexview Scene the window paints, current waviness included) to an SVG
+  // file; the sheet itself is not touched.
+  void
+  MainWindow::exportSvg()
+  {
+    if (!doc_) {
+      return;
+    }
+    std::filesystem::path suggested = doc_->path();
+    suggested.replace_extension(".svg");
+    const QString path = QFileDialog::getSaveFileName(this, "Export map as SVG", q(suggested.string()), "SVG (*.svg)");
+    if (path.isEmpty()) {
+      return;
+    }
+    QFile out(path);
+    if (!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+      QMessageBox::critical(this, "Cannot export", "cannot write " + path + ": " + out.errorString());
+      return;
+    }
+    const std::string text = view_->svg();
+    out.write(text.data(), static_cast<qint64>(text.size()));
+    status_->setText("exported " + path);
     return;
   }
 

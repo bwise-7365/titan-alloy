@@ -2,6 +2,32 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
+*** 2026-09-26 Olympic roads are a DRAFT (108 road links in operation-olympic.xml, traced on the tilted photo):
+    right pattern, hexes often a column off, 5 pieces, 6 places unreached. Ben to correct against the physical map;
+    details in example maps/Olympic/reading-notes.md.
+
+*** 2026-09-25 Olympic all-mountain hexsides UNVERIFIED (Ben checks the physical map Monday). The 73 edges
+    line="mountain-side" in map_graphics/xml/operation-olympic.xml came from a measurement (darkest brown
+    continuous across the whole hexside), not from a reading. The TEC does show "fingers" of shading along
+    hexsides as a terrain (all-mountain hexside: entry prohibited) and Ben can find a few that may qualify, so
+    most of the 73 are probably wrong. Drawn in magenta ("checkme") until resolved; then keep the real ones,
+    delete the rest, and restore a normal style. The measured all-rough hexsides (657) were already removed.
+
+--- 2026-09-25 HexMapEd's save dropped every one-hex link (SheetWriter wrote only links with two or more
+    hexes) and kept the junctions that name them, so the saved SMW sheet failed validation ("ID
+    rl-odessa-e referenced but never declared"). A one-hex link is valid (a rail leaving the map from a
+    hex: rl-smolensk-e, rl-kiev-ne, rl-odessa-e). Fixed: the writer writes every link SheetDoc holds; the
+    three links restored in stalin-moves-west.xml; the round-trip test now compares junctions too.
+    Document::removeLinkStep dropped a one-hex remnant of a cut link and left its junctions dangling,
+    and a cut into two long pieces gave both the same id. Ben's ruling: keep the remnant, do not prune
+    junctions. Fixed: the head keeps the id, the tail takes "<id>-2" (next free), junctions standing on
+    the tail's hexes are re-pointed to the tail's id (none removed), and the ends at the cut become
+    "unexplained". Tests: DocumentTest LinkStepsExtendSplitAndKeepOneHexRemnants,
+    CuttingALinkRenamesTheTailAndRepointsItsJunctions.
+    Also: a link drawn new had no id, which an explicit-junction sheet refuses. Fixed: addLinkStep gives
+    it "<kind>-new-N" (next free) and refuses a kind that cannot start an XML id (the kind box is
+    editable). Tests: LinkStepsExtendSplitAndKeepOneHexRemnants, NewLinksNeedAKindThatCanStartAnId.
+
 --- 2026-09-23 HexMapEd's save dropped the <legend> block and every link/path @ends, because
     HexXml::SheetDoc had no fields for them (SheetWriter writes only what SheetDoc holds). Found when the
     hexview SVG golden passed vacuously on Velikiye Luki: the reference SVG it rendered came from the

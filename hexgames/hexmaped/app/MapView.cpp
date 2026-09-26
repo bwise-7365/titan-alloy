@@ -7,6 +7,7 @@
 #include "hexview/MapFrame.h"
 #include "hexview/MapSceneBuilder.h"
 #include "hexview/Scene.h"
+#include "hexview/SceneWriters.h"
 
 #include <QBrush>
 #include <QGraphicsPolygonItem>
@@ -140,6 +141,15 @@ namespace HexQt {
     if (nullptr == doc_) {
       return;
     }
+    const HexView::Scene scene = buildScene();
+    scene_->setSceneRect(0.0, 0.0, scene.width(), scene.height());
+    paintScene(scene, symbols_, *scene_, PaintOptions{idsVisibleP_});
+    return;
+  }
+
+  HexView::Scene
+  MapView::buildScene() const
+  {
     const HexXml::SheetDoc& sheet = doc_->sheet();
     const HexView::MapFrame frame = HexView::MapFrame::of(sheet);
     HexView::MapStyle style = HexView::MapStyle::reference();
@@ -148,9 +158,31 @@ namespace HexQt {
     }
     HexView::Scene scene(frame.width(), frame.height());
     HexView::MapSceneBuilder(frame, symbols_, style).build(sheet, scene);
-    scene_->setSceneRect(0.0, 0.0, frame.width(), frame.height());
-    paintScene(scene, symbols_, *scene_, PaintOptions{idsVisibleP_});
-    return;
+    return scene;
+  }
+
+  std::string
+  MapView::svg() const
+  {
+    if (nullptr == doc_) {
+      throw std::invalid_argument("MapView::svg: no sheet is open");
+    }
+    const HexView::Scene full = buildScene();
+    if (idsVisibleP_) {
+      return HexView::writeSvg(full, symbols_, doc_->sheet().title);
+    }
+    // View > Show hex ids off: leave out the printed ids, the Grid layer's texts, as paintScene does
+    HexView::Scene shown(full.width(), full.height());
+    for (std::size_t li = 0; li < HexView::kLayerCount; ++li) {
+      const HexView::Layer layer = static_cast<HexView::Layer>(li);
+      for (const HexView::Primitive& prim : full.layer(layer)) {
+        if (HexView::Layer::Grid == layer && std::holds_alternative<HexView::TextShape>(prim.shape)) {
+          continue;
+        }
+        shown.add(layer, prim);
+      }
+    }
+    return HexView::writeSvg(shown, symbols_, doc_->sheet().title);
   }
 
   void

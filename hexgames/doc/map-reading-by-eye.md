@@ -96,4 +96,79 @@ Opus) that must do the same for a large sheet such as Dai Senso. `hexsheet.xsd` 
   complete image is the one whose pixels the XML is measured in. Use the halves only to settle a
   doubt, then convert the answer to the complete image's hexes, never its pixels.
 
+## 5. Measuring aids (added from Stalin Moves West, 2026-09-25)
+
+Small scratch scripts measure; the eye decides. Each aid below turns the image into numbers addressed by
+the lattice, and every result is drawn back over the scan and checked tile by tile before it goes into
+the XML. None of them is a detector to be tuned: when an aid is wrong in a place, the eye overrides it
+there and the aid is not improved.
+
+1. **Lattice helper.** One small module holds the grid (orientation, offset, pitch, origin, id format),
+   the two neighbour tables, `centre(id)`, the hexside corners, and a crop writer that draws the ideal
+   lattice in a thin contrasting colour with each hex's id in a corner. Every later step uses it, so no
+   centre or neighbour is ever worked out in prose.
+2. **Fill fractions per hex.** For each hex, count the pixels of each fill colour (rough, forest, sea,
+   marsh) inside the hex inset to 85%. Where fills are solid hex fills, as on SMW, the classes separate
+   cleanly (above 80% or below 5%). The eye still decides the patterned fills, such as marsh, and the
+   part-sea hexes.
+3. **Ink score per hexside.** For each hexside, sample points along its middle 80% and score the fraction
+   that lie within about 11 px of a colour mask (river blue, border red). A score of 0.6 or more is a
+   candidate and 0.3 to 0.6 is a doubt. Draw the candidates over the scan and reject by eye. The usual
+   false hits are coastlines and lagoon shores, which have the river's colour; a textured fill whose
+   pattern has the same colour, such as SMW's marsh; and a star or city of the border's colour.
+4. **Segments between junctions.** Join the accepted border hexsides at shared vertices and split them
+   wherever three or more meet. Each segment then takes one kind by eye (SMW: front line or national
+   border), which is a few decisions instead of one per hexside.
+5. **Regions by flood fill.** With the border hexsides as walls, flood out from the hex where each
+   printed name (a country, a zone) stands. Every land hex must land in exactly one region. A leak
+   means a gap in the border or a wrong call at a coast, and shows where to look.
+6. **Rails as polylines.** On labelled crops, read each line as a handful of points in the crop's own
+   pixels. A script converts them to image coordinates, samples along the line, and records the nearest
+   hex at each step. Then remove the zig-zags that coarse points produce, check every step for
+   adjacency, and draw the chains back over the scan. This is faster and more accurate than naming hexes
+   along a curving line in the head.
+7. **Marks by colour.** Small, distinctly coloured marks (SMW's yellow bridge bars) are found as
+   connected blobs and snapped to the nearest hexside midpoint or hex centre. Cross-check them against
+   the other layers: every SMW bridge had to lie on an accepted river hexside that a rail crosses.
+8. **Render and compare.** Render the sheet with `hexsheet2svg.py --png`, scale it to the scan, and
+   view the two stacked, north half and south half. Differences show up as whole missing features rather
+   than pixel noise.
+
+### Rivers: along hexsides or through centres (decide per game)
+
+Most games draw rivers along hexsides (`<edge line="river">`). About 10-15% (TRC among them) draw them
+centre to centre through "river hexes", like roads. Decide which from the print and the rules before
+reading, and record it with the map's rulings. A centre-to-centre river is a `<link kind="river">` hex
+chain (confluences are shared hexes, or junctions on an explicit sheet). The rules declare a `river`
+network and the package binds the link kind to it. Never force such a river onto hexsides: the crossed
+hexsides do not touch, so they neither render nor connect as one river.
+
+| Map | Rivers | Source |
+|---|---|---|
+| The Russian Campaign | centre to centre (links) | Ben, 2026-09-25 |
+| PGG, SMW, Velikiye Luki | along hexsides (edges) | as read |
+
+### Per-map terrain thresholds
+
+How much of a hex a feature must cover before the whole hex takes that terrain is a ruling for EACH
+map. It is not a constant: games, and the artists who draw them, differ. Before classifying fills on
+a map, look here for its ruling. If there is none, measure the fractions, show the reviewer the
+hexes near the gap, and record the ruling here once it is given. Each ruling states how the fraction
+is measured, because the measure changes the number: a lake's thick shoreline sits on the hex rim.
+
+| Map | Terrain | Ruling | Measured over | Source |
+|---|---|---|---|---|
+| Panzergruppe Guderian | woods | more than 15% forest | whole hex (light and dark mottle, closed) | Ben, 2026-09-25 |
+| Panzergruppe Guderian | lake | 22% or more lake | central 80% of the hex (rim excluded) | Ben, 2026-09-25 |
+| Operation Olympic | rough | more than 25% rough (tan) | land part of the 85% inset hex | Ben, 2026-09-25 |
+| Operation Olympic | mountain | 25% or more darkest brown (overrides rough) | land part of the 85% inset hex | Ben, 2026-09-25 |
+| Operation Olympic | assault | a sea hex clearly paler than the sea on its fold panel, unless it holds a red deployment letter | whole hex | Ben, 2026-09-25 |
+
+PGG notes: the swamp 1006 is 18% lake (central 80%) and stays swamp. The compass rose (5527) has the
+lakes' colour and is not lake.
+
+One aid failed and should not be tried again as it was: counting dark pixels where a rail crosses a
+hexside. The printed hex ids and the grid lines sit on or next to the hexsides and swamp the signal.
+Trace rails by eye (aid 6) instead.
+
 Copyright Ben Paul Wise. All Rights Reserved.

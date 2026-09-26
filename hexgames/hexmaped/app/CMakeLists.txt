@@ -10,6 +10,9 @@ add_executable(HexMapEd WIN32
   MapView.cpp
   ScenePainter.cpp)
 target_link_libraries(HexMapEd PRIVATE hexmaped hexview Qt6::Widgets)
+# The user guide, built into the executable for Help > About (":/help/README.md").
+qt_add_resources(HexMapEd help PREFIX "/help" BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+  FILES "${CMAKE_CURRENT_SOURCE_DIR}/../README.md")
 target_compile_features(HexMapEd PRIVATE cxx_std_20)
 target_compile_definitions(HexMapEd PRIVATE
   HEXGAMES_SOURCE_DIR="${CMAKE_SOURCE_DIR}"

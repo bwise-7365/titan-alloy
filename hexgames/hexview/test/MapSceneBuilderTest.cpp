@@ -147,10 +147,11 @@ namespace {
 
   TEST(MapSceneBuilderTest, MapStyleReferenceRoundsOnlyRivers)
   {
-    const Built rounded = build("the-russian-campaign");
+    // PGG draws its rivers along hexsides (TRC's now run centre to centre, as links).
+    const Built rounded = build("panzergruppe-guderian");
     const auto& edges = rounded.scene.layer(Layer::Edges);
-    EXPECT_EQ(1, std::count_if(edges.begin(), edges.end(), hasQuadP));  // one river path, rounded
-    const Built straight = build("the-russian-campaign", MapStyle{{}, true});
+    EXPECT_LT(0, std::count_if(edges.begin(), edges.end(), hasQuadP));  // river paths, rounded
+    const Built straight = build("panzergruppe-guderian", MapStyle{{}, true});
     const auto& plain = straight.scene.layer(Layer::Edges);
     EXPECT_EQ(0, std::count_if(plain.begin(), plain.end(), hasQuadP));
     EXPECT_GT(plain.size(), edges.size());  // each river hexside drawn on its own

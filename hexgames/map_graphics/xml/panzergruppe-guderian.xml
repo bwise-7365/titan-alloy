@@ -7,7 +7,7 @@
        height="3727"
        background="margin"
        font="Arial, Helvetica, sans-serif" urban="buildings" junctions="implicit">
-  <!-- built by map_graphics/xml/tools/image2sheet/assemble.py from the pgg catalogue; fix the catalogue, not this file -->
+  <!-- first built by the image2sheet catalogue (obsolete); reviewed by eye against the scan 2026-09-25 and edited by hand: fix this file -->
   <grid id="main" orientation="flat" offset="odd" cols="59" rows="31" size="61.761" ox="133.39" oy="121.34" id-format="{col:02}{row:02}" col-start="1" row-start="1" terrain="clear" id-side="s"/>
   <palette xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <color id="margin" value="#aeae80" name="sheet margin"/>
@@ -36,10 +36,10 @@
     <line id="road" stroke="grey" width="5"/>
   </lines>
   <!-- terrain, one per hex, as read -->
-  <hexes terrain="clear" ids="0101 0102 0103 0104 0105 0106 0107 0108 0109 0110 0111 0114 0115 0116 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0201 0204 0205 0206 0207 0208 0209 0210 0211 0214 0215 0216 0219 0220 0221 0222 0223 0225 0226 0227 0228 0229 0230 0231 0301 0302 0303 0304 0305 0306 0307 0308 0310 0311 0313 0314 0315 0316 0317 0318 0319 0320 0321 0322 0323 0324 0325 0327 0328 0329 0330 0331 0401 0402 0403 0404 0407 0410 0411 0412 0413 0414 0415 0416 0418 0419 0420 0421 0423 0424 0425 0428 0429 0430 0431 0501 0503 0504 0508 0510 0511 0513 0516 0519 0520 0521 0522 0523 0524 0525 0526 0529 0530 0531 0601 0603 0604 0605 0607 0608 0609 0610 0611 0612 0613 0614 0616 0618 0619 0620 0621 0622 0623 0624 0625 0626 0627 0629 0630 0631 0701 0702 0703 0704 0705 0707 0709 0711 0712 0713 0714 0715 0717 0718 0719 0720 0724 0725 0726 0727 0730 0731 0803 0804 0805 0806 0807 0809 0811 0812 0813 0814 0815 0818 0819 0820 0821 0824 0825 0826 0827 0830 0831 0903 0904 0905 0906 0907 0908 0909 0910 0911 0912 0913 0914 0915 0916 0918 0919 0920 0921 0922 0923 0925 0926 0928 0931 1001 1002 1003 1004 1005 1007 1008 1011 1012 1013 1015 1016 1017 1018 1019 1020 1021 1022 1023 1024 1025 1026 1028 1030 1031 1101 1102 1103 1108 1112 1113 1114 1115 1117 1119 1120 1121 1122 1123 1124 1125 1126 1127 1128 1130 1131 1201 1202 1207 1211 1212 1213 1214 1215 1217 1219 1220 1221 1222 1223 1224 1225 1226 1227 1230 1231 1301 1302 1303 1306 1307 1308 1309 1311 1312 1313 1314 1315 1316 1317 1318 1319 1320 1321 1322 1323 1324 1325 1326 1327 1328 1331 1403 1404 1405 1406 1407 1408 1409 1410 1411 1412 1413 1414 1415 1416 1417 1418 1419 1420 1421 1422 1423 1424 1425 1426 1427 1428 1430 1431 1501 1504 1505 1506 1507 1508 1509 1510 1511 1513 1514 1515 1516 1517 1518 1519 1520 1521 1522 1523 1524 1525 1526 1527 1528 1529 1530 1531 1603 1604 1605 1606 1607 1608 1609 1610 1614 1615 1616 1617 1618 1619 1620 1621 1622 1623 1624 1625 1626 1627 1628 1629 1630 1631 1703 1704 1705 1708 1709 1710 1713 1714 1715 1716 1717 1718 1719 1720 1721 1722 1723 1724 1725 1726 1727 1728 1729 1730 1731 1802 1803 1807 1809 1811 1812 1813 1814 1815 1816 1817 1818 1819 1820 1821 1822 1823 1824 1825 1826 1827 1828 1829 1830 1831 1903 1904 1910 1912 1913 1914 1915 1916 1917 1918 1919 1920 1921 1922 1923 1924 1925 1926 1927 1928 1929 1930 1931 2003 2004 2007 2009 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 2026 2027 2028 2029 2030 2031 2104 2106 2107 2108 2109 2112 2113 2114 2115 2116 2117 2118 2119 2120 2121 2122 2123 2124 2125 2126 2128 2129 2130 2131 2204 2211 2212 2213 2214 2215 2216 2217 2218 2219 2220 2221 2222 2223 2224 2225 2226 2229 2230 2231 2307 2311 2312 2313 2314 2315 2316 2317 2318 2319 2320 2321 2322 2323 2326 2327 2328 2329 2330 2331 2405 2406 2407 2408 2410 2411 2412 2413 2414 2415 2416 2417 2418 2419 2420 2421 2422 2423 2426 2427 2428 2429 2430 2431 2507 2508 2509 2510 2511 2512 2513 2514 2515 2516 2517 2519 2520 2521 2522 2523 2524 2526 2528 2529 2530 2531 2609 2610 2611 2612 2613 2614 2615 2616 2618 2619 2620 2621 2622 2623 2625 2626 2627 2629 2630 2631 2710 2711 2712 2713 2714 2715 2719 2720 2721 2722 2723 2724 2725 2726 2730 2808 2809 2810 2811 2812 2813 2814 2818 2819 2820 2821 2822 2823 2824 2828 2829 2831 2906 2907 2908 2909 2910 2911 2912 2913 2915 2916 2917 2918 2919 2920 2921 2922 2923 2924 2925 2926 2927 2929 2930 3005 3006 3007 3009 3011 3015 3016 3018 3019 3020 3021 3022 3023 3024 3026 3027 3028 3029 3030 3031 3105 3106 3107 3108 3111 3112 3115 3116 3117 3118 3119 3120 3121 3122 3124 3128 3129 3130 3131 3202 3204 3205 3206 3207 3208 3209 3214 3215 3216 3217 3218 3219 3220 3221 3222 3223 3224 3225 3227 3228 3229 3230 3231 3301 3303 3305 3306 3307 3308 3311 3312 3313 3314 3315 3316 3317 3318 3320 3321 3322 3323 3324 3325 3326 3327 3328 3329 3330 3331 3401 3402 3405 3406 3407 3410 3411 3412 3413 3414 3415 3417 3418 3421 3422 3423 3424 3425 3426 3427 3428 3429 3501 3502 3505 3506 3509 3510 3511 3512 3513 3514 3515 3516 3517 3518 3519 3520 3523 3524 3525 3526 3527 3528 3530 3601 3604 3605 3609 3610 3611 3612 3615 3616 3617 3618 3619 3620 3621 3623 3624 3625 3626 3627 3701 3702 3704 3706 3709 3710 3711 3712 3714 3715 3716 3717 3718 3719 3720 3721 3723 3724 3725 3726 3727 3728 3730 3801 3803 3804 3805 3806 3807 3808 3809 3810 3811 3812 3813 3814 3815 3816 3818 3819 3820 3821 3823 3824 3825 3826 3827 3828 3829 3830 3831 3901 3902 3903 3904 3905 3906 3907 3908 3909 3910 3911 3914 3915 3916 3917 3918 3919 3920 3921 3924 3925 3926 3927 3928 3929 3930 3931 4001 4002 4003 4004 4005 4006 4007 4008 4009 4010 4011 4012 4013 4014 4015 4016 4018 4019 4020 4024 4025 4026 4027 4029 4030 4031 4101 4102 4103 4104 4105 4106 4107 4108 4109 4110 4111 4112 4113 4114 4115 4116 4117 4118 4119 4120 4124 4125 4126 4127 4128 4129 4130 4202 4203 4204 4205 4206 4207 4208 4209 4210 4211 4212 4213 4215 4216 4217 4218 4219 4220 4222 4223 4224 4225 4226 4227 4228 4229 4230 4231 4302 4303 4304 4305 4306 4307 4308 4309 4310 4311 4312 4313 4314 4315 4316 4317 4318 4319 4320 4322 4323 4324 4325 4326 4327 4329 4330 4331 4401 4402 4403 4404 4405 4406 4407 4408 4409 4410 4411 4412 4413 4414 4415 4416 4417 4418 4419 4420 4421 4422 4423 4424 4425 4426 4428 4429 4430 4431 4501 4503 4504 4505 4506 4507 4508 4509 4510 4511 4512 4513 4514 4515 4516 4517 4518 4520 4521 4522 4523 4524 4525 4526 4527 4528 4529 4530 4531 4602 4603 4604 4605 4606 4607 4608 4609 4610 4611 4612 4613 4614 4615 4617 4618 4621 4622 4623 4624 4625 4626 4627 4628 4629 4630 4631 4701 4702 4703 4704 4705 4706 4707 4708 4709 4710 4711 4712 4713 4714 4715 4716 4718 4719 4720 4721 4722 4723 4724 4725 4726 4727 4728 4729 4730 4731 4802 4803 4804 4805 4806 4807 4808 4809 4811 4812 4813 4814 4815 4816 4818 4819 4820 4821 4822 4823 4824 4825 4826 4827 4828 4829 4830 4831 4901 4902 4903 4904 4906 4907 4908 4909 4910 4912 4914 4915 4916 4917 4918 4919 4920 4921 4922 4923 4924 4925 4926 4927 4928 4929 4930 4931 5001 5002 5003 5006 5007 5008 5009 5010 5011 5012 5013 5014 5015 5016 5017 5018 5019 5020 5021 5022 5023 5024 5025 5026 5027 5028 5029 5030 5031 5101 5102 5103 5104 5105 5106 5107 5108 5109 5110 5111 5112 5113 5114 5115 5116 5117 5118 5119 5121 5122 5123 5124 5125 5126 5127 5128 5129 5130 5131 5201 5202 5203 5204 5205 5206 5207 5210 5211 5212 5213 5214 5215 5216 5217 5218 5219 5221 5222 5223 5224 5225 5226 5227 5228 5229 5230 5231 5301 5302 5303 5304 5305 5306 5307 5308 5312 5313 5314 5315 5316 5317 5318 5319 5321 5322 5323 5324 5325 5326 5327 5328 5329 5330 5331 5401 5402 5403 5404 5405 5406 5407 5408 5409 5410 5411 5412 5413 5414 5415 5416 5417 5418 5419 5420 5421 5422 5423 5424 5425 5426 5427 5428 5429 5430 5431 5501 5502 5504 5505 5508 5509 5510 5512 5513 5514 5515 5516 5517 5518 5519 5520 5521 5522 5523 5524 5525 5526 5527 5528 5529 5530 5531 5601 5604 5605 5608 5612 5613 5614 5615 5617 5619 5621 5622 5623 5624 5625 5626 5627 5628 5629 5630 5631 5701 5704 5705 5707 5708 5709 5713 5714 5715 5717 5720 5722 5723 5724 5725 5726 5727 5728 5729 5730 5731 5803 5804 5808 5815 5816 5817 5818 5820 5823 5824 5825 5826 5827 5828 5829 5830 5831 5902 5903 5904 5915 5916 5917 5918 5919 5920 5921 5923 5924 5925 5926 5927 5928 5929 5930 5931"/>
-  <hexes terrain="woods" ids="0112 0113 0117 0202 0203 0212 0213 0217 0218 0224 0309 0312 0326 0405 0406 0408 0409 0417 0422 0426 0427 0505 0506 0507 0509 0512 0514 0515 0517 0518 0527 0528 0606 0617 0628 0706 0710 0721 0722 0723 0728 0729 0801 0810 0816 0817 0822 0823 0828 0829 0901 0902 0917 0924 0927 0929 0930 1009 1010 1014 1027 1029 1104 1105 1106 1109 1110 1111 1116 1118 1129 1203 1204 1205 1206 1208 1209 1210 1216 1218 1228 1229 1304 1305 1329 1330 1429 1601 1611 1701 1702 1706 1707 1711 1712 1801 1806 1808 1810 1901 1902 1906 1907 1908 1909 1911 2001 2002 2005 2006 2008 2010 2011 2101 2102 2103 2105 2110 2111 2127 2201 2202 2203 2205 2206 2207 2208 2209 2210 2227 2228 2301 2302 2303 2304 2305 2306 2308 2309 2310 2324 2325 2401 2402 2403 2404 2409 2424 2425 2501 2502 2503 2504 2505 2506 2525 2527 2601 2602 2603 2606 2607 2608 2617 2624 2628 2701 2702 2703 2704 2705 2706 2707 2708 2709 2716 2717 2718 2727 2728 2729 2731 2801 2802 2803 2805 2806 2807 2815 2816 2817 2825 2826 2827 2830 2901 2902 2914 2928 2931 3001 3002 3003 3008 3010 3012 3013 3014 3017 3025 3101 3103 3104 3109 3110 3113 3114 3123 3125 3126 3127 3203 3210 3211 3212 3213 3226 3302 3304 3309 3310 3319 3403 3404 3408 3409 3419 3420 3430 3431 3503 3504 3507 3508 3521 3522 3529 3531 3602 3603 3606 3607 3608 3613 3614 3622 3628 3629 3630 3631 3703 3705 3707 3708 3713 3722 3729 3731 3802 3817 3822 3912 3913 3922 3923 4017 4021 4022 4023 4028 4121 4122 4123 4131 4201 4214 4221 4301 4321 4328 4427 4502 4519 4601 4616 4619 4620 4717 4801 4810 4817 4905 4911 4913 5004 5005 5120 5208 5209 5220 5309 5310 5311 5320 5506 5507 5511 5606 5607 5609 5610 5611 5616 5618 5620 5706 5710 5711 5712 5716 5718 5719 5721 5805 5806 5807 5809 5810 5811 5812 5813 5814 5819 5821 5822 5905 5906 5907 5908 5909 5910 5911 5912 5913 5914 5922"/>
+  <hexes terrain="clear" ids="0101 0102 0103 0104 0105 0106 0107 0108 0109 0110 0111 0114 0115 0116 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0201 0204 0205 0206 0207 0208 0209 0210 0211 0214 0215 0216 0219 0220 0221 0222 0223 0225 0226 0227 0228 0229 0230 0231 0301 0302 0303 0304 0305 0306 0307 0308 0310 0311 0313 0314 0315 0316 0317 0318 0319 0320 0321 0322 0323 0324 0325 0327 0328 0329 0330 0331 0401 0402 0403 0404 0407 0410 0411 0412 0413 0414 0415 0416 0418 0419 0420 0421 0423 0424 0425 0428 0429 0430 0431 0501 0503 0504 0508 0510 0511 0513 0516 0519 0520 0521 0522 0523 0524 0525 0526 0529 0530 0531 0601 0603 0604 0605 0607 0608 0609 0610 0611 0612 0613 0614 0616 0618 0619 0620 0621 0622 0623 0624 0625 0626 0627 0629 0630 0631 0701 0702 0704 0705 0707 0709 0711 0712 0713 0714 0715 0717 0718 0719 0720 0724 0725 0726 0727 0730 0731 0803 0804 0805 0806 0807 0809 0811 0812 0813 0814 0815 0818 0819 0820 0821 0824 0825 0826 0827 0830 0831 0903 0904 0905 0906 0907 0908 0909 0910 0911 0912 0913 0914 0915 0916 0918 0919 0920 0921 0922 0923 0925 0926 0928 0931 1001 1002 1003 1004 1005 1007 1008 1011 1012 1013 1015 1016 1017 1018 1019 1020 1021 1022 1023 1024 1025 1026 1028 1030 1031 1101 1102 1103 1108 1112 1113 1114 1115 1117 1119 1120 1121 1122 1123 1124 1125 1126 1127 1128 1130 1131 1201 1202 1207 1211 1212 1213 1214 1215 1217 1219 1220 1221 1222 1223 1224 1225 1226 1227 1230 1231 1301 1302 1303 1306 1307 1308 1309 1311 1312 1313 1314 1315 1316 1317 1318 1319 1320 1321 1322 1323 1324 1325 1326 1327 1328 1331 1403 1404 1405 1406 1407 1408 1409 1410 1411 1412 1413 1414 1415 1416 1417 1418 1419 1420 1421 1422 1423 1424 1425 1426 1427 1428 1430 1431 1501 1504 1505 1506 1507 1508 1509 1510 1511 1513 1514 1515 1516 1517 1518 1519 1520 1521 1522 1523 1524 1525 1526 1527 1528 1529 1530 1531 1603 1604 1605 1606 1607 1608 1609 1610 1614 1615 1616 1617 1618 1619 1620 1621 1622 1623 1624 1625 1626 1627 1628 1629 1630 1631 1703 1704 1705 1708 1709 1710 1713 1714 1715 1716 1717 1718 1719 1720 1721 1722 1723 1724 1725 1726 1727 1728 1729 1730 1731 1802 1803 1807 1809 1811 1812 1813 1814 1815 1816 1817 1818 1819 1820 1821 1822 1823 1824 1825 1826 1827 1828 1829 1830 1831 1903 1904 1910 1912 1913 1914 1915 1916 1917 1918 1919 1920 1921 1922 1923 1924 1925 1926 1927 1928 1929 1930 1931 2003 2004 2007 2009 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 2026 2027 2028 2029 2030 2031 2104 2106 2107 2108 2109 2112 2113 2114 2115 2116 2117 2118 2119 2120 2121 2122 2123 2124 2125 2126 2128 2129 2130 2131 2204 2211 2212 2213 2214 2215 2216 2217 2218 2219 2220 2221 2222 2223 2224 2225 2226 2229 2230 2231 2307 2311 2312 2313 2314 2315 2316 2317 2318 2319 2320 2321 2322 2323 2326 2327 2328 2329 2330 2331 2405 2406 2407 2408 2410 2411 2412 2413 2414 2415 2416 2417 2418 2419 2420 2421 2422 2423 2426 2427 2428 2429 2430 2431 2507 2508 2509 2510 2511 2512 2513 2514 2515 2516 2517 2519 2520 2521 2522 2523 2524 2526 2528 2529 2530 2531 2609 2610 2611 2612 2613 2614 2615 2616 2618 2619 2620 2621 2622 2623 2625 2626 2627 2629 2630 2631 2710 2711 2712 2713 2714 2715 2719 2720 2721 2722 2723 2724 2725 2726 2730 2808 2809 2810 2811 2812 2813 2814 2818 2819 2820 2821 2822 2823 2824 2828 2829 2831 2906 2907 2908 2909 2910 2911 2912 2913 2915 2916 2917 2918 2919 2920 2921 2922 2923 2924 2925 2926 2927 2929 2930 3005 3006 3007 3009 3011 3015 3016 3018 3019 3020 3021 3022 3023 3024 3026 3027 3028 3029 3030 3031 3105 3106 3107 3108 3111 3112 3115 3116 3117 3118 3119 3120 3121 3122 3124 3128 3129 3130 3131 3202 3204 3205 3206 3207 3208 3209 3214 3215 3216 3217 3218 3219 3220 3221 3222 3223 3224 3225 3227 3228 3229 3230 3231 3301 3303 3305 3306 3307 3308 3311 3312 3313 3314 3315 3316 3317 3318 3320 3321 3322 3323 3324 3325 3326 3327 3328 3329 3330 3331 3401 3402 3405 3406 3407 3410 3411 3412 3413 3414 3415 3417 3418 3421 3422 3423 3424 3425 3426 3427 3428 3429 3501 3502 3505 3506 3509 3510 3511 3512 3513 3514 3515 3516 3517 3518 3519 3520 3523 3524 3525 3526 3527 3528 3530 3601 3604 3605 3609 3610 3611 3612 3615 3616 3617 3618 3619 3620 3621 3623 3624 3625 3626 3627 3701 3702 3704 3706 3709 3710 3711 3712 3714 3715 3716 3717 3718 3719 3720 3721 3723 3724 3725 3726 3727 3728 3730 3801 3803 3804 3805 3806 3807 3808 3809 3810 3811 3812 3813 3814 3815 3816 3818 3819 3820 3821 3823 3824 3825 3826 3827 3828 3829 3830 3831 3901 3902 3903 3904 3905 3906 3907 3908 3909 3910 3911 3914 3915 3916 3917 3918 3919 3920 3921 3924 3925 3926 3927 3928 3929 3930 3931 4001 4002 4003 4004 4005 4006 4007 4008 4009 4010 4011 4012 4013 4014 4015 4016 4018 4019 4020 4024 4025 4026 4027 4029 4030 4031 4101 4102 4103 4104 4105 4106 4107 4108 4109 4110 4111 4112 4113 4114 4115 4116 4117 4118 4119 4120 4124 4125 4126 4127 4128 4129 4130 4202 4203 4204 4205 4206 4207 4208 4209 4210 4211 4212 4213 4215 4216 4217 4218 4219 4220 4222 4223 4224 4225 4226 4227 4228 4229 4230 4231 4302 4303 4304 4305 4306 4307 4308 4309 4310 4311 4312 4313 4314 4315 4316 4317 4318 4319 4320 4322 4323 4324 4325 4326 4327 4329 4330 4331 4401 4402 4403 4404 4405 4406 4407 4408 4409 4410 4411 4412 4413 4414 4415 4416 4417 4418 4419 4420 4421 4422 4423 4424 4425 4426 4428 4429 4430 4431 4501 4503 4504 4505 4506 4507 4508 4509 4510 4511 4512 4513 4514 4515 4517 4518 4520 4521 4522 4523 4524 4525 4526 4527 4528 4529 4530 4531 4602 4603 4604 4605 4606 4607 4608 4609 4610 4611 4612 4613 4614 4615 4617 4618 4621 4622 4623 4624 4625 4626 4627 4628 4629 4630 4631 4701 4702 4703 4704 4705 4706 4707 4708 4709 4710 4711 4712 4713 4714 4715 4716 4718 4719 4720 4721 4722 4723 4724 4725 4726 4727 4728 4729 4730 4731 4802 4803 4804 4805 4806 4807 4808 4809 4811 4812 4813 4814 4815 4816 4818 4819 4820 4821 4822 4823 4824 4825 4826 4827 4828 4829 4830 4831 4901 4902 4903 4904 4906 4907 4908 4909 4910 4912 4914 4915 4916 4917 4918 4919 4920 4921 4922 4923 4924 4925 4926 4927 4928 4929 4930 4931 5001 5002 5003 5006 5007 5008 5009 5010 5011 5012 5013 5014 5015 5016 5017 5018 5019 5020 5021 5022 5023 5024 5025 5026 5027 5028 5029 5030 5031 5101 5102 5103 5104 5105 5106 5107 5108 5109 5110 5111 5112 5113 5114 5115 5116 5117 5118 5119 5121 5122 5123 5124 5125 5126 5127 5128 5129 5130 5131 5201 5202 5203 5204 5205 5206 5207 5210 5211 5212 5213 5214 5215 5216 5217 5218 5219 5221 5222 5223 5224 5225 5226 5227 5228 5229 5230 5231 5301 5302 5303 5304 5305 5306 5307 5308 5312 5313 5314 5315 5316 5317 5318 5319 5321 5322 5323 5324 5325 5326 5327 5328 5329 5330 5331 5401 5402 5403 5404 5405 5406 5407 5408 5409 5410 5411 5412 5413 5414 5415 5416 5417 5418 5419 5420 5421 5422 5423 5424 5425 5426 5427 5428 5429 5430 5431 5501 5502 5504 5505 5508 5509 5510 5512 5513 5514 5515 5516 5517 5518 5519 5520 5521 5522 5523 5524 5525 5526 5527 5528 5529 5530 5531 5601 5604 5605 5608 5612 5613 5614 5615 5617 5619 5621 5622 5623 5624 5625 5626 5627 5628 5629 5630 5631 5701 5704 5705 5707 5708 5709 5713 5714 5715 5717 5720 5722 5723 5724 5725 5726 5727 5728 5729 5730 5731 5803 5804 5815 5816 5817 5818 5820 5823 5824 5825 5826 5827 5828 5829 5830 5831 5902 5903 5904 5915 5916 5917 5918 5919 5920 5921 5923 5924 5925 5926 5927 5928 5929 5930 5931"/>
+  <hexes terrain="woods" ids="0112 0113 0117 0202 0203 0212 0213 0217 0218 0224 0309 0312 0326 0405 0406 0408 0409 0417 0422 0426 0427 0505 0506 0507 0509 0512 0514 0515 0517 0518 0527 0528 0606 0617 0628 0706 0710 0721 0722 0723 0728 0729 0801 0810 0816 0817 0822 0823 0828 0829 0901 0902 0917 0924 0927 0929 0930 1009 1010 1014 1027 1029 1104 1105 1106 1109 1110 1111 1116 1118 1129 1203 1204 1205 1206 1208 1209 1210 1216 1218 1228 1229 1304 1305 1329 1330 1429 1601 1611 1701 1702 1706 1707 1711 1712 1801 1806 1808 1810 1901 1902 1906 1907 1908 1909 1911 2001 2002 2005 2006 2008 2010 2011 2101 2102 2103 2105 2110 2111 2127 2201 2202 2203 2205 2206 2207 2208 2209 2210 2227 2228 2301 2302 2303 2304 2305 2306 2308 2309 2310 2324 2325 2401 2402 2403 2404 2409 2424 2425 2501 2502 2503 2504 2505 2506 2525 2527 2601 2602 2603 2606 2607 2608 2617 2624 2628 2701 2702 2703 2704 2705 2706 2707 2708 2709 2716 2717 2718 2727 2728 2729 2731 2801 2802 2803 2805 2806 2807 2815 2816 2817 2825 2826 2827 2830 2901 2902 2914 2928 2931 3001 3002 3003 3008 3010 3012 3013 3014 3017 3025 3101 3103 3104 3109 3110 3113 3114 3123 3125 3126 3127 3203 3210 3211 3212 3213 3226 3302 3304 3309 3310 3319 3403 3404 3408 3409 3419 3420 3430 3431 3503 3504 3507 3508 3521 3522 3529 3531 3602 3603 3606 3607 3608 3613 3614 3622 3628 3629 3630 3631 3703 3705 3707 3708 3713 3722 3729 3731 3802 3817 3822 3912 3913 3922 3923 4017 4021 4022 4023 4028 4121 4122 4123 4131 4201 4214 4221 4301 4321 4328 4427 4502 4516 4519 4601 4616 4619 4620 4717 4801 4810 4817 4905 4911 4913 5004 5005 5120 5208 5209 5220 5309 5310 5311 5320 5506 5507 5511 5606 5607 5609 5610 5611 5616 5618 5620 5706 5710 5711 5712 5716 5718 5719 5721 5805 5806 5807 5808 5809 5810 5811 5812 5813 5814 5819 5821 5822 5905 5906 5907 5908 5909 5910 5911 5912 5913 5914 5922"/>
   <hexes terrain="swamp" ids="0615 0708 0716 0802 0808 1006 1107 1310 1512 1612 1613 1804 1805 1905 2518 2604 2605 2804 2903 2904 2905 3004 3102 3201 3416"/>
-  <hexes terrain="lake" ids="0502 0602 1401 1402 1502 1503 1602 5503 5602 5603 5702 5703 5801 5802 5901"/>
+  <hexes terrain="lake" ids="0502 0602 0703 1401 1402 1502 1503 1602 5503 5602 5603 5702 5703 5801 5802 5901"/>
   <!-- river: 650 hexsides -->
   <edge at="0112:s" line="river"/>
   <edge at="0113:ne" line="river"/>
@@ -743,7 +743,7 @@
   <link kind="road" line="road" hexes="3414 3515 3614 3714 3814 3914"/>
   <link kind="road" line="road" hexes="3914 4013 4113 4212 4211 4311 4410 4510 4609"/>
   <link kind="road" line="road" hexes="3914 4014 4015"/>
-  <link kind="road" line="road" hexes="4608 4609"/>
+  <link kind="road" line="road" hexes="4607 4608 4609"/>
   <link kind="road" line="road" hexes="4609 4709 4809 4909 5008 5109 5208 5309 5408 5508"/>
   <link kind="road" line="road" hexes="4920 5019"/>
   <link kind="road" line="road" hexes="5119 5118 5217 5317 5316 5415 5516 5615 5716 5815 5915"/>
@@ -751,32 +751,32 @@
   <!-- places, as read -->
   <hex id="0412" name="ВИТЕБСК"><glyph symbol="city-major" color="ink"/></hex>
   <label text="ВИТЕБСК" at="0412" slot="s" size="34" weight="bold"/>
-  <hex id="0420" name="ОРША"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="0420" name="ОРША"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="5"/></hex>
   <label text="ОРША" at="0420" slot="s" size="34" weight="bold"/>
   <hex id="0424" name="МОГИЛЕВ"><glyph symbol="city-major" color="ink"/></hex>
   <label text="МОГИЛЕВ" at="0424" slot="s" size="34" weight="bold"/>
-  <hex id="0513" name="ВИТЕБСК"><glyph symbol="city-major" color="ink"/></hex>
-  <hex id="0525" name="МОГИЛЕВ"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="0513" name="ВИТЕБСК"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="10"/></hex>
+  <hex id="0525" name="МОГИЛЕВ"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="5"/></hex>
   <hex id="1427" name="Кричев"><glyph symbol="town" color="ink"/></hex>
   <label text="Кричев" at="1427" slot="s" size="26" weight="normal"/>
   <hex id="1509" name="Велиж"><glyph symbol="town" color="ink"/></hex>
   <label text="Велиж" at="1509" slot="s" size="26" weight="normal"/>
   <hex id="1524" name="Мстиславль"><glyph symbol="town" color="ink"/></hex>
   <label text="Мстиславль" at="1524" slot="s" size="26" weight="normal"/>
-  <hex id="2216" name="СМОЛЕНСК"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="2216" name="СМОЛЕНСК"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="25"/></hex>
   <label text="СМОЛЕНСК" at="2216" slot="s" size="34" weight="bold"/>
   <hex id="2217" name="СМОЛЕНСК"><glyph symbol="city-major" color="ink"/></hex>
-  <hex id="2626" name="РОСЛАВЛЬ"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="2626" name="РОСЛАВЛЬ"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="10"/></hex>
   <label text="РОСЛАВЛЬ" at="2626" slot="s" size="34" weight="bold"/>
   <hex id="3005" name="Белый"><glyph symbol="town" color="ink"/></hex>
   <label text="Белый" at="3005" slot="s" size="26" weight="normal"/>
-  <hex id="3901" name="РЖЕВ"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="3901" name="РЖЕВ"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="5"/></hex>
   <label text="РЖЕВ" at="3901" slot="s" size="34" weight="bold"/>
-  <hex id="4015" name="ВЯЗЬМА"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="4015" name="ВЯЗЬМА"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="15"/></hex>
   <label text="ВЯЗЬМА" at="4015" slot="s" size="34" weight="bold"/>
-  <hex id="4607" name="ГЖАТСК"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="4607" name="ГЖАТСК"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="5"/></hex>
   <label text="ГЖАТСК" at="4607" slot="s" size="34" weight="bold"/>
-  <hex id="5921" name="КАЛУГА"><glyph symbol="city-major" color="ink"/></hex>
+  <hex id="5921" name="КАЛУГА"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="20"/></hex>
   <label text="КАЛУГА" at="5921" slot="s" size="34" weight="bold"/>
   <!-- printed markers from the edge-marker pass -->
   <label text="A" x="320" y="37" size="40" weight="bold"/>
@@ -794,301 +794,32 @@
   <label text="4" x="4025" y="3435" size="40" weight="bold"/>
   <label text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
   <label text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label text="(20 ПО)" x="5490" y="727" size="30" weight="bold"/>
-  <label text="(20 ПО)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="727" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="(20 &#x41F;&#x41E;)" x="5490" y="1615" size="30" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="A" x="320" y="37" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="B" x="41" y="703" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="C" x="127" y="1203" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="D" x="41" y="1609" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="E" x="41" y="2147" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="F" x="41" y="2633" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="G" x="128" y="2787" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="H" x="41" y="3167" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="V,1" x="2203" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="W,1" x="3657" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="3" x="4765" y="35" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="X" x="5506" y="790" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="4" x="4025" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="Z,5" x="2913" y="3435" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="6" x="1705" y="3488" size="40" weight="bold"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x414;&#x43D;&#x435;&#x43F;&#x440;" x="211" y="1913" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x417;&#x430;&#x43F;. &#x414;&#x432;&#x438;&#x43D;&#x430;" x="895" y="702" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x414;&#x435;&#x441;&#x43D;&#x430;" x="2457" y="3088" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x421;&#x43E;&#x436;" x="1158" y="2772" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x423;&#x433;&#x440;&#x430;" x="3966" y="2106" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x412;&#x43E;&#x43B;&#x433;&#x430;" x="3825" y="88" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x412;&#x43E;&#x43F;&#x44C;" x="2246" y="1070" size="26" italic="true" color="blue" angle="-30"/>
-  <label xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" text="&#x41E;&#x441;&#x442;&#x451;&#x440;" x="1965" y="3018" size="26" italic="true" color="blue" angle="-30"/>
+  <hex id="5907"><glyph symbol="text" slot="n" color="ink" text="20"/></hex>
+  <hex id="5915"><glyph symbol="text" slot="n" color="ink" text="20"/></hex>
+  <label text="Днепр" x="1242" y="1851" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Днепр" x="3197" y="1255" size="26" italic="true" color="blue" angle="-80"/>
+  <label text="Зап. Двина" x="2127" y="230" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Зап. Двина" x="588" y="1161" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Десна" x="2828" y="2665" size="26" italic="true" color="blue" angle="-60"/>
+  <label text="Сож" x="1411" y="2814" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Угра" x="4307" y="1882" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Угра" x="4853" y="2105" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Волга" x="4122" y="199" size="26" italic="true" color="blue" angle="-10"/>
+  <label text="Вопь" x="2761" y="1303" size="26" italic="true" color="blue" angle="-70"/>
+  <label text="Остёр" x="1999" y="3023" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Ловать" x="790" y="392" size="26" italic="true" color="blue" angle="-70"/>
+  <label text="Межа" x="1850" y="430" size="26" italic="true" color="blue" angle="-20"/>
+  <label text="Каспля" x="1303" y="1242" size="26" italic="true" color="blue" angle="-20"/>
+  <label text="Усвяча" x="919" y="958" size="26" italic="true" color="blue" angle="-40"/>
+  <label text="Обша" x="2991" y="500" size="26" italic="true" color="blue" angle="-40"/>
+  <label text="Гжать" x="4212" y="568" size="26" italic="true" color="blue" angle="-20"/>
+  <label text="Сежа" x="3841" y="581" size="26" italic="true" color="blue" angle="-10"/>
+  <label text="Веровка" x="3645" y="676" size="26" italic="true" color="blue" angle="-20"/>
+  <label text="Болва" x="3739" y="3185" size="26" italic="true" color="blue" angle="-70"/>
+  <label text="Москва" x="5055" y="831" size="26" italic="true" color="blue" angle="-10"/>
+  <label text="Ока" x="5393" y="2247" size="26" italic="true" color="blue" angle="-20"/>
+  <label text="Ока" x="5251" y="3070" size="26" italic="true" color="blue" angle="-30"/>
+  <label text="Ипут" x="2450" y="3300" size="26" italic="true" color="blue" angle="-30"/>
   <panel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="title" x="60" y="3470" w="1500" h="230" fill="margin" stroke="margin">
     <text x="20" y="90" size="86" weight="bold">Panzergruppe Guderian:</text>
     <text x="120" y="170" size="52" weight="bold">THE BATTLE OF SMOLENSK, JULY 1941</text>

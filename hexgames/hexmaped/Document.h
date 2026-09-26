@@ -49,6 +49,11 @@ namespace HexMapEd {
     void toggleEdge(const Hexside&, std::string_view lineId);      // add the line on that hexside, or remove it
     void addLinkStep(std::string_view a, std::string_view b, std::string_view kind, std::string_view lineId);
     void removeLinkStep(std::string_view a, std::string_view b);   // the chain splits around the step
+    void removeOneHexLinks(std::string_view hex);  // one-hex links there; refuses one a junction names
+    // Junction mode: joins every link of `kind` through `hex` in one junction, or, when a junction of that
+    // kind is already there, removes it. Link ends at the hex follow ("junction" / "unexplained").
+    // Refused on an implicit sheet, and when fewer than two such links pass through the hex.
+    void toggleJunction(std::string_view hex, std::string_view kind);
     void setName(std::string_view hex, std::optional<std::string> name);
     void addGlyph(std::string_view hex, std::string_view symbol, std::string_view slot, std::optional<std::string> colour);
     void removeGlyph(std::string_view hex, std::size_t index);

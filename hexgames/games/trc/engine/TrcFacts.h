@@ -117,11 +117,12 @@ namespace Trc {
     std::vector<std::optional<SeaArea>> seaOf_;  // per water hex
     std::map<std::string, HexIndex> named_;      // upper-cased sheet names
     HexIndex kerchA_, kerchB_;
-    EdgeTerrainId riverEdge_, blockedEdge_;
+    EdgeTerrainId blockedEdge_;
     std::map<std::uint32_t, PhaseInfo> phases_;
     ModeId normal_, railMode_;
     ModifierId stuka_, sturmovik_;
     NetworkId railNetwork_;
+    NetworkId riverNetwork_;
     LayerId countries_;
     SpaceId omb_, axisPool_, russianPool_, axisSurrendered_, russianSurrendered_, stukas_;
     TrackId turnTrack_;

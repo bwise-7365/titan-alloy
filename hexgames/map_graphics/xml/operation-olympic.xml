@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd" id="olympic" title="Operation Olympic: The Invasion of Japan, 1 November 1945 (Decision Games, 2013)" source="example maps/Olympic map wrinkled.png, 2396 x 1568 (a photograph of a folded, wrinkled sheet; cells located by the perfect lattice and counted from the three ovals of the marked copy)" width="2396" height="1568" background="margin" urban="buildings" junctions="implicit">
+  <!-- written by HexMapEd; the structure and its style, validated against hexsheet.xsd -->
+  <grid id="main" orientation="flat" offset="odd" cols="61" rows="35" size="26.075" ox="33.3" oy="-5.94" id-format="{col:02}{row:02}" row-start="0" terrain="clear" id-side="n" clip="0100 0106 0113 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0200 0206 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0300 0306 0317 0318 0319 0320 0321 0322 0323 0324 0325 0326 0327 0328 0329 0330 0331 0332 0333 0334 0400 0417 0418 0419 0420 0421 0422 0423 0424 0425 0426 0427 0428 0429 0430 0431 0432 0433 0434 0500 0517 0518 0519 0520 0521 0522 0523 0524 0525 0526 0527 0528 0529 0530 0531 0532 0533 0534 0600 0617 0618 0619 0620 0621 0622 0623 0624 0625 0626 0627 0628 0629 0630 0631 0632 0633 0634 0700 0724 0725 0726 0727 0728 0729 0730 0731 0732 0733 0734 0800 0823 0824 0825 0826 0827 0828 0829 0830 0831 0832 0833 0834 0900 0924 0925 0926 0927 0928 0929 0930 0931 0932 0933 0934 1000 1023 1024 1025 1026 1027 1028 1029 1030 1031 1032 1033 1034 1100 1124 1125 1126 1127 1128 1129 1130 1131 1132 1133 1134 1223 1224 1225 1226 1227 1228 1229 1230 1231 1232 1233 1234 1300 1324 1325 1326 1327 1328 1329 1330 1331 1332 1333 1334 1400 1423 1424 1425 1426 1427 1428 1429 1430 1431 1432 1433 1434 1500 1524 1525 1526 1527 1528 1529 1530 1531 1532 1533 1534 1626 1627 1628 1629 1630 1631 1632 1633 1634 1700 1727 1728 1729 1730 1731 1732 1733 1734 1826 1827 1828 1829 1830 1831 1832 1833 1834 1900 1927 1928 1929 1930 1931 1932 1933 1934 2000 2026 2027 2028 2029 2030 2031 2032 2033 2034 2100 2127 2128 2129 2130 2131 2132 2133 2134 2200 2226 2227 2228 2229 2230 2231 2232 2233 2234 2300 2331 2332 2333 2334 2400 2434 2500 2634 2700 2834 2900 3034 3100 3200 3234 3300 3400 3434 3500 3600 3634 3700 3800 3834 3900 4000 4034 4100 4200 4234 4300 4400 4434 4500 4600 4634 4700 4734 4800 4801 4802 4833 4834 4900 4933 4934 5032 5034 5100 5128 5131 5132 5133 5134 5200 5226 5227 5228 5229 5230 5231 5232 5233 5234 5300 5327 5328 5329 5330 5331 5332 5333 5334 5400 5426 5427 5428 5429 5430 5431 5432 5433 5434 5500 5527 5528 5529 5530 5531 5532 5533 5534 5600 5626 5627 5628 5629 5630 5631 5632 5633 5634 5700 5701 5725 5726 5727 5728 5729 5730 5731 5732 5733 5734 5800 5823 5824 5825 5826 5827 5828 5829 5830 5831 5832 5833 5834 5900 5901 5916 5917 5918 5924 5925 5926 5927 5928 5929 5930 5931 5932 5933 5934 6000 6018 6023 6024 6025 6026 6027 6028 6029 6030 6031 6032 6033 6034 6100 6105 6116 6117 6118 6119 6124 6125 6126 6127 6128 6129 6130 6131 6132 6133 6134"/>
+  <palette>
+    <color id="margin" value="#3fa9e0" name="sheet margin"/>
+    <color id="paper" value="#dfe2e8" name="clear"/>
+    <color id="tan" value="#bdb28a" name="rough"/>
+    <color id="brown" value="#8a7a4e" name="all-mountain"/>
+    <color id="checkme" value="#e0149a" name="to verify on the physical map (all-mountain hexside)"/>
+    <color id="seablue" value="#2fb0f0" name="all-sea"/>
+    <color id="pale" value="#a9d8f5" name="assault hex"/>
+    <color id="grid" value="#8f8f98"/>
+    <color id="riverblue" value="#58b4e8" name="river hexside"/>
+    <color id="ink" value="#222222"/>
+    <color id="red" value="#b0282a" name="deployment letters"/>
+    <color id="roadgrey" value="#6b6b6b" name="road"/>
+  </palette>
+  <terrains>
+    <terrain id="clear" name="Clear Hex" fill="paper" stroke="grid"/>
+    <terrain id="rough" name="Rough Terrain Hex" fill="tan" stroke="grid" pattern="mottle"/>
+    <terrain id="mountain" name="All-Mountain Terrain" fill="brown" stroke="grid" pattern="mottle"/>
+    <terrain id="sea" name="All-Sea Hex" fill="seablue" stroke="grid"/>
+    <terrain id="assault" name="Assault Hex" fill="pale" stroke="grid"/>
+  </terrains>
+  <lines>
+    <line id="road" stroke="roadgrey" width="3"/>
+    <line id="river" stroke="riverblue" width="5"/>
+    <line id="mountain-side" stroke="checkme" width="7" dash="10,4"/>
+  </lines>
+  <hexes terrain="rough" ids="0509 0510 0511 0610 0611 0612 0711 0713 0714 0808 0813 0814 0815 0907 0908 0918 0919 1007 1013 1018 1019 1104 1105 1107 1108 1112 1113 1114 1119 1203 1204 1206 1207 1211 1213 1214 1217 1218 1219 1306 1313 1319 1320 1321 1406 1407 1412 1413 1414 1417 1419 1420 1421 1514 1518 1519 1520 1521 1613 1614 1615 1618 1620 1621 1709 1710 1713 1714 1715 1719 1806 1808 1809 1813 1814 1815 1816 1820 1906 1907 1908 1909 1910 1911 1914 1915 1916 1917 2005 2006 2008 2009 2010 2011 2013 2014 2015 2016 2018 2019 2108 2111 2112 2114 2115 2116 2117 2118 2119 2120 2121 2201 2206 2207 2208 2209 2214 2215 2216 2217 2218 2219 2220 2221 2301 2306 2307 2309 2310 2313 2314 2315 2316 2318 2319 2320 2321 2323 2324 2407 2408 2409 2410 2411 2412 2413 2414 2415 2417 2418 2419 2420 2421 2422 2423 2424 2509 2511 2512 2514 2517 2518 2519 2520 2521 2522 2523 2525 2606 2607 2609 2610 2611 2612 2613 2618 2621 2622 2623 2624 2625 2706 2711 2712 2713 2714 2715 2717 2718 2721 2722 2723 2724 2725 2726 2810 2811 2812 2813 2816 2818 2820 2822 2823 2824 2826 2827 2908 2912 2914 2917 2920 2921 2922 2923 2924 2925 3012 3013 3014 3016 3017 3020 3021 3022 3023 3024 3025 3026 3027 3028 3106 3114 3115 3116 3117 3118 3119 3122 3123 3124 3125 3126 3127 3128 3130 3206 3217 3218 3219 3220 3221 3222 3223 3224 3225 3227 3228 3231 3307 3319 3320 3321 3322 3323 3324 3326 3327 3328 3329 3331 3332 3333 3413 3414 3417 3419 3420 3421 3422 3423 3427 3428 3431 3432 3433 3518 3519 3520 3522 3523 3524 3528 3529 3530 3531 3618 3619 3622 3623 3624 3625 3626 3628 3630 3631 3632 3704 3710 3711 3716 3720 3721 3722 3723 3724 3725 3726 3731 3732 3810 3815 3819 3820 3822 3823 3824 3825 3826 3827 3828 3830 3906 3910 3919 3920 3921 3922 3923 3924 3926 3927 3928 3929 3931 3932 4004 4014 4019 4020 4021 4022 4026 4027 4115 4118 4121 4122 4123 4124 4125 4126 4127 4128 4203 4207 4209 4214 4215 4216 4217 4219 4220 4221 4222 4223 4224 4225 4226 4227 4304 4308 4309 4315 4316 4317 4318 4319 4322 4324 4325 4326 4327 4328 4408 4417 4418 4419 4420 4422 4423 4424 4425 4426 4427 4428 4507 4518 4519 4520 4523 4524 4525 4526 4530 4531 4618 4624 4625 4705 4706 4707 4708 4709 4710 4720 4721 4722 4723 4724 4726 4729 4730 4731 4732 4804 4805 4806 4807 4809 4810 4811 4813 4814 4815 4819 4820 4821 4822 4823 4824 4830 4831 4901 4902 4903 4904 4906 4908 4910 4911 4912 4913 4915 4916 4918 4919 4920 4921 4922 4923 4924 5001 5008 5009 5010 5011 5012 5013 5014 5017 5018 5022 5023 5102 5108 5111 5112 5113 5118 5119 5122 5208 5217 5218 5221 5317 5318 5319 5321 5322 5323 5417 5419 5420 5422 5519 5521 5522 5524 5624"/>
+  <hexes terrain="mountain" ids="1212 1307 1312 1318 1418 1619 1807 2308 2317 2416 2510 2513 2524 2619 2620 2719 2720 2814 2815 2817 2819 2821 2913 2915 2916 2918 2919 3015 3018 3019 3120 3121 3226 3325 3418 3424 3425 3426 3525 3526 3527 3629 3925 4023 4024 4025 4119 4120 4208 4218 4320 4321 4323 4914 5421"/>
+  <hexes terrain="sea" ids="0101 0102 0103 0104 0105 0107 0108 0109 0110 0111 0112 0114 0115 0201 0202 0203 0204 0205 0207 0208 0209 0210 0211 0212 0213 0214 0215 0301 0302 0303 0304 0305 0307 0308 0309 0310 0311 0312 0313 0314 0315 0316 0401 0402 0403 0404 0405 0406 0407 0409 0410 0411 0412 0413 0414 0415 0416 0501 0502 0503 0504 0505 0506 0507 0508 0513 0514 0515 0516 0601 0602 0603 0604 0605 0606 0607 0608 0614 0615 0616 0701 0702 0703 0704 0705 0707 0708 0709 0716 0717 0718 0719 0720 0721 0722 0723 0801 0802 0803 0804 0806 0809 0818 0819 0820 0821 0822 0901 0902 0906 0910 0917 0920 0921 0922 0923 1001 1008 1009 1010 1017 1020 1021 1022 1101 1102 1103 1109 1110 1121 1122 1123 1200 1201 1202 1208 1209 1210 1222 1301 1302 1309 1310 1323 1401 1402 1403 1409 1501 1502 1503 1504 1512 1523 1600 1601 1602 1603 1604 1610 1611 1624 1625 1701 1702 1703 1704 1705 1725 1726 1800 1801 1802 1803 1825 1901 1902 1903 1926 2001 2002 2003 2004 2101 2102 2103 2125 2126 2202 2203 2302 2303 2304 2327 2328 2329 2330 2401 2402 2403 2404 2428 2429 2430 2431 2432 2433 2501 2502 2503 2504 2505 2506 2529 2530 2531 2532 2533 2534 2600 2601 2602 2603 2604 2605 2628 2629 2630 2631 2632 2633 2701 2702 2703 2704 2705 2708 2709 2729 2730 2731 2732 2733 2734 2800 2801 2802 2803 2805 2807 2808 2809 2829 2830 2831 2832 2833 2901 2902 2903 2904 2907 2909 2910 2911 2930 2931 2932 2933 2934 3000 3001 3002 3003 3008 3011 3031 3032 3033 3101 3102 3103 3104 3112 3132 3133 3134 3201 3202 3203 3204 3212 3233 3301 3302 3303 3304 3305 3309 3311 3312 3313 3334 3401 3402 3403 3404 3405 3408 3409 3410 3501 3502 3503 3504 3505 3506 3507 3508 3510 3511 3512 3513 3534 3601 3602 3604 3605 3606 3607 3611 3612 3613 3701 3702 3703 3706 3707 3708 3712 3713 3714 3733 3734 3801 3802 3803 3806 3807 3808 3812 3813 3833 3901 3902 3903 3912 3913 3934 4001 4002 4003 4009 4010 4011 4012 4101 4102 4111 4112 4113 4132 4133 4134 4201 4202 4205 4211 4212 4229 4230 4231 4232 4233 4301 4302 4306 4311 4312 4313 4331 4332 4333 4334 4401 4402 4405 4410 4411 4412 4432 4433 4501 4502 4503 4533 4534 4601 4602 4603 4604 4633 4701 4702 4703 4927 4928 4929 4932 5000 5025 5026 5027 5028 5029 5030 5031 5033 5101 5106 5125 5126 5127 5129 5130 5201 5202 5204 5205 5210 5211 5224 5225 5301 5302 5303 5304 5305 5306 5307 5310 5311 5314 5315 5325 5326 5401 5402 5403 5404 5405 5406 5407 5408 5409 5411 5412 5413 5414 5415 5424 5425 5501 5502 5503 5504 5505 5506 5507 5508 5509 5510 5511 5513 5514 5515 5516 5525 5526 5601 5602 5603 5604 5605 5606 5607 5608 5609 5610 5611 5612 5613 5614 5615 5616 5625 5702 5703 5704 5705 5706 5708 5709 5710 5711 5712 5713 5714 5715 5716 5720 5722 5723 5801 5802 5803 5804 5805 5808 5809 5810 5811 5812 5813 5814 5815 5816 5817 5818 5819 5820 5821 5822 5902 5903 5904 5905 5906 5909 5910 5911 5912 5913 5914 5915 5919 5920 5921 5922 5923 6001 6002 6003 6004 6005 6006 6007 6008 6009 6010 6011 6012 6013 6014 6015 6016 6017 6019 6020 6021 6022 6101 6102 6103 6104 6106 6107 6108 6109 6110 6111 6112 6113 6114 6115 6120 6121 6122 6123"/>
+  <hexes terrain="assault" ids="0706 0805 0816 0817 0903 0904 0905 0916 1002 1016 1404 1505 1605 1623 1723 1724 1804 1823 1824 1904 1924 1925 2024 2025 2104 2204 2225 2305 2326 2426 2427 2528 3010 4505 4605 5206 5410 5512 5717 5718 5719"/>
+  <edge at="0711:se" line="river"/>
+  <edge at="0712:n" line="river"/>
+  <edge at="0811:n" line="river"/>
+  <edge at="0913:ne" line="river"/>
+  <edge at="0913:se" line="river"/>
+  <edge at="0914:ne" line="river"/>
+  <edge at="0914:se" line="river"/>
+  <edge at="1013:se" line="river"/>
+  <edge at="1014:n" line="river"/>
+  <edge at="1015:se" line="river"/>
+  <edge at="1113:se" line="river"/>
+  <edge at="1114:n" line="river"/>
+  <edge at="1115:se" line="river"/>
+  <edge at="1116:n" line="river"/>
+  <edge at="1116:ne" line="river"/>
+  <edge at="1116:se" line="river"/>
+  <edge at="1117:ne" line="river"/>
+  <edge at="1117:se" line="river"/>
+  <edge at="1205:se" line="river"/>
+  <edge at="1206:ne" line="river"/>
+  <edge at="1212:se" line="river"/>
+  <edge at="1213:n" line="river"/>
+  <edge at="1213:se" line="river"/>
+  <edge at="1214:ne" line="river"/>
+  <edge at="1214:se" line="river"/>
+  <edge at="1215:n" line="river"/>
+  <edge at="1217:n" line="river"/>
+  <edge at="1217:ne" line="river"/>
+  <edge at="1220:se" line="river"/>
+  <edge at="1221:n" line="river"/>
+  <edge at="1305:se" line="river"/>
+  <edge at="1306:n" line="river"/>
+  <edge at="1314:n" line="river"/>
+  <edge at="1316:se" line="river"/>
+  <edge at="1318:n" line="river"/>
+  <edge at="1320:se" line="river"/>
+  <edge at="1321:n" line="river"/>
+  <edge at="1415:se" line="river"/>
+  <edge at="1416:n" line="river"/>
+  <edge at="1420:n" line="river"/>
+  <edge at="1507:ne" line="river"/>
+  <edge at="1507:se" line="river"/>
+  <edge at="1508:ne" line="river"/>
+  <edge at="1509:n" line="river"/>
+  <edge at="1516:n" line="river"/>
+  <edge at="1516:ne" line="river"/>
+  <edge at="1516:se" line="river"/>
+  <edge at="1517:ne" line="river"/>
+  <edge at="1616:se" line="river"/>
+  <edge at="1617:n" line="river"/>
+  <edge at="1617:ne" line="river"/>
+  <edge at="1617:se" line="river"/>
+  <edge at="1712:se" line="river"/>
+  <edge at="1713:n" line="river"/>
+  <edge at="1718:n" line="river"/>
+  <edge at="1718:ne" line="river"/>
+  <edge at="1722:se" line="river"/>
+  <edge at="1812:n" line="river"/>
+  <edge at="1812:ne" line="river"/>
+  <edge at="1818:n" line="river"/>
+  <edge at="1818:ne" line="river"/>
+  <edge at="1818:se" line="river"/>
+  <edge at="1819:ne" line="river"/>
+  <edge at="1819:se" line="river"/>
+  <edge at="1820:ne" line="river"/>
+  <edge at="1820:se" line="river"/>
+  <edge at="1821:ne" line="river"/>
+  <edge at="1821:se" line="river"/>
+  <edge at="1822:n" line="river"/>
+  <edge at="1912:se" line="river"/>
+  <edge at="1913:n" line="river"/>
+  <edge at="1920:se" line="river"/>
+  <edge at="1921:ne" line="river"/>
+  <edge at="1921:se" line="river"/>
+  <edge at="1922:n" line="river"/>
+  <edge at="1923:se" line="river"/>
+  <edge at="2005:se" line="river"/>
+  <edge at="2006:ne" line="river"/>
+  <edge at="2006:se" line="river"/>
+  <edge at="2007:ne" line="river"/>
+  <edge at="2007:se" line="river"/>
+  <edge at="2008:ne" line="river"/>
+  <edge at="2019:se" line="river"/>
+  <edge at="2020:n" line="river"/>
+  <edge at="2020:se" line="river"/>
+  <edge at="2021:n" line="river"/>
+  <edge at="2022:se" line="river"/>
+  <edge at="2023:n" line="river"/>
+  <edge at="2106:n" line="river"/>
+  <edge at="2109:n" line="river"/>
+  <edge at="2109:ne" line="river"/>
+  <edge at="2109:se" line="river"/>
+  <edge at="2110:ne" line="river"/>
+  <edge at="2112:se" line="river"/>
+  <edge at="2113:ne" line="river"/>
+  <edge at="2120:n" line="river"/>
+  <edge at="2120:se" line="river"/>
+  <edge at="2121:n" line="river"/>
+  <edge at="2122:se" line="river"/>
+  <edge at="2123:n" line="river"/>
+  <edge at="2124:se" line="river"/>
+  <edge at="2210:n" line="river"/>
+  <edge at="2210:ne" line="river"/>
+  <edge at="2210:se" line="river"/>
+  <edge at="2211:ne" line="river"/>
+  <edge at="2211:se" line="river"/>
+  <edge at="2212:n" line="river"/>
+  <edge at="2213:n" line="river"/>
+  <edge at="2213:ne" line="river"/>
+  <edge at="2213:se" line="river"/>
+  <edge at="2214:ne" line="river"/>
+  <edge at="2214:se" line="river"/>
+  <edge at="2215:ne" line="river"/>
+  <edge at="2215:se" line="river"/>
+  <edge at="2216:ne" line="river"/>
+  <edge at="2221:se" line="river"/>
+  <edge at="2222:n" line="river"/>
+  <edge at="2223:se" line="river"/>
+  <edge at="2224:n" line="river"/>
+  <edge at="2320:se" line="river"/>
+  <edge at="2321:ne" line="river"/>
+  <edge at="2321:se" line="river"/>
+  <edge at="2322:n" line="river"/>
+  <edge at="2323:se" line="river"/>
+  <edge at="2324:n" line="river"/>
+  <edge at="2419:se" line="river"/>
+  <edge at="2420:n" line="river"/>
+  <edge at="2422:se" line="river"/>
+  <edge at="2423:n" line="river"/>
+  <edge at="2425:se" line="river"/>
+  <edge at="2514:se" line="river"/>
+  <edge at="2515:ne" line="river"/>
+  <edge at="2515:se" line="river"/>
+  <edge at="2516:ne" line="river"/>
+  <edge at="2516:se" line="river"/>
+  <edge at="2517:ne" line="river"/>
+  <edge at="2520:n" line="river"/>
+  <edge at="2520:ne" line="river"/>
+  <edge at="2522:se" line="river"/>
+  <edge at="2523:n" line="river"/>
+  <edge at="2523:ne" line="river"/>
+  <edge at="2525:se" line="river"/>
+  <edge at="2526:n" line="river"/>
+  <edge at="2610:n" line="river"/>
+  <edge at="2610:ne" line="river"/>
+  <edge at="2612:se" line="river"/>
+  <edge at="2613:ne" line="river"/>
+  <edge at="2613:se" line="river"/>
+  <edge at="2614:n" line="river"/>
+  <edge at="2615:n" line="river"/>
+  <edge at="2615:ne" line="river"/>
+  <edge at="2617:n" line="river"/>
+  <edge at="2617:ne" line="river"/>
+  <edge at="2617:se" line="river"/>
+  <edge at="2624:se" line="river"/>
+  <edge at="2625:n" line="river"/>
+  <edge at="2711:n" line="river"/>
+  <edge at="2713:n" line="river"/>
+  <edge at="2713:ne" line="river"/>
+  <edge at="2716:n" line="river"/>
+  <edge at="2716:ne" line="river"/>
+  <edge at="2724:se" line="river"/>
+  <edge at="2725:n" line="river"/>
+  <edge at="2813:n" line="river"/>
+  <edge at="2813:ne" line="river"/>
+  <edge at="2816:n" line="river"/>
+  <edge at="2816:ne" line="river"/>
+  <edge at="2821:se" line="river"/>
+  <edge at="2822:ne" line="river"/>
+  <edge at="2822:se" line="river"/>
+  <edge at="2823:ne" line="river"/>
+  <edge at="2823:se" line="river"/>
+  <edge at="2824:n" line="river"/>
+  <edge at="2826:se" line="river"/>
+  <edge at="2827:ne" line="river"/>
+  <edge at="2827:se" line="river"/>
+  <edge at="2828:ne" line="river"/>
+  <edge at="2914:n" line="river"/>
+  <edge at="2914:ne" line="river"/>
+  <edge at="2917:n" line="river"/>
+  <edge at="2917:ne" line="river"/>
+  <edge at="2925:se" line="river"/>
+  <edge at="2926:ne" line="river"/>
+  <edge at="2926:se" line="river"/>
+  <edge at="2927:n" line="river"/>
+  <edge at="2929:ne" line="river"/>
+  <edge at="3013:se" line="river"/>
+  <edge at="3014:n" line="river"/>
+  <edge at="3024:se" line="river"/>
+  <edge at="3025:n" line="river"/>
+  <edge at="3028:se" line="river"/>
+  <edge at="3029:n" line="river"/>
+  <edge at="3105:se" line="river"/>
+  <edge at="3113:se" line="river"/>
+  <edge at="3114:n" line="river"/>
+  <edge at="3122:n" line="river"/>
+  <edge at="3124:se" line="river"/>
+  <edge at="3125:n" line="river"/>
+  <edge at="3128:se" line="river"/>
+  <edge at="3129:n" line="river"/>
+  <edge at="3129:ne" line="river"/>
+  <edge at="3130:se" line="river"/>
+  <edge at="3131:ne" line="river"/>
+  <edge at="3133:ne" line="river"/>
+  <edge at="3214:se" line="river"/>
+  <edge at="3215:ne" line="river"/>
+  <edge at="3215:se" line="river"/>
+  <edge at="3217:se" line="river"/>
+  <edge at="3218:ne" line="river"/>
+  <edge at="3218:se" line="river"/>
+  <edge at="3219:ne" line="river"/>
+  <edge at="3221:se" line="river"/>
+  <edge at="3222:n" line="river"/>
+  <edge at="3223:se" line="river"/>
+  <edge at="3224:n" line="river"/>
+  <edge at="3228:n" line="river"/>
+  <edge at="3228:ne" line="river"/>
+  <edge at="3317:se" line="river"/>
+  <edge at="3318:n" line="river"/>
+  <edge at="3322:n" line="river"/>
+  <edge at="3322:ne" line="river"/>
+  <edge at="3322:se" line="river"/>
+  <edge at="3323:ne" line="river"/>
+  <edge at="3323:se" line="river"/>
+  <edge at="3324:n" line="river"/>
+  <edge at="3329:n" line="river"/>
+  <edge at="3329:ne" line="river"/>
+  <edge at="3417:n" line="river"/>
+  <edge at="3429:n" line="river"/>
+  <edge at="3430:se" line="river"/>
+  <edge at="3431:ne" line="river"/>
+  <edge at="3431:se" line="river"/>
+  <edge at="3432:ne" line="river"/>
+  <edge at="3515:ne" line="river"/>
+  <edge at="3515:se" line="river"/>
+  <edge at="3516:ne" line="river"/>
+  <edge at="3516:se" line="river"/>
+  <edge at="3517:n" line="river"/>
+  <edge at="3616:n" line="river"/>
+  <edge at="3616:ne" line="river"/>
+  <edge at="3616:se" line="river"/>
+  <edge at="3617:ne" line="river"/>
+  <edge at="3617:se" line="river"/>
+  <edge at="3618:ne" line="river"/>
+  <edge at="3618:se" line="river"/>
+  <edge at="3619:ne" line="river"/>
+  <edge at="3619:se" line="river"/>
+  <edge at="3620:ne" line="river"/>
+  <edge at="3624:ne" line="river"/>
+  <edge at="3624:se" line="river"/>
+  <edge at="3625:se" line="river"/>
+  <edge at="3626:ne" line="river"/>
+  <edge at="3626:se" line="river"/>
+  <edge at="3627:ne" line="river"/>
+  <edge at="3627:se" line="river"/>
+  <edge at="3628:ne" line="river"/>
+  <edge at="3721:n" line="river"/>
+  <edge at="3721:ne" line="river"/>
+  <edge at="3729:ne" line="river"/>
+  <edge at="3729:se" line="river"/>
+  <edge at="3730:ne" line="river"/>
+  <edge at="3814:ne" line="river"/>
+  <edge at="3830:n" line="river"/>
+  <edge at="3830:ne" line="river"/>
+  <edge at="3905:n" line="river"/>
+  <edge at="3915:n" line="river"/>
+  <edge at="3915:ne" line="river"/>
+  <edge at="3926:n" line="river"/>
+  <edge at="3926:ne" line="river"/>
+  <edge at="3926:se" line="river"/>
+  <edge at="3927:ne" line="river"/>
+  <edge at="3931:n" line="river"/>
+  <edge at="3931:ne" line="river"/>
+  <edge at="4015:n" line="river"/>
+  <edge at="4015:ne" line="river"/>
+  <edge at="4015:se" line="river"/>
+  <edge at="4016:ne" line="river"/>
+  <edge at="4027:n" line="river"/>
+  <edge at="4027:ne" line="river"/>
+  <edge at="4027:se" line="river"/>
+  <edge at="4028:ne" line="river"/>
+  <edge at="4028:se" line="river"/>
+  <edge at="4029:ne" line="river"/>
+  <edge at="4031:n" line="river"/>
+  <edge at="4109:se" line="river"/>
+  <edge at="4110:n" line="river"/>
+  <edge at="4117:n" line="river"/>
+  <edge at="4117:ne" line="river"/>
+  <edge at="4221:n" line="river"/>
+  <edge at="4221:ne" line="river"/>
+  <edge at="4309:ne" line="river"/>
+  <edge at="4321:se" line="river"/>
+  <edge at="4322:n" line="river"/>
+  <edge at="4409:n" line="river"/>
+  <edge at="4409:ne" line="river"/>
+  <edge at="4409:se" line="river"/>
+  <edge at="4413:se" line="river"/>
+  <edge at="4414:ne" line="river"/>
+  <edge at="4414:se" line="river"/>
+  <edge at="4415:ne" line="river"/>
+  <edge at="4415:se" line="river"/>
+  <edge at="4416:n" line="river"/>
+  <edge at="4420:se" line="river"/>
+  <edge at="4421:n" line="river"/>
+  <edge at="4426:n" line="river"/>
+  <edge at="4426:ne" line="river"/>
+  <edge at="4431:se" line="river"/>
+  <edge at="4513:n" line="river"/>
+  <edge at="4513:ne" line="river"/>
+  <edge at="4514:n" line="river"/>
+  <edge at="4514:ne" line="river"/>
+  <edge at="4519:se" line="river"/>
+  <edge at="4520:ne" line="river"/>
+  <edge at="4520:se" line="river"/>
+  <edge at="4521:n" line="river"/>
+  <edge at="4527:n" line="river"/>
+  <edge at="4527:ne" line="river"/>
+  <edge at="4531:se" line="river"/>
+  <edge at="4532:n" line="river"/>
+  <edge at="4604:se" line="river"/>
+  <edge at="4612:se" line="river"/>
+  <edge at="4613:n" line="river"/>
+  <edge at="4613:ne" line="river"/>
+  <edge at="4614:ne" line="river"/>
+  <edge at="4615:ne" line="river"/>
+  <edge at="4615:se" line="river"/>
+  <edge at="4616:ne" line="river"/>
+  <edge at="4616:se" line="river"/>
+  <edge at="4617:ne" line="river"/>
+  <edge at="4617:se" line="river"/>
+  <edge at="4618:ne" line="river"/>
+  <edge at="4618:se" line="river"/>
+  <edge at="4619:n" line="river"/>
+  <edge at="4623:se" line="river"/>
+  <edge at="4624:ne" line="river"/>
+  <edge at="4627:n" line="river"/>
+  <edge at="4627:ne" line="river"/>
+  <edge at="4631:n" line="river"/>
+  <edge at="4725:n" line="river"/>
+  <edge at="4725:ne" line="river"/>
+  <edge at="4728:n" line="river"/>
+  <edge at="4728:ne" line="river"/>
+  <edge at="4804:ne" line="river"/>
+  <edge at="4804:se" line="river"/>
+  <edge at="4805:ne" line="river"/>
+  <edge at="4809:se" line="river"/>
+  <edge at="4810:ne" line="river"/>
+  <edge at="4825:n" line="river"/>
+  <edge at="4825:ne" line="river"/>
+  <edge at="4909:se" line="river"/>
+  <edge at="4910:n" line="river"/>
+  <edge at="4911:n" line="river"/>
+  <edge at="4926:n" line="river"/>
+  <edge at="5009:n" line="river"/>
+  <edge at="5009:ne" line="river"/>
+  <edge at="5016:se" line="river"/>
+  <edge at="5021:se" line="river"/>
+  <edge at="5022:ne" line="river"/>
+  <edge at="5116:se" line="river"/>
+  <edge at="5117:n" line="river"/>
+  <edge at="5123:n" line="river"/>
+  <edge at="5123:ne" line="river"/>
+  <edge at="5123:se" line="river"/>
+  <edge at="5124:ne" line="river"/>
+  <edge at="5216:n" line="river"/>
+  <edge at="5224:n" line="river"/>
+  <edge at="5313:ne" line="river"/>
+  <edge at="5320:n" line="river"/>
+  <edge at="5320:ne" line="river"/>
+  <edge at="5420:n" line="river"/>
+  <edge at="5420:ne" line="river"/>
+  <edge at="5521:n" line="river"/>
+  <edge at="5521:ne" line="river"/>
+  <edge at="5521:se" line="river"/>
+  <edge at="5522:ne" line="river"/>
+  <edge at="5620:ne" line="river"/>
+  <edge at="5620:se" line="river"/>
+  <edge at="5621:n" line="river"/>
+  <edge at="5622:n" line="river"/>
+  <edge at="5807:n" line="river"/>
+  <edge at="1212:n" line="mountain-side"/>
+  <edge at="1212:ne" line="mountain-side"/>
+  <edge at="1318:se" line="mountain-side"/>
+  <edge at="1319:n" line="mountain-side"/>
+  <edge at="1319:ne" line="mountain-side"/>
+  <edge at="1807:se" line="mountain-side"/>
+  <edge at="1808:n" line="mountain-side"/>
+  <edge at="2316:se" line="mountain-side"/>
+  <edge at="2521:ne" line="mountain-side"/>
+  <edge at="2618:se" line="mountain-side"/>
+  <edge at="2619:ne" line="mountain-side"/>
+  <edge at="2619:se" line="mountain-side"/>
+  <edge at="2620:ne" line="mountain-side"/>
+  <edge at="2714:se" line="mountain-side"/>
+  <edge at="2719:se" line="mountain-side"/>
+  <edge at="2720:n" line="mountain-side"/>
+  <edge at="2720:ne" line="mountain-side"/>
+  <edge at="2720:se" line="mountain-side"/>
+  <edge at="2722:se" line="mountain-side"/>
+  <edge at="2812:ne" line="mountain-side"/>
+  <edge at="2814:se" line="mountain-side"/>
+  <edge at="2815:ne" line="mountain-side"/>
+  <edge at="2916:n" line="mountain-side"/>
+  <edge at="2918:se" line="mountain-side"/>
+  <edge at="2919:n" line="mountain-side"/>
+  <edge at="2919:ne" line="mountain-side"/>
+  <edge at="3226:se" line="mountain-side"/>
+  <edge at="3325:se" line="mountain-side"/>
+  <edge at="3424:ne" line="mountain-side"/>
+  <edge at="3424:se" line="mountain-side"/>
+  <edge at="3425:n" line="mountain-side"/>
+  <edge at="3425:ne" line="mountain-side"/>
+  <edge at="3425:se" line="mountain-side"/>
+  <edge at="3426:n" line="mountain-side"/>
+  <edge at="3426:ne" line="mountain-side"/>
+  <edge at="3426:se" line="mountain-side"/>
+  <edge at="3525:n" line="mountain-side"/>
+  <edge at="3525:ne" line="mountain-side"/>
+  <edge at="3525:se" line="mountain-side"/>
+  <edge at="3526:n" line="mountain-side"/>
+  <edge at="3526:ne" line="mountain-side"/>
+  <edge at="3526:se" line="mountain-side"/>
+  <edge at="3527:n" line="mountain-side"/>
+  <edge at="3710:se" line="mountain-side"/>
+  <edge at="3924:se" line="mountain-side"/>
+  <edge at="3925:ne" line="mountain-side"/>
+  <edge at="3925:se" line="mountain-side"/>
+  <edge at="4020:se" line="mountain-side"/>
+  <edge at="4023:se" line="mountain-side"/>
+  <edge at="4024:n" line="mountain-side"/>
+  <edge at="4024:ne" line="mountain-side"/>
+  <edge at="4024:se" line="mountain-side"/>
+  <edge at="4025:n" line="mountain-side"/>
+  <edge at="4025:ne" line="mountain-side"/>
+  <edge at="4118:se" line="mountain-side"/>
+  <edge at="4119:ne" line="mountain-side"/>
+  <edge at="4119:se" line="mountain-side"/>
+  <edge at="4124:n" line="mountain-side"/>
+  <edge at="4208:n" line="mountain-side"/>
+  <edge at="4208:ne" line="mountain-side"/>
+  <edge at="4208:se" line="mountain-side"/>
+  <edge at="4223:ne" line="mountain-side"/>
+  <edge at="4226:se" line="mountain-side"/>
+  <edge at="4320:ne" line="mountain-side"/>
+  <edge at="4320:se" line="mountain-side"/>
+  <edge at="4321:n" line="mountain-side"/>
+  <edge at="4518:ne" line="mountain-side"/>
+  <edge at="4518:se" line="mountain-side"/>
+  <edge at="4914:se" line="mountain-side"/>
+  <edge at="4915:n" line="mountain-side"/>
+  <edge at="5321:se" line="mountain-side"/>
+  <edge at="5322:ne" line="mountain-side"/>
+  <edge at="5322:se" line="mountain-side"/>
+  <edge at="4614:se" line="river"/>
+  <edge at="4613:se" line="river"/>
+  <edge at="5109:s" line="river"/>
+  <edge at="5110:ne" line="river"/>
+  <edge at="4803:se" line="river"/>
+  <edge at="4803:ne" line="river"/>
+  <edge at="5215:se" line="river"/>
+  <edge at="3625:ne" line="river"/>
+  <edge at="4827:s" line="river"/>
+  <edge at="4129:s" line="river"/>
+  <edge at="4031:ne" line="river"/>
+  <edge at="3432:se" line="river"/>
+  <edge at="3433:ne" line="river"/>
+  <edge at="3130:ne" line="river"/>
+  <edge at="3129:se" line="river"/>
+  <edge at="2828:se" line="river"/>
+  <edge at="2928:s" line="river"/>
+  <edge at="3122:ne" line="river"/>
+  <edge at="3514:se" line="river"/>
+  <edge at="3416:se" line="river"/>
+  <edge at="2105:se" line="river"/>
+  <edge at="1506:se" line="river"/>
+  <edge at="0915:ne" line="river"/>
+  <edge at="0915:se" line="river"/>
+  <edge at="0810:se" line="river"/>
+  <edge at="1612:ne" line="river"/>
+  <!-- roads traced by eye on the tilted photo 2026-09-26; DRAFT, see example maps/Olympic/reading-notes.md; the last 14 links close one-hex seam gaps -->
+  <link kind="road" line="road" hexes="3315 3415 3515 3615 3715 3814 3914" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3616 3516 3416 3316" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3616 3517 3417 3317" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3616 3615" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3717 3817 3917 4017 4117 4217" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3717 3718 3719 3720" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3817 3918 4018 4119" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1003 1104 1203 1303" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1003 1004 1005 1006" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1006 1106 1205 1305 1405" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="0807 0907 1007 1108" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="1706 1806 1906 2006 2106 2206 2306 2406" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1906 1907 1908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2406 2506 2606 2706 2806 2805 2905 3005 3106 3206 3306" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2806 2906 3006 3107 3207" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3603 3704 3804 3805 3905" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="3905 3906 3907 4007" ends="place place"/>
+  <link kind="road" line="road" hexes="3905 4005 4105 4104 4204" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4007 4107 4207" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4007 4008" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4204 4304 4404 4504" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="4307 4407 4507 4607 4707 4807" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4807 4907 5007 5107 5207" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4807 4806 4805 4905 5004 5104 5103" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1311 1211 1111 1011 0911 0811 0711 0611 0511" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="0913 0812 0712 0612 0512" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="0913 0914 1014" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="0912 1012 1112 1212 1312 1412" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1509 1609 1710 1810 1910 2010 2110 2210 2310" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1609 1610 1711 1811 1912 2012 2113 2114 2214" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="1911 2011 2111 2211 2311 2411" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2509 2609 2610 2710" ends="place place"/>
+  <link kind="road" line="road" hexes="2710 2711 2811 2912 3012 3013 3114" ends="place place"/>
+  <link kind="road" line="road" hexes="2811 2812 2813 2914 3014" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="2710 2610 2511 2411 2311" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3608 3709 3809 3910 3911 3811 3711 3610 3609" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3809 3909 3908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3914 4013 4114 4213" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4109 4110" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="4213 4313 4413 4513 4612" ends="place place"/>
+  <link kind="road" line="road" hexes="4608 4609 4610 4611 4612" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4612 4712 4812 4912 5012 5112 5212" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4708 4808 4909 5009 5109" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="5009 5010 5011 5012" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1116 1216 1316 1416" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="0914 1014 1115 1116" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="1116 1117 1118 1119 1120 1220" ends="place place"/>
+  <link kind="road" line="road" hexes="1118 1018 0919 0818" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="1315 1415 1516 1616" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="1616 1716 1816 1916 2016" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1616 1717 1817 1918 2017 2016" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1817 1818 1919 1920" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2016 2116 2115 2214" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="2314 2414 2515 2615 2716 2816 2917 3017 3117 3216" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2515 2516 2517 2518 2519 2419" ends="place place"/>
+  <link kind="road" line="road" hexes="2419 2520 2620 2720 2820" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3114 3214 3215 3216 3317" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4716 4816 4917 5016 5116 5215" ends="place place"/>
+  <link kind="road" line="road" hexes="4613 4714 4715 4716" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4414 4515 4615 4716" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4917 5017 5117 5217" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5215 5316 5416 5517" ends="place place"/>
+  <link kind="road" line="road" hexes="5517 5518 5519 5520 5620" ends="place place"/>
+  <link kind="road" line="road" hexes="5216 5217 5218 5219 5320" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1320 1420 1520 1620 1721 1821 1922" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1822 1922 2022 2123 2223 2324 2424" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="1920 1921 2021 2122 2222 2322" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2920 2921 3021 3121 3221" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3224 3125 3025 2926" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3221 3222 3223 3224" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3320 3420 3521 3621 3721 3821 3922 4022 4122 4222" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3720 3721 3722 3723 3724 3725 3726" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3822 3823 3824 3825 3826" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3320 3321 3322 3323" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4221 4321 4421 4521" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="4521 4522 4622 4623 4724 4824 4825 4926" ends="place place"/>
+  <link kind="road" line="road" hexes="4926 4925 5024 5124 5223" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="5021 5121 5221" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="4521 4620 4720" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="5223 5323 5423 5523" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="5523 5522 5521 5620" ends="place place"/>
+  <link kind="road" line="road" hexes="5220 5320 5420 5521" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2827 2928 3028 3128" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="2928 2927 2926" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="2928 2929 3029 3129 3229 3329" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3532 3632 3732 3831 3931 4031 4030 4130" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="3729 3829 3930 4029 4130" ends="unexplained place"/>
+  <link kind="road" line="road" hexes="3626 3627 3628 3629 3630 3631" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3329 3429 3529 3628" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="3532 3531 3530 3430 3330" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="4130 4129 4228" ends="place place"/>
+  <link kind="road" line="road" hexes="4228 4227 4327 4427 4527 4627 4727" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="4727 4728 4729 4730 4731 4732" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="4228 4329 4429 4430 4431" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="3717 3616" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4207 4307" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1311 1312" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0511 0512" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2310 2311" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4109 4008" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4608 4607" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1315 1316" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4414 4413" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1320 1220" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2920 2820" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3826 3726" ends="junction junction"/>
+  <link kind="road" line="road" hexes="5221 5220" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3329 3330" ends="junction junction"/>
+  <hex id="0715" name="Kitano"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="0815"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0818" name="Miyanoura"><glyph symbol="town" color="ink"/></hex>
+  <hex id="0906"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0907"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0911"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0913" name="Kanoya"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="0915"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0918" name="Tokashi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1003" name="Makurazaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1004"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1005"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1015"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1018"><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1108" name="Kure"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1116" name="Shibushi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="CL"/></hex>
+  <hex id="1117"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1120"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1220" name="Obi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1305"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1405"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1509" name="Kagoshima"><glyph symbol="city" color="ink"/></hex>
+  <hex id="1522"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1606"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1608"><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="1615"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
+  <hex id="1616" name="Miyakonojo"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="1622"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1705"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1706" name="Kushikino"><glyph symbol="town" color="ink"/></hex>
+  <hex id="1714"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
+  <hex id="1715"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
+  <hex id="1722"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1805"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1812"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
+  <hex id="1814"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
+  <hex id="1815"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
+  <hex id="1822" name="Miyazaki"><glyph symbol="town" color="ink"/></hex>
+  <hex id="1916"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
+  <hex id="1917"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
+  <hex id="1923"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2006" name="Sendai"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2016"><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2023"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2105"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2115"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2116" name="Kobayashi"><glyph symbol="town" color="ink"/></hex>
+  <hex id="2124"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2205"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2214" name="Yokomachi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="2224"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2306"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2325" name="Tsuno"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2405"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2419" name="Murasho"><glyph symbol="town" color="ink"/></hex>
+  <hex id="2509" name="Izumi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2515" name="Hitoyoshi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2526"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2527"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2627"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2710" name="Marushima"><glyph symbol="town" color="ink"/></hex>
+  <hex id="2728"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="2811" name="Ashiki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2928" name="Nobeoka"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="3012" name="Hinagu"><glyph symbol="town" color="ink"/></hex>
+  <hex id="3114" name="Yatsushiro"><glyph symbol="town" color="ink"/></hex>
+  <hex id="3320" name="Hama-Machi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="3616" name="Kumamoto"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="3905" name="Nagasaki"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="4007" name="Isahaya"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4130" name="Oita"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4213" name="Omuta"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="4228" name="Beppu"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="4414"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="4521" name="Hida"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4612" name="Saga"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="4705" name="Sonogi"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4716" name="Kurume"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4807" name="Imari"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="4926" name="Nakatsu"><glyph symbol="town" color="ink"/></hex>
+  <hex id="5109" name="Karatsu"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5114"><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="5115" name="Fukuoka"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5215" name="Fukuoka"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="5311"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5312"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5411"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5412"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5423" name="Kokura"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5517" name="Tsuyazaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5523" name="Kokura"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5617"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5618"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5619"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="5620" name="Yawata"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5621" name="Yawata"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5624"><glyph symbol="text" slot="s" color="red" text="R"/></hex>
+  <hex id="3717"><glyph symbol="city-major"/></hex>
+  <hex id="1408"><glyph symbol="city-major"/></hex>
+  <hex id="1508"><glyph symbol="city-major"/></hex>
+  <label text="Kitano" at="0715" slot="n" size="10" color="ink"/>
+  <label text="Miyanoura" at="0818" slot="n" size="10" color="ink"/>
+  <label text="Kanoya" at="0913" slot="n" size="10" color="ink"/>
+  <label text="Tokashi" at="0918" slot="n" size="10" color="ink"/>
+  <label text="Makurazaki" at="1003" slot="n" size="10" color="ink"/>
+  <label text="Kure" at="1108" slot="n" size="10" color="ink"/>
+  <label text="Shibushi" at="1116" slot="n" size="10" color="ink"/>
+  <label text="Obi" at="1220" slot="n" size="10" color="ink"/>
+  <label text="KAGOSHIMA" at="1509" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="Miyakonojo" at="1616" slot="n" size="10" color="ink"/>
+  <label text="Kushikino" at="1706" slot="n" size="10" color="ink"/>
+  <label text="Miyazaki" at="1822" slot="n" size="10" color="ink"/>
+  <label text="Sendai" at="2006" slot="n" size="10" color="ink"/>
+  <label text="Kobayashi" at="2116" slot="n" size="10" color="ink"/>
+  <label text="Yokomachi" at="2214" slot="n" size="10" color="ink"/>
+  <label text="Tsuno" at="2325" slot="n" size="10" color="ink"/>
+  <label text="Murasho" at="2419" slot="n" size="10" color="ink"/>
+  <label text="Izumi" at="2509" slot="n" size="10" color="ink"/>
+  <label text="Hitoyoshi" at="2515" slot="n" size="10" color="ink"/>
+  <label text="Marushima" at="2710" slot="n" size="10" color="ink"/>
+  <label text="Ashiki" at="2811" slot="n" size="10" color="ink"/>
+  <label text="Nobeoka" at="2928" slot="n" size="10" color="ink"/>
+  <label text="Hinagu" at="3012" slot="n" size="10" color="ink"/>
+  <label text="Yatsushiro" at="3114" slot="n" size="10" color="ink"/>
+  <label text="Hama-Machi" at="3320" slot="n" size="10" color="ink"/>
+  <label text="KUMAMOTO" at="3616" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="NAGASAKI" at="3905" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="Isahaya" at="4007" slot="n" size="10" color="ink"/>
+  <label text="Oita" at="4130" slot="n" size="10" color="ink"/>
+  <label text="Omuta" at="4213" slot="n" size="10" color="ink"/>
+  <label text="Beppu" at="4228" slot="n" size="10" color="ink"/>
+  <label text="Hida" at="4521" slot="n" size="10" color="ink"/>
+  <label text="Saga" at="4612" slot="n" size="10" color="ink"/>
+  <label text="Sonogi" at="4705" slot="n" size="10" color="ink"/>
+  <label text="Kurume" at="4716" slot="n" size="10" color="ink"/>
+  <label text="Imari" at="4807" slot="n" size="10" color="ink"/>
+  <label text="Nakatsu" at="4926" slot="n" size="10" color="ink"/>
+  <label text="Karatsu" at="5109" slot="n" size="10" color="ink"/>
+  <label text="FUKUOKA" at="5115" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="KOKURA" at="5423" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="Tsuyazaki" at="5517" slot="n" size="10" color="ink"/>
+  <label text="YAWATA" at="5620" slot="n" size="13" color="ink" weight="bold"/>
+</sheet>

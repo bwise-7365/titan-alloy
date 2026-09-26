@@ -37,7 +37,11 @@ TEST(SheetDocTest, TrcParsesWithExpectedShape)
   EXPECT_FALSE(doc.hexesBulk.empty());
   EXPECT_FALSE(doc.hexes.empty());  // Moscow, cities and a few other named hexes are per-hex elements
   EXPECT_FALSE(doc.edges.empty());
-  EXPECT_EQ(39u, doc.links.size());  // rail chains written by map_graphics/xml/tools/tidy_networks.py
+  // rail and centre-to-centre river chains (read by eye 2026-09-25, then edited by hand: no fixed count)
+  ASSERT_FALSE(doc.links.empty());
+  for (const HexXml::SheetLinkDoc& l : doc.links) {
+    EXPECT_TRUE("rail" == l.kind || "river" == l.kind) << l.kind;
+  }
   EXPECT_TRUE(doc.regions.empty());
   ASSERT_EQ(12u, doc.panels.size());
 

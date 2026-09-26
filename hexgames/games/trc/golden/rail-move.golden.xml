@@ -5,39 +5,37 @@
     <side id="axis">
       <register track="turn-track" value="1"/>
       <flag name="rail-moves" value="2"/>
-      <flag name="rail-touched" value="F31 G30 H27 H28 H29 H30"/>
+      <flag name="rail-touched" value="F31 G29 G30 H29 I29"/>
       <flag name="weather" value="clear"/>
       <flag name="weather-drm" value="0"/>
     </side>
   </sides>
   <units>
     <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="F31" face="front" status="railed" moved="false"/>
-    <unit id="g-ge-2-infantry" counter="g-ge-2-infantry" type="infantry" owner="axis" hex="H29" face="front" status="railed" moved="false"/>
-    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="H27" face="front" moved="false"/>
+    <unit id="g-ge-2-infantry" counter="g-ge-2-infantry" type="infantry" owner="axis" hex="G29" face="front" status="railed" moved="false"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="I29" face="front" moved="false"/>
   </units>
   <control>
     <hex id="E31" side="axis"/>
-    <hex id="H26" side="axis"/>
-    <hex id="I25" side="axis"/>
+    <hex id="H29" side="axis"/>
+    <link network="rail" hexes="E31 F31" side="axis"/>
     <link network="rail" hexes="F31 G30" side="axis"/>
-    <link network="rail" hexes="G30 H30" side="axis"/>
-    <link network="rail" hexes="H30 H29" side="axis"/>
-    <link network="rail" hexes="H29 H28" side="axis"/>
-    <link network="rail" hexes="H28 H27" side="axis"/>
-    <link network="rail" hexes="H27 H26" side="axis"/>
+    <link network="rail" hexes="G30 G29" side="axis"/>
+    <link network="rail" hexes="G29 H29" side="axis"/>
+    <link network="rail" hexes="H29 I29" side="axis"/>
+    <link network="rail" hexes="I29 J29" side="axis"/>
   </control>
   <log>
-    <move n="1" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="H26 H27 H28 H29 H30 G30 F31" mode="rail-move">
-      <event kind="moved" unit="g-ge-1-infantry" hex="F31" value="H26 H27 H28 H29 H30 G30 F31"/>
+    <move n="1" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-1-infantry" path="J29 I29 H29 G29 G30 F31" mode="rail-move">
+      <event kind="moved" unit="g-ge-1-infantry" hex="F31" value="J29 I29 H29 G29 G30 F31"/>
+      <event kind="control" hex="H29" side="axis"/>
       <event kind="control" hex="E31" side="axis"/>
-      <event kind="control" hex="H26" side="axis"/>
-      <event kind="control" hex="I25" side="axis"/>
     </move>
-    <move n="2" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-2-infantry" path="H27 H28 H29" mode="rail-move">
-      <event kind="moved" unit="g-ge-2-infantry" hex="H29" value="H27 H28 H29"/>
+    <move n="2" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="rail-move" units="g-ge-2-infantry" path="I29 H29 G29" mode="rail-move">
+      <event kind="moved" unit="g-ge-2-infantry" hex="G29" value="I29 H29 G29"/>
     </move>
-    <move n="3" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="H26 H27" mode="normal">
-      <event kind="moved" unit="g-ge-41-armour" hex="H27" value="H26 H27"/>
+    <move n="3" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="move" units="g-ge-41-armour" path="J29 I29" mode="normal">
+      <event kind="moved" unit="g-ge-41-armour" hex="I29" value="J29 I29"/>
     </move>
     <move n="4" turn="1" phase="axis-i1-move" side="axis" by="script" cmd="end-phase">
       <event kind="phase" side="axis" value="axis-i1-combat">turn 1</event>

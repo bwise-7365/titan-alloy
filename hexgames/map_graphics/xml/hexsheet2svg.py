@@ -734,7 +734,8 @@ class Renderer:
                  sa=w * 0.15, nsa=-w * 0.15, sb=-h * 0.16, sc=w * 0.23, nsc=-w * 0.23, sd=h * 0.14,
                  se=w * 0.3, nse=-w * 0.3, sf=h * 0.25)
         body = self.MARK_SHAPES[shape] % v
-        return '<g class="%s mark-%s" transform="translate(%.2f,%.2f) rotate(%.1f) scale(%.2f)" style="color:%s">%s</g>' % (
+        # translate to 3 decimals: at 2, the reference's rounding plus a port's own can pass the golden tolerance
+        return '<g class="%s mark-%s" transform="translate(%.3f,%.3f) rotate(%.1f) scale(%.2f)" style="color:%s">%s</g>' % (
             cls, mark.get("id"), x, y, rot, size, color, body)
 
     def layer_hexglyphs(self):

@@ -43,10 +43,12 @@ namespace HexView {
       return scratch(p, spec);
     }
 
+    // Link kinds drawn hand-scratched: roads, railways and centre-to-centre rivers (TRC).
     bool
     scratchedKindP(const std::string& kind)
     {
-      return std::string::npos != kind.find("road") || std::string::npos != kind.find("rail");
+      return std::string::npos != kind.find("road") || std::string::npos != kind.find("rail") ||
+             std::string::npos != kind.find("river");
     }
 
     // chain_path: consecutive hexsides joined into polylines, broken where they do not touch, each

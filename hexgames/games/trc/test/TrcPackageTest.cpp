@@ -30,7 +30,7 @@ TEST(TrcPackageTest, FactsReadOffTheDocuments)
 
   EXPECT_EQ(TrcTest::hex(*definition, "E31"), facts.named("Berlin"));
   EXPECT_EQ(TrcTest::hex(*definition, "R9"), facts.named("MOSCOW"));
-  EXPECT_EQ(TrcTest::hex(*definition, "G23"), facts.named("Königsberg"));
+  EXPECT_EQ(TrcTest::hex(*definition, "H23"), facts.named("Königsberg"));
   EXPECT_TRUE(facts.majorCityP(facts.named("Kiev")));
   EXPECT_FALSE(facts.majorCityP(facts.named("Kursk")));
   EXPECT_TRUE(facts.cityP(facts.named("Kursk")));
@@ -54,18 +54,15 @@ TEST(TrcPackageTest, FactsReadOffTheDocuments)
   EXPECT_FALSE(facts.southEntryP(TrcTest::hex(*definition, "QQ20")));
 }
 
-// The gaps are data, not code: the day the sheet gains country membership, or moves Riga, Helsinki
-// and Sevastopol onto land, this test fails and the rules that read them come to life (24.0
-// Hungary, 19.1, 17.3, the 1945 objectives; sea movement to and from those ports).
+// The gaps are data, not code: the day the sheet gains country membership, this test fails and the
+// rules that read it come to life (24.0 Hungary, 19.1, 17.3, the 1945 objectives). Riga, Helsinki and
+// Sevastopol moved onto land hexes in the 2026-09-25 reading, which closed the "cities on water" gap.
 TEST(TrcPackageTest, DataGapsAreReportedNotHidden)
 {
   const std::shared_ptr<const HexRules::GameDefinition> definition = TrcTest::definition();
   const Trc::TrcFacts facts(*definition);
-  ASSERT_EQ(2u, facts.dataGaps().size());
-  EXPECT_NE(std::string::npos, facts.dataGaps()[0].find("F17 RIGA"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[0].find("C14 HELSINKI"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[0].find("KK23 SEVASTOPOL"));
-  EXPECT_NE(std::string::npos, facts.dataGaps()[1].find("countries"));
+  ASSERT_EQ(1u, facts.dataGaps().size());
+  EXPECT_NE(std::string::npos, facts.dataGaps()[0].find("countries"));
 }
 
 TEST(TrcPackageTest, The1941ScenarioLoadsLegally)

@@ -73,7 +73,9 @@ EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, i
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(suggestButton, &QPushButton::clicked, this, &EditSiteEntry::onSuggestClicked);
 
-    setFixedWidth(420);
+    // Resizable in both directions; 420 is the starting and minimum width.
+    setMinimumWidth(420);
+    resize(420, sizeHint().height());
 }
 
 void EditSiteEntry::onOkClicked() {

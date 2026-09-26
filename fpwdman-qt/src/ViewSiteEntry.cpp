@@ -70,7 +70,9 @@ ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidg
 
     mainLayout->addLayout(buttonLayout);
 
-    setFixedWidth(420);
+    // Resizable in both directions; 420 is the starting and minimum width.
+    setMinimumWidth(420);
+    resize(420, sizeHint().height());
 }
 
 void ViewSiteEntry::keyPressEvent(QKeyEvent* event) {

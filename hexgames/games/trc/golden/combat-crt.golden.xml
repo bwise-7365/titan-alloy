@@ -16,6 +16,9 @@
     <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="X15" face="front" moved="false"/>
     <unit id="r-ru-2-armour" counter="r-ru-2-armour" type="armour" owner="russian" space="russian-pool" face="front" moved="false"/>
   </units>
+  <control>
+    <hex id="W15" side="russian"/>
+  </control>
   <streams>
     <stream tag="combat" draws="1"/>
   </streams>
@@ -53,6 +56,7 @@
       <arg name="answer" value="X15"/>
       <event kind="decision-answered" value="retreat">X15</event>
       <event kind="retreated" unit="r-ru-1-armour" hex="X15" value="W15 X15"/>
+      <event kind="control" hex="W15" side="russian"/>
     </move>
   </log>
 </save>

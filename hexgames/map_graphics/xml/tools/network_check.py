@@ -13,7 +13,8 @@ without an entry is an error, never a silent pass.
 
 TRC and PGG (tasks/08-map-networks.md):
   links  every step joins neighbouring hexes; no link enters a sea or lake hex, except a city hex
-         (a port the sheet classifies as water); no step crosses a blocked hexside
+         (a port the sheet classifies as water) and the end hexes of a river link (a centre-to-centre
+         river runs into its lake or sea); no step crosses a blocked hexside
   road   exactly one piece, reaching every named place (city-major, city-minor, city, capital, town)
   rail   every major city (city-major, capital) on the network; one piece, except further pieces of
          at least 8 hexes that run off a map edge
@@ -385,8 +386,11 @@ def link_problems(sheet, kind, chains):
                 out.append("%s step %s-%s does not join neighbouring hexes" % (kind, a, b))
             elif side in blocked:
                 out.append("%s step %s-%s crosses a blocked hexside" % (kind, a, b))
+        # a centre-to-centre river runs into the lake or sea hex it drains to (and out of the one it
+        # drains), so its first and last hexes may be water; nothing else may be
+        ends = (hexes[0], hexes[-1]) if kind == "river" else ()
         for h in hexes:
-            if sheet.waterP(h) and h not in sheet.places:
+            if sheet.waterP(h) and h not in sheet.places and h not in ends:
                 out.append("%s enters %s hex %s" % (kind, sheet.terrain[h], h))
     return sorted(set(out))
 
@@ -612,7 +616,8 @@ PGG_EXCEPTED = {
     "road misses named place 1524": "printed: no road reaches the town Мстиславль",
     "road misses named place 3005": "printed: no road reaches the town Белый",
     "road misses named place 3901": "printed: no road reaches Rzhev (railway only)",
-    "road misses named place 4607": "printed: Gzhatsk's road ends at a dot short of its blocks",
+    "road enters lake hex 0703":
+        "printed: the road skirts the lake inside 0703, lake by Ben's 22% ruling (2026-09-25)",
     "road misses named place 5921": "printed: no road reaches Kaluga (railway only)",
 }
 
@@ -629,11 +634,32 @@ def pgg_excepted(problems, emit):
     return out
 
 
+TRC_EXCEPTED = {
+    "river step E5-F5 crosses a blocked hexside":
+        "printed: the Kovzha leaves Lake Onega through the dotted prohibited shore at E5 (2026-09-25 reading)",
+    "rail step GG19-HH21 does not join neighbouring hexes":
+        "TRC 8.6: the Perekop segment GG19-HH21 is a rail-only link across the sea hex GG20",
+}
+
+
+def trc_excepted(problems, emit):
+    """Drop TRC's named printed exceptions, and report any that no longer occurs."""
+    out = []
+    for p in problems:
+        if p in TRC_EXCEPTED:
+            emit("EXCEPTED: %s (%s)" % (p, TRC_EXCEPTED[p]))
+        else:
+            out.append(p)
+    out += ["named exception no longer occurs: %s" % p for p in TRC_EXCEPTED if p not in problems]
+    return out
+
+
 # ---------------------------------------------------------------- profiles
 PROFILES = {
     "trc": dict(offmap="", steps=link_problems, whole=(),
-                lines={"river": river_problems, "border": border_problems, "blocked": None},
-                links={"rail": rail_problems}),
+                lines={"river": river_problems, "border": border_problems, "blocked": None, "district": None},
+                links={"rail": rail_problems, "river": None},  # TRC rivers run centre to centre (links)
+                excepted=trc_excepted),
     "pgg": dict(offmap="", steps=link_problems, whole=(),
                 lines={"river": river_problems},
                 links={"rail": rail_problems, "road": road_problems},

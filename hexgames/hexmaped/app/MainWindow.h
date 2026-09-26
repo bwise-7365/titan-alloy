@@ -37,7 +37,7 @@ namespace HexQt {
     void closeEvent(QCloseEvent*) override;
 
   private:
-    enum class Mode { Select, Terrain, Hexside, Link, Clip, Glyph, Name };
+    enum class Mode { Select, Terrain, Hexside, Link, Junction, Clip, Glyph, Name };
 
     void buildMenus();
     void buildToolbar();
@@ -50,6 +50,8 @@ namespace HexQt {
     void onDoubtChosen(QListWidgetItem*);
     void save();
     void saveAs();
+    void exportSvg();
+    void showAbout();  // the user guide (hexmaped/README.md, built in), scrollable
     void validateSaved();
     void applyEdit(const std::function<void()>& edit);  // runs it, reports a refusal, redraws
     void describe(const std::string& hex);

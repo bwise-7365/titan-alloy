@@ -32,8 +32,9 @@ TEST(RulesDocTest, TrcParsesWithExpectedShape)
 
   EXPECT_FALSE(doc.map.hexTerrain.empty());
   EXPECT_FALSE(doc.map.hexsideTerrain.empty());
-  ASSERT_EQ(1u, doc.map.networks.size());
-  EXPECT_EQ("rail", doc.map.networks[0].id);
+  ASSERT_EQ(2u, doc.map.networks.size());  // rivers run centre to centre, as a network
+  EXPECT_EQ("river", doc.map.networks[0].id);
+  EXPECT_EQ("rail", doc.map.networks[1].id);
   EXPECT_FALSE(doc.map.regionLayers.empty());
   EXPECT_FALSE(doc.map.spaces.empty());
 

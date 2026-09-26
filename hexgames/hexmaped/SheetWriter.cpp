@@ -355,9 +355,7 @@ namespace HexMapEd {
             Attrs().add("id", p.id).add("kind", p.kind).add("name", p.name).add("line", p.line).add("edges", join(p.edges)).unlessDefault("offset", p.offset, 0.0).add("ends", p.ends));
     }
     for (const HexXml::SheetLinkDoc& l : s.links) {
-      if (l.hexes.size() >= 2) {
-        emptyElement(out, 1, "link", Attrs().add("id", l.id).add("kind", l.kind).add("name", l.name).add("line", l.line).add("hexes", join(l.hexes)).add("owner", l.owner).add("ends", l.ends));
-      }
+      emptyElement(out, 1, "link", Attrs().add("id", l.id).add("kind", l.kind).add("name", l.name).add("line", l.line).add("hexes", join(l.hexes)).add("owner", l.owner).add("ends", l.ends));
     }
     for (const HexXml::SheetJunctionDoc& j : s.junctionElements) {
       Attrs a;

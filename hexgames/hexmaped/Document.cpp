@@ -8,6 +8,7 @@
 #include "hexxml/XmlDocument.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <set>
 #include <sstream>
@@ -33,6 +34,147 @@ namespace HexMapEd {
     eraseId(std::vector<std::string>& ids, std::string_view id)
     {
       ids.erase(std::remove(ids.begin(), ids.end(), std::string(id)), ids.end());
+      return;
+    }
+
+    bool
+    chainIdTakenP(const HexXml::SheetDoc& s, const std::string& id)
+    {
+      const bool linkP = std::any_of(s.links.begin(), s.links.end(), [&](const HexXml::SheetLinkDoc& l) { return l.id == id; });
+      const bool pathP = std::any_of(s.paths.begin(), s.paths.end(), [&](const HexXml::SheetPathDoc& p) { return p.id == id; });
+      return linkP || pathP;
+    }
+
+    // "<id>-2", "<id>-3", ...: the first not already a link or path id
+    std::string
+    freshChainId(const HexXml::SheetDoc& s, const std::string& base)
+    {
+      int n = 2;
+      while (chainIdTakenP(s, base + "-" + std::to_string(n))) {
+        ++n;
+      }
+      return base + "-" + std::to_string(n);
+    }
+
+    // an ASCII xs:NCName: a letter or '_' first, then letters, digits, '-', '_', '.'
+    bool
+    idPrefixP(std::string_view text)
+    {
+      const auto startP = [](char ch) { return std::isalpha(static_cast<unsigned char>(ch)) || '_' == ch; };
+      const auto restP = [](char ch) { return std::isalnum(static_cast<unsigned char>(ch)) || '-' == ch || '_' == ch || '.' == ch; };
+      return !text.empty() && startP(text.front()) && std::all_of(text.begin(), text.end(), restP);
+    }
+
+    // "<kind>-new-1", "<kind>-new-2", ...: the first not already a link or path id
+    std::string
+    newChainId(const HexXml::SheetDoc& s, const std::string& kind)
+    {
+      int n = 1;
+      while (chainIdTakenP(s, kind + "-new-" + std::to_string(n))) {
+        ++n;
+      }
+      return kind + "-new-" + std::to_string(n);
+    }
+
+    // A cut chain's pieces keep their outer end reasons; the ends at the cut are "unexplained".
+    void
+    splitEnds(const HexXml::SheetLinkDoc& whole, HexXml::SheetLinkDoc& head, HexXml::SheetLinkDoc& tail)
+    {
+      if (!whole.ends.has_value()) {
+        return;
+      }
+      const std::vector<std::string> pair = tokens(*whole.ends);
+      if (2 != pair.size()) {
+        throw std::invalid_argument("removeLinkStep: link ends \"" + *whole.ends + "\" is not a pair");
+      }
+      head.ends = pair[0] + " unexplained";
+      tail.ends = "unexplained " + pair[1];
+      return;
+    }
+
+    // A one-hex piece left by a cut: it has an "unexplained" end, or no ends. A one-hex link with explained
+    // ends (a railway leaving the map, "place edge") is a real link and is never absorbed.
+    bool
+    remnantP(const HexXml::SheetLinkDoc& l)
+    {
+      return 1 == l.hexes.size() && (!l.ends.has_value() || std::string::npos != l.ends->find("unexplained"));
+    }
+
+    // After a step joins `chain` to `ends`, a remnant of the same kind and line on either hex is folded
+    // into the chain: the junctions that named it name the chain, and a junction left joining the chain
+    // only to itself goes.
+    void
+    absorbRemnants(HexXml::SheetDoc& s, std::size_t chain, const std::vector<std::string>& ends)
+    {
+      if (!s.links[chain].id.has_value()) {
+        s.links[chain].id = newChainId(s, s.links[chain].kind);
+      }
+      const HexXml::SheetLinkDoc target = s.links[chain];  // kind, line and id; ends may change below
+      std::vector<std::string> gone;
+      for (std::size_t n = 0; n < s.links.size(); ++n) {
+        const HexXml::SheetLinkDoc& l = s.links[n];
+        const bool absorbP = n != chain && remnantP(l) && l.kind == target.kind && l.line == target.line &&
+                             std::find(ends.begin(), ends.end(), l.hexes.front()) != ends.end();
+        if (!absorbP) {
+          continue;
+        }
+        if (l.id.has_value()) {
+          gone.push_back(*l.id);
+        }
+        // the chain's end on the remnant's hex takes back the reason the cut left on the remnant
+        HexXml::SheetLinkDoc& c = s.links[chain];
+        if (l.ends.has_value() && c.ends.has_value()) {
+          const std::vector<std::string> theirs = tokens(*l.ends);
+          std::vector<std::string> mine = tokens(*c.ends);
+          const std::string reason = "unexplained" != theirs.front() ? theirs.front() : theirs.back();
+          if (2 == mine.size() && "unexplained" != reason) {
+            if (c.hexes.front() == l.hexes.front()) {
+              mine[0] = reason;
+            }
+            if (c.hexes.back() == l.hexes.front()) {
+              mine[1] = reason;
+            }
+            c.ends = mine[0] + " " + mine[1];
+          }
+        }
+      }
+      for (HexXml::SheetJunctionDoc& j : s.junctionElements) {
+        for (std::string& m : j.links) {
+          if (std::find(gone.begin(), gone.end(), m) != gone.end()) {
+            m = *target.id;
+          }
+        }
+        std::vector<std::string> unique;
+        for (const std::string& m : j.links) {
+          if (std::find(unique.begin(), unique.end(), m) == unique.end()) {
+            unique.push_back(m);
+          }
+        }
+        j.links = unique;
+      }
+      s.junctionElements.erase(std::remove_if(s.junctionElements.begin(), s.junctionElements.end(),
+                                              [](const HexXml::SheetJunctionDoc& j) { return j.paths.empty() && j.links.size() < 2; }),
+                               s.junctionElements.end());
+      s.links.erase(std::remove_if(s.links.begin(), s.links.end(),
+                                   [&](const HexXml::SheetLinkDoc& l) {
+                                     return remnantP(l) && l.kind == target.kind && l.line == target.line &&
+                                            l.id != target.id &&
+                                            std::find(ends.begin(), ends.end(), l.hexes.front()) != ends.end();
+                                   }),
+                    s.links.end());
+      return;
+    }
+
+    // Junctions standing on the tail's hexes now name the tail's id; none is removed.
+    void
+    repointJunctions(HexXml::SheetDoc& s, const std::string& oldId, const HexXml::SheetLinkDoc& tail)
+    {
+      for (HexXml::SheetJunctionDoc& j : s.junctionElements) {
+        const bool onTailP = std::find(tail.hexes.begin(), tail.hexes.end(), j.at) != tail.hexes.end();
+        if (onTailP) {
+          std::replace(j.links.begin(), j.links.end(), oldId, *tail.id);
+        }
+      }
       return;
     }
 
@@ -327,6 +469,9 @@ namespace HexMapEd {
     requireHex(a, "addLinkStep");
     requireHex(b, "addLinkStep");
     requireLine(lineId, "addLinkStep");
+    if (!idPrefixP(kind)) {
+      throw std::invalid_argument("addLinkStep: link kind \"" + std::string(kind) + "\" cannot start an XML id (letters, digits, '-', '_', '.'; not starting with a digit)");
+    }
     bool adjacentP = false;
     for (int k = 0; k < HexCoord::kDirections; ++k) {
       if (frame_.neighbour(a, static_cast<HexCoord::Direction>(k)) == std::string(b)) {
@@ -341,7 +486,7 @@ namespace HexMapEd {
     const std::string k(kind);
     const std::string line(lineId);
     edit([&](HexXml::SheetDoc& s) {
-      for (HexXml::SheetLinkDoc& l : s.links) {
+      for (const HexXml::SheetLinkDoc& l : s.links) {
         if (l.kind != k || l.line != line) {
           continue;
         }
@@ -351,32 +496,31 @@ namespace HexMapEd {
           }
         }
       }
-      for (HexXml::SheetLinkDoc& l : s.links) {
-        if (l.kind != k || l.line != line) {
+      // extend a chain that ends at either hex (never a one-hex piece: that is absorbed below), or start one
+      std::size_t chain = s.links.size();
+      for (std::size_t n = 0; n < s.links.size() && chain == s.links.size(); ++n) {
+        HexXml::SheetLinkDoc& l = s.links[n];
+        if (l.kind != k || l.line != line || l.hexes.size() < 2) {
           continue;
         }
-        if (l.hexes.back() == ha) {
-          l.hexes.push_back(hb);
-          return;
+        if (l.hexes.back() == ha || l.hexes.back() == hb) {
+          l.hexes.push_back(l.hexes.back() == ha ? hb : ha);
+          chain = n;
         }
-        if (l.hexes.back() == hb) {
-          l.hexes.push_back(ha);
-          return;
-        }
-        if (l.hexes.front() == ha) {
-          l.hexes.insert(l.hexes.begin(), hb);
-          return;
-        }
-        if (l.hexes.front() == hb) {
-          l.hexes.insert(l.hexes.begin(), ha);
-          return;
+        else if (l.hexes.front() == ha || l.hexes.front() == hb) {
+          l.hexes.insert(l.hexes.begin(), l.hexes.front() == ha ? hb : ha);
+          chain = n;
         }
       }
-      HexXml::SheetLinkDoc l;
-      l.kind = k;
-      l.line = line;
-      l.hexes = {ha, hb};
-      s.links.push_back(l);
+      if (chain == s.links.size()) {
+        HexXml::SheetLinkDoc l;
+        l.id = newChainId(s, k);  // explicit-junction sheets require every link to have an id
+        l.kind = k;
+        l.line = line;
+        l.hexes = {ha, hb};
+        s.links.push_back(l);
+      }
+      absorbRemnants(s, chain, {ha, hb});
     });
     return;
   }
@@ -406,14 +550,132 @@ namespace HexMapEd {
         head.hexes.assign(l.hexes.begin(), l.hexes.begin() + static_cast<std::ptrdiff_t>(cut) + 1);
         HexXml::SheetLinkDoc tail = l;
         tail.hexes.assign(l.hexes.begin() + static_cast<std::ptrdiff_t>(cut) + 1, l.hexes.end());
-        if (head.hexes.size() >= 2) {
-          out.push_back(head);
+        splitEnds(l, head, tail);
+        if (l.id.has_value()) {
+          // the head keeps the id; a one-hex remnant is kept too (a map exit is a one-hex link)
+          tail.id = freshChainId(s, *l.id);
+          repointJunctions(s, *l.id, tail);
         }
-        if (tail.hexes.size() >= 2) {
-          out.push_back(tail);
-        }
+        out.push_back(head);
+        out.push_back(tail);
       }
       s.links = std::move(out);
+    });
+    return;
+  }
+
+  void
+  Document::removeOneHexLinks(std::string_view hex)
+  {
+    requireHex(hex, "removeOneHexLinks");
+    const std::string h(hex);
+    const auto oneHexP = [&](const HexXml::SheetLinkDoc& l) { return 1 == l.hexes.size() && h == l.hexes.front(); };
+    if (std::none_of(sheet_.links.begin(), sheet_.links.end(), oneHexP)) {
+      throw std::invalid_argument("removeOneHexLinks: no one-hex link at " + h);
+    }
+    for (const HexXml::SheetLinkDoc& l : sheet_.links) {
+      if (!oneHexP(l) || !l.id.has_value()) {
+        continue;
+      }
+      for (const HexXml::SheetJunctionDoc& j : sheet_.junctionElements) {
+        if (std::find(j.links.begin(), j.links.end(), *l.id) != j.links.end()) {
+          throw std::invalid_argument("removeOneHexLinks: link '" + *l.id + "' at " + h + " is named by the junction at " +
+                                      j.at + "; edit the junction first");
+        }
+      }
+    }
+    edit([&](HexXml::SheetDoc& s) {
+      s.links.erase(std::remove_if(s.links.begin(), s.links.end(), oneHexP), s.links.end());
+    });
+    return;
+  }
+
+  namespace {
+
+    // The link's end reason at `hex` (first or last hex) becomes `reason`, when the link has ends.
+    void
+    setEndAt(HexXml::SheetLinkDoc& l, const std::string& hex, const std::string& reason)
+    {
+      if (!l.ends.has_value() || l.hexes.empty()) {
+        return;
+      }
+      std::vector<std::string> pair = tokens(*l.ends);
+      if (2 != pair.size()) {
+        throw std::invalid_argument("toggleJunction: link ends \"" + *l.ends + "\" is not a pair");
+      }
+      if (l.hexes.front() == hex) {
+        pair[0] = reason;
+      }
+      if (l.hexes.back() == hex) {
+        pair[1] = reason;
+      }
+      l.ends = pair[0] + " " + pair[1];
+      return;
+    }
+
+  }  // namespace
+
+  void
+  Document::toggleJunction(std::string_view hex, std::string_view kind)
+  {
+    requireHex(hex, "toggleJunction");
+    if ("explicit" != sheet_.junctions) {
+      throw std::invalid_argument("toggleJunction: this sheet's junctions are implicit (every shared hex joins)");
+    }
+    const std::string h(hex);
+    const std::string k(kind);
+    const auto kindAt = [&](const HexXml::SheetLinkDoc& l) {
+      return l.kind == k && std::find(l.hexes.begin(), l.hexes.end(), h) != l.hexes.end();
+    };
+    const auto existing = std::find_if(sheet_.junctionElements.begin(), sheet_.junctionElements.end(),
+                                       [&](const HexXml::SheetJunctionDoc& j) {
+                                         return j.at == h && std::any_of(sheet_.links.begin(), sheet_.links.end(), [&](const HexXml::SheetLinkDoc& l) {
+                                                  return kindAt(l) && l.id.has_value() &&
+                                                         std::find(j.links.begin(), j.links.end(), *l.id) != j.links.end();
+                                                });
+                                       });
+    if (existing != sheet_.junctionElements.end()) {
+      const std::vector<std::string> members = existing->links;
+      edit([&](HexXml::SheetDoc& s) {
+        s.junctionElements.erase(std::remove_if(s.junctionElements.begin(), s.junctionElements.end(),
+                                                [&](const HexXml::SheetJunctionDoc& j) { return j.at == h && j.links == members; }),
+                                 s.junctionElements.end());
+        for (HexXml::SheetLinkDoc& l : s.links) {
+          if (l.id.has_value() && std::find(members.begin(), members.end(), *l.id) != members.end()) {
+            setEndAt(l, h, "unexplained");
+          }
+        }
+      });
+      return;
+    }
+    std::vector<std::string> members;
+    for (const HexXml::SheetLinkDoc& l : sheet_.links) {
+      if (!kindAt(l)) {
+        continue;
+      }
+      if (!l.id.has_value()) {
+        throw std::invalid_argument("toggleJunction: a " + k + " link through " + h + " has no id");
+      }
+      members.push_back(*l.id);
+    }
+    if (members.size() < 2) {
+      throw std::invalid_argument("toggleJunction: fewer than two " + k + " links pass through " + h);
+    }
+    edit([&](HexXml::SheetDoc& s) {
+      HexXml::SheetJunctionDoc j;
+      j.at = h;
+      j.links = members;
+      for (const HexXml::SheetHexDoc& e : s.hexes) {
+        if (e.id == h && e.name.has_value()) {
+          j.name = e.name;
+        }
+      }
+      s.junctionElements.push_back(j);
+      for (HexXml::SheetLinkDoc& l : s.links) {
+        if (l.id.has_value() && std::find(members.begin(), members.end(), *l.id) != members.end()) {
+          setEndAt(l, h, "junction");
+        }
+      }
     });
     return;
   }

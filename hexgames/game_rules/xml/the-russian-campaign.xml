@@ -28,7 +28,6 @@
     <hex-terrain id="sea" name="Sea" move-cost="prohibited">Crossed only by sea movement. Air range is measured across it as if hexes existed (15.4).</hex-terrain>
     <hex-terrain id="lake" name="Lake" move-cost="prohibited"/>
 
-    <hexside-terrain id="river" name="River hexside" ref="14.1.1">A river crossing the hexside between two river hexes connects them. Carries the river's identity.</hexside-terrain>
     <hexside-terrain id="blocked" name="Blocked hexside" blocks="movement zoc" ref="7.1">Printed as a white dashed line.</hexside-terrain>
     <hexside-terrain id="all-water" name="All-water hexside" blocks="zoc" ref="7.1">The edge of a lake or sea.</hexside-terrain>
     <hexside-terrain id="coastline" name="Black coastal line" blocks="movement retreat" ref="8.5">May not be crossed by ground movement or retreat except at the Kerch Strait.</hexside-terrain>
@@ -36,6 +35,7 @@
     <hexside-terrain id="country-border" name="Country border">Solid black line; defines the country regions.</hexside-terrain>
     <hexside-terrain id="district-border" name="Military district boundary">Dash-dot line; defines the Russian military districts.</hexside-terrain>
 
+    <network id="river" name="Rivers" carries="grouping">Drawn centre to centre through the river hexes (14.1.1). A river hex is any hex on the network; a river crossing the hexside between two river hexes connects them, so one river is a connected piece of the network. Carries no movement or supply.</network>
     <network id="rail" name="Railroads" carries="movement supply" mutable="true">Drawn centre to centre with off-board extensions at the edges. Traversed by rail movement, followed by rail supply, and owned hex by hex through the railhead markers. Not a subgraph of adjacency in any useful sense.</network>
 
     <region-layer id="countries" name="Countries" partition="true" bounded-by="country-border">

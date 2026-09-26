@@ -152,13 +152,13 @@ namespace Trc {
       ssReserve_(counter("g-ss-res-infantry")),
       kerchA_(definition.board->indexOf(HexCoord::HexId{"KK19"})),
       kerchB_(definition.board->indexOf(HexCoord::HexId{"KK20"})),
-      riverEdge_(definition.rules->edgeTerrain("river")),
       blockedEdge_(definition.rules->edgeTerrain("blocked")),
       normal_(modeNamed(*definition.rules, "normal")),
       railMode_(modeNamed(*definition.rules, "rail-move")),
       stuka_(modifierNamed(*definition.rules, "stuka-shift")),
       sturmovik_(modifierNamed(*definition.rules, "sturmovik-shift")),
       railNetwork_(definition.board->networkId("rail")),
+      riverNetwork_(definition.board->networkId("river")),
       countries_(definition.board->layerId("countries")),
       omb_(definition.board->spaceId("omb")),
       axisPool_(definition.board->spaceId("axis-pool")),
@@ -267,28 +267,35 @@ namespace Trc {
   void
   TrcFacts::readRivers()
   {
+    // The sheet draws TRC's rivers centre to centre, as links of the "river" network. A river hex is
+    // any hex on the network; one river is a connected piece of it (14.1.1: "a river crossing the
+    // hexside between two river hexes connects them").
     const Board& board = *definition_.board;
+    const LinkNetwork& rivers = board.network(riverNetwork_);
     river_.assign(board.hexCount(), false);
     riverOf_.assign(board.hexCount(), std::nullopt);
-    for (std::size_t h = 0; h < board.hexCount(); ++h) {
-      for (int d = 0; d < HexCoord::kDirections; ++d) {
-        const std::vector<EdgeTerrainId>& edges = board.edge(HexIndex{static_cast<std::uint32_t>(h)}, static_cast<Direction>(d));
-        river_[h] = river_[h] || edges.end() != std::find(edges.begin(), edges.end(), riverEdge_);
-      }
+    for (const LinkNetwork::Link& link : rivers.links()) {
+      river_[link.a.value] = true;
+      river_[link.b.value] = true;
     }
-    // One river is the river hexes joined through river hexsides (14.1.1: "a river crossing the
-    // hexside between two river hexes connects them").
     std::uint32_t next = 0;
     for (std::size_t h = 0; h < board.hexCount(); ++h) {
       if (!river_[h] || riverOf_[h]) {
         continue;
       }
-      const HexIndex seed{static_cast<std::uint32_t>(h)};
-      for (HexIndex member : HexSearch::regionFlood(board, seed, [&](HexIndex from, Direction d) {
-             const std::vector<EdgeTerrainId>& edges = board.edge(from, d);
-             return edges.end() == std::find(edges.begin(), edges.end(), riverEdge_);
-           })) {
-        riverOf_[member.value] = next;
+      std::vector<HexIndex> todo{HexIndex{static_cast<std::uint32_t>(h)}};
+      riverOf_[h] = next;
+      while (!todo.empty()) {
+        const HexIndex at = todo.back();
+        todo.pop_back();
+        for (std::size_t li : rivers.linksAt(at)) {
+          const LinkNetwork::Link& link = rivers.links()[li];
+          const HexIndex other = (link.a == at) ? link.b : link.a;
+          if (!riverOf_[other.value]) {
+            riverOf_[other.value] = next;
+            todo.push_back(other);
+          }
+        }
       }
       ++next;
     }

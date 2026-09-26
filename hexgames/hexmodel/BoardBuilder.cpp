@@ -371,6 +371,10 @@ namespace HexModel {
         for (std::size_t li : net.byHex_[at.value]) {
           touchesP = touchesP || net.links_[li].chain == chain;
         }
+        // a one-hex link (a line leaving the map from this hex) has no step to touch the hex with
+        for (const HexXml::SheetLinkDoc& link : sheet.links) {
+          touchesP = touchesP || (1 == link.hexes.size() && link.id == net.chains_[chain].id && link.hexes.front() == j.at);
+        }
         if (!touchesP) {
           throw std::invalid_argument(sheet.id + ":" + std::to_string(j.sourceLine) + ": link '" +
                                        net.chains_[chain].id + "' does not pass through junction hex '" + j.at + "'");

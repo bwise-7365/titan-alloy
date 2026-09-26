@@ -46,12 +46,12 @@ TEST(NetworkGraphTest, TrcRailReachability)
   const HexModel::LinkNetwork& network = board.network(rail);
   ASSERT_GT(network.linkCount(), 200u);
 
-  // FF33 - EE32 - DD32 - DD31 is a chain of three drawn rail links, with no branch between them, on the
-  // west edge of the sheet; over the network graph those hexes are one, two and three links apart,
+  // GG33 - FF33 - EE32 - DD32 is a chain of three drawn rail links (Bucharest south), with no branch
+  // between them, on the west edge of the sheet; over the network graph those hexes are one, two and three links apart,
   // whatever their distance on the hex lattice is.
-  const HexModel::HexIndex start = board.indexOf(HexCoord::HexId{"FF33"});
-  const HexModel::HexIndex middle = board.indexOf(HexCoord::HexId{"EE32"});
-  const HexModel::HexIndex finish = board.indexOf(HexCoord::HexId{"DD31"});
+  const HexModel::HexIndex start = board.indexOf(HexCoord::HexId{"GG33"});
+  const HexModel::HexIndex middle = board.indexOf(HexCoord::HexId{"FF33"});
+  const HexModel::HexIndex finish = board.indexOf(HexCoord::HexId{"DD32"});
 
   const HexSearch::NetworkGraph graph(board, rail, [](std::size_t) { return true; });
   HexSearch::SearchScratch scratch;
@@ -77,10 +77,10 @@ TEST(NetworkGraphTest, RemovingOneLinkDisconnectsItsPair)
   const HexModel::NetworkId rail = board.networkId("rail");
   const HexModel::LinkNetwork& network = board.network(rail);
 
-  // The sheet's first rail link, Berlin E31 - F31, is Berlin's only link: refusing it leaves Berlin
-  // alone on the network, cut off from F31.
-  const HexModel::HexIndex from = board.indexOf(HexCoord::HexId{"E31"});
-  const HexModel::HexIndex to = board.indexOf(HexCoord::HexId{"F31"});
+  // BB32 - BB33 ends the Bucharest west spur at the map edge, BB33's only link: refusing it leaves
+  // BB33 alone on the network, cut off from BB32.
+  const HexModel::HexIndex from = board.indexOf(HexCoord::HexId{"BB32"});
+  const HexModel::HexIndex to = board.indexOf(HexCoord::HexId{"BB33"});
   std::optional<std::size_t> theLink;
   for (std::size_t i = 0; i < network.links().size(); ++i) {
     const HexModel::LinkNetwork::Link& link = network.links()[i];

@@ -50,10 +50,10 @@ TEST(BoardTest, TrcBoardFromSheet)
   EXPECT_EQ(kk19, *east);
 
   // The strait itself is a rules fact (TrcFacts::kerchP), not a sheet line; a blocked hexside is a sheet line.
-  const HexModel::HexIndex kk32 = board.indexOf(HexCoord::HexId{"KK32"});
-  const std::vector<HexModel::EdgeTerrainId>& kk32east =
-      board.edge(kk32, HexCoord::fromCompass("e", board.orientation()));
-  EXPECT_FALSE(kk32east.empty());
+  const HexModel::HexIndex ff28 = board.indexOf(HexCoord::HexId{"FF28"});  // Danube delta, white dots
+  const std::vector<HexModel::EdgeTerrainId>& ff28east =
+      board.edge(ff28, HexCoord::fromCompass("e", board.orientation()));
+  EXPECT_FALSE(ff28east.empty());
 
   const HexModel::HexIndex someSea = board.indexOf(HexCoord::HexId{"HH31"});
   (void)board.terrain(someSea);  // must not throw; TRC's sheet marks HH31 as sea
@@ -69,26 +69,20 @@ TEST(BoardTest, TrcBoardFromSheet)
   EXPECT_GT(net.linkCount(), 0u);
 }
 
-TEST(BoardTest, ImplicitSheetLetsChainsSwitchWhereverTheyShareAHex)
+TEST(BoardTest, ExplicitSheetSwitchesAtItsJunctions)
 {
+  // TRC's sheet is explicit (2026-09-25): chains meet only where a <junction> says so.
   const HexModel::Board board = buildTrc();
   const HexModel::LinkNetwork& net = board.network(board.networkId("rail"));
-  EXPECT_FALSE(net.explicitP());
+  EXPECT_TRUE(net.explicitP());
   EXPECT_LT(1u, net.chains().size());
-  // find a hex touched by two chains: TRC's rail chains meet at junction cities
   bool foundP = false;
   for (std::size_t h = 0; h < board.hexCount() && !foundP; ++h) {
     const HexModel::HexIndex hex{static_cast<std::uint32_t>(h)};
-    std::optional<std::size_t> first;
-    for (std::size_t li : net.linksAt(hex)) {
-      const std::size_t chain = net.links()[li].chain;
-      if (first && *first != chain) {
-        EXPECT_TRUE(net.switchP(hex, *first, chain));
-        EXPECT_TRUE(net.junctionsAt(hex).empty());
-        foundP = true;
-        break;
-      }
-      first = chain;
+    for (const HexModel::LinkNetwork::Junction& j : net.junctionsAt(hex)) {
+      ASSERT_LE(2u, j.size());
+      EXPECT_TRUE(net.switchP(hex, j[0], j[1]));
+      foundP = true;
     }
   }
   EXPECT_TRUE(foundP);

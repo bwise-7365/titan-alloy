@@ -72,6 +72,11 @@ namespace {
       EXPECT_EQ(a.links[i].kind, b.links[i].kind);
     }
     EXPECT_EQ(a.paths.size(), b.paths.size());
+    ASSERT_EQ(a.junctionElements.size(), b.junctionElements.size());
+    for (std::size_t i = 0; i < a.junctionElements.size(); ++i) {
+      EXPECT_EQ(a.junctionElements[i].at, b.junctionElements[i].at);
+      EXPECT_EQ(a.junctionElements[i].links, b.junctionElements[i].links);
+    }
     ASSERT_EQ(a.hexes.size(), b.hexes.size());
     for (std::size_t i = 0; i < a.hexes.size(); ++i) {
       EXPECT_EQ(a.hexes[i].id, b.hexes[i].id);

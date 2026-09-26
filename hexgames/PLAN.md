@@ -54,6 +54,69 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-09-26 PAUSED for Ben's eight detailed Olympic photographs. READ doc/2026-09-26-resume.md FIRST.
+  Olympic roads (draft) and all-mountain hexsides (unverified) are the open items; everything staged, uncommitted.
+  Reading scripts copied from scratch to tools/olympic-reading/ (not part of the build; working files).
+- 2026-09-25 OLYMPIC read (Ben's request): map_graphics/xml/operation-olympic.xml validates + renders.
+  Cells from the lattice run (reader/work/Olympic_map_wrinkled), counted from the three ovals (all match), snapped
+  to the printed lines; EVEN columns sit lower. Terrain, 49 assault hexes, 392 river / 73 all-mountain / 657
+  all-rough hexsides, 45 places + deployment letters. NOT YET: roads, the two dashed boundary lines. Doubts
+  (thresholds, all-rough rule, assault borderlines): example maps/Olympic/reading-notes.md.
+- 2026-09-25 evening: TRC sheet junctions="explicit" (ids on all 99 links, junctions at shared hexes; Prut joins
+  Danube at DD27, rails at J33 and E10 fixed by hand). HexMapEd: Junction mode (Document::toggleJunction), addLinkStep
+  absorbs cut remnants (unexplained-ended one-hex links; map exits kept), About dialog (README built in as a Qt
+  resource), SVG export follows Show hex ids. BoardBuilder accepts a one-hex link in a junction at its hex.
+  RESOLVED (same evening): the two throw-path failures (GridTest hang, SessionTest SEH) were a poisoned
+  CMakeCache: every CMAKE_CXX_FLAGS* entry empty, so no /EHsc -- destructors skipped during unwinding left debug
+  iterators registered in dead stack; ~Grid then looped in _Orphan_all (found by sampling the hung thread's RIP
+  against a linker map). Cause: a configure that failed compiler detection (vcvars not loaded) wrote the entries
+  empty; later configures keep them. Fixed the cache; CMakeLists now FATAL_ERRORs on MSVC flags without /EHsc;
+  build-dev.cmd prefers CLion's CMake 4.3.1 (was mixing PATH CMake 4.1.1 on CLion's folder). 298/298 green.
+- 2026-09-25 HexMapEd: Link-mode shift-click on the current hex deletes its one-hex links
+  (Document::removeOneHexLinks, refused for a link a junction names; DocumentTest); File > Export SVG
+  (MapView::svg = hexview writeSvg of the painted Scene, waviness included). network_check: a river link's end
+  hexes may be water (Ben's TRC edits run rivers into their lakes/sea). SheetDocTest no longer pins TRC's link
+  count. 296/296; HexMapEd.exe not relinked (it was running) -- rebuild after closing it.
+- 2026-09-25 TRC 1941 START LINE RE-DERIVED (Ben's request): new games/trc/tools/trc_startline.py (the notes'
+  rule, corrected cities, area anchors listed in the scenario notes), then trc_control.py; 72 of 94 units
+  moved, 63 control hexes; 295/295 green.
+- 2026-09-25 GREEN 295/295 (coordinator build). Done today after the TRC river links: EndReason "source"
+  (approved), HexMapEd/hexview scratch river links (MapLineLayers scratchedKindP), TRC 1941 scenario control
+  anchors re-mapped + rail control regenerated (trc_control.py --write), network_check profiles (TRC district,
+  river links; exceptions: Kovzha through Onega dots, 8.6 rail GG19-HH21; PGG: road through lake 0703, Gzhatsk
+  exception retired), reference renderer mark translate %.3f (SMW SVG golden sat on the tolerance), TRC goldens
+  re-recorded with hexgames_cli --record: rail-move/full-turn scripts moved onto the real Posen-Berlin rail,
+  combat-crt/supply gain a W15 control event (a real junction now). tools/bless-goldens.ps1 named in CLAUDE.md
+  does not exist. OPEN for Ben: trc-1941 unit placement still follows the old derived start line (Warsaw was
+  mis-placed at P21); commit cites "bugfix: TRC map re-read".
+- 2026-09-25 TRC RIVERS CENTRE TO CENTRE (Ben's request). Rules: hexside-terrain "river" replaced by
+  <network id="river" carries="grouping">; package binds link kind river; TrcFacts::readRivers reads river
+  hexes and river identity (connected pieces) from the network. Sheet: 239 river hexsides -> 28 river
+  links. hexview MapStyleReferenceRoundsOnlyRivers moved to PGG. Method doc: per-game river convention
+  table. XSD proposal: EndReason "source". Nothing built or run; goldens still need Ben's bless.
+- 2026-09-25 TRC RE-READ BY EYE (Ben's request; grid kept). the-russian-campaign.xml: terrain, water,
+  239 river hexsides (hex chains, rule 14.1.1), 68 rail links, 16 prohibited hexsides, 75 district
+  hexsides re-read; 13 places moved (Warsaw was at P21, Helsinki/Sevastopol/Astrakhan on water). Hi-res
+  photos registered by patch correlation. Tests updated to the corrected data (TrcPackageTest Königsberg
+  H23 + one data gap, NetworkGraphTest rail chain GG33-DD32, BoardTest blocked FF28:e). EXPECTED to need
+  Ben: TRC goldens re-bless (tools/bless-goldens.ps1, commit cites "bugfix: TRC map re-read");
+  hexview MapStyleReferenceRoundsOnlyRivers likely fails (river hexsides no longer chain). Notes and
+  doubts: example maps/TRC/reading-notes.md. Nothing built or run.
+- 2026-09-25 PGG REVIEWED BY EYE (Ben: grid already right, look for errors). Checked against the scan:
+  fills (per-hex fractions), 650 river hexsides (ink score + centre-to-centre crossings + contact
+  sheets), 53 links (tiles), places, labels. Rivers, swamps, woods, rails: no errors found. Fixed in
+  panzergruppe-guderian.xml: 285 duplicate edge labels (17 labels written 18 times); Gzhatsk road now
+  starts at the city (4607 4608 4609); 7 of 8 river names moved to the printed places and 16 printed
+  names added; header comment no longer says "fix the catalogue". Ben's rulings applied: victory
+  points as text glyphs (VL style) on the nine cities and on 5907/5915 (the edge "(20 ПО)" labels);
+  forest = over 15% of the whole hex (4516, 5808 now woods); 0703 lake, 1006 stays swamp. Lake
+  threshold: about 22% of the hex interior (80% inset) separates every lake from every non-lake.
+- 2026-09-25 SMW READ BY EYE (coordinator, Ben's request): map_graphics/xml/stalin-moves-west.xml rewritten
+  from scratch (old tile/chain versions discarded by Ben's word; the 2026-09-16-2354 snapshot is untouched).
+  319 hexes, 150 river + 2 lake + 51 front-line + 71 border hexsides, 23 bridges, 46 rail links with 40
+  explicit junctions, 25 places, six nation regions by flood fill from the borders, a coastal region.
+  Validates; renders. Notes and 18 doubts for Ben: example maps/Stalin-Moves-West/reading-notes.md.
+  NEXT: Ben reviews the doubts and finishes in HexMapEd.
 - 2026-09-24 REBOOT NOTE: read doc/2026-09-24-resume.md first (what is staged, the build recipe, where
   to start). 146 paths staged, uncommitted; nothing in flight.
 - 2026-09-23 (CLion session) M10a LAUNCH: Ben chose option 2, the map half of hexview pulled forward so
@@ -765,6 +828,11 @@ Engine and records
   started: M6e (PGG map accuracy against the references) and M6f (TRC map accuracy), both after M7b. Dai Senso rules source: "Dai Senso  Living_Rules_February_2014.pdf" (67 pp, text layer).
 
 ## XSD proposals awaiting review
+
+- APPROVED + APPLIED 2026-09-25 (Ben): hexsheet.xsd EndReason gains `source`; HexMapEd Schema updated; all 28
+  TRC river links carry ends. Was: (coordinator, from TRC centre-to-centre rivers) EndReason
+  gains `source` (a river rising on the map). 20 of TRC's 28 river links end at a source, so they carry no
+  `ends` today; `unexplained` would be wrong (it means a doubt).
 
 - APPROVED 2026-09-13 by Ben, applied (hexpackage.xsd `<side>`, trc.package.xml, kMaxSides=16); to
   be reviewed by Ben in XML Copy Editor. Original proposal: a counter's side. Unit types shared across sides (infantry, armour,

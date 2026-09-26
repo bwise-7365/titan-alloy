@@ -33,8 +33,9 @@ TEST(PackageDocTest, TrcParses)
 
   EXPECT_FALSE(doc.terrain.empty());
   EXPECT_FALSE(doc.hexside.empty());
-  ASSERT_EQ(1u, doc.network.size());
+  ASSERT_EQ(2u, doc.network.size());
   EXPECT_EQ("rail", doc.network[0].kind);
+  EXPECT_EQ("river", doc.network[1].kind);
   EXPECT_FALSE(doc.space.empty());
   EXPECT_TRUE(doc.layer.empty());
   EXPECT_FALSE(doc.unit.empty());

@@ -10,6 +10,7 @@
 // rivers (HexView::MapStyle::scratch); neither touches the document.
 
 #include "hexmaped/Document.h"
+#include "hexview/Scene.h"
 #include "hexview/SymbolLibrary.h"
 
 #include <QGraphicsView>
@@ -36,6 +37,9 @@ namespace HexQt {
     // Presentation only: roads, railways and rivers drawn hand-scratched (hexview/Scratch.h), 0 = straight.
     static constexpr int kMaxWaviness = 10;
     void setWaviness(int level);
+    // The drawn map as an SVG document: the same Scene the window paints (hexview's writeSvg), with the
+    // current waviness and the Show hex ids choice. Throws std::invalid_argument when no document is open.
+    std::string svg() const;
 
   signals:
     void hovered(QPointF sheetPixel);
@@ -47,6 +51,8 @@ namespace HexQt {
     void mousePressEvent(QMouseEvent*) override;
 
   private:
+    HexView::Scene buildScene() const;  // the sheet as a Scene, in the current style
+
     const HexMapEd::Document* doc_ = nullptr;
     QGraphicsScene* scene_;
     QGraphicsItem* highlight_ = nullptr;

@@ -18,13 +18,13 @@
   <terrain symbol="oil" rules="oil-field"/>
 
   <!-- sheet line ids -> rules hexside terrain -->
-  <hexside line="river" rules="river"/>
   <hexside line="border" rules="country-border"/>
   <hexside line="district" rules="district-border"/>
   <hexside line="blocked" rules="blocked"/>
   <hexside line="coast" rules="coastline"/>
 
   <network kind="rail" rules="rail"/>
+  <network kind="river" rules="river"/>
 
   <!-- rules spaces shown by sheet panels, or kept off the sheet -->
   <space rules="axis-pool" panel="axis-pool"/>

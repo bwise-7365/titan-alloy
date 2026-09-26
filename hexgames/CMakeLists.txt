@@ -21,6 +21,15 @@ else()
   message(STATUS "IPO/LTO unavailable, skipping: ${_ipoError}")
 endif()
 
+# A configure that once failed to find the compiler can leave the C++ flags cached empty, and every later
+# configure keeps them: no /EHsc means destructors do not run during unwinding (2026-09-25: iterators left
+# registered in debug containers hung GridTest and crashed SessionTest). Refuse such a cache outright.
+if(MSVC AND NOT CMAKE_CXX_FLAGS MATCHES "/EHsc")
+  message(FATAL_ERROR "CMAKE_CXX_FLAGS is '${CMAKE_CXX_FLAGS}' without /EHsc (a stale cache). Delete the "
+                      "CMAKE_CXX_FLAGS* entries from ${CMAKE_BINARY_DIR}/CMakeCache.txt, or the build folder, "
+                      "and configure again.")
+endif()
+
 # Warnings: every target declared below inherits these.
 if(MSVC)
   add_compile_options(/W4 /permissive- /utf-8)
