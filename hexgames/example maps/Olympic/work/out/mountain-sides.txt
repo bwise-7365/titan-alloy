@@ -1,0 +1,95 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+# W18e all-mountain hexsides
+# TEC key (left photo, bottom left, chart printed rotated 90 deg; swatch at photo px x 680-780, y 3800-3950):
+# "All-Mountain Terrain Hexside" swatch = a pale (clear) hex sitting on a solid dark-brown all-mountain hex, with a
+# narrow dark-brown smudge/finger reaching from the shared hexside up INTO the pale hex (about 1/4 hex wide, fading out).
+# The "All-Mountain Terrain" hex swatch is a whole hex filled uniformly dark brown. So a real hexside = a dark tongue
+# along a hexside against otherwise light terrain; a hexside between two dark/brown hexes or a dark hex is NOT one.
+side: 1212:n not   # 1212 and 1312 are dark hexes; edge is the blob outline
+side: 1212:ne not  # between two dark hexes (1212/1312)
+side: 1807:se not  # inside broad mountain blob 1807/1808 area, no finger on light ground
+side: 1808:n not   # internal to the same blob
+side: 1318:se not   # dark ridge runs from 1318 toward 1418 inside the mountain mass, not a finger on light ground
+side: 1319:n not
+side: 1319:ne not
+# doubt: 1318/1319/1418: a darker ridge streak crosses 1318 toward 1418; looks like relief shading inside a mountain mass, not a hexside
+side: 2316:se not
+side: 2521:ne not
+side: 2618:se not
+side: 2619:ne not
+side: 2619:se not
+side: 2620:ne not
+side: 2714:se not
+side: 2719:se not
+side: 2720:n not
+side: 2720:ne not
+side: 2720:se not
+side: 2722:se not
+side: 2812:ne not
+side: 2814:se not
+side: 2815:ne not
+side: 2916:n not
+side: 2918:se not
+side: 2919:n not
+side: 2919:ne not
+# cols 21-29 (left photo): mountain relief is soft gradient; no narrow dark finger against light ground found on any listed side; several sit on edges of dark hexes (2417,2418,2719,2720,2821,2822)
+side: 3424:ne not  # cols 32-36 rows 22-26 (middle photo): broad dark mass 3424-3426/3525-3526, no finger on light ground
+side: 3424:se not
+side: 3425:n not
+side: 3425:ne not
+side: 3425:se not
+side: 3426:n not
+side: 3426:ne not
+side: 3426:se not
+side: 3525:n not
+side: 3525:ne not
+side: 3525:se not
+side: 3526:n not
+side: 3526:ne not
+side: 3526:se not
+side: 3527:n not
+side: 3226:se not
+side: 3325:se not
+side: 4223:ne real   # dark tongue crossing the 4223/4323 hexside and reaching into 4323, resembles the TEC swatch
+# doubt: 4223:ne: tongue at photo (middle) sits between 4223, 4323 and 4324; could be 4223:se or 4323:sw instead
+side: 4124:n real    # dark finger at the top of 4124 running into 4023/4123
+# doubt: 4124:n: finger lies inside shaded ground; alternatively just relief shading of 4023 hex
+side: 4020:se real   # dark finger pointing down along 4020's east side (edges ne and se); only se is a candidate
+# doubt: 4020:se: finger may equally be 4020:ne (edge with 4120); coordinator to decide the pair
+side: 4118:se not
+side: 4119:ne not
+side: 4119:se not
+side: 4023:se not
+side: 4024:n not
+side: 4024:ne not
+side: 4024:se not
+side: 4025:n not
+side: 4025:ne not
+side: 4025:se not
+side: 4208:n not   # 4208 is a dark hex (with 4308, 4209); edges of a dark hex
+side: 4208:ne not
+side: 4208:se not
+side: 3710:se not  # small mountain blob 3710/3810/3711, dark hexes, no finger on light ground
+side: 4518:ne real  # clear dark finger (about 1/4 hex wide) from 4518 running north-east into 4617 and down along 4518/4618, light ground both sides; best match to the TEC swatch
+side: 4518:se real
+# doubt: 4518:ne/se: the finger lies mostly inside 4617 (west part) and along the 4518/4618 side; may be one side only
+side: 3924:se not
+side: 3925:ne not
+side: 3925:se not
+side: 4226:se not
+side: 4320:ne not  # dark hex 4320 region, broad shading
+side: 4320:se not
+side: 4321:n not
+side: 5321:se not  # Kokura massif: broad gradient, hexes 5322/5422 dark, no finger on light ground
+side: 5322:ne not
+side: 5322:se not
+side: 4914:se not
+side: 4915:n not
+# doubt: 4914:se, 4915:n: a darker blob sits across the 4914/4915/5014 corner, but both sides are already brown mountain (unlike the swatch, which has a light neighbour); left as not
+
+# REPORT
+# All 73 candidates judged. Real: 5 (4020:se, 4124:n, 4223:ne, 4518:ne, 4518:se); not: 68. New (not in candidates): 0 found.
+# Best evidence: 4518 (clear finger on light ground). 4020, 4124, 4223 are plausible but sit inside brown terrain: doubts.
+# Most candidates are edges of dark all-mountain hexes or of soft relief shading, not fingers. Only middle/right/left
+# regions with crops were examined; the swatch was interpreted as a dark tongue reaching from the hexside into a light hex.
+Copyright Ben Paul Wise. All Rights Reserved.

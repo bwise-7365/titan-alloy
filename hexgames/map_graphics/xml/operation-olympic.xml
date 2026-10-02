@@ -4,16 +4,17 @@
   <grid id="main" orientation="flat" offset="odd" cols="61" rows="35" size="26.075" ox="33.3" oy="-5.94" id-format="{col:02}{row:02}" row-start="0" terrain="clear" id-side="n" clip="0100 0106 0113 0116 0117 0118 0119 0120 0121 0122 0123 0124 0125 0126 0127 0128 0129 0130 0131 0132 0133 0134 0200 0206 0216 0217 0218 0219 0220 0221 0222 0223 0224 0225 0226 0227 0228 0229 0230 0231 0232 0233 0234 0300 0306 0317 0318 0319 0320 0321 0322 0323 0324 0325 0326 0327 0328 0329 0330 0331 0332 0333 0334 0400 0417 0418 0419 0420 0421 0422 0423 0424 0425 0426 0427 0428 0429 0430 0431 0432 0433 0434 0500 0517 0518 0519 0520 0521 0522 0523 0524 0525 0526 0527 0528 0529 0530 0531 0532 0533 0534 0600 0617 0618 0619 0620 0621 0622 0623 0624 0625 0626 0627 0628 0629 0630 0631 0632 0633 0634 0700 0724 0725 0726 0727 0728 0729 0730 0731 0732 0733 0734 0800 0823 0824 0825 0826 0827 0828 0829 0830 0831 0832 0833 0834 0900 0924 0925 0926 0927 0928 0929 0930 0931 0932 0933 0934 1000 1023 1024 1025 1026 1027 1028 1029 1030 1031 1032 1033 1034 1100 1124 1125 1126 1127 1128 1129 1130 1131 1132 1133 1134 1223 1224 1225 1226 1227 1228 1229 1230 1231 1232 1233 1234 1300 1324 1325 1326 1327 1328 1329 1330 1331 1332 1333 1334 1400 1423 1424 1425 1426 1427 1428 1429 1430 1431 1432 1433 1434 1500 1524 1525 1526 1527 1528 1529 1530 1531 1532 1533 1534 1626 1627 1628 1629 1630 1631 1632 1633 1634 1700 1727 1728 1729 1730 1731 1732 1733 1734 1826 1827 1828 1829 1830 1831 1832 1833 1834 1900 1927 1928 1929 1930 1931 1932 1933 1934 2000 2026 2027 2028 2029 2030 2031 2032 2033 2034 2100 2127 2128 2129 2130 2131 2132 2133 2134 2200 2226 2227 2228 2229 2230 2231 2232 2233 2234 2300 2331 2332 2333 2334 2400 2434 2500 2634 2700 2834 2900 3034 3100 3200 3234 3300 3400 3434 3500 3600 3634 3700 3800 3834 3900 4000 4034 4100 4200 4234 4300 4400 4434 4500 4600 4634 4700 4734 4800 4801 4802 4833 4834 4900 4933 4934 5032 5034 5100 5128 5131 5132 5133 5134 5200 5226 5227 5228 5229 5230 5231 5232 5233 5234 5300 5327 5328 5329 5330 5331 5332 5333 5334 5400 5426 5427 5428 5429 5430 5431 5432 5433 5434 5500 5527 5528 5529 5530 5531 5532 5533 5534 5600 5626 5627 5628 5629 5630 5631 5632 5633 5634 5700 5701 5725 5726 5727 5728 5729 5730 5731 5732 5733 5734 5800 5823 5824 5825 5826 5827 5828 5829 5830 5831 5832 5833 5834 5900 5901 5916 5917 5918 5924 5925 5926 5927 5928 5929 5930 5931 5932 5933 5934 6000 6018 6023 6024 6025 6026 6027 6028 6029 6030 6031 6032 6033 6034 6100 6105 6116 6117 6118 6119 6124 6125 6126 6127 6128 6129 6130 6131 6132 6133 6134"/>
   <palette>
     <color id="margin" value="#3fa9e0" name="sheet margin"/>
-    <color id="paper" value="#dfe2e8" name="clear"/>
-    <color id="tan" value="#bdb28a" name="rough"/>
-    <color id="brown" value="#8a7a4e" name="all-mountain"/>
-    <color id="checkme" value="#e0149a" name="to verify on the physical map (all-mountain hexside)"/>
-    <color id="seablue" value="#2fb0f0" name="all-sea"/>
-    <color id="pale" value="#a9d8f5" name="assault hex"/>
+    <color id="paper" value="#f4f1e8" name="clear"/>
+    <color id="tan" value="#b49e70" name="rough"/>
+    <color id="brown" value="#7d6636" name="all-mountain"/>
+    <color id="checkme" value="#645028" name="all-mountain hexside ( e0149a magenta so it stands out while Ben edits)"/>
+    <color id="seablue" value="#4bb1fb" name="all-sea"/>
+    <color id="pale" value="#b7e2fe" name="assault hex"/>
     <color id="grid" value="#8f8f98"/>
     <color id="riverblue" value="#58b4e8" name="river hexside"/>
     <color id="ink" value="#222222"/>
     <color id="red" value="#b0282a" name="deployment letters"/>
+    <color id="objgrey" value="#7d7d86" name="American Objective Line"/>
     <color id="roadgrey" value="#6b6b6b" name="road"/>
   </palette>
   <terrains>
@@ -26,12 +27,14 @@
   <lines>
     <line id="road" stroke="roadgrey" width="3"/>
     <line id="river" stroke="riverblue" width="5"/>
-    <line id="mountain-side" stroke="checkme" width="7" dash="10,4"/>
+    <line id="objective-line" stroke="objgrey" width="4" dash="8,5"/>
+    <line id="boundary-line" stroke="red" width="4" dash="8,5"/>
+    <line id="mountain-side" stroke="checkme" width="7"/>
   </lines>
-  <hexes terrain="rough" ids="0509 0510 0511 0610 0611 0612 0711 0713 0714 0808 0813 0814 0815 0907 0908 0918 0919 1007 1013 1018 1019 1104 1105 1107 1108 1112 1113 1114 1119 1203 1204 1206 1207 1211 1213 1214 1217 1218 1219 1306 1313 1319 1320 1321 1406 1407 1412 1413 1414 1417 1419 1420 1421 1514 1518 1519 1520 1521 1613 1614 1615 1618 1620 1621 1709 1710 1713 1714 1715 1719 1806 1808 1809 1813 1814 1815 1816 1820 1906 1907 1908 1909 1910 1911 1914 1915 1916 1917 2005 2006 2008 2009 2010 2011 2013 2014 2015 2016 2018 2019 2108 2111 2112 2114 2115 2116 2117 2118 2119 2120 2121 2201 2206 2207 2208 2209 2214 2215 2216 2217 2218 2219 2220 2221 2301 2306 2307 2309 2310 2313 2314 2315 2316 2318 2319 2320 2321 2323 2324 2407 2408 2409 2410 2411 2412 2413 2414 2415 2417 2418 2419 2420 2421 2422 2423 2424 2509 2511 2512 2514 2517 2518 2519 2520 2521 2522 2523 2525 2606 2607 2609 2610 2611 2612 2613 2618 2621 2622 2623 2624 2625 2706 2711 2712 2713 2714 2715 2717 2718 2721 2722 2723 2724 2725 2726 2810 2811 2812 2813 2816 2818 2820 2822 2823 2824 2826 2827 2908 2912 2914 2917 2920 2921 2922 2923 2924 2925 3012 3013 3014 3016 3017 3020 3021 3022 3023 3024 3025 3026 3027 3028 3106 3114 3115 3116 3117 3118 3119 3122 3123 3124 3125 3126 3127 3128 3130 3206 3217 3218 3219 3220 3221 3222 3223 3224 3225 3227 3228 3231 3307 3319 3320 3321 3322 3323 3324 3326 3327 3328 3329 3331 3332 3333 3413 3414 3417 3419 3420 3421 3422 3423 3427 3428 3431 3432 3433 3518 3519 3520 3522 3523 3524 3528 3529 3530 3531 3618 3619 3622 3623 3624 3625 3626 3628 3630 3631 3632 3704 3710 3711 3716 3720 3721 3722 3723 3724 3725 3726 3731 3732 3810 3815 3819 3820 3822 3823 3824 3825 3826 3827 3828 3830 3906 3910 3919 3920 3921 3922 3923 3924 3926 3927 3928 3929 3931 3932 4004 4014 4019 4020 4021 4022 4026 4027 4115 4118 4121 4122 4123 4124 4125 4126 4127 4128 4203 4207 4209 4214 4215 4216 4217 4219 4220 4221 4222 4223 4224 4225 4226 4227 4304 4308 4309 4315 4316 4317 4318 4319 4322 4324 4325 4326 4327 4328 4408 4417 4418 4419 4420 4422 4423 4424 4425 4426 4427 4428 4507 4518 4519 4520 4523 4524 4525 4526 4530 4531 4618 4624 4625 4705 4706 4707 4708 4709 4710 4720 4721 4722 4723 4724 4726 4729 4730 4731 4732 4804 4805 4806 4807 4809 4810 4811 4813 4814 4815 4819 4820 4821 4822 4823 4824 4830 4831 4901 4902 4903 4904 4906 4908 4910 4911 4912 4913 4915 4916 4918 4919 4920 4921 4922 4923 4924 5001 5008 5009 5010 5011 5012 5013 5014 5017 5018 5022 5023 5102 5108 5111 5112 5113 5118 5119 5122 5208 5217 5218 5221 5317 5318 5319 5321 5322 5323 5417 5419 5420 5422 5519 5521 5522 5524 5624"/>
-  <hexes terrain="mountain" ids="1212 1307 1312 1318 1418 1619 1807 2308 2317 2416 2510 2513 2524 2619 2620 2719 2720 2814 2815 2817 2819 2821 2913 2915 2916 2918 2919 3015 3018 3019 3120 3121 3226 3325 3418 3424 3425 3426 3525 3526 3527 3629 3925 4023 4024 4025 4119 4120 4208 4218 4320 4321 4323 4914 5421"/>
-  <hexes terrain="sea" ids="0101 0102 0103 0104 0105 0107 0108 0109 0110 0111 0112 0114 0115 0201 0202 0203 0204 0205 0207 0208 0209 0210 0211 0212 0213 0214 0215 0301 0302 0303 0304 0305 0307 0308 0309 0310 0311 0312 0313 0314 0315 0316 0401 0402 0403 0404 0405 0406 0407 0409 0410 0411 0412 0413 0414 0415 0416 0501 0502 0503 0504 0505 0506 0507 0508 0513 0514 0515 0516 0601 0602 0603 0604 0605 0606 0607 0608 0614 0615 0616 0701 0702 0703 0704 0705 0707 0708 0709 0716 0717 0718 0719 0720 0721 0722 0723 0801 0802 0803 0804 0806 0809 0818 0819 0820 0821 0822 0901 0902 0906 0910 0917 0920 0921 0922 0923 1001 1008 1009 1010 1017 1020 1021 1022 1101 1102 1103 1109 1110 1121 1122 1123 1200 1201 1202 1208 1209 1210 1222 1301 1302 1309 1310 1323 1401 1402 1403 1409 1501 1502 1503 1504 1512 1523 1600 1601 1602 1603 1604 1610 1611 1624 1625 1701 1702 1703 1704 1705 1725 1726 1800 1801 1802 1803 1825 1901 1902 1903 1926 2001 2002 2003 2004 2101 2102 2103 2125 2126 2202 2203 2302 2303 2304 2327 2328 2329 2330 2401 2402 2403 2404 2428 2429 2430 2431 2432 2433 2501 2502 2503 2504 2505 2506 2529 2530 2531 2532 2533 2534 2600 2601 2602 2603 2604 2605 2628 2629 2630 2631 2632 2633 2701 2702 2703 2704 2705 2708 2709 2729 2730 2731 2732 2733 2734 2800 2801 2802 2803 2805 2807 2808 2809 2829 2830 2831 2832 2833 2901 2902 2903 2904 2907 2909 2910 2911 2930 2931 2932 2933 2934 3000 3001 3002 3003 3008 3011 3031 3032 3033 3101 3102 3103 3104 3112 3132 3133 3134 3201 3202 3203 3204 3212 3233 3301 3302 3303 3304 3305 3309 3311 3312 3313 3334 3401 3402 3403 3404 3405 3408 3409 3410 3501 3502 3503 3504 3505 3506 3507 3508 3510 3511 3512 3513 3534 3601 3602 3604 3605 3606 3607 3611 3612 3613 3701 3702 3703 3706 3707 3708 3712 3713 3714 3733 3734 3801 3802 3803 3806 3807 3808 3812 3813 3833 3901 3902 3903 3912 3913 3934 4001 4002 4003 4009 4010 4011 4012 4101 4102 4111 4112 4113 4132 4133 4134 4201 4202 4205 4211 4212 4229 4230 4231 4232 4233 4301 4302 4306 4311 4312 4313 4331 4332 4333 4334 4401 4402 4405 4410 4411 4412 4432 4433 4501 4502 4503 4533 4534 4601 4602 4603 4604 4633 4701 4702 4703 4927 4928 4929 4932 5000 5025 5026 5027 5028 5029 5030 5031 5033 5101 5106 5125 5126 5127 5129 5130 5201 5202 5204 5205 5210 5211 5224 5225 5301 5302 5303 5304 5305 5306 5307 5310 5311 5314 5315 5325 5326 5401 5402 5403 5404 5405 5406 5407 5408 5409 5411 5412 5413 5414 5415 5424 5425 5501 5502 5503 5504 5505 5506 5507 5508 5509 5510 5511 5513 5514 5515 5516 5525 5526 5601 5602 5603 5604 5605 5606 5607 5608 5609 5610 5611 5612 5613 5614 5615 5616 5625 5702 5703 5704 5705 5706 5708 5709 5710 5711 5712 5713 5714 5715 5716 5720 5722 5723 5801 5802 5803 5804 5805 5808 5809 5810 5811 5812 5813 5814 5815 5816 5817 5818 5819 5820 5821 5822 5902 5903 5904 5905 5906 5909 5910 5911 5912 5913 5914 5915 5919 5920 5921 5922 5923 6001 6002 6003 6004 6005 6006 6007 6008 6009 6010 6011 6012 6013 6014 6015 6016 6017 6019 6020 6021 6022 6101 6102 6103 6104 6106 6107 6108 6109 6110 6111 6112 6113 6114 6115 6120 6121 6122 6123"/>
-  <hexes terrain="assault" ids="0706 0805 0816 0817 0903 0904 0905 0916 1002 1016 1404 1505 1605 1623 1723 1724 1804 1823 1824 1904 1924 1925 2024 2025 2104 2204 2225 2305 2326 2426 2427 2528 3010 4505 4605 5206 5410 5512 5717 5718 5719"/>
+  <hexes terrain="rough" ids="0509 0510 0511 0610 0611 0612 0711 0713 0714 0808 0813 0814 0815 0907 0908 0918 0919 1007 1013 1018 1019 1104 1105 1107 1108 1112 1113 1114 1119 1203 1204 1206 1207 1211 1213 1214 1217 1218 1219 1306 1313 1319 1320 1321 1406 1407 1412 1413 1414 1417 1419 1420 1421 1514 1518 1519 1520 1521 1613 1614 1615 1618 1620 1621 1709 1710 1713 1714 1715 1719 1806 1808 1809 1813 1814 1815 1816 1820 1906 1907 1908 1909 1910 1911 1914 1915 1916 1917 2005 2006 2008 2009 2010 2011 2013 2014 2015 2016 2018 2019 2108 2111 2112 2114 2115 2116 2117 2118 2119 2120 2121 2201 2206 2207 2208 2209 2214 2215 2216 2217 2218 2219 2220 2221 2301 2306 2307 2309 2310 2313 2314 2315 2316 2319 2320 2321 2323 2324 2407 2408 2409 2410 2411 2412 2413 2414 2415 2417 2418 2419 2420 2421 2422 2423 2424 2509 2511 2512 2514 2517 2518 2519 2520 2521 2522 2523 2525 2606 2607 2609 2610 2611 2612 2613 2618 2621 2622 2623 2624 2625 2706 2711 2712 2713 2714 2715 2717 2718 2721 2722 2723 2724 2725 2726 2810 2811 2812 2813 2816 2818 2820 2822 2823 2824 2826 2827 2908 2912 2914 2917 2920 2921 2922 2923 2924 2925 3012 3013 3014 3016 3017 3020 3021 3022 3023 3024 3025 3026 3027 3028 3106 3114 3115 3116 3117 3118 3119 3122 3125 3126 3127 3128 3130 3206 3217 3218 3219 3220 3221 3222 3223 3224 3225 3227 3228 3231 3307 3319 3320 3321 3322 3323 3324 3326 3327 3328 3329 3331 3332 3333 3413 3414 3417 3419 3420 3421 3422 3423 3427 3428 3431 3432 3433 3518 3519 3520 3522 3523 3524 3528 3529 3530 3531 3618 3619 3622 3623 3624 3625 3626 3628 3630 3631 3632 3704 3710 3711 3716 3720 3721 3722 3723 3724 3725 3726 3731 3732 3810 3815 3819 3820 3822 3823 3824 3825 3826 3827 3828 3830 3906 3910 3919 3920 3921 3922 3923 3924 3926 3927 3928 3929 3931 3932 4004 4014 4019 4020 4021 4022 4026 4027 4115 4118 4121 4122 4123 4124 4125 4126 4127 4128 4203 4207 4209 4214 4215 4216 4217 4219 4220 4221 4222 4223 4224 4225 4226 4227 4304 4308 4309 4315 4316 4317 4318 4319 4322 4324 4325 4326 4327 4328 4408 4417 4418 4419 4420 4422 4423 4424 4425 4426 4427 4428 4507 4518 4519 4520 4523 4524 4525 4526 4530 4531 4618 4624 4705 4706 4707 4708 4709 4710 4720 4721 4722 4723 4724 4726 4729 4730 4731 4732 4804 4805 4806 4807 4809 4810 4811 4813 4814 4815 4819 4820 4821 4824 4830 4831 4901 4902 4903 4904 4906 4908 4910 4911 4912 4913 4915 4916 4918 4919 4920 4921 4922 4923 4924 5001 5008 5009 5010 5011 5012 5013 5014 5017 5018 5022 5023 5102 5108 5111 5112 5113 5118 5119 5122 5208 5217 5218 5221 5317 5318 5319 5321 5322 5323 5417 5419 5420 5422 5519 5521 5522 5524 5624"/>
+  <hexes terrain="mountain" ids="1212 1307 1312 1318 1418 1619 1807 2308 2317 2318 2416 2510 2513 2524 2619 2620 2719 2720 2814 2815 2817 2819 2821 2913 2915 2916 2918 2919 3015 3018 3019 3120 3121 3123 3124 3226 3325 3418 3424 3425 3426 3525 3526 3527 3629 3925 4023 4024 4025 4119 4120 4208 4218 4320 4321 4323 4625 4822 4823 4914 5421"/>
+  <hexes terrain="sea" ids="0101 0102 0103 0104 0105 0107 0108 0109 0110 0111 0112 0114 0115 0201 0202 0203 0204 0205 0207 0208 0209 0210 0211 0212 0213 0214 0215 0301 0302 0303 0304 0305 0307 0308 0309 0310 0311 0312 0313 0314 0315 0316 0401 0402 0403 0404 0405 0406 0407 0409 0410 0411 0412 0413 0414 0415 0416 0501 0502 0503 0504 0505 0506 0507 0508 0513 0514 0515 0516 0601 0602 0603 0604 0605 0606 0607 0608 0614 0615 0616 0701 0702 0703 0704 0705 0706 0707 0708 0709 0716 0717 0718 0719 0720 0721 0722 0723 0801 0802 0803 0804 0806 0809 0818 0819 0820 0821 0822 0901 0902 0906 0910 0920 0921 0922 0923 1001 1008 1009 1010 1017 1020 1021 1022 1101 1102 1103 1109 1110 1121 1122 1123 1200 1201 1202 1208 1209 1210 1222 1301 1302 1309 1310 1323 1401 1402 1403 1409 1501 1502 1503 1504 1512 1523 1600 1601 1602 1603 1604 1610 1611 1624 1625 1701 1702 1703 1704 1725 1726 1800 1801 1802 1803 1825 1901 1902 1903 1926 2001 2002 2003 2004 2101 2102 2103 2125 2126 2202 2203 2302 2303 2304 2327 2328 2329 2330 2401 2402 2403 2404 2428 2429 2430 2431 2432 2433 2501 2502 2503 2504 2505 2506 2529 2530 2531 2532 2533 2534 2600 2601 2602 2603 2604 2605 2628 2629 2630 2631 2632 2633 2701 2702 2703 2704 2705 2708 2709 2729 2730 2731 2732 2733 2734 2800 2801 2802 2803 2805 2807 2808 2809 2829 2830 2831 2832 2833 2901 2902 2903 2904 2907 2909 2910 2911 2930 2931 2932 2933 2934 3000 3001 3002 3003 3008 3010 3011 3031 3032 3033 3101 3102 3103 3104 3112 3132 3133 3134 3201 3202 3203 3204 3212 3233 3301 3302 3303 3304 3305 3309 3311 3312 3313 3334 3401 3402 3403 3404 3405 3408 3409 3410 3501 3502 3503 3504 3505 3506 3507 3508 3510 3511 3512 3513 3534 3601 3602 3604 3605 3606 3607 3611 3612 3613 3701 3702 3703 3706 3707 3708 3712 3713 3714 3733 3734 3801 3802 3803 3806 3807 3808 3812 3813 3833 3901 3902 3903 3912 3913 3934 4001 4002 4003 4009 4010 4011 4012 4101 4102 4111 4112 4113 4132 4133 4134 4201 4202 4205 4211 4212 4229 4230 4231 4232 4233 4301 4302 4306 4311 4312 4313 4331 4332 4333 4334 4401 4402 4405 4410 4411 4412 4432 4433 4501 4502 4503 4505 4533 4534 4601 4602 4603 4604 4633 4701 4702 4703 4927 4928 4929 4932 5000 5025 5026 5027 5028 5029 5030 5031 5033 5101 5106 5125 5126 5127 5129 5130 5201 5202 5204 5205 5206 5210 5211 5224 5225 5301 5302 5303 5304 5305 5306 5307 5310 5314 5315 5325 5326 5401 5402 5403 5404 5405 5406 5407 5408 5409 5413 5414 5415 5424 5425 5501 5502 5503 5504 5505 5506 5507 5508 5509 5510 5511 5513 5514 5515 5516 5525 5526 5601 5602 5603 5604 5605 5606 5607 5608 5609 5610 5611 5612 5613 5614 5615 5616 5625 5702 5703 5704 5705 5706 5709 5710 5711 5712 5713 5714 5715 5716 5720 5722 5723 5801 5802 5803 5804 5805 5808 5809 5810 5811 5812 5813 5814 5815 5816 5817 5818 5819 5820 5821 5822 5902 5903 5904 5905 5906 5909 5910 5911 5912 5913 5914 5915 5919 5920 5921 5922 5923 6001 6002 6003 6004 6005 6006 6007 6008 6009 6010 6011 6012 6013 6014 6015 6016 6017 6019 6020 6021 6022 6101 6102 6103 6104 6106 6107 6108 6109 6110 6111 6112 6113 6114 6115 6120 6121 6122 6123 5721 5623 5724"/>
+  <hexes terrain="assault" ids="0805 0816 0817 0903 0904 0905 0916 0917 1002 1016 1404 1505 1605 1623 1705 1723 1724 1804 1823 1824 1904 1924 1925 2024 2025 2104 2204 2225 2305 2326 2426 2427 2528 5410 5411 5512 5717 5718 5719 5311 5412"/>
   <edge at="0711:se" line="river"/>
   <edge at="0712:n" line="river"/>
   <edge at="0811:n" line="river"/>
@@ -235,7 +238,6 @@
   <edge at="3129:ne" line="river"/>
   <edge at="3130:se" line="river"/>
   <edge at="3131:ne" line="river"/>
-  <edge at="3133:ne" line="river"/>
   <edge at="3214:se" line="river"/>
   <edge at="3215:ne" line="river"/>
   <edge at="3215:se" line="river"/>
@@ -398,7 +400,6 @@
   <edge at="5124:ne" line="river"/>
   <edge at="5216:n" line="river"/>
   <edge at="5224:n" line="river"/>
-  <edge at="5313:ne" line="river"/>
   <edge at="5320:n" line="river"/>
   <edge at="5320:ne" line="river"/>
   <edge at="5420:n" line="river"/>
@@ -407,11 +408,21 @@
   <edge at="5521:ne" line="river"/>
   <edge at="5521:se" line="river"/>
   <edge at="5522:ne" line="river"/>
-  <edge at="5620:ne" line="river"/>
-  <edge at="5620:se" line="river"/>
   <edge at="5621:n" line="river"/>
   <edge at="5622:n" line="river"/>
-  <edge at="5807:n" line="river"/>
+  <edge at="3925:se" line="mountain-side"/>
+  <edge at="4020:ne" line="mountain-side"/>
+  <edge at="4020:se" line="mountain-side"/>
+  <edge at="4023:ne" line="mountain-side"/>
+  <edge at="4023:se" line="mountain-side"/>
+  <edge at="4025:ne" line="mountain-side"/>
+  <edge at="4124:n" line="mountain-side"/>
+  <edge at="4222:se" line="mountain-side"/>
+  <edge at="4223:ne" line="mountain-side"/>
+  <edge at="4319:se" line="mountain-side"/>
+  <edge at="4321:ne" line="mountain-side"/>
+  <edge at="4518:ne" line="mountain-side"/>
+  <edge at="4518:se" line="mountain-side"/>
   <edge at="1212:n" line="mountain-side"/>
   <edge at="1212:ne" line="mountain-side"/>
   <edge at="1318:se" line="mountain-side"/>
@@ -420,7 +431,6 @@
   <edge at="1807:se" line="mountain-side"/>
   <edge at="1808:n" line="mountain-side"/>
   <edge at="2316:se" line="mountain-side"/>
-  <edge at="2521:ne" line="mountain-side"/>
   <edge at="2618:se" line="mountain-side"/>
   <edge at="2619:ne" line="mountain-side"/>
   <edge at="2619:se" line="mountain-side"/>
@@ -436,7 +446,6 @@
   <edge at="2815:ne" line="mountain-side"/>
   <edge at="2916:n" line="mountain-side"/>
   <edge at="2918:se" line="mountain-side"/>
-  <edge at="2919:n" line="mountain-side"/>
   <edge at="2919:ne" line="mountain-side"/>
   <edge at="3226:se" line="mountain-side"/>
   <edge at="3325:se" line="mountain-side"/>
@@ -458,33 +467,28 @@
   <edge at="3710:se" line="mountain-side"/>
   <edge at="3924:se" line="mountain-side"/>
   <edge at="3925:ne" line="mountain-side"/>
-  <edge at="3925:se" line="mountain-side"/>
-  <edge at="4020:se" line="mountain-side"/>
-  <edge at="4023:se" line="mountain-side"/>
   <edge at="4024:n" line="mountain-side"/>
   <edge at="4024:ne" line="mountain-side"/>
   <edge at="4024:se" line="mountain-side"/>
   <edge at="4025:n" line="mountain-side"/>
-  <edge at="4025:ne" line="mountain-side"/>
+  <edge at="4025:se" line="mountain-side"/>
   <edge at="4118:se" line="mountain-side"/>
   <edge at="4119:ne" line="mountain-side"/>
   <edge at="4119:se" line="mountain-side"/>
-  <edge at="4124:n" line="mountain-side"/>
   <edge at="4208:n" line="mountain-side"/>
   <edge at="4208:ne" line="mountain-side"/>
   <edge at="4208:se" line="mountain-side"/>
-  <edge at="4223:ne" line="mountain-side"/>
   <edge at="4226:se" line="mountain-side"/>
   <edge at="4320:ne" line="mountain-side"/>
   <edge at="4320:se" line="mountain-side"/>
-  <edge at="4321:n" line="mountain-side"/>
-  <edge at="4518:ne" line="mountain-side"/>
-  <edge at="4518:se" line="mountain-side"/>
+  <edge at="4517:se" line="mountain-side"/>
+  <edge at="4519:ne" line="mountain-side"/>
   <edge at="4914:se" line="mountain-side"/>
   <edge at="4915:n" line="mountain-side"/>
   <edge at="5321:se" line="mountain-side"/>
   <edge at="5322:ne" line="mountain-side"/>
   <edge at="5322:se" line="mountain-side"/>
+  <edge at="4811:ne" line="mountain-side"/>
   <edge at="4614:se" line="river"/>
   <edge at="4613:se" line="river"/>
   <edge at="5109:s" line="river"/>
@@ -511,136 +515,399 @@
   <edge at="0915:se" line="river"/>
   <edge at="0810:se" line="river"/>
   <edge at="1612:ne" line="river"/>
-  <!-- roads traced by eye on the tilted photo 2026-09-26; DRAFT, see example maps/Olympic/reading-notes.md; the last 14 links close one-hex seam gaps -->
-  <link kind="road" line="road" hexes="3315 3415 3515 3615 3715 3814 3914" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3616 3516 3416 3316" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3616 3517 3417 3317" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3616 3615" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3717 3817 3917 4017 4117 4217" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3717 3718 3719 3720" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3817 3918 4018 4119" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="1003 1104 1203 1303" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1003 1004 1005 1006" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1006 1106 1205 1305 1405" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="0807 0907 1007 1108" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="1706 1806 1906 2006 2106 2206 2306 2406" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1906 1907 1908" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2406 2506 2606 2706 2806 2805 2905 3005 3106 3206 3306" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2806 2906 3006 3107 3207" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3603 3704 3804 3805 3905" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="3905 3906 3907 4007" ends="place place"/>
-  <link kind="road" line="road" hexes="3905 4005 4105 4104 4204" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4007 4107 4207" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4007 4008" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4204 4304 4404 4504" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="4307 4407 4507 4607 4707 4807" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4807 4907 5007 5107 5207" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4807 4806 4805 4905 5004 5104 5103" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1311 1211 1111 1011 0911 0811 0711 0611 0511" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="0913 0812 0712 0612 0512" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="0913 0914 1014" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="0912 1012 1112 1212 1312 1412" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="1509 1609 1710 1810 1910 2010 2110 2210 2310" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1609 1610 1711 1811 1912 2012 2113 2114 2214" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="1911 2011 2111 2211 2311 2411" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2509 2609 2610 2710" ends="place place"/>
-  <link kind="road" line="road" hexes="2710 2711 2811 2912 3012 3013 3114" ends="place place"/>
-  <link kind="road" line="road" hexes="2811 2812 2813 2914 3014" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="2710 2610 2511 2411 2311" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3608 3709 3809 3910 3911 3811 3711 3610 3609" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3809 3909 3908" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3914 4013 4114 4213" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4109 4110" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="4213 4313 4413 4513 4612" ends="place place"/>
-  <link kind="road" line="road" hexes="4608 4609 4610 4611 4612" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4612 4712 4812 4912 5012 5112 5212" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4708 4808 4909 5009 5109" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="5009 5010 5011 5012" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="1116 1216 1316 1416" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="0914 1014 1115 1116" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="1116 1117 1118 1119 1120 1220" ends="place place"/>
-  <link kind="road" line="road" hexes="1118 1018 0919 0818" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="1315 1415 1516 1616" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="1616 1716 1816 1916 2016" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1616 1717 1817 1918 2017 2016" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1817 1818 1919 1920" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2016 2116 2115 2214" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="2314 2414 2515 2615 2716 2816 2917 3017 3117 3216" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2515 2516 2517 2518 2519 2419" ends="place place"/>
-  <link kind="road" line="road" hexes="2419 2520 2620 2720 2820" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3114 3214 3215 3216 3317" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4716 4816 4917 5016 5116 5215" ends="place place"/>
-  <link kind="road" line="road" hexes="4613 4714 4715 4716" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4414 4515 4615 4716" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4917 5017 5117 5217" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="5215 5316 5416 5517" ends="place place"/>
-  <link kind="road" line="road" hexes="5517 5518 5519 5520 5620" ends="place place"/>
-  <link kind="road" line="road" hexes="5216 5217 5218 5219 5320" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="1320 1420 1520 1620 1721 1821 1922" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="1822 1922 2022 2123 2223 2324 2424" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="1920 1921 2021 2122 2222 2322" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2920 2921 3021 3121 3221" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3224 3125 3025 2926" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3221 3222 3223 3224" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3320 3420 3521 3621 3721 3821 3922 4022 4122 4222" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3720 3721 3722 3723 3724 3725 3726" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3822 3823 3824 3825 3826" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3320 3321 3322 3323" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4221 4321 4421 4521" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="4521 4522 4622 4623 4724 4824 4825 4926" ends="place place"/>
-  <link kind="road" line="road" hexes="4926 4925 5024 5124 5223" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="5021 5121 5221" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="4521 4620 4720" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="5223 5323 5423 5523" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="5523 5522 5521 5620" ends="place place"/>
-  <link kind="road" line="road" hexes="5220 5320 5420 5521" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2827 2928 3028 3128" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="2928 2927 2926" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="2928 2929 3029 3129 3229 3329" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3532 3632 3732 3831 3931 4031 4030 4130" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="3729 3829 3930 4029 4130" ends="unexplained place"/>
-  <link kind="road" line="road" hexes="3626 3627 3628 3629 3630 3631" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3329 3429 3529 3628" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="3532 3531 3530 3430 3330" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="4130 4129 4228" ends="place place"/>
-  <link kind="road" line="road" hexes="4228 4227 4327 4427 4527 4627 4727" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="4727 4728 4729 4730 4731 4732" ends="unexplained unexplained"/>
-  <link kind="road" line="road" hexes="4228 4329 4429 4430 4431" ends="place unexplained"/>
-  <link kind="road" line="road" hexes="3717 3616" ends="junction junction"/>
-  <link kind="road" line="road" hexes="4207 4307" ends="junction junction"/>
-  <link kind="road" line="road" hexes="1311 1312" ends="junction junction"/>
-  <link kind="road" line="road" hexes="0511 0512" ends="junction junction"/>
-  <link kind="road" line="road" hexes="2310 2311" ends="junction junction"/>
-  <link kind="road" line="road" hexes="4109 4008" ends="junction junction"/>
-  <link kind="road" line="road" hexes="4608 4607" ends="junction junction"/>
-  <link kind="road" line="road" hexes="1315 1316" ends="junction junction"/>
-  <link kind="road" line="road" hexes="4414 4413" ends="junction junction"/>
-  <link kind="road" line="road" hexes="1320 1220" ends="junction junction"/>
-  <link kind="road" line="road" hexes="2920 2820" ends="junction junction"/>
-  <link kind="road" line="road" hexes="3826 3726" ends="junction junction"/>
-  <link kind="road" line="road" hexes="5221 5220" ends="junction junction"/>
+  <edge at="5317:s" line="mountain-side"/>
+  <edge at="5318:ne" line="mountain-side"/>
+  <edge at="5117:s" line="mountain-side"/>
+  <edge at="5018:s" line="mountain-side"/>
+  <edge at="5321:s" line="mountain-side"/>
+  <edge at="5421:s" line="mountain-side"/>
+  <edge at="4821:se" line="mountain-side"/>
+  <edge at="4922:s" line="mountain-side"/>
+  <edge at="4823:ne" line="mountain-side"/>
+  <edge at="4723:se" line="mountain-side"/>
+  <edge at="4722:s" line="mountain-side"/>
+  <edge at="4722:ne" line="mountain-side"/>
+  <edge at="4219:s" line="mountain-side"/>
+  <edge at="4227:ne" line="mountain-side"/>
+  <edge at="4327:s" line="mountain-side"/>
+  <edge at="3622:se" line="mountain-side"/>
+  <edge at="3325:ne" line="mountain-side"/>
+  <edge at="3324:s" line="mountain-side"/>
+  <edge at="3319:ne" line="mountain-side"/>
+  <edge at="3318:se" line="mountain-side"/>
+  <edge at="3106:se" line="mountain-side"/>
+  <edge at="2821:ne" line="river"/>
+  <edge at="2820:se" line="river"/>
+  <edge at="2820:ne" line="river"/>
+  <edge at="3023:s" line="mountain-side"/>
+  <edge at="3021:s" line="mountain-side"/>
+  <edge at="3022:ne" line="mountain-side"/>
+  <edge at="3331:s" line="mountain-side"/>
+  <edge at="3332:ne" line="mountain-side"/>
+  <edge at="2624:ne" line="mountain-side"/>
+  <edge at="2423:s" line="mountain-side"/>
+  <edge at="2424:ne" line="mountain-side"/>
+  <edge at="2423:se" line="mountain-side"/>
+  <edge at="2523:s" line="mountain-side"/>
+  <edge at="2721:se" line="mountain-side"/>
+  <edge at="2722:ne" line="mountain-side"/>
+  <edge at="2723:ne" line="mountain-side"/>
+  <edge at="2715:ne" line="mountain-side"/>
+  <edge at="2814:s" line="mountain-side"/>
+  <edge at="2413:s" line="mountain-side"/>
+  <edge at="2413:se" line="mountain-side"/>
+  <edge at="2513:s" line="mountain-side"/>
+  <edge at="2513:se" line="mountain-side"/>
+  <edge at="2513:ne" line="mountain-side"/>
+  <edge at="2512:se" line="mountain-side"/>
+  <edge at="2309:ne" line="mountain-side"/>
+  <edge at="2207:ne" line="mountain-side"/>
+  <edge at="2014:se" line="mountain-side"/>
+  <edge at="2015:ne" line="mountain-side"/>
+  <edge at="2014:s" line="mountain-side"/>
+  <edge at="1915:se" line="mountain-side"/>
+  <edge at="1915:s" line="mountain-side"/>
+  <edge at="1509:ne" line="mountain-side"/>
+  <edge at="1906:s" line="mountain-side"/>
+  <edge at="0813:ne" line="mountain-side"/>
+  <edge at="1520:ne" line="mountain-side"/>
+  <edge at="1519:se" line="mountain-side"/>
+  <edge at="1520:se" line="mountain-side"/>
+  <path kind="objective" name="American Objective Line" line="objective-line" edges="2403:ne 2403:se 2404:ne 2404:se 2405:ne 2405:se 2406:ne 2406:se 2407:ne 2407:se 2408:ne 2408:se 2409:ne 2409:se 2410:ne 2410:se 2411:ne 2411:se 2412:ne 2412:se 2413:ne 2413:se 2414:ne 2414:se 2415:ne 2415:se 2416:ne 2416:se 2417:ne 2417:se 2418:ne 2418:se 2419:ne 2419:se 2420:ne 2420:se 2421:ne 2421:se 2422:ne 2422:se 2423:ne 2423:se 2424:ne 2424:se 2425:ne 2425:se 2426:ne 2426:se 2427:ne 2427:se 2428:ne 2428:se 2429:ne 2429:se" ends="sea sea"/>
+  <path kind="boundary" name="North-South Boundary Line" line="boundary-line" edges="3112:ne 3112:se 3113:ne 3113:se 3114:ne 3114:se 3115:ne 3115:se 3116:ne 3116:se 3117:ne 3117:se 3118:ne 3118:se 3119:ne 3119:se 3120:ne 3120:se 3121:ne 3121:se 3122:ne 3122:se 3123:ne 3123:se 3124:ne 3124:se 3125:ne 3125:se 3126:ne 3126:se 3127:ne 3127:se 3128:ne 3128:se 3129:ne 3129:se 3130:ne 3130:se 3131:ne 3131:se 3132:ne 3132:se 3133:ne 3133:se 3134:ne" ends="sea sea"/>
+  <link kind="road" line="road" hexes="0509 0408 0409 0509" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0509 0609" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0609 0510 0511 0512 0513 0613 0714 0715" ends="junction place"/>
+  <link kind="road" line="road" hexes="0609 0710" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0710 0711 0611 0712 0812 0913" ends="junction place"/>
+  <link kind="road" line="road" hexes="0710 0810 0911" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0715 0815 0915 1014" ends="place junction"/>
+  <link kind="road" line="road" hexes="0818 0918 1017" ends="place place"/>
+  <link kind="road" line="road" hexes="0818 0919 1019 1120" ends="place junction"/>
+  <link kind="road" line="road" hexes="0906 0907" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0906 1005 1004 1003" ends="junction place"/>
+  <link kind="road" line="road" hexes="0906 1006 1106 1205" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0907 0807 0808 0909 0908" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0907 0908" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0908 1008 1108" ends="junction place"/>
+  <link kind="road" line="road" hexes="0911 0912 0913" ends="junction place"/>
+  <link kind="road" line="road" hexes="0911 1011 1111 1210 1311 1411" ends="junction junction"/>
+  <link kind="road" line="road" hexes="0913 1012 1113 1213 1313 1412" ends="place junction"/>
+  <link kind="road" line="road" hexes="0913 1013 1014" ends="place junction"/>
+  <link kind="road" line="road" hexes="1003 1104 1203" ends="place junction"/>
+  <link kind="road" line="road" hexes="1014 1015 1116" ends="junction place"/>
+  <link kind="road" line="road" hexes="1017 1117 1116" ends="place place"/>
+  <link kind="road" line="road" hexes="1017 1118 1119 1120" ends="place junction"/>
+  <link kind="road" line="road" hexes="1108 1107 1206" ends="place junction"/>
+  <link kind="road" line="road" hexes="1108 1207 1308" ends="place junction"/>
+  <link kind="road" line="road" hexes="1116 1115 1214 1315" ends="place junction"/>
+  <link kind="road" line="road" hexes="1120 1220" ends="junction place"/>
+  <link kind="road" line="road" hexes="1203 1303 1402" ends="junction sea"/>
+  <link kind="road" line="road" hexes="1203 1304 1305" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1205 1206" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1205 1305" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1206 1307 1308" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1220 1221 1322 1422 1522 1622" ends="place junction"/>
+  <link kind="road" line="road" hexes="1220 1320 1420" ends="place junction"/>
+  <link kind="road" line="road" hexes="1305 1405 1506" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1308 1408" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1315 1414 1514 1513" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1315 1415 1516 1616" ends="junction place"/>
+  <link kind="road" line="road" hexes="1408 1407 1406 1506" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1408 1509" ends="junction place"/>
+  <link kind="road" line="road" hexes="1411 1410 1510" ends="junction unexplained"/>
+  <link kind="road" line="road" hexes="1411 1412" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1412 1513" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1420 1419 1519 1518 1517" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1420 1521 1621" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1506 1606 1706" ends="junction place"/>
+  <link kind="road" line="road" hexes="1509 1608 1708" ends="place junction"/>
+  <link kind="road" line="road" hexes="1509 1609 1610 1710 1711" ends="place junction"/>
+  <link kind="road" line="road" hexes="1513 1612 1712" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1517 1616" ends="junction place"/>
+  <link kind="road" line="road" hexes="1517 1617 1618 1719 1619 1620 1721" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1616 1615 1715 1714 1813 1713 1712" ends="place junction"/>
+  <link kind="road" line="road" hexes="1616 1717 1817" ends="place junction"/>
+  <link kind="road" line="road" hexes="1621 1622" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1621 1721" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1622 1722 1822" ends="junction place"/>
+  <link kind="road" line="road" hexes="1706 1707 1708" ends="place junction"/>
+  <link kind="road" line="road" hexes="1706 1805" ends="place junction"/>
+  <link kind="road" line="road" hexes="1708 1808 1809" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1711 1712" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1711 1810" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1712 1811 1912 2012" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1721 1820 1921" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1805 1806 1907 1908 1909 1809" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1805 1906 2006" ends="junction place"/>
+  <link kind="road" line="road" hexes="1809 1810" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1810 1910 2009 2109" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1817 1818 1819 1920" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1817 1917" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1822 1923" ends="place junction"/>
+  <link id="road-new-1" kind="road" line="road" hexes="1915" ends="junction unexplained"/>
+  <link id="road-new-1-2" kind="road" line="road" hexes="1914 1814 1815 1916" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="1914 1913 2012" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1915" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="1916" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="1916 1917" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1917 2016" ends="junction place"/>
+  <link kind="road" line="road" hexes="1918 1919" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="1919 1920" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1919 2018 2017 2016" ends="junction place"/>
+  <link kind="road" line="road" hexes="1920 1921" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1921 2021 2122 2123" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1923 2022 2123" ends="junction junction"/>
+  <link kind="road" line="road" hexes="1923 2023 2124 2224" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2006 2106 2205 2306" ends="place junction"/>
+  <link kind="road" line="road" hexes="2006 2107" ends="place junction"/>
+  <link kind="road" line="road" hexes="2012 2011 2111" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2012 2113 2213 2214" ends="junction place"/>
+  <link kind="road" line="road" hexes="2016 2116 2215 2214" ends="place place"/>
+  <link kind="road" line="road" hexes="2107 2108 2109" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2107 2207 2206 2306" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2109 2110 2111" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2109 2208 2309 2408 2407 2507" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2111 2211 2312" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2123 2222 2322 2321 2320 2419" ends="junction place"/>
+  <link kind="road" line="road" hexes="2123 2223 2224" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2214 2315 2414 2515" ends="place place"/>
+  <link kind="road" line="road" hexes="2224 2325" ends="junction place"/>
+  <link kind="road" line="road" hexes="2306 2406 2507" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2312 2311 2410 2409 2509" ends="junction place"/>
+  <link kind="road" line="road" hexes="2312 2411 2511 2610" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2325 2425 2526 2527 2627 2728 2827 2928" ends="place place"/>
+  <link kind="road" line="road" hexes="2419 2519 2518 2617 2517 2516 2515" ends="place place"/>
+  <link kind="road" line="road" hexes="2419 2520 2619 2720" ends="place unexplained"/>
+  <link kind="road" line="road" hexes="2507 2508" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2507 2606" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2508 2509" ends="junction place"/>
+  <link kind="road" line="road" hexes="2508 2608 2709 2710" ends="junction place"/>
+  <link kind="road" line="road" hexes="2515 2614 2613" ends="place junction"/>
+  <link kind="road" line="road" hexes="2515 2615 2716 2816 2917 3017 3117 3216 3317" ends="place junction"/>
+  <link kind="road" line="road" hexes="2606 2706 2806 2707 2606" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2610 2611 2612 2613" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2610 2710" ends="junction place"/>
+  <link kind="road" line="road" hexes="2613 2713 2812" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2710 2711 2811" ends="place place"/>
+  <link kind="road" line="road" hexes="2811 2812" ends="place junction"/>
+  <link kind="road" line="road" hexes="2811 2912 3012" ends="place place"/>
+  <link kind="road" line="road" hexes="2812 2813 2914 3013" ends="junction junction"/>
+  <link kind="road" line="road" hexes="2928 2927 2926 3025 3125 3124 3223" ends="place junction"/>
+  <link kind="road" line="road" hexes="2928 3028 3129 3229 3330" ends="place junction"/>
+  <link kind="road" line="road" hexes="3006 2906 2905 3005 3006" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3006 3106 3105 3205" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3006 3107 3207" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3012 3013" ends="place junction"/>
+  <link kind="road" line="road" hexes="3013 3114" ends="junction place"/>
+  <link kind="road" line="road" hexes="3021 3121 3221" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="3114 3214 3315" ends="place junction"/>
+  <link kind="road" line="road" hexes="3205 3206 3207" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3205 3306 3406 3407 3408 3308 3207" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3207 3208" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3208 3108 3109 3110 3111 3211 3210 3310 3209 3208" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3221 3222" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3221 3321" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3222 3223" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3222 3322" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3223 3224 3325 3326 3327 3427 3428 3329" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3315 3414 3413 3412" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3315 3415" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3317 3217 3218 3319 3320" ends="junction place"/>
+  <link kind="road" line="road" hexes="3317 3316 3415" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3317 3417" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3320 3321" ends="place junction"/>
+  <link kind="road" line="road" hexes="3321 3322" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3322 3422 3522 3521" ends="junction junction"/>
   <link kind="road" line="road" hexes="3329 3330" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3329 3429 3529 3628" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3330 3430 3431 3532" ends="junction place"/>
+  <link kind="road" line="road" hexes="3411 3412" ends="sea junction"/>
+  <link kind="road" line="road" hexes="3412 3513 3514 3515" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3415 3515" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3415 3516" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3417 3416 3516" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3417 3418 3419 3420 3521" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3515 3615 3715 3814 3914 4013 4113 4213" ends="junction place"/>
+  <link kind="road" line="road" hexes="3516 3616" ends="junction place"/>
+  <link kind="road" line="road" hexes="3521 3620 3720" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3532 3631 3630 3629 3628" ends="place junction"/>
+  <link kind="road" line="road" hexes="3532 3632" ends="place junction"/>
+  <link kind="road" line="road" hexes="3603 3704 3705" ends="sea junction"/>
+  <link kind="road" line="road" hexes="3616 3716 3816 3916" ends="place junction"/>
+  <link kind="road" line="road" hexes="3616 3717" ends="place place"/>
+  <link kind="road" line="road" hexes="3628 3627 3626 3726" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3628 3729 3829 3930 4029" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3632 3732" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3632 3733 3732" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3705 3804 3905" ends="junction place"/>
+  <link kind="road" line="road" hexes="3705 3805" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3717 3718 3719 3720" ends="place junction"/>
+  <link kind="road" line="road" hexes="3717 3817" ends="place junction"/>
+  <link kind="road" line="road" hexes="3720 3721" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3721 3722 3723" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3721 3821 3922 4021 4022 4122" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3723 3724 3624 3625 3726" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3723 3823 3824 3825 3926 3927 4027" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3726 3727 3827 3828 3929 4029" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3732 3831 3931 4031" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3805 3806 3807 3908" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3805 3905" ends="junction place"/>
+  <link kind="road" line="road" hexes="3805 3906" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3817 3917 4017 4118 4217 4216 4316 4416" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3817 3918 4018 4019 4120" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3905 3906" ends="place junction"/>
+  <link kind="road" line="road" hexes="3905 4005" ends="place junction"/>
+  <link kind="road" line="road" hexes="3906 3907" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3907 4006 4005" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3907 4007" ends="junction place"/>
+  <link kind="road" line="road" hexes="3908 3909" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3908 4007" ends="junction place"/>
+  <link kind="road" line="road" hexes="3909 3809 3709 3608 3509 3510 3610 3711 3811 3911 3910 3909" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3915 3916" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3915 4014 4114 4213" ends="junction place"/>
+  <link kind="road" line="road" hexes="3915 4015" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3916 4015" ends="junction junction"/>
+  <link kind="road" line="road" hexes="3932 4031" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="4005 4004 4104" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4007 4008 4109 4110 4210 4310 4409" ends="place junction"/>
+  <link kind="road" line="road" hexes="4007 4107 4206 4307 4406" ends="place junction"/>
+  <link kind="road" line="road" hexes="4015 4016 4116 4215 4315 4414" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4027 4026 4126 4225" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4027 4028 4029" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4029 4130" ends="junction place"/>
+  <link kind="road" line="road" hexes="4031 4030 4130" ends="junction place"/>
+  <link kind="road" line="road" hexes="4031 4032 4033" ends="junction sea"/>
+  <link kind="road" line="road" hexes="4031 4131 4130" ends="junction place"/>
+  <link kind="road" line="road" hexes="4104 4103 4203" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4104 4203" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4104 4204 4305 4404 4504" ends="junction sea"/>
+  <link kind="road" line="road" hexes="4120 4121 4122" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4120 4219 4218 4318 4417" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4122 4123 4223 4324" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4122 4222 4221 4321 4421" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4130 4129 4228" ends="place place"/>
+  <link kind="road" line="road" hexes="4203 4303" ends="junction sea"/>
+  <link kind="road" line="road" hexes="4213 4314 4413" ends="place junction"/>
+  <link kind="road" line="road" hexes="4225 4224 4324" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4225 4226" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4226 4227 4228" ends="junction place"/>
+  <link kind="road" line="road" hexes="4226 4326 4426 4527" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4228 4329 4330 4430" ends="place junction"/>
+  <link kind="road" line="road" hexes="4319 4418 4417" ends="unexplained junction"/>
+  <link kind="road" line="road" hexes="4324 4323 4322 4421" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4324 4424 4525 4624" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4406 4407 4408 4409" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4406 4506 4605" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4409 4510" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4413 4414" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4413 4513" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4414 4515" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4416 4415 4515" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4416 4417" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4421 4521" ends="junction place"/>
+  <link kind="road" line="road" hexes="4430 4429 4529" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4430 4431 4532 4632 4732" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4510 4509 4508 4608" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4510 4511 4611" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4513 4514 4614 4615" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4513 4612" ends="junction place"/>
+  <link kind="road" line="road" hexes="4515 4615" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4521 4520 4619" ends="place junction"/>
+  <link kind="road" line="road" hexes="4521 4522 4622 4623 4624" ends="place junction"/>
+  <link kind="road" line="road" hexes="4527 4528 4529" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4527 4627 4727" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4529 4628 4728" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4605 4606 4707" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4605 4705" ends="junction place"/>
+  <link kind="road" line="road" hexes="4608 4607 4707" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4608 4609 4610 4711" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4611 4612" ends="junction place"/>
+  <link kind="road" line="road" hexes="4611 4711" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4612 4613 4714" ends="place junction"/>
+  <link kind="road" line="road" hexes="4612 4712 4812" ends="place junction"/>
+  <link kind="road" line="road" hexes="4615 4616" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4615 4716" ends="junction place"/>
+  <link kind="road" line="road" hexes="4616 4617 4618 4619" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4616 4717 4718" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4619 4719 4718" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4624 4725 4825 4926" ends="junction place"/>
+  <link kind="road" line="road" hexes="4705 4804 4803 4904 5003 5104" ends="place junction"/>
+  <link kind="road" line="road" hexes="4707 4807" ends="junction place"/>
+  <link kind="road" line="road" hexes="4711 4810 4809 4909 5009" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4714 4715 4716" ends="junction place"/>
+  <link kind="road" line="road" hexes="4714 4813 4913" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4716 4816 4917" ends="place junction"/>
+  <link kind="road" line="road" hexes="4718 4817 4917" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4718 4818" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4727 4728" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4727 4826 4926" ends="junction place"/>
+  <link kind="road" line="road" hexes="4728 4729" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4729 4730 4731 4732" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4729 4829 4930 4931 4831 4832 4732" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4807 4907" ends="place junction"/>
+  <link kind="road" line="road" hexes="4807 4908 5008 5009" ends="place junction"/>
+  <link kind="road" line="road" hexes="4812 4912 5011 5010 5009" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4812 4913" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4818 4819 4820 4821 4922 5021 5122" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4818 4919 5019 5020 5121" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4901 5001 5102 5103 5104" ends="sea junction"/>
+  <link kind="road" line="road" hexes="4907 5006 5005 5004 5104" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4907 5007 5107 5207 5308 5309 5209 5208 5109" ends="junction place"/>
+  <link kind="road" line="road" hexes="4913 5013 5014 5115" ends="junction place"/>
+  <link kind="road" line="road" hexes="4917 5016 5116 5215" ends="junction place"/>
+  <link kind="road" line="road" hexes="4917 5017 5018 5119" ends="junction junction"/>
+  <link kind="road" line="road" hexes="4926 4925 5024 5124" ends="place junction"/>
+  <link kind="road" line="road" hexes="5009 5109" ends="junction place"/>
+  <link kind="road" line="road" hexes="5109 5110 5111 5112 5212 5213 5214 5215" ends="place place"/>
+  <link kind="road" line="road" hexes="5119 5218 5217 5216 5215" ends="junction place"/>
+  <link kind="road" line="road" hexes="5119 5219 5320" ends="junction junction"/>
+  <link kind="road" line="road" hexes="5121 5122" ends="junction junction"/>
+  <link kind="road" line="road" hexes="5121 5220 5320" ends="junction junction"/>
+  <link kind="road" line="road" hexes="5122 5123 5124" ends="junction junction"/>
+  <link kind="road" line="road" hexes="5124 5223 5324 5423 5523" ends="junction place"/>
+  <link kind="road" line="road" hexes="5215 5316 5416 5517" ends="place place"/>
+  <link kind="road" line="road" hexes="5320 5420 5521" ends="junction place"/>
+  <link kind="road" line="road" hexes="5517 5518 5519" ends="place junction"/>
+  <link kind="road" line="road" hexes="5519 5520" ends="junction place"/>
+  <link kind="road" line="road" hexes="5519 5619" ends="junction unexplained"/>
+  <link kind="road" line="road" hexes="5520 5521" ends="place place"/>
+  <link kind="road" line="road" hexes="5520 5620" ends="place place"/>
+  <link kind="road" line="road" hexes="5521 5522" ends="place place"/>
+  <link kind="road" line="road" hexes="5522 5523" ends="place place"/>
+  <link kind="road" line="road" hexes="5523 5524 5624" ends="place sea"/>
+  <link kind="road" line="road" hexes="5523 5622" ends="place place"/>
+  <link kind="road" line="road" hexes="5620 5621" ends="place place"/>
+  <link kind="road" line="road" hexes="5621 5622" ends="place place"/>
+  <link kind="road" line="road" hexes="5807 5907 5908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5908 5807" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5807 5908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5907 5908" ends="unexplained unexplained"/>
+  <link kind="road" line="road" hexes="5908" ends="unexplained unexplained"/>
+  <link id="rail-new-1" kind="rail" line="road" hexes="5708 5807"/>
   <hex id="0715" name="Kitano"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="0815"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="0818" name="Miyanoura"><glyph symbol="town" color="ink"/></hex>
+  <hex id="0818" name="Miyanoura"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="0906"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="0907"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="0911"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="0913" name="Kanoya"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="0915"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="0918" name="Tokashi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="0918"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1003" name="Makurazaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="1004"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1005"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1015"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="1018"><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1017" name="Fukushima"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="1108" name="Kure"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
-  <hex id="1116" name="Shibushi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="CL"/></hex>
+  <hex id="1116" name="Shibushi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="1117"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1120"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1220" name="Obi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="1305"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1405"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
+  <hex id="1506"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1509" name="Kagoshima"><glyph symbol="city" color="ink"/></hex>
   <hex id="1522"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1606"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
@@ -648,33 +915,32 @@
   <hex id="1615"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
   <hex id="1616" name="Miyakonojo"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
   <hex id="1622"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="1705"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="1706" name="Kushikino"><glyph symbol="town" color="ink"/></hex>
+  <hex id="1706" name="Kushkino"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1713"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
   <hex id="1714"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
   <hex id="1715"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
   <hex id="1722"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1805"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="1812"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
   <hex id="1814"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
   <hex id="1815"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
-  <hex id="1822" name="Miyazaki"><glyph symbol="town" color="ink"/></hex>
+  <hex id="1822" name="Miyazaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="1905"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="1916"><glyph symbol="text" slot="s" color="red" text="36L"/></hex>
   <hex id="1917"><glyph symbol="text" slot="s" color="red" text="36C"/></hex>
   <hex id="1923"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2006" name="Sendai"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
-  <hex id="2016"><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="2016" name="Kobayashi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="2023"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2105"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="2115"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="2116" name="Kobayashi"><glyph symbol="town" color="ink"/></hex>
   <hex id="2124"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2205"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="2214" name="Yokomachi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="2214" name="Yokamaechi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
   <hex id="2224"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2306"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2325" name="Tsuno"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="2405"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2419" name="Murasho"><glyph symbol="town" color="ink"/></hex>
+  <hex id="2425"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="2509" name="Izumi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="2515" name="Hitoyoshi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="2526"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
@@ -687,17 +953,18 @@
   <hex id="3012" name="Hinagu"><glyph symbol="town" color="ink"/></hex>
   <hex id="3114" name="Yatsushiro"><glyph symbol="town" color="ink"/></hex>
   <hex id="3320" name="Hama-Machi"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
+  <hex id="3532" name="Saeki"><glyph symbol="town" color="ink"/></hex>
   <hex id="3616" name="Kumamoto"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="3717" name="Kumamoto"><glyph symbol="city" color="ink"/></hex>
   <hex id="3905" name="Nagasaki"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="4007" name="Isahaya"><glyph symbol="town" color="ink"/></hex>
   <hex id="4130" name="Oita"><glyph symbol="town" color="ink"/></hex>
   <hex id="4213" name="Omuta"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="4228" name="Beppu"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
-  <hex id="4414"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="4521" name="Hida"><glyph symbol="town" color="ink"/></hex>
   <hex id="4612" name="Saga"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
-  <hex id="4705" name="Sonogi"><glyph symbol="town" color="ink"/></hex>
-  <hex id="4716" name="Kurume"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4705" name="Saesbo"><glyph symbol="town" color="ink"/></hex>
+  <hex id="4716" name="Kurume"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="4807" name="Imari"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="4926" name="Nakatsu"><glyph symbol="town" color="ink"/></hex>
   <hex id="5109" name="Karatsu"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
@@ -706,35 +973,36 @@
   <hex id="5215" name="Fukuoka"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="2L"/></hex>
   <hex id="5311"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="5312"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="5411"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="5412"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
-  <hex id="5423" name="Kokura"><glyph symbol="city" color="ink"/></hex>
-  <hex id="5517" name="Tsuyazaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5517" name="Tsyuzaki"><glyph symbol="town" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5520" name="Yawata"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5521" name="Kokura"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5522" name="Kokura"><glyph symbol="city" color="ink"/></hex>
   <hex id="5523" name="Kokura"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
   <hex id="5617"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="5618"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="5619"><glyph symbol="text" slot="s" color="red" text="C"/></hex>
   <hex id="5620" name="Yawata"><glyph symbol="city" color="ink"/></hex>
-  <hex id="5621" name="Yawata"><glyph symbol="city" color="ink"/></hex>
-  <hex id="5624"><glyph symbol="text" slot="s" color="red" text="R"/></hex>
-  <hex id="3717"><glyph symbol="city-major"/></hex>
+  <hex id="5621" name="Yawata"><glyph symbol="city" color="ink"/><glyph symbol="text" slot="s" color="red" text="L"/></hex>
+  <hex id="5622" name="Kokura"><glyph symbol="city" color="ink"/></hex>
+  <hex id="5624"><glyph symbol="text" slot="s" color="ink" text="R"/></hex>
   <hex id="1408"><glyph symbol="city-major"/></hex>
   <hex id="1508"><glyph symbol="city-major"/></hex>
   <label text="Kitano" at="0715" slot="n" size="10" color="ink"/>
   <label text="Miyanoura" at="0818" slot="n" size="10" color="ink"/>
+  <label text="Fukushima" at="1017" slot="n" size="10" color="ink"/>
   <label text="Kanoya" at="0913" slot="n" size="10" color="ink"/>
-  <label text="Tokashi" at="0918" slot="n" size="10" color="ink"/>
   <label text="Makurazaki" at="1003" slot="n" size="10" color="ink"/>
   <label text="Kure" at="1108" slot="n" size="10" color="ink"/>
   <label text="Shibushi" at="1116" slot="n" size="10" color="ink"/>
   <label text="Obi" at="1220" slot="n" size="10" color="ink"/>
   <label text="KAGOSHIMA" at="1509" slot="n" size="13" color="ink" weight="bold"/>
   <label text="Miyakonojo" at="1616" slot="n" size="10" color="ink"/>
-  <label text="Kushikino" at="1706" slot="n" size="10" color="ink"/>
+  <label text="Kushkino" at="1706" slot="n" size="10" color="ink"/>
   <label text="Miyazaki" at="1822" slot="n" size="10" color="ink"/>
   <label text="Sendai" at="2006" slot="n" size="10" color="ink"/>
-  <label text="Kobayashi" at="2116" slot="n" size="10" color="ink"/>
-  <label text="Yokomachi" at="2214" slot="n" size="10" color="ink"/>
+  <label text="Kobayashi" at="2016" slot="n" size="10" color="ink"/>
+  <label text="Yokamaechi" at="2214" slot="n" size="10" color="ink"/>
   <label text="Tsuno" at="2325" slot="n" size="10" color="ink"/>
   <label text="Murasho" at="2419" slot="n" size="10" color="ink"/>
   <label text="Izumi" at="2509" slot="n" size="10" color="ink"/>
@@ -745,6 +1013,7 @@
   <label text="Hinagu" at="3012" slot="n" size="10" color="ink"/>
   <label text="Yatsushiro" at="3114" slot="n" size="10" color="ink"/>
   <label text="Hama-Machi" at="3320" slot="n" size="10" color="ink"/>
+  <label text="Saeki" at="3532" slot="n" size="10" color="ink"/>
   <label text="KUMAMOTO" at="3616" slot="n" size="13" color="ink" weight="bold"/>
   <label text="NAGASAKI" at="3905" slot="n" size="13" color="ink" weight="bold"/>
   <label text="Isahaya" at="4007" slot="n" size="10" color="ink"/>
@@ -753,13 +1022,13 @@
   <label text="Beppu" at="4228" slot="n" size="10" color="ink"/>
   <label text="Hida" at="4521" slot="n" size="10" color="ink"/>
   <label text="Saga" at="4612" slot="n" size="10" color="ink"/>
-  <label text="Sonogi" at="4705" slot="n" size="10" color="ink"/>
+  <label text="Saesbo" at="4705" slot="n" size="10" color="ink"/>
   <label text="Kurume" at="4716" slot="n" size="10" color="ink"/>
   <label text="Imari" at="4807" slot="n" size="10" color="ink"/>
   <label text="Nakatsu" at="4926" slot="n" size="10" color="ink"/>
   <label text="Karatsu" at="5109" slot="n" size="10" color="ink"/>
   <label text="FUKUOKA" at="5115" slot="n" size="13" color="ink" weight="bold"/>
-  <label text="KOKURA" at="5423" slot="n" size="13" color="ink" weight="bold"/>
-  <label text="Tsuyazaki" at="5517" slot="n" size="10" color="ink"/>
+  <label text="KOKURA" at="5522" slot="n" size="13" color="ink" weight="bold"/>
+  <label text="Tsyuzaki" at="5517" slot="n" size="10" color="ink"/>
   <label text="YAWATA" at="5620" slot="n" size="13" color="ink" weight="bold"/>
 </sheet>

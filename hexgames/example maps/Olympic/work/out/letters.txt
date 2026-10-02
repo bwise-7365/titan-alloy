@@ -1,0 +1,120 @@
+# W18g: Japanese deployment letters (red). letter: ID TEXT, ID = hex holding the letter centre.
+letter: 0715 L
+letter: 0815 C
+letter: 0906 C
+letter: 0907 C
+letter: 0911 C
+letter: 0913 L
+letter: 0915 C
+letter: 0918 C
+letter: 1003 L
+# doubt: 1003 L sits in the east corner of 1003, about 10 px (quarter scale) from the ne/se hexside (1103/1104 side); Makurazaki dot also there. 1003 kept.
+letter: 1004 C
+letter: 1005 C
+letter: 1015 C
+letter: 0818 L
+# sheet has nothing at 0818, photo has L (Miyanoura dot hex, sea/coast hex)
+letter: 1017 L
+# sheet has L at 1018, photo has it at 1017 (Fukushima dot); 1018 has no letter
+letter: 1108 L
+letter: 1116 L
+# sheet has CL at 1116, photo shows only L (rechecked below if noted)
+letter: 1117 C
+letter: 1120 C
+letter: 1220 L
+letter: 1305 C
+letter: 1405 C
+letter: 1506 C
+# sheet has nothing at 1506, photo has C
+letter: 1522 C
+letter: 1606 C
+letter: 1608 2L
+letter: 1615 36C
+letter: 1616 2L
+letter: 1622 C
+# 1705: NO letter. The blue "NDAI" (Sendai) name lettering crosses the pale hex; nothing red. Sheet has C at 1705: sheet is wrong (remove).
+letter: 1706 L
+# sheet has nothing at 1706, photo has L (pale-blue lake hex; Kushkin dot is in 1707)
+letter: 1713 36C
+# sheet has nothing at 1713, photo has 36C
+letter: 1714 36L
+letter: 1715 36L
+# 1718: no letter (the blob there was only the photo edge)
+letter: 1722 C
+# 1723: no letter (the L seen at its top right belongs to 1822)
+letter: 1805 C
+# 1812: NO letter (river and mountain only). Sheet has one at 1812: sheet is wrong (remove).
+letter: 1814 36L
+letter: 1815 36L
+letter: 1822 L
+# sheet has nothing at 1822, photo has L (Miyazaki dot hex)
+letter: 1905 C
+# sheet has nothing at 1905, photo has C
+letter: 1916 36L
+letter: 1917 36C
+letter: 1923 C
+letter: 2006 L
+letter: 2016 L
+letter: 2023 C
+# 2033: not a letter; the red squares are the map legend hex (ignored)
+letter: 2105 C
+# 2115: NO letter (mountain hex beside Yokamaechi). Sheet has one at 2115: sheet is wrong (remove); the 2L belongs to 2214.
+letter: 2124 C
+letter: 2205 C
+letter: 2214 2L
+letter: 2224 C
+letter: 2306 C
+letter: 2325 L
+letter: 2405 C
+letter: 2425 C
+# sheet has nothing at 2425, photo has C
+letter: 2509 L
+letter: 2515 L
+letter: 2526 C
+letter: 2527 C
+letter: 2627 C
+letter: 2728 C
+letter: 2811 L
+letter: 2928 L
+letter: 3320 2L
+letter: 3616 L
+letter: 3905 L
+letter: 4213 L
+letter: 4228 L
+# 4414: NO letter (roads and a river only). Sheet has one at 4414: sheet is wrong (remove).
+letter: 4612 L
+letter: 4716 L
+# sheet has nothing at 4716, photo has L (Kurume dot hex)
+letter: 4807 L
+letter: 5109 L
+letter: 5114 2L
+letter: 5215 2L
+letter: 5311 C
+letter: 5312 C
+# 5411: NO letter (blue FUKUOKA name lettering only; the C to its lower left is 5312's). Sheet has one at 5411: sheet is wrong (remove).
+letter: 5412 C
+letter: 5517 L
+letter: 5523 L
+letter: 5617 C
+letter: 5618 C
+letter: 5619 C
+letter: 5621 L
+# sheet has nothing at 5621, photo has L (city hex)
+# 5624: the R is printed in BLACK ink (island hex), not red; sheet has it as a red text glyph. Kept as letter: 5624 R with the colour difference noted.
+letter: 5624 R
+# 1534, 2033, 5902: not letters (legend box "C 2L" / legend hex / compass rose), ignored
+# 4705, 3532: no letter
+
+# ---- differences from the sheet (sheet has 78 text glyphs, photo has 82 letters) ----
+# sheet has L at 1018, photo has L at 1017 (move)
+# sheet has 36C at 1812, photo has 36C at 1713 (move; 1812 has no letter)
+# sheet has CL at 1116, photo has L only
+# sheet has C at 1705, 1812(36C), 2115, 4414, 5411, photo has none (remove; 1705 settled: none)
+# photo has letters the sheet lacks: 0818 L, 1506 C, 1706 L, 1822 L, 1905 C, 2425 C, 4716 L, 5621 L
+# 5624 R: black ink, not red
+# ---- report ----
+# count: 82 letters: 39 C, 28 L, 6 2L, 5 36L, 3 36C, 1 R (the R is black).
+# 1705: no letter; the blue NDAI (Sendai) name lettering is there, nothing red.
+# doubts: 1003 L is in the east corner, about 10 px from the hexside with 1103/1104 (kept 1003).
+#   No other letter straddles a hexside. The red dashes of the boundary line (cols 31-33) were ignored.
+# limits: found by red-blob search on all three photos plus the sheet's list, each checked by eye on a labelled crop.

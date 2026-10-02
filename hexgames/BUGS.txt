@@ -2,16 +2,19 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
-*** 2026-09-26 Olympic roads are a DRAFT (108 road links in operation-olympic.xml, traced on the tilted photo):
++++ 2026-09-26 Olympic roads are a DRAFT (108 road links in operation-olympic.xml, traced on the tilted photo):
     right pattern, hexes often a column off, 5 pieces, 6 places unreached. Ben to correct against the physical map;
     details in example maps/Olympic/reading-notes.md.
+    2026-09-29: re-read from the flat photos (one mainland piece, every place reached); doubts remain, PENDING review
+    (PLAN.md RESUME HERE). Mountain hexsides: Ben edited them in HexMapEd (134 in the sheet).
 
-*** 2026-09-25 Olympic all-mountain hexsides UNVERIFIED (Ben checks the physical map Monday). The 73 edges
++++ 2026-09-25 Olympic all-mountain hexsides UNVERIFIED (Ben checks the physical map Monday). The 73 edges
     line="mountain-side" in map_graphics/xml/operation-olympic.xml came from a measurement (darkest brown
     continuous across the whole hexside), not from a reading. The TEC does show "fingers" of shading along
     hexsides as a terrain (all-mountain hexside: entry prohibited) and Ben can find a few that may qualify, so
     most of the 73 are probably wrong. Drawn in magenta ("checkme") until resolved; then keep the real ones,
     delete the rest, and restore a normal style. The measured all-rough hexsides (657) were already removed.
+    2026-09-29: second pass with Ben's rule; all 79 accepted into the sheet (solid magenta); Ben finishes in HexMapEd.
 
 --- 2026-09-25 HexMapEd's save dropped every one-hex link (SheetWriter wrote only links with two or more
     hexes) and kept the junctions that name them, so the saved SMW sheet failed validation ("ID

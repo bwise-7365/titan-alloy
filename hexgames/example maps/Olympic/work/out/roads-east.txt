@@ -1,0 +1,110 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
+# roads-east: strip D, cols 40-61, right photo (W18d)
+road: 4303 4203 4103 4104 | ends: coast junction
+# doubt: 4303 4203 4103: road follows the north coast along the top edge of 4203; north end at 4303 top continues? (see 43xx crop)
+road: 4504 4404 4305 4204 4104 4004 4005 4006 3907 4007 | ends: coast place
+# doubt: 4004 4105: road passes near the 4004/4105/4104 vertex; 4004 chosen
+road: 4007 4107 4206 4307 4406 4506 4605 4705 | ends: place place
+road: 4605 4606 4707 4607 4608 4609 4610 4711 | ends: junction junction
+# doubt: 4610 4711: N-S road passes the 4610/4611/4711 vertex; 4711 chosen (joins the Saga road inside 4711)
+# doubt: 4606 4707 4607: road hugs the 4606/4707 hexside for ~one hex; 4707 included (also makes the 4707-4807 junction)
+road: 4707 4807 | ends: junction place
+road: 4007 4008 4109 4110 4210 4310 4409 | ends: place junction
+road: 4406 4407 4408 4409 4510 4511 4611 | ends: junction junction
+road: 4608 4508 4509 4510 | ends: junction junction
+# doubt: 4608 4508: road runs close to the 4508/4608 hexside
+road: 3905 3906 3907 4007 | ends: place place
+# doubt: 3905 3906: Nagasaki-Isahaya road runs along the 3805/3906 hexside just below Nagasaki; 3906 chosen
+road: 3905 4005 | ends: place junction
+road: 4007 3908 | ends: place strip
+place: 3905 Nagasaki (city)
+place: 4213 Omuta (town)
+place: 4007 Isahaya (town)
+place: 4705 Saesbo (town)
+place: 4807 Imari (town)
+road: 4612 4611 4711 4810 4809 4909 5009 5109 | ends: place place
+road: 4612 4712 4812 4913 | ends: place junction
+road: 4612 4613 4714 4715 4716 | ends: place place
+road: 4714 4813 4913 | ends: junction junction
+road: 4812 4912 5011 5010 5009 5109 | ends: junction place
+road: 4913 5013 5014 5115 | ends: junction place
+road: 4612 4513 4413 4314 4213 | ends: place place
+road: 4213 4113 4013 3914 3814 | ends: place strip
+road: 4213 4114 4014 3915 3916 | ends: place strip
+road: 3915 4015 4016 4116 4215 | ends: junction junction
+road: 4413 4414 | ends: junction junction
+road: 4513 4514 4614 4615 4616 4617 4618 4619 4520 4521 | ends: junction place
+road: 4215 4315 4414 4515 4615 4716 | ends: junction place
+road: 4515 4415 4416 4417 4318 4218 4219 4120 | ends: junction junction
+road: 4417 4418 4319 | ends: junction unexplained
+# doubt: 4319: hook road from 4417 ends in the mountains in 4319
+road: 3918 4018 4019 4120 4121 4122 4123 4223 4324 4424 4525 4624 | ends: strip junction
+road: 4521 4421 4321 4221 4222 4122 4022 | ends: place strip
+# doubt: 4321 4221 4222: Hida road hugs the 4221/4222/4322 vertex; 4221 chosen
+road: 4520 4521 4421 4322 4323 4324 4224 4225 4226 4227 4228 | ends: junction place
+road: 4027 4026 4126 4225 | ends: junction junction
+road: 3927 4027 4028 4029 4130 | ends: strip place
+road: 3929 4029 | ends: strip junction
+road: 3930 4029 | ends: strip junction
+road: 4130 4131 4031 4032 4033 | ends: place unexplained
+# doubt: 4033: south road from Oita stops short of the coast in 4033
+road: 3932 4031 | ends: strip junction
+road: 4226 4326 4426 4527 4528 4529 | ends: junction junction
+# doubt: 4426 4527: hump road passes the 4426/4427/4527 vertex; 4527 chosen
+road: 4527 4627 4727 | ends: junction junction
+road: 4727 4826 4926 | ends: junction place
+road: 4926 4825 4725 4624 4623 4622 4522 4521 | ends: place place
+road: 4727 4728 4729 4730 4731 4732 4632 | ends: junction junction
+place: 4926 Nakatsu (town)
+road: 4130 4129 4228 4329 4330 4430 4431 4532 4632 4732 4832 4831 4931 4930 4829 4729 | ends: place junction
+road: 4728 4628 4529 4429 4430 | ends: junction junction
+place: 4228 Beppu (town)
+place: 4130 Oita (town)
+place: 4521 Hida (town)
+road: 3917 4017 4118 4217 4216 4316 4416 | ends: strip junction
+# doubt: 3917 4017: road leaves col 40 towards Kumamoto near the 3917/3918 hexside; 3917 chosen
+road: 4716 4816 4917 5017 5018 5119 5219 5320 5420 5521 | ends: place junction
+road: 5215 5116 5016 4917 4817 4718 4719 4619 | ends: place junction
+# doubt: 4917: two roads cross near the 4917 W vertex (Kurume-SE road and the NE-SW road)
+road: 4616 4717 4718 4818 4919 5019 5020 5121 | ends: junction junction
+road: 4818 4819 4820 4821 | ends: junction junction
+place: 5115 Fukuoka (city)
+place: 5215 Fukuoka (city)
+road: 5109 5110 5111 5112 5212 5213 5214 5215 | ends: place place
+place: 5109 Karatsu (town)
+road: 4807 4907 5007 5107 5207 5308 5309 | ends: place junction
+road: 5109 5208 5209 5309 | ends: place junction
+# doubt: 5208 5209: Karatsu coast road hugs hexside 5208/5209 near Karatsu; 5208 then 5209 chosen
+road: 4807 4908 5008 5009 | ends: place junction
+road: 4807 4907 5006 5005 5004 5104 5103 5102 5001 4901 | ends: place coast
+# doubt: 4906 5006: north road from Imari passes the 4906/5006/4907 vertices; 5006 chosen
+road: 4705 4804 4803 4904 5003 5104 | ends: place junction
+road: 5215 5316 5416 5517 | ends: place place
+road: 5215 5216 5217 5218 5119 | ends: place junction
+road: 5320 5220 5121 | ends: junction junction
+road: 5121 5122 5123 5124 | ends: junction junction
+road: 4926 4925 5024 5124 5223 5324 5423 5523 | ends: place place
+road: 4821 4922 5021 5122 | ends: junction junction
+road: 5517 5518 5519 5520 5521 5522 5523 | ends: place place
+road: 5520 5620 5621 5622 5523 | ends: junction place
+road: 5519 5619 | ends: junction unexplained
+# doubt: 5619: short branch east from the Tsyuzaki-Yawata road ends at the red letter C in 5619
+road: 5523 5524 5624 | ends: place coast
+road: 5807 5907 5908 5807 | ends: unexplained unexplained
+# doubt: 5807: island loop road (cols 58-59 rows 7-8) is a ring around the 5807/5907/5908 vertex; its west end has a short tail inside 5807 ending in nothing
+place: 5517 Tsyuzaki (town)
+place: 5620 Yawata (city)
+place: 5621 Yawata (city)
+place: 5523 Kokura (city)
+place: 4612 Saga (town)
+place: 4716 Kurume (town)
+# doubt: 5423 5523: sheet has Kokura at 5423 and 5523; photo shows the KOKURA label over 5422/5423 but city buildings only in 5523 and the lower part of 5622
+# doubt: 5520: Yawata city buildings also fill 5520 (top) and part of 5521; sheet has Yawata only at 5620 and 5621
+# doubt: 4629 4528 4529: hump road / vertical road near 4527-4529 traced from 3x crops; junction positions approximate
+# doubt: 4726 4825: the road reaching Nakatsu from the north-west was followed only from 4825 southwards; its origin north of 4725 is the 4624-4622 road (checked)
+# doubt: strip: overlay of all lines on the right photo was viewed once (crops/ovl_top.jpg, ovl_bot.jpg) and looked coherent; roads in the mountains (cols 42-44 rows 17-27) are the least certain
+# REPORT (W18d)
+# road lines: 64; places listed: 18 (Omuta, Isahaya, Nagasaki, Oita, Beppu, Hida, Saga, Saesbo, Kurume, Imari, Nakatsu, Karatsu, Fukuoka x2, Tsyuzaki, Kokura, Yawata x2)
+# place discrepancies: Kokura (5423 on sheet; city drawn in 5523/5622), Yawata (city also in 5520). All other names match the sheet, incl. 4705 Saesbo and 5517 Tsyuzaki. Saeki (3532) and Hama-Machi are outside the strip.
+# surprising: a closed ring road on the island at 5807/5907/5908; the Oita south road stops in 4033; several roads leave to col 39 (marked strip); 4729-4832 coast road forms one long loop with the E road.
+# check.py: OK

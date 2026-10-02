@@ -63,4 +63,49 @@ hexes are often a column off, some straight runs are inferred, and counters hide
 photo. A first attempt from the wrinkled photo alone was discarded. Road ends not at a place read "unexplained".
 Still open: finishing roads against the physical map; the two dashed boundary lines.
 
+## 2026-09-29 re-read from the three flat photos (tasks/18-olympic-photos.md)
+Sources: `example maps/Olympic left|middle|right.jpg` (EXIF-rotated, read at quarter scale). Each photo was
+registered to the sheet's ideal grid by a homography (landmarks, refined on the printed grid lines); the
+drawn ids sit on the printed ids. Reading by Sonnet workers, one sub-task each; outputs in
+`example maps/Olympic/work/out/`; merged by the coordinator.
+- Water (Ben: only two water colours; darker = shadow): 54 pale hexes; the 15 holding a red letter are
+  deployment hexes (ruling 3), so 39 assault hexes. Added 0917 1705 5411; removed 0706 3010 4505 5206
+  (sea) and 4605 (half land, now clear).
+- Roads: three column strips, merged by `work/merge_roads.py` (a step belongs to the strip that owns its
+  mean column; ten steps only a neighbouring strip read were confirmed on crops and kept). 746 steps,
+  310 links, 3 pieces: the mainland (623 hexes, every place reached), the island at cols 29-34 (24) and the
+  ring on the island at 5807/5907/5908 (3). The draft roads were replaced. Unexplained ends: 1510 1918
+  2720 3021 3932 4319 5619 and the island ring. Triangles (two readings of one road, or a Y near a vertex):
+  0408/0409/0509, 3632/3732/3733, 3805/3905/3906, 3915/3916/4015, 4103/4104/4203. About 60 per-road doubts
+  in the three roads-*.txt files.
+- Deployment letters: 82 (39 C, 28 L, 6 2L, 5 36L, 3 36C, 1 R); the sheet's text glyphs were rewritten
+  from them. 1705 has none. 5624 R is black on the print. Doubt: 1003 L near the 1103/1104 side.
+- All-mountain hexsides: 68 of the 73 measured candidates rejected; 5 kept for Ben (still magenta):
+  4518:ne, 4518:se (clearest), 4020:se, 4124:n, 4223:ne.
+- Places (Ben, 2026-09-29): 4705 Saesbo (was Sonogi), 3532 Saeki added, printed spellings Yokamaechi
+  (2214) and Tsyuzaki (5517).
+- Ben's rulings (2026-09-29, from the physical map), applied: Tokashi removed, Fukushima town at 1017;
+  Kobayashi town at 2016 (three roads meet there; 2116 carries only 2016-2116-2215, so the middle strip's
+  2214-2115-2116 was removed in merge_roads.py); Kushkino (printed spelling) at 1706 (three roads); city
+  hexes Kumamoto 3616 3717, Yawata 5520 5620 5621, Kokura 5521 5522 5523 5622; both dashed lines run
+  along hexsides and extend into the sea (Objective Line 2403-2429, Boundary Line 3112-3134).
+- (superseded) Open for Ben: Tokashi 0918 (no dot seen; Fukushima's dot sits on the 1017/1118 side, its L in 1017);
+  Kobayashi (dot on the 2016/2116/2117 vertex, L in 2016; sheet 2116); Kushikino (sheet 1706, dot seen in
+  1707); Kumamoto buildings also in 3717; Kokura/Yawata city hexes (buildings in 5520, 5523, 5622).
+- All-mountain hexsides, second pass (Ben: shading along a hexside counts even when both hexes are mostly
+  not mountain): 13 confirmed by Ben (line mountain-side, brown); 65 candidates (line mountain-side-check,
+  magenta) from pass E2's yes list, minus 24 edges that only outlined whole dark hexes. Those dark hexes were
+  missed ALL-MOUNTAIN HEXES, now terrain mountain: 2318 3123 3124 4625 4822 4823 (the terrain was measured on
+  the wrinkled photo; more may be missed). Review images: work/crops/review_mountain_{left,middle,right}.jpg
+  (cyan = confirmed, yellow = candidate). Ben's "4118/4219" is not adjacent; E2 says 4119:se matches.
+- Ben, 2026-09-29: accept every candidate (he edits the rest in HexMapEd) and add 4811/4911 (4811:ne). The
+  sheet now has 79 all-mountain hexsides, one line style (mountain-side), drawn solid magenta so they stand
+  out while he edits.
+- Dashed boundary lines, as `<path>` hexside chains (kind objective / boundary; no XSD change): American
+  Objective Line 45 hexsides, the ne/se sides of column 24, 2405 to 2427 (coast north of Izumi to the Tsuno
+  sea); North-South Boundary Line 42 hexsides, the ne/se sides of column 31, 3113 to 3133 (inlet north of
+  Yatsushiro to the sea south of Saeki). Both print as straight lines midway between two columns, so the
+  zig-zag is the nearest hexside chain. Doubts: the exact north start of each; Yatsushiro's dot is within a
+  fifth of a hex west of the red line.
+
 Copyright Ben Paul Wise. All Rights Reserved.

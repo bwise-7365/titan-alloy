@@ -1,0 +1,120 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
+# roads-middle (strip C, cols 20-41, middle photo). W18c.
+# --- block A (cols 20-24) ---
+road: 2006 2107 2207 2206 2306 2406 2507 2508 2509 | ends: place place  # doubt: 2406->2507 passes next to sea hex 2506 (coast); chose direct 2406-2507
+road: 2006 2106 2205 2306 | ends: place junction
+road: 1910 2009 2109 2208 2309 2408 2407 2507 | ends: strip junction  # doubt: 2407/2408 road hugs col 24/25 hexside near the dashed line
+road: 2107 2108 2109 2110 2111 | ends: junction junction
+road: 2111 2011 2012 | ends: junction junction
+road: 2111 2211 2312 2411 2511 2610 2710 | ends: junction place
+road: 2509 2409 2410 2311 2312 | ends: place junction
+# --- block A, rows 12-18 ---
+road: 1912 2012 2113 2213 2214 | ends: strip place
+road: 2012 1913 1914 1915 1916 1917 2016 | ends: junction place  # doubt: 1914-1917 road hugs the col 18/19 hexside; chose col 19 hexes
+road: 2214 2315 2414 2515 | ends: place place
+road: 2214 2115 2116 2016 | ends: place place
+road: 2016 2017 2018 1918 1919 | ends: place strip  # doubt: 2018/1918 road hugs hexside
+place: 2214 Yokamaechi (town)  # sheet: Yokomachi at 2214 (spelling only)
+place: 2016 Kobayashi (town)  # DISCREPANCY (doubt): sheet has Kobayashi at 2116; the road junction/end suggests the town is in 2016; not checked against the dot itself
+# --- Murasho (2419) ---
+road: 2419 2519 2518 2617 | ends: place junction
+road: 2419 2520 2619 2720 | ends: place unexplained  # doubt: road stops in the middle of 2720 (dark mountain shading); may continue faintly toward 2721/2821
+road: 2419 2320 2321 2322 2222 2123 2022 1923 | ends: place strip  # doubt: road follows the river's west bank, close to the 2320/2321 vs 2420 hexsides
+# --- block B (cols 24-28), rows 5-11 ---
+road: 2507 2606 2706 2806 | ends: junction junction  # doubt: north-coast arc around the 2706 hill, hugging the 2706/2806 hexside; the two arcs meet in a hairpin at the tip of 2806 (no town there)
+road: 2606 2707 2806 | ends: junction junction  # doubt: inner road south of the 2706 hill; joins the north arc in a hairpin turn-around inside 2806
+road: 2508 2608 2709 2710 | ends: junction place  # doubt: coast road through the land slivers of mostly-sea hexes 2608 and 2709; alternative 2509 2609 2710
+place: 2710 Marushima (town)
+road: 2710 2711 2811 | ends: place place
+road: 2610 2611 2612 2613 | ends: junction junction
+road: 2812 2713 2613 | ends: junction junction
+road: 2613 2614 2515 | ends: junction place
+road: 2811 2812 2813 2914 3013 3114 | ends: place place  # doubt: 2812/2813/2913 - road hugs the river's south bank past the dark hex 2913; chose 2813
+road: 2811 2912 3012 | ends: place place  # doubt: road runs on the coast strip along the 2911/2912 boundary; chose 2912 (2911 is mostly sea)
+road: 2515 2516 2517 2617 | ends: place junction  # doubt: the two roads (this and 2419-2617) meet at the 2617/2618/2518 corner
+road: 2515 2615 2716 2816 2917 3017 3117 3216 3317 3417 | ends: place junction
+road: 3012 3013 | ends: place junction
+road: 3012 3013 3114 | ends: place place
+# --- block D (cols 32-36), north: Yatsushiro-Kumamoto road and the east peninsula ---
+road: 3114 3214 3315 3415 3516 3616 3717 3817 3918 4018 4019 4120 4121 4122 4123 4223 | ends: place strip  # main street through Kumamoto; the city buildings cover 3616 and 3717
+road: 3315 3414 3413 3412 3411 | ends: junction coast  # north along the peninsula's west side; stops at the north tip in 3411
+road: 3412 3513 3514 3515 3415 | ends: junction junction  # doubt: 3513 is mostly sea, the road uses its land sliver (alternative 3413 3514)
+road: 3515 3615 3715 3814 3914 4013 4113 4213 | ends: junction place  # doubt: coast road runs through the land slivers of the mostly-sea hexes 3715 3814 3914 4013 4113; an all-land alternative is 3715 3815 3915 4014 4114 4213
+road: 3616 3716 3816 3916 3915 4014 4114 4213 | ends: place place
+road: 3916 4015 | ends: junction junction
+road: 3915 4015 4016 4116 4215 | ends: junction strip  # doubt: U-turn loop of the line inside 4016; the road then climbs NE through the hills
+road: 3717 3718 3719 3720 3721 3722 3723 | ends: place junction
+road: 3723 3823 3824 3825 3926 3927 4027 4028 4029 | ends: junction junction
+road: 3723 3724 3624 3625 3726 3727 3827 3828 3929 4029 4130 | ends: junction place  # doubt: 3724/3624/3625 the road runs along the river's west bank
+road: 3817 3917 4017 4118 4217 | ends: junction strip
+road: 3721 3821 3922 4021 4022 4122 4222 | ends: junction strip
+road: 3415 3316 3317 | ends: junction junction
+road: 3516 3416 3417 3418 3419 3420 3521 3620 3720 | ends: junction junction
+road: 3317 3217 3218 3319 3320 | ends: junction place  # runs along the west side of the hills next to the N-S boundary line
+road: 3320 3321 3322 3422 3522 3521 | ends: place junction  # doubt: 3421/3422 - road runs on their hexside; chose 3422
+road: 3321 3221 3222 3223 | ends: junction junction
+road: 3223 3124 3125 3025 2926 2927 2928 | ends: junction place  # runs along the river's south-east bank; 3124/3125/3025 hug the river (looked at 3 times)
+road: 3223 3224 3325 3326 3327 3427 3428 3329 3330 3430 3431 3532 | ends: junction place  # doubt: 3428/3329 and 3330 - the road hugs hexsides near the river; looked at 3 times
+road: 3322 3222 | ends: junction junction  # doubt: short link across the river between A2 and the N-S road; seen once, faint
+road: 3021 3121 3221 | ends: unexplained junction  # doubt: west end stops in the mountains at 3021
+place: 3012 Hinagu (town)
+place: 3114 Yatsushiro (town)
+place: 3320 Hama-Machi (town)
+place: 3616 Kumamoto (city)  # city buildings cover 3616 (with red L) and 3717; the sheet has it at 3616
+road: 4213 4314 | ends: place strip  # coast road east of Omuta
+road: 4027 4026 4126 4225 4224 4324 | ends: junction strip
+road: 4130 4129 4228 | ends: place place
+road: 4228 4227 4226 4225 | ends: place junction
+road: 4226 4326 | ends: junction strip
+road: 4228 4329 4330 | ends: place strip  # east-shore road round Beppu bay
+place: 4228 Beppu (town)
+place: 4130 Oita (town)
+road: 3329 3429 3529 3628 3729 3829 3930 4029 | ends: junction junction
+road: 3532 3631 3630 3629 3628 3627 3626 3726 | ends: place junction
+road: 3532 3632 3732 3831 3931 4031 4030 4130 | ends: place place  # Saeki-Oita road; doubt: 3931/3932 the road follows their hexside; 4031/4030 near the coast
+road: 3532 3632 3733 3732 | ends: place junction  # doubt: a second road leaves Saeki southwards, follows the bay coast through the land at the west of mostly-sea 3733 and rejoins the east road at 3732
+road: 4031 4032 4033 | ends: junction coast  # south along the shore to the peninsula tip; doubt: the road near Oita hugs the 4030/4131 hexside (4030 chosen)
+place: 3532 Saeki (town)  # missing from the sheet
+# --- Nagasaki peninsula ---
+road: 3603 3704 3705 3805 3906 3907 4007 | ends: coast place  # doubt: the north end is in the land tip of 3602, chose 3603
+road: 3705 3804 3905 4005 4006 3907 | ends: junction junction  # street through Nagasaki (city buildings cover 3805/3905)
+road: 4005 4004 4104 4204 4305 4404 | ends: junction strip  # Nagasaki east road; doubt: 4004/4104/4105 - it hugs the 4104/4105 hexside near 4105's hill
+road: 3905 3805 3806 3807 3908 | ends: place junction  # doubt: west-shore road through the land slivers of mostly-sea 3806 3807; all-land alternative 3805 3906 3907 3908
+road: 4007 4107 4206 | ends: place strip
+road: 4007 4008 4109 4110 4210 | ends: place strip  # south-coast road east of Isahaya
+road: 4007 3908 3909 3910 3911 3811 3711 3610 3510 3509 | ends: place coast  # down the west peninsula, then along the south and west coast to the NW tip (3509, mostly sea)
+road: 3909 3809 3709 3608 3509 | ends: junction junction  # north-coast road round the peninsula, meets the other coast road at the NW tip
+road: 4104 4203 4303 | ends: junction unexplained  # north-coast spur through the 4203 hills; stops at the north shore in 4303 (doubt)
+place: 3905 Nagasaki (city)
+place: 4007 Isahaya (town)
+place: 4213 Omuta (town)
+place: 2811 Ashiki (town)
+place: 2515 Hitoyoshi (town)
+# --- block C (cols 28-32) ---
+road: 2905 3005 3006 3107 3207 3308 3408 3407 3406 | ends: coast junction  # starts at the peninsula's west coast; runs the south then east coast
+road: 2905 2906 3006 3106 3105 3205 3306 3406 | ends: junction junction  # north-coast road; with the previous piece it makes a ring round the 3106/3206 hills, meeting at 3406
+road: 3205 3206 3207 3208 3209 3310 3210 3211 | ends: junction junction  # central N-S road across the hills; doubt: 3209-3310-3210 the road runs on the east shore through the land sliver of mostly-sea 3310 (alternative 3209 3210); meets the west road at the peninsula tip 3211
+road: 3208 3108 3109 3110 3111 3211 | ends: junction junction
+# --- Tsuno / coast ---
+road: 1921 2021 2122 2123 2223 2224 | ends: strip junction
+road: 1923 2023 2124 2224 2325 2425 2526 2527 2627 2728 2827 2928 | ends: strip place  # coast road; 2224 is where the N-S road joins; runs along the shore through coastal hexes
+road: 2928 3028 3129 3229 3330 | ends: place junction
+place: 2928 Nobeoka (town)
+place: 2325 Tsuno (town)
+place: 2419 Murasho (town)
+place: 2006 Sendai (town)
+place: 2509 Izumi (town)
+
+# REPORT (W18c)
+# Road lines: 76 (pieces), all check.py OK. Places listed: 20 (Saeki 3532 added; Kumamoto counted at 3616).
+# Coverage: all land in cols 20-42, rows 0-34 looked at (sea, incl. the south of the strip, has no roads).
+# Place discrepancies: Kobayashi sheet 2116 vs road pattern 2016; Kumamoto's city buildings cover 3616 AND 3717
+#   (sheet has it at 3616 only, no dot seen, so possibly a two-hex city); Saeki 3532 missing from the sheet (known);
+#   Yokomachi (sheet) vs printed Yokamaechi at 2214 (spelling); Sendai 2006 and Miyazaki-side towns not re-verified.
+# Doubts: about 28 inline '# doubt:' comments (road hugging hexsides: 2406/2507, 2407/2408, 3209/3310, 3428/3329,
+#   3931/3932, 4030/4131; coastal road through land slivers of mostly-sea hexes 2608 2709 3513 3715 3814 3914 4013 4113 3806 3807 3509;
+#   hairpin loop at 2806; road stopping in 2720, 3021, 4303).
+# Surprises: many roads follow coasts through hexes that are mostly sea; the two roads at 2617 and the ring
+#   3406/3407 are joined only at a corner. Photo strip shows the north of the Nagasaki peninsula (cols 36-43 rows 2-8).
+# Overlap: strip ends at 2xxx-4xxx on left/right joins with west (cols 01-21) at 1912/1923/1921 and with east (40-61) at 4017/4222/4324/4404/4210/4206 etc.
+

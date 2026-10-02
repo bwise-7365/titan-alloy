@@ -54,6 +54,21 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-09-30 PAUSED (machine sleeping). Olympic: Ben edited the sheet in HexMapEd; terrain palette re-coloured
+  from `example maps/Olympic middle adjusted sample.png` (sea #4bb1fb, assault #b7e2fe, clear #f4f1e8, rough
+  #b49e70, mountain #7d6636); all staged, uncommitted. Proposed next (info given to Ben, not started): re-measure
+  terrain on the `Olympic * adjusted.png` photos (nearest of the five colours per pixel, Ben's thresholds) and
+  hand Ben a change list with fractions, not an overwrite. Pending: road doubts (below).
+- PENDING (later, Ben 2026-09-29): review the Olympic ROAD DOUBTS: about 60 `# doubt:` lines in
+  `example maps/Olympic/work/out/roads-{west,middle,east}.txt`, 10 unexplained road ends and 5 triangles
+  (list in example maps/Olympic/reading-notes.md, 2026-09-29 section). Ben has since edited the sheet in
+  HexMapEd, so check each doubt against the current operation-olympic.xml, not the worker files.
+- 2026-09-29 OLYMPIC RE-READ from Ben's three flat photos (`example maps/Olympic left|middle|right.jpg`, 16320x12240,
+  EXIF-rotated). Work folder `example maps/Olympic/work/` (quarter-scale upright PNGs, reg.py, crop.py, check.py,
+  H.json = sheet px -> photo px homographies, all three checked on printed ids). Delegated per Ben: task file
+  tasks/18-olympic-photos.md, sub-tasks A water (sea vs assault; Ben: only TWO water colours, dark = shadow),
+  B/C/D roads by column strip, E all-mountain hexsides, F dashed boundary lines. Two Sonnet workers at a time;
+  outputs in work/out/*.txt; coordinator merges into operation-olympic.xml. ALL sub-tasks done and MERGED into the sheet (validates, renders); nothing running. Ben ruled on places, cities, lines (applied). Mountain hexsides: all 79 accepted (solid magenta); Ben edits the rest in HexMapEd. 6 missed mountain hexes added. Uncommitted.
 - 2026-09-26 PAUSED for Ben's eight detailed Olympic photographs. READ doc/2026-09-26-resume.md FIRST.
   Olympic roads (draft) and all-mountain hexsides (unverified) are the open items; everything staged, uncommitted.
   Reading scripts copied from scratch to tools/olympic-reading/ (not part of the build; working files).
