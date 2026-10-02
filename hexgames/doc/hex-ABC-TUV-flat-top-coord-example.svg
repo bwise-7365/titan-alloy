@@ -4,7 +4,7 @@
    height="720px"
    version="1.1"
    id="svg4424"
-   sodipodi:docname="hex-ABC-offset-even-down.svg"
+   sodipodi:docname="hex-ABC-coord-example.svg"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -308,20 +308,21 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
-     inkscape:zoom="1.8541911"
-     inkscape:cx="144.80708"
-     inkscape:cy="212.49158"
+     inkscape:zoom="1.3111111"
+     inkscape:cx="475.55085"
+     inkscape:cy="343.22034"
      inkscape:window-width="1619"
      inkscape:window-height="1032"
-     inkscape:window-x="4013"
-     inkscape:window-y="1638"
+     inkscape:window-x="110"
+     inkscape:window-y="69"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer0" />
+     inkscape:current-layer="g4" />
   <g
      inkscape:groupmode="layer"
      id="layer0"
      inkscape:label="Layer 0"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <rect
        x="0"
        y="0"
@@ -330,13 +331,13 @@
        fill="#ffffff"
        id="rect3722" />
     <polygon
-       points="936,720 936,0 0,0 0,720 "
+       points="0,720 936,720 936,0 0,0 "
        fill="transparent"
        stroke-width="2"
        stroke="#000000"
        id="polygon3724" />
     <polygon
-       points="936,720 936,692 0,692 0,720 "
+       points="0,720 936,720 936,692 0,692 "
        fill="transparent"
        stroke-width="2"
        stroke="#000000"
@@ -349,7 +350,20 @@
        font-family="Verdana"
        id="text3728">Hexgraph from seed: 3879791786593937776</text>
     <polygon
-       points="164,90 148,120 112,120 96,90 112,60 148,60 "
+       points="96,30 112,60 96,90 60,90 44,60 60,30 "
+       fill="#ffffe3"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3730" />
+    <text
+       x="68"
+       y="38"
+       fill="#406080"
+       font-size="8px"
+       font-family="Verdana"
+       id="text3732">0000</text>
+    <polygon
+       points="148,60 164,90 148,120 112,120 96,90 112,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -362,7 +376,41 @@
        font-family="Verdana"
        id="text3736">0001</text>
     <polygon
-       points="268,90 252,120 216,120 200,90 216,60 252,60 "
+       points="200,30 216,60 200,90 164,90 148,60 164,30 "
+       fill="#e3e3e3"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3738" />
+    <text
+       x="172"
+       y="38"
+       fill="#406080"
+       font-size="8px"
+       font-family="Verdana"
+       id="text3740">0002</text>
+    <rect
+       x="169"
+       y="70"
+       width="10"
+       height="8"
+       fill="#87705a"
+       id="rect3742" />
+    <rect
+       x="182"
+       y="36"
+       width="10"
+       height="8"
+       fill="#87705a"
+       id="rect3744" />
+    <rect
+       x="182"
+       y="36"
+       width="10"
+       height="8"
+       fill="#87705a"
+       id="rect3746" />
+    <polygon
+       points="252,60 268,90 252,120 216,120 200,90 216,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -375,7 +423,20 @@
        font-family="Verdana"
        id="text3750">0003</text>
     <polygon
-       points="372,90 356,120 320,120 304,90 320,60 356,60 "
+       points="304,30 320,60 304,90 268,90 252,60 268,30 "
+       fill="#ffffe3"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3752" />
+    <text
+       x="276"
+       y="38"
+       fill="#406080"
+       font-size="8px"
+       font-family="Verdana"
+       id="text3754">0004</text>
+    <polygon
+       points="356,60 372,90 356,120 320,120 304,90 320,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -387,6 +448,12 @@
        font-size="8px"
        font-family="Verdana"
        id="text3758">0005</text>
+    <polygon
+       points="408,30 424,60 408,90 372,90 356,60 372,30 "
+       fill="#80c6ff"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3760" />
     <text
        x="380"
        y="38"
@@ -395,7 +462,7 @@
        font-family="Verdana"
        id="text3762">0006</text>
     <polygon
-       points="476,90 460,120 424,120 408,90 424,60 460,60 "
+       points="460,60 476,90 460,120 424,120 408,90 424,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -407,6 +474,12 @@
        font-size="8px"
        font-family="Verdana"
        id="text3766">0007</text>
+    <polygon
+       points="512,30 528,60 512,90 476,90 460,60 476,30 "
+       fill="#ffffe3"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3768" />
     <text
        x="484"
        y="38"
@@ -415,7 +488,7 @@
        font-family="Verdana"
        id="text3770">0008</text>
     <polygon
-       points="580,90 564,120 528,120 512,90 528,60 564,60 "
+       points="564,60 580,90 564,120 528,120 512,90 528,60 "
        fill="#e3e3e3"
        stroke-width="0.25"
        stroke="#808080"
@@ -441,6 +514,12 @@
        height="8"
        fill="#87705a"
        id="rect3778" />
+    <polygon
+       points="616,30 632,60 616,90 580,90 564,60 580,30 "
+       fill="#ffffe3"
+       stroke-width="0.25"
+       stroke="#808080"
+       id="polygon3780" />
     <text
        x="588"
        y="38"
@@ -449,7 +528,7 @@
        font-family="Verdana"
        id="text3782">0010</text>
     <polygon
-       points="684,90 668,120 632,120 616,90 632,60 668,60 "
+       points="668,60 684,90 668,120 632,120 616,90 632,60 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -462,7 +541,7 @@
        font-family="Verdana"
        id="text3786">0011</text>
     <polygon
-       points="736,60 720,90 684,90 668,60 684,30 720,30 "
+       points="720,30 736,60 720,90 684,90 668,60 684,30 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -475,7 +554,7 @@
        font-family="Verdana"
        id="text3790">0012</text>
     <polygon
-       points="788,90 772,120 736,120 720,90 736,60 772,60 "
+       points="772,60 788,90 772,120 736,120 720,90 736,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -488,7 +567,7 @@
        font-family="Verdana"
        id="text3794">0013</text>
     <polygon
-       points="840,60 824,90 788,90 772,60 788,30 824,30 "
+       points="824,30 840,60 824,90 788,90 772,60 788,30 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -501,7 +580,7 @@
        font-family="Verdana"
        id="text3798">0014</text>
     <polygon
-       points="892,90 876,120 840,120 824,90 840,60 876,60 "
+       points="876,60 892,90 876,120 840,120 824,90 840,60 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -514,7 +593,7 @@
        font-family="Verdana"
        id="text3802">0015</text>
     <polygon
-       points="112,120 96,150 60,150 44,120 60,90 96,90 "
+       points="96,90 112,120 96,150 60,150 44,120 60,90 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -527,7 +606,7 @@
        font-family="Verdana"
        id="text3806">0100</text>
     <polygon
-       points="164,150 148,180 112,180 96,150 112,120 148,120 "
+       points="148,120 164,150 148,180 112,180 96,150 112,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -540,7 +619,7 @@
        font-family="Verdana"
        id="text3810">0101</text>
     <polygon
-       points="216,120 200,150 164,150 148,120 164,90 200,90 "
+       points="200,90 216,120 200,150 164,150 148,120 164,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -553,7 +632,7 @@
        font-family="Verdana"
        id="text3814">0102</text>
     <polygon
-       points="268,150 252,180 216,180 200,150 216,120 252,120 "
+       points="252,120 268,150 252,180 216,180 200,150 216,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -566,7 +645,7 @@
        font-family="Verdana"
        id="text3818">0103</text>
     <polygon
-       points="320,120 304,150 268,150 252,120 268,90 304,90 "
+       points="304,90 320,120 304,150 268,150 252,120 268,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -579,7 +658,7 @@
        font-family="Verdana"
        id="text3822">0104</text>
     <polygon
-       points="372,150 356,180 320,180 304,150 320,120 356,120 "
+       points="356,120 372,150 356,180 320,180 304,150 320,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -592,7 +671,7 @@
        font-family="Verdana"
        id="text3826">0105</text>
     <polygon
-       points="424,120 408,150 372,150 356,120 372,90 408,90 "
+       points="408,90 424,120 408,150 372,150 356,120 372,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -605,7 +684,7 @@
        font-family="Verdana"
        id="text3830">0106</text>
     <polygon
-       points="476,150 460,180 424,180 408,150 424,120 460,120 "
+       points="460,120 476,150 460,180 424,180 408,150 424,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -618,7 +697,7 @@
        font-family="Verdana"
        id="text3834">0107</text>
     <polygon
-       points="528,120 512,150 476,150 460,120 476,90 512,90 "
+       points="512,90 528,120 512,150 476,150 460,120 476,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -631,7 +710,7 @@
        font-family="Verdana"
        id="text3838">0108</text>
     <polygon
-       points="580,150 564,180 528,180 512,150 528,120 564,120 "
+       points="564,120 580,150 564,180 528,180 512,150 528,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -644,7 +723,7 @@
        font-family="Verdana"
        id="text3842">0109</text>
     <polygon
-       points="632,120 616,150 580,150 564,120 580,90 616,90 "
+       points="616,90 632,120 616,150 580,150 564,120 580,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -657,7 +736,7 @@
        font-family="Verdana"
        id="text3846">0110</text>
     <polygon
-       points="684,150 668,180 632,180 616,150 632,120 668,120 "
+       points="668,120 684,150 668,180 632,180 616,150 632,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -670,7 +749,7 @@
        font-family="Verdana"
        id="text3850">0111</text>
     <polygon
-       points="736,120 720,150 684,150 668,120 684,90 720,90 "
+       points="720,90 736,120 720,150 684,150 668,120 684,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -683,7 +762,7 @@
        font-family="Verdana"
        id="text3854">0112</text>
     <polygon
-       points="788,150 772,180 736,180 720,150 736,120 772,120 "
+       points="772,120 788,150 772,180 736,180 720,150 736,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -696,7 +775,7 @@
        font-family="Verdana"
        id="text3858">0113</text>
     <polygon
-       points="840,120 824,150 788,150 772,120 788,90 824,90 "
+       points="824,90 840,120 824,150 788,150 772,120 788,90 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -709,7 +788,7 @@
        font-family="Verdana"
        id="text3862">0114</text>
     <polygon
-       points="892,150 876,180 840,180 824,150 840,120 876,120 "
+       points="876,120 892,150 876,180 840,180 824,150 840,120 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -722,7 +801,7 @@
        font-family="Verdana"
        id="text3866">0115</text>
     <polygon
-       points="112,180 96,210 60,210 44,180 60,150 96,150 "
+       points="96,150 112,180 96,210 60,210 44,180 60,150 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -735,7 +814,7 @@
        font-family="Verdana"
        id="text3870">0200</text>
     <polygon
-       points="164,210 148,240 112,240 96,210 112,180 148,180 "
+       points="148,180 164,210 148,240 112,240 96,210 112,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -748,7 +827,7 @@
        font-family="Verdana"
        id="text3874">0201</text>
     <polygon
-       points="216,180 200,210 164,210 148,180 164,150 200,150 "
+       points="200,150 216,180 200,210 164,210 148,180 164,150 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -761,7 +840,7 @@
        font-family="Verdana"
        id="text3878">0202</text>
     <polygon
-       points="268,210 252,240 216,240 200,210 216,180 252,180 "
+       points="252,180 268,210 252,240 216,240 200,210 216,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -774,7 +853,7 @@
        font-family="Verdana"
        id="text3882">0203</text>
     <polygon
-       points="320,180 304,210 268,210 252,180 268,150 304,150 "
+       points="304,150 320,180 304,210 268,210 252,180 268,150 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -787,7 +866,7 @@
        font-family="Verdana"
        id="text3886">0204</text>
     <polygon
-       points="372,210 356,240 320,240 304,210 320,180 356,180 "
+       points="356,180 372,210 356,240 320,240 304,210 320,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -800,7 +879,7 @@
        font-family="Verdana"
        id="text3890">0205</text>
     <polygon
-       points="424,180 408,210 372,210 356,180 372,150 408,150 "
+       points="408,150 424,180 408,210 372,210 356,180 372,150 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -813,7 +892,7 @@
        font-family="Verdana"
        id="text3894">0206</text>
     <polygon
-       points="476,210 460,240 424,240 408,210 424,180 460,180 "
+       points="460,180 476,210 460,240 424,240 408,210 424,180 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -826,7 +905,7 @@
        font-family="Verdana"
        id="text3898">0207</text>
     <polygon
-       points="528,180 512,210 476,210 460,180 476,150 512,150 "
+       points="512,150 528,180 512,210 476,210 460,180 476,150 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -839,7 +918,7 @@
        font-family="Verdana"
        id="text3902">0208</text>
     <polygon
-       points="580,210 564,240 528,240 512,210 528,180 564,180 "
+       points="564,180 580,210 564,240 528,240 512,210 528,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -852,7 +931,7 @@
        font-family="Verdana"
        id="text3906">0209</text>
     <polygon
-       points="632,180 616,210 580,210 564,180 580,150 616,150 "
+       points="616,150 632,180 616,210 580,210 564,180 580,150 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -865,7 +944,7 @@
        font-family="Verdana"
        id="text3910">0210</text>
     <polygon
-       points="684,210 668,240 632,240 616,210 632,180 668,180 "
+       points="668,180 684,210 668,240 632,240 616,210 632,180 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -878,7 +957,7 @@
        font-family="Verdana"
        id="text3914">0211</text>
     <polygon
-       points="736,180 720,210 684,210 668,180 684,150 720,150 "
+       points="720,150 736,180 720,210 684,210 668,180 684,150 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -891,7 +970,7 @@
        font-family="Verdana"
        id="text3918">0212</text>
     <polygon
-       points="788,210 772,240 736,240 720,210 736,180 772,180 "
+       points="772,180 788,210 772,240 736,240 720,210 736,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -904,7 +983,7 @@
        font-family="Verdana"
        id="text3922">0213</text>
     <polygon
-       points="840,180 824,210 788,210 772,180 788,150 824,150 "
+       points="824,150 840,180 824,210 788,210 772,180 788,150 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -917,7 +996,7 @@
        font-family="Verdana"
        id="text3926">0214</text>
     <polygon
-       points="892,210 876,240 840,240 824,210 840,180 876,180 "
+       points="876,180 892,210 876,240 840,240 824,210 840,180 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -930,7 +1009,7 @@
        font-family="Verdana"
        id="text3930">0215</text>
     <polygon
-       points="112,240 96,270 60,270 44,240 60,210 96,210 "
+       points="96,210 112,240 96,270 60,270 44,240 60,210 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -943,7 +1022,7 @@
        font-family="Verdana"
        id="text3934">0300</text>
     <polygon
-       points="164,270 148,300 112,300 96,270 112,240 148,240 "
+       points="148,240 164,270 148,300 112,300 96,270 112,240 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -956,7 +1035,7 @@
        font-family="Verdana"
        id="text3938">0301</text>
     <polygon
-       points="216,240 200,270 164,270 148,240 164,210 200,210 "
+       points="200,210 216,240 200,270 164,270 148,240 164,210 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -969,7 +1048,7 @@
        font-family="Verdana"
        id="text3942">0302</text>
     <polygon
-       points="268,270 252,300 216,300 200,270 216,240 252,240 "
+       points="252,240 268,270 252,300 216,300 200,270 216,240 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -982,7 +1061,7 @@
        font-family="Verdana"
        id="text3946">0303</text>
     <polygon
-       points="320,240 304,270 268,270 252,240 268,210 304,210 "
+       points="304,210 320,240 304,270 268,270 252,240 268,210 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -995,7 +1074,7 @@
        font-family="Verdana"
        id="text3950">0304</text>
     <polygon
-       points="372,270 356,300 320,300 304,270 320,240 356,240 "
+       points="356,240 372,270 356,300 320,300 304,270 320,240 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1008,7 +1087,7 @@
        font-family="Verdana"
        id="text3954">0305</text>
     <polygon
-       points="424,240 408,270 372,270 356,240 372,210 408,210 "
+       points="408,210 424,240 408,270 372,270 356,240 372,210 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1021,7 +1100,7 @@
        font-family="Verdana"
        id="text3958">0306</text>
     <polygon
-       points="476,270 460,300 424,300 408,270 424,240 460,240 "
+       points="460,240 476,270 460,300 424,300 408,270 424,240 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1034,7 +1113,7 @@
        font-family="Verdana"
        id="text3962">0307</text>
     <polygon
-       points="528,240 512,270 476,270 460,240 476,210 512,210 "
+       points="512,210 528,240 512,270 476,270 460,240 476,210 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1047,7 +1126,7 @@
        font-family="Verdana"
        id="text3966">0308</text>
     <polygon
-       points="580,270 564,300 528,300 512,270 528,240 564,240 "
+       points="564,240 580,270 564,300 528,300 512,270 528,240 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1060,7 +1139,7 @@
        font-family="Verdana"
        id="text3970">0309</text>
     <polygon
-       points="632,240 616,270 580,270 564,240 580,210 616,210 "
+       points="616,210 632,240 616,270 580,270 564,240 580,210 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1073,7 +1152,7 @@
        font-family="Verdana"
        id="text3974">0310</text>
     <polygon
-       points="684,270 668,300 632,300 616,270 632,240 668,240 "
+       points="668,240 684,270 668,300 632,300 616,270 632,240 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1086,7 +1165,7 @@
        font-family="Verdana"
        id="text3978">0311</text>
     <polygon
-       points="736,240 720,270 684,270 668,240 684,210 720,210 "
+       points="720,210 736,240 720,270 684,270 668,240 684,210 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1099,7 +1178,7 @@
        font-family="Verdana"
        id="text3982">0312</text>
     <polygon
-       points="788,270 772,300 736,300 720,270 736,240 772,240 "
+       points="772,240 788,270 772,300 736,300 720,270 736,240 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1112,7 +1191,7 @@
        font-family="Verdana"
        id="text3986">0313</text>
     <polygon
-       points="840,240 824,270 788,270 772,240 788,210 824,210 "
+       points="824,210 840,240 824,270 788,270 772,240 788,210 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1125,7 +1204,7 @@
        font-family="Verdana"
        id="text3990">0314</text>
     <polygon
-       points="892,270 876,300 840,300 824,270 840,240 876,240 "
+       points="876,240 892,270 876,300 840,300 824,270 840,240 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1138,7 +1217,7 @@
        font-family="Verdana"
        id="text3994">0315</text>
     <polygon
-       points="112,300 96,330 60,330 44,300 60,270 96,270 "
+       points="96,270 112,300 96,330 60,330 44,300 60,270 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1151,7 +1230,7 @@
        font-family="Verdana"
        id="text3998">0400</text>
     <polygon
-       points="164,330 148,360 112,360 96,330 112,300 148,300 "
+       points="148,300 164,330 148,360 112,360 96,330 112,300 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1164,7 +1243,7 @@
        font-family="Verdana"
        id="text4002">0401</text>
     <polygon
-       points="216,300 200,330 164,330 148,300 164,270 200,270 "
+       points="200,270 216,300 200,330 164,330 148,300 164,270 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1177,7 +1256,7 @@
        font-family="Verdana"
        id="text4006">0402</text>
     <polygon
-       points="268,330 252,360 216,360 200,330 216,300 252,300 "
+       points="252,300 268,330 252,360 216,360 200,330 216,300 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1190,7 +1269,7 @@
        font-family="Verdana"
        id="text4010">0403</text>
     <polygon
-       points="320,300 304,330 268,330 252,300 268,270 304,270 "
+       points="304,270 320,300 304,330 268,330 252,300 268,270 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1203,7 +1282,7 @@
        font-family="Verdana"
        id="text4014">0404</text>
     <polygon
-       points="372,330 356,360 320,360 304,330 320,300 356,300 "
+       points="356,300 372,330 356,360 320,360 304,330 320,300 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1216,7 +1295,7 @@
        font-family="Verdana"
        id="text4018">0405</text>
     <polygon
-       points="424,300 408,330 372,330 356,300 372,270 408,270 "
+       points="408,270 424,300 408,330 372,330 356,300 372,270 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1229,7 +1308,7 @@
        font-family="Verdana"
        id="text4022">0406</text>
     <polygon
-       points="476,330 460,360 424,360 408,330 424,300 460,300 "
+       points="460,300 476,330 460,360 424,360 408,330 424,300 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1242,7 +1321,7 @@
        font-family="Verdana"
        id="text4026">0407</text>
     <polygon
-       points="528,300 512,330 476,330 460,300 476,270 512,270 "
+       points="512,270 528,300 512,330 476,330 460,300 476,270 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1255,7 +1334,7 @@
        font-family="Verdana"
        id="text4030">0408</text>
     <polygon
-       points="580,330 564,360 528,360 512,330 528,300 564,300 "
+       points="564,300 580,330 564,360 528,360 512,330 528,300 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1268,7 +1347,7 @@
        font-family="Verdana"
        id="text4034">0409</text>
     <polygon
-       points="632,300 616,330 580,330 564,300 580,270 616,270 "
+       points="616,270 632,300 616,330 580,330 564,300 580,270 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1281,7 +1360,7 @@
        font-family="Verdana"
        id="text4038">0410</text>
     <polygon
-       points="684,330 668,360 632,360 616,330 632,300 668,300 "
+       points="668,300 684,330 668,360 632,360 616,330 632,300 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1294,7 +1373,7 @@
        font-family="Verdana"
        id="text4042">0411</text>
     <polygon
-       points="736,300 720,330 684,330 668,300 684,270 720,270 "
+       points="720,270 736,300 720,330 684,330 668,300 684,270 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1307,7 +1386,7 @@
        font-family="Verdana"
        id="text4046">0412</text>
     <polygon
-       points="788,330 772,360 736,360 720,330 736,300 772,300 "
+       points="772,300 788,330 772,360 736,360 720,330 736,300 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1320,7 +1399,7 @@
        font-family="Verdana"
        id="text4050">0413</text>
     <polygon
-       points="840,300 824,330 788,330 772,300 788,270 824,270 "
+       points="824,270 840,300 824,330 788,330 772,300 788,270 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1333,7 +1412,7 @@
        font-family="Verdana"
        id="text4054">0414</text>
     <polygon
-       points="892,330 876,360 840,360 824,330 840,300 876,300 "
+       points="876,300 892,330 876,360 840,360 824,330 840,300 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1346,7 +1425,7 @@
        font-family="Verdana"
        id="text4058">0415</text>
     <polygon
-       points="112,360 96,390 60,390 44,360 60,330 96,330 "
+       points="96,330 112,360 96,390 60,390 44,360 60,330 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1359,7 +1438,7 @@
        font-family="Verdana"
        id="text4062">0500</text>
     <polygon
-       points="164,390 148,420 112,420 96,390 112,360 148,360 "
+       points="148,360 164,390 148,420 112,420 96,390 112,360 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1372,7 +1451,7 @@
        font-family="Verdana"
        id="text4066">0501</text>
     <polygon
-       points="216,360 200,390 164,390 148,360 164,330 200,330 "
+       points="200,330 216,360 200,390 164,390 148,360 164,330 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1385,7 +1464,7 @@
        font-family="Verdana"
        id="text4070">0502</text>
     <polygon
-       points="268,390 252,420 216,420 200,390 216,360 252,360 "
+       points="252,360 268,390 252,420 216,420 200,390 216,360 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1398,7 +1477,7 @@
        font-family="Verdana"
        id="text4074">0503</text>
     <polygon
-       points="320,360 304,390 268,390 252,360 268,330 304,330 "
+       points="304,330 320,360 304,390 268,390 252,360 268,330 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1411,7 +1490,7 @@
        font-family="Verdana"
        id="text4078">0504</text>
     <polygon
-       points="372,390 356,420 320,420 304,390 320,360 356,360 "
+       points="356,360 372,390 356,420 320,420 304,390 320,360 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1424,7 +1503,7 @@
        font-family="Verdana"
        id="text4082">0505</text>
     <polygon
-       points="424,360 408,390 372,390 356,360 372,330 408,330 "
+       points="408,330 424,360 408,390 372,390 356,360 372,330 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1437,7 +1516,7 @@
        font-family="Verdana"
        id="text4086">0506</text>
     <polygon
-       points="476,390 460,420 424,420 408,390 424,360 460,360 "
+       points="460,360 476,390 460,420 424,420 408,390 424,360 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1450,7 +1529,7 @@
        font-family="Verdana"
        id="text4090">0507</text>
     <polygon
-       points="528,360 512,390 476,390 460,360 476,330 512,330 "
+       points="512,330 528,360 512,390 476,390 460,360 476,330 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1463,7 +1542,7 @@
        font-family="Verdana"
        id="text4094">0508</text>
     <polygon
-       points="580,390 564,420 528,420 512,390 528,360 564,360 "
+       points="564,360 580,390 564,420 528,420 512,390 528,360 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1476,7 +1555,7 @@
        font-family="Verdana"
        id="text4098">0509</text>
     <polygon
-       points="632,360 616,390 580,390 564,360 580,330 616,330 "
+       points="616,330 632,360 616,390 580,390 564,360 580,330 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1489,7 +1568,7 @@
        font-family="Verdana"
        id="text4102">0510</text>
     <polygon
-       points="684,390 668,420 632,420 616,390 632,360 668,360 "
+       points="668,360 684,390 668,420 632,420 616,390 632,360 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1502,7 +1581,7 @@
        font-family="Verdana"
        id="text4106">0511</text>
     <polygon
-       points="736,360 720,390 684,390 668,360 684,330 720,330 "
+       points="720,330 736,360 720,390 684,390 668,360 684,330 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1515,7 +1594,7 @@
        font-family="Verdana"
        id="text4110">0512</text>
     <polygon
-       points="788,390 772,420 736,420 720,390 736,360 772,360 "
+       points="772,360 788,390 772,420 736,420 720,390 736,360 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1528,7 +1607,7 @@
        font-family="Verdana"
        id="text4114">0513</text>
     <polygon
-       points="840,360 824,390 788,390 772,360 788,330 824,330 "
+       points="824,330 840,360 824,390 788,390 772,360 788,330 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1541,7 +1620,7 @@
        font-family="Verdana"
        id="text4118">0514</text>
     <polygon
-       points="892,390 876,420 840,420 824,390 840,360 876,360 "
+       points="876,360 892,390 876,420 840,420 824,390 840,360 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1554,7 +1633,7 @@
        font-family="Verdana"
        id="text4122">0515</text>
     <polygon
-       points="112,420 96,450 60,450 44,420 60,390 96,390 "
+       points="96,390 112,420 96,450 60,450 44,420 60,390 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1567,7 +1646,7 @@
        font-family="Verdana"
        id="text4126">0600</text>
     <polygon
-       points="164,450 148,480 112,480 96,450 112,420 148,420 "
+       points="148,420 164,450 148,480 112,480 96,450 112,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1580,7 +1659,7 @@
        font-family="Verdana"
        id="text4130">0601</text>
     <polygon
-       points="216,420 200,450 164,450 148,420 164,390 200,390 "
+       points="200,390 216,420 200,450 164,450 148,420 164,390 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1593,7 +1672,7 @@
        font-family="Verdana"
        id="text4134">0602</text>
     <polygon
-       points="268,450 252,480 216,480 200,450 216,420 252,420 "
+       points="252,420 268,450 252,480 216,480 200,450 216,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1606,7 +1685,7 @@
        font-family="Verdana"
        id="text4138">0603</text>
     <polygon
-       points="320,420 304,450 268,450 252,420 268,390 304,390 "
+       points="304,390 320,420 304,450 268,450 252,420 268,390 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1619,7 +1698,7 @@
        font-family="Verdana"
        id="text4142">0604</text>
     <polygon
-       points="372,450 356,480 320,480 304,450 320,420 356,420 "
+       points="356,420 372,450 356,480 320,480 304,450 320,420 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1632,7 +1711,7 @@
        font-family="Verdana"
        id="text4146">0605</text>
     <polygon
-       points="424,420 408,450 372,450 356,420 372,390 408,390 "
+       points="408,390 424,420 408,450 372,450 356,420 372,390 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1645,7 +1724,7 @@
        font-family="Verdana"
        id="text4150">0606</text>
     <polygon
-       points="476,450 460,480 424,480 408,450 424,420 460,420 "
+       points="460,420 476,450 460,480 424,480 408,450 424,420 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1658,7 +1737,7 @@
        font-family="Verdana"
        id="text4154">0607</text>
     <polygon
-       points="528,420 512,450 476,450 460,420 476,390 512,390 "
+       points="512,390 528,420 512,450 476,450 460,420 476,390 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1671,7 +1750,7 @@
        font-family="Verdana"
        id="text4158">0608</text>
     <polygon
-       points="580,450 564,480 528,480 512,450 528,420 564,420 "
+       points="564,420 580,450 564,480 528,480 512,450 528,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1684,7 +1763,7 @@
        font-family="Verdana"
        id="text4162">0609</text>
     <polygon
-       points="632,420 616,450 580,450 564,420 580,390 616,390 "
+       points="616,390 632,420 616,450 580,450 564,420 580,390 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1697,7 +1776,7 @@
        font-family="Verdana"
        id="text4166">0610</text>
     <polygon
-       points="684,450 668,480 632,480 616,450 632,420 668,420 "
+       points="668,420 684,450 668,480 632,480 616,450 632,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1710,7 +1789,7 @@
        font-family="Verdana"
        id="text4170">0611</text>
     <polygon
-       points="736,420 720,450 684,450 668,420 684,390 720,390 "
+       points="720,390 736,420 720,450 684,450 668,420 684,390 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1723,7 +1802,7 @@
        font-family="Verdana"
        id="text4174">0612</text>
     <polygon
-       points="788,450 772,480 736,480 720,450 736,420 772,420 "
+       points="772,420 788,450 772,480 736,480 720,450 736,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1736,7 +1815,7 @@
        font-family="Verdana"
        id="text4178">0613</text>
     <polygon
-       points="840,420 824,450 788,450 772,420 788,390 824,390 "
+       points="824,390 840,420 824,450 788,450 772,420 788,390 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1749,7 +1828,7 @@
        font-family="Verdana"
        id="text4182">0614</text>
     <polygon
-       points="892,450 876,480 840,480 824,450 840,420 876,420 "
+       points="876,420 892,450 876,480 840,480 824,450 840,420 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1762,7 +1841,7 @@
        font-family="Verdana"
        id="text4186">0615</text>
     <polygon
-       points="112,480 96,510 60,510 44,480 60,450 96,450 "
+       points="96,450 112,480 96,510 60,510 44,480 60,450 "
        fill="#80c6ff"
        stroke-width="0.25"
        stroke="#808080"
@@ -1775,7 +1854,7 @@
        font-family="Verdana"
        id="text4190">0700</text>
     <polygon
-       points="164,510 148,540 112,540 96,510 112,480 148,480 "
+       points="148,480 164,510 148,540 112,540 96,510 112,480 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1788,7 +1867,7 @@
        font-family="Verdana"
        id="text4194">0701</text>
     <polygon
-       points="216,480 200,510 164,510 148,480 164,450 200,450 "
+       points="200,450 216,480 200,510 164,510 148,480 164,450 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1801,7 +1880,7 @@
        font-family="Verdana"
        id="text4198">0702</text>
     <polygon
-       points="268,510 252,540 216,540 200,510 216,480 252,480 "
+       points="252,480 268,510 252,540 216,540 200,510 216,480 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1814,7 +1893,7 @@
        font-family="Verdana"
        id="text4202">0703</text>
     <polygon
-       points="320,480 304,510 268,510 252,480 268,450 304,450 "
+       points="304,450 320,480 304,510 268,510 252,480 268,450 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1827,7 +1906,7 @@
        font-family="Verdana"
        id="text4206">0704</text>
     <polygon
-       points="372,510 356,540 320,540 304,510 320,480 356,480 "
+       points="356,480 372,510 356,540 320,540 304,510 320,480 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1840,7 +1919,7 @@
        font-family="Verdana"
        id="text4210">0705</text>
     <polygon
-       points="424,480 408,510 372,510 356,480 372,450 408,450 "
+       points="408,450 424,480 408,510 372,510 356,480 372,450 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1853,7 +1932,7 @@
        font-family="Verdana"
        id="text4214">0706</text>
     <polygon
-       points="476,510 460,540 424,540 408,510 424,480 460,480 "
+       points="460,480 476,510 460,540 424,540 408,510 424,480 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1866,7 +1945,7 @@
        font-family="Verdana"
        id="text4218">0707</text>
     <polygon
-       points="528,480 512,510 476,510 460,480 476,450 512,450 "
+       points="512,450 528,480 512,510 476,510 460,480 476,450 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1879,7 +1958,7 @@
        font-family="Verdana"
        id="text4222">0708</text>
     <polygon
-       points="580,510 564,540 528,540 512,510 528,480 564,480 "
+       points="564,480 580,510 564,540 528,540 512,510 528,480 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1892,7 +1971,7 @@
        font-family="Verdana"
        id="text4226">0709</text>
     <polygon
-       points="632,480 616,510 580,510 564,480 580,450 616,450 "
+       points="616,450 632,480 616,510 580,510 564,480 580,450 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -1905,7 +1984,7 @@
        font-family="Verdana"
        id="text4230">0710</text>
     <polygon
-       points="684,510 668,540 632,540 616,510 632,480 668,480 "
+       points="668,480 684,510 668,540 632,540 616,510 632,480 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1918,7 +1997,7 @@
        font-family="Verdana"
        id="text4234">0711</text>
     <polygon
-       points="736,480 720,510 684,510 668,480 684,450 720,450 "
+       points="720,450 736,480 720,510 684,510 668,480 684,450 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1931,7 +2010,7 @@
        font-family="Verdana"
        id="text4238">0712</text>
     <polygon
-       points="788,510 772,540 736,540 720,510 736,480 772,480 "
+       points="772,480 788,510 772,540 736,540 720,510 736,480 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1944,7 +2023,7 @@
        font-family="Verdana"
        id="text4242">0713</text>
     <polygon
-       points="840,480 824,510 788,510 772,480 788,450 824,450 "
+       points="824,450 840,480 824,510 788,510 772,480 788,450 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1957,7 +2036,7 @@
        font-family="Verdana"
        id="text4246">0714</text>
     <polygon
-       points="892,510 876,540 840,540 824,510 840,480 876,480 "
+       points="876,480 892,510 876,540 840,540 824,510 840,480 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1970,7 +2049,7 @@
        font-family="Verdana"
        id="text4250">0715</text>
     <polygon
-       points="112,540 96,570 60,570 44,540 60,510 96,510 "
+       points="96,510 112,540 96,570 60,570 44,540 60,510 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1983,7 +2062,7 @@
        font-family="Verdana"
        id="text4254">0800</text>
     <polygon
-       points="164,570 148,600 112,600 96,570 112,540 148,540 "
+       points="148,540 164,570 148,600 112,600 96,570 112,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -1996,7 +2075,7 @@
        font-family="Verdana"
        id="text4258">0801</text>
     <polygon
-       points="216,540 200,570 164,570 148,540 164,510 200,510 "
+       points="200,510 216,540 200,570 164,570 148,540 164,510 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2009,7 +2088,7 @@
        font-family="Verdana"
        id="text4262">0802</text>
     <polygon
-       points="268,570 252,600 216,600 200,570 216,540 252,540 "
+       points="252,540 268,570 252,600 216,600 200,570 216,540 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2022,7 +2101,7 @@
        font-family="Verdana"
        id="text4266">0803</text>
     <polygon
-       points="320,540 304,570 268,570 252,540 268,510 304,510 "
+       points="304,510 320,540 304,570 268,570 252,540 268,510 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2035,7 +2114,7 @@
        font-family="Verdana"
        id="text4270">0804</text>
     <polygon
-       points="372,570 356,600 320,600 304,570 320,540 356,540 "
+       points="356,540 372,570 356,600 320,600 304,570 320,540 "
        fill="#e3e3e3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2069,7 +2148,7 @@
        fill="#87705a"
        id="rect4280" />
     <polygon
-       points="424,540 408,570 372,570 356,540 372,510 408,510 "
+       points="408,510 424,540 408,570 372,570 356,540 372,510 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2082,7 +2161,7 @@
        font-family="Verdana"
        id="text4284">0806</text>
     <polygon
-       points="476,570 460,600 424,600 408,570 424,540 460,540 "
+       points="460,540 476,570 460,600 424,600 408,570 424,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2095,7 +2174,7 @@
        font-family="Verdana"
        id="text4288">0807</text>
     <polygon
-       points="528,540 512,570 476,570 460,540 476,510 512,510 "
+       points="512,510 528,540 512,570 476,570 460,540 476,510 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2108,7 +2187,7 @@
        font-family="Verdana"
        id="text4292">0808</text>
     <polygon
-       points="580,570 564,600 528,600 512,570 528,540 564,540 "
+       points="564,540 580,570 564,600 528,600 512,570 528,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2121,7 +2200,7 @@
        font-family="Verdana"
        id="text4296">0809</text>
     <polygon
-       points="632,540 616,570 580,570 564,540 580,510 616,510 "
+       points="616,510 632,540 616,570 580,570 564,540 580,510 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2134,7 +2213,7 @@
        font-family="Verdana"
        id="text4300">0810</text>
     <polygon
-       points="684,570 668,600 632,600 616,570 632,540 668,540 "
+       points="668,540 684,570 668,600 632,600 616,570 632,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2147,7 +2226,7 @@
        font-family="Verdana"
        id="text4304">0811</text>
     <polygon
-       points="736,540 720,570 684,570 668,540 684,510 720,510 "
+       points="720,510 736,540 720,570 684,570 668,540 684,510 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2160,7 +2239,7 @@
        font-family="Verdana"
        id="text4308">0812</text>
     <polygon
-       points="788,570 772,600 736,600 720,570 736,540 772,540 "
+       points="772,540 788,570 772,600 736,600 720,570 736,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2173,7 +2252,7 @@
        font-family="Verdana"
        id="text4312">0813</text>
     <polygon
-       points="840,540 824,570 788,570 772,540 788,510 824,510 "
+       points="824,510 840,540 824,570 788,570 772,540 788,510 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2186,7 +2265,7 @@
        font-family="Verdana"
        id="text4316">0814</text>
     <polygon
-       points="892,570 876,600 840,600 824,570 840,540 876,540 "
+       points="876,540 892,570 876,600 840,600 824,570 840,540 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2199,7 +2278,7 @@
        font-family="Verdana"
        id="text4320">0815</text>
     <polygon
-       points="112,600 96,630 60,630 44,600 60,570 96,570 "
+       points="96,570 112,600 96,630 60,630 44,600 60,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2212,7 +2291,7 @@
        font-family="Verdana"
        id="text4324">0900</text>
     <polygon
-       points="164,630 148,660 112,660 96,630 112,600 148,600 "
+       points="148,600 164,630 148,660 112,660 96,630 112,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2225,7 +2304,7 @@
        font-family="Verdana"
        id="text4328">0901</text>
     <polygon
-       points="216,600 200,630 164,630 148,600 164,570 200,570 "
+       points="200,570 216,600 200,630 164,630 148,600 164,570 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2238,7 +2317,7 @@
        font-family="Verdana"
        id="text4332">0902</text>
     <polygon
-       points="268,630 252,660 216,660 200,630 216,600 252,600 "
+       points="252,600 268,630 252,660 216,660 200,630 216,600 "
        fill="#c6ffc6"
        stroke-width="0.25"
        stroke="#808080"
@@ -2251,7 +2330,7 @@
        font-family="Verdana"
        id="text4336">0903</text>
     <polygon
-       points="320,600 304,630 268,630 252,600 268,570 304,570 "
+       points="304,570 320,600 304,630 268,630 252,600 268,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2264,7 +2343,7 @@
        font-family="Verdana"
        id="text4340">0904</text>
     <polygon
-       points="372,630 356,660 320,660 304,630 320,600 356,600 "
+       points="356,600 372,630 356,660 320,660 304,630 320,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2277,7 +2356,7 @@
        font-family="Verdana"
        id="text4344">0905</text>
     <polygon
-       points="424,600 408,630 372,630 356,600 372,570 408,570 "
+       points="408,570 424,600 408,630 372,630 356,600 372,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2290,7 +2369,7 @@
        font-family="Verdana"
        id="text4348">0906</text>
     <polygon
-       points="476,630 460,660 424,660 408,630 424,600 460,600 "
+       points="460,600 476,630 460,660 424,660 408,630 424,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2303,7 +2382,7 @@
        font-family="Verdana"
        id="text4352">0907</text>
     <polygon
-       points="528,600 512,630 476,630 460,600 476,570 512,570 "
+       points="512,570 528,600 512,630 476,630 460,600 476,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2316,7 +2395,7 @@
        font-family="Verdana"
        id="text4356">0908</text>
     <polygon
-       points="580,630 564,660 528,660 512,630 528,600 564,600 "
+       points="564,600 580,630 564,660 528,660 512,630 528,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2329,7 +2408,7 @@
        font-family="Verdana"
        id="text4360">0909</text>
     <polygon
-       points="632,600 616,630 580,630 564,600 580,570 616,570 "
+       points="616,570 632,600 616,630 580,630 564,600 580,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2342,7 +2421,7 @@
        font-family="Verdana"
        id="text4364">0910</text>
     <polygon
-       points="684,630 668,660 632,660 616,630 632,600 668,600 "
+       points="668,600 684,630 668,660 632,660 616,630 632,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2355,7 +2434,7 @@
        font-family="Verdana"
        id="text4368">0911</text>
     <polygon
-       points="736,600 720,630 684,630 668,600 684,570 720,570 "
+       points="720,570 736,600 720,630 684,630 668,600 684,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2368,7 +2447,7 @@
        font-family="Verdana"
        id="text4372">0912</text>
     <polygon
-       points="788,630 772,660 736,660 720,630 736,600 772,600 "
+       points="772,600 788,630 772,660 736,660 720,630 736,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2381,7 +2460,7 @@
        font-family="Verdana"
        id="text4376">0913</text>
     <polygon
-       points="840,600 824,630 788,630 772,600 788,570 824,570 "
+       points="824,570 840,600 824,630 788,630 772,600 788,570 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2394,7 +2473,7 @@
        font-family="Verdana"
        id="text4380">0914</text>
     <polygon
-       points="892,630 876,660 840,660 824,630 840,600 876,600 "
+       points="876,600 892,630 876,660 840,660 824,630 840,600 "
        fill="#ffffe3"
        stroke-width="0.25"
        stroke="#808080"
@@ -2699,7 +2778,7 @@
            sodipodi:role="line"
            id="tspan1237"
            x="230.18491"
-           y="348.26584">Q</tspan></text>
+           y="348.26584">T</tspan></text>
       <text
          xml:space="preserve"
          style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-dasharray:none;stroke-opacity:1"
@@ -2709,7 +2788,7 @@
            sodipodi:role="line"
            id="tspan1237-6"
            x="296.18817"
-           y="236.214">R</tspan></text>
+           y="236.214">U</tspan></text>
       <text
          xml:space="preserve"
          style="fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-dasharray:none;stroke-opacity:1"
@@ -2719,7 +2798,7 @@
            sodipodi:role="line"
            id="tspan1237-6-5"
            x="166.53944"
-           y="237.38992">S</tspan></text>
+           y="237.38992">V</tspan></text>
       <circle
          style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.666164;stroke-opacity:1"
          id="path870"
@@ -2815,7 +2894,7 @@
            sodipodi:role="line"
            id="tspan1237-5"
            x="230.18491"
-           y="348.26584">Q</tspan></text>
+           y="348.26584">T</tspan></text>
       <text
          xml:space="preserve"
          style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-dasharray:none;stroke-opacity:1"
@@ -2825,7 +2904,7 @@
            sodipodi:role="line"
            id="tspan1237-6-7"
            x="296.18817"
-           y="236.214">R</tspan></text>
+           y="236.214">U</tspan></text>
       <text
          xml:space="preserve"
          style="fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-dasharray:none;stroke-opacity:1"
@@ -2835,7 +2914,7 @@
            sodipodi:role="line"
            id="tspan1237-6-5-1"
            x="166.53944"
-           y="237.38992">S</tspan></text>
+           y="237.38992">V</tspan></text>
       <circle
          style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.666164;stroke-opacity:1"
          id="path870-4"
@@ -3151,17 +3230,17 @@
            id="tspan3"
            x="605.87842"
            y="116.17389"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Monospace;-inkscape-font-specification:Monospace">Q=C-B</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Monospace;-inkscape-font-specification:Monospace">T=C-B</tspan><tspan
            sodipodi:role="line"
            x="605.87842"
-           y="136.17389"
+           y="136.57564"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan1570">R=A-C</tspan><tspan
+           id="tspan1570">U=A-C</tspan><tspan
            sodipodi:role="line"
            x="605.87842"
-           y="156.17389"
+           y="156.9774"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan5">S=B-A</tspan></text>
+           id="tspan5">V=B-A</tspan></text>
     </g>
     <g
        id="g3"
