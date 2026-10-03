@@ -1,2 +1,4 @@
 # CMake build output (CLion build dirs: cmake-build-debug, cmake-build-release, cmake-build-static, ...)
 /cmake-build-*/
+# Hand-made backup copies (SAVED-CMakeLists.txt, ...)
+SAVED-*

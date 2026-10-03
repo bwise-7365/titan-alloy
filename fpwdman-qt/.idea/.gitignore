@@ -8,3 +8,9 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+# Machine-specific: per-profile Qt install paths and the current profile
+/QtSettings.xml
+# IDE-rewritten code style / inspection settings
+/editor.xml
+# Hand-made backup copies
+/SAVED-*
