@@ -5,6 +5,15 @@ project(fpwdman_qt)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Build type. The build is type-agnostic: pick Debug or Release per build
+# directory at configure time (CLion: one CMake profile each, e.g.
+# cmake-build-debug and cmake-build-release). A configure that names no type
+# gets an optimized Release rather than CMake's empty, unoptimized default.
+#     cmake -B cmake-build-release -DCMAKE_BUILD_TYPE=Release
+if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release" FORCE)
+endif()
+
 # -----------------------------------------------------------------------------
 # Link flavor.
 #
@@ -23,8 +32,46 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # -----------------------------------------------------------------------------
 option(FPWDMAN_STATIC "Link Qt and the CRT statically: one self-contained .exe" OFF)
 
-set(FPWDMAN_QT_SHARED_DIR "C:/Qt/6.8.3/msvc2022_64"
-    CACHE PATH "Prefix of the stock DLL Qt, used by the default build")
+set(FPWDMAN_QT_SHARED_DIR ""
+    CACHE PATH "Prefix of the stock DLL Qt, used by the default build (empty: auto-detect)")
+
+# Machines differ in which Qt they have installed, so unless a prefix was given
+# explicitly, take the first one that exists: newest version first, in the kit
+# flavor that matches the compiler (an MSVC-built Qt cannot link with MinGW and
+# vice versa). A cached prefix that has since vanished -- a build directory
+# carried over from another machine -- is re-probed rather than trusted.
+if(NOT FPWDMAN_QT_SHARED_DIR OR NOT EXISTS "${FPWDMAN_QT_SHARED_DIR}")
+    # VS 2026's toolset is binary-compatible with VS 2022's, so either MSVC kit
+    # links fine with it.
+    if(MSVC)
+        set(_fpwdman_qt_kits msvc2026_64 msvc2022_64)
+    else()
+        set(_fpwdman_qt_kits mingw_64)
+    endif()
+    string(REPLACE ";" "/" _fpwdman_qt_kit "${_fpwdman_qt_kits}")
+    set(_fpwdman_qt_found "")
+    foreach(_fpwdman_qt_version IN ITEMS 6.12.0 6.8.3)
+        foreach(_fpwdman_qt_kit_dir IN LISTS _fpwdman_qt_kits)
+            set(_fpwdman_qt_candidate "C:/Qt/${_fpwdman_qt_version}/${_fpwdman_qt_kit_dir}")
+            if(EXISTS "${_fpwdman_qt_candidate}")
+                set(_fpwdman_qt_found "${_fpwdman_qt_candidate}")
+                break()
+            endif()
+        endforeach()
+        if(_fpwdman_qt_found)
+            break()
+        endif()
+    endforeach()
+    if(_fpwdman_qt_found)
+        set(FPWDMAN_QT_SHARED_DIR "${_fpwdman_qt_found}" CACHE PATH
+            "Prefix of the stock DLL Qt, used by the default build (empty: auto-detect)" FORCE)
+    elseif(NOT FPWDMAN_STATIC)
+        message(FATAL_ERROR
+            "No ${_fpwdman_qt_kit} Qt found under C:/Qt/6.12.0 or C:/Qt/6.8.3. "
+            "Pass -DFPWDMAN_QT_SHARED_DIR=<Qt prefix>.")
+    endif()
+endif()
+message(STATUS "Shared Qt prefix: ${FPWDMAN_QT_SHARED_DIR}")
 set(FPWDMAN_QT_STATIC_DIR "C:/Qt/6.8.3-static"
     CACHE PATH "Prefix of the self-built static Qt, used when FPWDMAN_STATIC is ON")
 
@@ -166,14 +213,21 @@ if(FPWDMAN_STATIC)
 # the exe -- the five Qt6 DLLs plus the platforms/ plugin -- so the build folder
 # runs stand-alone. The DLL flavor tracks the build type: a Debug build gets the
 # 'd'-suffixed debug DLLs + platforms/qwindowsd.dll; Release (and any other type)
-# gets the release DLLs + platforms/qwindows.dll.
+# gets the release DLLs + platforms/qwindows.dll. That split exists only in the
+# MSVC kits: the MinGW kit ships release DLLs alone, which a MinGW Debug exe
+# uses happily, so there it is always --release.
 elseif(WIN32)
+    if(MSVC)
+        set(FPWDMAN_DEPLOY_FLAVOR "$<IF:$<CONFIG:Debug>,--debug,--release>")
+    else()
+        set(FPWDMAN_DEPLOY_FLAVOR "--release")
+    endif()
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if(WINDEPLOYQT_EXECUTABLE)
         message(STATUS "Found windeployqt: ${WINDEPLOYQT_EXECUTABLE}")
         add_custom_command(TARGET fpwdman_qt POST_BUILD
             COMMAND "${WINDEPLOYQT_EXECUTABLE}"
-                    "$<IF:$<CONFIG:Debug>,--debug,--release>"
+                    "${FPWDMAN_DEPLOY_FLAVOR}"
                     "$<TARGET_FILE:fpwdman_qt>"
             COMMENT "Deploying Qt libraries to the executable directory..."
         )
@@ -201,7 +255,7 @@ elseif(WIN32)
             COMMAND "${CMAKE_COMMAND}" -E copy
                     "$<TARGET_FILE:fpwdman_qt>" "${PACKAGE_STAGE_DIR}/"
             COMMAND "${WINDEPLOYQT_EXECUTABLE}"
-                    "$<IF:$<CONFIG:Debug>,--debug,--release>"
+                    "${FPWDMAN_DEPLOY_FLAVOR}"
                     --dir "${PACKAGE_STAGE_DIR}"
                     --no-translations
                     --no-opengl-sw
