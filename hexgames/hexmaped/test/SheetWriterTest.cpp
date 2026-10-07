@@ -110,6 +110,7 @@ namespace {
       EXPECT_EQ(a.panels[i].boxes.size(), b.panels[i].boxes.size());
       EXPECT_EQ(a.panels[i].tracks.size(), b.panels[i].tracks.size());
       EXPECT_EQ(a.panels[i].tables.size(), b.panels[i].tables.size());
+      EXPECT_EQ(a.panels[i].images.size(), b.panels[i].images.size());
       for (std::size_t j = 0; j < a.panels[i].tables.size(); ++j) {
         EXPECT_EQ(a.panels[i].tables[j].rows.size(), b.panels[i].tables[j].rows.size());
       }

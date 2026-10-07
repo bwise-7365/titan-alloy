@@ -65,6 +65,12 @@ namespace {
     expectMatchesReference("velikiye-luki");
   }
 
+  // A designed sheet: 35 x 34 flat-top, rivers as path chains with vertex junctions, legend marks.
+  TEST(MapSvgGoldenTest, CirclingDragons)
+  {
+    expectMatchesReference("circling-dragons");
+  }
+
 }  // namespace
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

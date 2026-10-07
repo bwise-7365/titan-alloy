@@ -270,6 +270,12 @@ def flatten(el, m, props, out, group=None):
         out.append(Leaf("use", [x, y, angle_of(m), scale_of(m)],
                         {"href": el.get(XLINK), "color": color(props["color"], props)}, "", group))
         return
+    if tag == "image":
+        # a panel picture: its four corners after the transforms, and the file it names
+        x, y, w, h = f("x"), f("y"), f("width"), f("height")
+        corners = [apply(m, x, y), apply(m, x + w, y), apply(m, x + w, y + h), apply(m, x, y + h)]
+        out.append(Leaf("image", [v for c in corners for v in c], {"href": el.get(XLINK) or el.get("href")}, "", group))
+        return
     if tag == "path":
         cmds = path_cmds(el.get("d"))
     elif tag == "polygon":
@@ -357,7 +363,8 @@ def leaf_diff(a, b, tol):
     else:
         n = len(a.geom)
         for i, (x, y) in enumerate(zip(a.geom, b.geom)):
-            ok = angle_close(x, y) if i == 2 else close(x, y, tol)
+            # text and use carry an angle third; an image's geometry is its four corners
+            ok = angle_close(x, y) if (i == 2 and a.kind != "image") else close(x, y, tol)
             if not ok:
                 return "geometry %s vs %s" % (fmt(a.geom), fmt(b.geom))
         if a.text != b.text:

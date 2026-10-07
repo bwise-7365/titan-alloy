@@ -1,0 +1,1980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<counters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexcounters.xsd"
+          id="circling-dragons" title="Circling Dragons: China 1944-1945 -- preliminary counter set" size="15.875" corner="0.05"
+          source="designed set, no original; counts from the design memorandum (preliminary)">
+  <palette>
+    <color id="ink" value="#111111"/>
+    <color id="white" value="#ffffff"/>
+    <color id="jp" value="#e8542a" name="China Expeditionary Army"/>
+    <color id="kwa" value="#c98a2b" name="Kwantung Army"/>
+    <color id="kmtblue" value="#2f5fa8" name="Kuomintang"/>
+    <color id="ccpred" value="#c81e1e" name="Chinese Communist Party"/>
+    <color id="pup" value="#f2c9a0" name="Nanjing regime"/>
+    <color id="man" value="#7a8a40" name="Manchukuo"/>
+    <color id="mj" value="#d9c48a" name="Mengjiang"/>
+    <color id="sov" value="#8a5a2a" name="Soviet Union"/>
+    <color id="usg" value="#9aae7a" name="United States"/>
+    <color id="gold" value="#f0c020" name="US-equipped"/>
+    <color id="grey" value="#c8c8c8" name="regional troops"/>
+    <color id="orange" value="#f08020"/>
+    <color id="black" value="#000000"/>
+    <color id="lightblue" value="#7fa7cf"/>
+  </palette>
+  <styles>
+    <style id="japan" ground="jp" text="ink" box-stroke="ink"/>
+    <style id="kwantung" ground="kwa" text="ink" box-stroke="ink"/>
+    <style id="nationalist" ground="kmtblue" text="white" box-stroke="ink" box-fill="white"/>
+    <style id="communist" ground="ccpred" text="white" box-stroke="ink" box-fill="white"/>
+    <style id="puppet" ground="pup" text="ink" box-stroke="ink"/>
+    <style id="manchukuo" ground="man" text="ink" box-stroke="ink"/>
+    <style id="mengjiang" ground="mj" text="ink" box-stroke="ink"/>
+    <style id="soviet" ground="sov" text="white" box-stroke="white"/>
+    <style id="usa" ground="usg" text="ink" box-stroke="ink"/>
+    <style id="plain" ground="white" text="ink" box-stroke="ink"/>
+  </styles>
+  <counter id="jp-d110" family="unit" name="Japanese 110 Division (12A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">110</text>
+      <text slot="MR" rotate="90" size="small">12A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d62" family="unit" name="Japanese 62 Division (12A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">62</text>
+      <text slot="MR" rotate="90" size="small">12A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d37" family="unit" name="Japanese 37 Division (12A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">37</text>
+      <text slot="MR" rotate="90" size="small">12A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d69" family="unit" name="Japanese 69 Division (1A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">69</text>
+      <text slot="MR" rotate="90" size="small">1A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d114" family="unit" name="Japanese 114 Division (1A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">114</text>
+      <text slot="MR" rotate="90" size="small">1A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d63" family="unit" name="Japanese 63 Division (NCAA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">63</text>
+      <text slot="MR" rotate="90" size="small">NCAA</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d59" family="unit" name="Japanese 59 Division (NCAA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">59</text>
+      <text slot="MR" rotate="90" size="small">NCAA</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d35" family="unit" name="Japanese 35 Division (NCAA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">35</text>
+      <text slot="MR" rotate="90" size="small">NCAA</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d26" family="unit" name="Japanese 26 Division (MGA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">26</text>
+      <text slot="MR" rotate="90" size="small">MGA</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d3" family="unit" name="Japanese 3 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">3</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d13" family="unit" name="Japanese 13 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">13</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d27" family="unit" name="Japanese 27 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">27</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d34" family="unit" name="Japanese 34 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">34</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d39" family="unit" name="Japanese 39 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">39</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d40" family="unit" name="Japanese 40 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">40</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d58" family="unit" name="Japanese 58 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">58</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d68" family="unit" name="Japanese 68 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">68</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d116" family="unit" name="Japanese 116 Division (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">116</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d60" family="unit" name="Japanese 60 Division (13A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">60</text>
+      <text slot="MR" rotate="90" size="small">13A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d65" family="unit" name="Japanese 65 Division (13A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">65</text>
+      <text slot="MR" rotate="90" size="small">13A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d70" family="unit" name="Japanese 70 Division (13A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">70</text>
+      <text slot="MR" rotate="90" size="small">13A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d104" family="unit" name="Japanese 104 Division (23A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">104</text>
+      <text slot="MR" rotate="90" size="small">23A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-d22" family="unit" name="Japanese 22 Division (23A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">22</text>
+      <text slot="MR" rotate="90" size="small">23A</text>
+      <value>3-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="jp-tk3" family="unit" name="Japanese 3 Tank Division (12A)">
+    <front style="japan">
+      <symbol icon="armour"/>
+      <echelon level="division"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">3</text>
+      <text slot="MR" rotate="90" size="small">12A</text>
+      <value>4-6</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-6</value></back>
+  </counter>
+  <counter id="jp-imb-nc1" family="unit" name="Japanese independent mixed brigades (NCAA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="MR" rotate="90" size="small">NCAA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-imb-nc2" family="unit" name="Japanese independent mixed brigades (NCAA)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="MR" rotate="90" size="small">NCAA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-imb-11a" family="unit" name="Japanese independent mixed brigades (11A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="MR" rotate="90" size="small">11A</text>
+      <value>1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-imb-13a" family="unit" name="Japanese independent mixed brigades (13A)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="MR" rotate="90" size="small">13A</text>
+      <value>1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-pinghan" family="unit" name="Japanese railway garrison, Pinghan">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Pinghan</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-jinpu" family="unit" name="Japanese railway garrison, Jinpu">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Jinpu</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-longhai" family="unit" name="Japanese railway garrison, Longhai">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Longhai</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-jingsui" family="unit" name="Japanese railway garrison, Jingsui">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Jingsui</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-tongpu" family="unit" name="Japanese railway garrison, Tongpu">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Tongpu</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-yangtze" family="unit" name="Japanese railway garrison, Yangtze">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Yangtze</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-g-canton" family="unit" name="Japanese railway garrison, Canton">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <echelon level="brigade"/>
+      <steps count="1" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">IMB</text>
+      <text slot="TC" size="small">Canton</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-hq-cea" family="unit" name="Japanese headquarters, China Expeditionary Army">
+    <front style="japan">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">CEA</text>
+      <text slot="TC" size="small">Nanjing</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-hq-ncaa" family="unit" name="Japanese headquarters, North China Area Army">
+    <front style="japan">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">NCAA</text>
+      <text slot="TC" size="small">Peiping</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-hq-6aa" family="unit" name="Japanese headquarters, 6 Area Army">
+    <front style="japan">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">6 AA</text>
+      <text slot="TC" size="small">Hankow</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-3a" family="unit" name="Kwantung Army, 3 Army (Dongning)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">3 A</text>
+      <text slot="TC" size="small">Dongning</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-3a-2" family="unit" name="Kwantung Army, 3 Army (Hunchun)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">3 A</text>
+      <text slot="TC" size="small">Hunchun</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-5a" family="unit" name="Kwantung Army, 5 Army (Mudanjiang)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">5 A</text>
+      <text slot="TC" size="small">Mudanjiang</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-5a-2" family="unit" name="Kwantung Army, 5 Army (Linkou)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">5 A</text>
+      <text slot="TC" size="small">Linkou</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-4a" family="unit" name="Kwantung Army, 4 Army (Sunwu)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">4 A</text>
+      <text slot="TC" size="small">Sunwu</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-4a-2" family="unit" name="Kwantung Army, 4 Army (Hailar)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">4 A</text>
+      <text slot="TC" size="small">Hailar</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-30a" family="unit" name="Kwantung Army, 30 Army (Changchun)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">30 A</text>
+      <text slot="TC" size="small">Changchun</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-30a-2" family="unit" name="Kwantung Army, 30 Army (Meihekou)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">30 A</text>
+      <text slot="TC" size="small">Meihekou</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-44a" family="unit" name="Kwantung Army, 44 Army (Solun)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">44 A</text>
+      <text slot="TC" size="small">Solun</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kw-44a-2" family="unit" name="Kwantung Army, 44 Army (Liaoyuan)">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">44 A</text>
+      <text slot="TC" size="small">Liaoyuan</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="kr-34a" family="unit" name="Korea, 34 Army (north)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">34 A</text>
+      <text slot="TC" size="small">Korea N</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kr-58a" family="unit" name="Korea, 58 Army (south)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">58 A</text>
+      <text slot="TC" size="small">Korea S</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kr-17aa" family="unit" name="Korea, 17 Area Army reserve (Seoul)">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">17 AA</text>
+      <text slot="TC" size="small">Seoul</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="jp-air" family="support" name="Japanese 5 Air Army support" count="2">
+    <front style="japan">
+      <text slot="UL" size="small" weight="bold">5 AA</text><glyph kind="range" slot="UR" text="3"/><silhouette kind="aircraft" color="ink"/><band color="black" text-color="white">Air support</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-init-kmt" family="marker" name="Initiative, Japanese forces facing the KMT">
+    <front style="japan" split="kmtblue">
+      <emblem kind="hexagon" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Initiative|J facing KMT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-init-ccp" family="marker" name="Initiative, Japanese forces facing the CCP">
+    <front style="japan" split="ccpred">
+      <emblem kind="hexagon" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Initiative|J facing CCP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-ichigo1" family="marker" name="Japanese strategic directive: Ichi-Go I Henan">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Ichi-Go I|Henan</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-ichigo2" family="marker" name="Japanese strategic directive: Ichi-Go II Hunan">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Ichi-Go II|Hunan</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-ichigo3" family="marker" name="Japanese strategic directive: Ichi-Go III Guangxi">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Ichi-Go III|Guangxi</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-airfields" family="marker" name="Japanese strategic directive: Airfield denial">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Airfield|denial</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-coast" family="marker" name="Japanese strategic directive: Coastal defense">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Coastal|defense</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-dir-hold" family="marker" name="Japanese strategic directive: Hold for the KMT">
+    <front style="japan">
+      <text slot="CENTRE" size="small" weight="bold">Hold for|the KMT</text><band color="black" text-color="white">Directive</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-front" family="marker" name="Japanese formation's front: facing the KMT (CCP player controls) / facing the CCP (KMT player controls)" count="3">
+    <front style="japan" split="kmtblue">
+      <text slot="CENTRE" size="small" weight="bold">facing|KMT</text><band color="black" text-color="white">Control</band>
+    </front>
+    <back style="japan" split="ccpred">
+      <text slot="CENTRE" size="small" weight="bold">facing|CCP</text><band color="black" text-color="white">Control</band>
+    </back>
+  </counter>
+  <counter id="jp-pool-repl" family="marker" name="Japanese shared pool: Replacements">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Replace-|ments</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-pool-ops" family="marker" name="Japanese shared pool: Operationalsupport">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Operational|support</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-pool-rail" family="marker" name="Japanese shared pool: Railcapacity">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Rail|capacity</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-pool-log" family="marker" name="Japanese shared pool: Logistics">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Logistics</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-security" family="marker" name="Japanese security zone (blockhouse line)" count="3">
+    <front style="japan">
+      <symbol icon="garrison"/><band color="black" text-color="white">Security zone</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-surrendered" family="marker" name="Surrendered Japanese garrison" count="3">
+    <front style="japan">
+      <symbol icon="garrison"/><band color="white" text-color="ink">Surrendered</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-hailar" family="marker" name="Kwantung fortified zone, Hailar">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Hailar</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-aihui" family="marker" name="Kwantung fortified zone, Aihui">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Aihui</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-sunwu" family="marker" name="Kwantung fortified zone, Sunwu">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Sunwu</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-arshaan" family="marker" name="Kwantung fortified zone, Arshaan">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Arshaan</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-hutou" family="marker" name="Kwantung fortified zone, Hutou">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Hutou</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-fz-dongning" family="marker" name="Kwantung fortified zone, Dongning">
+    <front style="kwantung">
+      <symbol icon="text" text="Fort"/><text slot="TC" size="small" weight="bold">Dongning</text><text slot="BOTTOM" size="small" weight="bold">fortified zone</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-river" family="marker" name="Japanese river transport (Yangtze, Sungari)" count="2">
+    <front style="japan">
+      <silhouette kind="ship" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">River|transport</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-depot-kalgan" family="marker" name="Japanese depot and arms dump, Kalgan">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="gold" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Depot|Kalgan</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-depot-mukden" family="marker" name="Japanese depot and arms dump, Mukden">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="gold" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Depot|Mukden</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-depot-changchun" family="marker" name="Japanese depot and arms dump, Changchun">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="gold" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Depot|Changchun</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-depot-harbin" family="marker" name="Japanese depot and arms dump, Harbin">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="gold" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Depot|Harbin</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-airfield" family="marker" name="Airfield captured / destroyed" count="3">
+    <front style="plain">
+      <silhouette kind="aircraft" color="ink" scale="0.7"/><band color="orange" text-color="ink">Captured</band>
+    </front>
+    <back style="plain">
+      <silhouette kind="aircraft" color="ink" scale="0.7"/><band color="black" text-color="white">Destroyed</band>
+    </back>
+  </counter>
+  <counter id="sov-6gta" family="unit" name="Soviet grouping, 6 Gds Tank Army">
+    <front style="soviet">
+      <symbol icon="armour"/>
+      <echelon level="army"/>
+      <steps count="4" mark="dot"/>
+      <text slot="TC" size="small">6 Gds Tank Army</text>
+      <value>6-8</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot"/><value>3-8</value></back>
+  </counter>
+  <counter id="sov-39a" family="unit" name="Soviet grouping, 39 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="4" mark="dot"/>
+      <text slot="TC" size="small">39 Army</text>
+      <value>4-5</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot"/><value>2-5</value></back>
+  </counter>
+  <counter id="sov-36a" family="unit" name="Soviet grouping, 36 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">36 Army</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-17a" family="unit" name="Soviet grouping, 17 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">17 Army</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-pliyev" family="unit" name="Soviet grouping, Pliyev CMG">
+    <front style="soviet">
+      <symbol icon="cav-mech"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">Pliyev CMG</text>
+      <text slot="MR" rotate="90" size="small">Sov-Mong</text>
+      <value>3-8</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-8</value></back>
+  </counter>
+  <counter id="sov-1rb" family="unit" name="Soviet grouping, 1 Red Banner">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="4" mark="dot"/>
+      <text slot="TC" size="small">1 Red Banner</text>
+      <value>4-5</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot"/><value>2-5</value></back>
+  </counter>
+  <counter id="sov-5a" family="unit" name="Soviet grouping, 5 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="4" mark="dot"/>
+      <text slot="TC" size="small">5 Army</text>
+      <value>4-5</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot"/><value>2-5</value></back>
+  </counter>
+  <counter id="sov-25a" family="unit" name="Soviet grouping, 25 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">25 Army</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-35a" family="unit" name="Soviet grouping, 35 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">35 Army</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-2rb" family="unit" name="Soviet grouping, 2 Red Banner">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">2 Red Banner</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-15a" family="unit" name="Soviet grouping, 15 Army">
+    <front style="soviet">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="TC" size="small">15 Army</text>
+      <text slot="LR" size="small">Flotilla</text>
+      <value>3-5</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-5</value></back>
+  </counter>
+  <counter id="sov-airborne" family="marker" name="Soviet airborne detachment" count="3">
+    <front style="soviet">
+      <emblem kind="parachute" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Airborne|detachment</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="sov-directive" family="marker" name="Soviet directive (axis choice)">
+    <front style="soviet">
+      <text slot="CENTRE" size="medium" weight="bold">Soviet|directive</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="sov-withdrawal" family="marker" name="Soviet withdrawal track marker">
+    <front style="soviet">
+      <text slot="CENTRE" size="medium" weight="bold">Withdrawal|track</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="sov-fuel" family="marker" name="Soviet fuel airlift pool">
+    <front style="soviet">
+      <silhouette kind="aircraft" color="white" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Fuel|airlift</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="sov-occupied" family="marker" name="Soviet occupation" count="5">
+    <front style="soviet">
+      <emblem kind="star" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Occupied</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-nanjing1" family="unit" name="Nanjing regime, 1 Army">
+    <front style="puppet">
+      <symbol icon="garrison"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Nanjing 1 Army</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-nanjing2" family="unit" name="Nanjing regime, 2 Army">
+    <front style="puppet">
+      <symbol icon="garrison"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Nanjing 2 Army</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-nanjing3" family="unit" name="Nanjing regime, 3 Army">
+    <front style="puppet">
+      <symbol icon="garrison"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Nanjing 3 Army</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-manchukuo1" family="unit" name="Manchukuo Army 1">
+    <front style="manchukuo">
+      <symbol icon="garrison"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Manchukuo Army</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-manchukuo2" family="unit" name="Manchukuo Army 2">
+    <front style="manchukuo">
+      <symbol icon="garrison"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Manchukuo Army</text>
+      <value>1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="pup-mengjiang" family="unit" name="Mengjiang Army">
+    <front style="mengjiang">
+      <symbol icon="cavalry"/>
+      <echelon level="corps"/>
+      <steps count="1" mark="dot"/>
+      <text slot="TC" size="small">Mengjiang Army</text>
+      <value>1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-14af" family="support" name="US Fourteenth Air Force support" count="2">
+    <front style="usa">
+      <text slot="UL" size="small" weight="bold">14 AF</text><glyph kind="range" slot="UR" text="4"/><silhouette kind="aircraft" color="ink"/><band color="black" text-color="white">Air support</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-cacw" family="support" name="Chinese-American Composite Wing support">
+    <front style="usa">
+      <text slot="UL" size="small" weight="bold">CACW</text><glyph kind="range" slot="UR" text="3"/><silhouette kind="aircraft" color="ink"/><band color="black" text-color="white">Air support</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-b29" family="marker" name="B-29 bases at Chengdu">
+    <front style="usa">
+      <silhouette kind="bomber" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">B-29|Chengdu</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-lift" family="marker" name="US Strategic Lift">
+    <front style="usa">
+      <silhouette kind="ship" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Strategic|Lift</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-hump" family="marker" name="Hump tonnage and the Ledo Road">
+    <front style="usa">
+      <silhouette kind="aircraft" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Hump|tonnage</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-mission" family="marker" name="US military mission">
+    <front style="usa">
+      <text slot="CENTRE" size="medium" weight="bold">US|mission</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-marines-tianjin" family="marker" name="US Marines holding the port of Tianjin">
+    <front style="usa">
+      <text slot="TC" size="small" weight="bold">US Marines</text><emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Tianjin</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-marines-qingdao" family="marker" name="US Marines holding the port of Qingdao">
+    <front style="usa">
+      <text slot="TC" size="small" weight="bold">US Marines</text><emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Qingdao</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-marines-qinhuangdao" family="marker" name="US Marines holding the port of Qinhuangdao">
+    <front style="usa">
+      <text slot="TC" size="small" weight="bold">US Marines</text><emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Qinhuangdao</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-ga15" family="unit" name="KMT 15 Group Army, 1 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">15 GA</text>
+      <text slot="MR" rotate="90" size="small">1 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga19" family="unit" name="KMT 19 Group Army, 1 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">19 GA</text>
+      <text slot="MR" rotate="90" size="small">1 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga28" family="unit" name="KMT 28 Group Army, 1 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">28 GA</text>
+      <text slot="MR" rotate="90" size="small">1 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga31" family="unit" name="KMT 31 Group Army, 1 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">31 GA</text>
+      <text slot="MR" rotate="90" size="small">1 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga36" family="unit" name="KMT 36 Group Army, 1 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">36 GA</text>
+      <text slot="MR" rotate="90" size="small">1 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga34" family="unit" name="KMT 34 Group Army, 8 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">34 GA</text>
+      <text slot="MR" rotate="90" size="small">8 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga37" family="unit" name="KMT 37 Group Army, 8 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">37 GA</text>
+      <text slot="MR" rotate="90" size="small">8 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga38" family="unit" name="KMT 38 Group Army, 8 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">38 GA</text>
+      <text slot="MR" rotate="90" size="small">8 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga6" family="unit" name="KMT 6 Group Army, Shanxi (regional troops)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">6 GA</text>
+      <text slot="TC" size="small">Shanxi</text>
+      <text slot="MR" rotate="90" size="small">2 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga22" family="unit" name="KMT 22 Group Army, 5 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">22 GA</text>
+      <text slot="MR" rotate="90" size="small">5 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga33" family="unit" name="KMT 33 Group Army, 5 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">33 GA</text>
+      <text slot="MR" rotate="90" size="small">5 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga10" family="unit" name="KMT 10 Group Army, 6 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">10 GA</text>
+      <text slot="MR" rotate="90" size="small">6 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga26" family="unit" name="KMT 26 Group Army, 6 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">26 GA</text>
+      <text slot="MR" rotate="90" size="small">6 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga24" family="unit" name="KMT 24 Group Army, 9 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">24 GA</text>
+      <text slot="MR" rotate="90" size="small">9 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga27" family="unit" name="KMT 27 Group Army, 9 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">27 GA</text>
+      <text slot="MR" rotate="90" size="small">9 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga30" family="unit" name="KMT 30 Group Army, 9 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">30 GA</text>
+      <text slot="MR" rotate="90" size="small">9 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga16" family="unit" name="KMT 16 Group Army, Guangxi (regional troops)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">16 GA</text>
+      <text slot="TC" size="small">Guangxi</text>
+      <text slot="MR" rotate="90" size="small">4 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga35" family="unit" name="KMT 35 Group Army, Guangxi (regional troops)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">35 GA</text>
+      <text slot="TC" size="small">Guangxi</text>
+      <text slot="MR" rotate="90" size="small">4 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga23" family="unit" name="KMT 23 Group Army, 3 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">23 GA</text>
+      <text slot="MR" rotate="90" size="small">3 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga25" family="unit" name="KMT 25 Group Army, 3 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">25 GA</text>
+      <text slot="MR" rotate="90" size="small">3 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga32" family="unit" name="KMT 32 Group Army, 3 WA">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">32 GA</text>
+      <text slot="MR" rotate="90" size="small">3 WA</text>
+      <value>2-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga12" family="unit" name="KMT 12 Group Army, Guangdong (regional troops)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">12 GA</text>
+      <text slot="TC" size="small">Guangdong</text>
+      <text slot="MR" rotate="90" size="small">7 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga21" family="unit" name="KMT 21 Group Army, Guangxi (regional troops)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">21 GA</text>
+      <text slot="TC" size="small">Guangxi</text>
+      <text slot="MR" rotate="90" size="small">10 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-fu" family="unit" name="KMT 35 Army, Fu Zuoyi (Suiyuan)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="grey"/>
+      <echelon level="army"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">35 A</text>
+      <text slot="TC" size="small">Suiyuan</text>
+      <text slot="MR" rotate="90" size="small">12 WA</text>
+      <value>1-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-n1a" family="unit" name="KMT New 1 Army (US-equipped)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">New 1</text>
+      <text slot="TC" size="small">US-equipped</text>
+      <value>4-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-4</value></back>
+  </counter>
+  <counter id="kmt-n6a" family="unit" name="KMT New 6 Army (US-equipped)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">New 6</text>
+      <text slot="TC" size="small">US-equipped</text>
+      <value>4-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-4</value></back>
+  </counter>
+  <counter id="kmt-13a" family="unit" name="KMT 13 Army (US-equipped)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">13 A</text>
+      <text slot="TC" size="small">US-equipped</text>
+      <value>4-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-4</value></back>
+  </counter>
+  <counter id="kmt-52a" family="unit" name="KMT 52 Army (US-equipped)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">52 A</text>
+      <text slot="TC" size="small">US-equipped</text>
+      <value>4-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-4</value></back>
+  </counter>
+  <counter id="kmt-94a" family="unit" name="KMT 94 Army (US-equipped)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">94 A</text>
+      <text slot="TC" size="small">US-equipped</text>
+      <value>4-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>2-4</value></back>
+  </counter>
+  <counter id="kmt-ga11" family="unit" name="KMT 11 Group Army, Y-Force (returns 1945)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">11 GA</text>
+      <text slot="TC" size="small">Y-Force</text>
+      <value>3-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ga20" family="unit" name="KMT 20 Group Army, Y-Force (returns 1945)">
+    <front style="nationalist">
+      <symbol icon="infantry" fill="gold"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">20 GA</text>
+      <text slot="TC" size="small">Y-Force</text>
+      <value>3-3</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-3</value></back>
+  </counter>
+  <counter id="kmt-ghq" family="unit" name="KMT National Military Council (Chongqing)">
+    <front style="nationalist">
+      <symbol icon="hq"/>
+      <echelon level="high-command"/>
+      <text slot="UL" size="small" weight="bold">GHQ</text>
+      <text slot="TC" size="small">Chongqing</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-hq1" family="unit" name="KMT 1 War Area headquarters">
+    <front style="nationalist">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">1</text>
+      <text slot="TC" size="small">War Area</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-hq9" family="unit" name="KMT 9 War Area headquarters">
+    <front style="nationalist">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">9</text>
+      <text slot="TC" size="small">War Area</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-hqalpha" family="unit" name="Alpha Force headquarters (Kunming)">
+    <front style="nationalist">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">A</text>
+      <text slot="TC" size="small">Alpha HQ</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-init" family="marker" name="Initiative, KMT">
+    <front style="nationalist">
+      <emblem kind="hexagon" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Initiative|KMT</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-legit" family="marker" name="Legitimacy, KMT">
+    <front style="nationalist">
+      <text slot="CENTRE" size="medium" weight="bold">Legitimacy</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-position" family="marker" name="Postwar Position, KMT">
+    <front style="nationalist">
+      <text slot="CENTRE" size="medium" weight="bold">Postwar|Position</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-fort" family="marker" name="KMT fortified city" count="2">
+    <front style="nationalist">
+      <symbol icon="text" text="Fort"/><text slot="BOTTOM" size="small" weight="bold">Fortified|city</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-sgn" family="unit" name="CCP field force, Shaan-Gan-Ning">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Shaan-Gan-Ning</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-js" family="unit" name="CCP field force, Jin-Sui">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Jin-Sui</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-jcj" family="unit" name="CCP field force, Jin-Cha-Ji">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Jin-Cha-Ji</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-jjly" family="unit" name="CCP field force, Jin-Ji-Lu-Yu">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Jin-Ji-Lu-Yu</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-jjly2" family="unit" name="CCP field force, Jin-Ji-Lu-Yu">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Jin-Ji-Lu-Yu</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-sd" family="unit" name="CCP field force, Shandong">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Shandong</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-sd2" family="unit" name="CCP field force, Shandong Binhai">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Shandong Binhai</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-jrl" family="unit" name="CCP field force, Ji-Re-Liao">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">8RA</text>
+      <text slot="TC" size="small">Ji-Re-Liao</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a1" family="unit" name="CCP field force, N4A 1 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 1 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a2" family="unit" name="CCP field force, N4A 2 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 2 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a3" family="unit" name="CCP field force, N4A 3 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 3 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a4" family="unit" name="CCP field force, N4A 4 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 4 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a5" family="unit" name="CCP field force, N4A 5 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 5 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a6" family="unit" name="CCP field force, N4A 6 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 6 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-n4a7" family="unit" name="CCP field force, N4A 7 Div">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">N4A</text>
+      <text slot="TC" size="small">N4A 7 Div</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-dj" family="unit" name="CCP field force, Dongjiang Col.">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">SC</text>
+      <text slot="TC" size="small">Dongjiang Col.</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-ne1" family="unit" name="CCP Northeast column 1 (formed in play)">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">Column 1</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-ne2" family="unit" name="CCP Northeast column 2 (formed in play)">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">Column 2</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-ne3" family="unit" name="CCP Northeast column 3 (formed in play)">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">Column 3</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-ne4" family="unit" name="CCP Northeast column 4 (formed in play)">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">Column 4</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-ne5" family="unit" name="CCP Northeast column 5 (formed in play)">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <echelon level="corps"/>
+      <steps count="2" mark="dot"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">Column 5</text>
+      <value>2-4</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot"/><value>1-4</value></back>
+  </counter>
+  <counter id="ccp-hq" family="unit" name="CCP headquarters, Yan'an">
+    <front style="communist">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="TC" size="small">Yan'an</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-hq-ne" family="unit" name="CCP Northeast Bureau (1945)">
+    <front style="communist">
+      <symbol icon="hq"/>
+      <echelon level="army-group"/>
+      <text slot="UL" size="small" weight="bold">NE</text>
+      <text slot="TC" size="small">NE Bureau</text>
+      <value>0-4</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-presence" family="marker" name="CCP presence / base area" count="24">
+    <front style="communist">
+      <symbol icon="partisan"/><text slot="BOTTOM" size="small" weight="bold">Presence</text>
+    </front>
+    <back style="communist">
+      <symbol icon="partisan" fill="gold"/><band color="black" text-color="white">Base area</band>
+    </back>
+  </counter>
+  <counter id="ccp-init" family="marker" name="Initiative, CCP">
+    <front style="communist">
+      <emblem kind="hexagon" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Initiative|CCP</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-legit" family="marker" name="Legitimacy, CCP">
+    <front style="communist">
+      <text slot="CENTRE" size="medium" weight="bold">Legitimacy</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-position" family="marker" name="Postwar Position, CCP">
+    <front style="communist">
+      <text slot="CENTRE" size="medium" weight="bold">Postwar|Position</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-concentrate" family="marker" name="Presence concentrating into a field force" count="2">
+    <front style="communist">
+      <text slot="CENTRE" size="medium" weight="bold">Concen-|trate</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-junks" family="marker" name="Bohai junk crossing">
+    <front style="communist">
+      <silhouette kind="ship" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Bohai|crossing</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-calendar" family="marker" name="Calendar">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Calendar</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-weather" family="marker" name="Weather">
+    <front style="plain">
+      <emblem kind="cloud" color="lightblue" scale="0.9"/><text slot="BOTTOM" size="small" weight="bold">Weather</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-pacific" family="marker" name="Pacific War track">
+    <front style="plain">
+      <emblem kind="star" color="ink" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Pacific|War</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-control" family="marker" name="Control: KMT / CCP" count="8">
+    <front style="nationalist">
+      <emblem kind="flag" color="white" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Control</text>
+    </front>
+    <back style="communist">
+      <emblem kind="flag" color="white" color2="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Control</text>
+    </back>
+  </counter>
+  <counter id="mk-rail" family="marker" name="Rail segment interdicted / broken" count="10">
+    <front style="plain">
+      <silhouette kind="locomotive" color="ink" scale="0.8"/><band color="orange" text-color="ink">Interdicted</band>
+    </front>
+    <back style="plain">
+      <silhouette kind="locomotive" color="ink" scale="0.8"/><band color="black" text-color="white">Broken</band>
+    </back>
+  </counter>
+  <counter id="mk-bridge-yellow" family="marker" name="Yellow River rail bridge">
+    <front style="plain">
+      <text slot="CENTRE" size="small" weight="bold">Yellow River|bridge</text><band color="black" text-color="white">Bridge</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-ferry-yangtze" family="marker" name="Yangtze ferry" count="2">
+    <front style="plain">
+      <text slot="CENTRE" size="small" weight="bold">Yangtze|ferry</text><band color="black" text-color="white">Ferry</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-port" family="marker" name="Port denied / open" count="3">
+    <front style="plain">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Port|denied</text>
+    </front>
+    <back style="plain">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Port|open</text>
+    </back>
+  </counter>
+  <counter id="mk-oos" family="marker" name="Out of supply" count="2">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Out of|supply</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-halted" family="marker" name="Halted (fuel or water)">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Halted</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <sheet id="sheet-1" title="Circling Dragons, sheet 1: Japan, the Soviet Union, the puppets, the United States" cols="12" rows="11" gutter="0.5" margin="8" mirror="horizontal">
+    <place counter="jp-d110"/>
+    <place counter="jp-d62"/>
+    <place counter="jp-d37"/>
+    <place counter="jp-d69"/>
+    <place counter="jp-d114"/>
+    <place counter="jp-d63"/>
+    <place counter="jp-d59"/>
+    <place counter="jp-d35"/>
+    <place counter="jp-d26"/>
+    <place counter="jp-d3"/>
+    <place counter="jp-d13"/>
+    <place counter="jp-d27"/>
+    <place counter="jp-d34"/>
+    <place counter="jp-d39"/>
+    <place counter="jp-d40"/>
+    <place counter="jp-d58"/>
+    <place counter="jp-d68"/>
+    <place counter="jp-d116"/>
+    <place counter="jp-d60"/>
+    <place counter="jp-d65"/>
+    <place counter="jp-d70"/>
+    <place counter="jp-d104"/>
+    <place counter="jp-d22"/>
+    <place counter="jp-tk3"/>
+    <place counter="jp-imb-nc1"/>
+    <place counter="jp-imb-nc2"/>
+    <place counter="jp-imb-11a"/>
+    <place counter="jp-imb-13a"/>
+    <place counter="jp-g-pinghan"/>
+    <place counter="jp-g-jinpu"/>
+    <place counter="jp-g-longhai"/>
+    <place counter="jp-g-jingsui"/>
+    <place counter="jp-g-tongpu"/>
+    <place counter="jp-g-yangtze"/>
+    <place counter="jp-g-canton"/>
+    <place counter="jp-hq-cea"/>
+    <place counter="jp-hq-ncaa"/>
+    <place counter="jp-hq-6aa"/>
+    <place counter="kw-3a"/>
+    <place counter="kw-3a-2"/>
+    <place counter="kw-5a"/>
+    <place counter="kw-5a-2"/>
+    <place counter="kw-4a"/>
+    <place counter="kw-4a-2"/>
+    <place counter="kw-30a"/>
+    <place counter="kw-30a-2"/>
+    <place counter="kw-44a"/>
+    <place counter="kw-44a-2"/>
+    <place counter="kr-34a"/>
+    <place counter="kr-58a"/>
+    <place counter="kr-17aa"/>
+    <place counter="jp-air" repeat="2"/>
+    <place counter="jp-init-kmt"/>
+    <place counter="jp-init-ccp"/>
+    <place counter="jp-dir-ichigo1"/>
+    <place counter="jp-dir-ichigo2"/>
+    <place counter="jp-dir-ichigo3"/>
+    <place counter="jp-dir-airfields"/>
+    <place counter="jp-dir-coast"/>
+    <place counter="jp-dir-hold"/>
+    <place counter="jp-front" repeat="3"/>
+    <place counter="jp-pool-repl"/>
+    <place counter="jp-pool-ops"/>
+    <place counter="jp-pool-rail"/>
+    <place counter="jp-pool-log"/>
+    <place counter="jp-security" repeat="3"/>
+    <place counter="jp-surrendered" repeat="3"/>
+    <place counter="kw-fz-hailar"/>
+    <place counter="kw-fz-aihui"/>
+    <place counter="kw-fz-sunwu"/>
+    <place counter="kw-fz-arshaan"/>
+    <place counter="kw-fz-hutou"/>
+    <place counter="kw-fz-dongning"/>
+    <place counter="jp-river" repeat="2"/>
+    <place counter="jp-depot-kalgan"/>
+    <place counter="jp-depot-mukden"/>
+    <place counter="jp-depot-changchun"/>
+    <place counter="jp-depot-harbin"/>
+    <place counter="mk-airfield" repeat="3"/>
+    <place counter="sov-6gta"/>
+    <place counter="sov-39a"/>
+    <place counter="sov-36a"/>
+    <place counter="sov-17a"/>
+    <place counter="sov-pliyev"/>
+    <place counter="sov-1rb"/>
+    <place counter="sov-5a"/>
+    <place counter="sov-25a"/>
+    <place counter="sov-35a"/>
+    <place counter="sov-2rb"/>
+    <place counter="sov-15a"/>
+    <place counter="sov-airborne" repeat="3"/>
+    <place counter="sov-directive"/>
+    <place counter="sov-withdrawal"/>
+    <place counter="sov-fuel"/>
+    <place counter="sov-occupied" repeat="5"/>
+    <place counter="pup-nanjing1"/>
+    <place counter="pup-nanjing2"/>
+    <place counter="pup-nanjing3"/>
+    <place counter="pup-manchukuo1"/>
+    <place counter="pup-manchukuo2"/>
+    <place counter="pup-mengjiang"/>
+    <place counter="us-14af" repeat="2"/>
+    <place counter="us-cacw"/>
+    <place counter="us-b29"/>
+    <place counter="us-lift"/>
+    <place counter="us-hump"/>
+    <place counter="us-mission"/>
+    <place counter="us-marines-tianjin"/>
+    <place counter="us-marines-qingdao"/>
+    <place counter="us-marines-qinhuangdao"/>
+  </sheet>
+  <sheet id="sheet-2" title="Circling Dragons, sheet 2: the KMT, the CCP, neutral markers" cols="12" rows="11" gutter="0.5" margin="8" mirror="horizontal">
+    <place counter="kmt-ga15"/>
+    <place counter="kmt-ga19"/>
+    <place counter="kmt-ga28"/>
+    <place counter="kmt-ga31"/>
+    <place counter="kmt-ga36"/>
+    <place counter="kmt-ga34"/>
+    <place counter="kmt-ga37"/>
+    <place counter="kmt-ga38"/>
+    <place counter="kmt-ga6"/>
+    <place counter="kmt-ga22"/>
+    <place counter="kmt-ga33"/>
+    <place counter="kmt-ga10"/>
+    <place counter="kmt-ga26"/>
+    <place counter="kmt-ga24"/>
+    <place counter="kmt-ga27"/>
+    <place counter="kmt-ga30"/>
+    <place counter="kmt-ga16"/>
+    <place counter="kmt-ga35"/>
+    <place counter="kmt-ga23"/>
+    <place counter="kmt-ga25"/>
+    <place counter="kmt-ga32"/>
+    <place counter="kmt-ga12"/>
+    <place counter="kmt-ga21"/>
+    <place counter="kmt-fu"/>
+    <place counter="kmt-n1a"/>
+    <place counter="kmt-n6a"/>
+    <place counter="kmt-13a"/>
+    <place counter="kmt-52a"/>
+    <place counter="kmt-94a"/>
+    <place counter="kmt-ga11"/>
+    <place counter="kmt-ga20"/>
+    <place counter="kmt-ghq"/>
+    <place counter="kmt-hq1"/>
+    <place counter="kmt-hq9"/>
+    <place counter="kmt-hqalpha"/>
+    <place counter="kmt-init"/>
+    <place counter="kmt-legit"/>
+    <place counter="kmt-position"/>
+    <place counter="kmt-fort" repeat="2"/>
+    <place counter="ccp-sgn"/>
+    <place counter="ccp-js"/>
+    <place counter="ccp-jcj"/>
+    <place counter="ccp-jjly"/>
+    <place counter="ccp-jjly2"/>
+    <place counter="ccp-sd"/>
+    <place counter="ccp-sd2"/>
+    <place counter="ccp-jrl"/>
+    <place counter="ccp-n4a1"/>
+    <place counter="ccp-n4a2"/>
+    <place counter="ccp-n4a3"/>
+    <place counter="ccp-n4a4"/>
+    <place counter="ccp-n4a5"/>
+    <place counter="ccp-n4a6"/>
+    <place counter="ccp-n4a7"/>
+    <place counter="ccp-dj"/>
+    <place counter="ccp-ne1"/>
+    <place counter="ccp-ne2"/>
+    <place counter="ccp-ne3"/>
+    <place counter="ccp-ne4"/>
+    <place counter="ccp-ne5"/>
+    <place counter="ccp-hq"/>
+    <place counter="ccp-hq-ne"/>
+    <place counter="ccp-presence" repeat="24"/>
+    <place counter="ccp-init"/>
+    <place counter="ccp-legit"/>
+    <place counter="ccp-position"/>
+    <place counter="ccp-concentrate" repeat="2"/>
+    <place counter="ccp-junks"/>
+    <place counter="mk-calendar"/>
+    <place counter="mk-weather"/>
+    <place counter="mk-pacific"/>
+    <place counter="mk-control" repeat="8"/>
+    <place counter="mk-rail" repeat="10"/>
+    <place counter="mk-bridge-yellow"/>
+    <place counter="mk-ferry-yangtze" repeat="2"/>
+    <place counter="mk-port" repeat="3"/>
+    <place counter="mk-oos" repeat="2"/>
+    <place counter="mk-halted"/>
+  </sheet>
+</counters>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

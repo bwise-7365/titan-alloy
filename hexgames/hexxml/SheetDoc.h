@@ -225,6 +225,17 @@ namespace HexXml {
     std::vector<SheetPanelTableRowDoc> rows;
   };
 
+  // A picture in a panel (hexsheet.xsd PanelImage): the file at href, relative to the sheet file,
+  // scaled to fit the box x y w h in the panel's frame. Presentation only.
+  struct SheetPanelImageDoc {
+    std::string href;
+    double x = 0.0;
+    double y = 0.0;
+    double w = 0.0;
+    double h = 0.0;
+    int sourceLine = 0;
+  };
+
   struct SheetPanelDoc {
     std::string id;
     std::optional<std::string> title;
@@ -239,6 +250,7 @@ namespace HexXml {
     std::vector<SheetBoxDoc> boxes;
     std::vector<SheetTrackDoc> tracks;
     std::vector<SheetPanelTableDoc> tables;
+    std::vector<SheetPanelImageDoc> images;
     int sourceLine = 0;
   };
 
@@ -246,6 +258,7 @@ namespace HexXml {
     std::string id;
     std::string title;
     std::optional<std::string> source;
+    std::string file;  // the document's path, for what the sheet names relative to it (panel images); empty when parsed from text
     double width = 0.0;
     double height = 0.0;
     std::string background;

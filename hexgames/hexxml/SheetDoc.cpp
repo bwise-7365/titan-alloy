@@ -327,6 +327,19 @@ namespace HexXml {
       return t;
     }
 
+    SheetPanelImageDoc
+    parsePanelImage(const XmlNode& node)
+    {
+      SheetPanelImageDoc im;
+      im.href = node.required("href");
+      im.x = node.requiredAs<double>("x");
+      im.y = node.requiredAs<double>("y");
+      im.w = node.requiredAs<double>("w");
+      im.h = node.requiredAs<double>("h");
+      im.sourceLine = node.line();
+      return im;
+    }
+
     SheetPanelDoc
     parsePanel(const XmlNode& node)
     {
@@ -351,6 +364,8 @@ namespace HexXml {
           p.tracks.push_back(parseTrack(c));
         } else if ("table" == n) {
           p.tables.push_back(parsePanelTable(c));
+        } else if ("image" == n) {
+          p.images.push_back(parsePanelImage(c));
         }
       }
       return p;
@@ -377,6 +392,7 @@ namespace HexXml {
     s.font = root.optional("font").value_or(s.font);
     s.urban = root.required("urban");
     checkEnum(root, "urban", s.urban, {"buildings", "symbol"});
+    s.file = root.file();
     s.junctions = root.required("junctions");
     checkEnum(root, "junctions", s.junctions, {"implicit", "explicit"});
 

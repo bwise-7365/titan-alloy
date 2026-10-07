@@ -14,6 +14,7 @@ Instance documents approximate real sheets; each is compared with its scan in
 | `dai-senso.xml` | Dai Senso!, 3990 × 3198, two sheets | pointy | `w`/`e` + `{row:02}{col:02}`, rows numbered from the south, columns from each sheet's west edge | yes |
 | `panzergruppe-guderian.xml` | Panzergruppe Guderian (Cyrillic), 5615 × 3727 | **flat** | `{col:02}{row:02}` | yes |
 | `velikiye-luki.xml` | Velikiye Luki (Legion Wargames 2023), 5182 × 8021 photograph, map area only | **flat** | `{col:02}{row:02}`, even columns half a hex lower with rows 00-08; entry strips `G00-G09`, `R00-R09` | yes |
+| `circling-dragons.xml` | Circling Dragons (designed sheet, no scan), 3386 × 3825; China 1944-45 at 75 km per hex (the standard since 2026-10-06; `CD_HEX_KM=100` builds the first, 100 km sheet as `circling-dragons-100.xml`), built by `tools/cd/build_cd.py`; includes the Mongolian operations features, the political layer (under development) and two minor rivers (line `minor-river`) | **flat** | `{col:02}{row:02}`, 47 × 46, odd columns half a hex lower | yes |
 
 Sheet width and height are the scan's pixel size, so a render at `--scale 1` overlays the
 scan directly.
@@ -43,7 +44,9 @@ sheet  @id @title @source @width @height @background @font @urban=buildings|symb
                                                              at ends and junctions, midpoint to centre
   region     @layer @name @hexes @tint @opacity @outline @label @label-at
   label      @text (@at @slot | @x @y | @path) @angle @size @color @weight @italic @spacing @halo @anchor
-  panel      @id @title @x @y @w @h @rotate @fill @stroke > text* box* track* table*
+  panel      @id @title @x @y @w @h @rotate @fill @stroke > text* box* track* table* image*
+                                                           -- image: a picture file (@href, relative to the
+                                                             sheet) scaled to fit @x @y @w @h; presentation only
 ```
 
 - Hexes are addressed by their **printed identifier**; `grid/@id-format` says how it is generated

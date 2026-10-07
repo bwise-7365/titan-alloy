@@ -313,6 +313,9 @@ namespace HexMapEd {
         }
         line(out, 2, "</table>");
       }
+      for (const HexXml::SheetPanelImageDoc& im : p.images) {
+        emptyElement(out, 2, "image", Attrs().add("href", im.href).add("x", im.x).add("y", im.y).add("w", im.w).add("h", im.h));
+      }
       line(out, 1, "</panel>");
       return;
     }

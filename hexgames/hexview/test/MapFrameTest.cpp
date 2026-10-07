@@ -69,7 +69,7 @@ namespace {
   TEST(MapFrameTest, CentresAndCornersMatchReferenceOnSixSheets)
   {
     for (const char* name : {"the-russian-campaign", "panzergruppe-guderian", "d-day-at-tarawa",
-                             "dai-senso", "stalin-moves-west", "velikiye-luki"}) {
+                             "dai-senso", "stalin-moves-west", "velikiye-luki", "circling-dragons"}) {
       expectGeometryMatches(name);
     }
   }

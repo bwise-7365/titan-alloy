@@ -26,4 +26,9 @@ map_graphics/xml/tools/image2sheet/work/
 *.synctex.gz
 *.toc
 map_graphics/xml/tools/reader/work/
+# Natural Earth downloads the Circling Dragons builder reads (tools/cd/README.md)
+map_graphics/xml/tools/cd/ne/
+map_graphics/xml/tools/cd/diag_*.png
+# the logo tracer's intermediates (labels, palette, posterized preview)
+Circling Dragons/work/
 # Copyright Ben Paul Wise. All Rights Reserved.

@@ -11,6 +11,7 @@
 #include "hexview/MapLayers.h"
 
 #include <algorithm>
+#include <filesystem>
 
 namespace HexView {
 
@@ -54,6 +55,20 @@ namespace HexView {
         scene.add(Layer::Panels,
                   Primitive{textShape(place.apply(Pixel{x, y}), content, std::move(font), color,
                                       anchor, TextBaseline::Alphabetic, place.rotateDegrees),
+                            hit});
+        return;
+      }
+
+      // A picture: its href as written and resolved beside the sheet's file, its box in sheet pixels.
+      void
+      image(const HexXml::SheetPanelImageDoc& im, const std::string& sheetFile)
+      {
+        const std::string path =
+            sheetFile.empty() ? im.href
+                              : (std::filesystem::path(sheetFile).parent_path() / im.href).generic_string();
+        scene.add(Layer::Panels,
+                  Primitive{ImageShape{im.href, path, place.apply(Pixel{im.x, im.y}), im.w * place.scale,
+                                       im.h * place.scale, place.rotateDegrees},
                             hit});
         return;
       }
@@ -139,6 +154,9 @@ namespace HexView {
                       kInk);
           }
         }
+      }
+      for (const HexXml::SheetPanelImageDoc& im : p.images) {
+        draw.image(im, ctx.sheet.file);
       }
       return;
     }

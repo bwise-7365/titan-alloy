@@ -118,6 +118,20 @@ namespace HexView {
              ") scale(" + fixed(u.scale, 2) + ")\" style=\"color:" + colorText(u.color) + "\"/>";
     }
 
+    // A panel picture: the file as the sheet names it, scaled to fit its box (the reference writes
+    // preserveAspectRatio="xMidYMid meet"); turned about its own corner when its panel is rotated,
+    // in the translate-then-rotate form the text elements use.
+    std::string
+    imageElement(const ImageShape& i)
+    {
+      std::string a = 0.0 == i.angleDegrees
+                          ? "<image x=\"" + fixed(i.at.x, 2) + "\" y=\"" + fixed(i.at.y, 2) + "\""
+                          : "<image transform=\"translate(" + fixed(i.at.x, 2) + "," + fixed(i.at.y, 2) +
+                                ") rotate(" + shortest(i.angleDegrees) + ")\" x=\"0\" y=\"0\"";
+      return a + " width=\"" + fixed(i.w, 2) + "\" height=\"" + fixed(i.h, 2) +
+             "\" preserveAspectRatio=\"xMidYMid meet\" xlink:href=\"" + xmlEscape(i.href) + "\"/>";
+    }
+
     std::string
     element(const Shape& shape, const SymbolLibrary& lib, bool shortestP)
     {
@@ -126,6 +140,9 @@ namespace HexView {
       }
       if (const auto* t = std::get_if<TextShape>(&shape)) {
         return textElement(*t);
+      }
+      if (const auto* i = std::get_if<ImageShape>(&shape)) {
+        return imageElement(*i);
       }
       return useElement(std::get<SymbolUse>(shape), lib);
     }

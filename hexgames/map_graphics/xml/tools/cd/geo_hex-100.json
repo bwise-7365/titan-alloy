@@ -1,0 +1,7142 @@
+{
+"0101": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0102": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0103": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0104": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0105": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0106": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0107": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0108": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.74
+},
+"0109": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0110": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0111": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0112": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0113": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0114": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0115": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0116": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0117": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0118": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0119": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0120": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0121": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0122": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0123": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0124": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0125": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0126": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0127": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0128": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0129": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0130": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0131": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 0.43
+},
+"0132": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 0.99
+},
+"0133": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 1.0
+},
+"0134": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 1.0
+},
+"0201": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0202": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0203": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0204": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0205": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0206": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0207": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0208": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.93
+},
+"0209": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0210": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0211": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0212": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0213": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0214": {
+"land": 1.0,
+"lake": 0.461,
+"country": 1,
+"cfrac": 1.0
+},
+"0215": {
+"land": 1.0,
+"lake": 0.013,
+"country": 1,
+"cfrac": 1.0
+},
+"0216": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0217": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0218": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0219": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0220": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0221": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0222": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0223": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0224": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0225": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0226": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0227": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0228": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0229": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0230": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.87
+},
+"0231": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.95
+},
+"0232": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.69
+},
+"0233": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 1.0
+},
+"0234": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 0.98
+},
+"0301": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0302": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0303": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0304": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0305": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0306": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0307": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0308": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.81
+},
+"0309": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0310": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0311": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0312": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0313": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0314": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0315": {
+"land": 1.0,
+"lake": 0.033,
+"country": 1,
+"cfrac": 1.0
+},
+"0316": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0317": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0318": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0319": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0320": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0321": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0322": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0323": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0324": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0325": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0326": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0327": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0328": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0329": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0330": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0331": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.65
+},
+"0332": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0333": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 0.57
+},
+"0334": {
+"land": 1.0,
+"lake": 0.0,
+"country": 7,
+"cfrac": 0.78
+},
+"0401": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0402": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0403": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0404": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0405": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0406": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0407": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0408": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.52
+},
+"0409": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0410": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0411": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0412": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0413": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0414": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0415": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0416": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0417": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0418": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0419": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0420": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0421": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0422": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0423": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0424": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0425": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0426": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0427": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0428": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0429": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0430": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.79
+},
+"0431": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0432": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0433": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.85
+},
+"0434": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.98
+},
+"0501": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0502": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0503": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0504": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0505": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0506": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0507": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0508": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0509": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.51
+},
+"0510": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0511": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0512": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0513": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0514": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0515": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0516": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0517": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0518": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0519": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0520": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0521": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0522": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0523": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0524": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0525": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0526": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0527": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0528": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0529": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0530": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.97
+},
+"0531": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.89
+},
+"0532": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0533": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0534": {
+"land": 0.807,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0601": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0602": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0603": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0604": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0605": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0606": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0607": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0608": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0609": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.51
+},
+"0610": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0611": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0612": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0613": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0614": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0615": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0616": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0617": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0618": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0619": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0620": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0621": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0622": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0623": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0624": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0625": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0626": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0627": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0628": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0629": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0630": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.97
+},
+"0631": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.81
+},
+"0632": {
+"land": 1.0,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0633": {
+"land": 0.583,
+"lake": 0.0,
+"country": 6,
+"cfrac": 1.0
+},
+"0634": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"0701": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0702": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0703": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0704": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0705": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0706": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0707": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0708": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0709": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0710": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.7
+},
+"0711": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0712": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0713": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0714": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0715": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0716": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0717": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0718": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0719": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0720": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0721": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0722": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0723": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0724": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0725": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0726": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0727": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0728": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0729": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0730": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0731": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.99
+},
+"0732": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.88
+},
+"0733": {
+"land": 0.539,
+"lake": 0.0,
+"country": 6,
+"cfrac": 0.99
+},
+"0734": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"0801": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0802": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0803": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0804": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0805": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0806": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0807": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0808": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0809": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.91
+},
+"0810": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0811": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0812": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0813": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0814": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0815": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0816": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0817": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0818": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0819": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0820": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0821": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0822": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0823": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0824": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0825": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0826": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0827": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0828": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0829": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0830": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0831": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0832": {
+"land": 0.645,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.92
+},
+"0833": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"0834": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"0901": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0902": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0903": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0904": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0905": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0906": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0907": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0908": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0909": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"0910": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.93
+},
+"0911": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0912": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0913": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0914": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0915": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0916": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0917": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0918": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0919": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0920": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0921": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0922": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0923": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0924": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0925": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0926": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0927": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0928": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0929": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0930": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0931": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0932": {
+"land": 0.998,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0933": {
+"land": 0.178,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"0934": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1001": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1002": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1003": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1004": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1005": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1006": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1007": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1008": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1009": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.55
+},
+"1010": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1011": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1012": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1013": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1014": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1015": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1016": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1017": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1018": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1019": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1020": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1021": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1022": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1023": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1024": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1025": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1026": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1027": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1028": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1029": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1030": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1031": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1032": {
+"land": 0.9,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1033": {
+"land": 0.558,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1034": {
+"land": 0.598,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1101": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.53
+},
+"1102": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1103": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1104": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1105": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1106": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1107": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1108": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1109": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.98
+},
+"1110": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1111": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1112": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1113": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1114": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1115": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1116": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1117": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1118": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1119": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1120": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1121": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1122": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1123": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1124": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1125": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1126": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1127": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1128": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1129": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1130": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1131": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1132": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1133": {
+"land": 0.714,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1134": {
+"land": 0.165,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1201": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.81
+},
+"1202": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1203": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1204": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1205": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1206": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1207": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1208": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1209": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.56
+},
+"1210": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1211": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1212": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1213": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1214": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1215": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1216": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1217": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1218": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1219": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1220": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1221": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1222": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1223": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1224": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1225": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1226": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1227": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1228": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1229": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1230": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1231": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1232": {
+"land": 0.968,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1233": {
+"land": 0.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1234": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1301": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"1302": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.55
+},
+"1303": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1304": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1305": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1306": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1307": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1308": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1309": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.54
+},
+"1310": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1311": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1312": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1313": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1314": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1315": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1316": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1317": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1318": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1319": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1320": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1321": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1322": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1323": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1324": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1325": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1326": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1327": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1328": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1329": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1330": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1331": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1332": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1333": {
+"land": 0.198,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1334": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1401": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"1402": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.91
+},
+"1403": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1404": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1405": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1406": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.97
+},
+"1407": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.55
+},
+"1408": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.59
+},
+"1409": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1410": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1411": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1412": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1413": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1414": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1415": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1416": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1417": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1418": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1419": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1420": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1421": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1422": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1423": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1424": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1425": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1426": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1427": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1428": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1429": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1430": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1431": {
+"land": 0.967,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1432": {
+"land": 0.529,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1433": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1434": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1501": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"1502": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.57
+},
+"1503": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1504": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1505": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1506": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1507": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.61
+},
+"1508": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1509": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1510": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1511": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1512": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1513": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1514": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1515": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1516": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1517": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1518": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1519": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1520": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1521": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1522": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1523": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1524": {
+"land": 1.0,
+"lake": 0.04,
+"country": 1,
+"cfrac": 1.0
+},
+"1525": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1526": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1527": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1528": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1529": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1530": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1531": {
+"land": 0.99,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1532": {
+"land": 0.569,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.78
+},
+"1533": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1534": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1601": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.58
+},
+"1602": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1603": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1604": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1605": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1606": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1607": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.93
+},
+"1608": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1609": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1610": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1611": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1612": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1613": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1614": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1615": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1616": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1617": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1618": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1619": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1620": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1621": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1622": {
+"land": 1.0,
+"lake": 0.004,
+"country": 1,
+"cfrac": 1.0
+},
+"1623": {
+"land": 1.0,
+"lake": 0.17,
+"country": 1,
+"cfrac": 1.0
+},
+"1624": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1625": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1626": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1627": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1628": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1629": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1630": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1631": {
+"land": 0.935,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1632": {
+"land": 0.005,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.81
+},
+"1633": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1634": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1701": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.76
+},
+"1702": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1703": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1704": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1705": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1706": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1707": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.93
+},
+"1708": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1709": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1710": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1711": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1712": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1713": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1714": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1715": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1716": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1717": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1718": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1719": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1720": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1721": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1722": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1723": {
+"land": 1.0,
+"lake": 0.009,
+"country": 1,
+"cfrac": 1.0
+},
+"1724": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1725": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1726": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1727": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1728": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1729": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1730": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1731": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1732": {
+"land": 0.241,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1733": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1734": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1801": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.5
+},
+"1802": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.85
+},
+"1803": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.52
+},
+"1804": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1805": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"1806": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.68
+},
+"1807": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1808": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1809": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1810": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1811": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1812": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1813": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1814": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1815": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1816": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1817": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1818": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1819": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1820": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1821": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1822": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1823": {
+"land": 1.0,
+"lake": 0.104,
+"country": 1,
+"cfrac": 1.0
+},
+"1824": {
+"land": 1.0,
+"lake": 0.243,
+"country": 1,
+"cfrac": 1.0
+},
+"1825": {
+"land": 1.0,
+"lake": 0.018,
+"country": 1,
+"cfrac": 1.0
+},
+"1826": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1827": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1828": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1829": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1830": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1831": {
+"land": 0.554,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1832": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1833": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1834": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1901": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"1902": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.63
+},
+"1903": {
+"land": 1.0,
+"lake": 0.123,
+"country": 1,
+"cfrac": 1.0
+},
+"1904": {
+"land": 1.0,
+"lake": 0.01,
+"country": 2,
+"cfrac": 0.66
+},
+"1905": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.97
+},
+"1906": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.99
+},
+"1907": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1908": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1909": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1910": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1911": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1912": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1913": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1914": {
+"land": 0.979,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1915": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1916": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1917": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1918": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1919": {
+"land": 1.0,
+"lake": 0.036,
+"country": 1,
+"cfrac": 1.0
+},
+"1920": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1921": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1922": {
+"land": 1.0,
+"lake": 0.075,
+"country": 1,
+"cfrac": 1.0
+},
+"1923": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1924": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1925": {
+"land": 1.0,
+"lake": 0.003,
+"country": 1,
+"cfrac": 1.0
+},
+"1926": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1927": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1928": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1929": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1930": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1931": {
+"land": 0.376,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"1932": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1933": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"1934": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2001": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.85
+},
+"2002": {
+"land": 1.0,
+"lake": 0.157,
+"country": 1,
+"cfrac": 1.0
+},
+"2003": {
+"land": 1.0,
+"lake": 0.051,
+"country": 1,
+"cfrac": 0.74
+},
+"2004": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 1.0
+},
+"2005": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.87
+},
+"2006": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2007": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2008": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2009": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2010": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2011": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2012": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2013": {
+"land": 0.603,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2014": {
+"land": 0.448,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2015": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2016": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2017": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2018": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2019": {
+"land": 1.0,
+"lake": 0.001,
+"country": 1,
+"cfrac": 1.0
+},
+"2020": {
+"land": 1.0,
+"lake": 0.125,
+"country": 1,
+"cfrac": 1.0
+},
+"2021": {
+"land": 1.0,
+"lake": 0.004,
+"country": 1,
+"cfrac": 1.0
+},
+"2022": {
+"land": 1.0,
+"lake": 0.019,
+"country": 1,
+"cfrac": 1.0
+},
+"2023": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2024": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2025": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2026": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2027": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2028": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2029": {
+"land": 0.934,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2030": {
+"land": 0.236,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2031": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2032": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2033": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2034": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2101": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.57
+},
+"2102": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2103": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2104": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.66
+},
+"2105": {
+"land": 1.0,
+"lake": 0.0,
+"country": 2,
+"cfrac": 0.66
+},
+"2106": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2107": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2108": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2109": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2110": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2111": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2112": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2113": {
+"land": 0.743,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2114": {
+"land": 0.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2115": {
+"land": 0.396,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2116": {
+"land": 0.884,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2117": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2118": {
+"land": 0.849,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2119": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2120": {
+"land": 1.0,
+"lake": 0.201,
+"country": 1,
+"cfrac": 1.0
+},
+"2121": {
+"land": 1.0,
+"lake": 0.056,
+"country": 1,
+"cfrac": 1.0
+},
+"2122": {
+"land": 1.0,
+"lake": 0.038,
+"country": 1,
+"cfrac": 1.0
+},
+"2123": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2124": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2125": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2126": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2127": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2128": {
+"land": 0.983,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2129": {
+"land": 0.785,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2130": {
+"land": 0.083,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.85
+},
+"2131": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2132": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2133": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2134": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2201": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2202": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2203": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2204": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.98
+},
+"2205": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2206": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2207": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2208": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2209": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2210": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2211": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2212": {
+"land": 0.45,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2213": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2214": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2215": {
+"land": 0.535,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2216": {
+"land": 0.962,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2217": {
+"land": 0.357,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2218": {
+"land": 0.187,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2219": {
+"land": 0.97,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2220": {
+"land": 1.0,
+"lake": 0.02,
+"country": 1,
+"cfrac": 1.0
+},
+"2221": {
+"land": 0.967,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2222": {
+"land": 1.0,
+"lake": 0.253,
+"country": 1,
+"cfrac": 1.0
+},
+"2223": {
+"land": 0.986,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2224": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2225": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2226": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2227": {
+"land": 0.704,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2228": {
+"land": 0.31,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2229": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2230": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2231": {
+"land": 0.048,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2232": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2233": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2234": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2301": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2302": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2303": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2304": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2305": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2306": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2307": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2308": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2309": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2310": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2311": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2312": {
+"land": 0.179,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2313": {
+"land": 0.157,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2314": {
+"land": 0.095,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2315": {
+"land": 0.348,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2316": {
+"land": 0.878,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2317": {
+"land": 0.093,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2318": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2319": {
+"land": 0.001,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2320": {
+"land": 0.309,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2321": {
+"land": 0.786,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2322": {
+"land": 0.867,
+"lake": 0.007,
+"country": 1,
+"cfrac": 1.0
+},
+"2323": {
+"land": 0.797,
+"lake": 0.019,
+"country": 1,
+"cfrac": 1.0
+},
+"2324": {
+"land": 0.956,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2325": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2326": {
+"land": 0.729,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2327": {
+"land": 0.201,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2328": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2329": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2330": {
+"land": 0.484,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2331": {
+"land": 0.952,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2332": {
+"land": 0.66,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2333": {
+"land": 0.035,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2334": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2401": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2402": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2403": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2404": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2405": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2406": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2407": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2408": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2409": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2410": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2411": {
+"land": 0.81,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2412": {
+"land": 0.768,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2413": {
+"land": 0.373,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2414": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2415": {
+"land": 0.642,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2416": {
+"land": 0.016,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2417": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2418": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2419": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2420": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2421": {
+"land": 0.338,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2422": {
+"land": 0.448,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2423": {
+"land": 0.344,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2424": {
+"land": 0.671,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2425": {
+"land": 0.35,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2426": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2427": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2428": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2429": {
+"land": 0.843,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2430": {
+"land": 0.734,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2431": {
+"land": 0.409,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2432": {
+"land": 0.017,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2433": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2434": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2501": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2502": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2503": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2504": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2505": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2506": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2507": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2508": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2509": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2510": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2511": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2512": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2513": {
+"land": 0.311,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2514": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2515": {
+"land": 0.002,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2516": {
+"land": 0.029,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2517": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2518": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2519": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2520": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2521": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2522": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2523": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2524": {
+"land": 0.047,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2525": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2526": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2527": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2528": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2529": {
+"land": 0.005,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2530": {
+"land": 0.013,
+"lake": 0.0,
+"country": 9,
+"cfrac": 1.0
+},
+"2531": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2532": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2533": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2534": {
+"land": 0.022,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2601": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2602": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2603": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2604": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2605": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2606": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2607": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2608": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2609": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2610": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2611": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2612": {
+"land": 0.634,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.68
+},
+"2613": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2614": {
+"land": 0.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2615": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2616": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2617": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2618": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2619": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2620": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2621": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2622": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2623": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2624": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2625": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2626": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2627": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2628": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2629": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2630": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2631": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2632": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2633": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2634": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2701": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2702": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2703": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2704": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2705": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2706": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2707": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2708": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2709": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2710": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2711": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.99
+},
+"2712": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.82
+},
+"2713": {
+"land": 0.503,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2714": {
+"land": 0.543,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2715": {
+"land": 0.13,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.93
+},
+"2716": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2717": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2718": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2719": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2720": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2721": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2722": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2723": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2724": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2725": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2726": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2727": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2728": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2729": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2730": {
+"land": 0.065,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"2731": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2732": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2733": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2734": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2801": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.74
+},
+"2802": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2803": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2804": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2805": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2806": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2807": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2808": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2809": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2810": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.67
+},
+"2811": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.95
+},
+"2812": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2813": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2814": {
+"land": 0.751,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2815": {
+"land": 0.053,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2816": {
+"land": 0.002,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2817": {
+"land": 0.001,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2818": {
+"land": 0.044,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2819": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2820": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2821": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2822": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2823": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2824": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2825": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2826": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2827": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2828": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2829": {
+"land": 0.012,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"2830": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2831": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2832": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2833": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2834": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2901": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"2902": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.95
+},
+"2903": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2904": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2905": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2906": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2907": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2908": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2909": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"2910": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.97
+},
+"2911": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.98
+},
+"2912": {
+"land": 0.991,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2913": {
+"land": 0.83,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2914": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2915": {
+"land": 0.847,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2916": {
+"land": 0.886,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2917": {
+"land": 0.714,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2918": {
+"land": 0.802,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2919": {
+"land": 0.032,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2920": {
+"land": 0.203,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"2921": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2922": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2923": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2924": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2925": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2926": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2927": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2928": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2929": {
+"land": 0.006,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"2930": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2931": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2932": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2933": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"2934": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3001": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.86
+},
+"3002": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.99
+},
+"3003": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3004": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3005": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3006": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3007": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3008": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3009": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.82
+},
+"3010": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.9
+},
+"3011": {
+"land": 0.931,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3012": {
+"land": 0.059,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3013": {
+"land": 0.493,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3014": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3015": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3016": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3017": {
+"land": 0.939,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3018": {
+"land": 0.105,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3019": {
+"land": 0.003,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3020": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3021": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3022": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3023": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3024": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3025": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3026": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3027": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3028": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3029": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3030": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3031": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3032": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3033": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3034": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3101": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3102": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.92
+},
+"3103": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.6
+},
+"3104": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3105": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3106": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3107": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3108": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3109": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.53
+},
+"3110": {
+"land": 0.714,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3111": {
+"land": 0.549,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3112": {
+"land": 0.001,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3113": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3114": {
+"land": 0.077,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3115": {
+"land": 0.767,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3116": {
+"land": 0.996,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3117": {
+"land": 1.0,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3118": {
+"land": 0.184,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3119": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3120": {
+"land": 0.031,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3121": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3122": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3123": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3124": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3125": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3126": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3127": {
+"land": 0.099,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3128": {
+"land": 0.028,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3129": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3130": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3131": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3132": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3133": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3134": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3201": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3202": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3203": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.79
+},
+"3204": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3205": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3206": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.52
+},
+"3207": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.61
+},
+"3208": {
+"land": 0.916,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.59
+},
+"3209": {
+"land": 0.193,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.66
+},
+"3210": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3211": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3212": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3213": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3214": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3215": {
+"land": 0.072,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3216": {
+"land": 0.209,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3217": {
+"land": 0.077,
+"lake": 0.0,
+"country": 4,
+"cfrac": 0.96
+},
+"3218": {
+"land": 0.098,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3219": {
+"land": 0.157,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3220": {
+"land": 0.015,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3221": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3222": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3223": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3224": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3225": {
+"land": 0.026,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3226": {
+"land": 0.028,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3227": {
+"land": 0.005,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3228": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3229": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3230": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3231": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3232": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3233": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3234": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3301": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3302": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3303": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.71
+},
+"3304": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3305": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 1.0
+},
+"3306": {
+"land": 1.0,
+"lake": 0.422,
+"country": 3,
+"cfrac": 0.53
+},
+"3307": {
+"land": 1.0,
+"lake": 0.04,
+"country": 3,
+"cfrac": 1.0
+},
+"3308": {
+"land": 0.806,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3309": {
+"land": 0.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3310": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3311": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3312": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3313": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3314": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3315": {
+"land": 0.012,
+"lake": 0.0,
+"country": 4,
+"cfrac": 1.0
+},
+"3316": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3317": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3318": {
+"land": 0.012,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3319": {
+"land": 0.56,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3320": {
+"land": 0.547,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3321": {
+"land": 0.353,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3322": {
+"land": 0.041,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3323": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3324": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3325": {
+"land": 0.098,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3326": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3327": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3328": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3329": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3330": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3331": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3332": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3333": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3334": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3401": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3402": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.58
+},
+"3403": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.69
+},
+"3404": {
+"land": 1.0,
+"lake": 0.0,
+"country": 1,
+"cfrac": 0.52
+},
+"3405": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.81
+},
+"3406": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3407": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3408": {
+"land": 0.493,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3409": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3410": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3411": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3412": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3413": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3414": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3415": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3416": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3417": {
+"land": 0.164,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3418": {
+"land": 0.541,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3419": {
+"land": 0.977,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3420": {
+"land": 0.964,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3421": {
+"land": 0.509,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3422": {
+"land": 0.105,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3423": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3424": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3425": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3426": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3427": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3428": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3429": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3430": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3431": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3432": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3433": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3434": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3501": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3502": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3503": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 0.97
+},
+"3504": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3505": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3506": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3507": {
+"land": 1.0,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3508": {
+"land": 0.553,
+"lake": 0.0,
+"country": 3,
+"cfrac": 1.0
+},
+"3509": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3510": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3511": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3512": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3513": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3514": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3515": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3516": {
+"land": 0.023,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3517": {
+"land": 0.588,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3518": {
+"land": 0.706,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3519": {
+"land": 0.346,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3520": {
+"land": 0.172,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3521": {
+"land": 0.033,
+"lake": 0.0,
+"country": 10,
+"cfrac": 1.0
+},
+"3522": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3523": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3524": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3525": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3526": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3527": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3528": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3529": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3530": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3531": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3532": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3533": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+},
+"3534": {
+"land": 0.0,
+"lake": 0.0,
+"country": null,
+"cfrac": 0
+}
+}

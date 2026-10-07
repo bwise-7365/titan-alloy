@@ -2,7 +2,8 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 // The line layers: hexsheet2svg.py layer_edges (paths along hexsides, straight edges, rounded
-// rivers) and layer_links (smoothed road and railway networks, casings, rail ticks).
+// rivers whether written as edges or as path chains) and layer_links (smoothed road and railway
+// networks, casings, rail ticks).
 // ----------------------------------------------
 #include "hexview/MapLayers.h"
 #include "hexview/Scratch.h"
@@ -116,6 +117,10 @@ namespace HexView {
       return;
     }
 
+    // A path whose line is rounded (a river written as a chain, so that its confluences can be
+    // junctions at hex corners: Circling Dragons) is drawn as the rounded edge chains are, corners
+    // rounded in the reference style and scratched when the style asks. Every other path, and a path
+    // drawn offset into its hexes, stays straight along its hexsides.
     void
     addPaths(const MapContext& ctx, Scene& scene)
     {
@@ -123,7 +128,24 @@ namespace HexView {
         const std::string at =
             where(ctx.sheet, p.sourceLine, "path '" + p.name.value_or(p.kind) + "'");
         const HexXml::SheetLineDoc& l = ctx.line(p.line, at);
-        addStroked(scene, Layer::Edges, chainPath(ctx, p.edges, p.offset), l, ctx, at, NoHit{});
+        if (0.0 != p.offset || !ctx.roundedP(p.line)) {
+          addStroked(scene, Layer::Edges, chainPath(ctx, p.edges, p.offset), l, ctx, at, NoHit{});
+          continue;
+        }
+        std::vector<std::pair<Pixel, Pixel>> sides;
+        for (const std::string& token : p.edges) {
+          sides.push_back(ctx.frame.hexsideEnds(ctx.frame.edgeRef(token)));
+        }
+        const std::string seed = p.id.value_or(p.name.value_or(p.kind));
+        Commands d;
+        std::size_t ordinal = 0;
+        for (const Polyline& chain : cornerChains(sides)) {
+          const Commands piece = ctx.style.scratch.has_value()
+                                     ? straightChain(scratched(ctx, chain, seed, ordinal++))
+                                     : roundedCorners(chain);
+          d.insert(d.end(), piece.begin(), piece.end());
+        }
+        addStroked(scene, Layer::Edges, d, l, ctx, at, NoHit{});
       }
       return;
     }

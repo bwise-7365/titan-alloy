@@ -18,7 +18,7 @@ One element per address kind from the map-graphics taxonomy:
   region   a set of hexes with a tint and/or an outline; layers may overlap
   label    text at a hex slot, at a point, or along a path
   panel    off-map furniture: a rectangle, optionally rotated, holding text, boxes,
-           tracks and tables
+           tracks, tables and pictures
 
 Conventions
   * Hexes are addressed by their printed identifier. The grid element says how
@@ -460,6 +460,15 @@ Conventions
     <xs:attribute name="size" type="xs:decimal"/>
   </xs:complexType>
 
+  <xs:complexType name="PanelImage">
+    <xs:annotation><xs:documentation>A picture in a panel: the file at href, relative to the sheet file (an SVG or a raster), drawn scaled to fit the rectangle x y w h in the panel's frame and centred in it, so it turns with a rotated panel. Presentation only, like every panel child: the game model never sees it. Approved 2026-10-06 (the Circling Dragons logo).</xs:documentation></xs:annotation>
+    <xs:attribute name="href" type="xs:string" use="required"/>
+    <xs:attribute name="x" type="xs:decimal" use="required"/>
+    <xs:attribute name="y" type="xs:decimal" use="required"/>
+    <xs:attribute name="w" type="xs:decimal" use="required"/>
+    <xs:attribute name="h" type="xs:decimal" use="required"/>
+  </xs:complexType>
+
   <xs:complexType name="Panel">
     <xs:annotation><xs:documentation>Off-map furniture. Coordinates of children are relative to the panel's top-left corner; rotate turns the whole panel about that corner. Panels may sit over live hexes; the game model never sees them.</xs:documentation></xs:annotation>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -467,6 +476,7 @@ Conventions
       <xs:element name="box" type="Box"/>
       <xs:element name="track" type="Track"/>
       <xs:element name="table" type="Table"/>
+      <xs:element name="image" type="PanelImage"/>
     </xs:choice>
     <xs:attribute name="id" type="xs:ID" use="required"/>
     <xs:attribute name="title" type="xs:string"/>

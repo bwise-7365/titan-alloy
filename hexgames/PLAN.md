@@ -844,6 +844,15 @@ Engine and records
 
 ## XSD proposals awaiting review
 
+- APPROVED + APPLIED 2026-10-06 (Ben, in chat; Circling Dragons, the game logo on the sheet): hexsheet.xsd Panel gains
+  an `image` child beside text, box, track and table (PanelImage): `<image href="circling-dragons-logo.svg" x=".." y=".."
+  w=".." h=".."/>`, href relative to the sheet file, drawn scaled to fit the rectangle and centred in it, in the panel's
+  frame (so it turns with a rotated panel). Presentation only: like every panel child the game model never sees it.
+  Applied in hexsheet2svg.py (an SVG <image>), SheetDoc (SheetPanelImageDoc, SheetDoc::file), hexview (ImageShape;
+  SVG and JSON writers; MapPanelLayer; hit test), HexMapEd (ScenePainter through Qt6::Svg / QImage; SheetWriter round
+  trip), svg-golden.py (image leaves compared by corners and href). MapSvgGoldenTest.CirclingDragons and
+  MapSceneBuilderTest.PanelImageIsPlacedInThePanelsLayer cover it.
+
 - APPROVED + APPLIED 2026-09-25 (Ben): hexsheet.xsd EndReason gains `source`; HexMapEd Schema updated; all 28
   TRC river links carry ends. Was: (coordinator, from TRC centre-to-centre rivers) EndReason
   gains `source` (a river rising on the map). 20 of TRC's 28 river links end at a source, so they carry no

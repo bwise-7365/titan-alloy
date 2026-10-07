@@ -130,6 +130,17 @@ namespace HexView {
       return std::hypot(p.x - s.at.x, p.y - s.at.y) <= s.scale / 2.0;
     }
 
+    bool
+    hitsP(const ImageShape& s, Pixel p)
+    {
+      const double a = -s.angleDegrees * std::numbers::pi / 180.0;
+      const double dx = p.x - s.at.x;
+      const double dy = p.y - s.at.y;
+      const double x = dx * std::cos(a) - dy * std::sin(a);
+      const double y = dx * std::sin(a) + dy * std::cos(a);
+      return 0.0 <= x && x <= s.w && 0.0 <= y && y <= s.h;
+    }
+
   }  // namespace
 
   Scene::Scene(double width, double height) : width_(width), height_(height)

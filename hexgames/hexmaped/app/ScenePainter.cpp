@@ -10,11 +10,17 @@
 #include <QFont>
 #include <QGraphicsPathItem>
 #include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
+#include <QImage>
+#include <QPainter>
 #include <QPainterPath>
+#include <QPixmap>
+#include <QSvgRenderer>
 #include <QPen>
 #include <QString>
 
+#include <algorithm>
 #include <cmath>
 #include <numbers>
 #include <stdexcept>
@@ -310,9 +316,64 @@ namespace HexQt {
           addText(target, placed);
         }
         else {
-          throw std::invalid_argument("paintScene: symbol '" + u.symbol + "' nests a symbol use");
+          throw std::invalid_argument("paintScene: symbol '" + u.symbol + "' nests a symbol use or a picture");
         }
       }
+      return;
+    }
+
+    // A panel picture, scaled to fit its box and centred in it (the reference's preserveAspectRatio
+    // "xMidYMid meet"): an SVG through QSvgRenderer, anything else through QImage; rendered at twice the
+    // box's pixels so the editor's zoom keeps it sharp, then placed and turned with its panel. A file
+    // that cannot be read is a fault of the sheet and is surfaced, not painted blank.
+    void
+    addImage(QGraphicsScene& target, const HexView::ImageShape& im)
+    {
+      const QString file = QString::fromStdString(im.path);
+      const bool svgP = file.endsWith(".svg", Qt::CaseInsensitive);
+      QSvgRenderer svg;
+      QImage raster;
+      QSizeF natural;
+      if (svgP) {
+        if (!svg.load(file)) {
+          throw std::invalid_argument("paintScene: cannot read the picture '" + im.path + "'");
+        }
+        natural = svg.defaultSize();
+      }
+      else {
+        if (!raster.load(file)) {
+          throw std::invalid_argument("paintScene: cannot read the picture '" + im.path + "'");
+        }
+        natural = raster.size();
+      }
+      if (!(0.0 < natural.width()) || !(0.0 < natural.height()) || !(0.0 < im.w) || !(0.0 < im.h)) {
+        throw std::invalid_argument("paintScene: the picture '" + im.path + "' or its box has no size");
+      }
+      const double k = std::min(im.w / natural.width(), im.h / natural.height());
+      const int oversample = 2;
+      const QRectF fit(((im.w - natural.width() * k) / 2.0) * oversample,
+                       ((im.h - natural.height() * k) / 2.0) * oversample, natural.width() * k * oversample,
+                       natural.height() * k * oversample);
+      QImage canvas(static_cast<int>(std::ceil(im.w * oversample)),
+                    static_cast<int>(std::ceil(im.h * oversample)), QImage::Format_ARGB32_Premultiplied);
+      canvas.fill(Qt::transparent);
+      {
+        QPainter painter(&canvas);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        if (svgP) {
+          svg.render(&painter, fit);
+        }
+        else {
+          painter.drawImage(fit, raster);
+        }
+      }
+      QGraphicsPixmapItem* item = target.addPixmap(QPixmap::fromImage(canvas));
+      item->setTransformationMode(Qt::SmoothTransformation);
+      item->setScale(1.0 / oversample);
+      item->setPos(im.at.x, im.at.y);
+      item->setTransformOriginPoint(0.0, 0.0);
+      item->setRotation(im.angleDegrees);
       return;
     }
 
@@ -333,6 +394,9 @@ namespace HexQt {
             continue;  // the printed ids
           }
           addText(target, *text);
+        }
+        else if (const auto* image = std::get_if<HexView::ImageShape>(&prim.shape)) {
+          addImage(target, *image);
         }
         else {
           addSymbol(target, symbols, std::get<HexView::SymbolUse>(prim.shape));

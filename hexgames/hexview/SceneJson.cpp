@@ -86,6 +86,11 @@ namespace HexView {
         }
         return out + "}";
       }
+      if (const auto* i = std::get_if<ImageShape>(&shape)) {
+        return "{\"kind\":\"image\",\"href\":" + quoted(i->href) + ",\"x\":" + fixed(i->at.x, 2) +
+               ",\"y\":" + fixed(i->at.y, 2) + ",\"w\":" + shortest(i->w) + ",\"h\":" + shortest(i->h) +
+               ",\"angle\":" + shortest(i->angleDegrees) + "}";
+      }
       const SymbolUse& u = std::get<SymbolUse>(shape);
       return "{\"kind\":\"symbol\",\"symbol\":" + quoted(u.symbol) + ",\"x\":" + fixed(u.at.x, 2) +
              ",\"y\":" + fixed(u.at.y, 2) + ",\"rotate\":" + shortest(u.rotateDegrees) +

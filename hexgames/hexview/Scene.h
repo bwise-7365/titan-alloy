@@ -67,7 +67,19 @@ namespace HexView {
     Color color;
   };
 
-  using Shape = std::variant<PathShape, TextShape, SymbolUse>;
+  // A picture in a panel (hexsheet.xsd PanelImage): the file as the sheet names it, relative to the
+  // sheet (what the SVG writer emits, so the SVG stays portable) and resolved (what a painter opens),
+  // scaled to fit the w x h box whose top-left corner is `at` and centred in it, turned with its panel.
+  struct ImageShape {
+    std::string href;
+    std::string path;
+    Pixel at;
+    double w = 0.0;
+    double h = 0.0;
+    double angleDegrees = 0.0;
+  };
+
+  using Shape = std::variant<PathShape, TextShape, SymbolUse, ImageShape>;
 
   // What a pointer over a primitive is over.
   struct NoHit {};

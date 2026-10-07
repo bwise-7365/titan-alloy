@@ -442,7 +442,19 @@ class Renderer:
         for p in self.root.findall("path"):
             attrs, l = self.line_attrs(p.get("line"))
             offset = float(p.get("offset") or 0)
-            d = self.chain_path(p.get("edges").split(), offset, "path %s" % (p.get("name") or p.get("kind")))
+            ctx = "path %s" % (p.get("name") or p.get("kind"))
+            if not offset and self.smooth_line_p(p.get("line") or ""):
+                # a river written as a path chain is drawn as the rounded chain river edges are drawn
+                # (Circling Dragons, whose rivers are paths so that their confluences can be junctions)
+                sides = []
+                for ref in p.get("edges").split():
+                    pe = self.parse_edge(ref, ctx)
+                    if pe is not None:
+                        g, c, r, dd = pe
+                        sides.append(g.edge_ends(c, r, dd))
+                d = " ".join(self.rounded_path(chain) for chain in self.side_chains(sides))
+            else:
+                d = self.chain_path(p.get("edges").split(), offset, ctx)
             pid = ' id="%s"' % p.get("id") if p.get("id") else ""
             cas = self.casing_attrs(l)
             if cas:
@@ -457,7 +469,7 @@ class Renderer:
             g, c, r, d = pe
             if e.get("line"):
                 a, b = g.edge_ends(c, r, d)
-                if e.get("line") in self.smooth_lines or ("river" in self.smooth_lines and "river" in e.get("line")):
+                if self.smooth_line_p(e.get("line")):
                     smooth.setdefault(e.get("line"), []).append((a, b))
                     continue
                 attrs, l = self.line_attrs(e.get("line"))
@@ -468,6 +480,10 @@ class Renderer:
             o.append('<path class="edge smooth %s" d="%s" %s/>' % (escape(line), d, attrs))
         o.append("</g>")
         return "\n".join(o)
+
+    def smooth_line_p(self, line):
+        """Whether a hexside line is drawn as a rounded chain (the smooth_lines rule, for edges and paths alike)."""
+        return line in self.smooth_lines or ("river" in self.smooth_lines and "river" in line)
 
     @staticmethod
     def vertex_key(p):
@@ -935,6 +951,11 @@ class Renderer:
                     if ch.get("label"):
                         o.append('<text x="%.2f" y="%.2f" font-size="%.2f" text-anchor="middle" fill="#111">%s</text>' % (
                             bx + bw / 2, by + min(bh * 0.4, 12), min(bh * 0.3, 9), escape(ch.get("label"))))
+                elif ch.tag == "image":
+                    # a picture scaled to fit its box and centred in it, inside the panel's frame (PanelImage, 2026-10-06)
+                    ix, iy, iw, ih = (float(ch.get(k)) for k in ("x", "y", "w", "h"))
+                    o.append('<image x="%.2f" y="%.2f" width="%.2f" height="%.2f" preserveAspectRatio="xMidYMid meet" xlink:href="%s"/>' % (
+                        ix, iy, iw, ih, escape(ch.get("href"))))
                 elif ch.tag == "track":
                     tx, ty, cw, chh = (float(ch.get(k)) for k in ("x", "y", "cell-w", "cell-h"))
                     cells = ch.get("cells").split()

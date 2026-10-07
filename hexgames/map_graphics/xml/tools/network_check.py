@@ -194,11 +194,18 @@ class Sheet:
         return out
 
     def read_edge_lines(self):
+        """Hexside lines from edge elements and from path chains (a river written as a path, with its
+        vertex junctions, is the same hexside line to these rules)."""
         out = collections.defaultdict(dict)
         for e in self.root.findall("edge"):
             if e.get("line"):
                 pid, d = e.get("at").split(":")
                 out[e.get("line")][self.side_of(self.known(pid), d)] = e.get("at")
+        for p in self.root.findall("path"):
+            if p.get("line"):
+                for ref in p.get("edges").split():
+                    pid, d = ref.split(":")
+                    out[p.get("line")][self.side_of(self.known(pid), d)] = ref
         return out
 
     def read_links(self):
@@ -655,7 +662,100 @@ def trc_excepted(problems, emit):
 
 
 # ---------------------------------------------------------------- profiles
+# ---------------------------------------------------------------- rules: Circling Dragons
+# A designed sheet (tools/build_cd.py; Circling Dragons/circling-dragons-map-notes.md), not a scan: 100 km hexes and
+# networks kept sparse by design, so the rules read the design memorandum rather than a print.
+# Capitals without a railway in 1944: Chongqing (0724) and Yan'an (1116). That is a fact of the game, not a gap.
+# Chongqing and Yan'an, the two capitals the railways never reached, by sheet (the hex ids differ with the scale)
+CD_NO_RAIL = {"circling-dragons-100": "0724 1116"}
+CD_NO_RAIL_75 = "1031 1521"
+
+
+def cd_rail_problems(sheet, kind, pieces, adj):
+    """As rail_problems, with the two capitals the railways never reached excepted."""
+    out = []
+    excepted = set(CD_NO_RAIL.get(sheet.id, CD_NO_RAIL_75).split())
+    for pid, sym in sorted(sheet.places.items(), key=lambda kv: sheet.order(kv[0])):
+        if sym in MAJOR and pid not in adj and pid not in excepted:
+            out.append("rail misses major city %s" % pid)
+    for hexes, ends in pieces[1:]:
+        if len(hexes) < RAIL_MIN or not any(sheet.boundary_hexP(h) for h in hexes):
+            out.append("rail piece of %d hexes (%s) is separate and short or inland"
+                       % (len(hexes), " ".join(ends[:4]) or min(hexes, key=sheet.order)))
+    return out
+
+
+def cd_road_problems(sheet, kind, pieces, adj):
+    """Strategic roads only, so several pieces are the design; each piece must touch a railway hex, a named
+    place or the map edge (the Burma Road leaves the map)."""
+    out = []
+    rail = link_graph(sheet.links.get("rail", []))
+    for hexes, ends in pieces:
+        if not any(h in rail or h in sheet.places or sheet.boundary_hexP(h) for h in hexes):
+            out.append("road piece of %d hexes (%s) touches no railway, place or map edge"
+                       % (len(hexes), " ".join(ends[:4])))
+    return out
+
+
+def cd_river_problems(sheet, line, sides, pieces):
+    """As river_problems, except that a river may run along the map edge (the Amur on the north edge) and a
+    short piece is allowed when it drains (the Argun, cut by the north edge)."""
+    out = []
+    for s in sorted(sides, key=lambda s: sheet.side_ref[s]):
+        if any(sheet.waterP(p) for p in sheet.side_hexes[s]):
+            out.append("river hexside %s lies in water" % sheet.side_ref[s])
+    for piece, ends in pieces:
+        verts = {v for s in piece for v in sheet.side_ends[s]}
+        if not any(sheet.outletP(v) for v in verts):
+            out.append("river piece of %d hexsides at %s does not drain" % (len(piece), piece_name(sheet, piece, ends)))
+    return out
+
+
+def cd_minor_river_problems(sheet, line, sides, pieces):
+    """A minor river lies on land and joins a river: every piece touches a river hexside's vertex."""
+    out = []
+    river = {v for s in sheet.lines.get("river", {}) for v in sheet.side_ends[s]}
+    for s in sorted(sides, key=lambda s: sheet.side_ref[s]):
+        if any(sheet.waterP(p) for p in sheet.side_hexes[s]):
+            out.append("minor-river hexside %s lies in water" % sheet.side_ref[s])
+    for piece, ends in pieces:
+        verts = {v for s in piece for v in sheet.side_ends[s]}
+        if not verts & river:
+            out.append("minor-river piece of %d hexsides at %s joins no river" % (len(piece), piece_name(sheet, piece, ends)))
+    return out
+
+
+def cd_border_problems(sheet, line, sides, pieces):
+    """A border piece ends at the sea, the map edge, a river hexside (the Amur, Ussuri, Argun, Yalu and Tumen
+    carry the border where the sheet draws no border line) or a boundary of the other kind (the Manchukuo
+    boundary meets the Mongolian border at a vertex)."""
+    out = []
+    others = [k for k in ("river", "border", "border-mk") if k != line]
+    other_vertices = {v for k in others for s in sheet.lines.get(k, {}) for v in sheet.side_ends[s]}
+    for s in sorted(sides, key=lambda s: sheet.side_ref[s]):
+        if not sheet.river_sideP(s):
+            out.append("border hexside %s lies in water or on the map edge" % sheet.side_ref[s])
+    for piece, ends in pieces:
+        for v in ends:
+            if not (sheet.outletP(v) or v in other_vertices):
+                out.append("border piece of %d hexsides ends inland at %s" % (len(piece), vertex_name(sheet, v, piece)))
+    return out
+
+
+CD_PROFILE = dict(offmap="", steps=link_problems, whole=(),
+                  lines={"river": cd_river_problems, "minor-river": cd_minor_river_problems,
+                         "border": cd_border_problems, "border-mk": cd_border_problems,
+                         "weather": None},
+                  links={"rail": cd_rail_problems, "road": cd_road_problems, "track": cd_road_problems,
+                         "courier": None})
+
 PROFILES = {
+    # the base sheet and its two feature versions (tools/cd/build_cd.py VERSION): the same rules; version 2 adds
+    # Gobi tracks (held to the road rule), version 3 the weather divide and the speculative liaison route (reported)
+    "circling-dragons": CD_PROFILE,
+    "circling-dragons-v1": CD_PROFILE,
+    "circling-dragons-v2": CD_PROFILE,
+    "circling-dragons-100": CD_PROFILE,
     "trc": dict(offmap="", steps=link_problems, whole=(),
                 lines={"river": river_problems, "border": border_problems, "blocked": None, "district": None},
                 links={"rail": rail_problems, "river": None},  # TRC rivers run centre to centre (links)
