@@ -1,0 +1,45 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+% The packages and page style shared by the Circling Dragons documents (circling_dragons_map_and_rules_V3.tex and
+% circling_dragons_hexkrieg_rules.tex), taken from the memorandum's preamble on 7 October 2026.  Each document
+% gives its own \myversion (the draft version in the footer) and its own pdftitle through \hypersetup.
+\usepackage[letterpaper,margin=.85in]{geometry}
+\usepackage[T1]{fontenc}\usepackage{lmodern}\usepackage{microtype}
+\usepackage{booktabs,longtable,enumitem,amsmath,graphicx}
+\usepackage[bookmarksnumbered,bookmarksopen]{hyperref}\usepackage{url}
+\usepackage{tikz}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{lastpage}
+
+
+\usepackage{xcolor}
+\definecolor{darkred}{rgb}{0.55,0,0}
+% link and heading colors, from CPVI/shared-tex/prolog-article.tex
+\definecolor{myTeal}{RGB}{0, 128, 128}
+\definecolor{myBlue1}{RGB}{75, 99, 175}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=myBlue1,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=myTeal
+}
+\usepackage{sectsty}
+\sectionfont{\color{myBlue1}}
+\subsectionfont{\color{myBlue1}}
+\subsubsectionfont{\color{myBlue1}}
+
+
+%\rhead{Basic VI-NCP} % default is section
+%\lhead{B. P. Wise} % default is subsection
+
+\providecommand{\myversion}{}
+\lfoot{\color{darkred}\bf{DRAFT \myversion}}
+\cfoot{{\thepage} of {\pageref*{LastPage}}} % asterix suppressed hyperlink
+%\rfoot{\today}
+\rfoot{\copyright \  Ben P. Wise}
+
+\setlist{nosep}
+% Copyright Ben Paul Wise. All Rights Reserved.

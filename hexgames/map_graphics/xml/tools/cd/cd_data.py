@@ -182,9 +182,16 @@ LAND_HEXES_BY_SCALE = {100: "", 75: "3117 3131 3617"}
 # snapped Yangtze ran round the south of the Yueyang hex, so the Yueyang - Changsha railway crossed it; Yueyang
 # and the railway are south of the river.  The river now passes north of the Yueyang hex, and the Xiang (with
 # Dongting Lake) comes up the hex's west side to meet it (Ben's minor-river request, 2026-10-06).
+# The same fault on the Yellow River between Tongguan and Zhengzhou: the snapped river ran round the south of
+# the Sanmenxia hex 1724 and of the Luoyang hex 1924 and the north of 1824, so the Longhai railway crossed it
+# four times there; Luoyang, Sanmenxia and the railway are south of the river.  The river now passes north of
+# 1724 and 1924, and the only Longhai crossing left is the 1938 course between Zhengzhou and Kaifeng (Ben's
+# ruling for Luoyang, 2026-10-07, carried one hex west to 1724 because the same railway crossed there).
 RIVER_EDITS_BY_SCALE = {75: {
     "yangtze": dict(drop="1831:se 1832:ne 1932:s 1932:se", add="1932:n 1932:ne"),
     "xiang": dict(drop="1932:s", add="1832:ne 1831:se"),
+    "yellow": dict(drop="1624:ne 1724:s 1724:se 1824:ne 1924:s 1924:se",
+                   add="1724:nw 1724:n 1724:ne 1924:nw 1924:n 1924:ne"),
 }}
 
 # Minor rivers: printed only where they shaped a campaign, as explicit hexsides at a scale (Ben, 2026-10-06).

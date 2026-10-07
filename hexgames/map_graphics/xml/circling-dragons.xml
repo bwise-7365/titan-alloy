@@ -30,6 +30,7 @@
     <color id="label" value="#6b6656" name="area names"/>
     <color id="panel" value="#f7f4ea"/>
     <color id="panelink" value="#2b2b2b"/>
+    <color id="copyright" value="#000000" name="copyright notice on the margin"/>
     <color id="tint-su" value="#e9b8b0" name="U.S.S.R."/>
     <color id="tint-mn" value="#d9c9a0" name="Mongolia"/>
     <color id="tint-ko" value="#c8d8a8" name="Korea"/>
@@ -98,7 +99,7 @@
   <path id="rv-xiang-1" kind="river" name="Xiang" line="river" edges="1831:se 1832:ne" ends="junction junction"/>
   <path id="rv-yangtze-3" kind="river" name="Yangtze" line="river" edges="2030:se 2130:s 2131:ne 2230:s 2231:ne 2331:s 2332:ne 2431:s 2431:se 2431:ne 2430:se 2530:s 2530:se 2629:s 2629:se 2729:s 2729:se 2729:ne 2728:se 2827:s 2828:ne 2928:s 2929:ne 3028:s 3028:se 3128:s" ends="junction sea"/>
   <path id="rv-han-1" kind="river" name="Han" line="river" edges="2030:s 1931:ne 1930:s 1830:ne 1829:se 1829:ne 1828:se 1828:ne 1827:s 1728:ne 1727:s 1627:ne 1626:s 1527:ne 1526:s 1426:se 1426:s 1327:se 1327:s 1227:ne 1226:se 1226:ne 1225:s 1126:se 1126:s 1026:ne" ends="junction source"/>
-  <path id="rv-yellow-1" kind="river" name="Yellow River (1938-47 course below Huayuankou)" line="river" edges="2925:s 2825:se 2825:s 2726:se 2726:s 2626:se 2626:s 2527:se 2527:s 2427:se 2427:s 2328:ne 2327:s 2227:ne 2226:se 2226:ne 2225:s 2126:ne 2125:se 2125:ne 2124:s 2024:ne 2023:s 1924:se 1924:s 1824:ne 1823:s 1724:se 1724:s 1624:ne 1623:s 1524:ne 1523:se 1622:s 1622:se 1622:ne 1621:se 1621:ne 1620:se 1620:ne 1619:se 1619:ne 1618:se 1718:s 1718:se 1718:ne 1717:se 1717:ne 1716:se 1716:ne 1715:s 1615:ne 1614:s 1515:se 1515:s 1415:ne 1414:s 1315:ne 1314:s 1214:se 1215:ne 1215:se 1215:s 1116:se 1117:ne 1117:se 1118:ne 1118:se 1118:s 1018:se 1018:s 0919:se 0919:s 0819:se 0820:ne 0820:se 0820:s 0721:se 0721:s 0621:se 0621:s 0522:ne 0521:s 0421:ne 0420:s 0321:ne 0320:s 0220:se 0221:ne 0221:se 0222:ne 0222:se 0223:ne 0323:s 0324:ne 0423:s 0424:ne 0424:se 0424:s 0325:ne 0324:s 0224:ne 0223:s 0124:ne 0123:s" ends="sea edge"/>
+  <path id="rv-yellow-1" kind="river" name="Yellow River (1938-47 course below Huayuankou)" line="river" edges="2925:s 2825:se 2825:s 2726:se 2726:s 2626:se 2626:s 2527:se 2527:s 2427:se 2427:s 2328:ne 2327:s 2227:ne 2226:se 2226:ne 2225:s 2126:ne 2125:se 2125:ne 2124:s 2024:ne 2023:s 1924:ne 1923:s 1823:se 1823:s 1724:ne 1723:s 1623:se 1623:s 1524:ne 1523:se 1622:s 1622:se 1622:ne 1621:se 1621:ne 1620:se 1620:ne 1619:se 1619:ne 1618:se 1718:s 1718:se 1718:ne 1717:se 1717:ne 1716:se 1716:ne 1715:s 1615:ne 1614:s 1515:se 1515:s 1415:ne 1414:s 1315:ne 1314:s 1214:se 1215:ne 1215:se 1215:s 1116:se 1117:ne 1117:se 1118:ne 1118:se 1118:s 1018:se 1018:s 0919:se 0919:s 0819:se 0820:ne 0820:se 0820:s 0721:se 0721:s 0621:se 0621:s 0522:ne 0521:s 0421:ne 0420:s 0321:ne 0320:s 0220:se 0221:ne 0221:se 0222:ne 0222:se 0223:ne 0323:s 0324:ne 0423:s 0424:ne 0424:se 0424:s 0325:ne 0324:s 0224:ne 0223:s 0124:ne 0123:s" ends="sea edge"/>
   <path id="rv-xiang-2" kind="river" name="Xiang" line="river" edges="1537:se 1636:s 1636:se 1736:s 1736:se 1835:s 1835:se 1935:s 1935:se 1935:ne 1934:s 1834:ne 1833:se" ends="source junction"/>
   <path id="rv-xiang-3" kind="river" name="Xiang" line="river" edges="1833:ne 1832:se" ends="junction junction"/>
   <path id="rv-miluo-1" kind="river" name="Miluo" line="minor-river" edges="1933:s 1934:ne 2033:s" ends="junction source"/>
@@ -786,6 +787,9 @@
   <label text="monsoon zone: Jun - Sep" x="625" y="2172" size="11" angle="0" color="label" italic="true" weight="normal" spacing="0" halo="true"/>
   <label text="Xinqiang" x="1387" y="2605" size="11" angle="0" color="riverblue" italic="true" weight="normal" spacing="0" halo="true"/>
   <label text="Miluo" x="1381" y="2684" size="11" angle="0" color="riverblue" italic="true" weight="normal" spacing="0" halo="true"/>
+  <!-- copyright -->
+  <label text="Copyright Ben Paul Wise" x="60" y="3795" size="26" color="copyright" anchor="start"/>
+  <label text="Copyright Ben Paul Wise" x="3326" y="30" size="26" color="copyright" anchor="end"/>
   <!-- furniture: the tracks and boxes the current rules concept calls for; placeholders for the prototype.
        Laid in the corners the war left quiet, as Downfall lays its tracks: Soviet staging and the Pacific War
        track over Mongolia, the Far Eastern staging over the Sea of Japan, the Hump over Laos, the rest at sea.

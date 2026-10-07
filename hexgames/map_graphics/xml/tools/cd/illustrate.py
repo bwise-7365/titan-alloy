@@ -583,6 +583,9 @@ def race_play():
 
 
 A100 = dict(km=100, size=60.0, text=1.15, pad_top=150, notes=lambda: [])   # the action pictures' tables are in 100 km hex ids
+# The two August pictures reach the sheet's top margin: their crop starts 6 px lower, below the copyright notice
+# printed there (build_cd.py), so that the notice is not cut at the picture's top edge.
+NE_PAD_TOP = -6
 PICTURES = [
     dict(A100, name="1-ichigo-setup", move={"1718": "2224", "1717": "2123"}, crop=SOUTH, title="Ichi-Go: the opening position, April 1944",
          sub="The CCP player commands the Japanese in the south, the KMT player the North China garrisons",
@@ -596,10 +599,10 @@ PICTURES = [
     dict(A100, name="2-reflux-play", move={"1126": "1534", "1718": "2224"}, crop=SOUTH, title="The reflux of 1945: one way it plays, April to August",
          sub="The Japanese withdraw north and to the coast; the CCP expands into the ground they leave",
          title_counters=["jp-dir-coast", "jp-front-ccp"], items=reflux_play, legend=LEG_ALL),
-    dict(A100, name="3-august-setup", pad_top=0, move={"2011": "2715"}, crop=NORTHEAST, title="August 1945: the eve of Soviet entry, 8 August",
+    dict(A100, name="3-august-setup", pad_top=NE_PAD_TOP, move={"2011": "2715"}, crop=NORTHEAST, title="August 1945: the eve of Soviet entry, 8 August",
          sub="Nine scripted groupings at their stars; a Kwantung Army of raw divisions behind its fortified zones",
          title_counters=["sov-directive", "mk-pacific"], items=august_setup),
-    dict(A100, name="3-august-play", pad_top=0, crop=NORTHEAST, title="August 1945: one way it plays, 9 to 30 August",
+    dict(A100, name="3-august-play", pad_top=NE_PAD_TOP, crop=NORTHEAST, title="August 1945: one way it plays, 9 to 30 August",
          sub="The Soviet groupings follow their axes; the players choose the directive, the treaty and the start of the race",
          title_counters=["jp-dir-hold", "sov-withdrawal"], items=august_play, legend=LEG_ALL),
     dict(A100, name="4-race-setup", move={"1917": "2523", "2011": "2715"}, crop=NORTH, title="The race: the position in mid-September 1945",

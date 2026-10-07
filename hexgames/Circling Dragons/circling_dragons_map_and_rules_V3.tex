@@ -1,46 +1,11 @@
 \documentclass[11pt]{article}
-\usepackage[letterpaper,margin=.85in]{geometry}
-\usepackage[T1]{fontenc}\usepackage{lmodern}\usepackage{microtype}
-\usepackage{booktabs,longtable,enumitem,amsmath,graphicx}
-\usepackage[bookmarksnumbered,bookmarksopen,pdftitle={Circling Dragons: Map Design and Current Rules Concept}]{hyperref}\usepackage{url}
-\usepackage{tikz}
-
-
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\usepackage{lastpage}
-
-
-\usepackage{xcolor}
-\definecolor{darkred}{rgb}{0.55,0,0}
-% link and heading colors, from CPVI/shared-tex/prolog-article.tex
-\definecolor{myTeal}{RGB}{0, 128, 128}
-\definecolor{myBlue1}{RGB}{75, 99, 175}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=myBlue1,
-    filecolor=magenta,
-    urlcolor=cyan,
-    citecolor=myTeal
-}
-\usepackage{sectsty}
-\sectionfont{\color{myBlue1}}
-\subsectionfont{\color{myBlue1}}
-\subsubsectionfont{\color{myBlue1}}
-
-
-%\rhead{Basic VI-NCP} % default is section
-%\lhead{B. P. Wise} % default is subsection
+% packages, colors, headings and footer: shared with the other Circling Dragons documents
+\input{sections/cd-style}
+\hypersetup{pdftitle={Circling Dragons: Map Design and Current Rules Concept}}
 
 \def\myversion{v03b}
 
-\lfoot{\color{darkred}\bf{DRAFT \myversion}}
-\cfoot{{\thepage} of {\pageref*{LastPage}}} % asterix suppressed hyperlink
-\rfoot{\today}
-%\rfoot{\copyright \  Ben P. Wise}
-
 \input{sections/locator}
-\setlist{nosep}
 \title{\textbf{Circling Dragons}\\\large Map Design and Current Rules Concept\\\normalsize China, 1944--1945}
 \author{}
 \date{\textbf{\textcolor{darkred}{DRAFT \myversion}} \today   }

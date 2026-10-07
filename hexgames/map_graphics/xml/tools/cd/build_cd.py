@@ -287,6 +287,7 @@ class Builder:
             ("mkpurple", "#7a4b8a", "Manchukuo boundary"), ("cityred", "#9b1c1c", "major city"),
             ("gold", "#e8b923", "city, capital"), ("cyan", "#29a8d8", "port"), ("navy", "#1f3a6e", "airfield"),
             ("label", "#6b6656", "area names"), ("panel", "#f7f4ea", None), ("panelink", "#2b2b2b", None),
+            ("copyright", "#000000", "copyright notice on the margin"),
             ("tint-su", "#e9b8b0", "U.S.S.R."), ("tint-mn", "#d9c9a0", "Mongolia"), ("tint-ko", "#c8d8a8", "Korea"),
             ("tint-ic", "#e0d0a0", "Indochina / Siam"), ("tint-bu", "#c8c8e0", "Burma / India"),
             ("tint-jp", "#e8c0d8", "Japan / Formosa"), ("tint-mk", "#d8c8e0", "Manchukuo"),
@@ -495,6 +496,14 @@ class Builder:
             o.append('  <label %s/>' % a(text=text, x="%.0f" % x, y="%.0f" % y, size=size, angle=angle, color=colour,
                                          italic="true" if italic else None, weight=weight,
                                          spacing=3 if kind == "country" else (2 if kind == "range" else 0), halo="true"))
+        # the copyright notice, black on the orange margin in the lower-left and upper-right corners (Ben, 2026-10-06):
+        # each label is centred in its margin band, flush with the left or right edge of the hex area
+        o.append('  <!-- copyright -->')
+        notice = "Copyright Ben Paul Wise"
+        o.append('  <label %s/>' % a(text=notice, x="%.0f" % L.MARGIN_X, y="%.0f" % (L.SHEET_H - L.MARGIN_Y / 2), size=26,
+                                     color="copyright", anchor="start"))
+        o.append('  <label %s/>' % a(text=notice, x="%.0f" % (L.SHEET_W - L.MARGIN_X), y="%.0f" % (L.MARGIN_Y / 2), size=26,
+                                     color="copyright", anchor="end"))
         self.panels()
         o.append('</sheet>')
         return "\n".join(o) + "\n"

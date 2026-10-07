@@ -428,4 +428,120 @@ rules, and American spelling.
   set ("Coastal defense") and the map (title panel "centers", the source attribute); closed compass compounds
   (northwest, southeast). Dates stay in the day-month-year form of the military histories.
 
+
+## 15. Copyright notice on the sheet (2026-10-06)
+
+Ben asked for "Copyright Ben Paul Wise" in black on the orange margin in the lower-left and upper-right corners.
+The builder writes two labels (palette entry `copyright`, #000000, size 26), each centered in its 60 px margin band
+and flush with the left or right edge of the hex area, so they appear at every scale. hexview draws them the same
+as the reference renderer (golden test passes). The figures were not redrawn; their crops do not reach the
+corners, and the memorandum's full-map pages show the notice on the next compile.
+
+
+## 16. Six test cases from the figures (2026-10-06)
+
+Ben asked for a written record of the actions behind the four major-action figures and the two maneuver
+studies, arranged as six test cases for a future rule set: `circling-dragons-test-cases.md` in this folder.
+For each case it lists the starting position, each piece's moves in 75 km hex ids, the attacks and their
+results, supply, stacking, the final position, the results a rule set must reproduce (items T) and the
+points where the figures, the provisional rules and the sheet disagree (items D). The positions were read
+from `illustrate.py` and `maneuvers.py`, the terrain and rivers from the sheet, the values from the counter
+set; the hex routes, distances and supply paths were computed, not read off the pictures.
+
+Findings that need Ben's ruling (the sheet and the figures are unchanged):
+- The Yellow River chain ran along 1824:ne, 1924:s and 1924:se, so Luoyang was on the north bank and the
+  Longhai crossed the river between Zhengzhou and Luoyang (D1.1). Resolved on 7 October (section 17).
+- The Hengyang ring is open at Lingling 1737 under the ZOC rule as written, because both Japanese neighbors of
+  1737 are across the Xiang; the city traces supply along the Hunan-Guangxi railway to Guilin (D3.1).
+- The Changsha east wing is out of supply only under a local-path limit of eight hexes or fewer (D2.3).
+- The withdrawal rule's trigger (an enemy moving adjacent) does not cover the screens' withdrawals when
+  attacked (D2.1); a 3-step piece has no 2-step face.
+- Wuhan holds three divisions in two figures; the Ichi-Go play figure uses four airfield markers, the set has
+  three.
+- The August setup puts the Sunwu zone in 3703, not on the sheet's Sunwu mark (3702), and leaves out the Aihui
+  zone at Heihe 3701 (D5.1, D5.2).
+- Qinhuangdao and Shanhaiguan share 2917, which the CCP holds when the KMT lands there (D6.1); the Qingdao
+  Marines marker starts on land (D6.2).
+
+The open rulings are collected, with options and recommendations, in `circling-dragons-rulings-needed.md`.
+
+
+## 17. The Yellow River at Luoyang (2026-10-07)
+
+Ben ruled that the Yellow River pass north of Luoyang, as the Yangtze passes north of Yueyang. The snapped
+river ran round the south of the Sanmenxia hex 1724 and the Luoyang hex 1924 and the north of 1824, so the
+Longhai railway crossed it four times between Tongguan and Zhengzhou, although Sanmenxia, Luoyang and the
+railway are all on the south bank. The ruling (`RIVER_EDITS_BY_SCALE[75]["yellow"]` in `cd_data.py`) drops
+1624:ne 1724:s 1724:se 1824:ne 1924:s 1924:se and adds the north sides of 1724 and 1924; it was carried one
+hex west of Luoyang, to 1724, because the same railway crossed there (rulings list, item A1).
+
+- The Longhai now crosses the Yellow River only on the 1938 course between Zhengzhou and Kaifeng (2024:ne);
+  the Pinghan crosses at the Zhengzhou bridge (2024:ne); the Tongpu crosses from Shanxi into 1724 (1724:ne),
+  where it crossed into Tongguan before. The Yuncheng basin, which shares hex 1724, counts as south bank.
+- Rebuilt: `rivers.json` (only the six Yellow River hexsides changed), `terrain_hex.json` (unchanged), the
+  sheet XML (only the Yellow River path changed), its SVG and PNG. The sheets validate, the network check
+  reports 0 broken rules, and the hexview golden, frame and scene-builder tests pass.
+- Figures: all seventeen redrawn. The PNGs of the six figures that show the area (Ichi-Go, the reflux, the
+  race) changed; the maneuver PNGs are identical (their SVGs change because each embeds the whole sheet).
+  The August crops reached the top margin, where the copyright notice of section 15 showed as a one-pixel
+  sliver; they now start 6 px lower (`NE_PAD_TOP` in `illustrate.py`), which changes the two August PNGs
+  and moves the August locator box by 0.0016 of the sheet's height.
+- The memorandum and the standalone study say so (`sections/sheet-75km.tex`) and were recompiled (47 and 17
+  pages).
+
+
+## 18. Shared style file and the HexKrieg-style rules proposal (2026-10-07)
+
+Ben asked to compare the test cases and the rulings list with two HexKrieg documents
+(`C:\repos\ghub-per\HexKrieg\doc\hexkrieg_system_rules.tex` and `supply_model_land_sea_draft.tex`), to find the
+smallest revisions of the HexKrieg movement, combat and supply rules that fit Circling Dragons, and to write
+them up as a new document. He ruled that Circling Dragons keeps its initiative system and that the HexKrieg
+turns and phases are dropped.
+
+- `sections/cd-style.tex`: the packages, colors, headings and footer of the memorandum's preamble, now shared.
+  The memorandum inputs it and sets its own pdftitle and `\myversion`; its text is unchanged (the extracted
+  text of the 47-page PDF is identical). The standalone maneuver study keeps its own preamble.
+- `circling_dragons_hexkrieg_rules.tex` (12 pages, draft v01): sources, a comparison table, fourteen revisions
+  (M1 to M14) with reasons, the proposed rules (activations; terrain and edge costs; pieces with offense,
+  defense and steps; movement with the HexKrieg stop-on-entry zones and the R1 exceptions; combat by declared
+  attacks with return fire, withdrawal before combat, modifiers, a combat table shifted one row toward the
+  defender, results and advance; graded supply traced along the network with attrition at level 0 and air
+  supply at level 1; recovery), checks against the six test cases, the rulings it settles, and open points.
+- Main findings: the four structural differences are the sequence, who fights, what carries supply, and the
+  effect of zones of control. Under the proposal most test-case events hold; the attackers' step losses at
+  Changsha (a4) and Hengyang (b4) do not, because the return fire of a weak or air-supplied defender is small.
+  The recommendation of rulings item B4 changed from "zones affect supply only" to the HexKrieg stop rule.
+
+
+## 19. Assault losses and supply pieces (2026-10-07, proposal v02)
+
+Ben asked for the attacker-loss clause and asked whether explicit supply pieces with a limited reach along the
+network would change Circling Dragons much; he intends to use them and to set their reach by play testing.
+
+- Assault losses (rule 4.5): after the results, if an attacked fortified city or Kwantung fortified zone is
+  still held, each piece that attacked it loses a step on a roll of 8 to 10. It covers the zones as well
+  because the rules treat them as fortified cities. Changsha a4 (`jp-d34`) and Hengyang b3/b4 now hold, the
+  latter over the two general assaults of July (51 percent per division).
+- Supply pieces (rule 4.6): the HexKrieg draft's supply units kept, with their reach counted along the
+  network. A source covers the network within the reach R at level 3; a supply piece on a covered hex relays a
+  further R at one level less; a piece off the network takes the lower of that coverage and the level its local
+  path allows (3, 5 and 7 points). Placeholders: R = 6; Japanese 6 pieces in China and 2 in Manchuria and Korea,
+  KMT 5, none for the Soviets (the Mongolian rules stay) or the CCP (base areas are sources).
+- Analysis: with R longer than any distance on the sheet the rule is the v01 trace, so supply pieces generalize
+  it. At R = 6 they change little at Changsha, in August and in the race; they slow and thin deep advances: the
+  Wuhan source reaches Zhuzhou, one piece carries level 2 to Hengyang, Lingling and Guilin, Liuzhou needs a
+  second piece (level 1) or the route from Canton (level 2). That gives Ichi-Go a tempo mechanism (the
+  memorandum's open question), lowers the Hengyang ring to level 2 (a longer siege), and can make the Dushan
+  halt a supply effect. Costs: about 13 counters, more orders, a new target for raids.
+- Version v03 (Ben's request): a one-page unnumbered section "To the play testers" before section 1 says that
+  the rules will change and that reports and suggestions are welcome, and lists the sixteen choices under
+  play test (P1 to P16: supply 7, combat 6, movement 3) with the alternatives considered. Each rule under test
+  carries its tag, e.g., [P1], linked to the list (macro `\ptest`). The open-points section now points to it.
+- Version v04 (Ben's request): a three-page unnumbered "Introduction" for play testers new to the game,
+  before the play-tester page; the main content is unchanged and the section numbers stay. Subsections: what
+  the game is about (the double contest; the four operations), two players and four factions (crossed control,
+  directives, shared pools, Legitimacy; the US and the Soviets), time and initiative, the map, the pieces,
+  movement, combat and supply in outline, the course of a game, how the game is won, this document and play
+  testing. 17 pages in all.
+
 Copyright Ben Paul Wise. All Rights Reserved.

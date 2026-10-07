@@ -23,7 +23,8 @@ notes, rulings and open doubts are in `Circling Dragons/circling-dragons-map-not
 - `stage2_elev.py` -- samples ETOPO1 at 19 points per land hex through api.opentopodata.org; writes
   `elev_hex.json`. Resumable; the cached file is in the repository so the build needs no network.
 - `stage3_rivers.py` -- snaps the chosen rivers' centrelines to hexside chains, then applies the scale's
-  river rulings (the Yangtze moved north of the Yueyang hex at 75 km) and adds the minor rivers as explicit
+  river rulings (at 75 km the Yangtze moved north of the Yueyang hex, and the Yellow River north of the
+  Sanmenxia and Luoyang hexes so that the Longhai stays on its south bank) and adds the minor rivers as explicit
   hexsides; writes `rivers.json`. The builder draws the minor rivers (the Xinqiang and the Miluo) with the
   thin `minor-river` line, which both renderers round like the rivers because its id contains `river`.
 - `stage4_terrain.py` -- one terrain class per hex from the elevation statistics, the steppe and marsh
