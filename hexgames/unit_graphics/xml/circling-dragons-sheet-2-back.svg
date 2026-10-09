@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="212.00mm" height="195.62mm" viewBox="0 0 212.000 195.625" font-family="Arial Narrow, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="212.00mm" height="212.00mm" viewBox="0 0 212.000 212.000" font-family="Arial Narrow, Arial, sans-serif">
 <title>Circling Dragons, sheet 2: the KMT, the CCP, neutral markers -- back</title>
-<rect width="212.000" height="195.625" fill="#ffffff"/>
+<rect width="212.000" height="212.000" fill="#ffffff"/>
 <g class="counter" data-id="kmt-ga15" transform="translate(188.125,8.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
@@ -372,7 +372,32 @@
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Fort</text></g>
 </g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Fortified</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">city</text></g></g>
-<g class="counter" data-id="ccp-sgn" transform="translate(122.625,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="kmt-supply1" transform="translate(122.625,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#ffffff"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply 1</text></g>
+<g class="silhouette truck" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><rect x="-20" y="-2" width="26" height="12" rx="1"/><rect x="6" y="2" width="13" height="8" rx="2"/><circle cx="-12" cy="11" r="3"/><circle cx="10" cy="11" r="3"/></g></g>
+<g class="counter" data-id="kmt-supply2" transform="translate(106.250,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#ffffff"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply 2</text></g>
+<g class="silhouette truck" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><rect x="-20" y="-2" width="26" height="12" rx="1"/><rect x="6" y="2" width="13" height="8" rx="2"/><circle cx="-12" cy="11" r="3"/><circle cx="10" cy="11" r="3"/></g></g>
+<g class="counter" data-id="kmt-supply3" transform="translate(89.875,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#ffffff"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply 3</text></g>
+<g class="silhouette truck" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><rect x="-20" y="-2" width="26" height="12" rx="1"/><rect x="6" y="2" width="13" height="8" rx="2"/><circle cx="-12" cy="11" r="3"/><circle cx="10" cy="11" r="3"/></g></g>
+<g class="counter" data-id="kmt-supply4" transform="translate(73.500,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#ffffff"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply 4</text></g>
+<g class="silhouette truck" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><rect x="-20" y="-2" width="26" height="12" rx="1"/><rect x="6" y="2" width="13" height="8" rx="2"/><circle cx="-12" cy="11" r="3"/><circle cx="10" cy="11" r="3"/></g></g>
+<g class="counter" data-id="kmt-supply5" transform="translate(57.125,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#2f5fa8" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#ffffff"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Supply 5</text></g>
+<g class="silhouette truck" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><rect x="-20" y="-2" width="26" height="12" rx="1"/><rect x="6" y="2" width="13" height="8" rx="2"/><circle cx="-12" cy="11" r="3"/><circle cx="10" cy="11" r="3"/></g></g>
+<g class="counter" data-id="ccp-sgn" transform="translate(40.750,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -382,7 +407,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Shaan-Gan-Ning</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-js" transform="translate(106.250,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-js" transform="translate(24.375,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -392,7 +417,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Jin-Sui</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-jcj" transform="translate(89.875,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-jcj" transform="translate(8.000,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -402,7 +427,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Jin-Cha-Ji</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-jjly" transform="translate(73.500,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-jjly" transform="translate(188.125,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -412,7 +437,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Jin-Ji-Lu-Yu</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-jjly2" transform="translate(57.125,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-jjly2" transform="translate(171.750,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -422,7 +447,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Jin-Ji-Lu-Yu</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-sd" transform="translate(40.750,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-sd" transform="translate(155.375,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -432,7 +457,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Shandong</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-sd2" transform="translate(24.375,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-sd2" transform="translate(139.000,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -442,7 +467,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Shandong Binhai</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-jrl" transform="translate(8.000,57.125) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-jrl" transform="translate(122.625,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -452,7 +477,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Ji-Re-Liao</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a1" transform="translate(188.125,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a1" transform="translate(106.250,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -462,7 +487,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 1 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a2" transform="translate(171.750,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a2" transform="translate(89.875,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -472,7 +497,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 2 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a3" transform="translate(155.375,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a3" transform="translate(73.500,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -482,7 +507,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 3 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a4" transform="translate(139.000,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a4" transform="translate(57.125,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -492,7 +517,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 4 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a5" transform="translate(122.625,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a5" transform="translate(40.750,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -502,7 +527,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 5 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a6" transform="translate(106.250,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a6" transform="translate(24.375,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -512,7 +537,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 6 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-n4a7" transform="translate(89.875,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-n4a7" transform="translate(8.000,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -522,7 +547,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">N4A 7 Div</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-dj" transform="translate(73.500,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-dj" transform="translate(188.125,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -532,7 +557,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Dongjiang Col.</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-ne1" transform="translate(57.125,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-ne1" transform="translate(171.750,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -542,7 +567,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Column 1</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-ne2" transform="translate(40.750,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-ne2" transform="translate(155.375,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -552,7 +577,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Column 2</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-ne3" transform="translate(24.375,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-ne3" transform="translate(139.000,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -562,7 +587,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Column 3</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-ne4" transform="translate(8.000,73.500) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-ne4" transform="translate(122.625,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -572,7 +597,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Column 4</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-ne5" transform="translate(188.125,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-ne5" transform="translate(106.250,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol infantry">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -582,7 +607,7 @@
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Column 5</text></g>
 <g class="steps"><circle cx="7.0" cy="30.0" r="2.6" fill="#ffffff"/></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-4</text></g></g>
-<g class="counter" data-id="ccp-hq" transform="translate(171.750,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-hq" transform="translate(89.875,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol hq">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">HQ</text></g>
@@ -590,7 +615,7 @@
 <g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXXX</text></g>
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Yan'an</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">0-4</text></g></g>
-<g class="counter" data-id="ccp-hq-ne" transform="translate(155.375,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-hq-ne" transform="translate(73.500,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="symbol hq">
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">HQ</text></g>
@@ -599,41 +624,6 @@
 <g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">NE</text></g>
 <g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">NE Bureau</text></g>
 <g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">0-4</text></g></g>
-<g class="counter" data-id="ccp-presence" transform="translate(139.000,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
-<g class="symbol partisan">
-<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
-<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
-</g></g>
-<g class="counter" data-id="ccp-presence" transform="translate(122.625,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
-<g class="symbol partisan">
-<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
-<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
-</g></g>
-<g class="counter" data-id="ccp-presence" transform="translate(106.250,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
-<g class="symbol partisan">
-<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
-<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
-</g></g>
-<g class="counter" data-id="ccp-presence" transform="translate(89.875,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
-<g class="symbol partisan">
-<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
-<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
-</g></g>
-<g class="counter" data-id="ccp-presence" transform="translate(73.500,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
-<g class="symbol partisan">
-<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
-<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
-</g></g>
 <g class="counter" data-id="ccp-presence" transform="translate(57.125,89.875) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
@@ -767,43 +757,63 @@
 <rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
 </g></g>
-<g class="counter" data-id="ccp-init" transform="translate(139.000,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-presence" transform="translate(139.000,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
+<g class="symbol partisan">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
+</g></g>
+<g class="counter" data-id="ccp-presence" transform="translate(122.625,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
+<g class="symbol partisan">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
+</g></g>
+<g class="counter" data-id="ccp-presence" transform="translate(106.250,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
+<g class="symbol partisan">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
+</g></g>
+<g class="counter" data-id="ccp-presence" transform="translate(89.875,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
+<g class="symbol partisan">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
+</g></g>
+<g class="counter" data-id="ccp-presence" transform="translate(73.500,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Base area</text></g>
+<g class="symbol partisan">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="16.1" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">P</text></g>
+</g></g>
+<g class="counter" data-id="ccp-init" transform="translate(57.125,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem hexagon" transform="translate(50.0,44.0) scale(0.80)"><polygon points="16,0 8,13.9 -8,13.9 -16,0 -8,-13.9 8,-13.9" fill="none" stroke="#ffffff" stroke-width="3"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Initiative</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">CCP</text></g></g>
-<g class="counter" data-id="ccp-legit" transform="translate(122.625,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-legit" transform="translate(40.750,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Legitimacy</text></g></g>
-<g class="counter" data-id="ccp-position" transform="translate(106.250,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-position" transform="translate(24.375,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Postwar</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">Position</text></g></g>
-<g class="counter" data-id="ccp-concentrate" transform="translate(89.875,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-concentrate" transform="translate(8.000,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Concen-</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">trate</text></g></g>
-<g class="counter" data-id="ccp-concentrate" transform="translate(73.500,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-concentrate" transform="translate(188.125,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Concen-</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">trate</text></g></g>
-<g class="counter" data-id="ccp-junks" transform="translate(57.125,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="ccp-junks" transform="translate(171.750,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="silhouette ship" transform="translate(50.0,44.0) scale(0.80)" fill="#ffffff"><path d="M-22,4 L22,4 L17,12 L-18,12 Z"/><rect x="-8" y="-4" width="16" height="8"/><rect x="-3" y="-11" width="4" height="7"/><rect x="-16" y="0" width="5" height="4"/><rect x="10" y="0" width="5" height="4"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Bohai</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">crossing</text></g></g>
-<g class="counter" data-id="mk-calendar" transform="translate(40.750,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-calendar" transform="translate(155.375,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Calendar</text></g></g>
-<g class="counter" data-id="mk-weather" transform="translate(24.375,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-weather" transform="translate(139.000,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem cloud" transform="translate(50.0,44.0) scale(0.90)"><ellipse cx="0" cy="-6" rx="13" ry="7" fill="#7fa7cf"/><rect x="-3" y="-2" width="6" height="12" fill="#7fa7cf"/><ellipse cx="0" cy="11" rx="8" ry="2.5" fill="#7fa7cf"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Weather</text></g></g>
-<g class="counter" data-id="mk-pacific" transform="translate(8.000,122.625) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-pacific" transform="translate(122.625,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem star" transform="translate(50.0,44.0) scale(0.80)"><polygon points="0.0,-14.0 3.3,-4.5 13.3,-4.3 5.3,1.7 8.2,11.3 0.0,5.6 -8.2,11.3 -5.3,1.7 -13.3,-4.3 -3.3,-4.5" fill="#111111"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Pacific</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">War</text></g></g>
-<g class="counter" data-id="mk-control" transform="translate(188.125,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
-<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
-<g class="counter" data-id="mk-control" transform="translate(171.750,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
-<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
-<g class="counter" data-id="mk-control" transform="translate(155.375,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
-<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
-<g class="counter" data-id="mk-control" transform="translate(139.000,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
-<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
-<g class="counter" data-id="mk-control" transform="translate(122.625,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
-<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
-<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
 <g class="counter" data-id="mk-control" transform="translate(106.250,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
@@ -813,26 +823,21 @@
 <g class="counter" data-id="mk-control" transform="translate(73.500,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
-<g class="counter" data-id="mk-rail" transform="translate(57.125,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
-<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
-<g class="counter" data-id="mk-rail" transform="translate(40.750,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
-<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
-<g class="counter" data-id="mk-rail" transform="translate(24.375,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
-<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
-<g class="counter" data-id="mk-rail" transform="translate(8.000,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
-<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
-<g class="counter" data-id="mk-rail" transform="translate(188.125,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
-<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
-<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
-<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-control" transform="translate(57.125,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
+<g class="counter" data-id="mk-control" transform="translate(40.750,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
+<g class="counter" data-id="mk-control" transform="translate(24.375,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
+<g class="counter" data-id="mk-control" transform="translate(8.000,139.000) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
+<g class="counter" data-id="mk-control" transform="translate(188.125,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#c81e1e" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#ffffff"/><rect x="-12" y="-12" width="22" height="14" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Control</text></g></g>
 <g class="counter" data-id="mk-rail" transform="translate(171.750,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
@@ -853,58 +858,78 @@
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
 <g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
-<g class="counter" data-id="mk-bridge-yellow" transform="translate(89.875,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-rail" transform="translate(89.875,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
+<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-rail" transform="translate(73.500,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
+<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-rail" transform="translate(57.125,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
+<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-rail" transform="translate(40.750,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
+<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-rail" transform="translate(24.375,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Broken</text></g>
+<g class="silhouette locomotive" transform="translate(50.0,44.0) scale(0.80)" fill="#111111"><rect x="-20" y="-2" width="16" height="12"/><rect x="-4" y="2" width="24" height="8" rx="4"/><rect x="13" y="-5" width="4" height="7"/><circle cx="-13" cy="12" r="3"/><circle cx="-4" cy="12" r="3"/><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></g></g>
+<g class="counter" data-id="mk-bridge-yellow" transform="translate(8.000,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Bridge</text></g>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Yellow River</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">bridge</text></g></g>
-<g class="counter" data-id="mk-ferry-yangtze" transform="translate(73.500,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-ferry-yangtze" transform="translate(188.125,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Ferry</text></g>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Yangtze</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">ferry</text></g></g>
-<g class="counter" data-id="mk-ferry-yangtze" transform="translate(57.125,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-ferry-yangtze" transform="translate(171.750,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
 <g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Ferry</text></g>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Yangtze</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">ferry</text></g></g>
-<g class="counter" data-id="mk-port" transform="translate(40.750,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-port" transform="translate(155.375,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Port</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">open</text></g></g>
-<g class="counter" data-id="mk-port" transform="translate(24.375,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-port" transform="translate(139.000,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Port</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">open</text></g></g>
-<g class="counter" data-id="mk-port" transform="translate(8.000,155.375) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-port" transform="translate(122.625,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
 <g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Port</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">open</text></g></g>
-<g class="counter" data-id="mk-oos" transform="translate(188.125,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-oos" transform="translate(106.250,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Out of</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">supply</text></g></g>
-<g class="counter" data-id="mk-oos" transform="translate(171.750,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-oos" transform="translate(89.875,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Out of</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">supply</text></g></g>
-<g class="counter" data-id="mk-halted" transform="translate(155.375,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="counter" data-id="mk-halted" transform="translate(73.500,171.750) scale(0.15875)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
 <g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Halted</text></g></g>
 <g class="crop" stroke="#000000" stroke-width="0.15">
-<path d="M8.000,0 V5.600 M8.000,190.025 V195.625"/>
-<path d="M23.875,0 V5.600 M23.875,190.025 V195.625"/>
-<path d="M24.375,0 V5.600 M24.375,190.025 V195.625"/>
-<path d="M40.250,0 V5.600 M40.250,190.025 V195.625"/>
-<path d="M40.750,0 V5.600 M40.750,190.025 V195.625"/>
-<path d="M56.625,0 V5.600 M56.625,190.025 V195.625"/>
-<path d="M57.125,0 V5.600 M57.125,190.025 V195.625"/>
-<path d="M73.000,0 V5.600 M73.000,190.025 V195.625"/>
-<path d="M73.500,0 V5.600 M73.500,190.025 V195.625"/>
-<path d="M89.375,0 V5.600 M89.375,190.025 V195.625"/>
-<path d="M89.875,0 V5.600 M89.875,190.025 V195.625"/>
-<path d="M105.750,0 V5.600 M105.750,190.025 V195.625"/>
-<path d="M106.250,0 V5.600 M106.250,190.025 V195.625"/>
-<path d="M122.125,0 V5.600 M122.125,190.025 V195.625"/>
-<path d="M122.625,0 V5.600 M122.625,190.025 V195.625"/>
-<path d="M138.500,0 V5.600 M138.500,190.025 V195.625"/>
-<path d="M139.000,0 V5.600 M139.000,190.025 V195.625"/>
-<path d="M154.875,0 V5.600 M154.875,190.025 V195.625"/>
-<path d="M155.375,0 V5.600 M155.375,190.025 V195.625"/>
-<path d="M171.250,0 V5.600 M171.250,190.025 V195.625"/>
-<path d="M171.750,0 V5.600 M171.750,190.025 V195.625"/>
-<path d="M187.625,0 V5.600 M187.625,190.025 V195.625"/>
-<path d="M188.125,0 V5.600 M188.125,190.025 V195.625"/>
-<path d="M204.000,0 V5.600 M204.000,190.025 V195.625"/>
+<path d="M8.000,0 V5.600 M8.000,206.400 V212.000"/>
+<path d="M23.875,0 V5.600 M23.875,206.400 V212.000"/>
+<path d="M24.375,0 V5.600 M24.375,206.400 V212.000"/>
+<path d="M40.250,0 V5.600 M40.250,206.400 V212.000"/>
+<path d="M40.750,0 V5.600 M40.750,206.400 V212.000"/>
+<path d="M56.625,0 V5.600 M56.625,206.400 V212.000"/>
+<path d="M57.125,0 V5.600 M57.125,206.400 V212.000"/>
+<path d="M73.000,0 V5.600 M73.000,206.400 V212.000"/>
+<path d="M73.500,0 V5.600 M73.500,206.400 V212.000"/>
+<path d="M89.375,0 V5.600 M89.375,206.400 V212.000"/>
+<path d="M89.875,0 V5.600 M89.875,206.400 V212.000"/>
+<path d="M105.750,0 V5.600 M105.750,206.400 V212.000"/>
+<path d="M106.250,0 V5.600 M106.250,206.400 V212.000"/>
+<path d="M122.125,0 V5.600 M122.125,206.400 V212.000"/>
+<path d="M122.625,0 V5.600 M122.625,206.400 V212.000"/>
+<path d="M138.500,0 V5.600 M138.500,206.400 V212.000"/>
+<path d="M139.000,0 V5.600 M139.000,206.400 V212.000"/>
+<path d="M154.875,0 V5.600 M154.875,206.400 V212.000"/>
+<path d="M155.375,0 V5.600 M155.375,206.400 V212.000"/>
+<path d="M171.250,0 V5.600 M171.250,206.400 V212.000"/>
+<path d="M171.750,0 V5.600 M171.750,206.400 V212.000"/>
+<path d="M187.625,0 V5.600 M187.625,206.400 V212.000"/>
+<path d="M188.125,0 V5.600 M188.125,206.400 V212.000"/>
+<path d="M204.000,0 V5.600 M204.000,206.400 V212.000"/>
 <path d="M0,8.000 H5.600 M206.400,8.000 H212.000"/>
 <path d="M0,23.875 H5.600 M206.400,23.875 H212.000"/>
 <path d="M0,24.375 H5.600 M206.400,24.375 H212.000"/>
@@ -927,10 +952,13 @@
 <path d="M0,171.250 H5.600 M206.400,171.250 H212.000"/>
 <path d="M0,171.750 H5.600 M206.400,171.750 H212.000"/>
 <path d="M0,187.625 H5.600 M206.400,187.625 H212.000"/>
+<path d="M0,188.125 H5.600 M206.400,188.125 H212.000"/>
+<path d="M0,204.000 H5.600 M206.400,204.000 H212.000"/>
 <path d="M1.333,4.000 H6.667 M4.000,1.333 V6.667" stroke-width="0.25"/><circle cx="4.000" cy="4.000" r="2.000" fill="none" stroke-width="0.25"/>
 <path d="M205.333,4.000 H210.667 M208.000,1.333 V6.667" stroke-width="0.25"/><circle cx="208.000" cy="4.000" r="2.000" fill="none" stroke-width="0.25"/>
-<path d="M1.333,191.625 H6.667 M4.000,188.958 V194.292" stroke-width="0.25"/><circle cx="4.000" cy="191.625" r="2.000" fill="none" stroke-width="0.25"/>
-<path d="M205.333,191.625 H210.667 M208.000,188.958 V194.292" stroke-width="0.25"/><circle cx="208.000" cy="191.625" r="2.000" fill="none" stroke-width="0.25"/>
+<path d="M1.333,208.000 H6.667 M4.000,205.333 V210.667" stroke-width="0.25"/><circle cx="4.000" cy="208.000" r="2.000" fill="none" stroke-width="0.25"/>
+<path d="M205.333,208.000 H210.667 M208.000,205.333 V210.667" stroke-width="0.25"/><circle cx="208.000" cy="208.000" r="2.000" fill="none" stroke-width="0.25"/>
 </g>
-<text x="8.00" y="194.43" font-size="2.80" fill="#333333">Circling Dragons, sheet 2: the KMT, the CCP, neutral markers -- back</text>
+<text x="204.00" y="3.44" font-size="2.80" text-anchor="end" fill="#000000" paint-order="stroke" stroke="#ffffff" stroke-width="0.70" stroke-linejoin="round">Copyright Ben Paul Wise</text>
+<text x="8.00" y="210.80" font-size="2.80" paint-order="stroke" stroke="#ffffff" stroke-width="0.70" stroke-linejoin="round"><tspan fill="#000000">Copyright Ben Paul Wise</tspan><tspan dx="6.40" fill="#333333">Circling Dragons, sheet 2: the KMT, the CCP, neutral markers -- back</tspan></text>
 </svg>

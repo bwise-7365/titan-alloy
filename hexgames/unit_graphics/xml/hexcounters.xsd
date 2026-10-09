@@ -346,6 +346,9 @@ Conventions
     </xs:attribute>
     <xs:attribute name="crop-marks" type="xs:boolean" default="true"/>
     <xs:attribute name="background" type="xs:IDREF"/>
+    <xs:attribute name="notice" type="xs:string">
+      <xs:annotation><xs:documentation>A copyright notice, printed on both faces in the top margin flush right and in the bottom margin flush left, ahead of the sheet's caption.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <!-- ================= root ================= -->

@@ -12,7 +12,10 @@
 \newcommand{\ptest}[1]{\hyperlink{ptest}{\textcolor{darkred}{[P#1]}}}
 \hypersetup{pdftitle={Circling Dragons: Movement, Combat and Supply on the HexKrieg Model}}
 
-\def\myversion{v04}
+
+% Changes to the major version number are driven only by major restructuring.
+% Almost all edits should ncrement only the minor version number.
+\def\myversion{v4.3}
 
 \title{\textbf{Circling Dragons}\\\large Movement, Combat and Supply on the HexKrieg Model\\\normalsize A proposal for the prototype}
 \author{}
@@ -36,7 +39,8 @@ This introduction is for play testers who are new to \emph{Circling Dragons}. It
 \subsection*{What the game is about}
 \emph{Circling Dragons} covers the last two years of the war in China, from the spring of 1944 to the spring of 1946. Two Chinese parties fought Japan in those years: the Nationalist government of Chiang Kai-shek, the KMT (Kuomintang), and the Chinese Communist Party of Mao Zedong, the CCP. They were allies in name, in a united front against Japan, and each expected to fight the other once Japan was beaten. The game is about that double contest. Each Chinese faction must help to defeat Japan, but each must also come out of the war stronger than its rival. The defeat of Japan is therefore a shared aim, and the winner is the faction better placed when the war against Japan has turned into the civil war.
 
-Four large operations mark the period, and the game is designed to reproduce them.
+Four large operations mark the period, and the game is designed so the players can not only reproduce the historical battles
+but also explore interesting variations.
 \begin{itemize}
 \item \textbf{Ichi-Go}, April to December 1944: the largest Japanese offensive of the war in China, which opened a railway corridor to Indochina and took the American air bases in south China.
 \item \textbf{The reflux of 1945}, January to August: the Japanese withdrew from the south toward the north and the coast, and both Chinese factions moved into the ground they left.
@@ -96,7 +100,9 @@ The winner is the player whose faction has the better Postwar Position when the 
 \subsection*{This document and play testing}
 This document is a proposal for the prototype. It takes its rules of movement, combat and supply from HexKrieg, a hex game built as a testbed for artificial-intelligence agents, and changes them only where \emph{Circling Dragons} requires it. Sections \ref{sec:sources} to \ref{sec:revisions} explain the sources and the changes, section \ref{sec:rules} states the rules, section \ref{sec:checks} checks them against six test cases from the operations of 1944 and 1945, and sections \ref{sec:rulings} and \ref{sec:open} record what is settled and what is open. The time track, the Japanese directives and pools, the political layer, Strategic Lift, the treaty and the surrender are in the design memorandum.
 
-Play testing is meant to show whether these rules produce the operations of 1944 and 1945 for the right reasons and at the right pace, and whether the decisions they pose have more than one reasonable answer. Many rules are choices between alternatives; the next page lists them, and each is marked where it appears. Observations of every kind are useful, especially where a rule gave a result that seems historically wrong, where a choice was obvious, or where a rule was hard to apply.
+Play testing is meant to show whether these rules enable the operations of 1944 and 1945 to be reproduced for the right reasons and at the right pace, and whether the decisions they pose have more than one reasonable answer.
+Interesting yet plausible variations should be possible; changes to enhance those variations are welcome.
+Many rules are choices between alternatives; the next page lists them, and each is marked where it appears. Observations of every kind are useful, especially where a rule gave a result that seems historically wrong, where a choice was obvious, or where a rule was hard to apply.
 \clearpage
 
 \section*{To the play testers}
@@ -138,7 +144,7 @@ P15 & Movement costs: clear and broken 1, mountain and marsh 2, a minor river 1 
 P16 & KMT and CCP pieces exert no zones of control on each other before the surrender. & Zones between them at all times, or from the first Chinese-on-Chinese attack in the area. \\
 \end{longtable}
 }
-The counter set does not yet carry the defense values, the supply pieces or step markers; they will follow these choices.
+The counter set carries the supply pieces at the placeholder counts of P3 (Japanese \texttt{jp-supply1} to \texttt{jp-supply6} and \texttt{kw-supply1} and \texttt{kw-supply2}, KMT \texttt{kmt-supply1} to \texttt{kmt-supply5}); it does not yet carry the defense values or step markers, which will follow these choices.
 \clearpage
 
 \section{Sources and scope}\label{sec:sources}
@@ -461,7 +467,7 @@ B9, B10, B11 and the figure corrections C1 to C10 are not affected.
 \item \textbf{Attackers' losses away from fortified cities.} The assault-loss clause gives the losses of the divisions that assaulted Changsha and Hengyang. Away from fortified cities and zones an attacker still loses steps only to return fire, which is small when the defender is weak, split among several attackers or across a river; e.g., \texttt{jp-d40} at Changsha (a4) loses a step on 10 percent of rolls.
 \item \textbf{The tempo of Ichi-Go.} With railway edges at 0.5, a division may move eight hexes along an open railway in one activation. The pace of a sustained advance is set by the supply pieces, which must follow it, together with the zones of the KMT screens, the fortified cities and the directives. This is the memorandum's first open question.
 \item \textbf{The HexKrieg supply draft} is not the latest HexKrieg land supply system; a later version may change section \ref{sub:supply}. This proposal keeps the draft's supply pieces and their loss of a level per relay, but counts their reach along the network. The naval extension is not used, since \emph{Circling Dragons} has no naval combat, but its treatment of ports as junctions between two networks fits the ports of Strategic Lift.
-\item \textbf{The counter set} needs a defense value on each unit piece, the supply pieces (13 at the placeholder counts), and, if B12 is decided that way, step markers.
+\item \textbf{The counter set} has the 13 supply pieces since 7 October 2026 (263 counters on two sheets of 12 by 12). It still needs a defense value on each unit piece and, if B12 is decided that way, step markers.
 \end{enumerate}
 
 \end{document}

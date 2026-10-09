@@ -1,0 +1,432 @@
+% Copyright Ben Paul Wise. All Rights Reserved.
+% Circling Dragons, rule summary: a reference of at most ten pages condensed from the map and rules for the prototype
+% (circling_dragons_map_and_rules_V4.tex, v4.4).  The section numbers are the part numbers of the rulebook outline
+% (hexgames/doc/wargame-rulebook-outline.md), as in the full rules: section 3 is the map, section 6 movement, and so
+% on.  The packages and page style are shared with the other Circling Dragons documents through sections/cd-style.tex.
+\documentclass[11pt]{article}
+\input{sections/cd-style}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{placeins}
+\usepackage{capt-of}
+% a rule under play test: its number in the list of section 16, linked to that list
+\newcommand{\ptest}[1]{\hyperlink{ptest}{\textcolor{darkred}{[P#1]}}}
+% a rule drafted in appendix A of the full rules and not yet part of them
+\newcommand{\draft}{\textcolor{darkred}{\textbf{[Draft]}}\ }
+\newcommand{\draftmark}{\textcolor{darkred}{\textbf{[Draft]}}}
+\hypersetup{pdftitle={Circling Dragons: Rule Summary}}
+% a reference of at most ten pages: run-in paragraph heads and floats set close to the text
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}{-2ex \@plus -.5ex}{.8ex}{\normalfont\Large\bfseries\color{myBlue1}}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}{-1.5ex \@plus -.3ex}{.5ex}{\normalfont\large\bfseries\color{myBlue1}}}
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}{.8ex \@plus .3ex}{-1em}{\normalfont\bfseries}}
+\makeatother
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+
+% Changes to the major version number are driven only by major restructuring.
+% Almost all edits should increment only the minor version number.
+\def\myversion{v1.0}
+
+\begin{document}
+\thispagestyle{plain}
+\noindent\begin{minipage}[c]{.22\textwidth}\includegraphics[width=\textwidth]{circling-dragons-logo-V2.pdf}\end{minipage}\hfill
+\begin{minipage}[c]{.74\textwidth}\centering
+{\LARGE\textbf{Circling Dragons}}\\[.3em]{\large Rule Summary}\\China, 1944--1946\\[.6em]
+\textbf{\textcolor{darkred}{DRAFT \myversion}} \today\\[.6em]
+{\bfseries\footnotesize\color{darkred}This is an AI-generated experimental text, not to be
+distributed without written permission.}
+\end{minipage}
+\vspace{.5em}
+
+\begingroup\footnotesize\setcounter{tocdepth}{1}
+\renewcommand{\contentsname}{\normalsize Contents}
+\makeatletter\renewcommand*\l@section{\@dottedtocline{1}{0em}{1.8em}}\makeatother
+\begin{multicols}{3}\tableofcontents\end{multicols}
+\endgroup
+
+% ======================================================================================================================
+% Part 0 of the outline: front matter
+% ======================================================================================================================
+\section*{How to read this summary}
+\phantomsection\addcontentsline{toc}{section}{How to read this summary}
+This is a reference summary of \emph{Circling Dragons: Map and Rules for the Prototype}, version 4.4: the rules, tables and decisions of play, without the explanations, historical frames, maneuver studies and illustrations. Its sections have the numbers of the full rules, which follow the rulebook outline (\path{hexgames/doc/wargame-rulebook-outline.md}). Where the two differ, the full rules govern. \emph{Must} states a requirement and \emph{may} a permission; \emph{a piece} means any one piece, and \emph{one piece} exactly one. A \emph{unit piece} is a combat formation; a \emph{marker} records information and has no strength. Hexes are named by four-digit numbers, e.g., 2034. A number in dark red brackets, e.g., \ptest{1}, marks a choice under play test (table \ref{tab:choices}). \draft marks a rule that the full rules draft in their appendix A but do not yet adopt. Every number is a placeholder for the prototype.
+
+% ======================================================================================================================
+% Part 1: introduction
+% ======================================================================================================================
+\section{Introduction}\label{sec:intro}
+\paragraph{Situation.} Historical: China, spring 1944 to spring 1946. The KMT (Nationalists) and the CCP (Communists), allies in name, must each help defeat Japan while coming out of the war stronger than the other.
+
+\paragraph{Scale.} 75 km between hex centers, on a sheet of 47 by 46 hexes covering China, Manchuria, Korea and Mongolia. No fixed turns: a calendar interval is about one month. Pieces are divisions, group armies, field forces and Soviet armies of one to four steps. Two players, KMT and CCP; the design also serves AI agents. One ten-sided die.
+
+\paragraph{Crossed control.} Neither player is Japan. The KMT player commands the KMT armies and $J_{CCP}$, the Japanese facing the CCP (chiefly the North China garrisons); the CCP player commands the CCP and $J_{KMT}$, the Japanese facing the KMT (chiefly the armies of Ichi-Go). Each Japanese operation must serve the directive in force; both Japanese commands draw on shared pools; a Japanese formation changes controller when it changes front. Direct KMT--CCP fighting costs Legitimacy. The United States and the scripted Soviets have no player.
+
+\paragraph{The four operations.} \textbf{Ichi-Go} (April--December 1944), the Japanese drive down the railway corridor to Indochina and the US air bases. \textbf{The reflux} (January--August 1945), the Japanese withdrawal north and to the coast. \textbf{August 1945}, Soviet entry into Manchuria and the Japanese surrender. \textbf{The race} (from September 1945), KMT against CCP for the cities, railways, ports and arms dumps of North China and Manchuria.
+
+\paragraph{Open decisions.} The conduct of the Japanese offensives; Chinese-on-Chinese fighting; the Sino-Soviet treaty; the Tonghua redoubt; where the race is run; the order of Soviet objectives.
+
+\paragraph{Design features.} Crossed control after \emph{Battle for Germany} and \emph{Downfall}; a continuous time track; a sparse transport network over coarse barriers; conventional control of nodes against the CCP's rural presence; the surrender as a change of phase; HexKrieg movement, combat and supply, with supply pieces that a deep advance must wait for.
+
+\paragraph{How to win, in brief.} The faction with the better Postwar Position when the transition to civil war is complete wins, not the one that did more damage to Japan (section \ref{sec:victory}).
+
+% ======================================================================================================================
+% Part 2: components
+% ======================================================================================================================
+\section{Components}\label{sec:components}
+The map (two sheets of 22 by 34 inches); 263 counters (126 unit pieces, 5 air-support pieces, 13 supply pieces, markers); the time track and calendar; the Legitimacy, Pacific War and Soviet withdrawal tracks; the Japanese pools; one ten-sided die.
+
+% ======================================================================================================================
+% Part 3: the map
+% ======================================================================================================================
+\section{The map}\label{sec:map}
+\paragraph{Grid.} Flat-topped hexes numbered column and row from 0101. Of 2,162 hexes, 1,187 are in play (China proper 895, Manchukuo 247, Korea 45); 242 Mongolian hexes are open to Soviet formations only.
+
+\paragraph{Terrain.} One terrain per hex; rivers on hexsides; railways, strategic roads and tracks from hex center to hex center (table \ref{tab:terrain}). \ptest{15}
+
+\paragraph{Rivers.} Major: the Yellow River, the Yangtze, the Han and the Xiang where they shape corridors, and the Amur, Ussuri, Sungari, Nen, Liao and Argun. Minor: only the Xinqiang and the Miluo north of Changsha.
+
+\paragraph{Passes.} A railway or strategic road through a mountain hex is a pass. The Greater Khingan is crossed only at its marked passes (Boketu tunnel, Arshaan gap, Lubei trail), the Yinshan only at Kalgan.
+
+\paragraph{Network.} A line is printed only if removing it would change a player's strategic decisions: the main railways, a few strategic roads, the Yangtze and Sungari river routes, and the Gobi tracks, which carry movement but not supply.
+
+\paragraph{Places.} Cities that are junctions, political objectives, major ports or airfields, or campaign bases; the nine Soviet entry stars; the water points (Erenhot, Sonid, Lubei, Sain Shand); the fuel-airlift airfields (Tamsag Bulag, Matad, Choibalsan); the six Kwantung fortified zones (Hailar, Aihui, Sunwu, Arshaan, Hutou, Dongning).
+
+\paragraph{Markers.} Two-faced: presence/base area, KMT/CCP control, rail interdicted/broken, port denied/open, airfield captured/destroyed, Japanese front. Also fortified cities, bridges, directives, Soviet halted and occupation, surrendered garrisons, Marines.
+
+% ======================================================================================================================
+% Part 4: pieces
+% ======================================================================================================================
+\section{Pieces}\label{sec:pieces}
+\paragraph{Kinds.} \textbf{Unit pieces} (table \ref{tab:pieces}); the tank formations and the cavalry-mechanized group are \textbf{motorized}, all others move \textbf{on foot}. \textbf{Air-support pieces} do not fire; they support combat and supply by air. \textbf{Supply pieces} relay supply and stack as markers: Japanese 6 in China and 2 in Manchuria and Korea, KMT 5. \ptest{3} CCP presence markers are markers, not pieces.
+
+\paragraph{Counts.} Japan 51, KMT 35, CCP 23 (plus 24 presence markers), Soviet 11, puppets 6. About 105 unit pieces start on the map.
+
+\paragraph{Steps.} The back face shows a piece reduced; a step marker shows a loss short of the back face. Current offense and defense are the printed values times the fraction of steps that remain, fractions kept: a division with two of three steps has offense 2 and defense 2. A piece that loses its last step is removed.
+
+% ======================================================================================================================
+% Part 5: sequence of play
+% ======================================================================================================================
+\section{Sequence of play}\label{sec:sequence}
+\paragraph{Time track.} Four initiative markers: KMT, CCP, $J_{KMT}$ (the Japanese facing the KMT, commanded by the CCP player) and $J_{CCP}$ (the Japanese facing the CCP, commanded by the KMT player). The faction furthest behind acts next; its order moves its marker forward by the time the order costs (\draftmark\ table \ref{tab:ordercost}). After the surrender the endgame is played in initiative rounds.
+
+\paragraph{Orders.} Move/Redeploy, Attack, Move--Attack, Rail Redeploy, Recover/Refit, Political/Base Action, Interdict/Repair Transport. A piece with an Attack order attacks without moving; with a Move--Attack order it may attack after it moves.
+
+\paragraph{The activation.}
+\begin{enumerate}
+\item Pieces with Move or Move--Attack orders move, one at a time (section \ref{sub:move}).
+\item The faction declares its attacks: each attacking piece names one adjacent enemy hex.
+\item Each qualifying defending piece may withdraw before combat.
+\item All declared attacks and the return fire are resolved together, with strengths as at declaration.
+\item Results are applied: retreats, then step losses, then assault losses, then advances.
+\item Supply levels are computed for every piece on the map; attrition is applied; refitted pieces recover.
+\end{enumerate}
+
+\paragraph{Calendar.} Dated events bring reinforcements, seasons, Soviet entry (9 August 1945), the Sino-Soviet treaty (14 August) and the surrender (15 August). The scenario gives the dates.
+
+% ======================================================================================================================
+% Part 6: movement
+% ======================================================================================================================
+\section{Movement}\label{sec:movement}
+\subsection{Land movement}\label{sub:move}
+Movement is along the edges between hex centers. The cost of the edge from $h$ to the adjacent $h'$ is
+\[
+c(h,h')=\tfrac{1}{2}\bigl(t(h)+t(h')\bigr)+s(h,h') \mbox{\ off the lines,}\qquad c(h,h')=0.5 \mbox{\ along a railway, road or track,}
+\]
+where $t$ is the terrain cost and $s$ the river surcharge of table \ref{tab:terrain}. A river under a line is bridged unless a marker shows the bridge down. \ptest{15}
+\begin{enumerate}
+\item \textbf{Allowance.} A piece pays each edge from its allowance and stops when it cannot pay for the next. A piece that has not moved may always move one hex. Supply may reduce the allowance of motorized pieces (table \ref{tab:supply}).
+\item \textbf{Prohibited.} No entry into a hex an enemy piece holds, or into a sea hex except by Strategic Lift or junk crossing. No Chinese or Japanese piece enters Mongolia. Motorized pieces enter desert only along a track.
+\item \textbf{Zones of control.} \ptest{14} The six hexes around a unit piece, except a hex across a major river and a mountain hex; minor rivers do not block. Entering an enemy zone ends a move. A piece that starts in an enemy zone may leave with its first step. Zones also block supply paths.
+\item \textbf{Stacking.} At the end of each step: two unit pieces, any number of markers, one air-support piece. Surrendered Japanese pieces do not count. A step that would exceed the limit is not taken, and the piece stops.
+\item \textbf{Enemies.} \ptest{16} Japanese pieces of either controller are enemies of KMT, CCP and Soviet pieces. KMT and CCP pieces exert no zones on each other before the surrender and fight only by a declared attack at the Legitimacy cost.
+\end{enumerate}
+
+\subsection{Rail}\label{sub:rail}
+A Rail Redeploy order moves pieces along open railway, never into or out of an enemy zone; Japanese rail moves draw on the shared rail capacity \draftmark. A railway segment is \textbf{open} (supply and redeployment), \textbf{interdicted} (supply with a penalty; redeployment costly) or \textbf{broken} (unusable until repaired); the Interdict/Repair Transport order changes its state.
+
+\subsection{Mongolia and the Soviet groupings}\label{sub:mongolia-move}
+Mongolia is a sanctuary: only Soviet pieces enter it. At entry the groupings appear at their stars and follow fixed axes: Manzhouli--Hailar--Qiqihar; Tamsag Bulag over the Khingan to Tongliao, Mukden and Changchun; Sain Shand over the Gobi to Dolonnor and Kalgan. They cross the Khingan only at the passes. Motorized groupings may halt for fuel, the cavalry group for water (section \ref{sub:steppe-supply}).
+
+\subsection{Sea, river and air movement}\label{sub:sea-move}
+No naval pieces. \textbf{Strategic Lift} moves KMT formations between eligible air, port and rail nodes, its ports set by the treaty. \textbf{Junk crossing}: the CCP across the Bohai. \textbf{River transport}: Yangtze and Sungari between designated ports. Air-support pieces act within four hexes; their movement is drafted. No airborne rules.
+
+% ======================================================================================================================
+% Part 7: combat
+% ======================================================================================================================
+\section{Combat}\label{sec:combat}
+\subsection{Land combat}\label{sub:combat}
+\begin{enumerate}
+\item \textbf{Attacks.} Each piece with an Attack or Move--Attack order may attack one adjacent enemy hex, its modified offense split evenly among the pieces there, one fire stream to each.
+\item \textbf{Return fire.} Each attacked piece fires back: all its modified offense at one attacker, half at each of two, or half at each of two chosen at random among three or more.
+\item \textbf{Withdrawal before combat.} \ptest{13} A defender in broken or mountain terrain, or with a river between it and every adjacent enemy, may withdraw one hex when an enemy moves adjacent or declares an attack on it; not into an enemy-held hex, nor into an enemy zone unless a friendly piece holds it. Its marker moves one space. Fire aimed at it is lost; attackers may advance.
+\item \textbf{Modifiers}, all multiplying a stream and applying together: streams received across two non-adjacent hexsides $\times 1.5$; into mountain $\times\tfrac{1}{2}$; by motorized pieces into broken or marsh $\times\tfrac{1}{2}$; across a major river, either way, $\times\tfrac{1}{2}$ \ptest{12}; into a fortified city or zone $\times\tfrac{1}{2}$; air support $\times 1.5$ \ptest{11}. Offense and defense are also multiplied by the supply multipliers (table \ref{tab:supply}) and the fraction of steps remaining.
+\item \textbf{Odds.} \ptest{9} For each defending piece, $A$ is the sum of the streams it receives and $D$ its modified defense. Rounded for the defender: $\lfloor A/D\rfloor{:}1$ when $A\ge D$, otherwise $1{:}\lceil D/A\rceil$.
+\item \textbf{Roll.} One ten-sided die per defending piece on table \ref{tab:crt}; results apply to the defender only.
+\item \textbf{Results.} \textbf{NR} no result. \textbf{R} retreat one hex, not into or through an enemy-held hex, not into sea, not over stacking; enemy zones do not bind it; if no hex is open, lose one step instead; a piece in a fortified city or zone may refuse and lose one step. \textbf{S} lose one step. \textbf{E} lose two steps.
+\item \textbf{Assault losses.} \ptest{8} If an attacked fortified city or zone is still held, roll for each piece that attacked it: 8--10 loses one step.
+\item \textbf{Advance.} Attackers adjacent to a hex emptied by combat or withdrawal may enter it, within stacking, and stop. Entry removes a fortified-city marker.
+\end{enumerate}
+
+\subsection{Special cases}\label{sub:fortified}\label{sub:civil}\label{sub:air-combat}
+\textbf{Fortified zones:} besides items 4, 7 and 8, a Kwantung fortified zone holds a Soviet grouping that attacks it for one activation, and a bypassed zone keeps its hex until the general surrender. \textbf{Chinese-on-Chinese:} only by a declared attack, at a Legitimacy cost \draftmark. \textbf{Air:} no air-to-air combat; one air-support piece within four hexes may support one combat per activation, attack or defense \ptest{11}; air pieces may attack bridges (drafted). \textbf{Naval:} none.
+
+% ======================================================================================================================
+% Part 8: supply
+% ======================================================================================================================
+\section{Supply}\label{sec:supply}
+\subsection{Land supply}\label{sub:supply}
+\begin{enumerate}
+\item \textbf{Sources} are named by the scenario: ports, capitals, depots, railheads, and the CCP's base areas. They do not move.
+\item \textbf{Network}: the railway, strategic road and river-route hexes that no enemy piece holds and that are not in an enemy zone unless a friendly piece holds them. Tracks are not network. A source hex is a network hex.
+\item \textbf{Supply pieces} \ptest{3} \ptest{5} move only along their network, by a Move order (allowance 4, 0.5 per edge) or Rail Redeploy; they may not enter an enemy zone unless a friendly unit piece holds the hex, and are removed if an enemy enters their hex. Japanese supply pieces belong to a front.
+\item \textbf{Coverage.} \ptest{1} \ptest{2} A source covers at level 3 every network hex within the reach $R$ (first test value 6 network hexes). A supply piece on a covered hex covers every network hex within $R$ of it at one level less than its own hex. A hex covered twice takes the higher level.
+\item \textbf{Local path.} A piece off the network traces to a covered network hex, not through sea, enemy-held hexes, or enemy zones unless a friendly piece holds them. Its cost is the sum of the supply path costs (table \ref{tab:terrain}) of the hexes entered; on the network it is 0.
+\item \textbf{Level.} \ptest{7} Path cost $\le 3$ allows level 3; 4--5 level 2; 6--7 level 1. A piece's level is the lower of its coverage and its path level, at the best reachable hex; no path gives level 0.
+\item \textbf{CCP.} \ptest{4} No supply pieces; base areas are its sources, and its pieces trace local paths to them.
+\item \textbf{Attrition.} A piece at level 0 at the end of two consecutive activations of its own faction loses one step at the end of the second.
+\item \textbf{Timing.} Levels are computed at the end of every activation and used until the end of the next.
+\end{enumerate}
+
+\subsection{Steppe, Mongolia, sea and air supply}\label{sub:steppe-supply}\label{sub:air-supply}
+\ptest{6} Steppe hexes count double for supply distance and desert treble (table \ref{tab:terrain}). A Soviet motorized grouping more than three hexes from its railhead halts until a fuel-airlift roll succeeds (one activation lost on 1--3). The cavalry group must end each move at a water point or make the same roll. Soviet groupings count as level 3 in combat and suffer no attrition. \textbf{Sea:} ports are sources when the scenario names them; a port-denied marker closes one to a faction; Strategic Lift moves formations, not supply. \textbf{Air:} a piece in a fortified city or on a friendly airfield within four hexes of a friendly air-support piece is at level 1 or better; one air piece supplies one hex; a piece supplied only by air suffers no attrition and may not attack, but returns fire.
+
+% ======================================================================================================================
+% Part 9: command and control
+% ======================================================================================================================
+\section{Command and control}\label{sec:command}
+\paragraph{Crossed control and transfer.} A two-sided marker shows the front each Japanese formation faces. A formation reassigned to the other front passes to the other player; anti-sabotage restrictions keep the departing controller from leaving it unable to survive \draftmark.
+
+\paragraph{Directives and pools.} Both Japanese factions draw on shared pools of operational support, replacements, rail capacity and logistics, so what one player spends with Japanese forces is lost to the other. Each Japanese operation must normally advance the directive in force; the controller chooses how. Historical sequence: Ichi-Go I, II, III (1944); airfield denial, then coastal defense (1945); Hold for the KMT (from the surrender).
+
+\paragraph{Headquarters.} Japanese 3 (area armies, which decide the front a formation faces), KMT 4, CCP 2. Other functions drafted.
+
+\paragraph{Soviets and Americans.} The Soviets are off-map until entry, then follow their axes (section \ref{sub:mongolia-move}) west, east (Suifenhe--Mudanjiang--Harbin) and northeast (Amur and Sungari); the players choose only which objective comes first and when a halted grouping resumes. The US gives Strategic Lift, the Fourteenth Air Force, and the Marines as port markers at Tientsin, Qingdao and Qinhuangdao.
+
+% ======================================================================================================================
+% Part 10: reinforcements, replacements and recovery
+% ======================================================================================================================
+\section{Reinforcements, replacements and recovery}\label{sec:reinforce}
+\paragraph{Reinforcements.} Japan by event in 1945. KMT: Alpha Force at Kunming; the Burma divisions by air to Kunming (December 1944); the two Y-Force group armies over the Ledo Road (1945). CCP: the five Northeast columns by concentration of presence. Soviets at their stars at entry.
+
+\paragraph{Replacements.} Japanese steps from the shared pool; KMT and CCP steps from the scenario. The Kalgan arms depot gives replacement points to the first faction to occupy Kalgan; the Tonghua redoubt's arms pass to the faction holding Tonghua when it falls.
+
+\paragraph{Recovery.} A piece with a Recover/Refit order at level 3 that neither moves nor fights and is not in an enemy zone regains one step at the end of the activation.
+
+% ======================================================================================================================
+% Part 11: weather and time
+% ======================================================================================================================
+\section{Weather and time}\label{sec:weather}
+Provisional. Two zones divided along the Qinling and the Huai. \textbf{North:} cold November--March (steppe and desert supply distances double again, movement $-1$); mud on the Manchurian plain April--May (movement $-1$). \textbf{South:} monsoon June--September (air support $-1$).
+
+% ======================================================================================================================
+% Part 12: hidden information
+% ======================================================================================================================
+\section{Hidden information}\label{sec:fog}
+Pieces, markers, tracks and pools are open. Only the Soviet directive's next objective is hidden; the CCP may look at it by the liaison route.
+
+% ======================================================================================================================
+% Part 13: special rules
+% ======================================================================================================================
+\section{Special rules}\label{sec:special}
+\paragraph{CCP presence and base areas.} Presence markers (backs: base areas) represent rural political-military control. They interdict railways, make occupation costly, recruit, and survive the loss of a nearby city. Political/Base Action places presence, establishes base areas and concentrates presence into field forces \draftmark; beside a Soviet-held hex concentration costs less.
+
+\paragraph{Mengjiang.} The puppet garrisons at Kalgan, Dolonnor, Guisui and Baotou are Japanese-controlled, weak, and dissolve at the surrender.
+
+\paragraph{Soviet occupation and withdrawal.} The Soviet--Mongolian group holds the hexes it reaches; it blocks KMT movement into them but not CCP presence. After the surrender the Soviets leave in stages: Chahar and Jehol, then southern, central and northern Manchuria (spring 1946). A released hex passes to the faction with a formation or presence adjacent to it, otherwise it stays vacant.
+
+\paragraph{The Sino-Soviet treaty} (14 August 1945, KMT decision).
+\textbf{Accept:} one Legitimacy step lost; Soviet-held Manchurian cities pass to KMT formations that arrive within the withdrawal window and are denied to the CCP until then; Strategic Lift may use Manchurian ports other than Dairen; reduced-cost CCP concentration beside Soviet hexes is suspended. \textbf{Refuse:} no Legitimacy cost; cities pass to whoever arrives first; reduced-cost concentration applies; Strategic Lift may use no Manchurian port.
+
+\paragraph{The Japanese surrender.} Japanese offensives cease; Japanese-held cities, junctions and depots become objectives; Strategic Lift and the Soviet withdrawal begin; Japanese pieces may remain as surrendered garrisons; puppet pieces pass.
+
+\paragraph{The political layer} (provisional). \textbf{Sonid declaration:} at Mengjiang's collapse an autonomy marker appears at Sonid; the CCP may absorb it with one Political action (free while the Soviets hold Chahar), gaining presence in the Chahar and Suiyuan steppe; the KMT may suppress it with a formation, at one Legitimacy step. \textbf{Tonghua redoubt:} at Soviet entry the Kwantung Army may withdraw into it; pieces there survive the general surrender until a Soviet grouping reduces it or the withdrawal track releases it. \textbf{Liaison route:} once per three months the CCP may spend a Political action to see the Soviet directive's next objective or shift one Soviet axis choice.\label{sub:political}
+
+% ======================================================================================================================
+% Part 14: victory
+% ======================================================================================================================
+\section{Victory}\label{sec:victory}
+The winner has the higher \textbf{Postwar Position}
+\[
+P=w_T T+w_C C+w_A A+w_L L-w_D D,
+\]
+with $T$ territory, $C$ major cities, $A$ intact armed strength, $L$ Legitimacy, and $D$ dependence and disruption. The KMT's weights favor cities, ports, junctions and intact armies; the CCP's favor base areas, presence, North China, Manchuria and intact field forces. Weights and measures are drafted (table \ref{tab:weights}).
+
+% ======================================================================================================================
+% Part 19: charts and tables
+% ======================================================================================================================
+\setcounter{section}{18}
+\section{Charts and tables}\label{sec:charts}
+The tables of play are gathered here: terrain (table \ref{tab:terrain}), pieces (table \ref{tab:pieces}), combat (table \ref{tab:crt}), supply (table \ref{tab:supply}), order costs (table \ref{tab:ordercost}), victory weights (table \ref{tab:weights}) and the choices under play test (table \ref{tab:choices}). The order costs and victory weights are drafts from appendix A of the full rules.
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\footnotesize
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.27\textwidth}>{\raggedright\arraybackslash}p{.33\textwidth}>{\raggedright\arraybackslash}p{.2\textwidth}>{\raggedright\arraybackslash}p{.12\textwidth}@{}}
+\toprule
+Terrain or hexside & Movement cost & Fire into the hex & Supply path \\
+\midrule
+Clear & 1 & --- & 1 \\
+Broken & 1 & motorized at half & 1 \\
+Mountain & 2 & at half & 2 \\
+Marsh & 2 & motorized at half & 2 \\
+Steppe & 1 & --- & 2 \\
+Desert & 2; motorized pieces only along a track & --- & 3 \\
+Sea & Strategic Lift or junk crossing only & --- & closed \\
+Fortified city or zone & as its terrain & at half & as its terrain \\
+\midrule
+Minor river (hexside) & 1 extra & --- & --- \\
+Major river (hexside) & 2 extra & across it at half & --- \\
+Railway, strategic road, track & 0.5 per edge along it & --- & network \\
+\bottomrule
+\end{tabular}
+\captionof{table}{Terrain and hexsides: movement, fire and supply}\label{tab:terrain}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\footnotesize
+\begin{tabular}{@{}lrrrrrl@{}}
+\toprule
+Piece & Pieces & Offense & Defense & Allowance & Steps & Class \\
+\midrule
+Japanese infantry division & 23 & 3 & 3 & 4 & 3 & foot \\
+Japanese 3rd Tank Division & 1 & 4 & 3 & 6 & 3 & motorized \\
+Japanese independent mixed brigade & 4 & 1 & 1 & 3 & 1 & foot \\
+Japanese railway garrison & 7 & 1 & 2 & 2 & 1 & foot \\
+Kwantung Army piece & 10 & 2 & 2 & 4 & 2 & foot \\
+Korea Army piece & 3 & 2 & 2 & 3 & 2 & foot \\
+Puppet army (Mengjiang allowance 3) & 6 & 1 & 1 & 2 & 1 & foot \\
+KMT group army, regular & 18 & 2 & 3 & 3 & 3 & foot \\
+KMT group army, regional troops & 6 & 1 & 2 & 3 & 2 & foot \\
+KMT US-equipped army & 5 & 4 & 4 & 4 & 3 & foot \\
+KMT Y-Force group army & 2 & 3 & 3 & 3 & 3 & foot \\
+CCP field force or Northeast column & 21 & 2 & 2 & 4 & 2 & foot \\
+Headquarters (Japanese 3, KMT 4, CCP 2) & 9 & 0 & 1 & 4 & 1 & foot \\
+Soviet 6th Guards Tank Army & 1 & 6 & 5 & 8 & 4 & motorized \\
+Soviet 39th, 5th and 1st Red Banner Armies & 3 & 4 & 4 & 5 & 4 & foot \\
+Soviet armies of three steps & 6 & 3 & 3 & 5 & 3 & foot \\
+Soviet cavalry-mechanized group (Pliyev) & 1 & 3 & 2 & 8 & 3 & motorized \\
+\bottomrule
+\end{tabular}
+\captionof{table}{Unit pieces: offense, defense, allowance and steps}\label{tab:pieces}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{@{}l*{10}{c}@{}}
+\toprule
+Odds & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+\midrule
+1:4 or less & NR & NR & NR & NR & NR & NR & NR & NR & NR & NR \\
+1:3 & NR & NR & NR & NR & NR & NR & NR & NR & NR & R \\
+1:2 & NR & NR & NR & NR & NR & NR & NR & R & R & S \\
+1:1 & NR & NR & NR & NR & R & R & R & S & S & E \\
+2:1 & NR & NR & NR & R & R & R & S & S & S & E \\
+3:1 & NR & NR & R & R & R & S & S & S & E & E \\
+4:1 & NR & R & R & R & S & S & S & E & E & E \\
+5:1 & R & R & R & S & S & S & E & E & E & E \\
+6:1 or more & R & R & S & S & S & E & E & E & E & E \\
+\bottomrule
+\end{tabular}
+\captionof{table}{Combat table, effects on the defending piece; columns are the roll of one ten-sided die}\label{tab:crt}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Level & Offense & Defense & Allowance, foot & Allowance, motorized \\
+\midrule
+3 & 1.00 & 1.00 & 1.00 & 1.00 \\
+2 & 0.75 & 1.00 & 1.00 & 0.85 \\
+1 & 0.50 & 0.85 & 1.00 & 0.65 \\
+0 & 0.50 & 0.75 & 1.00 & 0.40 \\
+\bottomrule
+\end{tabular}
+\captionof{table}{Supply multipliers by level; allowances rounded to the nearest point, never below 1}\label{tab:supply}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\small
+\begin{tabular}{@{}lr@{\qquad}lr@{}}
+\toprule
+Order & Spaces & Order & Spaces \\
+\midrule
+Move/Redeploy & 2 & Political/Base Action & 1 \\
+Attack (Japanese: 1 support point) & 2 & Interdict/Repair Transport & 1 \\
+Move--Attack (Japanese: 1 support point) & 3 & Pass & 1 \\
+Rail Redeploy & 1 & Withdrawal before combat & 1 \\
+Recover/Refit & 2 & Group of more than four unit pieces & $+1$ \\
+\bottomrule
+\end{tabular}
+\captionof{table}{(Draft) Time cost of orders, in spaces of about one week}\label{tab:ordercost}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\footnotesize
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.05\textwidth}>{\raggedright\arraybackslash}p{.42\textwidth}>{\raggedright\arraybackslash}p{.3\textwidth}rr@{}}
+\toprule
+Term & KMT measure & CCP measure & $w$ KMT & $w$ CCP \\
+\midrule
+$T$ & control markers & bases, control 1; presence 0.5; Manchuria $\times 2$ & 1 & 1 \\
+$C$ & major cities held & major cities held & 4 & 2 \\
+$A$ & steps on the map & steps on the map & 0.5 & 1 \\
+$L$ & Legitimacy & Legitimacy & 3 & 3 \\
+$D$ & cut rail within one hex of its major cities, plus half its lift moves & CCP steps at level 0 & 1 & 1 \\
+\bottomrule
+\end{tabular}
+\captionof{table}{(Draft) Measures and weights of the Postwar Position}\label{tab:weights}
+\end{minipage}
+
+\par\medskip\noindent\begin{minipage}{\textwidth}
+\centering\footnotesize
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.05\textwidth}>{\raggedright\arraybackslash}p{.50\textwidth}>{\raggedright\arraybackslash}p{.38\textwidth}@{}}
+\toprule
+No. & The rule now & Alternatives \\
+\midrule
+P1 & Supply reach $R$ = 6 network hexes. & Longer or shorter; very long = plain trace. \\
+P2 & Each relay costs one level. & No loss per relay. \\
+P3 & Supply pieces: Japanese 6 + 2, KMT 5. & One per front or per war area. \\
+P4 & CCP has no supply pieces. & CCP supply pieces, or presence relays. \\
+P5 & Japanese supply pieces belong to a front. & Drawn from the shared pool. \\
+P6 & Soviets keep the Mongolian fuel and water rolls. & Soviet depots as supply pieces. \\
+P7 & Local path 3/5/7 for levels 3/2/1; table \ref{tab:supply}. & Other thresholds; HexKrieg multipliers. \\
+P8 & Assault loss on 8--10, fortified cities and zones. & Cities only; another rate. \\
+P9 & Table shifted toward the defender; defender rounding. & HexKrieg table and rounding. \\
+P10 & Defense $\pm 1$ by type (table \ref{tab:pieces}). & Other values. \\
+P11 & Air support $\times 1.5$, one combat, four hexes. & Air supply only; other range or effect. \\
+P12 & Fire across a major river halved. & Rivers affect movement and supply only. \\
+P13 & Withdrawal when attacked or approached, one space. & Approach trigger only; another cost. \\
+P14 & Entering an enemy zone ends a move. & Zones cut supply only. \\
+P15 & Movement costs of table \ref{tab:terrain}. & Broken at 2; other river costs. \\
+P16 & No KMT--CCP zones before the surrender. & Zones at all times, or after the first clash. \\
+\bottomrule
+\end{tabular}
+\captionof{table}{Choices under play test}\label{tab:choices}\hypertarget{ptest}{}
+\end{minipage}
+
+% ======================================================================================================================
+% Part 20: glossary
+% ======================================================================================================================
+\FloatBarrier
+\section{Glossary}\label{sec:glossary}
+{\small
+\begin{multicols}{2}
+\begin{description}[leftmargin=0pt,itemsep=1pt]
+\item[Activation] One turn of a faction on the time track.
+\item[Assault loss] A step an attacker may lose attacking a fortified city or zone without taking it.
+\item[Directive] A Japanese strategic requirement each Japanese operation must normally advance.
+\item[Edge cost] Average terrain cost of two adjacent hexes plus any river surcharge, or 0.5 along a line.
+\item[Fire stream] The share of a piece's offense aimed at one enemy piece.
+\item[Legitimacy] The United Front track: political standing and foreign support.
+\item[Level] A piece's supply state, 3 (full) to 0 (cut off).
+\item[Reach] The number of network hexes a source or supply piece covers.
+\item[Strategic Lift] The US resource that moves KMT formations by air and sea.
+\item[Zone of control] The six hexes around a unit piece, except across a major river and into mountain.
+\end{description}
+\end{multicols}
+}
+
+\end{document}
+% Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,0 +1,2197 @@
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
+% process with TeXworks as pdfLaTeX
+%
+% ACV --- Derivation of Record (P1, round 3, 2026-07-25).
+% Reconstructed 2026-10-09 from ACV-derivation-of-record.pdf, whose LaTeX
+% source was lost.  The text, the equation identifiers (E-n) and the tables
+% follow that PDF; the page format comes from the shared prolog.
+
+\input{../../CPVI/shared-tex/prolog-article.tex}
+
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+
+\def\myversion{P1 r3}
+\setlength{\headheight}{15pt}
+
+\lfoot{\color{myDarkRed}\bf{DRAFT \myversion}}
+\cfoot{{\thepage} of {\pageref*{LastPage}}} % asterix suppressed hyperlink
+\rfoot{\copyright \  Ben P. Wise}
+
+% Propositions, corollaries, definitions and remarks share one counter,
+% numbered within the section; the two assumptions are numbered on their own.
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[proposition]{Definition}
+\newtheorem{assumption}{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+% Plain ruled box for the statements the document singles out.
+\newtcolorbox{recordbox}{enhanced, breakable, sharp corners,
+  colback=white, colframe=black, boxrule=0.6pt,
+  left=4pt, right=4pt, top=2pt, bottom=2pt,
+  before upper={\setlength{\parskip}{0.6em}}}
+
+% Part headings: Part A, Part B, Part C.
+\newcommand{\docpart}[1]{\par\vspace{3ex}\noindent
+  {\color{myBlue1}\huge\bfseries #1}\par\vspace{1ex}
+  \addcontentsline{toc}{part}{#1}}
+
+\newcommand{\Sc}{\mathcal{S}}
+\newcommand{\Zc}{\mathcal{Z}}
+\newcommand{\bbA}{\mathbb{A}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ch}{\mathrm{ch}}
+\newcommand{\eff}{\mathrm{eff}}
+
+% Equation identifiers.  Single-line equations carry \tag{E-n}.  A stacked
+% group is an eqnarray whose rows are E-nA, E-nB, ...; \Elabel{E-1A}{E1_A}
+% at the end of a row sets the number printed for that row and labels it.
+\makeatletter
+\newcommand{\Etagname}{}
+\renewcommand{\theequation}{\Etagname}
+\newcommand{\Elabel}[2]{\gdef\Etagname{#1}\phantomsection
+  \protected@edef\@currentlabel{#1}\label{#2}}
+\makeatother
+% \tag'd equations do not advance the equation counter, so hyperref's default
+% anchor names repeat and links land on the wrong equation.  Unique names:
+\hypersetup{hypertexnames=false}
+
+\begin{document}
+
+\title{ACV --- Derivation of Record\\[1ex]
+  {\large Inferring which entries of a transition matrix are exactly zero,
+   without assuming anything about where they are}\\[1ex]
+  {\normalsize v1: $K=0$; one entrywise sparsity model (D-30)}}
+\author{Agent 1 (Derivation Author)}
+\date{P1, round 3 --- July 25, 2026}
+
+\maketitle
+
+
+\section*{What this is}
+
+You have $N$ time series measured together --- prices, flows, temperatures, counts
+of something --- sampled at regular intervals. You believe each series is driven
+partly by its own past and partly by the past of the others, and you want to know
+\emph{which} influences are real. Write the belief down as a linear transition rule:
+today's vector of $N$ numbers is a matrix times yesterday's vector, plus noise. That
+matrix has $N^2$ entries; with $p$ lags of history it has $N^2p$. At $N=40$ and $p=2$
+that is 3200 numbers, fitted from perhaps two hundred observations. Ordinary least
+squares will return 3200 non-zero numbers, most of them noise, and no indication of
+which ones matter.
+
+\textbf{What this method does.} You hand it the series. It returns a transition
+matrix in which most entries are \emph{exactly zero} --- not small, zero ---
+together with a posterior probability for each entry being non-zero, and a posterior
+over how many non-zero entries there are. \textbf{It decides how many by weighing
+evidence, not by anyone's judgement about which variables ought to influence which.}
+There is no significance test, no cross-validation, no threshold on coefficient size,
+and no information criterion anywhere in it.
+
+\subsection*{The core formula}
+
+Two factors, multiplied. Let $M$ be the number of entries of the transition matrix
+that are non-zero, let $x_{ti}$ be the observed value of coordinate $i$ at time $t$,
+and let $u_{ti}$ be the value the matrix multiplication predicts for it from the
+previous observations. Then the object being maximised is, in its recognisable form,
+\begin{equation}
+\underbrace{\;\;p^{M}\;\;}_{\text{prior mass on the pattern}}
+\;\times\;
+\underbrace{\prod_{t}\prod_{i}\exp\Bigl\{-\tfrac12\Bigl(\frac{x_{ti}-u_{ti}}{\sigma_i}\Bigr)^{2}\Bigr\}}_{\text{Gaussian on the residual}} .
+\tag{$\star$}\label{star}
+\end{equation}
+The left factor is the prior: each entry is switched on independently with
+probability $p$, so a pattern with $M$ of them switched on carries prior mass
+proportional to $p^M$. The right factor is the likelihood: the residual between what
+was observed and what the matrix predicts, measured in units of that coordinate's
+noise scale $\sigma_i$, and taken as Gaussian. Nothing more than this is needed to
+state what the method is.
+
+\subsection*{What balancing the two factors means}
+
+Switching on more entries makes $u_{ti}$ track $x_{ti}$ more closely, so the right
+factor rises. It also makes $M$ larger, so the left factor falls, since $p<1$.
+Switching off entries does the opposite: the prior mass rises and the fit degrades.
+\textbf{The posterior picks the trade.} There is a rate of exchange between fit and
+prior mass, and where it turns is where the answer is. That balance is what is meant
+by an Occam factor in the rest of this document, and \textbf{it is the entire
+complexity-control mechanism of the project} --- everything else is either an exact
+evaluation of one of the two factors, a statement of what the evaluation assumes, or
+a case where it degenerates.
+
+\begin{recordbox}
+\textbf{The essential property, and it is the point of the project.}
+
+\textbf{The method assumes nothing whatsoever about \emph{where} the non-zero entries
+lie.} There is no notion of a block, a group, a partition, a neighbourhood, a
+distance, an ordering, or a position anywhere in the model. Every one of the $N^2p$
+entries is exchangeable with every other, a priori. Look at \eqref{star}: the prior
+factor is $p^M$, and $M$ is a \emph{count}. There is nothing in that expression that
+can see which entries are on --- only how many.
+
+It follows that if a fitted result comes out looking block-structured, or banded, or
+clustered by country, or clustered by anything at all, \textbf{that is a finding
+about the data and never an input to the model.} The machinery has no vocabulary in
+which to have preferred it.
+
+This is why the method exists. GVAR --- the standard tool for the motivating problem
+--- has its designers write the link structure down in advance from economic
+intuition about which countries trade with which. Not doing that is the whole
+contribution. It is emphatically \textbf{not} a goal to reproduce GVAR's particular
+structure; a result that disagreed with GVAR would be just as much a success, and a
+method tuned until it agreed would be a failure that had learned to hide.
+\end{recordbox}
+
+\subsection*{Lineage, in one paragraph}
+
+AUTOCLASS is a Bayesian classification engine from the late 1980s that decides how
+many classes a dataset contains by marginal likelihood alone --- no elbow plots, no
+stopping parameter. It ran unmodified on stellar spectra and on satellite imagery.
+This project transplants that discipline from \emph{classes over cases} to
+\emph{zeros over matrix entries}: same refusal to introduce a criterion outside the
+marginal likelihood, same insistence that the complexity penalty fall out of the
+prior rather than be imposed. That is the extent of the analogy and it is offered as
+motivation, not as structure. Where AUTOCLASS is cited below it is cited from
+\texttt{workflow/autoclass-reference.md}, which quotes the primary sources; the
+project has twice mis-stated AUTOCLASS from memory and will not do so again.
+
+\subsection*{How to read this, and where the developed formula is}
+
+\textbf{Forward pointer.} \eqref{star} is the shape of the thing, not the thing that
+is computed. The fully developed posterior --- the object the implementation
+evaluates and the search maximises --- is \eqref{E126} \textbf{in
+\S\ref{sec:search}}, assembled from the closed-form per-equation marginal
+\eqref{E101}, the structure prior \eqref{E135}, and the one-dimensional integral
+\eqref{E103}. It differs from \eqref{star} in exactly three respects --- Gaussian
+normalising constants, a prior over the \emph{values} of the non-zero entries, and
+the marginalisation of the rate $p$ --- and \textbf{each of the three is introduced
+later, at the point where it is needed, with the argument for why it is forced}: the
+normalising constants in \S\ref{sec:model}, the prior over the values in
+\S\ref{sec:slab}, and the marginalisation of the rate in \S\ref{sec:rate}. Gaussian
+errors and independent matrix entries are used exactly as \eqref{star} suggests;
+nothing is quietly replaced.
+
+\begin{description}[style=nextline, leftmargin=2em, topsep=0pt, itemsep=0pt]
+\item[Part A, \S1--\S4: everything, at one lag.]
+  The model, the sufficient statistics, the prior with every constant it contains,
+  the closed-form marginal likelihood, and the resulting rule for when an entry gets
+  switched on. A reader who stops at the end of Part A has seen every mechanism in
+  the project. \emph{Read this part.}
+\item[Part B, \S5: the worked example.]
+  Benchmark B1 --- fifty synthetic coordinates, 350 true links out of 2500,
+  deliberately non-economic --- with the detection threshold and the expected
+  false-positive count computed in advance, so that the run can refute the theory
+  rather than merely illustrate it. \emph{Read the table.}
+\item[Part C, \S6--\S11: the rest.]
+  General lag order; the search; the degenerate cases; three reductions; the one
+  place the model class is provably inadequate (over-differencing, \S\ref{sec:cannot}); a
+  conditioning diagnostic; assumptions and limitations. \emph{Skippable on a first
+  pass except \S\ref{sec:red3}, which is the correctness check with teeth.}
+\end{description}
+Notation is introduced where it is used. Appendix \ref{app:disp} is the
+equation-identifier disposition, including what this revision deleted.
+
+\subsection*{What changed in this revision, and why}
+
+\textbf{D-30, ruled 2026-07-25.} The previous draft carried \emph{two} sparsity
+models: the entrywise one above, and a second in which the coordinates were
+partitioned into groups and inclusion indicators were placed at the block level, with
+the partition inferred. The second model, the group count, the block indicators, the
+comparison between the two models and every claim about which should win on which
+data are \textbf{deleted}. They are preserved in
+\texttt{theory/theory-v1-with-blocks.tex} and their identifiers
+\textbf{E-114--E-117} are retired permanently.
+
+The reason is the boxed property above. Block structure does not need a block prior
+to be recovered: entrywise inference is indifferent to position, so it finds
+non-zeros wherever they lie, clustered or scattered. A block prior buys only
+strength-borrowing within a block. What it cost while it stood was worse: it could
+not express a partly-filled block, so on a benchmark whose truth was 350 entries it
+was forced to report 500; and it invited the entirely reasonable suspicion that the
+method \emph{assumed} the answer. It never did. But a reader could not tell that from
+the derivation, and a derivation from which the central property cannot be read is
+defective whatever its algebra says.
+
+Three corrections were also made, and one of them changes a headline number.
+\begin{enumerate}[label=(\roman*), topsep=0pt, itemsep=0pt]
+\item \textbf{The false-positive prediction was wrong by roughly a factor of
+  $(\bar k+1)$} --- it was evaluated as though the retained structure were empty
+  when it in fact carries about seven entries per equation. Corrected at
+  \eqref{E120}, \eqref{E122}, \eqref{E133} and throughout \S\ref{sec:bench}. The
+  corrected result \textbf{carries the mean sparsity $\bar k$ and is therefore not
+  parameter-free.} It was described as parameter-free and that was wrong; see \S5.3.
+\item \textbf{The claim that no quantity needs a user-supplied value was false.}
+  Section \ref{sec:constants} now declares every set constant openly, with reasoning,
+  in one table --- including an evidence threshold that the quadrature grid and the
+  stopping rule are both chained to and that nobody had named.
+\item \textbf{A third reduction with teeth} was added (\S\ref{sec:red3}). The
+  existing two are both evaluated at points where every mechanism under test is
+  switched off.
+\end{enumerate}
+
+
+\docpart{Part A --- The complete inference at one lag}
+
+\section{The model, and what the data reduces to}\label{sec:model}
+
+\subsection{The process}
+
+Observed $y_t\in\mathbb{R}^N$ for $t=1,\dots,T$; differencing of order $d$ has
+already been applied and $y_t$ denotes the differenced series ($d=1$ fixed, D-05 ---
+\S\ref{sec:cannot} is what that costs). There is no hidden state (A-001), so the
+observed vector is the state:
+\begin{eqnarray}
+y_t &=& \sum_{l=1}^{p} A_l\, y_{t-l} \;+\; c \;+\; \varepsilon_t,
+  \Elabel{E-1A}{E1_A} \\
+\varepsilon_t &\overset{\text{iid}}{\sim}& \mathcal{N}(0,\Sigma),
+  \Elabel{E-1B}{E1_B} \\
+A_l &\in& \mathbb{R}^{N\times N},
+  \Elabel{E-1C}{E1_C}
+\end{eqnarray}
+with $c\in\mathbb{R}^N$ an intercept. The observation equation \textbf{E-2} is the
+identity, $y_t=Jx_t$ with $J=I_N$, and carries nothing. Part A takes $p=1$;
+\S\ref{sec:lag} carries general $p$, and every statement here is written so that the
+generalisation is a substitution.
+
+\paragraph{The intercept is always included and is never a sparsity candidate.} The
+previous draft had no intercept, which on differenced data asserts zero drift for
+every coordinate. Ben ruled it in. It costs $N$ parameters, changes no derivation,
+and is absorbed by writing the regressor vector with a leading constant:
+\begin{eqnarray}
+z_t &=& \bigl(1,\; y_{t-1}',\; \dots,\; y_{t-p}'\bigr)' \;\in\; \mathbb{R}^{1+Np},
+  \Elabel{E-134A}{E134_A} \\
+\bbA &=& \bigl[\, c \;\; A_1 \;\cdots\; A_p \,\bigr],
+  \Elabel{E-134B}{E134_B} \\
+y_t &=& \bbA z_t + \varepsilon_t.
+  \Elabel{E-134C}{E134_C}
+\end{eqnarray}
+Index 0 of $z_t$ is the constant. Every $\gamma_i$ below contains index 0 by
+construction; the candidate set is indices $1,\dots,Np$, so the candidate count per
+equation is $n_i=Np$ and the global count is $n=N^2p$, exactly as before. Two things
+this buys: the $p=0$ reduction now lands on AUTOCLASS's real-valued model as shipped
+rather than on that model with its mean pinned at zero (\S\ref{sec:red2}), and a
+coordinate with genuine drift no longer forces spurious diagonal links to absorb it.
+
+The innovation covariance is diagonal (D-04),
+\begin{eqnarray}
+\Sigma &=& \operatorname{diag}(\sigma_1^2,\dots,\sigma_N^2),
+  \Elabel{E-4A}{E4_A} \\
+\sigma_i^2 &>& 0,
+  \Elabel{E-4B}{E4_B}
+\end{eqnarray}
+and the parameter set and its dimension are
+\begin{eqnarray}
+\Theta &=& \bigl\{(c, A_1,\dots,A_p,\sigma_1^2,\dots,\sigma_N^2)\bigr\},
+  \Elabel{E-5A}{E5_A} \\
+D &=& N^2p+2N,
+  \Elabel{E-5B}{E5_B}
+\end{eqnarray}
+before any entry is forced to zero. Under a structure that zeroes some entries of the
+$A_l$, $D$ falls by exactly the number excluded. \textbf{That count is a property of
+the model and not of a choice of coordinates}, because with no hidden state there is
+no basis to change --- which is why ``how many entries are non-zero'' is a well-posed
+question here and was not in the $K>0$ draft.
+
+\begin{assumption}[conditioning, and the whole of it]\label{ass:cond}
+Every marginal likelihood in this document is conditional on $y_{1-p_{\max}:0}$, with
+$p_{\max}$ the largest lag order in the candidate set, \textbf{fixed before any
+fitting}. Every candidate therefore explains the identical vector $y_{1:T}$ from the
+identical number of usable transitions. $p_{\max}$ is a declared quantity, listed in
+\S\ref{sec:constants}; it is \emph{not} the reported ceiling $p^*$ of
+\S\ref{sec:ceiling}, and conflating the two was a defect of the previous draft.
+\end{assumption}
+
+With that, the likelihood is the complete-data likelihood --- there is nothing latent
+to integrate:
+\begin{equation}
+f\bigl(y_{1:T}\mid y_{1-p_{\max}:0},\theta,\Sc\bigr) \;=\;
+\prod_{t=1}^{T}\mathcal{N}\bigl(y_t;\; \bbA z_t,\; \Sigma\bigr),
+\tag{E-9}\label{E9}
+\end{equation}
+which is the complete-data likelihood \textbf{E-10} of the earlier drafts evaluated
+at $x=y$ --- with no hidden state the complete-data and observed-data likelihoods are
+the same object. Write $\ell(\theta)$ for its logarithm. \textbf{No Kalman recursion,
+no EM, no Cheeseman--Stutz substitution, and no Laplace approximation is used to
+compute any reported number in v1}; \S\ref{sec:marginal} evaluates the marginal
+likelihood exactly up to one one-dimensional integral.
+
+\paragraph{First refinement: the Gaussian normalising constants.} The right factor of
+\eqref{star} is written as a bare exponential, which is how one writes it when only
+the residuals are of interest. \eqref{E9} is the full density, so it carries a factor
+$(2\pi\sigma_i^2)^{-1/2}$ for each observation of each coordinate. The reason those
+factors cannot be dropped here is that $\sigma_i$ \textbf{is inferred, not fixed}. If
+$\sigma_i$ were known, the constants would be the same for every candidate structure
+and would cancel from every comparison, which is why a reader accustomed to
+residual-sum-of-squares fitting rarely sees them. Because $\sigma_i$ is a parameter
+to be integrated out, the constants are a function of it, and dropping them changes
+the shape of the integrand in $\sigma_i^2$: the likelihood would then be monotone
+decreasing in $\sigma_i^2$ with no interior maximum, and the inferred dispersion
+would be biased towards zero without bound. They cost nothing --- they are a term
+$-\frac{T}{2}\log(2\pi\sigma_i^2)$ per equation in \eqref{E28_A} --- and they are what
+makes the $\sigma^2$ integral in Proposition \ref{prop:closed} a proper
+inverse-Gamma rather than a divergence.
+
+\begin{remark}[the prior is not truncated to stationarity]\label{rem:trunc}
+A truncation to $\{\rho(A)<1\}$ has a normalising constant that depends on the
+inclusion pattern, and that constant would enter every model comparison --- exactly
+the smuggled quantity D-10 forbids. \eqref{E9} is a proper density in $y_{1:T}$ for
+every $\theta$, explosive or not, so no truncation is needed for integrability. The
+cost is prior mass on explosive processes, recorded in \S\ref{sec:assump}.
+\end{remark}
+
+\subsection{What the data reduces to}
+
+\begin{definition}[the statistics]\label{def:stats}
+\begin{eqnarray}
+S_{xx} &=& \sum_{t=1}^{T} y_t y_t',
+  \Elabel{E-26A}{E26_A} \\
+S_{xz} &=& \sum_{t=1}^{T} y_t z_t',
+  \Elabel{E-26B}{E26_B} \\
+S_{zz} &=& \sum_{t=1}^{T} z_t z_t',
+  \Elabel{E-26C}{E26_C}
+\end{eqnarray}
+together with $T$. Their total dimension is $O(N^2p^2)$ and is \textbf{independent
+of} $T$.
+\end{definition}
+
+\begin{proposition}[sufficiency]\label{prop:suff}
+$(T,S_{xx},S_{xz},S_{zz})$ is sufficient for $\theta$ in the model \eqref{E9}.
+\end{proposition}
+
+\begin{proof}
+Expanding the exponent of \eqref{E9},
+\begin{equation}
+\ell(\theta) = -\tfrac{TN}{2}\log 2\pi - \tfrac{T}{2}\log|\Sigma|
+ - \tfrac12\operatorname{tr}\Bigl\{\Sigma^{-1}\bigl(S_{xx} - \bbA S_{xz}'
+ - S_{xz}\bbA' + \bbA S_{zz}\bbA'\bigr)\Bigr\},
+\tag{E-27}\label{E27}
+\end{equation}
+using $u'Bv=\operatorname{tr}(Bvu')$ three times. \eqref{E27} depends on the data
+only through $(T,S_{xx},S_{xz},S_{zz})$; by Fisher--Neyman, with the $\theta$-free
+factor equal to 1, these are sufficient.
+\end{proof}
+
+\begin{remark}[sufficiency does not need a diagonal $\Sigma$, and this is not a
+technicality]\label{rem:diag}
+\eqref{E27} is derived with $\Sigma$ an \textbf{arbitrary symmetric positive definite
+matrix}. Diagonality is used nowhere in Proposition \ref{prop:suff}. It is used for
+the first time in \eqref{E28_A} below, to \emph{separate} an object that is already in
+hand.
+
+The objection this forestalls is the natural one: \emph{``the sufficient statistics
+were derived under a diagonal $\Sigma$, and the per-equation decoupling is then read
+off them, so the decoupling argument is circular.''} It is not. Sufficiency is
+established for the general-$\Sigma$ model; diagonality is an additional hypothesis
+applied afterwards, and the order matters. Agent 3 verified \eqref{E27} symbolically
+at $N=2$, $p=1$, $T=2$ with a full symmetric $\Sigma$ precisely so that this rests on
+a check rather than on an assertion, and the check must be re-run at $p=2$ in the
+same form.
+\end{remark}
+
+\begin{corollary}[prior-agnostic consequence]\label{cor:agn}
+For any \emph{proper prior}, the marginal likelihood is a function of
+$(T,S_{xx},S_{xz},S_{zz})$ and of the structure alone. No candidate structure
+requires a pass over the data: the one-time accumulation of \eqref{E26_A}--\eqref{E26_C} costs
+$O(TN^2p^2)$ and every subsequent score is $O(k^3)$ or less.
+\end{corollary}
+
+\paragraph{Decoupling.} With $\Sigma$ diagonal and $\alpha_i$ the $i$-th row of $\bbA$
+written as a column, \eqref{E27} separates:
+\begin{eqnarray}
+\ell(\theta) &=& \sum_{i=1}^{N}\Bigl[-\tfrac{T}{2}\log(2\pi\sigma_i^2)
+ - \tfrac{1}{2\sigma_i^2}\bigl(c_i - 2\,\alpha_i' s_i + \alpha_i' S_{zz}\alpha_i\bigr)\Bigr],
+  \Elabel{E-28A}{E28_A} \\
+c_i &:=& [S_{xx}]_{ii},
+  \Elabel{E-28B}{E28_B} \\
+s_i &:=& ([S_{xz}]_{i\cdot})'.
+  \Elabel{E-28C}{E28_C}
+\end{eqnarray}
+Restricting to a structure $\gamma_i\subseteq\{0,1,\dots,Np\}$ (always containing 0)
+deletes the corresponding rows and columns:
+\begin{eqnarray}
+\ell_i\bigl(\alpha_i[\gamma_i],\sigma_i^2\bigr) &=& -\tfrac{T}{2}\log(2\pi\sigma_i^2)
+ - \tfrac{1}{2\sigma_i^2}\Bigl(c_i - 2\,\alpha_i[\gamma_i]' s_i[\gamma_i]
+ + \alpha_i[\gamma_i]' S_\gamma\, \alpha_i[\gamma_i]\Bigr),
+  \Elabel{E-29A}{E29_A} \\
+S_\gamma &:=& S_{zz}[\gamma_i,\gamma_i].
+  \Elabel{E-29B}{E29_B}
+\end{eqnarray}
+Equation $i$ needs only $(T,c_i,s_i,S_{zz})$, and $S_{zz}$ is \emph{shared} by all
+$N$ equations. At $N=50$, $p=2$ the whole problem is about 79 KiB of statistics at
+any $T$.
+
+\begin{remark}[what decouples and what does not]\label{rem:decouple}
+\eqref{E28_A} separates the log-\emph{likelihood} across equations. The \emph{score}
+separates only conditional on the shared hyperparameters. Under the priors of
+\S\ref{sec:prior} there is exactly one shared hyperparameter left --- the slab scale
+$g$, which D-09/D-24 require be integrated rather than fixed --- so the correct
+statement is: \textbf{$N$ independent per-equation searches, inside one shared
+one-dimensional quadrature.} Nothing else couples them. The previous draft also
+coupled them through a single global inclusion rate; \S\ref{sec:rate} carries the
+per-equation rate instead, which removes that coupling and has a consequence for the
+false-positive count that \S\ref{sec:predict} states plainly.
+\end{remark}
+
+\subsection{The cost of moving one entry}
+
+This is the result the entire search cost rests on, so it is proved rather than
+quoted.
+
+\begin{proposition}[cost of one indicator flip]\label{prop:flip}
+\textbf{[Requires: a fixed value of $g$; unconditionally, multiply by the node count
+$n_Q$]} Let equation $i$ have structure $\gamma_i$, $k=|\gamma_i|$, with the Cholesky
+factor of $\Lambda_\gamma := S_\gamma + g^{-1}I_k$ in hand together with
+$\log\det\Lambda_\gamma$ and the scalar
+$s_i[\gamma_i]'\Lambda_\gamma^{-1}s_i[\gamma_i]$. Then the score of a neighbour
+$\gamma_i\cup\{j\}$ or $\gamma_i\setminus\{j\}$ costs
+\begin{equation}
+O(k^2)\text{ floating-point operations, independent of $T$ and of $N$,}
+\tag{E-85}\label{E85}
+\end{equation}
+and the score of the whole structure follows in a further $O(1)$.
+\end{proposition}
+
+\begin{proof}
+Adding regressor $j$ borders the matrix. With $R^{\ch}_\gamma$ the upper Cholesky
+factor of $\Lambda_\gamma$,
+\begin{eqnarray}
+R^{\ch}_{\gamma\cup j} &=&
+  \begin{bmatrix} R^{\ch}_\gamma & r \\ 0 & \varrho \end{bmatrix},
+  \Elabel{E-30A}{E30_A} \\
+(R^{\ch}_\gamma)' r &=& \Lambda[\gamma,j],
+  \Elabel{E-30B}{E30_B} \\
+\varrho &=& \bigl(\Lambda[j,j] - r'r\bigr)^{1/2},
+  \Elabel{E-30C}{E30_C}
+\end{eqnarray}
+one triangular solve of size $k$, i.e.\ $k^2/2+O(k)$ operations, giving the new
+log-determinant as $2(\log\det R^{\ch}_\gamma + \log\varrho)$. The new quadratic form
+follows from the rank-one bordering identity
+\begin{equation}
+s_{\cup j}'\Lambda_{\cup j}^{-1}s_{\cup j} \;=\; s_\gamma'\Lambda_\gamma^{-1}s_\gamma
+\;+\; \frac{\bigl(s_{i,j} - r'\,(R^{\ch}_\gamma)^{-\prime} s_\gamma\bigr)^2}{\varrho^2},
+\tag{E-86}\label{E86}
+\end{equation}
+at $O(k)$ cost from quantities already computed in \eqref{E30_B}--\eqref{E30_C}. Deletion is the same
+identity in reverse after a Givens downdate, again $O(k^2)$. $T$ appears nowhere: it
+entered once, in the accumulation of \eqref{E26_A}--\eqref{E26_C}. $N$ appears nowhere: the other
+equations' factors are unchanged and held in log space. The prior term is a ratio of
+Beta functions in $k$ alone and is $O(1)$ by \eqref{E113}.
+\end{proof}
+
+\begin{corollary}[what this buys]\label{cor:buys}
+A sweep over all $n_i=Np$ single-flip neighbours of one equation costs $O(n_ik^2)$
+per quadrature node. At $N=50$, $p=2$, $k\approx 7$, $n_Q=32$: about
+$1.6\times10^5$ operations per equation-sweep and $8\times10^6$ for all fifty ---
+\textbf{independent of} $T$, so the $T=5000$ end of the benchmark sweep costs the
+same per move as the $T=20$ end.
+\end{corollary}
+
+
+\section{The prior, and every constant in it}\label{sec:prior}
+
+This is where the audit for smuggled intuition happens. Every constant that enters
+the model enters in this section, in view, with a reason --- or it does not enter at
+all. \S\ref{sec:constants} is the complete list, including the ones that are
+\emph{not} in the model but nonetheless get set.
+
+\subsection{The innovation variances}
+
+Conjugate to \eqref{E29_A}, independently across $i$:
+\begin{eqnarray}
+\sigma_i^2 &\sim& \operatorname{InvGamma}(a_\sigma,b_\sigma),
+  \Elabel{E-92A}{E92_A} \\
+a_\sigma = b_\sigma &=& \tfrac12.
+  \Elabel{E-92B}{E92_B}
+\end{eqnarray}
+Read as pseudo-counts, $a_\sigma$ is half the number of prior observations and
+$b_\sigma$ half their sum of squares, so \eqref{E92_B} is worth one observation of unit
+variance. Coordinates are standardized before fitting (charter \S3), which is what
+makes ``unit'' mean something; $b_\sigma/a_\sigma=1$ then follows, and properness
+forbids $a_\sigma\to0$, which is Jeffreys. Two constraints, one free scalar left, and
+it is set to the value that makes the prior worth exactly one observation.
+\textbf{This is an argument for the ratio and for properness; it does not by itself
+select $\frac12$ over $\frac14$}, and \S\ref{sec:constants} records it as set rather
+than derived, with its magnitude.
+
+\begin{assumption}[what a prior must be]\label{ass:proper}
+Every $\pi(\theta\mid\Sc)$ is a \emph{proper} density and $\pi(\Sc)$ a proper mass
+function. This is a correctness requirement, not hygiene: an improper prior with an
+arbitrary scale $c$ on each of $D_\Sc$ coordinates multiplies the marginal likelihood
+by $c^{D_\Sc}$, and since $D_\Sc$ differs across structures by one per entry, every
+Bayes factor is then wrong by $(D_{\Sc_1}-D_{\Sc_2})\log c$ --- in the direction that
+empties the model as $c\to\infty$. The reflexes a reader brings from the BVAR
+literature --- Jeffreys' $1/\sigma^2$, a flat prior on $A$ --- are both excluded.
+\end{assumption}
+
+\subsection[Second refinement: the slab]{Second refinement: a prior over the values of the non-zero
+entries}\label{sec:slab}
+
+\eqref{star} puts a prior on \emph{which} entries are non-zero and says nothing about
+\emph{what they are}. That gap has to be closed before anything can be computed,
+because the quantity being compared across structures is the marginal likelihood ---
+the likelihood with the parameters integrated out --- and one cannot integrate a
+coefficient out without a density to integrate it against. So each included
+coefficient gets a prior, called the slab, and each excluded one is a point mass at
+exactly zero. Conditional on $\sigma_i^2$ and on a common scale $g$:
+\begin{eqnarray}
+\alpha_i[\gamma_i] \;\bigm|\; \sigma_i^2, g &\sim&
+  \mathcal{N}\bigl(0,\; g\,\sigma_i^2\, I_k\bigr),
+  \Elabel{E-93A}{E93_A} \\
+k &=& |\gamma_i|.
+  \Elabel{E-93B}{E93_B}
+\end{eqnarray}
+The spike-and-slab pairing --- a point mass, not a narrow density --- is what
+separates the output from ridge and from least squares, which put a small non-zero
+value everywhere. Scaling by $\sigma_i^2$ makes $g$ dimensionless and keeps the
+marginal in closed form.
+
+\begin{recordbox}
+\textbf{$p^M$ is not the whole penalty, and the part it is missing is the part that
+does the work at large $T$.}
+
+The structural term of \eqref{star} charges a \emph{fixed} amount for each included
+entry --- $\log(1/p)$ nats, or after \S\ref{sec:rate} about $\log n_i$ nats. That
+charge does not depend on the data and does not move with the sample size. The slab
+supplies a second charge, and it is of a different kind: integrating an included
+coefficient against \eqref{E93_A} spreads its prior mass over a range of values, and
+the data then concentrates on a much narrower range, so the fraction of prior mass
+that survives is small. By \S\ref{sec:marginal} that fraction is
+$(1+g\mu_j)^{-1/2}$ per included direction, where $\mu_j$ grows linearly in $T$ ---
+so the second charge is $\approx\frac12\log T$ \textbf{nats per included entry, and
+it grows with the sample size}.
+
+That growth is exactly what makes the method get \emph{more} selective as data
+accumulates rather than less. Without it, the inclusion threshold on a squared
+$t$-statistic would sit at a constant $2\log(1/p)$ forever, so a fixed fraction of
+the null entries would clear it at every sample size and the false-positive count
+would never fall. With it, the threshold rises like $\log T$ while the null
+distribution of the statistic does not move, and the expected number of spurious
+links falls like $1/\sqrt{T}$ --- which is \eqref{E133}, the quantity the whole
+benchmark sweep is designed to test. A derivation carrying $p^M$ alone would look
+right at any single sample size and be wrong across sample sizes.
+\end{recordbox}
+
+\begin{remark}[the entries are \emph{conditionally} i.i.d., and the distinction is
+real]\label{rem:iid}
+\eqref{E93_A} makes the included coefficients independent and identically distributed
+\textbf{given $\sigma_i^2$ and} $g$, and the inclusion indicators independent and
+identically distributed \textbf{given the rate} \eqref{E96_A}. Neither statement holds
+marginally, and it would be careless to claim it did. The coefficients within one
+equation share that equation's dispersion $\sigma_i^2$, and \emph{all} coefficients
+in \emph{all} equations share the single slab scale $g$, which is inferred;
+integrating $g$ out therefore couples every entry in the matrix to every other.
+Likewise integrating the rate couples the indicators within an equation, which is
+precisely how the multiplicity correction of \S\ref{sec:rate} arises --- the coupling
+is the mechanism, not a defect. Nothing departs from conditional independence across
+entries anywhere in the derivation: the only shared quantities are $\sigma_i^2$ (per
+equation), $\rho_i$ (per equation) and $g$ (global), and each is named where it
+enters. The practical consequence is stated at Remark \ref{rem:decouple}: $N$
+independent per-equation searches, inside one shared one-dimensional quadrature, and
+nothing else.
+\end{remark}
+
+\subsection{Why the slab scale cannot be fixed}\label{sec:slabfixed}
+
+\begin{proposition}[Lindley--Bartlett: a fixed diffuse slab empties the
+model]\label{prop:lb}
+Let $\gamma$ and $\gamma\cup\{j\}$ differ by one entry, and hold $g$ fixed. Then,
+with $\Zc_i$ as in \eqref{E101},
+\begin{equation}
+\lim_{g\to\infty}\frac{\Zc_i(\gamma\cup\{j\},g)}{\Zc_i(\gamma,g)} \;=\; 0,
+\tag{E-94}\label{E94}
+\end{equation}
+the ratio decaying as $g^{-1/2}$.
+So for a fixed slab taken wide enough, \emph{every} entry is switched off regardless
+of the data, and the inferred sparsity is a function of $g$ alone.
+\end{proposition}
+
+\begin{proof}
+From \eqref{E101},
+$\Zc_i\propto|I_k+gS_\gamma|^{-1/2}(b_\sigma+\frac12R_\gamma(g))^{-(a_\sigma+T/2)}$.
+As $g\to\infty$, $R_\gamma(g)$ tends to the ordinary residual sum of squares, finite
+and independent of $g$, so the second factor tends to a finite positive limit. The
+first satisfies $|I_{k+1}+gS_{\gamma\cup j}|/|I_k+gS_\gamma|\sim g\tilde\mu_j$ for
+the residual eigenvalue $\tilde\mu_j>0$, so the ratio of first factors is
+$\sim(g\tilde\mu_j)^{-1/2}$. The log Bayes factor therefore falls by $\frac12\log g$
+without bound.
+\end{proof}
+
+A fixed \emph{narrow} slab is the mirror failure: every coefficient's prior mass
+concentrates at zero, the inclusion Bayes factor approaches one, and the posterior
+over structures approaches the prior. Either way the answer is a function of a
+constant nobody derived. \textbf{Therefore $g$ is given a hyperprior and integrated
+out} (D-09, D-24):
+\begin{eqnarray}
+\sqrt{g} &\sim& \text{Half-Cauchy}(0,1), \quad\text{equivalently}
+  \Elabel{E-95A}{E95_A} \\
+\pi(g) &=& \frac{1}{\pi\sqrt{g}\,(1+g)}.
+  \Elabel{E-95B}{E95_B}
+\end{eqnarray}
+Three properties, each consumed below. It is \emph{proper}, so Assumption
+\ref{ass:proper} holds and the integral of \S\ref{sec:quad} converges at the lower
+end --- the reflex choice $\pi(g)\propto1/g$ is improper and diverges there. Its tail
+is $g^{-3/2}$, heavy enough that the data and not the hyperprior decides the upper
+end. Its median is $g=1$, which on standardized coordinates reads ``a slab of the
+same scale as the innovation.'' The \emph{scale} of the half-Cauchy is nonetheless a
+set constant and is listed in \S\ref{sec:constants}.
+
+\subsection{Third refinement: marginalising the rate}\label{sec:rate}
+
+The rate $p$ in \eqref{star} is written as though it were known. It is not, and
+fixing it would be the single most damaging thing one could do to this method. A
+fixed rate charges $\log\frac{1-p}{p}$ nats for each included entry --- a constant,
+chosen by whoever chose $p$, and \textbf{independent of how many candidate entries
+there were}. A problem with 3200 candidates would then be penalised at exactly the
+same rate per entry as a problem with twelve, so the method would over-fit badly at
+scale and would have a tuning knob sitting where its central claim ought to be.
+
+Integrating the rate out repairs this, and the repair is not a patch but the source
+of the method's most useful property. Give the rate a Beta prior and integrate; the
+integral is a Beta function, and what emerges is a prior on the pattern that depends
+on the count through $\binom{n_i}{k_i}^{-1}$ rather than through $p^{k_i}$. That is a
+\textbf{multiplicity correction}: a pattern with $k_i$ non-zeros is charged the
+logarithm of the number of ways $k_i$ entries could have been chosen out of the $n_i$
+on offer, which is about $\log n_i$ nats per included entry. \textbf{The penalty
+therefore scales with the number of candidate entries with nothing set by hand} ---
+it tightens automatically as the problem grows, and it is what makes the
+false-positive count in \eqref{E133} independent of the size of the matrix. Nobody
+chose $\log n_i$; marginalising the rate produced it.
+
+Concretely, each equation carries its own rate, all drawn from the same Beta:
+\begin{eqnarray}
+\gamma_i\mid\rho_i &\sim& \operatorname{Bernoulli}(\rho_i)^{\otimes n_i},
+  \Elabel{E-96A}{E96_A} \\
+\rho_i &\overset{\text{iid}}{\sim}& \operatorname{Beta}(a,b),
+  \Elabel{E-96B}{E96_B} \\
+a = b &=& 1,
+  \Elabel{E-96C}{E96_C} \\
+n_i &=& Np.
+  \Elabel{E-96D}{E96_D}
+\end{eqnarray}
+Marginalising each $\rho_i$ gives the object that carries the whole of the complexity
+control on the discrete side:
+
+\begin{proposition}[the structure prior]\label{prop:sprior}
+\begin{eqnarray}
+\pi(\gamma_i) &=& \int_0^1 \rho_i^{k_i}(1-\rho_i)^{n_i-k_i}\,
+  \frac{\rho_i^{a-1}(1-\rho_i)^{b-1}}{B(a,b)}\,d\rho_i \;=\;
+  \frac{B(a+k_i,\; b+n_i-k_i)}{B(a,b)},
+  \Elabel{E-111A}{E111_A} \\
+k_i &:=& |\gamma_i\setminus\{0\}|,
+  \Elabel{E-111B}{E111_B}
+\end{eqnarray}
+which depends on $\gamma_i$ only through the count $k_i$, and the joint structure
+prior is the product
+\begin{equation}
+\pi(\gamma) \;=\; \prod_{i=1}^{N}\frac{B(a+k_i,\; b+n_i-k_i)}{B(a,b)}.
+\tag{E-135}\label{E135}
+\end{equation}
+At $a=b=1$ the induced law on each count is uniform on $k_i\in\{0,\dots,n_i\}$.
+\end{proposition}
+
+\begin{proof}
+The integral is the Beta function by definition. For the last claim,
+$B(1+k,1+n-k)=k!(n-k)!/(n+1)!=\binom{n}{k}^{-1}/(n+1)$, so
+$\pi(k)=\binom{n}{k}\pi(\gamma)=1/(n+1)$.
+\end{proof}
+
+\begin{corollary}[the multiplicity correction, exhibited]\label{cor:mult}
+At $a=b=1$,
+\begin{equation}
+\log\pi(\gamma_i) \;=\; -\log(n_i+1) \;-\; \log\binom{n_i}{k_i}.
+\tag{E-112}\label{E112}
+\end{equation}
+The first term is constant across structures and cancels. The second is the
+multiplicity correction, and for $k_i\ll n_i$ it is $\approx k_i\log(n_i/k_i)+k_i$:
+\textbf{roughly $\log n_i$ nats per included entry}, growing with the number of
+candidates while the data does not.
+\end{corollary}
+
+\begin{corollary}[the price of one more entry]\label{cor:price}
+\begin{equation}
+\Delta_\pi(k_i) \;=\; \log\frac{\pi(\gamma_i\cup\{j\})}{\pi(\gamma_i)} \;=\;
+\log\frac{a+k_i}{b+n_i-k_i-1} \;\xrightarrow[a=b=1]{\qquad}\;
+\log\frac{k_i+1}{n_i-k_i} \;\approx\; -\log n_i.
+\tag{E-113}\label{E113}
+\end{equation}
+$O(1)$ arithmetic in the count alone, which is what Proposition \ref{prop:flip}
+consumes.
+\end{corollary}
+
+\noindent\textbf{Three readings, all of them consequences.}
+\begin{enumerate}[label=(\alph*), topsep=0pt, itemsep=0pt]
+\item \textbf{The penalty adapts to problem size with no tuning.} At $N=50$, $p=1$:
+  $n_i=50$, so $\approx3.9$ nats per entry. At $p=2$: $n_i=100$, 4.6 nats. At $N=6$,
+  $p=2$: $n_i=12$, 2.5 nats. Nobody set these; they are $\log n_i$, and they came
+  from integrating the rate.
+\item \textbf{Small data therefore concentrates mass on few non-zeros
+  automatically.} An entry is included only if the data buys back $\log n_i$ nats
+  through the likelihood, which \S\ref{sec:inclusion} turns into an explicit
+  threshold.
+\item \textbf{A fixed inclusion probability would not do this.} With $\rho$ fixed the
+  charge is $\log\frac{\rho}{1-\rho}$, independent of $n_i$: the penalty would not
+  tighten as the candidate set grew, and $\rho$ would be a tuning constant. That is
+  D-08's argument, derived.
+\end{enumerate}
+
+\begin{recordbox}
+\textbf{Self-flagged weakness (W-1, rank 1). Per-equation rate versus one global rate
+is a substantive choice worth $\log N$ nats per entry --- 3.9 at $N=50$ --- and it
+moves the predicted false-positive count by a factor of $N$.} Under the per-equation
+rate ruled here the multiplicity correction charges $\log n_i=\log(Np)$; under a
+single global rate over all $n=N^2p$ candidates it charges $\log(N^2p)$, and
+\eqref{E133} falls by a factor $\approx N$. Table \ref{tab:b1} in \S\ref{sec:predict}
+prints \emph{both} columns so that the size of the ruling is visible. The
+per-equation form is what makes Remark \ref{rem:decouple} true and the search factor
+cleanly; the global form is the more conservative. The derivation is written so that
+substituting one for the other changes \eqref{E111_A}--\eqref{E113} and \eqref{E135}
+and nothing else. \textbf{Confirmation requested.}
+\end{recordbox}
+
+\subsection{The prior over the lag order}\label{sec:lagprior}
+
+Without a proper prior over $p$, the posterior over $p$ --- a headline output --- is
+normalised over whatever set the search happened to visit, i.e.\ it is a function of
+the search budget. So:
+\begin{eqnarray}
+\pi(p) &=& \frac{(1-\varpi)\,\varpi^{p}}{1-\varpi^{p_{\max}+1}},
+  \Elabel{E-97A}{E97_A} \\
+p &=& 0,1,\dots,p_{\max},
+  \Elabel{E-97B}{E97_B} \\
+\varpi &=& \tfrac12,
+  \Elabel{E-97C}{E97_C}
+\end{eqnarray}
+a geometric law renormalised over the \emph{declared} range of Assumption
+\ref{ass:cond}. It is not a cap on the model: $\pi(p)$ is proper on any range
+including an unbounded one, and D-10 forbids a cap that changes the score, which a
+proper prior is not. $\varpi=\frac12$ costs 0.69 nats per lag against the $N^2$ extra
+parameters a lag brings, so it is deliberately weak --- its job is to make the sum
+finite, not to choose $p$. \S\ref{sec:cannot}(iii) is the one case where that fails.
+
+\subsection{Every constant that gets set, declared}\label{sec:constants}
+
+\textbf{The previous draft claimed that no quantity in v1 requires a user-supplied
+numerical value. That claim was false and is withdrawn.} The correct statement is
+narrower and still worth making: \emph{no quantity that carries a scale is left to
+the user} --- the innovation scale, the slab scale and the inclusion rate are all
+integrated out rather than set --- but a handful of constants are set, and one of
+them, an evidence threshold, sits underneath both the quadrature grid and the search
+stopping rule and had never been named.
+
+AUTOCLASS declares its own equivalent and gives a number.
+\texttt{classes-c.text} 154--160: \emph{``Those with log marginals that differ by
+less than 5 are are considered to be nearly equally probable''};
+\texttt{search-c.text} 78--82 explains the reason, which is that its own computation
+is not more accurate than that. We adopt the practice and state our own number, which
+differs from theirs because our reason differs: our marginal is closed form up to one
+smooth one-dimensional integral, so our arithmetic is far more accurate than
+AUTOCLASS's, and what we are declaring is not a computational accuracy but a
+\textbf{reporting resolution}.
+
+\begin{definition}[the evidence threshold, and the chain hanging from
+it]\label{def:thresh}
+\begin{eqnarray}
+\delta_{\text{report}} &=& 1\text{ nat}, \quad\text{hence}
+  \Elabel{E-137A}{E137_A} \\
+\epsilon_{\text{stop}} &\le& \tfrac{1}{10}\delta_{\text{report}},
+  \Elabel{E-137B}{E137_B} \\
+\Delta_{\text{trunc}} &\le& \tfrac{1}{10}\epsilon_{\text{stop}}.
+  \Elabel{E-137C}{E137_C}
+\end{eqnarray}
+Log Bayes factors below $\delta_{\text{report}}$ are reported as ``not
+distinguished'' and no claim is made from them. The search stops when no
+single-entry move improves the score by more than $\epsilon_{\text{stop}}$; the
+quadrature grid must bound its own truncation error by $\Delta_{\text{trunc}}$, by
+\eqref{E108}, and must report the achieved value.
+\end{definition}
+
+\paragraph{Why one nat.} The smallest decision the model ever makes is the inclusion
+of a single entry, and by \eqref{E113} that decision is fought over
+$\log n_i\approx4$ nats at the benchmark size, $\approx8$ under a global rate. A
+reporting threshold at one nat is a quarter of the smallest genuine decision, so it
+cannot flip one; and as a bare odds statement $e:1$ is a preference nobody would call
+evidence. The two factors of ten below it exist so that the stopping rule cannot
+chase quadrature noise and the quadrature cannot chase arithmetic noise. \textbf{The
+number is declared, not derived}, and a different declaration would change which
+near-threshold entries are reported as decided --- not which are included.
+
+The complete inventory. ``Effect'' is the magnitude by which the constant moves a
+reported quantity, stated so that the weak ones can be recognised as weak without
+being called derived.
+
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.5cm}
+                  >{\raggedright\arraybackslash}p{2.4cm}
+                  >{\raggedright\arraybackslash}p{5.2cm}
+                  >{\raggedright\arraybackslash}p{4.9cm}@{}}
+\toprule
+Constant & Where & Argument for the value & Effect if changed \\
+\midrule
+$a_\sigma=b_\sigma=\frac12$ & \eqref{E92_B} &
+  ratio pinned by standardization, properness excludes 0; the level is set &
+  $\approx0.05$ nats/entry at $T=200$; $\approx0.5$ at $T=20$ \\
+half-Cauchy scale $=1$ & \eqref{E95_A} &
+  median $g=1$ on standardized coordinates &
+  small; $g$ is integrated, so this shifts the integrand not the answer \\
+$a=b=1$ & \eqref{E96_C} &
+  uniform on the rate; makes $\pi(k_i)$ uniform &
+  $\approx0.06$ nats/entry \\
+$\varpi=\frac12$ & \eqref{E97_C} & deliberately weak & 0.69 nats per lag \\
+$\delta_{\text{report}}=1$ nat & \eqref{E137_A} &
+  \textbf{declared}; a quarter of the smallest model decision &
+  which near-threshold entries are called decided \\
+$\epsilon_{\text{stop}}$, $\Delta_{\text{trunc}}$ & \eqref{E137_B}--\eqref{E137_C} &
+  chained, one decade apart &
+  below $\delta_{\text{report}}$ by construction \\
+$p_{\max}$ & Assumption \ref{ass:cond} &
+  \textbf{declared before fitting}; it sets the conditioning set &
+  changes the effective sample, hence \emph{every} $\log\Zc$; Bayes factors at fixed
+  $p_{\max}$ are unaffected \\
+$\varepsilon$ & \eqref{E124_B} &
+  a \textbf{reporting} convention for the advisory ceiling $p^*$ &
+  changes advice only; enters no score \\
+$n_{\text{restart}}$, $n_{\text{keep}}$ & \S\ref{sec:search} &
+  search budget, open item O-3 &
+  $n_{\text{keep}}$ changes the reported $\pi(k\mid y)$, $\pi(p\mid y)$ (W-4) \\
+$d$ & D-05 & fixed a priori, not inferred &
+  large; \S\ref{sec:cannot}; the one genuine modelling knob \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two entries deserve emphasis because they were misrepresented before.
+\textbf{$p_{\max}$ and $p^*$ are different objects.} $p_{\max}$ is declared, fixes
+the conditioning set, and therefore enters every marginal likelihood; the previous
+draft set it equal to the computed $p^*$, which made a reporting convention
+$\varepsilon$ silently change the effective sample. That is repaired here by
+declaring $p_{\max}$ and demoting $p^*$ to advice (\S\ref{sec:ceiling}). And $d$
+\textbf{is a genuine knob with a large effect}, not a data description;
+\S\ref{sec:cannot} is what it costs and open item O-5 is where it is decided.
+
+\begin{remark}[the honest comparison with AUTOCLASS]\label{rem:autoclass}
+The project's earlier claim that AUTOCLASS ``never asked the user for a scale'' is
+\textbf{false}. \texttt{preparation-c.text} 357--376 makes a per-attribute
+\texttt{error} a required property of every real attribute, describes it as
+\emph{``a lower bound on the width of the normal distribution''}, and states that
+\emph{``broad error estimates tend to limit the number of classes''}: one exogenous
+number per real attribute, and it controls the answer to AUTOCLASS's headline
+question. Everything else in its prior is either a hard-coded constant or read from
+global database statistics, which its own authors call ``cheating'' in those words,
+with a footnote explaining that a prior is supposed to be independent of the evidence
+(TR \S2.2).
+
+The honest framing is better than the false one. \textbf{AUTOCLASS takes one scale
+per attribute and gets a complexity bound in return; ACV takes none and therefore has
+no complexity bound of that kind} --- which is precisely why \S\ref{sec:degen}(D-f)
+has to \emph{refuse} the constant-coordinate case that AUTOCLASS's \texttt{error}
+absorbs. On the one axis where we are stricter, we are stricter because D-09 repairs
+a limitation AUTOCLASS's authors named themselves.
+\end{remark}
+
+
+\section{The marginal likelihood, in closed form}\label{sec:marginal}
+
+\textbf{[Requires: Gaussian coordinates, \eqref{E92_A}, \eqref{E93_A}, diagonal
+$\Sigma$]} This section evaluates the second term of the score. It is the reduction
+target of charter \S7 and the only part of v1 needing any numerical approximation at
+all, and that approximation is one smooth integral in one variable.
+
+\subsection{The per-equation marginal, given the slab scale}
+
+Fix equation $i$ and structure $\gamma$, write $S_\gamma$, $s=s_i[\gamma]$, $c=c_i$,
+and define
+\begin{eqnarray}
+\Lambda_\gamma(g) &:=& S_\gamma + \tfrac1g I_k \;\succ\; 0,
+  \Elabel{E-99A}{E99_A} \\
+\hat\alpha_\gamma(g) &:=& \Lambda_\gamma(g)^{-1}s,
+  \Elabel{E-99B}{E99_B} \\
+R_\gamma(g) &:=& c - s'\Lambda_\gamma(g)^{-1}s \;\ge\; 0.
+  \Elabel{E-100}{E100}
+\end{eqnarray}
+
+\begin{proposition}[the closed form]\label{prop:closed}
+\begin{equation}
+\Zc_i(\gamma,g) \;=\; (2\pi)^{-T/2}\,\bigl|I_k + g\,S_\gamma\bigr|^{-1/2}\,
+\frac{b_\sigma^{a_\sigma}}{\Gamma(a_\sigma)}\,
+\Gamma\Bigl(a_\sigma+\tfrac{T}{2}\Bigr)\,
+\Bigl(b_\sigma+\tfrac{R_\gamma(g)}{2}\Bigr)^{-(a_\sigma+T/2)}.
+\tag{E-101}\label{E101}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Write $\alpha$ for $\alpha_i[\gamma]$ and $\sigma^2$ for $\sigma_i^2$. The integrand
+is
+\begin{eqnarray}
+e^{\ell_i}\,\pi(\alpha\mid\sigma^2,g)\,\pi(\sigma^2) &=& (2\pi\sigma^2)^{-T/2}
+  \exp\bigl\{-\tfrac{1}{2\sigma^2}(c-2\alpha's+\alpha'S_\gamma\alpha)\bigr\}
+  \nonumber\\
+&&\times\,(2\pi g\sigma^2)^{-k/2}\exp\bigl\{-\tfrac{1}{2g\sigma^2}\alpha'\alpha\bigr\}
+  \times\tfrac{b_\sigma^{a_\sigma}}{\Gamma(a_\sigma)}(\sigma^2)^{-a_\sigma-1}
+  e^{-b_\sigma/\sigma^2}.
+  \Elabel{E-98}{E98}
+\end{eqnarray}
+\emph{Complete the square in $\alpha$.} The two exponents combine to
+$-\frac{1}{2\sigma^2}(c-2\alpha's+\alpha'\Lambda_\gamma\alpha)$, and since
+$\Lambda_\gamma\succ0$,
+$\alpha'\Lambda_\gamma\alpha-2\alpha's=(\alpha-\hat\alpha_\gamma)'\Lambda_\gamma
+(\alpha-\hat\alpha_\gamma)-s'\Lambda_\gamma^{-1}s$, leaving $R_\gamma$ of
+\eqref{E100} plus a centred quadratic. $R_\gamma\ge0$ because it equals
+$\min_\alpha\{\sum_t(y_{ti}-\alpha'z_t)^2+g^{-1}\|\alpha\|^2\}$.
+
+\emph{Integrate over $\alpha\in\mathbb{R}^k$.} The Gaussian integral gives
+$(2\pi\sigma^2)^{k/2}|\Lambda_\gamma|^{-1/2}$; multiplying by the slab normaliser
+$(2\pi g\sigma^2)^{-k/2}$ gives
+$g^{-k/2}|\Lambda_\gamma|^{-1/2}=|g\Lambda_\gamma|^{-1/2}=|I_k+gS_\gamma|^{-1/2}$.
+$\sigma^2$ \textbf{has cancelled from this factor entirely}, which is what scaling
+the slab by $\sigma^2$ bought and is why the next step is clean.
+
+\emph{Integrate over $\sigma^2$.} Substituting $w=(b_\sigma+R_\gamma/2)/\sigma^2$
+turns the remaining integral into
+$(b_\sigma+R_\gamma/2)^{-(a_\sigma+T/2)}\Gamma(a_\sigma+T/2)$, finite because
+$a_\sigma+T/2>0$ and $b_\sigma>0$. Collecting gives \eqref{E101}.
+\end{proof}
+
+In log space, which is what is implemented:
+\begin{multline}
+\log\Zc_i(\gamma,g) = -\tfrac{T}{2}\log2\pi - \tfrac12\log\bigl|I_k+gS_\gamma\bigr|
+ + a_\sigma\log b_\sigma - \log\Gamma(a_\sigma) \\
+ + \log\Gamma\bigl(a_\sigma+\tfrac{T}{2}\bigr)
+ - \bigl(a_\sigma+\tfrac{T}{2}\bigr)\log\bigl(b_\sigma+\tfrac{R_\gamma(g)}{2}\bigr).
+\tag{E-102}\label{E102}
+\end{multline}
+\textbf{Only two terms depend on the structure}: the log-determinant, which is the
+Occam factor in closed form, and $R_\gamma$, which is the fit. Everything else
+cancels from every Bayes factor, so a structure comparison at fixed $g$ costs one
+log-determinant and one quadratic form --- both delivered by
+\eqref{E30_A}--\eqref{E86}.
+
+\subsection[Reading (E-101)]{Reading \eqref{E101}: this \emph{is} the Occam factor}\label{sec:occam}
+
+Let $\mu_1\ge\dots\ge\mu_k\ge0$ be the eigenvalues of $S_\gamma$. Then
+$-\frac12\log|I_k+gS_\gamma|=-\frac12\sum_j\log(1+g\mu_j)$, so each included
+regressor contributes $-\frac12\log(1+g\mu_j)$ nats: \textbf{zero} if it carries no
+information ($\mu_j=0$), and $\approx-\frac12\log T$ once $g\mu_j\gg1$, since $\mu_j$
+grows linearly in $T$. The volume correction therefore charges each \emph{effective}
+parameter half a log of the sample size --- which is BIC's penalty, arrived at rather
+than imposed, computed per direction rather than by counting, and automatically zero
+for a direction the data does not identify. A parameter count cannot have that last
+property. It is also why no separate ``effective dimension'' question arises in v1:
+\eqref{E101} answers it direction by direction. Formally, with no hidden state there
+is no symmetry group acting on the parameters, so the round-1 rank bound holds at
+group dimension zero and
+\begin{eqnarray}
+D_{\eff} &=& D,
+  \Elabel{E-21A}{E21_A} \\
+\operatorname{rank} H_\ell(\hat\theta) &=& D \text{ generically},
+  \Elabel{E-21B}{E21_B}
+\end{eqnarray}
+with $H_\ell:=-\nabla^2\ell$ the likelihood Hessian,
+$\Lambda:=-\nabla^2\log\pi$ the prior curvature, and $H=H_\ell+\Lambda$ the posterior
+Hessian, a distinction kept explicit at every use:
+\begin{eqnarray}
+H_\ell &=& -\nabla^2\ell,
+  \Elabel{E-81A}{E81_A} \\
+\Lambda &=& -\nabla^2\log\pi,
+  \Elabel{E-81B}{E81_B} \\
+H &=& H_\ell+\Lambda \;\succ\; 0,
+  \Elabel{E-81C}{E81_C}
+\end{eqnarray}
+the positive definiteness because $H_\ell\succeq0$ (a Gram matrix over $\sigma_i^2$)
+and $\Lambda=I/(g\sigma_i^2)\succ0$. \textbf{There is no singular-Hessian failure mode
+in v1}, at any $T$, including $T<k$.
+
+\begin{remark}[the general-prior statement, and why it is not used]\label{rem:laplace}
+For a general prior the same content is Laplace's method,
+\begin{equation}
+\Zc(\Sc) \;=\; e^{\ell(\hat\theta)}\,\pi(\hat\theta\mid\Sc)\,(2\pi)^{D/2}\,
+|H|^{-1/2}\,\bigl(1+O(T^{-1})\bigr),
+\tag{E-18}\label{E18}
+\end{equation}
+\begin{equation}
+\log\Zc(\Sc) \;=\; \underbrace{\ell(\hat\theta)}_{\text{fit}} \;+\;
+\underbrace{\log\pi(\hat\theta\mid\Sc) + \tfrac{D}{2}\log2\pi
+ - \tfrac12\log|H|}_{\log\Omega(\Sc),\text{ the Occam factor}} \;+\; O(T^{-1}),
+\tag{E-19}\label{E19}
+\end{equation}
+whose second group of factors is the fraction of prior mass surviving contact with
+the data --- the Occam factor of \eqref{star} written for a general prior. That is
+what \eqref{E101} evaluates exactly. \textbf{Laplace is never invoked to compute a
+reported number in v1}; it is retained here because it is the prior-agnostic
+statement of what an Occam factor is, because the exponential-family interface of
+\S\ref{sec:obs} needs it, and because dropping its bracket is where BIC comes from ---
+and BIC would charge $\frac12\log T$ per entry and \emph{nothing} for the fact that
+the entry was chosen out of $n_i$ candidates, discarding the multiplicity mechanism
+and keeping a proxy.
+\end{remark}
+
+\subsection{The slab-scale quadrature}\label{sec:quad}
+
+$g$ must be integrated, not maximised. Writing $u=\log g$,
+\begin{equation}
+\Zc(\Sc) \;=\; \int_0^\infty\Bigl[\prod_{i=1}^{N}\Zc_i(\gamma_i,g)\Bigr]\pi(g)\,dg
+\;=\; \int_{-\infty}^{\infty} e^{\psi_\Sc(u)}\,du,
+\tag{E-103}\label{E103}
+\end{equation}
+\begin{equation}
+\psi_\Sc(u) \;=\; \sum_{i=1}^{N}\log\Zc_i(\gamma_i,e^u) \;+\; \log\pi(e^u) \;+\; u.
+\tag{E-104}\label{E104}
+\end{equation}
+One dimension, the same integral for every structure. Differentiating \eqref{E102},
+\begin{equation}
+\psi_\Sc'(u) = \sum_{i=1}^{N}\Biggl[
+\underbrace{-\tfrac12\sum_j\frac{g\mu_{ij}}{1+g\mu_{ij}}}_{\text{Occam, }\in[-k_i/2,0]}
++ \underbrace{\bigl(a_\sigma+\tfrac{T}{2}\bigr)
+  \frac{\|\hat\alpha_{\gamma_i}(g)\|^2/(2g)}{b_\sigma+R_{\gamma_i}(g)/2}}_{\text{fit gain, }\ge0}
+\Biggr] + \frac{d}{du}\bigl[\log\pi(e^u)+u\bigr],
+\tag{E-105}\label{E105}
+\end{equation}
+which is the Occam mechanism visible in one derivative: the penalty saturates at
+$k_i/2$ per equation while the gain is bought at a rate that falls as the slab
+widens, and the mode is where they balance.
+
+\begin{proposition}[the two ends]\label{prop:ends}
+\begin{enumerate}[label=(\alph*), leftmargin=2em, topsep=0pt, itemsep=0pt]
+\item $g\to0$. $\hat\alpha_\gamma\to0$, $R_\gamma\to c$, $|I+gS_\gamma|\to1$, so
+\begin{equation}
+\lim_{g\to0}\Zc_i(\gamma,g) \;=\; \Zc_i(\varnothing) \;=\;
+(2\pi)^{-T/2}\tfrac{b_\sigma^{a_\sigma}\Gamma(a_\sigma+T/2)}{\Gamma(a_\sigma)}
+\bigl(b_\sigma+\tfrac{c}{2}\bigr)^{-(a_\sigma+T/2)},
+\tag{E-106}\label{E106}
+\end{equation}
+independently of $\gamma$: the slab collapses onto the spike and every structure
+scores alike. The left tail is governed entirely by the hyperprior, so convergence
+there is equivalent to $\pi$ being proper at 0 --- which is why $\pi(g)\propto1/g$ is
+inadmissible.
+\item $g\to\infty$. $R_\gamma\to c-s'S_\gamma^{+}s$ and
+$|I+gS_\gamma|\sim g^{k^{\eff}}\prod_{\mu_j>0}\mu_j$, so
+\begin{eqnarray}
+\log\Zc_i(\gamma,g) &=& \mathit{const} - \tfrac{k_i^{\eff}}{2}u + O(e^{-u}),
+  \Elabel{E-107A}{E107_A} \\
+\psi_\Sc'(u) &\to& -\tfrac12\bigl(1+\textstyle\sum_i k_i^{\eff}\bigr),
+  \Elabel{E-107B}{E107_B}
+\end{eqnarray}
+the Lindley--Bartlett slope of Proposition \ref{prop:lb}: the right tail decays
+linearly in $u$, the more steeply the larger the structure.
+\end{enumerate}
+\end{proposition}
+
+\begin{corollary}[a structure-independent floor]\label{cor:floor}
+By (a),
+$\Zc(\Sc)\ge[\prod_i\Zc_i(\varnothing)]\Pr(g\le\epsilon)(1-o(1))$ with a bound not
+depending on $\Sc$. \textbf{No structure can score worse than the empty one by more
+than $-\log\Pr(g\le\epsilon)$.} Two consequences for the grid: the floor cannot be
+truncated away without changing Bayes factors, and it cannot be resolved by adding
+nodes, because the integrand is flat there. Include it, sample it coarsely.
+\end{corollary}
+
+\paragraph{What makes a grid adequate.} Four conditions, in order of how easily each
+is violated.
+\begin{description}[leftmargin=2.5em, labelindent=0pt, topsep=0pt, itemsep=0pt,
+  font=\normalfont]
+\item[(Q1)] \textbf{The same grid for every structure compared}, or the score is a
+  function of the grid and D-10 is violated by construction. This is the condition
+  D-24's warning is about; the cache key \eqref{E109} enforces it.
+\item[(Q2)] \textbf{Brackets every mode in the retained set}, not just the modal
+  structure's. By \eqref{E105} the mode moves with $\sum_ik_i^{\eff}$ and with the
+  signal; the bracket follows from setting $\psi'=0$ at the extreme structures.
+\item[(Q3)] \textbf{Resolves the curvature.} The Occam term's second derivative is
+  at most $\frac18\sum_ik_i$ in magnitude, so the peak half-width in $u$ is
+  $\Omega((\sum_ik_i)^{-1/2})$ --- narrower for larger structures, but only as a
+  square root. Gauss--Legendre with $n_Q$ nodes on a bracket of width $W$ resolves
+  features of scale $W/n_Q$, so a fixed wide bracket at $N=50$, $k_i\approx7$,
+  $W\approx20$ needs $n_Q\approx370$, and a bracket centred adaptively on the mode
+  needs far fewer. The implementation must report which it did and the achieved
+  accuracy; the previous draft quoted $n_Q=32$ in a cost claim and $\gtrsim370$ here
+  without reconciling them.
+\item[(Q4)] \textbf{Truncation error bounded, in nats, and reported.}
+\begin{equation}
+\Delta_{\text{trunc}} \;\le\; \Pr\bigl(g\le e^{u_{\min}}\bigr) \;+\;
+\frac{\exp\{\psi_\Sc(u_{\max})\}}{\frac12\bigl(1+\sum_ik_i^{\eff}\bigr)},
+\tag{E-108}\label{E108}
+\end{equation}
+  the first term from Corollary \ref{cor:floor} and the second by integrating the
+  linear tail of \eqref{E107_A}. \textbf{This must be at most $\Delta_{\text{trunc}}$
+  of} \eqref{E137_C}, and doubling $n_Q$ must change every reported $\log\Zc$ by less
+  than that. A grid chosen until the results looked right is a tuning constant by
+  another route.
+\end{description}
+
+\paragraph{The cache.} The nodes are fixed once. Each $\log\Zc_i(\gamma_i,e^{u_q})$
+depends only on $(\gamma_i,c_i,s_i,S_{zz},T)$, so the key is
+\begin{equation}
+\text{key} \;=\; (i,\;\gamma_i,\;q),
+\tag{E-109}\label{E109}
+\end{equation}
+and a move that changes $\gamma_i$ alone invalidates $n_Q$ entries for one $i$ and
+none for the other $N-1$.
+
+
+\section{When does an entry get switched on?}\label{sec:inclusion}
+
+Everything so far assembles into one number per candidate move. This section
+computes it.
+
+The model-comparison machinery is three lines, and every other section either
+evaluates $\Zc$ or specifies $\pi$:
+\begin{equation}
+\pi(y,\theta\mid\Sc) \;=\; f(y\mid\theta,\Sc)\,\pi(\theta\mid\Sc),
+\tag{E-14}\label{E14}
+\end{equation}
+\begin{equation}
+\Zc(\Sc) \;=\; \int_{\Theta_\Sc} f(y\mid\theta,\Sc)\,\pi(\theta\mid\Sc)\,d\theta,
+\tag{E-15}\label{E15}
+\end{equation}
+\begin{equation}
+\pi(\Sc\mid y) \;=\; \frac{\pi(\Sc)\,\Zc(\Sc)}{\sum_{\Sc'}\pi(\Sc')\,\Zc(\Sc')},
+\tag{E-16}\label{E16}
+\end{equation}
+with $y$ everywhere abbreviating $y_{1:T}$ conditional on $y_{1-p_{\max}:0}$
+(Assumption \ref{ass:cond}). Both \eqref{E15} and \eqref{E16} require Assumption
+\ref{ass:proper}; \eqref{E16} additionally requires the candidate set to be a set,
+which is what \eqref{E97_A} supplies. Writing
+\begin{eqnarray}
+\operatorname{score}(\Sc) &=& \log\pi(\Sc)+\log\Zc(\Sc),
+  \Elabel{E-24A}{E24_A} \\
+\pi(\Sc\mid y) &\propto& e^{\operatorname{score}(\Sc)}.
+  \Elabel{E-24B}{E24_B}
+\end{eqnarray}
+\textbf{Both terms carry complexity control and they do different jobs}:
+$\log\pi(\Sc)$ supplies the \emph{multiplicity} correction --- how many structures of
+a given size exist --- and the Occam factor inside $\log\Zc$ supplies the
+\emph{volume} correction --- how much prior mass a structure's continuous parameters
+waste. A derivation carrying one and not the other is wrong in a way invisible at
+fixed $k$ and fatal across $k$, which is the only comparison this project makes.
+\S\ref{sec:degen}(D-d) exhibits a case where the two disagree, which is the cleanest
+demonstration that both are needed.
+
+Let $\tilde\mu_j:=S_{jj}-S_{j\gamma}\Lambda_\gamma^{-1}S_{\gamma j}$ be the residual
+information in candidate $j$ after the included regressors, $\hat\beta_j$ its partial
+regression coefficient, and
+\begin{equation}
+z_j^2 \;:=\; \frac{\tilde\mu_j\,\hat\beta_j^2}{\sigma_i^2}
+\tag{E-118}\label{E118}
+\end{equation}
+the squared partial $t$-statistic.
+
+\begin{proposition}[the inclusion rule]\label{prop:incl}
+The change in \eqref{E24_A} on adding entry $j$ to equation $i$ is
+\begin{equation}
+\Delta_j \;=\; \underbrace{-\tfrac12\log\bigl(1+g\tilde\mu_j\bigr)}_{\textit{Occam (volume)}}
+\;+\; \underbrace{\tfrac12\,\frac{g\tilde\mu_j}{1+g\tilde\mu_j}\,z_j^2}_{\textit{fit}}
+\;+\; \underbrace{\Delta_\pi(k_i)}_{\textit{multiplicity}, \text{ \eqref{E113}}},
+\tag{E-119}\label{E119}
+\end{equation}
+so in the regime $g\tilde\mu_j\gg1$ the entry is included exactly when
+\begin{equation}
+\tcboxmath{ \begin{array}[t]{c}
+z_j^2 \;>\; \tau \;:=\; \log\bigl(g\tilde\mu_j\bigr) + 2\log\dfrac{n_i-k_i}{k_i+1}
+\;\approx\; \log T + 2\log\dfrac{n_i-k_i}{k_i+1} + O(1).
+\end{array}}
+\tag{E-120}\label{E120}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The determinant term of \eqref{E102} changes by $-\frac12\log(1+g\tilde\mu_j)$,
+since $\tilde\mu_j$ is exactly the Schur complement in the bordered determinant. The
+residual term changes by \eqref{E86}: $R$ falls by
+$\tilde\mu_j\hat\beta_j^2\cdot g\tilde\mu_j/(1+g\tilde\mu_j)$, which divided by
+$2\sigma_i^2$ and multiplied by the prefactor
+$(a_\sigma+T/2)/(b_\sigma+R/2)\to1/\sigma_i^2$ gives the fit term. The prior term is
+\eqref{E113}. Setting $\Delta_j>0$ and using $g\tilde\mu_j/(1+g\tilde\mu_j)\to1$
+gives $z_j^2>\log(1+g\tilde\mu_j)-2\Delta_\pi(k_i)$, and $\tilde\mu_j=\Theta(T)$.
+\end{proof}
+
+\begin{recordbox}
+\textbf{Correction, objection O-004.} The previous draft wrote the second term of
+\eqref{E120} as $2\log n_i$ --- that is, evaluated it at $k_i=0$ --- and computed
+every downstream number from that form, while the structure it was describing carries
+$k_i\approx7$. The approximation $k\ll n$ licenses dropping $k$ from $n-k$; it does
+\textbf{not} license dropping $k+1$ from the denominator. At $n_i=50$, $k_i=7$ the
+difference is $2\log8=4.16$ nats, and $\tau$ is exponentiated in a tail probability,
+so the error is a factor of $e^{2.08}\approx8$ in every false-positive count. Every
+dependent number in \S\ref{sec:predict} has been recomputed.
+\end{recordbox}
+
+\noindent Two readings of \eqref{E120}, both consequences.
+\begin{enumerate}[label=(\alph*), topsep=0pt, itemsep=0pt]
+\item \textbf{The threshold rises with the number of candidates and with the sample
+  size, and falls as the structure fills up.} The $\log T$ is the volume correction;
+  the $2\log((n_i-k_i)/(k_i+1))$ is the multiplicity correction. The second is the
+  one that makes the method scale: doubling $N$ at fixed $T$ raises the bar
+  automatically, with nothing set by hand.
+\item \textbf{It contains no reference to \emph{which} entry $j$ is.} The threshold
+  for the entry linking coordinate 3 to coordinate 47 is the threshold for the entry
+  linking coordinate 3 to coordinate 4. That is the boxed property of page one,
+  appearing where it matters.
+\end{enumerate}
+
+
+\docpart{Part B --- The worked example}
+
+\section{Benchmark B1}\label{sec:bench}
+
+Benchmark B1 (\texttt{workflow/benchmark.md}) is a VAR(1) and belongs here unchanged.
+It is deliberately non-economic and small enough to print in full. \textbf{This
+section derives what the machinery predicts before the run; agent 3 runs it.}
+
+\subsection{The generator}\label{sec:gen}
+
+$N=50$ coordinates arranged in ten groups of five; $p=1$;
+$A_1\in\mathbb{R}^{50\times50}$ with $n=2500$ candidate entries. Ten dense $5\times5$
+diagonal blocks (250 entries) with block spectral radius 0.7; a coupling budget of
+$C=100$ entries confined to ten off-diagonal block positions on a directed cycle
+$1\to2\to\dots\to10\to1$; $\rho(A_1)$ rescaled after assembly. Total 350 non-zeros
+of 2500 --- 14\% density, about seven per equation. $\Sigma$ diagonal; $x_0$ from the
+stationary distribution. The generator produces the \emph{differences} as the VAR and
+cumulates to levels, so that the pipeline's $d=1$ is correct pre-processing --- which
+by Corollary \ref{cor:overdiff} is not a nicety but the condition under which B1 is
+inside the model class at all.
+
+\begin{recordbox}
+\textbf{What B1 is and is not for.} The generator's truth happens to be clustered.
+\textbf{The model cannot see that and is not being asked to exploit it.} B1-C
+(clustered) and B1-S (the same coupling budget scattered at random) are co-equal
+headline cases, and the required result is that the method recovers whatever is there
+in \emph{both} --- approximately block-structured from clustered data, scattered from
+scattered data. A method that reported block structure on B1-S would have an
+assumption baked in; that failure mode is what B1-S exists to expose, and with the
+partition model deleted there is no longer any mechanism by which it could occur.
+B1-C is therefore an illustration that parsimony may land on something block-like,
+\emph{not} a target to reproduce.
+\end{recordbox}
+
+\subsection{What the machinery predicts}\label{sec:predict}
+
+By \eqref{E121_A} below a true entry with population partial signal-to-noise ratio
+$\eta_j$ (so that $\E[z_j^2]\approx T\eta_j$) is detected once
+\begin{eqnarray}
+T\eta_j &\gtrsim& \tau, \quad\text{equivalently}
+  \Elabel{E-121A}{E121_A} \\
+T &\gtrsim& \tau/\eta_j,
+  \Elabel{E-121B}{E121_B} \\
+\tau &=& \log T + 2\log\frac{n_i-\bar k}{\bar k+1},
+  \Elabel{E-121C}{E121_C}
+\end{eqnarray}
+and for a \emph{null} entry $z_j^2\sim\chi^2_1$, so the expected count of spurious
+links per equation at threshold $\tau$ is
+\begin{equation}
+\E[\text{FP per equation}] \;\approx\; n_i\Pr(\chi^2_1>\tau) \;\approx\;
+n_i\sqrt{\tfrac{2}{\pi\tau}}\;e^{-\tau/2} \;=\;
+n_i\sqrt{\tfrac{2}{\pi\tau}}\;\frac{\bar k+1}{(n_i-\bar k)\sqrt{T}}.
+\tag{E-122}\label{E122}
+\end{equation}
+
+\begin{corollary}[the headline prediction, corrected]\label{cor:headline}
+Summing \eqref{E122} over the $N$ equations and using $n_i/(n_i-\bar k)\to1$,
+\begin{equation}
+\tcboxmath{ \begin{array}[t]{c}
+\E[\text{FP total}] \;\approx\; N\,(\bar k+1)\,\sqrt{\dfrac{2}{\pi\tau}}\;
+\dfrac{1}{\sqrt{T}}
+\end{array}}
+\tag{E-133}\label{E133}
+\end{equation}
+--- \textbf{in which the number of candidate entries $n_i$ has cancelled}: the
+multiplicity correction raises the threshold by precisely enough to absorb it. The
+expected number of spurious links does not depend on how many entries were on offer.
+\end{corollary}
+
+\subsection[Not parameter-free]{This prediction is not parameter-free, and it was described as if it
+were}\label{sec:notfree}
+
+\begin{recordbox}
+\textbf{The cancellation of $n_i$ is real and it is the cleanest available statement
+of what this method buys. The claim that \eqref{E133} is ``a prediction with no free
+parameter in it'' is false and is withdrawn.} What survives the cancellation is
+$N(\bar k+1)$, and $\bar k$ --- the mean number of entries retained per equation ---
+is an \emph{output of the fit}, not a property of the design. \eqref{E133} is
+therefore a prediction \emph{conditional on the reported sparsity}: it says that once
+the method has told you it retained $\bar k$ entries per equation, you may predict
+how many of them are spurious, and you may check that prediction against the sweep.
+That is still falsifiable and still useful, but it is a self-consistency statement
+rather than an a-priori one, and the difference matters because the supervisor told
+Ben it was parameter-free and that was wrong.
+\end{recordbox}
+
+Table \ref{tab:b1} evaluates \eqref{E121_A}--\eqref{E133} at $\bar k=7$, $n_i=50$,
+$N=50$. The last column prints the same quantity under a single \emph{global}
+inclusion rate over all $n=N^2p=2500$ candidates, so that the size of the W-1 ruling
+is visible: it is a factor of about $N$.
+
+\begin{table}[ht]
+\caption{What B1 predicts. $\tau$ from \eqref{E121_C}; $\eta$ needed is
+$\tau/(\text{usable})$; FP columns from \eqref{E133}. \textbf{All values carry
+$\bar k=7$.}}\label{tab:b1}
+\centering
+\small
+\begin{tabular}{rrrrrrl}
+\toprule
+$T$ & usable & $\tau$ & $\eta_j$ needed & $\E$[FP]/eq. & $\E$[FP] total &
+  (global rate) \\
+\midrule
+20   & 18   & 6.36  & 0.353   & 0.658  & 32.9 & 0.376 \\
+50   & 48   & 7.28  & 0.152   & 0.389  & 19.5 & 0.231 \\
+100  & 98   & 7.97  & 0.0813  & 0.263  & 13.1 & 0.160 \\
+200  & 198  & 8.66  & 0.0437  & 0.178  & \textbf{8.92} & \textbf{0.110} \\
+500  & 498  & 9.58  & 0.0192  & 0.107  & 5.36 & 0.068 \\
+1000 & 998  & 10.27 & 0.0103  & 0.0732 & 3.66 & 0.047 \\
+2000 & 1998 & 10.96 & 0.00549 & 0.0501 & 2.51 & 0.033 \\
+5000 & 4998 & 11.88 & 0.00238 & 0.0305 & 1.52 & 0.020 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Read the two ends against each other.} At $T=20$ an entry needs
+$\eta_j\gtrsim0.35$, which almost no entry of a 14\%-dense matrix with $\rho(A)=0.7$
+will have: \emph{predicted, a nearly empty matrix}, which is the correct answer at
+that sample size. The failure to watch for is a confident report of many links. At
+$T=5000$ an entry needs only $\eta_j\gtrsim0.0024$, so essentially every true entry
+is found while \eqref{E133} predicts about 1.5 spurious links across the whole
+$50\times50$ matrix: \emph{predicted, the count plateaus at $\approx350$ and does not
+climb toward 2500.} \textbf{A method that recovers the truth at $T=200$ and reports
+550 links at $T=5000$ has a broken multiplicity correction, and \eqref{E133} is the
+number to check it against.} The $T^{-1/2}$ decay is itself the test: the threshold
+rises like $\log T$ while the null distribution does not move.
+
+\paragraph{Two caveats on the table, stated rather than buried.} At $T=20$ the usable
+sample is 18 against $n_i=50$ candidates, so most structures in the space have
+$k_i>T$; \eqref{E128} keeps the marginal likelihood finite there, but the $\chi^2_1$
+approximation behind \eqref{E122} is not reliable and the entry `32.9' should be read
+as ``tens, not units'' rather than as a number. And the coupling entries' magnitudes
+are not pinned by \texttt{benchmark.md}: since $\eta_j\propto a_{ij}^2$, the $T$ at
+which the inter-group coupling becomes detectable is a free choice of whoever writes
+the generator. At a coupling magnitude of 0.1 the implied detection $T$ is of order
+$10^3$, several times the charter's target. \textbf{\texttt{benchmark.md} needs a
+magnitude rule before the sweep is run}, and item (G) below is how it gets checked.
+
+\subsection[Format for the generating parameters]{The appendix format for the generating parameters}\label{sec:appfmt}
+
+Fixed here so that agent 3 and agent 5 agree in advance; produced \emph{by running
+the generator}, so the printed numbers and the numbers used are the same by
+construction. (A) ten within-group blocks, one $5\times5$ table each, six significant
+figures, each with its own $\rho$ before global rescaling. (B) coupling entries as
+$(i,j,\text{value})$ triples grouped by block-edge, with a count per edge and a total
+equal to $C=100$. (C) $\rho(A_1)$ before and after rescaling, and the factor. (D)
+$\Sigma$, $\sigma_0$, and $\sigma_0/(\text{stationary s.d.})$. (E) RNG seed and
+generator version, verbatim. (F) the $10\times10$ block-level occupancy matrix with
+the strong-connectivity check and its result. \textbf{(G) the derived quantities this
+document predicts} --- per-entry $\eta_j$ as a histogram \emph{split by within-block
+and coupling}, the implied detection $T$ per entry, and the predicted $\E$[FP] at
+each $T$ in the sweep.
+
+Item (G) is this document's one addition to \texttt{benchmark.md} \S6, and it is what
+lets the run \emph{refute} \S\ref{sec:predict} rather than merely report numbers.
+
+
+\docpart{Part C --- General lag order, and the rest of the machinery}
+
+\section{General lag order}\label{sec:lag}
+
+\subsection{What changes, and what does not}
+
+Exactly three things change, and all three are dimension bookkeeping. The regressor
+vector lengthens to $z_t\in\mathbb{R}^{1+Np}$ by \eqref{E134_A}, so $S_{zz}$ is
+$(1+Np)\times(1+Np)$ and $n_i=Np$. The parameter count grows to $D=N^2p+2N$, so each
+additional lag costs $N^2$ parameters --- \textbf{not one}, which is the intuition a
+reader arrives with from univariate Box--Jenkins. And the conditioning set lengthens,
+with $p_{\max}$ fixed before fitting (Assumption \ref{ass:cond}).
+
+Everything else is unchanged, for a structural reason rather than a list of
+coincidences: \textbf{from \eqref{E134_A} onward, $p$ enters only through the length of
+$z_t$.}
+
+\begin{proposition}[the $p=1$ results generalise by substitution]\label{prop:subst}
+With $z_t\in\mathbb{R}^{1+Np}$: \eqref{E26_A}--\eqref{E27} and Proposition
+\ref{prop:suff} hold verbatim, sufficiency being a statement about the regression
+form and indifferent to how $z_t$ was assembled; \eqref{E28_A}--\eqref{E30_C} and
+Propositions \ref{prop:flip} hold verbatim, the decoupling using only diagonality of
+$\Sigma$ and the bordering using only $\Lambda_\gamma\succ0$; Proposition
+\ref{prop:closed} and \eqref{E101}--\eqref{E102} hold verbatim, their proof never
+using $\dim z_t$; \S\ref{sec:quad} holds verbatim, $p$ entering only through
+$k_i^{\eff}$; and \S\ref{sec:rate} holds with $n_i=Np$, so \textbf{the multiplicity
+correction tightens with $p$ automatically, by $\log p$ nats per entry}.
+\end{proposition}
+
+\begin{proof}
+Each clause is the observation that the cited proof refers to $z_t$ only through its
+dimension and to $\bbA$ only through its row count. The last needs one line:
+$\Delta_\pi\approx-\log n_i=-\log(Np)=-\log N-\log p$.
+\end{proof}
+
+The one place $p$ does more than lengthen a vector is collinearity: the columns of
+$z_t$ at different lags are lagged copies of one another and are correlated by
+construction, so the near-collinear regime is \emph{more} likely at $p=2$ than at
+$p=1$. That is why \S\ref{sec:cond} is written as a diagnostic to be run rather than a
+caveat to be noted.
+
+\paragraph{Comparability.} \emph{Across $p$: comparable.} Every candidate is a
+density for the same $y_{1:T}$ given the same conditioning set; a candidate with
+$p<p_{\max}$ simply does not use the earlier pre-sample values, and $\pi(p)$ of
+\eqref{E97_A} makes the posterior proper. \emph{Across $d$: not comparable} (D-05):
+different differencing orders are models for different data, and the missing
+Jacobian and effective-sample correction are not supplied here. \S\ref{sec:cannot}
+is where that bites.
+
+\subsection[The lag ceiling is advice]{The reported lag ceiling is advice, not a cap}\label{sec:ceiling}
+
+D-23 requires that the practical limit on $p$ be shown to be a property of the data
+volume and not of the theory. The program therefore computes and prints
+\begin{eqnarray}
+p^*(N,T;\varepsilon) &=& \max\Bigl\{\,p\in\mathbb{N} \;:\;
+  \frac{N\,p}{T-p} \;\le\; \bigl(1-\sqrt{\varepsilon}\bigr)^2\Bigr\},
+  \Elabel{E-124A}{E124_A} \\
+\varepsilon &=& \tfrac14\text{ by default},
+  \Elabel{E-124B}{E124_B}
+\end{eqnarray}
+from a Marchenko--Pastur aspect-ratio condition: at full inclusion the smallest
+eigenvalue of $S_\gamma$ is $\approx(T-p)(1-\sqrt{c})^2$ with $c=n_i/(T-p)$, and
+requiring the smallest direction to retain a fraction $\varepsilon$ of the average
+information gives $c\le(1-\sqrt{\varepsilon})^2$. Alongside it the program prints the
+search-space size
+\begin{equation}
+\log_2\bigl|\{\text{structures}\}\bigr| \;=\; N^2p\text{ bits},
+\tag{E-125}\label{E125}
+\end{equation}
+so the user can see what the restart budget is being asked to cover.
+
+\begin{recordbox}
+\textbf{Correction, objection O-003.} The previous draft set $p_{\max}=p^*$. Since
+$p_{\max}$ fixes the conditioning set and the effective sample, that made the
+reporting convention $\varepsilon$ change \emph{every} marginal likelihood in the
+document, while the text asserted it changed none. Here $p_{\max}$ is
+\textbf{declared} (\S\ref{sec:constants}) and $p^*$ is \textbf{advisory}: it enters
+no score and no normaliser. It tells the user where the posterior over structures is
+becoming too diffuse to read, which is a different statement from where the model
+breaks.
+\end{recordbox}
+
+Worked values, so a reader with more data can compute their own: $N=40,T=200$ gives
+$p^*=1$ at $\varepsilon=\frac14$ and 2 at $\varepsilon=\frac1{16}$; $N=50,T=200$
+gives 0 and 2; $N=50,T=5000$ gives 24 and 55; $N=6,T=20000$ gives 800 and 1714; and
+$N=1,T=200$ gives 40 and 72.
+
+Three observations. The last row shows the criterion \emph{recovering univariate
+practice}: at $N=1$, \eqref{E124_A} reduces to $p\le T/5$, which is why Box--Jenkins
+runs $p=3$ or 4 without a second thought and why that intuition does not survive
+multiplication by $N$. Second, \textbf{at $\varepsilon=\frac14$ neither the charter's
+target configuration nor the benchmark's clears the range it is specified at}, and I
+report the disagreement rather than back-solve for the $\varepsilon$ that would
+remove it. Third, the criterion is deliberately pessimistic because the search never
+forms the full $Np\times Np$ system --- it works at $|\gamma_i|\approx7$, where the
+aspect ratio is $7/198$ and the design is comfortable at any $\varepsilon$. The
+resolution recommended is to report both: \eqref{E124_A} as the pre-fit advisory range
+and the post-fit aspect ratio $\bar k/(T-p)$ alongside the structure. Both are
+reports, so D-10 is untouched either way.
+
+\subsection{Instantiation at $N=2$, $p=2$}\label{sec:inst}
+
+\textbf{Nothing has ever been checked at $p=2$ anywhere in this project}, and the
+whole operating range is $p\in\{1,2\}$. At $N=2$, $p=2$, $T=3$, with symbolic
+$y_{-1},y_0,y_1,y_2,y_3\in\mathbb{R}^2$ and $z_t=(1,y_{t-1}',y_{t-2}')'$,
+\begin{eqnarray}
+S_{zz} &=& \sum_{t=1}^{3} z_t z_t',
+  \Elabel{E-123A}{E123_A} \\
+S_{xz} &=& \sum_{t=1}^{3} y_t z_t',
+  \Elabel{E-123B}{E123_B} \\
+S_{xx} &=& \sum_{t=1}^{3} y_t y_t'.
+  \Elabel{E-123C}{E123_C}
+\end{eqnarray}
+Note the structure a $p=1$ check cannot exhibit: $S_{zz}$ has \emph{repeated blocks},
+because the same observations appear at two lags. That is the algebraic source of lag
+collinearity and it is invisible at $p=1$. The checks, in priority order:
+\eqref{E27} with a \textbf{full symmetric} $\Sigma$, then \eqref{E28_A} under imposed
+diagonality; \eqref{E101} at $\gamma_i$ containing one regressor from each lag,
+against the direct double integral \eqref{E98}; \eqref{E30_A} and \eqref{E86} for a move
+across a lag boundary; and \eqref{E119}'s Schur complement when $j$ is a lag-2
+regressor and $\gamma$ already contains its lag-1 counterpart --- the place lag
+collinearity first shows in the score, and it has never been computed.
+
+
+\section{Search}\label{sec:search}
+
+The score, instantiated, is
+\begin{equation}
+\operatorname{score}(\Sc) = \underbrace{\log\pi(p)}_{\text{\eqref{E97_A}}}
++ \underbrace{\sum_{i=1}^{N}\log\frac{B(a+k_i,\;b+n_i-k_i)}{B(a,b)}}_{\text{\eqref{E135}}}
++ \underbrace{\log\int_{-\infty}^{\infty}e^{\psi_\Sc(u)}\,du}_{\text{\eqref{E103}, fixed grid}}.
+\tag{E-126}\label{E126}
+\end{equation}
+\textbf{No other term exists.} A reviewer auditing for D-10 violations checks that
+\eqref{E126} is the only quantity ever compared, anywhere.
+
+\paragraph{Moves.} Add $j$ to $\gamma_i$; delete $j$ from $\gamma_i$; swap
+$j\to j'$ within $\gamma_i$. All cost $O(k_i^2)$ per quadrature node by Proposition
+\ref{prop:flip}. Index 0, the intercept, is never a move.
+
+\paragraph{What is held.} For each retained $(i,q)$: the Cholesky factor of
+$S_{\gamma_i}+e^{-u_q}I$, updated by \eqref{E30_A}; the running scalar
+$s_i[\gamma_i]'\Lambda^{-1}s_i[\gamma_i]$, updated by \eqref{E86}; and the counts
+$k_i$, consumed by \eqref{E113} in $O(1)$. The outer integral is then re-evaluated by
+summing $n_Q$ cached per-equation values, or $O(n_Q)$ if the sum
+$\sum_i\log\Zc_i(\gamma_i,e^{u_q})$ is itself kept running. \textbf{That is the
+entire cost of the one remaining coupling between equations: one running sum per
+node.}
+
+\paragraph{Stopping and reporting.} Sweep all single-flip neighbours of every
+equation, accept the best improving move, stop when a full sweep yields no move worth
+more than $\epsilon_{\text{stop}}$ nats \eqref{E137_B}. Restart $n_{\text{restart}}$
+times from structures drawn from the prior \eqref{E135}, seeded deterministically.
+Retain the best $n_{\text{keep}}$ distinct structures over all restarts and all
+$p\le p_{\max}$; reported quantities are computed by normalising \eqref{E16} over the
+retained set.
+
+\begin{recordbox}
+\textbf{Self-flagged weakness (W-4, rank 4).} Normalising over the retained set
+approximates normalising over all structures and the error is not bounded here. A
+proper $\pi(p)$ makes the \emph{idealised} posterior exist; it does not make the
+\emph{computed} one budget-independent. The cheap honest mitigation is to report the
+total retained mass against the same quantity at half the restart budget: if the two
+differ materially the search has not converged and the posterior should not be
+quoted. That is a report, not a score.
+\end{recordbox}
+
+
+\section{Degenerate cases}\label{sec:degen}
+
+\begin{description}[style=nextline, leftmargin=2em, topsep=0pt]
+\item[(D-a) An all-zero row, $\gamma_i=\{0\}$.]
+  Coordinate $i$ has no incoming links. Then $k_i=0$, and \eqref{E101} gives
+\begin{equation}
+\Zc_i(\{0\}) = (2\pi)^{-T/2}\tfrac{b_\sigma^{a_\sigma}\Gamma(a_\sigma+T/2)}{\Gamma(a_\sigma)}
+\bigl(b_\sigma+\tfrac{R_{\{0\}}}{2}\bigr)^{-(a_\sigma+T/2)}.
+\tag{E-127}\label{E127}
+\end{equation}
+  \textbf{This is a perfectly well-defined model} --- coordinate $i$ is i.i.d.\ noise
+  about its own drift --- and it is the correct answer at $T=20$. No special case is
+  needed in the code: the empty structure is a structure. It is also the $p=0$ model
+  of \S\ref{sec:red2}.
+
+\item[(D-b) An all-zero column.]
+  Coordinate $j$ appears in no equation's $\gamma_i$: it is not Granger-causal for
+  anything at the retained structure. This is \emph{not} a degeneracy of any single
+  equation --- every $\Zc_i$ is regular --- but it does mean row sparsity and column
+  sparsity are different summaries and both must be printed, since an analyst reading
+  only row counts will not see it. At $p\ge2$, ``no outgoing links'' must mean all
+  $p$ of them.
+
+\item[(D-c) $T$ small relative to $k$.]
+  If $k_i\ge T$ then $S_\gamma$ is singular and the \emph{likelihood} is unbounded as
+  $\sigma_i^2\to0$. At $N=40$, $p=2$, $T=20$ that is most structures in the space. It
+  costs nothing:
+
+  \begin{proposition}[the marginal likelihood is finite regardless]\label{prop:finite}
+  For every $\gamma$, every $g>0$ and every $T\ge1$,
+  \begin{equation}
+  \Zc_i(\gamma,g) \;\le\; (2\pi)^{-T/2}\,
+  \frac{b_\sigma^{a_\sigma}\Gamma(a_\sigma+T/2)}{\Gamma(a_\sigma)}\,
+  b_\sigma^{-(a_\sigma+T/2)},
+  \tag{E-128}\label{E128}
+  \end{equation}
+  uniformly over $\gamma$ and $g$.
+  \end{proposition}
+
+  \begin{proof}
+  $\Lambda_\gamma\succ0$ for every $g>0$ regardless of $\operatorname{rank}S_\gamma$,
+  so $R_\gamma\ge0$; $|I_k+gS_\gamma|\ge1$ since $gS_\gamma\succeq0$; and
+  $b_\sigma+R_\gamma/2\ge b_\sigma>0$. Substituting into \eqref{E101} gives
+  \eqref{E128}.
+  \end{proof}
+
+  The objection this answers predicted that at $T=20$ the score would be a function
+  of the hyperparameter $b_\sigma$ rather than of the data. \textbf{That prediction
+  assumed Laplace.} v1 computes \eqref{E101} exactly and never evaluates the
+  likelihood at a maximiser, so what enters the score is $R_\gamma$, an integrated
+  quantity bounded between 0 and $c_i$.
+
+\item[(D-d) Duplicate or collinear regressors.]
+  Suppose $z_{tj}=z_{tj'}$ for all $t$. Then
+  $\Zc_i(\gamma\cup\{j\},g)=\Zc_i(\gamma\cup\{j'\},g)$ exactly: the posterior over
+  structures has an exact two-fold symmetry, the modal structure is not unique, and
+  \textbf{reporting the mode alone is misleading} --- marginal inclusion
+  probabilities split evenly and are the honest summary. Including \emph{both} adds a
+  null direction, so
+\begin{equation}
+\log\frac{\Zc_i(\gamma\cup\{j,j'\},g)}{\Zc_i(\gamma\cup\{j\},g)} \;=\;
+-\tfrac12\log(1+g\cdot0) \;+\; 0 \;=\; 0:
+\tag{E-129}\label{E129}
+\end{equation}
+  the likelihood side is \emph{exactly} indifferent, and the only thing separating
+  them is the multiplicity term $\approx-\log n_i$. This is the cleanest
+  demonstration in the document that the two complexity mechanisms do different jobs
+  --- the volume correction charges nothing for a redundant parameter, correctly,
+  since it costs no effective dimension; the multiplicity correction charges
+  $\log n_i$, also correctly, since a redundant entry is still a claim about the
+  structure. A derivation carrying only the first would include duplicates for free.
+
+\item[(D-e) $T\le p_{\max}$.]
+  No complete $(y_t,z_t)$ pairs; \eqref{E101} returns the prior predictive. Well
+  defined and useless: the program must refuse, and the declaration requires
+  $T\ge p_{\max}+2$.
+
+\item[(D-f) A constant coordinate.]
+  A coordinate identically zero after differencing gives $c_i=0$, so \eqref{E101}
+  attains the bound \eqref{E128}: finite but degenerate. Detect at declaration and
+  refuse. \textbf{This is the case AUTOCLASS's per-attribute \texttt{error} absorbs
+  and we cannot} (Remark \ref{rem:autoclass}); refusing is the price of taking no
+  scale from the user.
+\end{description}
+
+
+\section{Reductions}\label{sec:red}
+
+Charter \S7 makes reductions a gate condition. The first two are anchors: they show
+the model class contains the right textbook cases. \textbf{Neither is a correctness
+test}, because both are evaluated where every mechanism this project exists to
+exercise is switched off. \S\ref{sec:red3} is the one with teeth and it is new.
+
+\subsection{All entries on $\Rightarrow$ the conjugate Bayesian VAR}
+
+\begin{proposition}[reduction 1]\label{prop:red1}
+At $\gamma_i=\{0,1,\dots,Np\}$ for every $i$ and conditional on $g$,
+\begin{equation}
+\Zc(\Sc_{\text{full}},g) = \prod_{i=1}^{N}(2\pi)^{-T/2}\bigl|I+gS_{zz}\bigr|^{-1/2}
+\frac{b_\sigma^{a_\sigma}\Gamma(a_\sigma+\frac{T}{2})}{\Gamma(a_\sigma)}
+\Bigl(b_\sigma+\tfrac{R_i}{2}\Bigr)^{-(a_\sigma+\frac{T}{2})},
+\tag{E-130}\label{E130}
+\end{equation}
+$R_i=c_i-s_i'(S_{zz}+g^{-1}I)^{-1}s_i$: exactly the conjugate Bayesian VAR with
+independent Normal--inverse-Gamma priors per equation, diagonal $\Sigma$, and prior
+coefficient covariance $g\sigma_i^2I$ --- the standard closed form, carrying the
+$g$-dependence that the standard treatment omits by fixing it.
+\end{proposition}
+
+\begin{proof}
+Immediate from Proposition \ref{prop:closed}, since at full inclusion \eqref{E29_A}
+equals \eqref{E28_A}.
+\end{proof}
+
+\subsection{$p=0$ $\Rightarrow$ AUTOCLASS's single-class real model}\label{sec:red2}
+
+At $p=0$, $z_t$ is the constant alone, so every $\gamma_i=\{0\}$ and
+\begin{equation}
+\Zc(\Sc_{p=0}) = \prod_{i=1}^{N}\iint\prod_t\mathcal{N}(y_{ti};m_i,\sigma_i^2)\,
+\mathcal{N}(m_i;0,g\sigma_i^2)\,\operatorname{InvGamma}(\sigma_i^2;a_\sigma,b_\sigma)
+\,dm_i\,d\sigma_i^2,
+\tag{E-131}\label{E131}
+\end{equation}
+$N$ independent Normal--inverse-Gamma models, one per coordinate, with a free mean.
+With the intercept of \eqref{E134_A} now in the model this is
+\begin{equation}
+y_{ti}\sim\mathcal{N}(m_i,\sigma_i^2),
+\tag{E-132}\label{E132}
+\end{equation}
+with $m_i$ free, which is \textbf{exactly} AUTOCLASS's single-class real-valued model
+(\texttt{single\_normal\_cn}). The previous draft, having no intercept, reduced
+instead to that model with its mean pinned at zero, and had to record the mismatch.
+One further difference remains and is a repair rather than a discrepancy: AUTOCLASS's
+prior on the mean is flat and made normalisable by cutting it off at data-derived
+limits, which its own authors call cheating (\texttt{tr-fia-90-12-7-01} \S4.2,
+\emph{``in order to make it normalizable we must cheat and use information from the
+data''}). Ours is proper and its scale is integrated out.
+
+\subsection[Reduction 3: sixteen structures]{Reduction 3: sixteen structures, brute force, everything at
+once}\label{sec:red3}
+
+\begin{recordbox}
+\textbf{Why this exists.} Reduction 1 holds $g$ fixed at full inclusion: the
+structure prior is a single number compared with nothing, $\Delta_\pi$ is never
+exercised, no structure move happens, the quadrature is bypassed, and the Occam
+factor is evaluated at one point. Reduction 2 has no $g$, no $\gamma$ and no
+quadrature at all. Between them they test \eqref{E101} at a single structure --- the
+same object the $N=1,k=1,T=2$ fixed-dimension check already tests. \textbf{They
+cannot catch} a sign error in \eqref{E113}, the wrong $n_i$ in the multiplicity term,
+a quadrature that truncates a structure-dependent tail, or the $(k+1)$ error of
+\S\ref{sec:inclusion}. This reduction can catch all four.
+\end{recordbox}
+
+\begin{definition}[the check]\label{def:check}
+Take $N=2$, $p=1$, $T=4$, fixed rational $y_0,\dots,y_4\in\mathbb{R}^2$ (five
+vectors: four usable transitions and one pre-sample). Each equation has $n_i=Np=2$
+candidates plus the always-included intercept, so the structure space has
+$2^n=2^4=16$ members. Compute the full posterior
+\begin{equation}
+\pi(\Sc\mid y) \;=\; \frac{\pi(\gamma)\,\Zc(\Sc)}{\sum_{\Sc'}\pi(\gamma')\,\Zc(\Sc')},
+\tag{E-136}\label{E136}
+\end{equation}
+with $\Sc$ ranging over all 16, \textbf{two ways}, and require agreement to $10^{-6}$ in each of the sixteen
+probabilities and to $10^{-4}$ nats in each of the sixteen scores.
+\begin{description}[style=nextline, leftmargin=2em, topsep=0pt, itemsep=0pt]
+\item[Reference.]
+  For each structure, integrate the joint \eqref{E98} numerically over
+  $(\alpha_1[\gamma_1],\sigma_1^2,\alpha_2[\gamma_2],\sigma_2^2)$ and over $g$ --- at
+  most three dimensions per equation, so tensor-product Gauss quadrature reaches
+  machine precision cheaply --- \emph{without} using \eqref{E101}. Multiply by
+  $\pi(\gamma)$ computed directly from \eqref{E96_A}--\eqref{E96_B} as
+  $\prod_i\int_0^1\rho_i^{k_i}(1-\rho_i)^{n_i-k_i}d\rho_i$, i.e.\ without using
+  \eqref{E111_A} or \eqref{E113}. Normalise over the sixteen.
+\item[Production path.]
+  \eqref{E101}$\to$\eqref{E102}$\to$ \eqref{E103}/\eqref{E104} on the shipped grid
+  $\to$\eqref{E135}$\to$ \eqref{E126}$\to$\eqref{E136}.
+\end{description}
+\textbf{The reference must use a different quadrature rule, a different node count
+and a different order of integration from the production path}, so that a shared bug
+cannot cancel.
+\end{definition}
+
+\paragraph{What it exercises, and what a failure would look like.} It exercises
+\eqref{E98}, \eqref{E101}, \eqref{E111_A}, \eqref{E113}, \eqref{E135}, the
+$g$-quadrature and the normalisation \eqref{E136} \emph{simultaneously}, and it fails
+if any one of them is wrong. The failure signatures are diagnostic: a sign error in
+\eqref{E113} shows as a monotone drift in the discrepancy with $k=\sum_ik_i$; a wrong
+$n_i$ (that is, $N^2p$ where $Np$ belongs, or a candidate count that wrongly includes
+the intercept) shows as a constant offset per included entry; a truncated quadrature
+tail shows as a discrepancy growing with $k$, because by \eqref{E107_B} the right tail
+slope depends on $\sum_ik_i^{\eff}$; and an error in \eqref{E101} itself shows at
+$k=0$, where everything else is inert.
+
+$T=4$ is chosen so that $k_i\le2<T$ and $S_\gamma$ is non-singular with a non-trivial
+fit term, while the whole computation remains exactly reproducible from five printed
+rational vectors. Repeating at $T=3$ and $T=6$ costs nothing and catches a
+$T$-indexing error.
+
+
+\section{What the model class cannot represent}\label{sec:cannot}
+
+This is the one place v1 is provably unable to represent something the data may
+contain, and it is a consequence of fixing $d=1$ without inference.
+
+\begin{proposition}[the observed spectral density is positive definite at every
+frequency]\label{prop:spec}
+Write \eqref{E1_A} as $\mathcal{A}(L)y_t=\varepsilon_t$ with
+\begin{eqnarray}
+\mathcal{A}(L) &=& I_N - \sum_{l=1}^{p}A_lL^l,
+  \Elabel{E-6A}{E6_A} \\
+\mathcal{A}(0) &=& I_N,
+  \Elabel{E-6B}{E6_B}
+\end{eqnarray}
+and let $\theta$ satisfy $\det\mathcal{A}(e^{-i\omega})\ne0$ for all $\omega$. Then
+\begin{equation}
+f_y(\omega) \;=\; \tfrac{1}{2\pi}\,\mathcal{A}(e^{-i\omega})^{-1}\,\Sigma\,
+\bigl(\mathcal{A}(e^{-i\omega})^{-1}\bigr)^{*} \;\succ\; 0
+\tag{E-76}\label{E76}
+\end{equation}
+for every $\omega$, every $\theta$, every $p$.
+\end{proposition}
+
+\begin{proof}
+\eqref{E76} is the filtering identity. For definiteness let $v\ne0$ and
+$w=(\mathcal{A}(e^{-i\omega})^{-1})^*v$; then $2\pi v^*f_yv=w^*\Sigma w$, and $w\ne0$
+by invertibility while $\Sigma\succ0$ by \eqref{E4_B}.
+\end{proof}
+
+\begin{corollary}[over-differenced data lies outside the model class]\label{cor:overdiff}
+A spectral zero --- a frequency at which the true spectral density is singular,
+equivalently a unit root in the moving-average operator --- is produced by no
+$\theta\in\Theta$, at any $p$. With no hidden state there is not even a channel
+through which the misfit could be reported as something else: it is absorbed by $p$
+and by the sparsity pattern, which are the two quantities the project exists to
+report.
+\end{corollary}
+
+\paragraph{What the machinery does instead, derived.} Suppose a coordinate is
+stationary in levels and the pipeline differences it. In the pure case,
+$y_t=e_t-e_{t-1}$ is MA(1) with coefficient $-1$; its autocovariances are
+\begin{eqnarray}
+\gamma_0 &=& 2\varsigma^2,
+  \Elabel{E-77A}{E77_A} \\
+\gamma_1 &=& -\varsigma^2,
+  \Elabel{E-77B}{E77_B} \\
+\gamma_r &=& 0 \quad (r\ge2),
+  \Elabel{E-77C}{E77_C}
+\end{eqnarray}
+and the Yule--Walker equations become a discrete Laplacian with fixed ends, whose
+solution is linear in the lag index:
+\begin{equation}
+\varphi_m^{(p)} \;=\; -\Bigl(1-\frac{m}{p+1}\Bigr),
+\tag{E-78}\label{E78}
+\end{equation}
+for $m=1,\dots,p$, and
+\begin{eqnarray}
+v_p &=& \varsigma^2\,\frac{p+2}{p+1},
+  \Elabel{E-79A}{E79_A} \\
+v_1 &=& \tfrac32\varsigma^2,
+  \Elabel{E-79B}{E79_B} \\
+v_2 &=& \tfrac43\varsigma^2,
+  \Elabel{E-79C}{E79_C} \\
+v_\infty &=& \varsigma^2.
+  \Elabel{E-79D}{E79_D}
+\end{eqnarray}
+Three readings. (i) \textbf{The fit improves monotonically in $p$ and never attains
+its limit}: there is no $p$ at which the data stops asking for another lag. (ii) At
+any fixed $p$ there \emph{is} an interior maximiser, namely \eqref{E78}, so the
+pathology is not that a fit fails to converge but that the \emph{sequence} of fits
+does not terminate. (iii) \textbf{Therefore the posterior over $p$ on
+over-differenced data is decided by $\pi(p)$ and by $p_{\max}$, not by the data}, and
+the spurious links land on the diagonal --- where the analyst is least likely to
+question them.
+
+\paragraph{Mitigation, and its honest limit.} Open item O-5 proposes fitting at both
+$d=0$ and $d=1$ and presenting both. The derivation supports the proposal and
+sharpens the caveat: the two fits are models for \emph{different data}, so putting
+them side by side is legitimate and subtracting them is not. \textbf{The choice rests
+on the analyst and on diagnostics, not on the machinery}, and this document declines
+to supply a number that would let anyone pretend otherwise. What \emph{is} comparable
+is a within-$d$ diagnostic:
+\begin{equation}
+\kappa(p) \;:=\; \Bigl|\det\Bigl(I_N-\sum_{l=1}^{p}\hat A_l\Bigr)\Bigr|,
+\tag{E-80}\label{E80}
+\end{equation}
+with over-differencing showing as $\kappa(p)$ small and decreasing in $p$, which
+\eqref{E78} predicts exactly, since $1-\sum_m\varphi_m^{(p)}z^m$ at $z=1$ is
+$1/(p+1)\to0$. It costs nothing, it is a report and not a score, so D-10 is
+untouched. If a coordinate trips it, the honest statement is that $d=1$ was wrong for
+that coordinate and its equation's reported structure is not interpretable.
+
+\begin{recordbox}
+\textbf{Self-flagged weakness (W-2, rank 2).} Corollary \ref{cor:overdiff} is
+airtight; the \emph{quantification} is worst-case only. \eqref{E77_A}--\eqref{E79_D} are
+computed at the extreme (white in levels); a coordinate that is nearly a unit root in
+levels is barely distorted by differencing, and nothing in v1 tells the analyst which
+they have. \eqref{E80} detects the extreme end only. \textbf{This is the largest
+known hole in v1}, and it is a scope consequence of D-05 rather than an error. O-5
+needs a ruling before P2.
+\end{recordbox}
+
+
+\section{The conditioning diagnostic}\label{sec:cond}
+
+Near-flat directions arise here from \textbf{collinear regressors}, which is live in
+the target regime: at $N=50$, $p=2$ there are $n_i=100$ candidates per equation
+against 198 usable transitions, and the columns are lagged values of a strongly
+cross-correlated process, not independent draws. The object is
+\begin{eqnarray}
+H_{\ell,i}[\gamma_i,\gamma_i] &=& \tfrac{1}{\sigma_i^2}S_\gamma,
+  \Elabel{E-82A}{E82_A} \\
+H_i[\gamma_i,\gamma_i] &=& \tfrac{1}{\sigma_i^2}\bigl(S_\gamma+\tfrac1gI_k\bigr),
+  \Elabel{E-82B}{E82_B}
+\end{eqnarray}
+so the two differ by exactly the slab precision and the spectrum of $S_\gamma$
+carries everything.
+
+\begin{proposition}[what a rank computation at fixed $T$ cannot see]\label{prop:rank}
+Let $v$ be a fixed unit vector. (a) If $\E[(v'z_t)^2]=\varrho^2>0$ then
+$v'S_\gamma v/T\to\varrho^2$ almost surely: the direction is data-informed and its
+eigenvalue grows linearly in $T$. (b) If $\varrho^2=0$, exact collinearity, then
+$v'S_\gamma v=0$ for every $T$ and $v'H_iv=1/(g\sigma_i^2)$, independent of $T$: the
+direction is carried entirely by the prior. (c) If $\varrho^2$ is small but non-zero
+--- the realistic case --- the direction is data-informed but becomes visible only
+once $T\varrho^2$ exceeds $1/g$, and \textbf{at fixed $T$ it is indistinguishable from
+(b) by any rank computation at any tolerance}, since the classification depends only
+on the product $T\varrho^2$.
+\end{proposition}
+
+\begin{proof}
+(a),(b) are the law of large numbers applied to $v'S_\gamma v=\sum_t(v'z_t)^2$. For
+(c), a tolerance $\varsigma$ classifies by $\mathbf{1}[T\varrho^2>\varsigma]$, which
+is a statement about the product; two processes with
+$T_1\varrho_1^2=T_2\varrho_2^2$ are classified alike while differing in whether the
+direction is identified in the limit.
+\end{proof}
+
+\begin{definition}[the diagnostic --- a report, never a score]\label{def:diag}
+Across the sweep, report the decade histogram of the spectrum,
+\begin{equation}
+\operatorname{bucket}(\mu_j) = \bigl\lfloor\log_{10}(\mu_j/\mu_1)\bigr\rfloor,
+\tag{E-83}\label{E83}
+\end{equation}
+and, across two sample sizes on the same process, the scaling exponent
+\begin{equation}
+r_j(T_1,T_2) = \frac{\log(\mu_j(T_2)/\mu_j(T_1))}{\log(T_2/T_1)},
+\tag{E-84}\label{E84}
+\end{equation}
+which tends to 1 for a data-informed direction and 0 for a prior-carried one.
+\textbf{Never report a tolerance-based rank.} Neither quantity enters any score.
+\end{definition}
+
+Under independent regressors at $N=50$, $p=2$, $T=200$ the condition number of
+$S_{zz}$ would be near 35, which is comfortable; under B1's actual generator, whose
+within-group blocks are dense with $\rho=0.7$, the small end of the spectrum is not
+protected by that arithmetic, and \eqref{E84} across the sweep is the only thing that
+will say which regime the data is in.
+
+
+\section[The observation model]{The observation model as a declared component}\label{sec:obs}
+
+AUTOCLASS's engine character came from a library of likelihood terms selected per
+attribute --- a multinomial term, a normal term, a normal-with-modelled-missingness
+term, a covariant block --- with its model file doing nothing but assigning terms to
+attribute indices. This section states, honestly and briefly, how far that
+transplants.
+
+The derivation is carried for a general conjugate exponential-family regression: a
+declared type supplies a base measure, a sufficient-statistic map $\mathsf{s}_i$, a
+log-partition $B_i$ and a dispersion $\tau_i$, with the autoregression carrying the
+natural parameter through a link,
+\begin{equation}
+f(y_{ti}\mid\nu_{ti},\tau_i) = h_i(y_{ti};\tau_i)\exp\bigl\{\tfrac{1}{\tau_i}
+[\nu_{ti}\mathsf{s}_i(y_{ti})-B_i(\nu_{ti})]\bigr\},
+\tag{E-87}\label{E87}
+\end{equation}
+\begin{equation}
+\nu_{ti} \;=\; \alpha_i[\gamma_i]'z_t[\gamma_i] \qquad \text{(canonical link)},
+\tag{E-88}\label{E88}
+\end{equation}
+\begin{eqnarray}
+\ell_i &=& \sum_t\log h_i + \tfrac{1}{\tau_i}\Bigl[\alpha_i[\gamma_i]'\mathsf{s}_i^z
+  - \sum_tB_i\bigl(\alpha_i[\gamma_i]'z_t[\gamma_i]\bigr)\Bigr],
+  \Elabel{E-89A}{E89_A} \\
+\mathsf{s}_i^z &:=& \sum_t\mathsf{s}_i(y_{ti})z_t[\gamma_i].
+  \Elabel{E-89B}{E89_B}
+\end{eqnarray}
+Taking $\mathsf{s}_i(y)=y$, $B_i(\nu)=\nu^2/2$, $\tau_i=\sigma_i^2$ recovers
+\eqref{E29_A} exactly:
+\begin{equation}
+\ell_i = -\tfrac{T}{2}\log(2\pi\sigma_i^2) - \tfrac{1}{2\sigma_i^2}\bigl(c_i
+- 2\alpha_i[\gamma_i]'s_i[\gamma_i] + \alpha_i[\gamma_i]'S_\gamma\alpha_i[\gamma_i]\bigr),
+\tag{E-90}\label{E90}
+\end{equation}
+so the Gaussian case is an instantiation and not a parallel derivation. A type is
+admissible if it supplies (T1) the four objects of \eqref{E87}--\eqref{E88}; (T2)
+statistics of fixed dimension, independent of $T$, accumulable in one pass; (T3) a
+proper prior on $(\alpha_i,\tau_i)$ into which the slab scale enters as in
+\S\ref{sec:prior}; and (T4) an evaluator for
+\begin{equation}
+\Zc_i(\gamma_i,g) = \iint e^{\ell_i}\,\pi(\alpha_i[\gamma_i]\mid\tau_i,g)\,
+\pi(\tau_i)\,d\alpha_i\,d\tau_i.
+\tag{E-91}\label{E91}
+\end{equation}
+
+\begin{recordbox}
+\textbf{What this does and does not cover, said plainly.}
+
+\emph{Does.} Everything in \S\ref{sec:prior}, \S\ref{sec:inclusion},
+\S\ref{sec:lag}, \S\ref{sec:search} and \S\ref{sec:red} is written in terms of
+$\log\Zc_i(\gamma_i,g)$ and $|\gamma_i|$ alone and \textbf{knows nothing about the
+coordinate type}. That is the precise and entire sense in which the sparsity and
+complexity machinery is type-indifferent.
+
+\emph{Does not.} \textbf{One type is derived: Gaussian. No other type is derived, and
+(T2) and (T3) are asserted per type and verified for none.} A count coordinate under
+a log-link Poisson autoregression has $B_i(\nu)=e^\nu$, so the second term of
+\eqref{E89_A} is not quadratic, no finite-dimensional conjugate prior on $\alpha_i$
+exists, and \eqref{E91} has no closed form; the same is true of a multinomial
+coordinate under a logit link. The price is a Laplace evaluation or a
+low-dimensional quadrature per equation per candidate structure --- the \emph{same
+species} of price D-24 already accepts for the slab scale, which is the honest
+framing, but it is not free. Incremental updating degrades from $O(k^2)$ to an
+iterative solve, since Proposition \ref{prop:flip} rests on the bordered Cholesky of
+a matrix that no longer stays fixed. And a stationarity notion may not exist at all
+for a non-Gaussian autoregression, which \S\ref{sec:cond} and \S\ref{sec:cannot}
+both assume.
+
+\emph{In AUTOCLASS the analogue was nearly free} because attributes are independent
+given the class, so terms of different types simply multiply. Here the analogue of an
+attribute term is a \emph{regression}, and a regression needs a link. Claiming the
+transplant is complete would be overselling it.
+\end{recordbox}
+
+
+\section{Assumptions and limitations}\label{sec:assump}
+
+\paragraph{Assumptions in force.} \textbf{A1} Conditioning on $y_{1-p_{\max}:0}$ with
+$p_{\max}$ declared before fitting (Assumption \ref{ass:cond}). \textbf{A2} Every
+prior proper (Assumption \ref{ass:proper}). \textbf{A3} No stationarity truncation,
+so the prior places mass on explosive processes (Remark \ref{rem:trunc}).
+\textbf{A4} $\Sigma$ diagonal (D-04), consumed at \eqref{E28_A}; contemporaneous
+innovation correlation is \textbf{not representable in v1 at all}, and with $K=0$
+there is no hidden coordinate to absorb it. \textbf{A5} $d$ fixed at 1, not inferred,
+not comparable across (D-05). \textbf{A6} Coordinates standardized before fitting, on
+which \eqref{E92_B} and \eqref{E95_A} are calibrated --- so the prior is empirical-Bayes
+to the extent of one scalar per coordinate. It cancels from every Bayes factor and
+does not cancel from a reported $\log\Zc$. \textbf{A7} Regular sampling, no missing
+values. \textbf{A8} $A_l$ constant in $t$; no regime switching, no time variation.
+\textbf{A9} $z_t$ stationary and ergodic, used in Proposition \ref{prop:rank}(a) and
+in \eqref{E124_A}; not implied by A3.
+
+\paragraph{Limitations.} \textbf{L1} A pure VAR cannot represent moving-average
+structure at all. Any genuine MA component must be approximated autoregressively, and
+\eqref{E79_A} shows how badly: the approximation improves like $(p+2)/(p+1)$ and never
+terminates. \textbf{L2} Over-differenced data lies outside the model class
+(\S\ref{sec:cannot}); mitigation is \eqref{E80} plus O-5, which is \textbf{open and
+needs a ruling before P2}. \textbf{L3} No hidden state, hence no latent common
+factor: a common shock is representable only as explicit links among observed
+coordinates, at up to $N$ entries per shock rather than one dimension. \textbf{L4}
+Missing values are unsupported; the charter says otherwise and should be amended. A
+missing component removes one observation from one equation and one from every
+equation at the next step, breaking the equal-effective-sample condition
+\emph{across} equations. \textbf{L5} Real-valued coordinates only; no other type is
+derived (\S\ref{sec:obs}). \textbf{L6 No inferred grouping is reported.} A reader who
+wants a partition of the coordinates must read it off the recovered sparsity pattern.
+This is a deliberate consequence of D-30 and is arguably the better behaviour --- we
+report what the data supports and do not impose the concept of a group at all --- but
+it is a capability the previous draft claimed and this one does not. \textbf{L7} The
+reported posterior is normalised over the retained set, not over all structures
+(W-4). \textbf{L8} Cross-$d$ and cross-$N$ comparisons are meaningless; only $p$ and
+structure are compared. \textbf{L9} With a diagonal $\Sigma$ assumed, a structure
+that happens to leave less contemporaneous correlation unexplained will score better
+for that reason and not because its link structure is truer. AUTOCLASS records the
+identical distortion from its own independence assumption
+(\texttt{interpretation-c.text} 30--37) and it belongs in the limitations in those
+terms. Benchmark variant B1-N measures it; \textbf{the size is not derived here}
+(W-3).
+
+
+\appendix
+
+\section{Equation disposition}\label{app:disp}
+
+Identifiers are permanent. A withdrawn or retired equation keeps its identifier and
+is never reused. New equations take the next free number regardless of where they
+sit, so the table is in identifier order.
+
+{\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.4cm}
+                    >{\raggedright\arraybackslash}p{3.4cm}
+                    >{\raggedright\arraybackslash}p{8.9cm}@{}}
+\toprule
+IDs & Disposition & Note \\
+\midrule
+\endfirsthead
+\toprule
+IDs & Disposition & Note \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+E-1, E-2, E-4--E-6, E-9 & restated &
+  $x=y$, $J=I_N$; $D=N^2p+2N$ now carries the intercept \\
+E-3, E-7, E-8, E-11--E-13, E-31 & withdrawn (round 2) &
+  hidden-state bookkeeping; dormant \\
+E-10 & unchanged & complete-data likelihood, folded into \eqref{E9} \\
+E-14--E-17 & unchanged &
+  joint, $\Zc$, structure posterior, the exact identity; cited not reprinted \\
+E-18--E-20 & unchanged &
+  Laplace, Occam, BIC; cited in Remark \ref{rem:laplace}, not used \\
+E-21 & restated & $D_{\eff}=D$ at group dimension 0 \\
+E-22, E-23 & restated (round 2) &
+  missing information $\equiv0$; trivial, not reprinted \\
+E-24--E-30, E-32 & unchanged &
+  score; regression form; sufficiency; decoupling; bordering \\
+E-33--E-75 & \textbf{withdrawn, dormant} &
+  hidden state (A-001); live in \texttt{theory-v0-hidden-state.tex} \\
+\midrule
+E-76--E-86 & unchanged &
+  spectral density, over-differencing, Hessian conventions, diagnostic, flip cost \\
+E-87--E-91 & unchanged, compressed &
+  exponential-family interface, \S\ref{sec:obs} \\
+E-92--E-97 & unchanged &
+  hyperpriors; every constant now also in \S\ref{sec:constants} \\
+E-98--E-110 & unchanged &
+  the closed form, the quadrature, the cache, the candidate set \\
+E-111--E-113 & \textbf{restated} &
+  per-equation counts $(k_i,n_i)$ in place of the global $(k,n)$ ---
+  \S\ref{sec:rate}, W-1. Formulae identical; indexing changed \\
+\textbf{E-114--E-117} & \textbf{RETIRED (D-30)} &
+  model S-B: induced entry pattern, Ewens/CRP partition prior, $\alpha_{\text{CRP}}$
+  hyperprior, block indicators. \textbf{Never reused.} Live in
+  \texttt{theory-v1-with-blocks.tex} \\
+E-118, E-119, E-121 & unchanged &
+  partial $t$-statistic; three-term increment; sweep prediction \\
+\textbf{E-120, E-122, E-133} & \textbf{corrected (O-004)} &
+  the $(k+1)$ term restored; every dependent number in \S\ref{sec:predict}
+  recomputed \\
+E-123--E-125 & restated &
+  $N=2$, $p=2$ design (intercept added); $p^*$ demoted to advisory (O-003) \\
+E-126 & restated & the score, with the S-B branch deleted \\
+E-127--E-132 & restated &
+  degenerate cases and reductions 1--2; \eqref{E132} now an exact match rather than
+  a discrepancy, the intercept having closed it \\
+\midrule
+\textbf{E-134} & \textbf{new} & regressor vector with always-included intercept \\
+\textbf{E-135} & \textbf{new} & joint structure prior as a product over equations \\
+\textbf{E-136} & \textbf{new} &
+  reduction 3: the 16-structure exact posterior, \S\ref{sec:red3} \\
+\textbf{E-137} & \textbf{new} &
+  the declared evidence threshold and the chain hanging from it,
+  \S\ref{sec:constants} \\
+\end{longtable}
+}
+
+\noindent\textbf{Agent 3's work list, in priority order.}
+\begin{enumerate}[topsep=0pt, itemsep=0pt]
+\item \textbf{Reduction 3} (Definition \ref{def:check}). It subsumes items 2 and 4 of
+  the previous list and is the only check that fails if any single component is
+  wrong.
+\item \eqref{E101} at $N=1$, $k=1$, $T=2$ against the direct double integral
+  \eqref{E98}. Cheap, and it isolates the one object everything rests on.
+\item The $N=2$, $p=2$ battery of \S\ref{sec:inst}. \textbf{No $p=2$ check exists
+  anywhere in the project.}
+\item \eqref{E94} --- the Lindley--Bartlett collapse, owed since round 1 and never
+  reached.
+\item \eqref{E119} at $k=0\to1$ and $1\to2$ \textbf{with the corrected}
+  \eqref{E120}; then \eqref{E129}.
+\item \eqref{E130}, \eqref{E131}, the two anchor reductions.
+\item \eqref{E21_B}/\eqref{E81_C}: $\operatorname{rank}H_\ell=\operatorname{rank}H=D$ at
+  $N=2$, $p=1$, $T=3$.
+\item Numeric: \eqref{E84} on a constructed collinear design; then \eqref{E108}.
+\end{enumerate}
+Every round-1 script for E-33--E-75 is dormant; every script written against the
+\emph{global}-rate forms of E-111--E-113 must be re-run with per-equation counts.
+
+\section{Self-flagged weaknesses, ranked}
+
+\begin{description}[leftmargin=3em, labelindent=0pt, topsep=0pt, itemsep=0pt]
+\item[W-1.] \textbf{Per-equation versus global inclusion rate} (\S\ref{sec:rate}).
+  Worth $\log N=3.9$ nats per entry at $N=50$ and a factor of $N$ in the predicted
+  false-positive count. Both columns are printed in Table \ref{tab:b1}.
+  \textbf{Confirmation requested.}
+\item[W-2.] \textbf{Over-differencing is a model-class failure and v1 detects it only
+  at the extreme} (\S\ref{sec:cannot}). Airtight as a statement; quantified only at
+  the worst case. \textbf{O-5 needs a ruling before P2.}
+\item[W-3.] \textbf{The misspecified-$\Sigma$ distortion is not quantified} (L9). The
+  mechanism is derived and the size is not; B1-N measures it.
+\item[W-4.] \textbf{The reported posterior is normalised over the retained set}
+  (\S\ref{sec:search}). Mitigation offered is a report, not a bound.
+\item[W-5.] \textbf{$\delta_{\text{report}}=1$ nat is declared, not derived}
+  (\S\ref{sec:constants}). The argument constrains it to be well below $\log n_i$ and
+  well above the quadrature error, which is a range, not a number. A different
+  declaration changes which near-threshold entries are called decided.
+\item[W-6.] \textbf{$\varepsilon$ in \eqref{E124_A} is a reporting convention I cannot
+  derive}, and at $\varepsilon=\frac14$ the charter's own target does not clear $p=2$
+  (\S\ref{sec:ceiling}). I decline to pick the value that makes the charter right.
+\item[W-7.] \textbf{Standardization makes \S\ref{sec:prior} empirical-Bayes by one
+  scalar per coordinate} (A6). Cancels from every Bayes factor; does not cancel from
+  a reported $\log\Zc$.
+\item[W-8.] \textbf{Non-Gaussian coordinate types are specified, not derived}
+  (\S\ref{sec:obs}). One instantiation is worked; (T2)/(T3) are verified for no other
+  type.
+\item[W-9.] \textbf{Missing values are unsupported and the charter says otherwise}
+  (L4). Stated, not solved.
+\end{description}
+
+\section{What was deleted, and where it lives}
+
+\textbf{By D-30 (this revision).} Model S-B in full: the partition $\mathcal{P}$ of
+the coordinates into $G$ groups, the Ewens/CRP prior over partitions with its
+concentration hyperprior, the block-level inclusion indicators $\delta_{gh}^{(l)}$
+and the induced entry pattern, the group-count inference, the S-A/S-B margin
+arithmetic, the prior over the pair of models, the split/merge/move search operators,
+the two declaration fields that selected between the models, and every predicted sign
+of a comparison between them. Equations \textbf{E-114--E-117}, retired. All of it is
+preserved verbatim in \texttt{theory/theory-v1-with-blocks.tex}, which carries a
+boxed supersession notice.
+
+\textbf{By A-001 (earlier).} The hidden state and everything attached to it: the
+$GL(K)$ symmetry, both identifiability routes, the Faddeev--Popov determinant, orbit
+volumes, pseudo-determinant Laplace, the prior over $K$, the hidden pre-sample
+initialisation and the $K$-dependent constant it put in the score, the
+Cheeseman--Stutz debt, and the EM/Kalman inner loop. Equations \textbf{E-33--E-75},
+dormant in \texttt{theory/theory-v0-hidden-state.tex}. Three confirmed blocking
+defects against that material (V-001--V-003) are unrepaired and must be the first
+items addressed if Extension 2 resumes.
+
+\end{document}
+
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------

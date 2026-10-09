@@ -755,6 +755,54 @@
     </front>
     <back derived="same"/>
   </counter>
+  <counter id="jp-supply1" family="marker" name="Japanese supply piece 1 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 1</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-supply2" family="marker" name="Japanese supply piece 2 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 2</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-supply3" family="marker" name="Japanese supply piece 3 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 3</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-supply4" family="marker" name="Japanese supply piece 4 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 4</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-supply5" family="marker" name="Japanese supply piece 5 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 5</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-supply6" family="marker" name="Japanese supply piece 6 (China)">
+    <front style="japan">
+      <text slot="TC" size="small" weight="bold">Supply 6</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-supply1" family="marker" name="Japanese supply piece 1 (Manchuria and Korea)">
+    <front style="kwantung">
+      <text slot="TC" size="small" weight="bold">Supply 1</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kw-supply2" family="marker" name="Japanese supply piece 2 (Manchuria and Korea)">
+    <front style="kwantung">
+      <text slot="TC" size="small" weight="bold">Supply 2</text><silhouette kind="truck" color="ink" scale="0.8"/><band color="black" text-color="white">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
   <counter id="mk-airfield" family="marker" name="Airfield captured / destroyed" count="3">
     <front style="plain">
       <silhouette kind="aircraft" color="ink" scale="0.7"/><band color="orange" text-color="ink">Captured</band>
@@ -1430,6 +1478,36 @@
     </front>
     <back derived="same"/>
   </counter>
+  <counter id="kmt-supply1" family="marker" name="KMT supply piece 1">
+    <front style="nationalist">
+      <text slot="TC" size="small" weight="bold">Supply 1</text><silhouette kind="truck" color="white" scale="0.8"/><band color="white" text-color="ink">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-supply2" family="marker" name="KMT supply piece 2">
+    <front style="nationalist">
+      <text slot="TC" size="small" weight="bold">Supply 2</text><silhouette kind="truck" color="white" scale="0.8"/><band color="white" text-color="ink">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-supply3" family="marker" name="KMT supply piece 3">
+    <front style="nationalist">
+      <text slot="TC" size="small" weight="bold">Supply 3</text><silhouette kind="truck" color="white" scale="0.8"/><band color="white" text-color="ink">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-supply4" family="marker" name="KMT supply piece 4">
+    <front style="nationalist">
+      <text slot="TC" size="small" weight="bold">Supply 4</text><silhouette kind="truck" color="white" scale="0.8"/><band color="white" text-color="ink">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kmt-supply5" family="marker" name="KMT supply piece 5">
+    <front style="nationalist">
+      <text slot="TC" size="small" weight="bold">Supply 5</text><silhouette kind="truck" color="white" scale="0.8"/><band color="white" text-color="ink">Supply</band>
+    </front>
+    <back derived="same"/>
+  </counter>
   <counter id="ccp-sgn" family="unit" name="CCP field force, Shaan-Gan-Ning">
     <front style="communist">
       <symbol icon="infantry"/>
@@ -1784,7 +1862,7 @@
     </front>
     <back derived="same"/>
   </counter>
-  <sheet id="sheet-1" title="Circling Dragons, sheet 1: Japan, the Soviet Union, the puppets, the United States" cols="12" rows="11" gutter="0.5" margin="8" mirror="horizontal">
+  <sheet id="sheet-1" title="Circling Dragons, sheet 1: Japan, the Soviet Union, the puppets, the United States" cols="12" rows="12" gutter="0.5" margin="8" mirror="horizontal" notice="Copyright Ben Paul Wise">
     <place counter="jp-d110"/>
     <place counter="jp-d62"/>
     <place counter="jp-d37"/>
@@ -1863,6 +1941,14 @@
     <place counter="jp-depot-mukden"/>
     <place counter="jp-depot-changchun"/>
     <place counter="jp-depot-harbin"/>
+    <place counter="jp-supply1"/>
+    <place counter="jp-supply2"/>
+    <place counter="jp-supply3"/>
+    <place counter="jp-supply4"/>
+    <place counter="jp-supply5"/>
+    <place counter="jp-supply6"/>
+    <place counter="kw-supply1"/>
+    <place counter="kw-supply2"/>
     <place counter="mk-airfield" repeat="3"/>
     <place counter="sov-6gta"/>
     <place counter="sov-39a"/>
@@ -1896,7 +1982,7 @@
     <place counter="us-marines-qingdao"/>
     <place counter="us-marines-qinhuangdao"/>
   </sheet>
-  <sheet id="sheet-2" title="Circling Dragons, sheet 2: the KMT, the CCP, neutral markers" cols="12" rows="11" gutter="0.5" margin="8" mirror="horizontal">
+  <sheet id="sheet-2" title="Circling Dragons, sheet 2: the KMT, the CCP, neutral markers" cols="12" rows="12" gutter="0.5" margin="8" mirror="horizontal" notice="Copyright Ben Paul Wise">
     <place counter="kmt-ga15"/>
     <place counter="kmt-ga19"/>
     <place counter="kmt-ga28"/>
@@ -1936,6 +2022,11 @@
     <place counter="kmt-legit"/>
     <place counter="kmt-position"/>
     <place counter="kmt-fort" repeat="2"/>
+    <place counter="kmt-supply1"/>
+    <place counter="kmt-supply2"/>
+    <place counter="kmt-supply3"/>
+    <place counter="kmt-supply4"/>
+    <place counter="kmt-supply5"/>
     <place counter="ccp-sgn"/>
     <place counter="ccp-js"/>
     <place counter="ccp-jcj"/>

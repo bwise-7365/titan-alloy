@@ -251,6 +251,7 @@ namespace HexXml {
       checkEnum(node, "mirror", s.mirror, {"horizontal", "vertical", "none"});
       s.cropMarks = node.optionalAs<bool>("crop-marks").value_or(true);
       s.background = node.optional("background");
+      s.notice = node.optional("notice");
       for (const XmlNode& p : node.children("place")) {
         s.places.push_back(parsePlace(p));
       }

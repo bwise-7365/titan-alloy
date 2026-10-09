@@ -7,9 +7,11 @@ scale and counts (preliminary)" of Circling Dragons/circling_dragons_map_and_rul
 CCP 23, the Soviets 11, the puppets 6) and about 124 markers.  Two-state markers are double-sided, so one
 counter carries both states: presence / base area, KMT / CCP control, rail interdicted / broken, port
 denied / open, airfield captured / destroyed, and the front a Japanese formation faces.  Every value line
-is a placeholder (strength-movement) for the prototype to revise.
+is a placeholder (strength-movement) for the prototype to revise.  Since 2026-10-07 the set also has 13
+supply pieces (Japanese 6 in China and 2 in Manchuria and Korea, KMT 5) for the HexKrieg-style rules
+proposal, 263 counters in all.
 
-Two sheets of 12 x 11 at 5/8 inch: sheet-1 Japan, the Soviets, the puppets and the US; sheet-2 the KMT,
+Two sheets of 12 x 12 at 5/8 inch: sheet-1 Japan, the Soviets, the puppets and the US; sheet-2 the KMT,
 the CCP and the neutral markers.  Render with ../counters2svg.py circling-dragons.xml --png.
 """
 import os
@@ -179,6 +181,14 @@ marker(S1, "jp-river", "japan", "Japanese river transport (Yangtze, Sungari)", '
 for name in ("Kalgan", "Mukden", "Changchun", "Harbin"):
     marker(S1, "jp-depot-%s" % name.lower(), "japan", "Japanese depot and arms dump, " + name,
            '<emblem kind="pennant" color="ink" color2="gold" scale="0.8"/>' + bottom("Depot|" + name))
+# supply pieces (circling_dragons_hexkrieg_rules.tex, rule 4.6; Ben, 2026-10-07): they relay supply along the
+# network from the sources, and count as markers for stacking; the counts are placeholders under play test (P3)
+for n in range(1, 7):
+    marker(S1, "jp-supply%d" % n, "japan", "Japanese supply piece %d (China)" % n,
+           '<text slot="TC" size="small" weight="bold">Supply %d</text><silhouette kind="truck" color="ink" scale="0.8"/>' % n + band("Supply"))
+for n in (1, 2):
+    marker(S1, "kw-supply%d" % n, "kwantung", "Japanese supply piece %d (Manchuria and Korea)" % n,
+           '<text slot="TC" size="small" weight="bold">Supply %d</text><silhouette kind="truck" color="ink" scale="0.8"/>' % n + band("Supply"))
 flip(S1, "mk-airfield", "Airfield captured / destroyed",
      "plain", '<silhouette kind="aircraft" color="ink" scale="0.7"/>' + band("Captured", "orange", "ink"),
      "plain", '<silhouette kind="aircraft" color="ink" scale="0.7"/>' + band("Destroyed"), count=3)
@@ -248,6 +258,9 @@ marker(S2, "kmt-init", "nationalist", "Initiative, KMT", '<emblem kind="hexagon"
 marker(S2, "kmt-legit", "nationalist", "Legitimacy, KMT", centre_text("Legitimacy"))
 marker(S2, "kmt-position", "nationalist", "Postwar Position, KMT", centre_text("Postwar|Position"))
 marker(S2, "kmt-fort", "nationalist", "KMT fortified city", '<symbol icon="text" text="Fort"/>' + bottom("Fortified|city"), count=2)
+for n in range(1, 6):
+    marker(S2, "kmt-supply%d" % n, "nationalist", "KMT supply piece %d" % n,
+           '<text slot="TC" size="small" weight="bold">Supply %d</text><silhouette kind="truck" color="white" scale="0.8"/>' % n + band("Supply", "white", "ink"))
 
 # ============================================================================ sheet 2: CCP
 FIELD = [("ccp-sgn", "Shaan-Gan-Ning", "8RA"), ("ccp-js", "Jin-Sui", "8RA"), ("ccp-jcj", "Jin-Cha-Ji", "8RA"), ("ccp-jjly", "Jin-Ji-Lu-Yu", "8RA"),
@@ -288,7 +301,7 @@ marker(S2, "mk-oos", "plain", "Out of supply", centre_text("Out of|supply"), cou
 marker(S2, "mk-halted", "plain", "Halted (fuel or water)", centre_text("Halted"))
 
 # ============================================================================ sheets
-COLS, ROWS = 12, 11
+COLS, ROWS = 12, 12      # a twelfth row since the supply pieces (2026-10-07)
 titles = {"sheet-1": "Circling Dragons, sheet 1: Japan, the Soviet Union, the puppets, the United States",
           "sheet-2": "Circling Dragons, sheet 2: the KMT, the CCP, neutral markers"}
 total = 0
@@ -296,7 +309,9 @@ for sid in ("sheet-1", "sheet-2"):
     n = sum(c for _, c in sheets[sid])
     assert n <= COLS * ROWS, (sid, n)
     total += n
-    x.append('  <sheet id="%s" title="%s" cols="%d" rows="%d" gutter="0.5" margin="8" mirror="horizontal">' % (sid, escape(titles[sid]), COLS, ROWS))
+    # the copyright notice in the margins, as on the map sheet (Ben, 2026-10-07)
+    x.append('  <sheet id="%s" title="%s" cols="%d" rows="%d" gutter="0.5" margin="8" mirror="horizontal" notice="Copyright Ben Paul Wise">'
+             % (sid, escape(titles[sid]), COLS, ROWS))
     for cid, c in sheets[sid]:
         x.append('    <place counter="%s"%s/>' % (cid, ' repeat="%d"' % c if 1 < c else ""))
     x.append('  </sheet>')

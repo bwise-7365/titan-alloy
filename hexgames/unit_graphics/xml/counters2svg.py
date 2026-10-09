@@ -413,8 +413,18 @@ class Renderer:
                 o.append(face_group(face, cid, x, y))
             if (sheet.get("crop-marks") or "true") == "true":
                 o.append(crop_marks())
-            o.append('<text x="%.2f" y="%.2f" font-size="%.2f" fill="#333333">%s -- %s</text>' % (
-                mar, H - mar * 0.15, mar * 0.35, escape(sheet.get("title") or sheet.get("id")), side))
+            # the caption at the bottom left and, when the sheet has one, the copyright notice ahead of it and again
+            # at the top right; a white halo keeps both legible where the crop marks cross them
+            fs = mar * 0.35
+            halo = ' paint-order="stroke" stroke="#ffffff" stroke-width="%.2f" stroke-linejoin="round"' % (fs * 0.25)
+            caption = '<tspan fill="#333333">%s -- %s</tspan>' % (escape(sheet.get("title") or sheet.get("id")), side)
+            notice = sheet.get("notice")
+            if notice:
+                caption = '<tspan fill="#000000">%s</tspan><tspan dx="%.2f" fill="#333333">%s -- %s</tspan>' % (
+                    escape(notice), mar * 0.8, escape(sheet.get("title") or sheet.get("id")), side)
+                o.append('<text x="%.2f" y="%.2f" font-size="%.2f" text-anchor="end" fill="#000000"%s>%s</text>' % (
+                    W - mar, mar * 0.15 + fs * 0.8, fs, halo, escape(notice)))
+            o.append('<text x="%.2f" y="%.2f" font-size="%.2f"%s>%s</text>' % (mar, H - mar * 0.15, fs, halo, caption))
             o.append("</svg>")
             out[side] = ("\n".join(o), W, H)
         return out

@@ -544,4 +544,55 @@ network would change Circling Dragons much; he intends to use them and to set th
   movement, combat and supply in outline, the course of a game, how the game is won, this document and play
   testing. 17 pages in all.
 
+
+## 20. Supply pieces in the counter set (2026-10-07)
+
+Ben asked for the supply pieces of the rules proposal in the counter set. `unit_graphics/xml/tools/build_cd.py`
+now writes 13 more markers at the placeholder counts of choice P3: `jp-supply1` to `jp-supply6` (japan style,
+sheet 1), `kw-supply1` and `kw-supply2` (kwantung style, sheet 1) and `kmt-supply1` to `kmt-supply5`
+(nationalist style, sheet 2). Each shows a truck silhouette, its number and a "Supply" band. They are family
+`marker`, since the rules count them as markers for stacking. The sheets grew from 12 x 11 to 12 x 12 (sheet 1
+had 5 free cells); 263 counters in all. The XML validates against hexcounters.xsd; the sheet SVGs and PNGs are
+re-rendered; the rules proposal says the pieces now exist (its version v4.3). The caption at the foot of
+each sheet is crossed by the cut marks; that predates this change.
+
+Copyright notice (same day, Ben's request): hexcounters.xsd gained an optional `notice` attribute on `sheet`
+(read by hexxml's CounterSetDoc as `notice`); counters2svg.py prints it on both faces, flush right in the top
+margin and flush left in the bottom margin ahead of the caption, with a white halo so the crop marks do not
+hide it (the caption gets the halo too). The Circling Dragons sheets carry "Copyright Ben Paul Wise", as the
+map does.
+
+## 21. Map and rules version 4, restructured as a rulebook (2026-10-07)
+
+`circling_dragons_map_and_rules_V4.tex` (v4.4, the version after the proposal's v4.3; 77 pages) combines the memorandum (V3, v3.3) and the HexKrieg
+proposal (v4.3) and orders them by the rulebook outline in `hexgames/doc/wargame-rulebook-outline.md`.
+- **Section numbers:** they equal the outline's part numbers: 1 introduction, 2 components, 3 map, 4 pieces,
+  5 sequence of play, 6 movement, 7 combat, 8 supply, 9 command, 10 reinforcements and recovery, 11 weather,
+  12 hidden information, 13 special rules, 14 victory, 15 the four major actions as scenario situations,
+  16 provisional rules, 17 designer's notes (including the HexKrieg comparison and M1-M14), 18 examples (the
+  maneuver studies and the test-case checks), 19 charts and tables, and 20 glossary.
+- **Unchanged text:** the rules text is that of the two sources.
+  - Where the sources differ, the proposal governs; "How to read these rules" names the four differences.
+  - Rules that V3 names but does not write are listed as "not yet written" (open point 8), not invented: e.g.
+    order costs, rail capacity, the interdicted-rail supply penalty, and the victory weights.
+- **Appendix A (draft):** proposals for every item of open point 8. Each "not yet written" place in the
+  rules points to its draft. The appendix is boxed as "not part of the rules" and gives a reason for each
+  choice. Its items:
+  - time cost of orders: weekly spaces, four to a month, and an order per activation scoped by
+    headquarters command range;
+  - rail capacity, interdiction and repair, with a one-level supply penalty per interdicted hex;
+  - Political/Base Action: place, establish, concentrate, accept surrender, restraint;
+  - air basing and bridge and rail attacks, at the ranges printed on the counters;
+  - control transfer by area-army sector, with the anti-sabotage rule;
+  - headquarters;
+  - junk crossing and Strategic Lift limits;
+  - Legitimacy tracks from 0 to 10;
+  - victory measures and weights;
+  - the campaign scenario and four short scenarios.
+
+  Still open, listed in A.11: control of the Kwantung and Korea Armies, the other pool sizes, the 1945
+  Japanese reinforcements, the airborne rule, and the exact setup hexes.
+- **Shared and kept files:** V4 reuses `sections/cd-style`, `locator`, `sheet-75km` and `maneuver-studies`
+  unchanged. V3 and the proposal stay as they were.
+
 Copyright Ben Paul Wise. All Rights Reserved.

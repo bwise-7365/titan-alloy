@@ -159,6 +159,7 @@ namespace HexXml {
     std::string mirror = "horizontal";
     bool cropMarks = true;
     std::optional<std::string> background;
+    std::optional<std::string> notice;  // copyright notice, top right and bottom left margins
     std::vector<CounterPlaceDoc> places;
   };
 
