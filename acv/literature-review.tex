@@ -135,7 +135,7 @@ result: an improper prior on a parameter that appears in some candidate models a
 not in others leaves the comparison undefined, because the missing normalising
 constant does not cancel. This is the Bartlett--Lindley paradox, and it appears in
 every treatment of Bayesian model selection \cite{llorente2022}, \cite{kass1995},
-\cite{lambert2019}.
+\cite{mattei2019}.
 
 The derivations in the paper are correct and are worth keeping for the reader, but
 they should be introduced as instances of a known difficulty rather than as
@@ -206,7 +206,7 @@ score is a sum of per-row terms once the shared parameters are fixed. That prope
 is called decomposability, and it is the same property that makes exact structure
 learning of Bayesian networks possible by dynamic programming \cite{silander2006}.
 Deterministic Bayesian subset selection of other kinds appears in
-\cite{hybrid2020} and \cite{kowal2022}.
+\cite{jin2021} and \cite{kowal2022}.
 
 The specific device in Section 10.2 of the paper, conditioning on a grid of
 $\sigma$ values so that a criterion which is not separable becomes separable,
@@ -573,7 +573,7 @@ literature. Several groups have published methods that infer group or block
 membership from the data instead of assuming it, and they do so with consistency
 proofs and at cross-sections far larger than nine
 \cite{gudmundsson2021}, \cite{brownlees2017}, \cite{billio2019},
-\cite{biclustered2012}, \cite{kim2026}.
+\cite{huang2012}, \cite{kim2026}.
 
 Plainly stated: the ability to recover a block arrangement from data, without
 imposing it, is neither new nor rare. A claim of novelty on that ground will be
@@ -712,207 +712,9 @@ And the observation that a deterministic criterion, evaluated in closed form,
 matches a Markov chain method at this size with a smaller worst case. All three are
 modest, all three are supported by the numbers in hand, and all three will hold up.
 
-\begin{thebibliography}{99}
-
-\bibitem{ament2021}
-S. Ament and C. Gomes,
-\emph{Sparse Bayesian learning via stepwise regression},
-Proceedings of Machine Learning Research 139, 2021.
-\url{https://proceedings.mlr.press/v139/ament21a/ament21a.pdf}
-
-\bibitem{biswas2022}
-N. Biswas, L. Mackey and X.-L. Meng,
-\emph{Scalable spike-and-slab}, 2022.
-\url{https://arxiv.org/abs/2204.01668}
-
-\bibitem{chan2020}
-J. C. C. Chan,
-\emph{Large Bayesian vector autoregressions}.
-\url{https://www.joshuachan.org/papers/large_BVAR.pdf}
-
-\bibitem{korobilis2013}
-D. Korobilis,
-\emph{VAR forecasting using Bayesian variable selection},
-Journal of Applied Econometrics 28(2), 204--230, 2013.
-\url{https://mpra.ub.uni-muenchen.de/21122/1/ssvs.pdf}
-
-\bibitem{yang2016}
-Y. Yang, M. J. Wainwright and M. I. Jordan,
-\emph{On the computational complexity of high-dimensional Bayesian variable
-selection},
-Annals of Statistics 44(6), 2497--2532, 2016.
-\url{https://projecteuclid.org/journals/annals-of-statistics/volume-44/issue-6/On-the-computational-complexity-of-high-dimensional-Bayesian-variable-selection/10.1214/15-AOS1417.pdf}
-
-\bibitem{barbieri2004}
-M. M. Barbieri and J. O. Berger,
-\emph{Optimal predictive model selection},
-Annals of Statistics 32(3), 870--897, 2004.
-\url{https://projecteuclid.org/journals/annals-of-statistics/volume-32/issue-3/Optimal-predictive-model-selection/10.1214/009053604000000238.full}
-
-\bibitem{basu2015}
-S. Basu and G. Michailidis,
-\emph{Regularized estimation in sparse high-dimensional time series models},
-Annals of Statistics 43(4), 1535--1567, 2015.
-\url{https://projecteuclid.org/euclid.aos/1434546214}
-
-\bibitem{billio2019}
-M. Billio, R. Casarin and L. Rossini,
-\emph{Bayesian nonparametric sparse VAR models},
-Journal of Econometrics 212(1), 97--115, 2019.
-\url{https://arxiv.org/abs/1608.02740}
-
-\bibitem{biclustered2012}
-T.-Y. Chiang and others,
-\emph{Learning bi-clustered vector autoregressive models},
-ECML PKDD 2012, Lecture Notes in Computer Science 7524.
-\url{https://link.springer.com/chapter/10.1007/978-3-642-33486-3_47}
-
-\bibitem{brownlees2017}
-C. T. Brownlees, G. S. Gudmundsson and G. Lugosi,
-\emph{Sparse estimation of huge networks with a block-wise structure},
-Econometrics Journal 20(3), S61--S85, 2017.
-\url{https://ideas.repec.org/a/wly/emjrnl/v20y2017i3ps61-s85.html}
-
-\bibitem{cheeseman1996}
-P. Cheeseman and J. Stutz,
-\emph{Bayesian classification (AutoClass): theory and results},
-in Advances in Knowledge Discovery and Data Mining, 1996.
-\url{https://ntrs.nasa.gov/citations/19920075544}
-
-\bibitem{dhillon2011}
-P. S. Dhillon, D. Foster and L. Ungar,
-\emph{Minimum description length penalization for group and multi-task sparse
-learning},
-Journal of Machine Learning Research 12, 2011.
-\url{https://jmlr.csail.mit.edu/papers/v12/dhillon11a.html}
-
-\bibitem{feroz2011}
-F. Feroz, S. T. Balan and M. P. Hobson,
-\emph{Detecting extrasolar planets from stellar radial velocities using Bayesian
-evidence}, 2011. Sets out the modified Jeffreys prior and the reason for it.
-\url{https://arxiv.org/abs/1012.5129}
-
-\bibitem{gsn2008}
-E. I. George, D. Sun and S. Ni,
-\emph{Bayesian stochastic search for VAR model restrictions},
-Journal of Econometrics 142(1), 553--580, 2008.
-\url{https://faculty.wharton.upenn.edu/wp-content/uploads/2012/04/GeorgeSunNi-JE2008.pdf}
-
-\bibitem{gudmundsson2021}
-G. S. Gudmundsson and C. T. Brownlees,
-\emph{Detecting groups in large vector autoregressions},
-Journal of Econometrics 225(1), 2--26, 2021.
-\url{https://bse.eu/research/publications/detecting-groups-large-vector-autoregressions}
-
-\bibitem{hybrid2020}
-\emph{Bayesian selection of best subsets via hybrid search},
-Computational Statistics, 2020.
-\url{https://link.springer.com/article/10.1007/s00180-020-00996-y}
-
-\bibitem{kass1995}
-R. E. Kass and A. E. Raftery,
-\emph{Bayes factors},
-Journal of the American Statistical Association 90(430), 773--795, 1995.
-\url{https://www.stat.washington.edu/raftery/Research/PDF/kass1995.pdf}
-
-\bibitem{kim2026}
-Y. Kim and C. Baek,
-\emph{Latent community paths in VAR-type models via dynamic directed spectral
-co-clustering}, 2026.
-\url{https://arxiv.org/abs/2604.12563}
-
-\bibitem{kowal2022}
-D. R. Kowal,
-\emph{Bayesian subset selection and variable importance for interpretable
-prediction and classification},
-Journal of Machine Learning Research 23, 2022.
-\url{https://www.jmlr.org/papers/volume23/21-0403/21-0403.pdf}
-
-\bibitem{lambert2019}
-\emph{A parsimonious tour of Bayesian model uncertainty}. Surveys the
-Bartlett--Lindley paradox and the standard remedies.
-\url{https://arxiv.org/abs/1902.05539}
-
-\bibitem{liang2008}
-F. Liang, R. Paulo, G. Molina, M. A. Clyde and J. O. Berger,
-\emph{Mixtures of g-priors for Bayesian variable selection},
-Journal of the American Statistical Association 103(481), 410--423, 2008.
-\url{https://www2.stat.duke.edu/~berger/papers/g-priors.pdf}
-
-\bibitem{llorente2022}
-F. Llorente, L. Martino, D. Delgado and J. L\'{o}pez-Santiago,
-\emph{On the safe use of prior densities for Bayesian model selection}, 2022.
-\url{https://arxiv.org/abs/2206.05210}
-
-\bibitem{mackay1992}
-D. J. C. MacKay,
-\emph{Bayesian interpolation},
-Neural Computation 4(3), 415--447, 1992.
-\url{https://authors.library.caltech.edu/records/r7qgh-q6g10}
-
-\bibitem{nicholson2015}
-W. B. Nicholson, J. Bien and D. S. Matteson,
-\emph{VARX-L: structured regularization for large vector autoregressions with
-exogenous variables}, 2015.
-\url{https://arxiv.org/abs/1508.07497}
-
-\bibitem{park2008}
-T. Park and G. Casella,
-\emph{The Bayesian lasso},
-Journal of the American Statistical Association 103(482), 681--686, 2008.
-\url{https://people.eecs.berkeley.edu/~jordan/courses/260-spring09/other-readings/park-casella.pdf}
-
-\bibitem{schwarz1978}
-G. Schwarz,
-\emph{Estimating the dimension of a model},
-Annals of Statistics 6(2), 461--464, 1978.
-\url{https://projecteuclid.org/journals/annals-of-statistics/volume-6/issue-2/Estimating-the-Dimension-of-a-Model/10.1214/aos/1176344136.full}
-
-\bibitem{scott2010}
-J. G. Scott and J. O. Berger,
-\emph{Bayes and empirical-Bayes multiplicity adjustment in the variable-selection
-problem},
-Annals of Statistics 38(5), 2587--2619, 2010.
-\url{https://arxiv.org/abs/1011.2333}
-
-\bibitem{silander2006}
-T. Silander and P. Myllym\"{a}ki,
-\emph{A simple approach for finding the globally optimal Bayesian network
-structure},
-Proceedings of the Twenty-Second Conference on Uncertainty in Artificial
-Intelligence, 2006.
-\url{https://arxiv.org/abs/1206.6875}
-
-\bibitem{tibshirani1996}
-R. Tibshirani,
-\emph{Regression shrinkage and selection via the lasso},
-Journal of the Royal Statistical Society Series B 58(1), 267--288, 1996.
-\url{https://webdoc.agsci.colostate.edu/koontz/arec-econ535/papers/Tibshirani%20%28JRSS-B%201996%29.pdf}
-
-\bibitem{wallace2005}
-C. S. Wallace,
-\emph{Statistical and Inductive Inference by Minimum Message Length},
-Springer, 2005.
-\url{https://link.springer.com/book/10.1007/0-387-27656-4}
-
-\bibitem{zhang2011}
-Z. Zhang and B. D. Rao,
-\emph{Sparse signal recovery with temporally correlated source vectors using
-sparse Bayesian learning}, 2011.
-\url{https://arxiv.org/abs/1102.3949}
-
-\bibitem{zhao2006}
-P. Zhao and B. Yu,
-\emph{On model selection consistency of lasso},
-Journal of Machine Learning Research 7, 2541--2563, 2006.
-\url{https://www.jmlr.org/papers/volume7/zhao06a/zhao06a.pdf}
-
-\bibitem{zou2006}
-H. Zou,
-\emph{The adaptive lasso and its oracle properties},
-Journal of the American Statistical Association 101(476), 1418--1429, 2006.
-\url{https://pages.stat.wisc.edu/~shao/stat992/zou2006.pdf}
-
-\end{thebibliography}
+% The references are kept in the shared CPVI bibliography.  unsrturl orders
+% them as ieeetr does, by first citation, and also prints the url field.
+\bibliographystyle{unsrturl}
+\bibliography{../../CPVI/shared-tex/fdp}
 
 \end{document}
