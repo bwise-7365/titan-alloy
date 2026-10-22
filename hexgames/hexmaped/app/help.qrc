@@ -1,0 +1,8 @@
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<!-- The user guide, built into the executable for Help > About (":/help/README.md"). -->
+<RCC>
+  <qresource prefix="/help">
+    <file alias="README.md">../README.md</file>
+  </qresource>
+</RCC>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
