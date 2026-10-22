@@ -1,0 +1,40 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml seq-move-command
+title A move command, from intent to events [PROPOSED]
+
+actor Player
+participant Session
+participant "MovementWalk\n(HexSearch)" as Walk
+participant ZocPolicy
+participant MovementPolicy
+participant "applyMove\n(pure)" as Apply
+participant Position
+participant EventLog
+participant "EventSink\n(view)" as Sink
+
+Player -> Session : reachable(units, mode)
+Session -> Walk : dijkstraBounded(HexAdjacencyGraph, scratch, sources, arcCost, ceiling, terminalP)
+Walk -> MovementPolicy : enter(ctx, unit, from, dir, mode)
+MovementPolicy --> Walk : EntryVerdict{cost | prohibited, mustStopP}
+Walk -> ZocPolicy : blockedForP(ctx, hex, side, Movement)
+ZocPolicy --> Walk : bool
+Walk --> Session : Field (reached hexes, paths, costs)
+Session --> Player : Reachability
+
+Player -> Session : apply(MoveUnit{units, mode, path})
+Session -> Session : validate: acting side, phase caps, path in reachable()
+Session -> Apply : applyMove(ctx, policies, cmd, sink)
+Apply -> Position : place(unit, hex) ; state(unit).flags.movedP
+Apply --> Session : Position'
+Session -> Session : control update (last toucher), stacking repair if @enforced says so
+Session -> EventLog : append(UnitMoved, ControlChanged...)
+Session -> Sink : onEvent(...)
+Session --> Player : Applied{firstEvent, eventCount}
+
+note over Session
+  An illegal command throws before
+  applyMove runs; the Position is
+  untouched and nothing is logged.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

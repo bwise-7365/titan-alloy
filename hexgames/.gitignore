@@ -1,0 +1,34 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
+# build trees and IDE state
+cmake-build-*/
+build/
+out/
+.idea/
+.vs/
+.vscode/
+CMakeCache.txt
+CMakeFiles/
+Testing/
+_deps/
+compile_commands.json
+# python
+__pycache__/
+*.pyc
+# rendered diagrams and golden diagnostics
+uml/out/
+*.actual.xml
+# image2sheet scratch: overlays, tiles, catalogues and renders a run regenerates
+map_graphics/xml/tools/image2sheet/work/
+# latex
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
+map_graphics/xml/tools/reader/work/
+# Natural Earth downloads the Circling Dragons builder reads (tools/cd/README.md)
+map_graphics/xml/tools/cd/ne/
+map_graphics/xml/tools/cd/diag_*.png
+# the logo tracer's intermediates (labels, palette, posterized preview)
+Circling Dragons/work/
+# Copyright Ben Paul Wise. All Rights Reserved.

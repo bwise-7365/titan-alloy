@@ -3,47 +3,98 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <vector>
-#include "SiteEntry.h"
 
-class QPlainTextEdit;
+#include "PreferencesDialog.h" // Preferences struct
+#include "SiteDatabase.h"
+
+class QListWidget;
 class QLineEdit;
 class QLabel;
+class QTimer;
+class QPoint;
 
+// The password-manager main window: an encrypted-database controller ported
+// from the old FLTK FPwdMan. Handles open/save (SBC-encrypted), the master-
+// passphrase flow, entry CRUD, find, sort, clipboard, live status lights, and
+// the idle auto-close.
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    // Program version, shown in Help -> About. 4.0 is the first version that
+    // writes the FPMQ2 format (SBC key schedule version 1).
+    static const int kVersionMajor = 4;
+    static const int kVersionMinor = 0;
+
+    explicit MainWindow(const QString& initialPath = QString(), QWidget* parent = nullptr);
     ~MainWindow();
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool eventFilter(QObject* watched, QEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
+    // File
+    void onNewFile();
+    void onOpen();
+    void onSave();
+    void onSaveAs();
+    // Edit
+    void onNewEntry();
+    void onEditEntry();
+    void onDeleteEntry();
+    // Tools
+    void onSortSites();
+    void onPreferences();
+    void onChangeMasterPassphrase();
+    void onToggleTheme();
+    // Help
+    void onAbout();
+    void onUsage();
+    // list / find
+    void onFindTextChanged(const QString& text);
     void onFindReturnPressed();
-    void onEditActionTriggered();
-    void onSaveActionTriggered();
-    void onSaveAsActionTriggered();
-    void onLoadActionTriggered();
-    void onSortSitesTriggered();
+    void onItemDoubleClicked();
+    void onCopyPassword();
+    void onListContextMenu(const QPoint& pos);
+    // security & timers
+    void onIdleTimeout();
+    void onClipTimerTick();
 
 private:
     void setupMenus();
     void setupCentralWidget();
-    void updateTextOutput();
-    bool saveToFile(const QString &fileName);
+    void loadPreferences();       // read m_prefs from QSettings
+    void savePreferences() const; // persist m_prefs to QSettings
+    void refreshList(int selectRow = -1);
+    void updateStatusTiles();
+    void markDirty();
+    void resetIdle();
+    int currentRow() const;
+    SiteEntry* currentEntry(); // the selected entry, or nullptr if none/out of range
 
-    QPlainTextEdit *m_textOutput;
-    QLineEdit *m_findLineEdit;
-    QLineEdit *m_fileLineEdit;
-    QLabel *m_entropyTile;
-    QLabel *m_passphraseTile;
-    QLabel *m_changesTile;
-    QString m_lastSearchString;
-    std::vector<SiteEntry> m_entries;
-    int m_lastFoundIndex;
+    bool maybeSaveGuard();               // true if it's OK to proceed (discard/saved)
+    bool ensurePassphraseForSave();      // prompt-create a passphrase if none set
+    bool doSave(const QString& path);    // encrypt+write; true on success
+    void openDatabase(const QString& path); // prompt passphrase + open (with retry)
+
+    QListWidget* m_list = nullptr;
+    QLineEdit* m_findLineEdit = nullptr;
+    QLineEdit* m_fileLineEdit = nullptr;
+    QLabel* m_passphraseTile = nullptr;
+    QLabel* m_changesTile = nullptr;
+    QLabel* m_clipboardTile = nullptr;
+    QTimer* m_idleTimer = nullptr;
+    QTimer* m_clipTimer = nullptr;
+
+    SiteDatabase m_db;
+    Preferences m_prefs;
+
+    QString m_lastSearch;
+    int m_lastFoundRow = -1;
+    int m_clipRemainingSecs = 0;
+    bool m_darkMode = false;
+    bool m_idleQuitting = false;
 };
 
 #endif // MAINWINDOW_H

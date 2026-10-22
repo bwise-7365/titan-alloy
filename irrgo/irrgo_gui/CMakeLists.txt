@@ -3,8 +3,6 @@
 #   cmake -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/msvc2022_64 ...
 # or set it in CLion: Settings > Build > CMake > CMake options.
 
-#set(CMAKE_PREFIX_PATH "C:/Qt/6.8.3/msvc2022_64")
-set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set(CMAKE_AUTOMOC ON)
@@ -45,13 +43,21 @@ qt_add_resources(irrgo_gui "textures_res"
 if(WIN32)
     target_sources(irrgo_gui PRIVATE irrgo.rc)
 endif()
+irrgo_add_version_resource(irrgo_gui "IrrGo")
 
 
-# Comment this out to get a CMD window and view output
-#set_target_properties(irrgo_gui PROPERTIES  WIN32_EXECUTABLE TRUE )
+# Build as a Windows GUI subsystem app, so launching it from Explorer does not also open
+# a console window. Ignored on non-Windows platforms, so this stays portable; Qt supplies
+# the WinMain entry point via Qt6::EntryPoint, which Qt6::Core links in automatically.
+#
+# The cost: qWarning/qDebug and anything written to stderr have nowhere to go when the
+# program is started from Explorer. Comment this line out to get the console back while
+# debugging. (Launched from an existing terminal, output still appears there.)
+set_target_properties(irrgo_gui PROPERTIES WIN32_EXECUTABLE TRUE)
 
 target_link_libraries(irrgo_gui PRIVATE
     Qt6::Widgets
+    gui_common
     irrgo_lib
 )
 # Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,0 +1,71 @@
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="630" height="430" viewBox="0 0 630 430" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c01c28"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="630" height="430" fill="#fdfbf7"/>
+  <text x="315" y="26" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Walls (F3, H2, H3)</text>
+  <text x="152" y="52" text-anchor="middle" font-size="13" fill="#222">Edge wall — uncapturable</text>
+  <text x="472" y="52" text-anchor="middle" font-size="13" fill="#222">Interior wall — flankable</text>
+
+  <!-- Panel A: 6x6 board at (20,64) -->
+  <rect x="20" y="64" width="264" height="264" fill="#ecdcb4" stroke="#8a6d3b" stroke-width="1.5"/>
+  <g stroke="#b09868" stroke-width="1">
+    <line x1="64" y1="64" x2="64" y2="328"/><line x1="108" y1="64" x2="108" y2="328"/>
+    <line x1="152" y1="64" x2="152" y2="328"/><line x1="196" y1="64" x2="196" y2="328"/>
+    <line x1="240" y1="64" x2="240" y2="328"/>
+    <line x1="20" y1="108" x2="284" y2="108"/><line x1="20" y1="152" x2="284" y2="152"/>
+    <line x1="20" y1="196" x2="284" y2="196"/><line x1="20" y1="240" x2="284" y2="240"/>
+    <line x1="20" y1="284" x2="284" y2="284"/>
+  </g>
+  <!-- White pressing from above -->
+  <circle cx="130" cy="262" r="16" fill="#f7f2e7" stroke="#5a5248" stroke-width="2"/>
+  <circle cx="174" cy="262" r="16" fill="#f7f2e7" stroke="#5a5248" stroke-width="2"/>
+  <!-- Black edge wall, bottom row -->
+  <circle cx="86"  cy="306" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="130" cy="306" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="174" cy="306" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="218" cy="306" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <!-- Edge marker -->
+  <line x1="64" y1="332" x2="240" y2="332" stroke="#2e8b57" stroke-width="3"/>
+
+  <!-- Panel B: 6x6 board at (340,64) -->
+  <rect x="340" y="64" width="264" height="264" fill="#ecdcb4" stroke="#8a6d3b" stroke-width="1.5"/>
+  <g stroke="#b09868" stroke-width="1">
+    <line x1="384" y1="64" x2="384" y2="328"/><line x1="428" y1="64" x2="428" y2="328"/>
+    <line x1="472" y1="64" x2="472" y2="328"/><line x1="516" y1="64" x2="516" y2="328"/>
+    <line x1="560" y1="64" x2="560" y2="328"/>
+    <line x1="340" y1="108" x2="604" y2="108"/><line x1="340" y1="152" x2="604" y2="152"/>
+    <line x1="340" y1="196" x2="604" y2="196"/><line x1="340" y1="240" x2="604" y2="240"/>
+    <line x1="340" y1="284" x2="604" y2="284"/>
+  </g>
+  <!-- Completing square tint (3,2) -->
+  <rect x="428" y="196" width="44" height="44" fill="#c01c28" fill-opacity="0.22" stroke="#c01c28" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <!-- Black interior wall, row 2 -->
+  <circle cx="406" cy="174" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="450" cy="174" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="494" cy="174" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <circle cx="538" cy="174" r="16" fill="#2e2a26" stroke="#000" stroke-width="1.5"/>
+  <!-- White jaw above, white striker right -->
+  <circle cx="450" cy="130" r="16" fill="#f7f2e7" stroke="#5a5248" stroke-width="2"/>
+  <circle cx="582" cy="218" r="16" fill="#f7f2e7" stroke="#5a5248" stroke-width="2"/>
+  <!-- Threatened stone ring -->
+  <circle cx="450" cy="174" r="21" fill="none" stroke="#c01c28" stroke-width="2" stroke-dasharray="5,3"/>
+  <!-- Enemy slide into the completing square -->
+  <line x1="560" y1="218" x2="460" y2="218" stroke="#c01c28" stroke-width="2.5" marker-end="url(#arrowR)"/>
+
+  <!-- Captions -->
+  <text x="152" y="356" text-anchor="middle" font-size="12" fill="#333">Every stone: friend on the wall axis,</text>
+  <text x="152" y="372" text-anchor="middle" font-size="12" fill="#333">edge (green) blocks the other axis.</text>
+  <text x="472" y="356" text-anchor="middle" font-size="12" fill="#333">White holds one jaw; one slide to the tinted</text>
+  <text x="472" y="372" text-anchor="middle" font-size="12" fill="#333">square captures. Interior walls need backing.</text>
+
+  <!-- Legend -->
+  <circle cx="205" cy="404" r="6" fill="#2e2a26" stroke="#000"/>
+  <text x="216" y="408" font-size="12" fill="#333">Black (you)</text>
+  <circle cx="315" cy="404" r="6" fill="#f7f2e7" stroke="#5a5248" stroke-width="1.5"/>
+  <text x="326" y="408" font-size="12" fill="#333">White (enemy)</text>
+</svg>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

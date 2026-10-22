@@ -1,0 +1,17 @@
+# Build output
+build/
+out/
+cmake-build-*/
+vcpkg_installed/
+
+# Machine-specific presets (see BUILD_NOTES section 3, rule 1)
+CMakeUserPresets.json
+
+# IDE
+.idea/
+.vs/
+.vscode/
+
+# The vcpkg manifest is NOT ignorable - if a broad *.json rule is ever added
+# above, this negation must stay below it. (This bit the CPPurses port.)
+!vcpkg.json

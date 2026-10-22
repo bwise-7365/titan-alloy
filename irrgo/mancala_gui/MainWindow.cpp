@@ -1,6 +1,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "MainWindow.h"
 #include "AbsGame.h"
+#include "menu_helpers.h"
 #include <QAction>
 #include <QActionGroup>
 #include <QComboBox>
@@ -17,11 +18,10 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QWidgetAction>
-#include <thread>
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
-static const struct { int secs; const char* label; } kMctsOptions[] = {
+static const guicommon::MctsOption kMctsOptions[] = {
     {  1, "1 sec" }, {  2, "2 sec" }, {  5, "5 sec" },
     {  10, "10 sec" }, {  30, "30 sec" }, {  60, "60 sec" },
 };
@@ -29,20 +29,9 @@ static const struct { int secs; const char* label; } kMctsOptions[] = {
 // ── Constructor ───────────────────────────────────────────────────────────────
 
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
+    : guicommon::GameMainWindow(parent)
 {
     setWindowTitle("Mancala");
-
-    searchBarTimer_ = new QTimer(this);
-    connect(searchBarTimer_, &QTimer::timeout, this, [this]() {
-        if (searchBudgetMs_ > 0) {
-            int pct = qMin(100, static_cast<int>(searchElapsed_.elapsed()) * 100
-                                / searchBudgetMs_);
-            searchProgress_->setValue(pct);
-        } else {
-            searchProgress_->setValue((searchProgress_->value() + 3) % 101);
-        }
-    });
 
     auto* central = new QWidget(this);
     setCentralWidget(central);
@@ -57,23 +46,11 @@ MainWindow::MainWindow(QWidget* parent)
     boardWidget_ = new MancalaWidget(boardArea);
     boardVBox->addWidget(boardWidget_, 1);
 
-    turnProgress_ = new QProgressBar(boardArea);
-    turnProgress_->setRange(0, 100);
-    turnProgress_->setFixedHeight(14);
-    turnProgress_->setTextVisible(false);
-    { auto sp = turnProgress_->sizePolicy(); sp.setRetainSizeWhenHidden(true);
-      turnProgress_->setSizePolicy(sp); }
-    turnProgress_->hide();
-    boardVBox->addWidget(turnProgress_);
-
-    searchProgress_ = new QProgressBar(boardArea);
-    searchProgress_->setRange(0, 100);
-    searchProgress_->setFixedHeight(14);
-    searchProgress_->setTextVisible(false);
-    { auto sp = searchProgress_->sizePolicy(); sp.setRetainSizeWhenHidden(true);
-      searchProgress_->setSizePolicy(sp); }
-    searchProgress_->hide();
-    boardVBox->addWidget(searchProgress_);
+    auto* turnBar = guicommon::makeStatusBar(boardArea);
+    boardVBox->addWidget(turnBar);
+    auto* searchBar = guicommon::makeStatusBar(boardArea);
+    boardVBox->addWidget(searchBar);
+    search().setProgressBars(searchBar, turnBar);
 
     root->addWidget(boardArea, 1);
 
@@ -97,13 +74,16 @@ MainWindow::MainWindow(QWidget* parent)
     stopBtn_ = new QPushButton("Stop", statusRow);
     stopBtn_->setStyleSheet("QPushButton { background-color: #FFCC99; color: black; }");
     stopBtn_->setFixedWidth(44);
-    { auto sp = stopBtn_->sizePolicy(); sp.setRetainSizeWhenHidden(true);
-      stopBtn_->setSizePolicy(sp); }
+    guicommon::retainSizeWhenHidden(stopBtn_);
     stopBtn_->hide();
     statusHBox->addWidget(statusLabel_, 1);
     statusHBox->addWidget(stopBtn_);
     pv->addWidget(statusRow);
-    connect(stopBtn_, &QPushButton::clicked, this, &MainWindow::cancelSearch);
+    connect(stopBtn_, &QPushButton::clicked, this, [this]() {
+        search().cancelSearch();
+        endVersus();                     // Stop drops a versus game back to manual play
+        manualAction_->setChecked(true);  // reflect it in the Play menu
+    });
 
     pv->addSpacing(8);
 
@@ -193,87 +173,37 @@ void MainWindow::buildMenuBar() {
     manualAction_->setCheckable(true);
     manualAction_->setChecked(true);
     playGroup->addAction(manualAction_);
+    // Selecting Manual returns both sides to the mouse: leave any versus game.
+    connect(manualAction_, &QAction::triggered, this, [this]() {
+        endVersus();
+        search().cancelSearch();
+    });
 
     // NegaMax submenu
     {
-        auto* nmAction = new QAction("NegaMax", this);
-        nmAction->setCheckable(true);
-        playGroup->addAction(nmAction);
-        playMenu->addAction(nmAction);
-
-        auto* nmMenu  = new QMenu(this);
-        auto* widget  = new QWidget;
-        auto* vbox    = new QVBoxLayout(widget);
-        vbox->setContentsMargins(8, 6, 8, 6);
-        auto* form    = new QFormLayout;
-        form->setSpacing(6);
-        vbox->addLayout(form);
-
-        playDepthSpin_ = new QSpinBox(widget);
-        playDepthSpin_->setRange(1, 12);
-        playDepthSpin_->setValue(6);
-        form->addRow("Depth:", playDepthSpin_);
-
-        playTurnsSpin_ = new QSpinBox(widget);
-        playTurnsSpin_->setRange(1, 200);
-        playTurnsSpin_->setValue(4);
-        form->addRow("Turns:", playTurnsSpin_);
-
-        auto* sep = new QFrame(widget);
-        sep->setFrameShape(QFrame::HLine);
-        vbox->addWidget(sep);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
+        // Same time choices as MCTS: both are wall-clock budgets now.
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, playMenu, playGroup, nm,
+                                                      playNegamaxSecCombo_, playTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayNegamaxGo);
-
-        auto* wa = new QWidgetAction(nmMenu);
-        wa->setDefaultWidget(widget);
-        nmMenu->addAction(wa);
-        nmAction->setMenu(nmMenu);
-        connect(nmMenu, &QMenu::aboutToShow, this, [nmAction]() { nmAction->setChecked(true); });
     }
 
     // MCTS submenu
     {
-        auto* mctsAction = new QAction("MCTS", this);
-        mctsAction->setCheckable(true);
-        playGroup->addAction(mctsAction);
-        playMenu->addAction(mctsAction);
-
-        auto* mctsMenu = new QMenu(this);
-        auto* widget   = new QWidget;
-        auto* vbox2    = new QVBoxLayout(widget);
-        vbox2->setContentsMargins(8, 6, 8, 6);
-        auto* form2    = new QFormLayout;
-        form2->setSpacing(6);
-        vbox2->addLayout(form2);
-
-        playMctsSecCombo_ = new QComboBox(widget);
-        for (const auto& o : kMctsOptions)
-            playMctsSecCombo_->addItem(o.label, o.secs);
-        form2->addRow("Time:", playMctsSecCombo_);
-
-        playMctsTurnsSpin_ = new QSpinBox(widget);
-        playMctsTurnsSpin_->setRange(1, 200);
-        playMctsTurnsSpin_->setValue(4);
-        form2->addRow("Turns:", playMctsTurnsSpin_);
-
-        auto* sep2 = new QFrame(widget);
-        sep2->setFrameShape(QFrame::HLine);
-        vbox2->addWidget(sep2);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox2->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        guicommon::MctsMenuConfig mc{kMctsOptions, std::size(kMctsOptions), true, 1, 200, 4};
+        auto* goBtn = guicommon::buildMctsMenu(this, playMenu, playGroup, mc,
+                                               playMctsSecCombo_, playMctsTurnsSpin_);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayMctsGo);
+    }
 
-        auto* wa = new QWidgetAction(mctsMenu);
-        wa->setDefaultWidget(widget);
-        mctsMenu->addAction(wa);
-        mctsAction->setMenu(mctsMenu);
-        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() { mctsAction->setChecked(true); });
+    // Computer submenu (human vs computer)
+    {
+        // The same NegaMax time choices, plus which side (P0/P1) the human takes; the
+        // computer plays the other and answers every turn.
+        guicommon::ComputerMenuConfig cc{kMctsOptions, std::size(kMctsOptions), "P0", "P1", 0};
+        auto* goBtn = guicommon::buildComputerMenu(this, playMenu, playGroup, cc,
+                                                   playComputerSecCombo_, playComputerSideCombo_);
+        connect(goBtn, &QPushButton::clicked, this, &MainWindow::onPlayComputerGo);
     }
 
     // ── Suggest menu ───────────────────────────────────────────────────────────
@@ -283,87 +213,42 @@ void MainWindow::buildMenuBar() {
 
     // NegaMax suggest
     {
-        auto* nmAction = new QAction("NegaMax", this);
-        nmAction->setCheckable(true);
-        suggestGroup->addAction(nmAction);
-        suggestMenu->addAction(nmAction);
-
-        auto* nmMenu  = new QMenu(this);
-        auto* widget  = new QWidget;
-        auto* vbox    = new QVBoxLayout(widget);
-        vbox->setContentsMargins(8, 6, 8, 6);
-        auto* form    = new QFormLayout;
-        form->setSpacing(6);
-        vbox->addLayout(form);
-
-        suggestDepthSpin_ = new QSpinBox(widget);
-        suggestDepthSpin_->setRange(1, 12);
-        suggestDepthSpin_->setValue(6);
-        form->addRow("Depth:", suggestDepthSpin_);
-
-        auto* sep = new QFrame(widget);
-        sep->setFrameShape(QFrame::HLine);
-        vbox->addWidget(sep);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, nmMenu, &QMenu::hide);
+        guicommon::TimeMenuConfig nm{kMctsOptions, std::size(kMctsOptions)};
+        nm.withTurns = false;
+        QSpinBox* unusedTurns = nullptr;
+        auto* goBtn = guicommon::buildNegaMaxTimeMenu(this, suggestMenu, suggestGroup, nm,
+                                                      suggestNegamaxSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestNegamaxGo);
-
-        auto* wa = new QWidgetAction(nmMenu);
-        wa->setDefaultWidget(widget);
-        nmMenu->addAction(wa);
-        nmAction->setMenu(nmMenu);
-        connect(nmMenu, &QMenu::aboutToShow, this, [nmAction]() { nmAction->setChecked(true); });
     }
 
     // MCTS suggest
     {
-        auto* mctsAction = new QAction("MCTS", this);
-        mctsAction->setCheckable(true);
-        suggestGroup->addAction(mctsAction);
-        suggestMenu->addAction(mctsAction);
-
-        auto* mctsMenu = new QMenu(this);
-        auto* widget   = new QWidget;
-        auto* vbox2    = new QVBoxLayout(widget);
-        vbox2->setContentsMargins(8, 6, 8, 6);
-        auto* form2    = new QFormLayout;
-        form2->setSpacing(6);
-        vbox2->addLayout(form2);
-
-        suggestMctsSecCombo_ = new QComboBox(widget);
-        for (const auto& o : kMctsOptions)
-            suggestMctsSecCombo_->addItem(o.label, o.secs);
-        form2->addRow("Time:", suggestMctsSecCombo_);
-
-        auto* sep2 = new QFrame(widget);
-        sep2->setFrameShape(QFrame::HLine);
-        vbox2->addWidget(sep2);
-
-        auto* goBtn = new QPushButton("Go!", widget);
-        vbox2->addWidget(goBtn);
-        connect(goBtn, &QPushButton::clicked, mctsMenu, &QMenu::hide);
+        guicommon::MctsMenuConfig mc{kMctsOptions, std::size(kMctsOptions)};
+        mc.withTurns = false;
+        QSpinBox* unusedTurns = nullptr;
+        auto* goBtn = guicommon::buildMctsMenu(this, suggestMenu, suggestGroup, mc,
+                                               suggestMctsSecCombo_, unusedTurns);
         connect(goBtn, &QPushButton::clicked, this, &MainWindow::onSuggestMctsGo);
-
-        auto* wa = new QWidgetAction(mctsMenu);
-        wa->setDefaultWidget(widget);
-        mctsMenu->addAction(wa);
-        mctsAction->setMenu(mctsMenu);
-        connect(mctsMenu, &QMenu::aboutToShow, this, [mctsAction]() { mctsAction->setChecked(true); });
     }
 
-    // Keep depth spinboxes in sync.
-    connect(playDepthSpin_,    &QSpinBox::valueChanged,
-            suggestDepthSpin_, &QSpinBox::setValue);
-    connect(suggestDepthSpin_, &QSpinBox::valueChanged,
-            playDepthSpin_,    &QSpinBox::setValue);
+    // Keep the NegaMax time combos in sync.
+    connect(playNegamaxSecCombo_,    &QComboBox::currentIndexChanged,
+            suggestNegamaxSecCombo_, &QComboBox::setCurrentIndex);
+    connect(suggestNegamaxSecCombo_, &QComboBox::currentIndexChanged,
+            playNegamaxSecCombo_,    &QComboBox::setCurrentIndex);
+
+    // ── About ─────────────────────────────────────────────────────────────────
+    auto* aboutMenu = menuBar()->addMenu("About");
+    connect(aboutMenu->addAction("About Mancala"), &QAction::triggered, this, [this]() {
+        guicommon::showAboutDialog(this, "Mancala");
+    });
 }
 
 // ── Game control ──────────────────────────────────────────────────────────────
 
 void MainWindow::onNewGame() {
-    cancelSearch();
+    search().cancelSearch();
+    endVersus();  // a fresh board leaves any human-vs-computer game
     suggestedLog_->clear();
     boardWidget_->clearSuggestion();
     moveLog_->clear();
@@ -381,7 +266,7 @@ void MainWindow::updateWindowSize() {
 }
 
 void MainWindow::onMoveRequested(int pitIndex) {
-    if (!game_ || game_->isTerminal() || isSearching_) return;
+    if (!game_ || game_->isTerminal() || search().isSearching()) return;
     if (!game_->isLegalMove(pitIndex)) return;
 
     int player = game_->currentPlayer();
@@ -392,42 +277,14 @@ void MainWindow::onMoveRequested(int pitIndex) {
     boardWidget_->update();
     logMove(pitIndex, player);
     updateControls();
-}
-
-// ── Search progress ───────────────────────────────────────────────────────────
-
-void MainWindow::startSearchIndicator(int budgetSeconds) {
-    searchBudgetMs_ = budgetSeconds * 1000;
-    searchProgress_->setValue(0);
-    searchProgress_->show();
-    if (searchBudgetMs_ > 0) {
-        searchElapsed_.start();
-        searchBarTimer_->setInterval(250);
-    } else {
-        searchBarTimer_->setInterval(30);
-    }
-    searchBarTimer_->start();
-    updateControls();
-}
-
-void MainWindow::stopSearchIndicator() {
-    searchBarTimer_->stop();
-    searchProgress_->hide();
-}
-
-void MainWindow::cancelSearch() {
-    ++searchGen_;
-    playTurnsRemaining_ = 0;
-    playTurnsTotal_     = 0;
-    turnProgress_->hide();
-    if (isSearching_) {
-        isSearching_ = false;
-        stopSearchIndicator();
-        updateControls();
-    }
+    maybeComputerMove();  // in Computer mode, let the computer answer this move
 }
 
 // ── AI play ───────────────────────────────────────────────────────────────────
+
+AbsGame::Game* MainWindow::currentGame() {
+    return game_.get();
+}
 
 void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
     if (!game_ || game_->isTerminal()) return;
@@ -444,151 +301,76 @@ void MainWindow::applyComputedMove(AbsGame::MoveId mv) {
 }
 
 void MainWindow::onPlayNegamaxGo() {
-    if (!game_ || game_->isTerminal() || isSearching_) return;
-
-    if (playTurnsRemaining_ <= 0) {
-        playTurnsRemaining_ = playTurnsSpin_->value();
-        playTurnsTotal_     = playTurnsRemaining_;
-        turnProgress_->setValue(0);
-        turnProgress_->show();
-    }
-
-    isSearching_ = true;
-    startSearchIndicator();
-
-    auto     searchGame = game_->clone();
-    int      depth      = playDepthSpin_->value();
-    unsigned gen        = searchGen_;
-
-    std::thread([this, gen, depth, searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth, 10000);
-        QMetaObject::invokeMethod(this, [this, mv, gen]() {
-            if (gen != searchGen_) return;
-            isSearching_ = false;
-            stopSearchIndicator();
-            applyComputedMove(mv);
-            --playTurnsRemaining_;
-            if (playTurnsTotal_ > 0)
-                turnProgress_->setValue((playTurnsTotal_ - playTurnsRemaining_) * 100
-                                        / playTurnsTotal_);
-            if (!game_->isTerminal() && playTurnsRemaining_ > 0)
-                onPlayNegamaxGo();
-            else {
-                turnProgress_->hide();
-                playTurnsTotal_ = 0;
-            }
-        }, Qt::QueuedConnection);
-    }).detach();
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playNegamaxSecCombo_->currentData().toInt());
+    startPlay(p, playTurnsSpin_->value());
 }
 
 void MainWindow::onPlayMctsGo() {
-    if (!game_ || game_->isTerminal() || isSearching_) return;
+    endVersus();  // auto-play drives both sides; drop any human-vs-computer game
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        playMctsSecCombo_->currentData().toInt());
+    startPlay(p, playMctsTurnsSpin_->value());
+}
 
-    if (playTurnsRemaining_ <= 0) {
-        playTurnsRemaining_ = playMctsTurnsSpin_->value();
-        playTurnsTotal_     = playTurnsRemaining_;
-        turnProgress_->setValue(0);
-        turnProgress_->show();
+// Enter human-vs-computer mode: the human takes the side chosen in the Computer submenu and
+// the computer answers each of its turns with a NegaMax search at the chosen think time.
+void MainWindow::onPlayComputerGo() {
+    if (!game_ || game_->isTerminal()) {
+        return;
     }
-
-    int      seconds = playMctsSecCombo_->currentData().toInt();
-    isSearching_ = true;
-    startSearchIndicator(seconds);
-
-    auto     searchGame = game_->clone();
-    unsigned gen        = searchGen_;
-
-    std::thread([this, gen, seconds, searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::mcts(*searchGame, seconds);
-        QMetaObject::invokeMethod(this, [this, mv, gen]() {
-            if (gen != searchGen_) return;
-            isSearching_ = false;
-            stopSearchIndicator();
-            applyComputedMove(mv);
-            --playTurnsRemaining_;
-            if (playTurnsTotal_ > 0)
-                turnProgress_->setValue((playTurnsTotal_ - playTurnsRemaining_) * 100
-                                        / playTurnsTotal_);
-            if (!game_->isTerminal() && playTurnsRemaining_ > 0)
-                onPlayMctsGo();
-            else {
-                turnProgress_->hide();
-                playTurnsTotal_ = 0;
-            }
-        }, Qt::QueuedConnection);
-    }).detach();
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        playComputerSecCombo_->currentData().toInt());
+    const int humanSide = playComputerSideCombo_->currentData().toInt();
+    beginVersus(p, humanSide);  // if the computer holds the opening move, it starts now
 }
 
 void MainWindow::onSuggestNegamaxGo() {
-    if (!game_ || game_->isTerminal() || isSearching_) return;
+    if (!canStartSearch()) return;
 
-    isSearching_ = true;
-    startSearchIndicator();
+    int cp      = game_->currentPlayer();
+    int numPits = game_->numPits();
 
-    int      depth      = suggestDepthSpin_->value();
-    int      cp         = game_->currentPlayer();
-    int      numPits    = game_->numPits();
-    unsigned gen        = searchGen_;
-    auto     searchGame = game_->clone();
-
-    std::thread([this, gen, depth, cp, numPits,
-                 searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::bestMove(*searchGame, depth, 10000);
-        QMetaObject::invokeMethod(this, [this, mv, gen, cp, numPits]() {
-            if (gen != searchGen_) return;
-            isSearching_ = false;
-            stopSearchIndicator();
-            updateControls();
-            if (mv >= 0) {
-                int pitNum = (cp == 0) ? mv + 1 : mv - numPits;
-                suggestedLog_->setText(
-                    QString("P%1 pit %2").arg(cp).arg(pitNum));
-                boardWidget_->setSuggestion(mv);
-            } else {
-                suggestedLog_->setText("(no move)");
-            }
-        }, Qt::QueuedConnection);
-    }).detach();
+    const auto p = guicommon::SearchController::Params::negamaxTimed(
+        suggestNegamaxSecCombo_->currentData().toInt());
+    search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
+        if (mv >= 0) {
+            int pitNum = (cp == 0) ? mv + 1 : mv - numPits;
+            suggestedLog_->setText(QString("P%1 pit %2").arg(cp).arg(pitNum));
+            boardWidget_->setSuggestion(mv);
+        } else {
+            suggestedLog_->setText("(no move)");
+        }
+    });
 }
 
 void MainWindow::onSuggestMctsGo() {
-    if (!game_ || game_->isTerminal() || isSearching_) return;
+    if (!canStartSearch()) return;
 
-    isSearching_ = true;
-    int      seconds    = suggestMctsSecCombo_->currentData().toInt();
-    startSearchIndicator(seconds);
+    int cp      = game_->currentPlayer();
+    int numPits = game_->numPits();
 
-    int      cp         = game_->currentPlayer();
-    int      numPits    = game_->numPits();
-    unsigned gen        = searchGen_;
-    auto     searchGame = game_->clone();
-
-    std::thread([this, gen, seconds, cp, numPits,
-                 searchGame = std::move(searchGame)]() {
-        AbsGame::MoveId mv = AbsGame::Searcher::mcts(*searchGame, seconds);
-        QMetaObject::invokeMethod(this, [this, mv, gen, cp, numPits]() {
-            if (gen != searchGen_) return;
-            isSearching_ = false;
-            stopSearchIndicator();
-            updateControls();
-            if (mv >= 0) {
-                int pitNum = (cp == 0) ? mv + 1 : mv - numPits;
-                suggestedLog_->setText(
-                    QString("P%1 pit %2").arg(cp).arg(pitNum));
-                boardWidget_->setSuggestion(mv);
-            } else {
-                suggestedLog_->setText("(no move)");
-            }
-        }, Qt::QueuedConnection);
-    }).detach();
+    const auto p = guicommon::SearchController::Params::mctsTimed(
+        suggestMctsSecCombo_->currentData().toInt());
+    search().launch(game_->clone(), p, [this, cp, numPits](AbsGame::MoveId mv, unsigned) {
+        if (mv >= 0) {
+            int pitNum = (cp == 0) ? mv + 1 : mv - numPits;
+            suggestedLog_->setText(QString("P%1 pit %2").arg(cp).arg(pitNum));
+            boardWidget_->setSuggestion(mv);
+        } else {
+            suggestedLog_->setText("(no move)");
+        }
+    });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 void MainWindow::updateControls() {
-    stopBtn_->setVisible(isSearching_);
-    boardWidget_->setSearching(isSearching_);
-    bool idle = !isSearching_;
+    bool searching = search().isSearching();
+    stopBtn_->setVisible(searching);
+    boardWidget_->setSearching(searching);
+    bool idle = !searching;
     menuBar()->setEnabled(idle);
     clearSuggestBtn_->setEnabled(idle);
 
@@ -602,7 +384,7 @@ void MainWindow::updateControls() {
             s0 > s1 ? "P0 wins!" : s1 > s0 ? "P1 wins!" : "Draw!");
         return;
     }
-    if (isSearching_) {
+    if (searching) {
         statusLabel_->setText("Thinking...");
     } else {
         int cp = game_->currentPlayer();

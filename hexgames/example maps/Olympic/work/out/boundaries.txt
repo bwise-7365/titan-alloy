@@ -1,0 +1,116 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+# W18f boundaries
+# American Objective Line (grey dashed). Runs as a vertical straight line through the middle of the
+# zig-zag band between columns 24 and 25 (it does NOT follow hexsides exactly; it crosses the slanted
+# sides at their midpoints). Nearest hexside chain = the ne/se sides of the column-24 hexes:
+# 2405:ne, 2405:se, 2406:ne, 2406:se, ... (each col-24 hex contributes ne then se).
+# start: north coast at 2405 (sea hex 2505 to its ne; line begins near top of 2405 / 2405:ne).
+# rows 5-20 checked on middle photo (crops f_a1..f_a4): line stays in the 24/25 band, x constant.
+# rows 20-27 checked (crops f_a5, f_a6). Line ends at the right vertex of 2427 (top of pale hex 2528), i.e. in the Tsuno assault-hex sea area (2427/2528).
+# ordered north to south, chain of the col-24 hexes' ne then se sides:
+side: 2405:ne
+side: 2405:se
+side: 2406:ne
+side: 2406:se
+side: 2407:ne
+side: 2407:se
+side: 2408:ne
+side: 2408:se
+side: 2409:ne
+side: 2409:se
+side: 2410:ne
+side: 2410:se
+side: 2411:ne
+side: 2411:se
+side: 2412:ne
+side: 2412:se
+side: 2413:ne
+side: 2413:se
+side: 2414:ne
+side: 2414:se
+side: 2415:ne
+side: 2415:se
+side: 2416:ne
+side: 2416:se
+side: 2417:ne
+side: 2417:se
+side: 2418:ne
+side: 2418:se
+side: 2419:ne
+side: 2419:se
+side: 2420:ne
+side: 2420:se
+side: 2421:ne
+side: 2421:se
+side: 2422:ne
+side: 2422:se
+side: 2423:ne
+side: 2423:se
+side: 2424:ne
+side: 2424:se
+side: 2425:ne
+side: 2425:se
+side: 2426:ne
+side: 2426:se
+side: 2427:ne
+# pattern: zig-zag along ne/se sides (line sits mid-band between cols 24 and 25, about 15 px inside col-24 hexes at quarter scale); never through hex centres. 45 sides.
+# doubt: the line is straight, so the equally good alternative reading is the col-25 nw/sw sides (same physical sides, named from the other hex). Not a real ambiguity.
+# doubt: exact start: line begins at the coast of 2405 (top of 2405:ne); the sea hex 2505 lies beyond, the label IZUMI is to the west.
+# North-South Boundary Line (red dashed). Rows 0-12 of cols 30-34: no line (only a photo crease near 3103). Line starts
+# at y ~ top of 3113 (crops f_b1..f_b3): mid-band between cols 31 and 32, same zig-zag pattern.
+# start: in the sea inlet just north of Yatsushiro (3214), at the top of 3113 / left vertex of sea hex 3212, about 1 hex north of the coast.
+# rows 13-33 checked (crops f_b3..f_b7); line stays straight at mid-band between cols 31 and 32 all the way.
+# ordered north to south, ne then se sides of the col-31 hexes:
+side: 3113:ne
+side: 3113:se
+side: 3114:ne
+side: 3114:se
+side: 3115:ne
+side: 3115:se
+side: 3116:ne
+side: 3116:se
+side: 3117:ne
+side: 3117:se
+side: 3118:ne
+side: 3118:se
+side: 3119:ne
+side: 3119:se
+side: 3120:ne
+side: 3120:se
+side: 3121:ne
+side: 3121:se
+side: 3122:ne
+side: 3122:se
+side: 3123:ne
+side: 3123:se
+side: 3124:ne
+side: 3124:se
+side: 3125:ne
+side: 3125:se
+side: 3126:ne
+side: 3126:se
+side: 3127:ne
+side: 3127:se
+side: 3128:ne
+side: 3128:se
+side: 3129:ne
+side: 3129:se
+side: 3130:ne
+side: 3130:se
+side: 3131:ne
+side: 3131:se
+side: 3132:ne
+side: 3132:se
+side: 3133:ne
+side: 3133:se
+# end: in the sea south of the Saeki peninsula coast: line ends at the bottom-right vertex of 3133 (top of sea hex 3134), after 3133:se. (Coast at 3132/3232.)
+# pattern: zig-zag ne/se sides, no hex centres. 42 sides.
+# doubt: Yatsushiro dot (3214 per the sheet) lies just west of the line, at the col-31/32 band; the line passes within about a fifth of a hex of it.
+# doubt: line is a straight vertical, exactly mid-band at the quarter-scale fit (+-4 px), so the col-31 ne/se chain and the equivalent col-32 nw/sw chain are the same sides; could equally be read as running along a straight column of hex vertices if the author intended it that way.
+
+# REPORT
+# American Objective Line: 45 sides (2405:ne .. 2427:ne), zig-zag between cols 24/25, N end: coast at 2405 above Izumi/IZUMI sea, S end: Tsuno assault-hex sea at 2427/2528. Doubt: exact start at coast of 2405.
+# North-South Boundary Line: 42 sides (3113:ne .. 3133:se), zig-zag between cols 31/32, N end: sea inlet north of Yatsushiro at 3113/3212, S end: sea south of Saeki coast (3133/3134). Doubt: Yatsushiro dot next to line.
+# Neither line crosses a hex interior deliberately; both are straight and sit mid-band. Surprising: NS line is at cols 31/32 (not 32/33 as briefed).
+
+Copyright Ben Paul Wise. All Rights Reserved.

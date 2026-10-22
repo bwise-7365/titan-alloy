@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "DVR.h"
 #include "EyeEval.h"
+#include <cstddef>
 #include <limits>
 #include <queue>
 #include <random>
@@ -127,7 +128,7 @@ bool Game::isLegalPlacement(int nodeId) const {
                 }
             }
         } else {  // nc == myColor
-            // A same-colour neighbour contributes a liberty if its group has any
+            // A same-color neighbour contributes a liberty if its group has any
             // empty neighbour other than nodeId.
             int root = dsuFind(nb);
             const auto& libs = dsu_libset_[root];
@@ -155,7 +156,7 @@ bool Game::placeStone(int nodeId) {
     board_[nodeId] = myColor;
 
     // Initialise DSU for the new stone.  Its initial liberties are all currently
-    // empty neighbours (same-colour neighbours will be united below).
+    // empty neighbours (same-color neighbours will be united below).
     dsu_parent_[nodeId]  = nodeId;
     dsu_libset_[nodeId].clear();
     dsu_members_[nodeId] = {nodeId};
@@ -175,7 +176,7 @@ bool Game::placeStone(int nodeId) {
         if (board_[nb] == opColor && dsu_libset_[dsuFind(nb)].empty())
             dsuCaptureGroup(dsuFind(nb), opColor);
 
-    // Merge the new stone into every adjacent same-colour group.
+    // Merge the new stone into every adjacent same-color group.
     for (int nb : graph_.node(nodeId).neighbors)
         if (board_[nb] == myColor)
             dsuUnite(nodeId, nb);
@@ -187,21 +188,26 @@ bool Game::placeStone(int nodeId) {
 
     history_.insert(hash_);
     passCount_ = 0;
-    moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
-                            myColor,
-                            nodeId,
-                            graph_.node(nodeId).row, graph_.node(nodeId).col});
-    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
+    recordMove(myColor, nodeId, graph_.node(nodeId).row, graph_.node(nodeId).col);
+    togglePlayer();
     return true;
 }
 
 bool Game::pass() {
     if (isTerminal()) return false;
     ++passCount_;
-    moveHistory_.push_back({static_cast<int>(moveHistory_.size()) + 1,
-                            Color::Empty, -1, -1});
-    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
+    recordMove(Color::Empty);
+    togglePlayer();
     return true;
+}
+
+void Game::recordMove(Color color, int nodeId, int row, int col) {
+    moveHistory_.push_back(
+        Move{static_cast<int>(moveHistory_.size()) + 1, color, nodeId, row, col});
+}
+
+void Game::togglePlayer() {
+    current_ = (current_ == Player::Black) ? Player::White : Player::Black;
 }
 
 // ── AbsGame::Game overrides ───────────────────────────────────────────────────
@@ -229,15 +235,71 @@ bool Game::applyMove(AbsGame::MoveId mv) {
     return placeStone(mv);
 }
 
+std::pair<int, int> Game::countStones() const {
+    int black = 0, white = 0;
+    for (Color c : board_) {
+        if      (c == Color::Black) { ++black; }
+        else if (c == Color::White) { ++white; }
+    }
+    return {black, white};
+}
+
+AbsGame::MoveId Game::chooseRolloutMove(const std::vector<AbsGame::MoveId>& legal,
+                                        std::mt19937_64& rng) const {
+    const Color mine = (current_ == Player::Black) ? Color::Black : Color::White;
+
+    // Benson needs the whole position to answer for any point, so it is computed once
+    // here into bensonScratch_, whose buffers survive from ply to ply; the cheap rule
+    // answers per point from a handful of neighbour reads and needs no table at all.
+    // `if constexpr` keeps the unused branch out of the binary entirely.
+    const std::vector<char>* bensonTerritory = nullptr;
+    if constexpr (kUseBensonEyeRule) {
+        bensonTerritory = &bensonPassAliveTerritory(*this, mine, bensonScratch_);
+    }
+    const auto fillsOwnEye = [&](AbsGame::MoveId mv) -> bool {
+        if constexpr (kUseBensonEyeRule) {
+            return (*bensonTerritory)[static_cast<std::size_t>(mv)] != 0;
+        } else {
+            return isSinglePointEye(*this, mv, mine);
+        }
+    };
+
+    // Reservoir sampling: one uniform pick over the allowed points in a single pass, with
+    // no list to build and no allocation on the cheap path -- this runs once per playout
+    // ply, which is the hottest loop in the search.
+    //
+    // kPass is NOT one of the sampled candidates, though the base class's uniform policy
+    // does sample it. A playout must not pass while a non-eye-filling point is available:
+    // a pass in mid-game is not a plausible line of play, and sampling one contaminates
+    // the game the playout reports with a move no player would make. Passing only once
+    // nothing but eye-filling remains is what produces a non-eye-filling endgame, and it
+    // is where a real game ends too.
+    AbsGame::MoveId chosen = AbsGame::kPass;
+    int allowedSeen = 0;
+    for (AbsGame::MoveId mv : legal) {
+        if (mv == AbsGame::kPass) {
+            continue;
+        }
+        if (fillsOwnEye(mv)) {
+            continue;
+        }
+        ++allowedSeen;
+        // Keep move k with probability 1/k, which leaves every candidate equally likely.
+        std::uniform_int_distribution<int> pick(1, allowedSeen);
+        if (pick(rng) == 1) {
+            chosen = mv;
+        }
+    }
+    return chosen;  // kPass when every legal point would have filled our own eye
+}
+
 double Game::staticEval() const {
     // Stone count + single-point eye bonus — O(N+E), no allocation.
     // The eye bonus (weight > 1) makes filling a secure eye slightly negative
     // under Chinese area scoring, correcting the raw stone-count bias.
-    double black = 0.0, white = komi_;
-    for (Color c : board_) {
-        if      (c == Color::Black) ++black;
-        else if (c == Color::White) ++white;
-    }
+    auto [blackStones, whiteStones] = countStones();
+    double black = blackStones;
+    double white = komi_ + whiteStones;
     auto [eb, ew] = singleEyeBonus(*this);
     black += eb;
     white += ew;
@@ -252,11 +314,7 @@ double Game::negamaxEval() const {
     constexpr int    kRadius     = 3;
     constexpr double areaPremium = 0.05;
 
-    int blackStones = 0, whiteStones = 0;
-    for (Color c : board_) {
-        if      (c == Color::Black) ++blackStones;
-        else if (c == Color::White) ++whiteStones;
-    }
+    auto [blackStones, whiteStones] = countStones();
 
     double blackDvr = DVR(*this, Color::Black, kRadius).size();
     double whiteDvr = DVR(*this, Color::White, kRadius).size();

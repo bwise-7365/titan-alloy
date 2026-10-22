@@ -10,8 +10,6 @@
 
 namespace IrrGo {
 
-static constexpr float kColSpacing = 0.87f;
-static constexpr float kRowSpacing = 0.93f;
 static constexpr double kMinAngleDeg   = 15.0;
 static constexpr float  kNodeClearance = 0.3f; // min distance from segment to any non-endpoint node
 
@@ -91,7 +89,7 @@ bool IrregularGraph::canAddEdge(int a, int b) const {
 }
 
 IrregularGraph::IrregularGraph(int m, int n, int maxDegree, uint64_t seed)
-    : m_(m), n_(n), maxDegree_(maxDegree),
+    : maxDegree_(maxDegree),
       baseRows_(expandGrid(m)), baseCols_(expandGrid(n))
 {
     seed_ = seed;

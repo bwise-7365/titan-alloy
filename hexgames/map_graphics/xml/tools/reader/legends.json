@@ -1,0 +1,93 @@
+{
+ "_comment": "Copyright Ben Paul Wise. All Rights Reserved. Legends placed by eye (Ben's route, 2026-09-20). Per work folder: the legend rectangle in source pixels, the orientation the legend hexes are printed in, and one swatch per printed legend entry as [name, kind, sheet, x, y, size]. x y is the swatch centre and size its circumradius, read off a gridded crop of the scan; sheet is the id the hexsheet document uses (or will use) for that meaning. Consumed by legend.py DIR --placed legends.json.",
+ "BFM_map_redone": {
+  "panel": [1620, 370, 2020, 480],
+  "orientation": "pointy",
+  "rotate": -90,
+  "note": "Terrain Effects Chart printed sideways; the legend hexes are pointy although the map is flat. No BFM sheet exists yet, so the sheet ids are proposals.",
+  "swatches": [
+   ["Setup Hex", "glyph", "setup", 1652, 430, 23],
+   ["Railroad", "side-across", "rail", 1708, 430, 23],
+   ["River", "side-along", "river", 1762, 430, 23],
+   ["Fortification", "hex", "fortification", 1813, 430, 23],
+   ["Moscow", "glyph", "moscow", 1865, 430, 23],
+   ["City", "glyph", "city", 1917, 430, 23],
+   ["Woods", "hex", "woods", 1970, 430, 23]
+  ]
+ },
+ "BFM_map_1": {
+  "panel": null,
+  "orientation": "flat",
+  "note": "The original GDW printing has no legend, so each kind's swatch is an exemplar hex on the map itself, picked by eye (the style-library case G2 done on the same scan: nothing is borrowed from another print). The sheet ids repeat BFM_map_redone's so the two readings can be compared kind for kind. Clear is the unmarked default in both printings and has no swatch.",
+  "swatches": [
+   ["Setup Hex", "glyph", "setup", 470, 602, 136],
+   ["Railroad", "side-across", "rail", 2525, 1320, 136],
+   ["River", "side-along", "river", 820, 1300, 136],
+   ["Fortification", "hex", "fortification", 1240, 500, 136],
+   ["Moscow", "glyph", "moscow", 2508, 594, 136],
+   ["City", "glyph", "city", 1914, 2145, 136],
+   ["Woods", "hex", "woods", 1485, 973, 136]
+  ]
+ },
+ "Target_Leningrad_map": {
+  "panel": null,
+  "orientation": "flat",
+  "glyph-slot": [0, -0.45],
+  "note": "No printed legend. Exemplar hexes named by printed id (the lattice is numbered), read from a gridded overview on 2026-09-21; the contact sheet is the check. Stars and crosses (set-up glyphs) and the red Leningrad perimeter are left out until the terrain reads. Sheet ids are proposals. 2026-09-21 second look at the contact sheet: 0305 is coastal land, the sea exemplar is 0206; the Lake Peipus hex ids could not be read with confidence, so Lake is left out. Third look: the fortification boxes sit on hexsides (side-mid, exemplar 1506), city pictograms sit in the upper half under the id (glyph-slot), 0708 has forest mottle that outvoted its river (0609 instead), 1203 is half lake (rough exemplar 1803).",
+  "swatches": [
+   ["Clear", "hex", "clear", "0806", null, null],
+   ["Forest", "hex", "forest", "1002", null, null],
+   ["Rough", "hex", "rough", "1803", null, null],
+   ["Sea", "hex", "sea", "0206", null, null],
+   ["City", "glyph", "city", "1105", null, null],
+   ["Fortification", "side-mid", "fortification", "1506", null, null],
+   ["River", "side-along", "river", "0609", null, null],
+   ["Railroad", "side-across", "rail", "0906", null, null]
+  ]
+ },
+ "Battle_of_Tannenberg_game_map": {
+  "panel": [30, 1120, 340, 1760],
+  "orientation": "flat",
+  "note": "Terrain Key, three columns; the nine fills, glyphs and rings are where the finder found them, the line rows below (river, major river, blocked hexside; single- and double-track railroad; political boundary) placed by eye at the same column centres and a 110 px row pitch. Off-map railroad, reinforcement letters left out. Sheet ids are proposals.",
+  "swatches": [
+   ["Clear", "hex", "clear", 87, 1168, 41],
+   ["Forest", "hex", "forest", 199, 1168, 41],
+   ["Broken", "hex", "broken", 308, 1169, 41],
+   ["Swamp", "hex", "swamp", 87, 1278, 41],
+   ["Town", "glyph", "town", 199, 1278, 41],
+   ["City", "glyph", "city", 308, 1278, 41],
+   ["Trenches", "glyph", "trenches", 87, 1388, 41],
+   ["Russian Fortress", "ring", "fortress-russian", 199, 1388, 41],
+   ["German Fortress", "ring", "fortress-german", 308, 1388, 41],
+   ["River hexside", "side-along", "river", 87, 1498, 41],
+   ["Major River hexside", "side-along", "river-major", 199, 1498, 41],
+   ["Blocked hexside", "side-along", "blocked", 308, 1498, 41],
+   ["Single-track Railroad", "side-across", "rail", 87, 1608, 41],
+   ["Double-track Railroad", "side-across", "rail-double", 199, 1608, 41],
+   ["Political Boundary", "side-along", "border", 308, 1718, 41]
+  ]
+ },
+ "Stalin_Moves_West_map": {
+  "panel": [1000, 15, 1300, 400],
+  "orientation": "pointy",
+  "note": "Two columns of eight; the earlier --panel rectangle stopped at y 340 and so missed Front Line and Forest. Sheet ids are those of stalin-moves-west.xml (terrain and line ids; the four glyphs are its symbol names).",
+  "swatches": [
+   ["Marsh", "hex", "marsh", 1060, 50, 22],
+   ["River/Lake Hexside", "side-along", "river", 1060, 98, 22],
+   ["All-Sea", "hex", "sea", 1060, 140, 22],
+   ["Coastal", "hex", "coastal", 1060, 188, 22],
+   ["Railroad", "side-across", "rail", 1060, 235, 22],
+   ["Bridge", "side-mid", "bridge", 1060, 280, 22],
+   ["National Border", "side-along", "border", 1060, 328, 22],
+   ["Front Line (USSR border)", "side-along", "front", 1060, 382, 22],
+   ["Soviet Mobilization Hex", "glyph", "star-soviet", 1155, 50, 22],
+   ["Axis Mobilization Hex", "glyph", "star-axis", 1155, 98, 22],
+   ["Resource hex", "glyph", "oil", 1155, 140, 22],
+   ["City", "glyph", "city", 1155, 188, 22],
+   ["Port", "glyph", "port", 1155, 235, 22],
+   ["Clear", "hex", "clear", 1155, 280, 22],
+   ["Rough", "hex", "rough", 1155, 328, 22],
+   ["Forest", "hex", "forest", 1155, 378, 22]
+  ]
+ }
+}

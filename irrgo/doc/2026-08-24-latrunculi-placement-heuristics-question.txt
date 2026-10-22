@@ -1,0 +1,12 @@
+INFO-ONLY: Read the irrgo/doc/latrunculi-rules-for-beginners.md file.
+The opening 'placement' phase of the Ludus Latrunculorum presents a problem.
+It is typically about 40 moves long, with no obvious negaMax static evalution.
+MCTS doesn't help because of the endless shuffling: almost all 'random play' rollouts end in stalemate.
+So I want you to analyze the rules and develop some heuristics for how to place stones in the initial phase,
+before movement starts. From ancient sources, I know that one tactic is to build a horizontal or vertical wall.
+Two others I have observed in play is to build a diagonal or to build a solid 2x2 square (cannot be captured).
+Also, one can place a "guard" near the walls, diagonals, or squares. Finally, placing a stone in the corner
+or *not* placing stones where they can be pinned in one move. So my info-only (don't change anything yet)
+question is whether you can analyze the rules, think through the interactions, and recommend heuristics
+(things to do and things to avoid) that could be implemented in this C++ to play the opening on
+anything from 6x6 to 10x12 boards.

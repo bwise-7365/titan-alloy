@@ -3,8 +3,7 @@
 #include "BoardWidget.h"
 #include "Game.h"
 #include "Graph.h"
-#include "Searcher.h"
-#include <QElapsedTimer>
+#include "GameMainWindow.h"
 #include <QMainWindow>
 #include <memory>
 #include <random>
@@ -22,7 +21,7 @@ class QTextEdit;
 class QProgressBar;
 class QTimer;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public guicommon::GameMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget* parent = nullptr);
@@ -39,33 +38,28 @@ private slots:
     void onSuggestMctsGo();
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSave();
     void onSaveAs();
     void onLoad();
 
 private:
     void buildMenuBar();
-    void updateControls();
-    void logLastMove();
+    void updateControls() override;
     void stopStoneSetup();
     void clearSuggestion();
+    void captureSeed();          // record the seed stones as the replay's ply-0 position
+    void afterPlayMove();        // common tail once a play move is applied to game_
+    void rebuildMoveList();      // repopulate the clickable list from timeline_
+    QString moveText(const IrrGo::Move& m) const;  // one play move -> a log row
 
-    // Search progress bar helpers — reused by NegaMax and MCTS.
-    // budgetSeconds == 0  →  indeterminate sweep animation (NegaMax)
-    // budgetSeconds  > 0  →  elapsed-time fraction updated every 250 ms (MCTS)
-    void startSearchIndicator(int budgetSeconds = 0);
-    void stopSearchIndicator();
-    void cancelSearch();     // invalidates any in-flight search and hides bar
+    // guicommon::GameMainWindow hooks.
+    AbsGame::Game* currentGame() override;
+    void applyComputedMove(AbsGame::MoveId mv) override;
+    bool extraSearchBlock() const override;   // true while the stone setup animates
+    int  playbackPlyCount() const override;   // number of play moves (M)
+    void rebuildToPly(int ply) override;      // reconstruct seed + first `ply` play moves
 
-    // Builds a NegaMax submenu action and attaches it to parent / group.
-    // depthOut / turnsOut are set to the created spinboxes.
-    // connectGo: if true the Go! button is wired to onSuggestGo().
-    // Returns the Go! button so the caller can connect it to any slot.
-    QPushButton* buildNegaMaxMenu(QMenu* parent, QActionGroup* group,
-                                  QSpinBox*& depthOut, QSpinBox*& turnsOut,
-                                  bool withTurns = true);
-
-    void applyComputedMove(AbsGame::MoveId mv);
     void saveToFile(const QString& path);
 
     // Central UI
@@ -82,7 +76,8 @@ private:
     QCheckBox*    whiteDvrCheck_      = nullptr;
     QPushButton*  labelsBtn_           = nullptr;
     QPushButton*  neighborhoodBtn_    = nullptr;
-    QTextEdit*    moveLog_;
+    guicommon::MoveListWidget* moveList_ = nullptr;  // clickable per-ply move log
+    guicommon::PlaybackBar*    playback_ = nullptr;  // replay transport bar
 
     // Board menu embedded controls
     QComboBox*    sizeCombo_;
@@ -96,15 +91,19 @@ private:
     // Stones menu
     QActionGroup* stonesGroup_;
 
-    // Play menu
+    // Play menu. NegaMax runs iterative deepening bounded by a wall clock, so it is
+    // budgeted by time like MCTS and its control is a time combo, not a depth spinbox.
     QAction*  manualAction_      = nullptr;
-    QSpinBox* playDepthSpin_     = nullptr;
+    QComboBox* playNegamaxSecCombo_ = nullptr;
     QSpinBox* playTurnsSpin_     = nullptr;
     QComboBox* playMctsSecCombo_ = nullptr;
     QSpinBox*  playMctsTurnsSpin_ = nullptr;
+    // Human-vs-computer controls: NegaMax think time and which side (Black/White) the human plays.
+    QComboBox* playComputerSecCombo_  = nullptr;
+    QComboBox* playComputerSideCombo_ = nullptr;
 
     // Suggest menu
-    QSpinBox*  suggestDepthSpin_    = nullptr;
+    QComboBox* suggestNegamaxSecCombo_ = nullptr;
     QSpinBox*  suggestTurnsSpin_    = nullptr;
     QComboBox* suggestMctsSecCombo_ = nullptr;
 
@@ -113,6 +112,11 @@ private:
     std::unique_ptr<IrrGo::Game>   game_;
     QString currentFilePath_;
 
+    // Replay timeline: the play moves only (the seed is the fixed ply-0 position);
+    // game_ is always the position at the playback cursor.
+    std::vector<IrrGo::Move> timeline_;
+    std::vector<int>         setupNodes_;  // seed stone node ids = initial position
+
     // Setup animation
     QTimer*          stoneTimer_;
     std::vector<int> pendingSetup_;
@@ -120,16 +124,5 @@ private:
     int              setupPlaced_ = 0;
     int              setupTarget_ = 0;
     std::mt19937_64  setupRng_;
-
-    // Search state (shared by NegaMax and MCTS)
-    QProgressBar*  searchProgress_  = nullptr;
-    QProgressBar*  turnProgress_    = nullptr;  // fraction of planned turns completed
-    QTimer*        searchBarTimer_  = nullptr;
-    QElapsedTimer  searchElapsed_;          // wall-clock timer for MCTS progress
-    int            searchBudgetMs_  = 0;   // 0 = sweep mode; >0 = timed mode
-    bool           isSearching_     = false;
-    unsigned       searchGen_       = 0;   // incremented on board reset to discard stale results
-    int            playTurnsRemaining_ = 0; // counts down during auto-play; 0 = idle
-    int            playTurnsTotal_     = 0; // total turns for the current auto-play run
 };
 // Copyright Ben Paul Wise. All Rights Reserved.

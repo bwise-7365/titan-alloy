@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../packages/xml/trc.package.xml"
+      scenario="trc-test" seed="20260912"
+      title="TRC engine smoke script: a panzer corps and an army group HQ close on G24 and attack it">
+  <cursor turn="1" phase="axis-i1-move" side="axis"/>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-move" side="axis" cmd="move" units="g-ge-56-armour"
+          mode="normal" path="G27 G26 G25"/>
+    <move n="2" turn="1" phase="axis-i1-move" side="axis" cmd="move" units="g-ge-n-hq"
+          mode="normal" path="E27 F27 G26 H26 H25"/>
+    <move n="3" turn="1" phase="axis-i1-move" side="axis" cmd="end-phase"/>
+    <move n="4" turn="1" phase="axis-i1-combat" side="axis" cmd="attack"
+          units="g-ge-56-armour g-ge-n-hq" target="G24"/>
+    <move n="5" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="g-ge-n-hq"/>
+    </move>
+    <move n="6" turn="1" phase="axis-i1-combat" side="axis" cmd="end-phase"/>
+  </log>
+  <notes>
+    <note>The first golden of the engine. Both counters stop on entering the Russian zone of control
+      around G24, so each move ends adjacent to it. Eight attacking factors against five is one to
+      one on the Combat Results Table, and with this seed the die is a five, which is an exchange:
+      the defender loses a step, then the attacker chooses which of his two counters loses one.</note>
+  </notes>
+</save>

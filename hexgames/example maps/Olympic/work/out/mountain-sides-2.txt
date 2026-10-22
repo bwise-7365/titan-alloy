@@ -1,0 +1,175 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+# W18e2 all-mountain hexsides, second pass
+# CALIBRATION (13 confirmed, right photo cols 39-45 rows 17-25, seen marked): what they share, as I see it:
+# a band of the darkest brown shading whose edge or spine lies ON the hexside: typically the outline of a dark
+# mountain mass (dark on one side or straddling, lighter ground beyond), or a narrow dark finger hugging the line
+# (4124:n, 4223:ne, 4518:ne/se, 4321:ne, 4020:se). The hexes either side may be mostly light; a hexside qualifies
+# when the dark shading follows the line for most of its length. Mid-tone soft relief crossing a hexside does not.
+# --- group cols 41-44 rows 17-21 (crops e2_g4a, e2_g4b, e2_g4c)
+side: 4118:se yes   # weaker; dark band along top of 4218's west side
+# doubt: 4118:se weaker than 4119:ne / 4119:se
+side: 4119:ne yes
+side: 4119:se yes
+side: 4320:ne yes
+side: 4320:se yes
+side: 4321:n no   # inside the dark mass, no spine on the line
+# doubt: 4321:n dark both sides
+# QUESTION 4118/4219: 4119/4219 (4119:se) matches the look; 4118/4218 is a weaker fringe. The dark band runs 4218-west -> 4219-west.
+# --- group cols 38-42 rows 22-26, dark hex 4024 and neighbours (crop e2_g5). Confirmed here already: 4023:ne 4023:se 4025:ne 3925:se 4124:n
+side: 4024:n yes
+side: 4024:ne yes
+side: 4024:se yes
+side: 4025:n yes   # dark both sides (4024/4025), edge lies inside the dark mass
+# doubt: 4025:n interior of mass, kept yes by analogy with confirmed 3925:se
+side: 4025:se yes
+side: 3924:se yes
+side: 3925:ne yes
+# --- crop e2_g6
+side: 4226:se yes   # dark tongue of 4327 abuts the line; modest
+# --- middle photo cols 33-37 rows 22-26: dark flat block 3425/3426/3525/3526 in a wider massif (crops e2_g7, e2_g7u)
+# Rule I adopted from here on (consistent with Ben's confirmed 3925:se, 4025:ne, which are inside a dark mass):
+# outer edges of a dark flat block facing lighter ground = yes; edges inside the block between two dark hexes = yes
+# but doubted, because the shading is equally dark on both sides and there is no distinct spine.
+side: 3525:n yes
+side: 3525:ne yes
+side: 3525:se yes
+side: 3526:ne yes
+side: 3526:se yes
+side: 3527:n yes
+side: 3424:ne yes   # weak, dark bump of 3424 against lighter 3524
+side: 3424:se yes  # edge 3424/3525
+side: 3526:n yes
+# doubt: 3526:n (3525/3526) interior of the block
+side: 3425:ne yes
+side: 3425:se yes
+side: 3425:n yes
+side: 3426:n yes
+side: 3426:ne yes
+side: 3426:se yes
+# doubt: 3425:n 3425:ne 3425:se 3426:n 3426:ne 3426:se 3424:se are interior or west-side edges of the massif; uniformly dark, no spine
+# --- crop e2_g8
+side: 3325:se yes   # dark ridge streak along the line
+side: 3226:se yes   # dark ridge streak; weak
+# doubt: 3226:se weak
+# --- middle photo cols 27-31 rows 14-18 (crops e2_g9, e2_g9u): dark band 2814-2915-2916
+side: 2714:se yes   # dark edge of 2814 against light 2715, clear
+side: 2814:se yes
+side: 2815:ne yes
+side: 2916:n yes
+# doubt: 2814:se 2815:ne 2916:n are edges of the flat-dark hex 2915 against equally dark or mid-dark neighbours; interior type
+# --- middle photo cols 26-30 rows 17-21 (crop e2_g10): dark hexes 2719/2720 with paler 2819/2820 to the east
+side: 2618:se yes
+side: 2619:ne yes
+side: 2619:se yes
+side: 2620:ne yes
+side: 2719:se yes
+side: 2720:n yes
+side: 2720:ne yes
+side: 2720:se yes
+# doubt: 2619:se weak (2619 mid-tone); 2720:n and 2620:ne are interior of the dark pair 2719/2720
+side: 2919:ne yes   # mid-tone 2919 against dark flat 3018
+side: 2918:se yes   # weak
+side: 2919:n no     # both sides mid; no dark along the line
+# doubt: 2918:se weak
+side: 2722:se yes   # dark spine follows the line (crop e2_g11)
+# --- crops e2_g12, e2_g13, e2_g14
+side: 2316:se yes   # dark 2317 boundary follows the line
+side: 2521:ne no    # mid-tone relief both sides, no dark band
+side: 2812:ne yes   # dark flat 2913 against paler 2812
+# --- left photo crops e2_g15 (1807/1808), e2_g16 (1212), e2_g17 (1318/1319)
+side: 1807:se yes   # dark core of the 1807/1808 blob reaches the line
+side: 1808:n yes     # weak: dark core lies mostly above the line
+# doubt: 1808:n weak
+side: 1212:n yes    # top of the dark massif; line lies inside the dark
+side: 1212:ne yes   # 1212/1312 both dark, interior
+# doubt: 1212:ne interior of a dark massif
+side: 1318:se yes
+side: 1319:n yes     # dark streak lies along the line
+side: 1319:ne yes    # dark 1418 against mid-dark 1319
+# doubt: 1318:se 1319:n 1319:ne are the dark ridge the first worker called relief shading; kept yes per Ben's ruling
+# --- crops e2_g18 (3710), e2_g19 (4208)
+side: 3710:se yes   # dark ridge of the small island massif along the line
+side: 4208:n yes
+side: 4208:ne yes
+side: 4208:se yes  # dark 4208 against mid-brown 4309
+# --- crops e2_g20 (4914/4915), e2_g21 (5321/5322)
+side: 4914:se yes   # dark core of 4915 blob reaches the line
+side: 4915:n yes     # dark core lies against the line, mostly on the 4914 side
+side: 5321:se yes
+side: 5322:ne yes
+side: 5322:se yes  # dark ridge hugs the zigzag along the east flank
+# doubt: 4915:n dark core straddles the line
+# CANDIDATE COVERAGE: all 73 side: lines of pass E judged (5 real + confirmed set included, see below)
+# confirmed by Ben (calibration set, counted yes): 
+side: 4223:ne yes
+side: 4124:n yes
+side: 4020:se yes
+side: 4023:se yes
+side: 4025:ne yes
+side: 4518:ne yes
+side: 4518:se yes
+side: 3925:se yes
+# (other calibration hexsides 4222:se 4023:ne 4020:ne 4319:se 4321:ne were not among pass-E candidates)
+side: 4222:se yes
+side: 4023:ne yes
+side: 4020:ne yes
+side: 4319:se yes
+side: 4321:ne yes
+# --- SWEEP for further hexsides (step 3)
+# sweep right cols 43-47 rows 15-19 (crops s2, s2m): the ridge of confirmed 4518:ne/4518:se continues both ways
+side: 4517:se yes   # NEW, dark finger tip, extends the confirmed chain northwards
+side: 4519:ne yes   # NEW, chain continues south, dark ridge on the line
+side: 4519:se no    # ridge fades at the river
+side: 4518:n no     # dark only low in 4518
+# sweep right cols 44-48 rows 24-28 (crops s6, s6m): 4625 is a flat-dark hex like 4024; same treatment as 4024
+side: 4625:n yes
+side: 4625:ne yes
+side: 4625:se yes
+side: 4625:s yes    # dark continues into 4626 below, weaker
+side: 4625:sw yes
+side: 4625:nw yes
+# doubt: 4625:nw 4625:s 4625:sw border mid-dark neighbours (4525, 4626); n/ne/se face light ground
+# sweep middle cols 26-33 rows 24-29 and right cols 37-41 rows 26-30 (crops s4 s5 s7): only mid-brown rough massifs, no flat-dark core; nothing proposed
+# sweep right cols 47-51 rows 20-24 (crops s10, s10m): dark core 4822/4823, paler ground to the east and north
+side: 4822:n yes
+side: 4822:ne yes
+side: 4822:se yes
+side: 4823:ne yes
+side: 4823:se yes
+side: 4823:s yes   # weak
+side: 4822:nw no   # west side is the same dark mass, no spine
+side: 4822:sw no
+side: 4823:sw no
+# sweep middle cols 29-33 rows 22-26 (crops s8, s8m): dark core 3123/3124 with the pale river valley to the east
+side: 3123:ne yes
+side: 3123:se yes
+side: 3124:ne yes
+side: 3124:se yes
+side: 3124:s yes   # weak, river edge
+side: 3123:n no
+side: 3123:nw no
+side: 3123:sw no
+side: 3124:sw no
+# sweep middle cols 29-33 rows 17-21 (crop s9): 3019/3020 mid-dark, no distinct spine; nothing proposed
+# sweep left cols 21-25 rows 16-20 (crops s14, s14m): flat-dark pair 2317/2318
+side: 2317:n yes
+side: 2317:nw yes
+side: 2317:sw yes
+side: 2317:ne yes   # weak, dark 2417 beyond
+side: 2318:sw yes
+side: 2318:s yes
+side: 2318:se yes
+# sweep right cols 52-56 rows 19-23 (s11): Kokura mass already covered by 5321/5322; cols 46-50 rows 27-31 (s12): 4830/4731 blob only mid-dark, nothing proposed
+# doubt: 4830 (dark blob, mid-dark, not proposed); the sweep did not cover every dark core (about 12 of the flat-dark cores were viewed; others in cols 1-20 and 52-61 rows 2-12 were not)
+# ---------------- REPORT
+# Judged: 74 pass-E side lines: 71 yes (8 of them Ben-confirmed), 3 no (4321:n, 2521:ne, 2919:n).
+# Calibration hexsides not in pass E, counted yes: 4222:se 4023:ne 4020:ne 4319:se 4321:ne.
+# New from the sweep: 26 yes (4517:se 4519:ne; 4625 x6; 4822:n/ne/se; 4823:ne/se/s; 3123:ne/se; 3124:ne/se/s; 2317 x4; 2318 x3),
+# 9 no. Total lines: 114 (102 yes, 12 no). Weak ones are marked in comments.
+# Method note: I applied Ben's ruling broadly. Edges between two dark hexes inside a massif are yes but doubted.
+# The sweep viewed about 12 dark cores; other dark cores (cols 1-20, and 52-61 rows 2-12) were not searched, so more exist.
+# 4118 question: Ben's "4118/4219" is not a pair of neighbours. 4119/4219 (4119:se) matches the look: dark shading of 4119
+# lies along it. 4118/4218 (4118:se) is a weaker fringe; I marked it yes with a doubt. The zigzag 4118:se, 4119:ne, 4119:se
+# follows the whole dark spine; if Ben meant one line, it is 4119:se.
+# Surprising: pass E rejected almost everything that is dark on one side; under Ben's ruling nearly all 73 become yes.
+Copyright Ben Paul Wise. All Rights Reserved.

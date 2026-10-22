@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  report.xsd - the verdict of every rule on one design.
+
+  The plan is XML and the rules are XML, so the verdict is too: the intended
+  consumer is a search procedure, not a person.
+
+  Three outcomes, not two. A rule about stairs, applied to a design with no stair
+  in it, is UNDETERMINED - not satisfied. Reporting it as satisfied would tell a
+  search that a constraint had been met when nothing has been done about it.
+
+  A report may omit its UNDETERMINED verdicts and may list verdicts in any order;
+  a consumer reads a missing rule as UNDETERMINED. This writer emits all of them,
+  in declaration order.
+
+  The report takes no view on what a broken rule is worth. A partial design is
+  expected to break rules it has not yet satisfied; whether a broken PATTERN rule
+  is worth pruning for is the caller's judgment, not this file's.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="1.0">
+
+  <xs:simpleType name="Outcome">
+    <xs:annotation>
+      <xs:documentation>
+        UNDETERMINED means the rule does not yet apply: there is nothing in the
+        design for it to talk about. It does NOT mean satisfied. A design with no
+        stair has not met the stair rule; it has not been asked.
+
+        A conforming report MAY omit its UNDETERMINED verdicts, and MAY emit
+        verdicts in any order. A consumer must read a missing rule as
+        UNDETERMINED. This implementation emits all of them, in rule-declaration
+        order, because a reader is better served by the whole vector than by
+        having to remember the convention.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="SATISFIED"/>
+      <xs:enumeration value="BROKEN"/>
+      <xs:enumeration value="UNDETERMINED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ConnectionKind">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="DOOR"/>
+      <xs:enumeration value="OPENING"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Severity">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="CODE"/>
+      <xs:enumeration value="PATTERN"/>
+      <xs:enumeration value="ADVICE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="report">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="verdict" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <!-- Empty when satisfied. -->
+              <xs:element name="finding" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="room" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="ref" type="xs:token" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="connection" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="from" type="xs:token"       use="required"/>
+                        <xs:attribute name="to"   type="xs:token"       use="required"/>
+                        <xs:attribute name="kind" type="ConnectionKind" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="message" type="xs:string" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="rule"     type="xs:token" use="required"/>
+            <xs:attribute name="severity" type="Severity" use="required"/>
+            <xs:attribute name="result"   type="Outcome"  use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="plan"      type="xs:string"       use="required"/>
+      <xs:attribute name="rooms"     type="xs:nonNegativeInteger" use="required"/>
+      <xs:attribute name="connections" type="xs:nonNegativeInteger" use="required"/>
+      <xs:attribute name="satisfied"    type="xs:nonNegativeInteger" use="required"/>
+      <xs:attribute name="broken"       type="xs:nonNegativeInteger" use="required"/>
+      <xs:attribute name="undetermined" type="xs:nonNegativeInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

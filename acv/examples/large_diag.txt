@@ -1,0 +1,25 @@
+seed 20260726, case block, KMAX = 25
+
+true cells 2573   recovered 2549   missed 24   falsely occupied 6
+
+of the missed cells:
+  reached by forward selection but left out by the criterion : 24
+  never reached by forward selection                         : 0
+
+true magnitude of a cell:
+  recovered            n= 2549  median 1.100  fraction below 0.60 0.195
+  missed, reached      n=   24  median 0.625  fraction below 0.60 0.458
+
+cells in a row: true mean 12.87 max 18   chosen mean 12.78 max 16
+rows whose true count reaches the limit 25: 0
+
+the question that matters: is the true subset of a row the subset
+forward selection reaches at that row's own size?
+  rows where it is     : 194 of 200
+  rows where it is not : 6
+
+for each missed cell, where forward selection put it in the chain,
+against the number of cells the criterion gave that row:
+  admitted at step  median 14  range 7-19
+  row size chosen   median 12  range 6-14
+  cells admitted later than the size chosen: 24 of 24

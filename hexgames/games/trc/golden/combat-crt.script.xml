@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="3" title="TRC Combat Results Table: twelve factors and a Stuka against four, on open steppe">
+  <cursor turn="1" phase="axis-i1-combat" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-n-hq" counter="g-ge-n-hq" type="hq" owner="axis" hex="Y16">in Stuka range</unit>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="V17"/>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="V15"/>
+    <unit id="r-ru-1-armour" counter="r-ru-1-armour" type="armour" owner="russian" hex="V16"/>
+    <unit id="r-ru-2-armour" counter="r-ru-2-armour" type="armour" owner="russian" hex="V16"/>
+  </units>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-combat" side="axis" cmd="attack" units="g-ge-41-armour g-ge-1-infantry"
+          target="V16" modifiers="stuka-shift"/>
+    <move n="2" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="g-ge-1-infantry"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-combat" side="russian" cmd="answer">
+      <arg name="what" value="loss"/>
+      <arg name="answer" value="r-ru-2-armour"/>
+    </move>
+    <move n="4" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="W15"/>
+    </move>
+    <move n="5" turn="1" phase="axis-i1-combat" side="axis" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="X15"/>
+    </move>
+  </log>
+  <notes>
+    <note>8 + 4 against 2 + 2 is 3-1; the Stuka (15.5), in range of Army Group North's HQ three hexes away,
+      shifts three rungs of the ratio ladder to 6-1, which is the "5-1, 6-1" column.</note>
+  </notes>
+</save>

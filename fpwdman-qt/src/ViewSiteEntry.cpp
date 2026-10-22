@@ -1,59 +1,81 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "ViewSiteEntry.h"
-#include <QVBoxLayout>
+
+#include <QCheckBox>
 #include <QFormLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
 
-ViewSiteEntry::ViewSiteEntry(const SiteEntry *entry, QWidget *parent)
+#include "ClipboardUtil.h"
+#include "PasswordField.h"
+#include "UiMetrics.h"
+
+ViewSiteEntry::ViewSiteEntry(const SiteEntry* entry, int clipboardClearMs, QWidget* parent)
     : QDialog(parent) {
     setWindowTitle(tr("View Site Entry"));
-    // resize(400, 300); // Removed to allow for a compact layout
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QFormLayout *formLayout = new QFormLayout();
+    auto* mainLayout = new QVBoxLayout(this);
+    auto* formLayout = new QFormLayout();
 
-    // Ensure even and compact spacing
-    const int commonSpacing = 6;
-    formLayout->setVerticalSpacing(commonSpacing);
-    mainLayout->setSpacing(commonSpacing);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    formLayout->setVerticalSpacing(ui::kSpacing);
+    formLayout->setHorizontalSpacing(ui::kFormHSpacing);
+    mainLayout->setSpacing(ui::kSpacing);
+    mainLayout->setContentsMargins(ui::snugMargins());
 
-    auto createReadOnlyField = [&](const QString &label, const QString &value) {
-        QLineEdit *lineEdit = new QLineEdit(value, this);
+    auto createReadOnlyField = [&](const QString& label, const QString& value) {
+        auto* lineEdit = new QLineEdit(value, this);
         lineEdit->setReadOnly(true);
+        lineEdit->setFocusPolicy(Qt::StrongFocus);
+        lineEdit->home(false);
         formLayout->addRow(label + ":", lineEdit);
+        return lineEdit;
     };
+
+    const QString password = entry ? entry->Password : QString();
 
     if (entry) {
         createReadOnlyField(tr("Title"), entry->Title);
         createReadOnlyField(tr("Site"), entry->Site);
         createReadOnlyField(tr("UserID"), entry->UserID);
-        createReadOnlyField(tr("Password"), entry->Password);
+
+        // The password is masked by default; a checkbox reveals it on demand,
+        // matching the Edit dialog and keeping it off-screen at a glance.
+        auto* passwordEdit = createReadOnlyField(tr("Password"), entry->Password);
+        auto* showBox = new QCheckBox(tr("Show password"), this);
+        formLayout->addRow(QString(), showBox);
+        ui::wireRevealToggle(showBox, {passwordEdit});
+
         createReadOnlyField(tr("Comment"), entry->Comment);
     }
 
     mainLayout->addLayout(formLayout);
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    auto* buttonLayout = new QHBoxLayout();
     buttonLayout->setContentsMargins(0, 0, 0, 0);
+    buttonLayout->setSpacing(ui::kSpacing);
+
+    auto* copyButton = new QPushButton(tr("Copy Password"), this);
+    connect(copyButton, &QPushButton::clicked, this,
+            [password, clipboardClearMs]() { cliputil::copySensitive(password, clipboardClearMs); });
+    buttonLayout->addWidget(copyButton);
+
     buttonLayout->addStretch();
-    QPushButton *closeButton = new QPushButton(tr("Close"), this);
+    auto* closeButton = new QPushButton(tr("Close"), this);
     closeButton->setDefault(true);
     connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
     buttonLayout->addWidget(closeButton);
 
     mainLayout->addLayout(buttonLayout);
 
-    // Set fixed width to match user's general window size preference
-    // but allow height to be determined by the compact layout.
-    setFixedWidth(400);
+    // Resizable in both directions; 420 is the starting and minimum width.
+    setMinimumWidth(420);
+    resize(420, sizeHint().height());
 }
 
-void ViewSiteEntry::keyPressEvent(QKeyEvent *event) {
+void ViewSiteEntry::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
         accept();
         return;

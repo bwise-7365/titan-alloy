@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="hexrules.xsd"
+      id="dai-senso" title="Axis Empires: Dai Senso!" publisher="Decision Games" year="2011" players="3"
+      source="Dai Senso Living Rules, 1 February 2014 (incorporating DS Errata October 2012); Dai Senso game map adjusted.png; pic1753887.png. Pacific game alone; combined-game rules excluded."
+      hex-scale="about 120 to 300 miles, depending on latitude"
+      turn-scale="30 to 60 days; four seasons per year; the first turn of each season is a seasonal turn">
+
+  <!-- ================= factions ================= -->
+  <sides>
+    <side id="axis" name="Axis" control="human" hostile-to="western soviet">Japan and its aligned Minor Countries.</side>
+    <side id="western" name="Western" control="human" hostile-to="axis soviet">US, Britain and aligned Minor Countries. Allied to the Soviets against the Axis but an enemy of the Soviet faction.</side>
+    <side id="soviet" name="Soviet" control="human" hostile-to="axis western">Russia and aligned Minor Countries.</side>
+    <rule id="three-way-hostility" ref="13.1" topic="politics">Anything related to one faction is an enemy to both other factions at all times. Combat between Western and Soviet units is legal unless a rule forbids it. The two Allied factions score both collectively and individually.</rule>
+    <note>Below the factions sit countries, Major or Minor; a Minor Country has status, alignment and posture and can change sides.</note>
+  </sides>
+
+  <!-- ================= map ================= -->
+  <map>
+    <hex-ids pattern="[we]\d{4}" example="e4904">A sheet prefix, w for the West Map and e for the East Map, plus four digits. The two sheets are geometrically continuous but numbered independently, so a hex is a (sheet, number) pair and sheet-crossing adjacency is separate from the numbering. Named spans appear as inclusive ranges along a map edge, such as w5311 to w6011. Which digit pair is north-south is not established.</hex-ids>
+
+    <hex-terrain id="clear" name="Clear, including Desert" move-cost="1" shift="0"/>
+    <hex-terrain id="city" name="City or Capital" move-cost="1" shift="1"/>
+    <hex-terrain id="port" name="Port" move-cost="1" shift="0">Port, Multi-Zone Port or Key Port.</hex-terrain>
+    <hex-terrain id="town" name="Town" move-cost="other-terrain" shift="0"/>
+    <hex-terrain id="rough" name="Rough: Hills, Forest, Swamp" move-cost="2" shift="1"/>
+    <hex-terrain id="all-sea-hex" name="All-Sea" move-cost="prohibited">Contains only water. Ground units may not enter except onto a friendly Beachhead marker; a Beachhead hex is still not a Land hex but may be occupied, retreated into and moved from.</hex-terrain>
+    <hex-terrain id="ice" name="Ice" move-cost="other-terrain">Loses Naval Base and Open Port status in Snow.</hex-terrain>
+
+    <hexside-terrain id="mountain" name="Mountain hexside" move-cost="2" shift="2" blocks="zoc"/>
+    <hexside-terrain id="river" name="River hexside" move-cost="1" shift="1"/>
+    <hexside-terrain id="road-rail" name="Road or Rail" move-cost="0.5" shift="0">Movement along a road or rail negates the destination hex's cost and pays this hexside cost instead: half an MP for a one-step unit, one MP for a multi-step unit. Also a network; see below.</hexside-terrain>
+    <hexside-terrain id="strait-connected" name="Strait, connected" move-cost="0.5" shift="2" blocks="zoc">Crossed at road or rail cost; joins road and rail networks for supply.</hexside-terrain>
+    <hexside-terrain id="strait-unconnected" name="Strait, not connected" move-cost="entire" shift="2" blocks="zoc"/>
+    <hexside-terrain id="lake" name="Lake hexside" blocks="movement retreat"/>
+    <hexside-terrain id="all-sea" name="All-Sea hexside" move-cost="entire" shift="2" enter-only="marine" blocks="zoc supply retreat">Crossed only onto a Beachhead or by a Marine for its whole allowance. The +2 shift applies against a Marine assault. Not crossed by supply or retreat unless it is a Strait or Beachhead hexside.</hexside-terrain>
+    <hexside-terrain id="beachhead-hexside" name="Beachhead hexside" move-cost="entire" shift="2">A runtime hexside: the one edge of an All-Sea hex that a Beachhead marker points at. Shift 2 for Beachhead-2, 1 for Beachhead-1, 0 for an SNLF Beachhead-0. Units exit only across it; ZOC projects only across it; attacks are made only across it.</hexside-terrain>
+    <hexside-terrain id="naval-zone-border" name="Naval Zone Border hexside">Bounds the naval zones; two zones are adjacent if they share such a hexside.</hexside-terrain>
+    <hexside-terrain id="country-border" name="Country or Dependent Border hexside">Two countries share a border if at least one border hexside separates them; a border hexside may lie entirely across a strait or the open sea.</hexside-terrain>
+    <hexside-terrain id="region-border" name="Region Border hexside">The same, one level down.</hexside-terrain>
+
+    <network id="road-rail-net" name="Roads and rails" carries="movement supply">Drawn centre to centre. Connected road and rail symbols carry the supply trace any distance, roads limited to one contiguous stretch per line, rails unlimited. The same drawn line is charged as the road-rail hexside cost when moved along.</network>
+
+    <region-layer id="countries" name="Countries" partition="true" bounded-by="country-border" mutable="true">
+      <note ref="13.0">Major (Japan, US, Britain, Russia and others) or Minor (the seven Chinese countries, Siam, the Netherlands East Indies and others). Mutable state per Minor Country: status Active, Neutral or Conquered; alignment to a faction; posture belligerent, Policy Affected or Truce Affected. Countries are conquered, liberated and reactivated by Conditional Events.</note>
+    </region-layer>
+    <region-layer id="dependents" name="Dependents" partition="true" bounded-by="country-border" mutable="true">
+      <note>Possessions of a country (Korea of Japan, Indochina of France). Never "a friendly Country", which matters for Open Port and supply.</note>
+    </region-layer>
+    <region-layer id="regions" name="Regions" partition="true" bounded-by="region-border" mutable="true">
+      <note>Sub-areas of a country that can be ceded separately, such as the Mongol Frontier and Inner Mongolia.</note>
+    </region-layer>
+    <region-layer id="weather-areas" name="Weather Areas" partition="false">
+      <region id="wa-central" name="Central"/>
+      <region id="wa-desert" name="Desert"/>
+      <region id="wa-north" name="North"/>
+      <region id="wa-north-monsoon" name="North Monsoon"/>
+      <region id="wa-south" name="South"/>
+      <region id="wa-south-monsoon" name="South Monsoon"/>
+      <note>Defined as sets of countries by their printed disposition, so ceded territory keeps its weather. Many islands belong to no area. An All-Sea Beachhead hex belongs to the area its Beachhead hexside points into.</note>
+    </region-layer>
+    <region-layer id="naval-zones" name="Naval Zones" partition="false" bounded-by="naval-zone-border" mutable="true">
+      <note>Each zone consists of All-Sea hexes plus coastal Land hexes; a coastal hex may belong to two zones. Each zone has three boxes, On Station, Convoys and Used, holding support units and convoy markers. Their contents gate port access, movement and supply through the zone.</note>
+    </region-layer>
+    <region-layer id="strategic-hexes" name="Strategic Hexes" partition="true">
+      <region id="strategic-western" name="Western (green)" side="western"/>
+      <region id="strategic-soviet" name="Soviet (red)" side="soviet"/>
+      <region id="strategic-axis" name="Axis (orange)" side="axis"/>
+    </region-layer>
+
+    <space id="box-western-us" name="Western US box" kind="box" side="western"/>
+    <space id="box-panama" name="Panama Canal box" kind="box" side="western"/>
+    <space id="box-polynesia" name="French Polynesia box" kind="box" side="western"/>
+    <space id="box-europe-africa" name="Europe/Africa box" kind="box" side="western"/>
+    <space id="box-eastern-europe" name="Eastern Europe box" kind="box" side="soviet">Coextensive with a named span of map-edge hexes for supply tracing; Soviet units enter and leave from that span.</space>
+    <space id="force-pool" name="Force Pools, one per faction" kind="pool" returns="true">Selection is deliberate, not random.</space>
+    <space id="delay-box" name="Delay Box" kind="box" returns="true">Counters with a Delay Stripe go here when removed and return after a Delay Result die roll, exempt from the usual 1-6 clamping (7.1).</space>
+    <space id="naval-delay-box" name="Naval Warfare Delay Box" kind="box" returns="true"/>
+    <space id="strategic-warfare-box" name="Strategic Warfare Box" kind="box">Holds Allied Collapse and Military Takeover markers that enter the victory count.</space>
+    <space id="ceded-lands-box" name="Ceded Lands Box" kind="box"/>
+    <space id="posture-display" name="Posture Display" kind="display">One Posture Box per country holding Policy and Truce markers.</space>
+    <space id="war-state-display" name="War State Display" kind="display">Pre-War, Limited War, Total War.</space>
+    <space id="european-war-boxes" name="European War Boxes" kind="display"/>
+    <space id="government-box" name="Government Holding Box" kind="box">The Japanese Government marker.</space>
+    <space id="turn-track" name="Turn Track" kind="track">A register: adverse weather turns are printed on it, and the V-J Day, Russian Entry and Enforced Peace markers and evacuated units are stored on future turn spaces.</space>
+    <space id="vp-track" name="VP Track" kind="track">Two faces, Rising Sun and Allied Crusade; Japanese Mandate and Hakko Ichiu markers cap or modify the score.</space>
+    <space id="uscl-track" name="USCL Track" kind="track"/>
+    <space id="esv-track" name="Current ESV Track" kind="track">The European Strategic Value, adjusted by Soviet card Production Values.</space>
+
+    <note>Other hex-centred data: Provisional Capital; Oil hex; Limited Stacking hex; Aid or Lend-Lease hex; US Impact hex; road and rail symbol presence used by the supply trace. Off-Map Boxes are partly spatial: a box is part of a Naval Zone if port-to-port movement can reach it and adjacent to another box if direct transfer is printed.</note>
+    <note>Range is counted including the destination hex but not the origin hex.</note>
+  </map>
+
+  <!-- ================= counters ================= -->
+  <counters>
+    <unit-type id="infantry" name="Infantry" kind="ground" zoc="full" stacking="1"/>
+    <unit-type id="armour" name="Armour-type" kind="ground" zoc="full" stacking="1">Multi-step armour may overrun; gives one attacker shift in Blitz combat; takes the first attacker loss.</unit-type>
+    <unit-type id="mechanized" name="Mechanized" kind="ground" zoc="full" stacking="1"/>
+    <unit-type id="marine" name="Marine" kind="ground" zoc="full" stacking="1">May cross one All-Sea hexside for its whole allowance; one attacker shift when supplied, Blitz-enabled and attacking across a Beachhead, Strait or All-Sea hexside; takes the first attacker loss in such an assault.</unit-type>
+    <unit-type id="airborne" name="Airborne" kind="ground" zoc="full" stacking="1">Flips to its Airdrop marker side when dropped.</unit-type>
+    <unit-type id="cavalry-mechanized" name="Cavalry-mechanized" kind="ground" zoc="full" stacking="1"/>
+    <unit-type id="fortress" name="Fortress" kind="ground" zoc="full" stacking="1">One defender shift, need not be supplied. No two together.</unit-type>
+    <unit-type id="garrison" name="Garrison" kind="ground" zoc="full" stacking="1"/>
+    <unit-type id="hq" name="HQ" kind="hq" zoc="full" stacking="1">A ground unit with the three factors and its own stacking, retreat and support rules. A supplied HQ contributes its factor and one shift to any combat within two hexes involving a ground unit of its nationality. No two together.</unit-type>
+    <unit-type id="fleet" name="Fleet" kind="naval">Occupies a Naval Zone On Station box; closes every port in the zone to the enemy.</unit-type>
+    <unit-type id="submarine" name="Submarine fleet" kind="naval"/>
+    <unit-type id="carrier-strike" name="Carrier strike unit" kind="naval"/>
+    <unit-type id="air-force" name="Air force unit" kind="air">In a zone box, closes enemy ports within three hexes of a friendly Naval Base for activities in that zone; in or adjacent to a hex, gives one combat shift.</unit-type>
+    <unit-type id="bomber" name="Bomber" kind="air"/>
+    <unit-type id="beachhead" name="Beachhead marker" kind="marker" stacking="none">Sits in an All-Sea hex with an arrow at one hexside; strengths 2, 1 and SNLF 0. A directional bridge: entered from any adjacent Land hex, left only across its hexside.</unit-type>
+    <unit-type id="airdrop" name="Airdrop marker" kind="marker" stacking="none">An airborne unit turned inside out; gives a Blitz shift, negates enemy ZOC, blocks enemy retreat and supply; may be placed with enemy units. Becomes a one-step infantry unit or goes to the Delay Box later in the segment (4.1.4).</unit-type>
+    <unit-type id="detachment" name="Detachment marker" kind="marker" zoc="none" stacking="none">Controls its hex, blocks supply, can create an Air or Naval Base, can be attacked; does not negate ZOC.</unit-type>
+    <unit-type id="logistics" name="Logistics marker" kind="marker" zoc="none" stacking="none">As a Detachment; also a Replacement Location if it can trace overland supply.</unit-type>
+    <unit-type id="partisan-base" name="Partisan Base marker" kind="marker" zoc="none" stacking="none">Placed in a Rough or City hex of a Conquered Allied Minor Country; a supply source for that country's units; blocks enemy supply unless a friendly ground unit shares the hex; one per conquered country per segment; never in a ceded Region.</unit-type>
+    <unit-type id="blitz" name="Blitz / Totsugeki marker" kind="marker" stacking="none">Units within two hexes are Blitz-enabled.</unit-type>
+    <unit-type id="convoy" name="Convoy marker" kind="marker" stacking="none">Escort, Scratch, Standard, Fleet Train, Supply, Troop. Placed in a zone's Convoys box, moved to Used when spent. A Troop Convoy carries one one-step unit; only a US Fleet Train carries a multi-step unit.</unit-type>
+
+    <list id="ground-factors" name="Numbers on a ground unit">
+      <item code="attack">Attack Factor.</item>
+      <item code="defence">Defense Factor.</item>
+      <item code="movement">Movement Allowance.</item>
+    </list>
+    <list id="unit-markings" name="Other counter markings">
+      <item>nationality colour</item><item>unit-type symbol</item><item>step count</item><item>Delay Stripe</item><item>Exp (expeditionary)</item><item>Colonial (white type box)</item><item>Elite</item>
+    </list>
+    <list id="other-markers" name="Other markers">
+      <item>Devastation</item><item>Influence</item><item>Policy</item><item>Truce</item><item>Government</item><item>Collapse</item><item>Delay</item><item>track markers</item>
+    </list>
+  </counters>
+
+  <!-- ================= sequence of play ================= -->
+  <sequence>
+    <phase id="game-turn" name="Game turn">
+      <phase id="seasonal-victory" name="Seasonal Victory Phase" condition="seasonal turns only"><note ref="0.1">Compute the Current Strategic Value; see victory.</note></phase>
+      <phase id="faction-turn" name="Faction turn" side="axis western soviet">
+        <phase id="seasonal-phase" name="Seasonal Phase" condition="seasonal turns only">
+          <phase id="option-card-segment" name="Option Card Segment"><note>Reveal the Pending Card as the new Current Card, perform its actions, select the next Pending Card.</note></phase>
+          <phase id="logistics-segment" name="Logistics / Partisan Segment"/>
+          <phase id="replacements-segment" name="Replacements Segment"/>
+        </phase>
+        <phase id="initial-admin" name="Initial Administrative Phase">
+          <phase id="political-events" name="Political Events Segment"/>
+          <phase id="support-segment" name="Support Segment"><note>Return support units to base, maintain beachheads, place support units and convoy markers, place Blitz markers.</note></phase>
+          <phase id="organization-segment" name="Organization Segment"><note>Combine units, convert fortresses and garrisons, voluntary elimination, breakdown, detachments.</note></phase>
+        </phase>
+        <phase id="operational-movement" name="Operational Movement Phase"><note>Supplied units only; overruns permitted.</note></phase>
+        <phase id="combat-phase" name="Combat Phase">
+          <phase id="blitz-combat" name="Blitz Combat Segment"><note ref="4.1">Airdrops, then blitz combat, then beachhead landings, airdrop landings, carrier strike returns, in that order. Skipped by a faction with no Blitz marker on the map.</note></phase>
+          <phase id="regular-combat" name="Regular Combat Segment"/>
+          <phase id="marker-segment" name="Marker Segment"/>
+        </phase>
+        <phase id="reserve-movement" name="Reserve Movement Phase"><note ref="10.3">Unsupplied units may move; no overruns or exploitation.</note></phase>
+        <phase id="final-admin" name="Final Administrative Phase">
+          <phase id="war-peace" name="War and Peace Segment"><note>Declarations of war, truce countdown.</note></phase>
+          <phase id="conditional-events" name="Conditional Events Segment"/>
+        </phase>
+        <note>Performed three times per game turn in fixed order: Axis, Western, Soviet.</note>
+      </phase>
+      <phase id="end-of-game-turn" name="End of Game Turn Phase">
+        <phase id="delay-segment" name="Delay Segment"/>
+        <phase id="turn-marker-segment" name="Turn Marker Segment"/>
+      </phase>
+    </phase>
+    <note>Seasons: Spring begins Mar-Apr, Summer May-June, Autumn Aug-Sept, Winter Nov-Dec. The seasonal phases are performed only on the first turn of each season.</note>
+  </sequence>
+
+  <!-- ================= stacking ================= -->
+  <stacking units="3" steps="6" enforced="end of every phase and segment" repair="eliminate-excess" exempt="fleet submarine carrier-strike air-force bomber beachhead airdrop detachment logistics partisan-base blitz convoy" ref="9.0">
+    <rule id="stacking-limited" ref="9.2" topic="stacking">Three ground units and three steps in a hex or on a Beachhead marker carrying the Limited Stacking symbol.</rule>
+    <rule id="stacking-composition" ref="9.1" topic="stacking">No two HQ units together; no two Fortress units together. Ground units of different Minor Countries may not stack: any number of the faction's Major Country units, plus one Minor Country's units, plus Exp units from other Minor Countries, with an exception for Chinese pan-national HQs.</rule>
+    <rule id="stacking-repair-steps" ref="9.0" topic="stacking">Violations are repaired by eliminating steps. Off-Map Boxes have no stacking limit.</rule>
+  </stacking>
+
+  <!-- ================= zones of control ================= -->
+  <zoc id="zoc" name="Zone of control" range="1" blocked-by="mountain all-sea strait-connected strait-unconnected" negated-by-friendly="true" blocks="supply retreat" ref="8.0">
+    <note>Every adjacent hex, except across a Mountain, All-Sea or Strait hexside (a Beachhead hexside is crossed); not into a Policy Affected Country; a unit of a Policy Affected Country projects none. A friendly ground unit or Airdrop marker in a hex negates all enemy ZOC there for as long as it stays. Logistics, Partisan Base and Detachment markers do not negate. A ZOC does not by itself force a stop; weather does.</note>
+    <rule id="zoc-weather" ref="11.3 11.4 11.5" topic="zoc">In Mud a unit may not move out of a hex containing an enemy ZOC and friendly units do not negate it. In Storms or Snow a unit must stop after moving into or out of such a hex, again with no negation. The predicate is therefore three-valued: no EZOC, EZOC negated, EZOC not negatable.</rule>
+    <rule id="zoc-beachhead" ref="Beachhead" topic="zoc" units="beachhead">From a Beachhead hex, ZOC projects across the Beachhead hexside only.</rule>
+  </zoc>
+
+  <!-- ================= movement ================= -->
+  <movement budget="points">
+    <mode id="hex-to-hex" name="Hex-to-hex" phase="operational-movement reserve-movement" ref="3.1.1">Pay the cost of each hex entered plus the hexside crossed. A unit may exceed its allowance to enter the first hex of a phase and must then stop. Overruns are permitted in the Operational Movement Phase.</mode>
+    <mode id="port-to-port" name="Port-to-port" phase="operational-movement reserve-movement" ref="3.1.2">From a Port hex, a Beachhead or an Off-Map Box, across a Naval Zone to any friendly Open Port in that zone, if a friendly Troop Convoy with sufficient capacity is in the zone's Convoys box. Expends the whole allowance regardless of zones crossed; chaining through Multi-Zone Ports is possible. Convoy markers cannot be combined.</mode>
+    <mode id="box-to-box" name="Off-map box to off-map box" phase="operational-movement reserve-movement" ref="3.1.3">Direct transfer between adjacent boxes as printed; the unit must stop.</mode>
+    <mode id="marine-crossing" name="Marine crossing" units="marine">A Marine may cross one All-Sea hexside for its entire allowance.</mode>
+    <mode id="beachhead-moves" name="Beachhead moves" ref="Beachhead">A ground unit may move onto a friendly Beachhead for its entire allowance, crossing All-Sea hexsides freely; a unit on a Beachhead leaves only across the Beachhead hexside. A Beachhead Landing places a Blitz-enabled unit directly into the adjacent Land hex, ignoring movement.</mode>
+    <mode id="soviet-edge" name="Eastern Europe box entry" side="soviet">Soviet units may enter or leave the Eastern Europe Box from a named range of map-edge hexes.</mode>
+    <rule id="one-procedure" ref="3.1.4" topic="movement">A unit uses only one of hex-to-hex, port-to-port and box-to-box per movement phase.</rule>
+    <rule id="supplied-to-move" ref="10.3" topic="movement">Only supplied units move in the Operational Movement Phase; unsupplied units may move in the Reserve Movement Phase.</rule>
+    <rule id="overrun" ref="3.2" topic="movement" units="armour">A multi-step armour-type unit moving hex-to-hex may enter a Land hex holding a single one-step enemy ground unit and eliminate it at no extra cost, ignoring its ZOC, repeatedly in one phase.</rule>
+    <rule id="overrun-blocked" ref="3.2" topic="movement">An overrun is forbidden if the target could receive any defender's column shift: terrain, Mud, a Fortress, an Air unit, or an HQ within ranged-support distance. Also barred in the Reserve Movement Phase and during exploitation. The test is a counterfactual evaluation of the combat-shift machinery.</rule>
+    <rule id="pre-war-movement" ref="War State" topic="movement">In Pre-War no unit may move or attack outside its own country or dependent.</rule>
+  </movement>
+
+  <!-- ================= supply ================= -->
+  <supply>
+    <trace id="supply" name="Supply" sources="a Home Country City for units of that country; a Partisan Base marker for units of the Minor Country it sits in; a Western or Soviet Off-Map Box for that faction's counters. Not a source if its hex holds an enemy unit, Airdrop, Detachment or Logistics marker." max-length="unlimited" blocked-by-zoc="true" fatal="false" checked="at the moment it is needed (10.2)" ref="10.0">
+      <segment order="1" kind="free" length="2">Two Hex Free Trace: the first two hexes may cross any terrain not otherwise prohibited.</segment>
+      <segment order="2" kind="network" network="road-rail-net" length="unlimited">Road/Rail Trace: on reaching a hex with a Road or Rail symbol, follow connected symbols any distance. Symbols adjoining a Connected Strait count as connected. The line may cross only one Connected Strait or one stretch of contiguous Road hexes; rail is unlimited.</segment>
+      <segment order="3" kind="region-gated" layer="naval-zones" length="unlimited">Naval Zone Trace: from Open Port to Open Port across any number of zones, provided each zone holds a friendly Supply Convoy marker in its Convoys box.</segment>
+      <rule id="supply-restrictions" ref="10.2" topic="supply">No tracing into an EZOC hex unless a friendly unit is there; into a hex with any enemy unit, Airdrop, Detachment or Logistics marker; into a hex with an enemy Partisan Base and no friendly ground unit; into an enemy-country City or Port not under friendly control; into a Neutral Minor Country; or across an All-Sea hexside unless it is a Strait hexside or belongs to a Beachhead hex.</rule>
+      <rule id="supply-capabilities" ref="10.0" topic="supply">Supply is a precondition for operational movement, airdrops, beachhead landings, HQ ranged support and combat shifts, marine shift reduction, advance after combat, exploitation, unit combination, and acting as an Air or Naval Base. Being unsupplied is a capability loss, not elimination.</rule>
+      <rule id="supply-beachhead" ref="Beachhead" topic="supply">Supply may be traced through any hexside of a Beachhead hex, unlike movement.</rule>
+    </trace>
+  </supply>
+
+  <!-- ================= combat ================= -->
+  <combat mandatory="false">
+    <resolver id="crt" name="Combat Results Table" kind="odds-table" randomizer="die" min-odds="1-3" max-odds="9-1" rounding="defender" ref="4.2">
+      <note ref="4.2.2">Attacks are declared one hex at a time; a hex is attacked at most once per segment and all units in it defend. Sequence: attacker declares units and optionally one HQ for ranged support; defender may declare one supplied HQ if none is in the hex; sum factors, express as a CRT ratio rounded in the defender's favour, clamp to 1-3 through 9-1; add attacker shifts, subtract defender shifts, apply the net, clamp again; roll one die; resolve retreats; apply attrition, attacker first; advance or exploit. An attack needs a raw 1-3 before shifts. The numeric body of the table is on player aid cards not in the source folder.</note>
+      <list id="crt-results" name="Combat results" ref="4.2.4">
+        <item code="Ad">Attacker Defeated: all attacking ground units retreat one hex, or one attacking unit takes a step loss; the attacker chooses if retreat is possible.</item>
+        <item code="Ex">Exchange: as Ad; if the attacker takes the step loss instead of retreating, the defenders must then retreat one hex or take a step loss.</item>
+        <item code="Dr1">Defender retreats one hex; unsatisfiable retreat converts to step losses.</item>
+        <item code="Dr2">Defender retreats two hexes.</item>
+        <item code="Dr3">Defender retreats three hexes.</item>
+        <item code="#/#">Attrition: step losses, attacker's number first.</item>
+      </list>
+      <rule id="retreat-before-attrition" ref="4.2.4" topic="combat">Retreat results are applied before attrition results; attrition is applied to the attacker first, then the defender.</rule>
+      <rule id="hq-ranged-support" ref="4.2.1.2 4.2.3.5" topic="combat" units="hq">A supplied HQ may contribute its factor and one shift to any combat within two hexes, on attack or defence, if the combat includes a ground unit of its nationality. The support path may cross enemy units and All-Sea hexes but not Neutral or Policy Affected countries. An HQ that participated may not support another combat later in the segment, though it still contributes when its own hex is attacked.</rule>
+      <rule id="first-loss" ref="4.2.6.1" topic="combat">The first attacker step lost must be a marine step if the force includes a marine attacking across an All-Sea, Beachhead or Strait hexside, and an armour step if it includes an armour-type unit; if both apply the attacker chooses. The remainder is free.</rule>
+      <rule id="hexside-shift-lowest" ref="4.2.3.8" topic="combat">Terrain gives the defender the hex shift plus at most one hexside shift, and that the lowest of all hexside types being attacked across.</rule>
+    </resolver>
+    <resolver id="marker-attack" name="Attack on markers alone" kind="automatic" ref="3.8">
+      <note>An attack against a hex containing only Detachment or Logistics markers succeeds automatically with no die roll; the marker goes to the Delay Box. No exploitation follows.</note>
+    </resolver>
+
+    <modifier id="air-shift" name="Air unit" applies-to="either" kind="shift" value="1" ref="4.2.3.1">One per air unit in or adjacent to the defending hex, of the same nationality as a participant. Suppressed by Mud, and by Storms or Snow if merely adjacent.</modifier>
+    <modifier id="airdrop-shift" name="Airdrop marker" applies-to="attacker" kind="shift" value="1" phase="blitz-combat" ref="4.2.3.2">One per marker; nationality irrelevant.</modifier>
+    <modifier id="armour-shift" name="Armour" applies-to="attacker" kind="shift" value="1" phase="blitz-combat" ref="4.2.3.3">One shift total regardless of the number of armour units.</modifier>
+    <modifier id="fortress-shift" name="Fortress unit" applies-to="defender" kind="shift" value="1" ref="4.2.3.4">Need not be supplied.</modifier>
+    <modifier id="hq-shift" name="HQ" applies-to="either" kind="shift" value="1" ref="4.2.3.5">Including an HQ providing ranged support.</modifier>
+    <modifier id="marine-shift" name="Marines" applies-to="attacker" kind="shift" value="1" ref="4.2.3.6">Supplied, Blitz-enabled, attacking across a Beachhead, Strait or All-Sea hexside; full value only in Blitz combat.</modifier>
+    <modifier id="mud-shift" name="Mud" applies-to="defender" kind="shift" value="1" ref="4.2.3.7">Storms and Snow give no shift.</modifier>
+    <modifier id="terrain-shift" name="Terrain" applies-to="defender" kind="shift" ref="4.2.3.8">Hex shift plus the lowest single applicable hexside shift; see the terrain tables.</modifier>
+    <rule id="shifts-cumulative" ref="4.2.3" topic="combat">Shifts are cumulative across sources: sum attacker shifts, subtract defender shifts, apply the net once. The die roll is never modified in ground combat.</rule>
+    <rule id="blitz-segment" ref="3.10" topic="combat" phase="blitz-combat">Only Blitz-enabled attacking units and markers may attack or give shifts; defenders need not be Blitz-enabled. Airdrop, Armour and the full marine shift exist only here. Blitz attacks against hexes in Mud, Storms or Snow are prohibited, except by Blitz-enabled Russian units in Snow.</rule>
+    <rule id="one-attack-per-unit" ref="4.2.1" topic="combat">A phasing unit attacks at most once per segment; units in one hex may attack different hexes.</rule>
+  </combat>
+
+  <!-- ================= retreat ================= -->
+  <retreat routed-by="owner" distance="1-3" monotone="true" advance-after-combat="true" unsatisfiable="convert-to-step-loss" blocked-by="all-sea lake" ref="4.2.5">
+    <list id="retreat-priorities" name="Retreat priorities, re-evaluated each hex" ordered="true" ref="4.2.5.1">
+      <item>a hex farther from the defending hex than any hex retreated into so far, containing no EZOC</item>
+      <item>a hex farther away containing a friendly ground, Airdrop or Air unit</item>
+      <item>otherwise the force cannot retreat</item>
+    </list>
+    <rule id="retreat-restrictions" ref="4.2.5" topic="retreat">A force cannot retreat if it includes a unit with movement allowance 0 that fought, or an HQ that fought. No retreat into an Off-Map Box, a hex with an enemy unit, Airdrop or Beachhead marker, a Neutral Minor Country or a Policy Affected Country, or across an All-Sea hexside unless it is a Strait or Beachhead hexside.</rule>
+    <rule id="retreat-sweep" ref="4.2.5" topic="retreat">Retreating into a hex with friendly ground units sweeps them into the retreating stack; they count as having participated in the combat. Stacking may be violated during and at the end of a retreat but is repaired at the end of the segment.</rule>
+    <rule id="retreat-conversion" ref="4.2.5" topic="retreat">Unsatisfiable retreat converts one-for-one into step losses. The defender may choose to convert when all adjacent attackers attack across Strait, Beachhead or Mountain hexsides, or when the defending hex holds a City and no Blitz marker.</rule>
+    <rule id="advance-and-exploit" ref="4.2.8" topic="retreat">Advance after combat places any number of supplied attacking units into a vacated hex, ignoring movement costs but not legality. Exploitation is a further post-combat move, blocked into Mud hexes and unavailable after an automatic success against markers alone.</rule>
+  </retreat>
+
+  <!-- ================= randomisers ================= -->
+  <randomizer id="die" name="Die" kind="die" size="6">One six-sided die for combat, delay results and other rolls. Delay results are exempt from the usual 1-6 clamping of modified rolls.</randomizer>
+  <randomizer id="axis-cards" name="Axis option cards" kind="hand" size="76" side="axis" fields="Option Card Segment actions; Political Events; Conditional Events">Selected under constraints a season ahead, not drawn.</randomizer>
+  <randomizer id="western-cards" name="Western option cards" kind="hand" size="80" side="western" fields="Option Card Segment actions; Political Events; Conditional Events"/>
+  <randomizer id="soviet-cards" name="Soviet option cards" kind="hand" size="44" side="soviet" fields="Option Card Segment actions; Political Events; Conditional Events; Production Value">The Production Value adjusts the European Strategic Value track.</randomizer>
+
+  <!-- ================= weather ================= -->
+  <weather source="printed" layer="weather-areas" ref="11.0">
+    <list id="weather-states" name="Adverse weather">
+      <item code="mud"/><item code="storms"/><item code="snow"/>
+    </list>
+    <table id="weather-effects" name="Weather effects" rows="effect" cols="weather">
+      <col label="Mud"/><col label="Storms"/><col label="Snow"/>
+      <row label="Movement out of an EZOC hex"><cell>prohibited</cell><cell>must stop</cell><cell>must stop</cell></row>
+      <row label="Friendly units negate that EZOC"><cell>no</cell><cell>no</cell><cell>no</cell></row>
+      <row label="Blitz attack against such a hex"><cell>prohibited</cell><cell>prohibited</cell><cell>prohibited, except Blitz-enabled Russians</cell></row>
+      <row label="Defender column shift"><cell>1</cell><cell>none</cell><cell>none</cell></row>
+      <row label="Dr results"><cell>Dr3 to Dr2, Dr2 to Dr1, Dr1 to Ex</cell><cell>same</cell><cell>same</cell></row>
+      <row label="Air unit shift"><cell>none at all</cell><cell>none if adjacent</cell><cell>none if adjacent</cell></row>
+      <row label="Exploitation into the hex"><cell>prohibited</cell><cell>allowed</cell><cell>allowed</cell></row>
+      <row label="Retreat, advance after combat"><cell>unaffected</cell><cell>unaffected</cell><cell>unaffected</cell></row>
+      <row label="Naval side effects"><cell>support units barred from named All-Sea hexes</cell><cell>none</cell><cell>Ice hexes lose Naval Base and Open Port status; support units barred from named northern zones</cell></row>
+    </table>
+    <note>Adverse weather turns are printed on the turn track per Weather Area; nothing is rolled.</note>
+  </weather>
+
+  <!-- ================= victory ================= -->
+  <victory>
+    <condition id="seasonal-csv" side="axis western soviet" kind="scheduled" ref="0.1">At each Seasonal Victory Phase compute the Current Strategic Value and position the VP marker; see the CSV rule.</condition>
+    <condition id="asian-domination" side="axis" kind="immediate">Automatic victory by Asian Domination.</condition>
+    <condition id="japanese-surrender" side="western soviet" kind="immediate">Automatic victory by Japanese Surrender.</condition>
+    <condition id="european-collapse" side="axis western soviet" kind="immediate">Automatic end by European Theatre Collapse.</condition>
+    <condition id="vj-day" side="axis western soviet" kind="final">The game ends when the V-J Day marker is removed from the turn track; on a tie the Axis wins.</condition>
+    <rule id="csv-computation" ref="0.1" topic="victory">Count Soviet and Western Strategic Hexes under Axis control plus Allied Collapse markers in the Strategic Warfare Box; subtract Axis Strategic Hexes under Allied control plus Military Takeover markers, not counting Axis Strategic Hexes in an active Policy Affected Country; add a bonus from the European Strategic Value track if any Axis Strategic Hex inside Japan is under Allied control. The integer positions the VP marker on the Rising Sun or Allied Crusade face.</rule>
+  </victory>
+
+  <!-- ================= game-specific layer ================= -->
+
+  <note>Option cards as the engine</note>
+  <rule id="card-pipeline" ref="1.1.3" topic="cards">Each faction plays one card per season, chosen a season in advance. At each Seasonal Phase it reveals its Pending Card as the Current Card, performs its actions, then chooses the next Pending Card from its hand. Selection is binding. A faction that cannot legally select says so and reveals no card next season.</rule>
+  <list id="card-constraints" name="Card selection constraints" ref="1.1.3">
+    <item>Selection Requirements printed on the card: played cards, country postures, the Japanese Government marker, the European war.</item>
+    <item>War State gating by colour: blue Pre-War, gray Limited War, red Total War; only cards up to the current state.</item>
+    <item>Sequential restrictions: certain types not back to back.</item>
+    <item>Annual restrictions: certain types once per calendar year.</item>
+    <item>Production Value budgets for the Soviet faction.</item>
+  </list>
+  <rule id="card-reinforcements" ref="1.1" topic="reinforcement">Reinforcements arrive almost entirely through cards: the Option Card Segment lists counters to place in the Force Pool, the Delay Box or the Strategic Warfare Box. Minor Country units arrive only if the country is active and aligned with the playing faction.</rule>
+
+  <note>Politics</note>
+  <rule id="political-layers" ref="13.0" topic="politics">Four layers: faction; country, Major or Minor with status Active, Neutral or Conquered; dependent; region. Alignment and posture (belligerent, Policy Affected, Truce Affected) sit on top. Country, dependent and region membership are static; status, alignment and posture are mutable and read by dozens of rules.</rule>
+  <rule id="policy-affected" ref="13.0" topic="politics">A Policy marker in a country's Posture Box makes it a Policy Affected Country: its units project no ZOC, no ZOC is projected into it, movement and attacks into it are restricted, supply may not be traced into it, and its Strategic Hexes do not count.</rule>
+  <rule id="conquest" ref="13.0" topic="politics">Countries are conquered and liberated by Conditional Events; a conquered country may be reactivated under the other Allied faction, changing what counts as friendly terrain.</rule>
+  <rule id="war-state" ref="3.9" topic="politics">Three war states, Pre-War, Limited War, Total War, with one-way transitions triggered by named card plays or by any Allied country adopting a posture of War. Pre-War: no movement or attack outside one's own country or dependent, no support units or airdrops, blue cards only. Limited War bars Allied declarations of war. The transition to Total War runs a ten-step script: remove policy markers, schedule V-J Day sixteen seasonal turns out, queue four Axis conditional events.</rule>
+
+  <note>Naval Zones</note>
+  <rule id="naval-zone-gates" ref="3.3" topic="naval">A friendly Troop Convoy in a zone's Convoys box permits port-to-port movement; a friendly Supply Convoy permits supply across the zone. An enemy Fleet in the On Station box closes every port in the zone. An enemy Air unit closes ports within three hexes of a Naval Base of that faction, for activities within that zone.</rule>
+  <rule id="mutual-interdiction" ref="3.3" topic="naval">Open Port Mutual Interdiction: if two factions each deny the other the same pair of hexes, neither has an Open Port.</rule>
+
+  <note>Compound hex predicates, worth memoising</note>
+  <list id="predicates" name="Named hex predicates" ref="glossary">
+    <item code="Air Base">A Land hex with a City, Port, Road or Rail, and a supplied ground unit, Detachment or Logistics marker; no enemy Air unit present.</item>
+    <item code="Naval Base">A Land hex with a Port and a supplied ground unit, Detachment or Logistics marker; not an All-Sea Beachhead hex; not a snowbound Ice hex; no enemy Air unit.</item>
+    <item code="Open Port">A Port hex with a friendly ground unit or marker, or in a friendly active Country, or an All-Sea hex with a friendly Beachhead, or a designated Off-Map Box, minus the enemy-presence and enemy-naval restrictions.</item>
+    <item code="Blitz-enabled">Within two hexes of a friendly Blitz or Totsugeki marker, including its own hex.</item>
+    <item code="Island">A Land hex surrounded entirely by All-Sea, Strait or Beachhead hexsides.</item>
+    <item code="Border">Two countries share a border if at least one Border Hexside separates them.</item>
+  </list>
+  <list id="control-priority" name="Control" ordered="true" ref="glossary">
+    <item>an enemy Strategic Hex with a friendly Devastation marker</item>
+    <item>a hex holding a friendly ground unit, Detachment or Logistics marker</item>
+    <item>a hex in a friendly active Country or Dependent, or a Conquered enemy Minor Country</item>
+  </list>
+
+  <note>Markers with unit-like behaviour</note>
+  <rule id="airdrop-states" ref="3.7 4.1.4" topic="markers" units="airborne airdrop">An airdrop is not a movement: a supplied, Blitz-enabled airborne unit flips to its Airdrop marker and is placed within two hexes, even with enemy units. Later in the segment the marker becomes a one-step infantry unit if supplied and not stacked with an enemy, or goes to the Delay Box. The counter has three states: unit, marker, delayed.</rule>
+  <rule id="beachhead-facing" ref="3.5" topic="markers" units="beachhead">The Beachhead marker's arrow names its hexside; its behaviour is asymmetric between entering (any side) and leaving (that side only). Strengths differ in defender shift and in conferring Blitz-enabled status.</rule>
+
+  <note>Replacements</note>
+  <rule id="replacement-locations" ref="7.0" topic="replacement">Replacements are steps placed at Replacement Locations: a supplied HQ in its home country, or a Logistics marker able to trace supply, overland for the Soviet faction.</rule>
+
+  <note>Ordering hazards</note>
+  <rule id="order-supply-on-demand" ref="10.2" topic="sequence">Supply is evaluated when needed, so a unit unable to move early in the Operational Movement Phase may become able to move later in the same phase.</rule>
+  <rule id="order-sweep-hq" ref="4.2.5" topic="sequence">Units swept into a retreat count as participants, which can retroactively disqualify an HQ from supporting later combats.</rule>
+</game>

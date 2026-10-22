@@ -1,0 +1,121 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexview-classes
+title hexview -- presentation model, no Qt [PROPOSED]
+hide empty members
+
+package HexView {
+  class Scene {
+    +add(Layer, Primitive)
+    +layer(Layer) : span<Primitive>
+    +hitAt(Pixel) : HitTag
+  }
+  class Primitive <<value>> {
+    shape : PathShape | TextShape | SymbolUse
+    hit : HitTag
+  }
+  enum Layer {
+    Background
+    Terrain
+    Regions
+    Grid
+    Edges
+    Links
+    Rings
+    HexGlyphs
+    SideGlyphs
+    Labels
+    Panels
+    Control
+    Units
+    Markers
+    Highlights
+    Overlay
+  }
+  class MapFrame {
+    {static} +of(SheetDoc) : MapFrame
+    +centre(HexId) : Pixel
+    +hexsideEnds(EdgeRef)
+    +hexAt(Pixel) : optional<HexId>
+  }
+  class LineGeometry <<functions>> {
+    smoothedLinks(chains, MapFrame) : Polyline[]
+    cornerChains(hexsides) : Polyline[]
+    roundedCorners(Polyline) : PathCommand[]
+    straightChain(Polyline) : PathCommand[]
+  }
+  class SymbolLibrary {
+    {static} +reference() : SymbolLibrary
+    +symbol(name) : Symbol
+  }
+  class MapStyle <<value>> {
+    roundedLines : set<string>
+    smoothLinksP : bool
+    {static} reference() : rivers rounded
+  }
+  class MapSceneBuilder {
+    +build(SheetDoc, Scene&)
+  }
+  class FaceResolver {
+    +face(CounterId, FaceSide) : Face
+  }
+  class FaceLayout {
+    +draw(Face, topLeft, size, hit) : Primitive[]
+  }
+  class StateSceneBuilder {
+    +build(Position, ViewState, Scene&)
+  }
+  class ViewState <<value>> {
+    viewer : optional<SideId>
+    selection, hover
+    reachable, targets, draftPath
+    pixelsPerHex
+  }
+  interface EngineFacade {
+    +legalCommands() : Command[]
+    +reachable(units, mode) : Reachability
+    +attackTargets(units) : HexIndex[]
+    +apply(Command) : Applied
+  }
+  class SessionFacade
+  class InteractionMachine {
+    +feed(Intent, ViewState) : Outcome
+  }
+  class ReplayController {
+    +at(move) : Position
+    +eventsOf(move) : Event[]
+  }
+  class AnimationPlan <<value>> {
+    beats : Tween[][]
+  }
+  class SceneWriters <<functions>> {
+    writeSvg(Scene, SymbolLibrary, title)
+    writeJson(Scene, SymbolLibrary)
+  }
+}
+
+Scene *-- "many" Primitive
+Scene ..> Layer
+MapSceneBuilder ..> MapFrame
+MapSceneBuilder ..> LineGeometry : smoothed links, rounded rivers
+MapSceneBuilder ..> SymbolLibrary
+MapSceneBuilder ..> MapStyle
+MapSceneBuilder ..> Scene : map layers
+StateSceneBuilder ..> FaceResolver
+StateSceneBuilder ..> FaceLayout
+StateSceneBuilder ..> ViewState
+StateSceneBuilder ..> Scene : play-state layers
+FaceLayout ..> SymbolLibrary
+SessionFacade --|> EngineFacade
+InteractionMachine ..> EngineFacade : asks, never applies
+InteractionMachine ..> ViewState
+ReplayController ..> AnimationPlan
+SceneWriters ..> Scene
+
+note bottom of SceneWriters
+  writeSvg is laid out like hexsheet2svg.py, so SVG goldens
+  compare against the Python reference renderers.
+  writeJson feeds the HTML client; hexqt paints the same
+  Scene with QPainter (decision log "Visual parity").
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

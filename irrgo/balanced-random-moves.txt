@@ -1,0 +1,28 @@
+The game of Hex is very computationally challenging.
+However, random-move Hex has a surprisingly simple
+strategy when each side has 50/50 chance of playing the next move.
+
+Of course, it is well-known that the "gambler's fallacy" really is false.
+There is no tendency to 'make up' past uneven outcomes.
+Naturally, this makes me wonder how to make it always somewhat biased toward
+a more even outcome, i.e. to slightly favor the player (X or Y)
+who has not had many moves lately.
+
+P(X=1, Y=0) = (CY + 1)/(CY + CX + 2)
+P(Y=1, X=0) = (CX + 1)/(CX + CY + 2)
+
+where updates occur by
+CX <-- X + f*CX
+CY <-- Y + f*CY
+
+e.g. f = 0.9
+and CX = CY = 0 initially.
+
+
+OR we could just say
+P(this X = 1 | previous Y = 1) = 0.60
+P(this Y = 1 | previous X = 1) = 0.60
+
+Either seems to be very even over 100 moves or so.
+
+================================

@@ -1,11 +1,8 @@
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.
 #include "LoadedGraph.h"
 #include <unordered_map>
 
 namespace IrrGo {
-
-static constexpr float kColSpacing = 0.87f;
-static constexpr float kRowSpacing = 0.93f;
 
 LoadedGraph::LoadedGraph(const std::vector<NodeData>& nodeData,
                          const std::vector<EdgeData>& edgeData,
@@ -31,4 +28,4 @@ LoadedGraph::LoadedGraph(const std::vector<NodeData>& nodeData,
 }
 
 } // namespace IrrGo
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.

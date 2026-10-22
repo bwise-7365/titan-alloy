@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd" id="vl" title="Velikiye Luki: Stalingrad of the North, November 1942 - February 1943 (Legion Wargames, 2023)" source="example maps/Velikiye-Luki/Velikiye Luki map complete.png, 5182 x 8021 (a photograph: the lattice drifts about 2% across the sheet); checked against the north and south scans" width="5182" height="8021" background="margin" urban="buildings" junctions="explicit">
+  <!-- written by HexMapEd; the structure and its style, validated against hexsheet.xsd -->
+  <grid id="main" orientation="flat" offset="odd" cols="9" rows="10" size="262.3" ox="1013" oy="3389" id-format="{col:02}{row:02}" row-start="0" terrain="open" id-side="s" clip="0209 0409 0609 0809"/>
+  <grid id="german" orientation="flat" offset="even" cols="1" rows="10" size="262.3" ox="619.5" oy="3389" id-format="G{row:02}" row-start="0" terrain="german-entry" show-ids="false"/>
+  <grid id="russian" orientation="flat" offset="even" cols="1" rows="10" size="262.3" ox="4554.5" oy="3389" id-format="R{row:02}" row-start="0" terrain="russian-entry" show-ids="false"/>
+  <palette>
+    <color id="margin" value="#f3efe6" name="sheet margin"/>
+    <color id="paper" value="#f1ede3" name="open"/>
+    <color id="leaf" value="#aabf93" name="wooded mottle"/>
+    <color id="earth" value="#8f8271" name="hill"/>
+    <color id="grid" value="#5a5248"/>
+    <color id="water" value="#8496cc" name="lake"/>
+    <color id="lovat" value="#2a55b0" name="major river"/>
+    <color id="stream" value="#6f9fdb" name="minor river"/>
+    <color id="navy" value="#1b2c66" name="prohibited hexside"/>
+    <color id="tan" value="#a97d4e" name="road"/>
+    <color id="ink" value="#151515"/>
+    <color id="red" value="#c9231c" name="Russian objective star, place names"/>
+    <color id="brick" value="#9b3a2a" name="place names"/>
+    <color id="grey" value="#cfc5c1" name="German entry hex"/>
+    <color id="pink" value="#e9c6b5" name="Russian entry hex"/>
+    <color id="riverblue" value="#3d6fc0" name="river names"/>
+  </palette>
+  <terrains>
+    <terrain id="open" name="Open" fill="paper" stroke="grid"/>
+    <terrain id="wooded" name="Wooded" fill="leaf" stroke="grid" pattern="mottle"/>
+    <terrain id="hill" name="Hill (over open)" fill="earth" stroke="grid" pattern="dots"/>
+    <terrain id="hill-wooded" name="Hill over wooded" fill="earth" stroke="grid" pattern="mottle"/>
+    <terrain id="german-entry" name="German entry hex" fill="grey" stroke="grid"/>
+    <terrain id="russian-entry" name="Russian entry hex" fill="pink" stroke="grid"/>
+  </terrains>
+  <lines>
+    <line id="major-river" stroke="lovat" width="22"/>
+    <line id="minor-river" stroke="stream" width="12"/>
+    <line id="road" stroke="tan" width="6"/>
+    <line id="rail" stroke="ink" width="3" ticks="true"/>
+    <line id="prohibited" stroke="navy" width="12"/>
+  </lines>
+  <legend>
+    <mark id="lake" name="Lake (other terrain in hex)" shape="ellipse" color="water" size="0.42 0.3"/>
+    <mark id="german-objective" name="German objective (Balkenkreuz)" shape="cross" color="ink" size="0.22 0.22"/>
+    <mark id="russian-objective" name="Russian objective (red star)" shape="star" color="red" size="0.22 0.22"/>
+    <mark id="bridge" name="Bridge hexside (negates the river)" shape="bar" color="tan" size="0.12 0.3" across="edge"/>
+  </legend>
+  <hexes terrain="open" ids="0100 0101 0102 0104 0105 0106 0109 0201 0202 0203 0204 0300 0303 0304 0305 0404 0405 0406 0408 0502 0503 0504 0505 0506 0507 0508 0509 0602 0604 0605 0704 0705 0706 0800 0804 0805 0806 0900 0905 0906"/>
+  <hexes terrain="wooded" ids="0108 0200 0205 0207 0208 0301 0302 0307 0308 0309 0400 0401 0402 0407 0500 0501 0600 0601 0603 0607 0608 0700 0701 0702 0703 0707 0708 0709 0801 0802 0803 0807 0808 0901 0902 0903 0904 0907 0908"/>
+  <hexes terrain="hill" ids="0403"/>
+  <hexes terrain="hill-wooded" ids="0103 0107 0206 0306 0606 0909"/>
+  <edge at="0700:nw" line="major-river"/>
+  <edge at="0700:sw" line="major-river"/>
+  <edge at="0701:nw" line="major-river"/>
+  <edge at="0701:sw" line="major-river"/>
+  <edge at="0601:se" line="major-river"/>
+  <edge at="0601:s" line="major-river"/>
+  <edge at="0602:nw" line="major-river"/>
+  <edge at="0602:sw" line="major-river"/>
+  <edge at="0603:nw" line="major-river"/>
+  <edge at="0603:sw" line="major-river"/>
+  <edge at="0604:nw" line="major-river" mark="bridge"/>
+  <edge at="0604:sw" line="major-river" mark="bridge"/>
+  <edge at="0605:nw" line="major-river"/>
+  <edge at="0605:sw" line="major-river"/>
+  <edge at="0606:nw" line="major-river"/>
+  <edge at="0606:sw" line="major-river"/>
+  <edge at="0507:s" line="major-river"/>
+  <edge at="0508:nw" line="major-river"/>
+  <edge at="0508:sw" line="major-river" mark="bridge"/>
+  <edge at="0509:nw" line="major-river"/>
+  <edge at="0408:s" line="major-river"/>
+  <edge at="0309:se" line="major-river"/>
+  <edge at="0100:se" line="minor-river"/>
+  <edge at="0100:s" line="minor-river"/>
+  <edge at="0101:nw" line="minor-river"/>
+  <edge at="0200:n" line="minor-river"/>
+  <edge at="0300:nw" line="minor-river"/>
+  <edge at="0102:ne" line="minor-river"/>
+  <edge at="0201:s" line="minor-river"/>
+  <edge at="0202:se" line="minor-river"/>
+  <edge at="0202:s" line="minor-river"/>
+  <edge at="0203:se" line="minor-river"/>
+  <edge at="0203:s" line="minor-river"/>
+  <edge at="0203:sw" line="minor-river"/>
+  <edge at="0203:nw" line="minor-river"/>
+  <edge at="0104:se" line="minor-river"/>
+  <edge at="0104:s" line="minor-river"/>
+  <edge at="0105:s" line="minor-river"/>
+  <edge at="0106:nw" line="minor-river"/>
+  <edge at="0106:sw" line="minor-river"/>
+  <edge at="0106:s" line="minor-river"/>
+  <edge at="0302:sw" line="minor-river"/>
+  <edge at="0302:s" line="minor-river"/>
+  <edge at="0302:se" line="minor-river"/>
+  <edge at="0401:s" line="minor-river"/>
+  <edge at="0402:ne" line="minor-river"/>
+  <edge at="0402:se" line="minor-river"/>
+  <edge at="0502:s" line="minor-river"/>
+  <edge at="0503:sw" line="minor-river"/>
+  <edge at="0503:s" line="minor-river"/>
+  <edge at="0602:s" line="minor-river"/>
+  <edge at="0603:ne" line="minor-river"/>
+  <edge at="0603:se" line="minor-river"/>
+  <edge at="0704:sw" line="minor-river"/>
+  <edge at="0306:sw" line="minor-river"/>
+  <edge at="0306:s" line="minor-river"/>
+  <edge at="0406:sw" line="minor-river"/>
+  <edge at="0406:s" line="minor-river"/>
+  <edge at="0507:nw" line="minor-river"/>
+  <edge at="0506:s" line="minor-river"/>
+  <edge at="0605:s" line="minor-river"/>
+  <edge at="0606:ne" line="minor-river"/>
+  <edge at="0606:se" line="minor-river"/>
+  <edge at="0607:ne" line="minor-river"/>
+  <edge at="0607:sw" line="minor-river"/>
+  <edge at="0607:s" line="minor-river"/>
+  <edge at="0308:ne" line="minor-river"/>
+  <edge at="0407:s" line="minor-river"/>
+  <edge at="0308:se" line="minor-river"/>
+  <edge at="0308:s" line="minor-river"/>
+  <edge at="0309:nw" line="minor-river"/>
+  <edge at="0700:n" line="minor-river"/>
+  <edge at="0700:ne" line="minor-river"/>
+  <edge at="0700:s" line="minor-river"/>
+  <edge at="0800:sw" line="minor-river"/>
+  <edge at="0802:sw" line="minor-river"/>
+  <edge at="0802:s" line="minor-river"/>
+  <edge at="0802:se" line="minor-river"/>
+  <edge at="0803:ne" line="minor-river"/>
+  <edge at="0803:se" line="minor-river"/>
+  <edge at="0804:ne" line="minor-river"/>
+  <edge at="0804:se" line="minor-river"/>
+  <edge at="0805:ne" line="minor-river"/>
+  <edge at="0805:se" line="minor-river"/>
+  <edge at="0806:ne" line="minor-river"/>
+  <edge at="0906:s" line="minor-river"/>
+  <edge at="0907:ne" line="minor-river"/>
+  <edge at="0908:ne" line="minor-river"/>
+  <edge at="0908:se" line="minor-river"/>
+  <edge at="0909:ne" line="minor-river"/>
+  <edge at="0909:se" line="minor-river"/>
+  <edge at="0907:nw" line="minor-river"/>
+  <edge at="0907:sw" line="minor-river"/>
+  <edge at="0907:s" line="minor-river"/>
+  <edge at="0800:n" line="minor-river"/>
+  <edge at="0800:ne" line="minor-river"/>
+  <edge at="0800:se" line="minor-river"/>
+  <edge at="0801:ne" line="minor-river"/>
+  <edge at="0902:s" line="minor-river"/>
+  <edge at="0902:se" line="minor-river"/>
+  <edge at="0703:s" line="minor-river"/>
+  <edge at="0803:sw" line="minor-river"/>
+  <edge at="0804:sw" line="minor-river"/>
+  <edge at="0805:nw" line="minor-river"/>
+  <edge at="0805:sw" line="minor-river"/>
+  <edge at="0806:nw" line="minor-river"/>
+  <edge at="0806:sw" line="minor-river"/>
+  <edge at="0807:nw" line="minor-river"/>
+  <edge at="0807:sw" line="minor-river"/>
+  <edge at="0808:nw" line="minor-river"/>
+  <edge at="0808:sw" line="minor-river"/>
+  <edge at="0708:nw" line="prohibited"/>
+  <edge at="0708:sw" line="prohibited"/>
+  <edge at="0708:s" line="prohibited"/>
+  <edge at="0105:ne" line="minor-river"/>
+  <edge at="0105:se" line="minor-river"/>
+  <edge at="0307:s" line="minor-river"/>
+  <edge at="0507:se" line="major-river"/>
+  <edge at="0704:s" line="minor-river"/>
+  <edge at="0904:s" line="minor-river"/>
+  <link id="rl-nasva" kind="rail" name="Nasva line" line="rail" hexes="0100 0101 0201 0202 0203 0204 0105 G05" ends="edge edge"/>
+  <link id="rl-nvl-vl" kind="rail" name="Novoskolniki - Velikiye Luki" line="rail" hexes="0105 0205 0305 0404 0505 0604" ends="place place"/>
+  <link id="rl-krposelok" kind="rail" name="Kr Poselok line" line="rail" hexes="0105 0106 0107 0108 G08" ends="place edge"/>
+  <link id="rl-opukhliki" kind="rail" name="Opukhliki line" line="rail" hexes="0604 0505 0506 0406 0307 0308 0208 0109" ends="place edge"/>
+  <link id="rl-north-east" kind="rail" name="north line east" line="rail" hexes="0604 0704 0804 0904 R03" ends="place edge"/>
+  <link id="rl-south-east" kind="rail" name="south line east" line="rail" hexes="0604 0705 0804 0905 R05" ends="place edge"/>
+  <link id="rd-nasva" kind="road" name="Nasva road" line="road" hexes="0100 0101 0201 0202 0203 0104 0105 G04" ends="edge edge"/>
+  <link id="rd-shubino-vl" kind="road" name="Shubino - Ivanovo - Rusanovo - Velikiye Luki" line="road" hexes="0203 0303 0403 0504 0604" ends="junction place"/>
+  <link id="rd-tulubevo" kind="road" name="Tulubevo spur" line="road" hexes="0303 0302" ends="junction place"/>
+  <link id="rd-sidorovshchika" kind="road" name="Sidorovshchika road" line="road" hexes="0401 0402 0403 0504" ends="place junction"/>
+  <link id="rd-demya-vl" kind="road" name="Novoskolniki - Demya - Velikiye Luki" line="road" hexes="0105 0204 0304 0404 0505 0604" ends="place place"/>
+  <link id="rd-pekhovo" kind="road" name="Pekhovo road" line="road" hexes="0105 0205 0206 0307" ends="place place"/>
+  <link id="rd-east-bank" kind="road" name="Lovat east bank" line="road" hexes="0604 0605 0606 0607 0508 0509" ends="place edge"/>
+  <link id="rd-borki" kind="road" name="Borki road" line="road" hexes="0508 0408 0309" ends="junction edge"/>
+  <link id="rd-lipets" kind="road" name="Lipets - Plaksino - Uspenskoe" line="road" hexes="0604 0605 0706 0707 0807 0808 0909 R09" ends="place edge"/>
+  <link id="rd-dokukino-lipets" kind="road" name="Dokukino - Lipets" line="road" hexes="0805 0706" ends="place place"/>
+  <link id="rd-vl-dokukino" kind="road" name="Velikiye Luki - Dokukino" line="road" hexes="0604 0705 0805 0906 R05" ends="place edge"/>
+  <link id="rd-0605-0805" kind="road" name="0605 - 0805 connector" line="road" hexes="0605 0705 0805" ends="junction junction"/>
+  <link id="rd-velikopole" kind="road" name="Velikopole - Gotrovo - Losevo" line="road" hexes="0705 0804 0803 0802 0801 0800" ends="junction edge"/>
+  <link id="rd-gotrovo-east" kind="road" name="Gotrovo east" line="road" hexes="0802 0902 R01" ends="place edge"/>
+  <link id="rd-kunya" kind="road" name="Kunya spur" line="road" hexes="0805 0905 R04" ends="place edge"/>
+  <link id="rd-gubani" kind="road" name="Gubani road" line="road" hexes="0700 0701 0702 0602 0703 0704 0604" ends="edge place"/>
+  <link id="rd-losevo" kind="road" name="Losevo link" line="road" hexes="0701 0800" ends="junction place"/>
+  <junction at="0604" links="rd-shubino-vl rd-demya-vl rd-east-bank rd-lipets rd-vl-dokukino rd-gubani" name="Velikiye Luki"/>
+  <junction at="0605" links="rd-east-bank rd-lipets rd-0605-0805"/>
+  <junction at="0105" links="rd-nasva rd-demya-vl rd-pekhovo" name="Novoskolniki"/>
+  <junction at="0805" links="rd-vl-dokukino rd-0605-0805 rd-dokukino-lipets rd-kunya" name="Dokukino"/>
+  <junction at="0705" links="rd-vl-dokukino rd-velikopole"/>
+  <junction at="0203" links="rd-nasva rd-shubino-vl" name="Shubino"/>
+  <junction at="0303" links="rd-shubino-vl rd-tulubevo" name="Ivanovo"/>
+  <junction at="0504" links="rd-shubino-vl rd-sidorovshchika" name="Rusanovo"/>
+  <junction at="0508" links="rd-east-bank rd-borki"/>
+  <junction at="0706" links="rd-lipets rd-dokukino-lipets" name="Lipets"/>
+  <junction at="0802" links="rd-velikopole rd-gotrovo-east" name="Gotrovo"/>
+  <junction at="0800" links="rd-velikopole rd-losevo" name="Losevo"/>
+  <junction at="0701" links="rd-gubani rd-losevo"/>
+  <junction at="0105" links="rl-nasva rl-nvl-vl rl-krposelok"/>
+  <junction at="0604" links="rl-nvl-vl rl-opukhliki rl-north-east rl-south-east"/>
+  <junction at="0505" links="rl-nvl-vl rl-opukhliki"/>
+  <hex id="0100" name="Bashevo"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0101" name="Nasva"><glyph symbol="town" color="tan"/><glyph mark="russian-objective" slot="nw"/><glyph mark="german-objective" slot="sw"/></hex>
+  <hex id="0203" name="Shubino"><glyph symbol="town" slot="w" color="tan"/><glyph mark="russian-objective" slot="n"/><glyph mark="german-objective"/></hex>
+  <hex id="0302" name="Tulubevo"><glyph symbol="town" slot="nw" color="tan"/></hex>
+  <hex id="0303" name="Ivanovo"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0401" name="Sidorovshchika"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0105" name="Novoskolniki"><glyph symbol="city" color="ink"/><glyph mark="russian-objective" slot="nw"/><glyph symbol="text" slot="nw" color="red" text="2"/><glyph mark="german-objective" slot="sw"/><glyph symbol="text" slot="sw" color="ink" text="3"/></hex>
+  <hex id="0305" name="Demya"><glyph symbol="town" slot="sw" color="tan"/><glyph mark="russian-objective" slot="nw"/><glyph mark="german-objective" slot="w"/></hex>
+  <hex id="0504" name="Rusanovo"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0602" name="Kartsevo"><glyph symbol="town" slot="e" color="tan"/></hex>
+  <hex id="0604" name="Velikiye Luki"><glyph symbol="city" color="ink"/><glyph mark="russian-objective" slot="nw"/><glyph mark="german-objective" slot="ne"/><glyph symbol="text" slot="ne" color="ink" text="9"/></hex>
+  <hex id="0106" name="Vlase"><glyph symbol="town" color="tan"/><glyph mark="russian-objective" slot="ne"/><glyph mark="german-objective" slot="se"/></hex>
+  <hex id="0405" name="Platonovo"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0307" name="Pekhovo"><glyph symbol="town" slot="n" color="tan"/><glyph mark="russian-objective" slot="w"/></hex>
+  <hex id="0700" name="Gubani"><glyph symbol="town" slot="w" color="tan"/></hex>
+  <hex id="0800" name="Losevo"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0802" name="Gotrovo"><glyph symbol="town" slot="n" color="tan"/></hex>
+  <hex id="0804" name="Velikopole"><glyph symbol="town" slot="nw" color="tan"/></hex>
+  <hex id="0905" name="Kunya"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0805" name="Dokukino"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0706" name="Lipets"><glyph symbol="town" slot="ne" color="tan"/></hex>
+  <hex id="0807" name="Plaksino"><glyph symbol="town" slot="nw" color="tan"/></hex>
+  <hex id="0108" name="Kr Poselok"><glyph symbol="town" slot="s" color="tan"/><glyph mark="russian-objective" slot="ne"/><glyph mark="german-objective" slot="e"/></hex>
+  <hex id="0208" name="Opukhliki"><glyph symbol="town" slot="sw" color="tan"/><glyph mark="russian-objective" slot="ne"/></hex>
+  <hex id="0408" name="Borki"><glyph symbol="town" slot="n" color="tan"/></hex>
+  <hex id="0509" name="Poreche"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0909" name="Uspenskoe"><glyph symbol="town" color="tan"/></hex>
+  <hex id="0109"><glyph mark="lake" slot="n"/></hex>
+  <hex id="0208"><glyph mark="lake" slot="w"/></hex>
+  <hex id="0307"><glyph mark="lake" slot="e"/></hex>
+  <hex id="0308"><glyph mark="lake" slot="n"/></hex>
+  <hex id="0404"><glyph mark="lake" slot="n"/><glyph mark="lake" slot="w"/></hex>
+  <hex id="0407"><glyph mark="lake" slot="e"/></hex>
+  <hex id="0607"><glyph mark="lake" slot="nw"/><glyph mark="lake" slot="se"/></hex>
+  <hex id="0608"><glyph mark="lake" slot="ne"/></hex>
+  <hex id="0706"><glyph mark="lake" slot="nw"/><glyph mark="lake" slot="w"/><glyph mark="lake" slot="e"/></hex>
+  <hex id="0707"><glyph mark="lake" slot="n"/><glyph mark="lake" slot="e"/><glyph mark="lake" slot="sw"/></hex>
+  <hex id="0708"><glyph mark="lake" slot="nw"/><glyph mark="lake" slot="ne"/><glyph mark="lake" slot="s"/></hex>
+  <hex id="R01"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <hex id="R04"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <hex id="R08"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <label text="BASHEVO" at="0100" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="NASVA" at="0101" size="34" color="brick" weight="bold"/>
+  <label text="SHUBINO" at="0203" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="TULUBEVO" at="0302" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="SIDOROVSHCHIKA" at="0401" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="IVANOVO" at="0303" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="NOVOSKOLNIKI" at="0105" slot="n" size="40" color="brick" weight="bold"/>
+  <label text="DEMYA" at="0305" size="34" color="brick" weight="bold"/>
+  <label text="RUSANOVO" at="0504" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="KARTSEVO" at="0602" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="VELIKIYE LUKI" at="0604" slot="n" size="46" color="brick" weight="bold"/>
+  <label text="VLASE" at="0106" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="PLATONOVO" at="0405" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="PEKHOVO" at="0307" slot="s" size="34" color="brick" weight="bold"/>
+  <label text="GUBANI" at="0700" size="34" color="brick" weight="bold"/>
+  <label text="LOSEVO" at="0800" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="GOTROVO" at="0802" size="34" color="brick" weight="bold"/>
+  <label text="VELIKOPOLE" at="0804" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="KUNYA" at="0905" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="DOKUKINO" at="0805" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="LIPETS" at="0706" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="PLAKSINO" at="0807" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="KR POSELOK" at="0108" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="OPUKHLIKI" at="0208" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="BORKI" at="0408" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="PORECHE" at="0509" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="USPENSKOE" at="0909" slot="n" size="34" color="brick" weight="bold"/>
+  <label text="Lovat" at="0507" slot="e" angle="-70" size="48" color="riverblue" italic="true"/>
+  <label text="Rachitsa" at="0202" slot="e" angle="-65" size="30" color="riverblue" italic="true"/>
+  <label text="Cveretitsa" at="0406" slot="w" angle="-60" size="30" color="riverblue" italic="true"/>
+  <label text="Vsruitsa" at="0806" slot="w" angle="-75" size="30" color="riverblue" italic="true"/>
+  <label text="Kunya" at="0905" slot="sw" angle="-75" size="30" color="riverblue" italic="true"/>
+  <label text="GERMAN ENTRY HEXES" x="300" y="5650" angle="90" size="70" color="grey" weight="bold" spacing="14"/>
+  <label text="RUSSIAN ENTRY HEXES" x="4900" y="5650" angle="90" size="70" color="pink" weight="bold" spacing="14"/>
+  <label text="2ND MC" at="R01" angle="90" size="34" color="red" weight="bold"/>
+  <label text="5TH GSC" at="R04" angle="90" size="34" color="red" weight="bold"/>
+  <label text="3RD SA" at="R08" angle="90" size="34" color="red" weight="bold"/>
+</sheet>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plan name="Isolated bedroom fragment">
+  <rooms>
+    <room id="outside" label="Outdoors" kind="EXTERIOR" privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="mud" label="Mud room" kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="living" label="Living room" kind="COMMON" privacy="PUBLIC"/>
+    <room id="bed1" label="Bedroom 1" kind="BEDROOM" privacy="PRIVATE"/>
+  </rooms>
+  <connections>
+    <connection from="outside" to="mud" kind="DOOR"/>
+    <connection from="mud" to="living" kind="OPENING"/>
+  </connections>
+</plan>

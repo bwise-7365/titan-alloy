@@ -1,0 +1,33 @@
+N=200 T=80 n=16000  adaptive lasso with the error scale estimated
+true error scale 0.1
+
+seed 20260726, block, true cells 2573
+  start: cross-validation gives M = 11563, sigma = 0.0462
+  pass 1: M =  2573  correct  2573  false     0  missed     0  sigma 0.1009  error 0.63
+  pass 2: M =  2573  correct  2573  false     0  missed     0  sigma 0.1009  error 0.63
+  the pattern has stopped changing
+  the same case started from a large value, to show the fixed point does not depend on it
+  start: sigma set to 1.0000 by hand
+  pass 1: M =  2569  correct  2566  false     3  missed     7  sigma 0.1299  error 1.65
+  pass 2: M =  2573  correct  2573  false     0  missed     0  sigma 0.1009  error 0.63
+  pass 3: M =  2573  correct  2573  false     0  missed     0  sigma 0.1009  error 0.63
+  the pattern has stopped changing
+
+seed 20260726, scatter, true cells 2573
+  start: cross-validation gives M = 11601, sigma = 0.0456
+  pass 1: M =  2573  correct  2573  false     0  missed     0  sigma 0.1010  error 0.63
+  pass 2: M =  2573  correct  2573  false     0  missed     0  sigma 0.1010  error 0.63
+  the pattern has stopped changing
+
+seed 20261726, block, true cells 2553
+  start: cross-validation gives M = 11351, sigma = 0.0472
+  pass 1: M =  2553  correct  2553  false     0  missed     0  sigma 0.0996  error 0.64
+  pass 2: M =  2553  correct  2553  false     0  missed     0  sigma 0.0996  error 0.64
+  the pattern has stopped changing
+
+seed 20261726, scatter, true cells 2553
+  start: cross-validation gives M = 11299, sigma = 0.0492
+  pass 1: M =  2553  correct  2553  false     0  missed     0  sigma 0.0998  error 0.63
+  pass 2: M =  2553  correct  2553  false     0  missed     0  sigma 0.0998  error 0.63
+  the pattern has stopped changing
+

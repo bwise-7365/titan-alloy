@@ -1,0 +1,39 @@
+/plan  The purpose of the XML/XSD rule languages was to guide and constrain the development of wargames in C++20. I will need a Markdown file of the plan on disk so that we both can keep track of progress as the work progresses. Use the same C:\repos\ghub-per\titan-alloy\hexgames directory.
+
+I expect that an efficient workflow will require one Fable agent to coordinate several Opus and/or Sonnet agents (no more than 5: I don't want to waste my limit token-budget). Recommend a workflow, with compare and contrast to two others to explain your recommendation. Be sure to save the state of your progress to the hard disk periodically. There have been repeated unexplained server errors that crash Claude sessions, so it may be necessary to resume mid-stride after a problem.
+
+Unit tests will be necessary; use Google Test. Your architecture should emphasize a clean design with reuse of code. Enforce clean domain types over defensive checks. Do not introduce lots of defensive null checks or scattered boundary branching. Encode invariant constraints directly in strong types (e.g. C++ concepts, strong typedefs). Emphasize concision and clarity over efficiency.
+
+PlantUML documentation of the class design and expected interaction sequences will be required, before implementation, but not in overwhelming complete detail. The first round of text documentation will be produced using the  Generating_ten_sections.md file in C:\repos\ghub-per\literate-robot\ai-assisted-refactoring-book.
+
+# Common Game Engine
+Design a reusable common 'wargame engine' that handles the common data structures, behavior, and analysis of hex-based wargames, given moves from either human players or AI. Use the XML specification of games 'Dai Senso', 'The Russian Campaign', 'D-Day at Tarawa' and 'Panzergruppe Guderian' (DS, TRC, DDaT, PGG) as your test cases. They are use cases to make sure it works, but do not limit it to those four: we will try two others after all this works as 'out of sample' tests. The basic engine has to be able to run 'headless', with no GUI. Of course, it must avoid race conditions, memory leaks, etc. Because training an AI would require running lots of instances, probably in parallel, make sure that multiple instances can run simultaneously without corrupting each others' state.
+
+Graph analysis will be necessary (e.g. routes through road networks, A* across varied terrain, etc). Look at OGDF and CXXGraph and recommond one or the other, with pros and cons behind your recommendation.
+
+## Coordinates
+Use the ABC coordinate system as defined in C:\repos\ghub-per\panj\hexmap because it makes it easy to refer to hex edges and vertices using the same coordinates as hex centers. NOTE WELL: it is a non-standard coordinate system based on three non-orthogonal unit vectors in the plane. DO NOT use the standard hacks common in wargames: use MY unique system. If the XML rules need to be updated to use the ABC coordinates, tell me and let me review it before you update the XML and XSD.
+
+## Game-Specific Engines
+Make a sub-directory for each of DS, TRC, DDaT, and PGG which use the common playing engine with game-specific code to run game-specific unit tests. For each, there should be one overall complete system test which is a scripted series of moves on each side with controlled PRNG seed to ensure perfect replication of the 'golden records', all without a GUI.
+
+
+# Common Game GUI
+Design a common reusable 'wargame gui' that supports games whose rules, maps, and units can be specified with the XML/XSD in this directory. Again, DS, TRC, DDat and PGG will be the first 'use cases' to make sure it all works, but make sure the design is extensible. My immediate goal is a Qt6 implementation on this workstation (it is installed; see C:\repos\ghub-per\visolver for several examples, such as the fleet_app in C:\repos\ghub-per\visolver\cmake-build-release\apps\fleet\gui. NOTE that the required Qt6 DLLs and 'platform' directory are needed in every Qt6 application. Debug and Release require different DLLs). A secondary, future goal is to support an HTML interface so people can play through the browser. Do not implement an HTML interface now; just make sure that the design supports the future extension.
+
+I have an example GUI in Java17 at C:\repos\ghub-per\HexKrieg
+
+## Game-Specific GUIs
+Make a sub-directory for each of DS, TRC, DDaT, and PGG which use the common GUI and game-specific engine with game-specific code to run game-specific unit tests.
+
+# Game Records
+Using the XML specifications as a basis, design XML/XSD to save and reload DS, TRC, DDaT and PGG games.
+
+# Copyrights
+Put a copyright comment at the start and end of every C++ source or header file, like this:
+
+// ----------------------------------------------
+// Copyright Ben Paul Wise. All Rights Reserved.
+// ----------------------------------------------
+
+For TXT and MD files, "Copyright Ben Paul Wise. All Rights Reserved."  will be required.

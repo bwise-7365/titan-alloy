@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root name="fixture" count="3" ratio="1.5" flag="true">
+  <child id="a">first</child>
+  <child id="b">  second, trimmed  </child>
+  <other id="c"/>
+</root>

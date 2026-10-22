@@ -1,24 +1,28 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "EditSiteEntry.h"
-#include <QVBoxLayout>
+
+#include <QCheckBox>
 #include <QFormLayout>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QHBoxLayout>
-#include <QKeyEvent>
+#include <QVBoxLayout>
 
-EditSiteEntry::EditSiteEntry(SiteEntry *entry, QWidget *parent)
-    : QDialog(parent), m_entry(entry) {
+#include "PasswordField.h"
+#include "UiMetrics.h"
+
+EditSiteEntry::EditSiteEntry(SiteEntry* entry, PasswordGenerator::Mode pwMode, int suggestedLength,
+                             QWidget* parent)
+    : QDialog(parent), m_entry(entry), m_pwMode(pwMode), m_suggestedLength(suggestedLength) {
     setWindowTitle(tr("Edit Site Entry"));
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QFormLayout *formLayout = new QFormLayout();
+    auto* mainLayout = new QVBoxLayout(this);
+    auto* formLayout = new QFormLayout();
 
-    // Ensure even and compact spacing, matching ViewSiteEntry
-    const int commonSpacing = 6;
-    formLayout->setVerticalSpacing(commonSpacing);
-    mainLayout->setSpacing(commonSpacing);
-    mainLayout->setContentsMargins(10, 10, 10, 10);
+    formLayout->setVerticalSpacing(ui::kSpacing);
+    formLayout->setHorizontalSpacing(ui::kFormHSpacing);
+    mainLayout->setSpacing(ui::kSpacing);
+    mainLayout->setContentsMargins(ui::snugMargins());
 
     m_titleEdit = new QLineEdit(this);
     m_siteEdit = new QLineEdit(this);
@@ -29,33 +33,49 @@ EditSiteEntry::EditSiteEntry(SiteEntry *entry, QWidget *parent)
     formLayout->addRow(tr("Title:"), m_titleEdit);
     formLayout->addRow(tr("Site:"), m_siteEdit);
     formLayout->addRow(tr("UserID:"), m_userIdEdit);
-    formLayout->addRow(tr("Password:"), m_passwordEdit);
+
+    // Password row: field + Suggest button.
+    auto* passwordRow = new QHBoxLayout();
+    passwordRow->setContentsMargins(0, 0, 0, 0);
+    passwordRow->setSpacing(ui::kSpacing);
+    passwordRow->addWidget(m_passwordEdit, 1);
+    auto* suggestButton = new QPushButton(tr("Suggest"), this);
+    passwordRow->addWidget(suggestButton);
+    formLayout->addRow(tr("Password:"), passwordRow);
+
+    auto* showBox = new QCheckBox(tr("Show password"), this);
+    formLayout->addRow(QString(), showBox);
+
     formLayout->addRow(tr("Comment:"), m_commentEdit);
 
-    onResetClicked(); // Populate fields from entry
+    ui::wireRevealToggle(showBox, {m_passwordEdit});
+
+    onResetClicked(); // populate fields from the entry
 
     mainLayout->addLayout(formLayout);
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    auto* buttonLayout = new QHBoxLayout();
     buttonLayout->setContentsMargins(0, 0, 0, 0);
-    
-    QPushButton *okButton = new QPushButton(tr("OK"), this);
-    QPushButton *resetButton = new QPushButton(tr("Reset"), this);
-    QPushButton *cancelButton = new QPushButton(tr("Cancel"), this);
+    buttonLayout->setSpacing(ui::kSpacing);
 
-    // Order: OK (left), Reset (middle), Cancel (right)
+    auto* okButton = new QPushButton(tr("OK"), this);
+    auto* resetButton = new QPushButton(tr("Reset"), this);
+    auto* cancelButton = new QPushButton(tr("Cancel"), this);
+    okButton->setDefault(true); // Enter now confirms (was Cancel in the prototype)
+
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(resetButton);
     buttonLayout->addWidget(cancelButton);
-
     mainLayout->addLayout(buttonLayout);
 
     connect(okButton, &QPushButton::clicked, this, &EditSiteEntry::onOkClicked);
     connect(resetButton, &QPushButton::clicked, this, &EditSiteEntry::onResetClicked);
     connect(cancelButton, &QPushButton::clicked, this, &QDialog::reject);
+    connect(suggestButton, &QPushButton::clicked, this, &EditSiteEntry::onSuggestClicked);
 
-    // Set fixed width to match user's general window size preference
-    setFixedWidth(400);
+    // Resizable in both directions; 420 is the starting and minimum width.
+    setMinimumWidth(420);
+    resize(420, sizeHint().height());
 }
 
 void EditSiteEntry::onOkClicked() {
@@ -76,15 +96,17 @@ void EditSiteEntry::onResetClicked() {
         m_userIdEdit->setText(m_entry->UserID);
         m_passwordEdit->setText(m_entry->Password);
         m_commentEdit->setText(m_entry->Comment);
+
+        m_titleEdit->home(false);
+        m_siteEdit->home(false);
+        m_userIdEdit->home(false);
+        m_passwordEdit->home(false);
+        m_commentEdit->home(false);
     }
 }
 
-void EditSiteEntry::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        // "If the user hits 'return', it does the Cancel action."
-        reject();
-        return;
-    }
-    QDialog::keyPressEvent(event);
+void EditSiteEntry::onSuggestClicked() {
+    m_passwordEdit->setText(PasswordGenerator::generate(m_suggestedLength, m_pwMode));
+    m_passwordEdit->home(false);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

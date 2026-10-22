@@ -1,0 +1,501 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="121.10mm" height="134.30mm" viewBox="0 0 121.100 134.300" font-family="Arial Narrow, Arial, sans-serif">
+<title>Dai Senso! representative counters -- back</title>
+<rect width="121.100" height="134.300" fill="#ffffff"/>
+<g class="counter" data-id="jp-inf-16" transform="translate(100.400,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXX</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">44</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">16</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/><circle cx="86.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-4-2</text></g></g>
+<g class="counter" data-id="jp-inf-2" transform="translate(87.200,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-3-1</text></g></g>
+<g class="counter" data-id="jp-guards" transform="translate(74.000,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">B</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Gds</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-2-1</text></g></g>
+<g class="counter" data-id="jp-snlf" transform="translate(60.800,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50.0,45.0 L50.0,54.9 M46.0,47.6 L54.0,47.6 M44.4,51.8 A5.6,3.9 0 0 0 55.6,51.8" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">12</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">SNLF</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-2-1</text></g></g>
+<g class="counter" data-id="jp-armour" transform="translate(47.600,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol armour">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">18</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-2</text></g></g>
+<g class="counter" data-id="jp-airborne" transform="translate(34.400,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M42.0,39.8 A8.0,7.8 0 0 1 58.0,39.8" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">27</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1Ab</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="jp-fortress" transform="translate(21.200,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g class="symbol fortress">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+</g>
+<g class="steps"><rect x="90.5" y="7.5" width="5" height="5" fill="#111111"/><rect x="83.5" y="7.5" width="5" height="5" fill="#111111"/><rect x="76.5" y="7.5" width="5" height="5" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">E</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Rab</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">0-3-0</text></g></g>
+<g class="counter" data-id="jp-garrison" transform="translate(8.000,8.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol garrison">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="50.0" cy="44.0" r="4.2" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+</g>
+<g class="steps"><rect x="90.5" y="7.5" width="5" height="5" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">N</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Kor</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">0-1-1</text></g></g>
+<g class="counter" data-id="kwa-hq" transform="translate(100.400,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#a8202a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g class="symbol hq-checker">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<rect x="30.0" y="31.0" width="10.0" height="8.7" fill="#ffffff"/>
+<rect x="30.0" y="48.3" width="10.0" height="8.7" fill="#ffffff"/>
+<rect x="40.0" y="39.7" width="10.0" height="8.7" fill="#ffffff"/>
+<rect x="50.0" y="31.0" width="10.0" height="8.7" fill="#ffffff"/>
+<rect x="50.0" y="48.3" width="10.0" height="8.7" fill="#ffffff"/>
+<rect x="60.0" y="39.7" width="10.0" height="8.7" fill="#ffffff"/>
+</g>
+<g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXX</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">44</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Kwa</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Kwa</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="kwa-inf" transform="translate(87.200,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#a8202a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">44</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">4</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Kwa</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-3-1</text></g></g>
+<g class="counter" data-id="kwa-cav" transform="translate(74.000,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#a8202a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol cavalry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">44</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">1</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Kwa</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-2</text></g></g>
+<g class="counter" data-id="ru-army" transform="translate(60.800,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a5a2a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXX</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">3</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">1FE</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/><circle cx="86.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-3-1</text></g></g>
+<g class="counter" data-id="ru-mech" transform="translate(47.600,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a5a2a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol mechanized">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">ASR</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">6</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-1-2</text></g></g>
+<g class="counter" data-id="ru-cavmech" transform="translate(34.400,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a5a2a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol cav-mech">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">9</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">KMG</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-1-3</text></g></g>
+<g class="counter" data-id="gb-ind" transform="translate(21.200,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d2b48c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">5</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">17</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Ind</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="gb-aus" transform="translate(8.000,21.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d2b48c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">8</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Aus</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="gb-nz" transform="translate(100.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d2b48c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Exp</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">NZ</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="gb-hk" transform="translate(87.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d2b48c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol garrison">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="50.0" cy="44.0" r="4.2" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+</g>
+<g class="steps"><rect x="90.5" y="7.5" width="5" height="5" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">E</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">HK</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">HK</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">0-1-0</text></g></g>
+<g class="counter" data-id="us-army" transform="translate(74.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXX</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">60</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">6</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/><circle cx="86.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">4-4-2</text></g></g>
+<g class="counter" data-id="us-marine" transform="translate(60.800,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M50.0,45.0 L50.0,54.9 M46.0,47.6 L54.0,47.6 M44.4,51.8 A5.6,3.9 0 0 0 55.6,51.8" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">48</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-2</text></g></g>
+<g class="counter" data-id="us-arm" transform="translate(47.600,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol armour">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#f0c020" stroke="#111111" stroke-width="2.2"/>
+<rect x="37.6" y="36.9" width="24.8" height="14.3" rx="7.2" ry="7.2" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">55</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2-1-2</text></g></g>
+<g class="counter" data-id="us-phil" transform="translate(34.400,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#2a8a3a" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#2a8a3a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#2a8a3a"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#2a8a3a" dominant-baseline="central" transform="translate(0,0.0)">E</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#2a8a3a" dominant-baseline="central" transform="translate(0,0.0)">Res</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#2a8a3a" dominant-baseline="central" transform="translate(0,0.0)">Phil</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#2a8a3a" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="nat-warzone" transform="translate(21.200,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f0d040" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#d02020" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#d02020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g transform="translate(50.0,27.0) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" letter-spacing="-0.5" transform="translate(0,0.0)">XXXXX</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">N</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">5WZ</text></g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#d02020"/><circle cx="86.0" cy="10.0" r="2.6" fill="#d02020"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-2-1</text></g></g>
+<g class="counter" data-id="nat-inf" transform="translate(8.000,34.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f0d040" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#d02020" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#d02020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#d02020"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">N</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Exp</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-2-1</text></g></g>
+<g class="counter" data-id="nat-kan" transform="translate(100.400,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f0d040" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#d02020" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#d02020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#d02020"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Res</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Kan</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="nat-yun" transform="translate(87.200,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f0d040" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#d02020" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#d02020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#d02020"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Exp</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Yun</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="nat-sze" transform="translate(74.000,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f0d040" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#d02020" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#d02020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#d02020"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Res</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" transform="translate(0,0.0)">Sze</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#d02020" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-2-1</text></g></g>
+<g class="counter" data-id="ccp-inf" transform="translate(60.800,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d02020" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#40d0e0" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#40d0e0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#40d0e0"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#40d0e0" dominant-baseline="central" transform="translate(0,0.0)">ASR</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#40d0e0" dominant-baseline="central" transform="translate(0,0.0)">8Rt</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#40d0e0" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-2-1</text></g></g>
+<g class="counter" data-id="siam-inf" transform="translate(47.600,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a5ab0" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">C</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Exp</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="nei-inf" transform="translate(34.400,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#f09030" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#3050a0" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#3050a0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#3050a0"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#3050a0" dominant-baseline="central" transform="translate(0,0.0)">E</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#3050a0" dominant-baseline="central" transform="translate(0,0.0)">KNIL</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#3050a0" dominant-baseline="central" transform="translate(0,0.0)">NEI</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#3050a0" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-2-1</text></g></g>
+<g class="counter" data-id="fra-inf" transform="translate(21.200,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#3050a0" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="#ffffff" stroke="#ffffff" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#ffffff"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">E</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Exp</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">Fra</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="man-cav" transform="translate(8.000,47.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#7a8a40" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol cavalry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">N</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Mong</text></g>
+<g transform="translate(12.0,44.0) rotate(-90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Mong</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-2</text></g></g>
+<g class="counter" data-id="jp-cv-strike" transform="translate(100.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">CV Fleet</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">4</text></g>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">Kido Butai</text></g>
+<g class="silhouette carrier" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><path d="M-22,4 L22,4 L17,12 L-18,12 Z"/><rect x="-23" y="-1" width="46" height="5"/><rect x="8" y="-9" width="6" height="8"/></g></g>
+<g class="counter" data-id="jp-cv-fleet" transform="translate(87.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">CV Strike</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">4</text></g>
+<circle cx="89.0" cy="13.0" r="6.5" fill="none" stroke="#111111" stroke-width="1.5"/><g transform="translate(89.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2</text></g>
+<g class="silhouette aircraft" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><path d="M0,-13 L3,-4 L21,2 L21,5 L3,3 L2,10 L7,13 L7,15 L0,13 L-7,15 L-7,13 L-2,10 L-3,3 L-21,5 L-21,2 L-3,-4 Z"/></g></g>
+<g class="counter" data-id="jp-airforce" transform="translate(74.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Escort</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Troop Convoy</text></g></g>
+<g class="counter" data-id="jp-troop-convoy" transform="translate(60.800,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Air Force</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<circle cx="89.0" cy="13.0" r="6.5" fill="none" stroke="#111111" stroke-width="1.5"/><g transform="translate(89.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3</text></g>
+<g class="silhouette aircraft" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><path d="M0,-13 L3,-4 L21,2 L21,5 L3,3 L2,10 L7,13 L7,15 L0,13 L-7,15 L-7,13 L-2,10 L-3,3 L-21,5 L-21,2 L-3,-4 Z"/></g>
+<g transform="translate(88.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1</text></g></g>
+<g class="counter" data-id="us-bomber" transform="translate(47.600,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem cloud" transform="translate(50.0,44.0) scale(1.00)"><ellipse cx="0" cy="-6" rx="13" ry="7" fill="#9a9a9a"/><rect x="-3" y="-2" width="6" height="12" fill="#9a9a9a"/><ellipse cx="0" cy="11" rx="8" ry="2.5" fill="#9a9a9a"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Devastation</text></g></g>
+<g class="counter" data-id="us-interceptor" transform="translate(34.400,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Interceptor</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">57</text></g>
+<circle cx="89.0" cy="13.0" r="6.5" fill="none" stroke="#111111" stroke-width="1.5"/><g transform="translate(89.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2</text></g>
+<g class="silhouette interceptor" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><path d="M0,-14 L2,-2 L14,6 L14,8 L2,5 L1,10 L5,13 L5,14 L0,12 L-5,14 L-5,13 L-1,10 L-2,5 L-14,8 L-14,6 L-2,-2 Z"/></g>
+<path d="M11.0,97.0 L11.0,85.0 M7.0,89.0 L11.0,85.0 L15.0,89.0" fill="none" stroke="#111111" stroke-width="2"/></g>
+<g class="counter" data-id="us-surf-fleet" transform="translate(21.200,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Escort</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Troop Convoy</text></g></g>
+<g class="counter" data-id="us-sub-fleet" transform="translate(8.000,60.800) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Sub Fleet</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">B</text></g>
+<g class="silhouette submarine" transform="translate(50.0,44.0) scale(1.00)" fill="#111111"><rect x="-22" y="0" width="44" height="9" rx="4.5"/><rect x="-4" y="-7" width="8" height="8" rx="1"/><rect x="-1" y="-11" width="2" height="4"/></g>
+<path d="M11.0,85.0 L11.0,97.0 M7.0,93.0 L11.0,97.0 L15.0,93.0" fill="none" stroke="#111111" stroke-width="2"/>
+<rect x="80.0" y="85.0" width="13" height="11" fill="#000000" stroke="#000000" stroke-width="0.6"/><g transform="translate(86.5,90.5) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">+1</text></g></g>
+<g class="counter" data-id="ru-airforce" transform="translate(100.400,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a5a2a" stroke="#8a8a8a" stroke-width="0.6"/>
+<rect x="0" y="80.0" width="100" height="16.0" fill="#000000"/>
+<g transform="translate(50.0,91.2) rotate(0.0)"><text x="0" y="0" font-size="9.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Air Force</text></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#ffffff" dominant-baseline="central" transform="translate(0,0.0)">3</text></g>
+<circle cx="89.0" cy="13.0" r="6.5" fill="none" stroke="#ffffff" stroke-width="1.5"/><g transform="translate(89.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">2</text></g>
+<g class="silhouette aircraft" transform="translate(50.0,44.0) scale(1.00)" fill="#ffffff"><path d="M0,-13 L3,-4 L21,2 L21,5 L3,3 L2,10 L7,13 L7,15 L0,13 L-7,15 L-7,13 L-2,10 L-3,3 L-21,5 L-21,2 L-3,-4 Z"/></g>
+<rect x="80.0" y="85.0" width="13" height="11" fill="#d02020" stroke="#000000" stroke-width="0.6"/><g transform="translate(86.5,90.5) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">-1</text></g></g>
+<g class="counter" data-id="jp-airdrop" transform="translate(87.200,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M42.0,39.8 A8.0,7.8 0 0 1 58.0,39.8" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">27</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">1Ab</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">1-1-1</text></g></g>
+<g class="counter" data-id="jp-detachment" transform="translate(74.000,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="symbol infantry">
+<rect x="30.0" y="31.0" width="40.0" height="26.0" fill="none" stroke="#111111" stroke-width="2.2"/>
+<path d="M30.0,31.0 L70.0,57.0 M30.0,57.0 L70.0,31.0" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g class="steps"><circle cx="93.0" cy="10.0" r="2.6" fill="#111111"/></g>
+<g transform="translate(8.0,12.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="start" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">A</text></g>
+<g transform="translate(88.0,44.0) rotate(90.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">2</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">3-3-1</text></g></g>
+<g class="counter" data-id="jp-logistics" transform="translate(60.800,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem pennant" transform="translate(50.0,44.0) scale(1.00)"><rect x="-13" y="-12" width="2" height="26" fill="#111111"/><polygon points="-11,-12 12,-6 -11,0" fill="#d02020"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Logistics</text></g></g>
+<g class="counter" data-id="jp-beachhead-2" transform="translate(47.600,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<path d="M50.0,19.0 L50.0,7.0 M46.0,11.0 L50.0,7.0 L54.0,11.0" fill="none" stroke="#111111" stroke-width="2"/>
+<g class="silhouette ship" transform="translate(50.0,44.0) scale(0.60)" fill="#111111"><path d="M-22,4 L22,4 L17,12 L-18,12 Z"/><rect x="-8" y="-4" width="16" height="8"/><rect x="-3" y="-11" width="4" height="7"/><rect x="-16" y="0" width="5" height="4"/><rect x="10" y="0" width="5" height="4"/></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Beachhead 2</text></g></g>
+<g class="counter" data-id="jp-convoy" transform="translate(34.400,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem anchor" transform="translate(50.0,44.0) scale(0.70)"><path d="M0,-12 L0,10 M-9,-2 L9,-2 M-12,4 A12,10 0 0 0 12,4" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round"/><circle cy="-13" r="3" fill="none" stroke="#111111" stroke-width="2"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Troop</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Convoy</text></g></g>
+<g class="counter" data-id="ccp-partisan-base" transform="translate(21.200,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d02020" stroke="#8a8a8a" stroke-width="0.6"/>
+<circle cx="50.0" cy="44.0" r="5" fill="#000000" stroke="#ffffff" stroke-width="1"/>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#40d0e0" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Partisan</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#40d0e0" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Base</text></g></g>
+<g class="counter" data-id="mk-neutrality" transform="translate(8.000,74.000) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Neutrality</text></g>
+<g transform="translate(50.0,93.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">+1</text></g></g>
+<g class="counter" data-id="mk-armistice" transform="translate(100.400,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">Enforced</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">Peace</text></g></g>
+<g class="counter" data-id="mk-allied-collapse" transform="translate(87.200,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<polygon points="84.0,50.0 67.0,79.4 33.0,79.4 16.0,50.0 33.0,20.6 67.0,20.6" fill="none" stroke="#2a8a3a" stroke-width="3"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Allied</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Collapse</text></g></g>
+<g class="counter" data-id="mk-oil-embargo" transform="translate(74.000,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<polygon points="84.0,50.0 67.0,79.4 33.0,79.4 16.0,50.0 33.0,20.6 67.0,20.6" fill="none" stroke="#f08020" stroke-width="3"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Oil</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Embargo</text></g></g>
+<g class="counter" data-id="mk-british-entry" transform="translate(60.800,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#d2b48c" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem roundel" transform="translate(50.0,44.0) scale(0.80)"><circle r="14" fill="#3050a0"/><circle r="9" fill="#d02020"/><circle r="4" fill="#3050a0"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">British Entry</text></g></g>
+<g class="counter" data-id="mk-us-entry" transform="translate(47.600,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem star" transform="translate(50.0,44.0) scale(0.80)"><polygon points="0.0,-14.0 3.3,-4.5 13.3,-4.3 5.3,1.7 8.2,11.3 0.0,5.6 -8.2,11.3 -5.3,1.7 -13.3,-4.3 -3.3,-4.5" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">US Entry</text></g></g>
+<g class="counter" data-id="mk-soviet-influence" transform="translate(34.400,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#111111"/><rect x="-12" y="-12" width="22" height="14" fill="#d02020"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Soviet</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Influence</text></g></g>
+<g class="counter" data-id="mk-western-influence" transform="translate(21.200,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem flag" transform="translate(50.0,44.0) scale(0.80)"><rect x="-14" y="-12" width="2" height="26" fill="#111111"/><rect x="-12" y="-12" width="22" height="14" fill="#2a8a3a"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Western</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Influence</text></g></g>
+<g class="counter" data-id="mk-a-bomb" transform="translate(8.000,87.200) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#9aae7a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem cloud" transform="translate(50.0,44.0) scale(1.00)"><ellipse cx="0" cy="-6" rx="13" ry="7" fill="#111111"/><rect x="-3" y="-2" width="6" height="12" fill="#111111"/><ellipse cx="0" cy="11" rx="8" ry="2.5" fill="#111111"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">A-Bomb</text></g></g>
+<g class="counter" data-id="mk-govt-army" transform="translate(100.400,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem roundel" transform="translate(50.0,44.0) scale(0.70)"><circle r="14" fill="#d02020"/><circle r="9" fill="#ffffff"/><circle r="4" fill="#d02020"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Government</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Army</text></g></g>
+<g class="counter" data-id="mk-war-production" transform="translate(87.200,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">War</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">Production</text></g>
+<rect x="41.0" y="64.0" width="13" height="11" fill="#000000" stroke="#000000" stroke-width="0.6"/><g transform="translate(47.5,69.5) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">-1</text></g></g>
+<g class="counter" data-id="mk-minor-prod" transform="translate(74.000,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<polygon points="100,0 100,100 0,0" fill="#f08020"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-8.4)">Minor</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Country</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,8.4)">Prod</text></g></g>
+<g class="counter" data-id="mk-hainan" transform="translate(60.800,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<polygon points="100,0 100,100 0,0" fill="#f0c020"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-8.4)">Japanese</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Dependent</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,8.4)">Hainan</text></g></g>
+<g class="counter" data-id="mk-blitz" transform="translate(47.600,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#000000" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">BLITZ</text></g></g>
+<g class="counter" data-id="mk-mud" transform="translate(34.400,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#8a6a3a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="19.0" text-anchor="middle" fill="#ffffff" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">MUD</text></g></g>
+<g class="counter" data-id="mk-storms" transform="translate(21.200,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#dde8f0" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">SNOW</text></g></g>
+<g class="counter" data-id="mk-vj-day" transform="translate(8.000,100.400) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,44.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-5.2)">V-J</text><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,5.2)">Day</text></g></g>
+<g class="counter" data-id="mk-war-state" transform="translate(100.400,113.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,-4.2)">Pacific</text><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,4.2)">War State</text></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Total War</text></g></g>
+<g class="counter" data-id="mk-open-city" transform="translate(87.200,113.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#ffffff" stroke="#8a8a8a" stroke-width="0.6"/>
+<g transform="translate(50.0,13.0) rotate(0.0)"><text x="0" y="0" font-size="10.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Open City</text></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" transform="translate(0,0.0)">in this hex</text></g></g>
+<g class="counter" data-id="mk-kamikazes" transform="translate(74.000,113.600) scale(0.12700)"><rect width="100" height="100" rx="5.0" fill="#e8542a" stroke="#8a8a8a" stroke-width="0.6"/>
+<g class="emblem skull" transform="translate(50.0,44.0) scale(0.70)"><circle cy="-3" r="9" fill="#111111"/><rect x="-5" y="4" width="10" height="5" fill="#111111"/><circle cx="-3.5" cy="-4" r="2.2" fill="#ffffff"/><circle cx="3.5" cy="-4" r="2.2" fill="#ffffff"/></g>
+<g transform="translate(50.0,92.0) rotate(0.0)"><text x="0" y="0" font-size="8.0" text-anchor="middle" fill="#111111" dominant-baseline="central" font-weight="bold" transform="translate(0,0.0)">Kamikazes</text></g></g>
+<g class="crop" stroke="#000000" stroke-width="0.15">
+<path d="M8.000,0 V5.600 M8.000,128.700 V134.300"/>
+<path d="M20.700,0 V5.600 M20.700,128.700 V134.300"/>
+<path d="M21.200,0 V5.600 M21.200,128.700 V134.300"/>
+<path d="M33.900,0 V5.600 M33.900,128.700 V134.300"/>
+<path d="M34.400,0 V5.600 M34.400,128.700 V134.300"/>
+<path d="M47.100,0 V5.600 M47.100,128.700 V134.300"/>
+<path d="M47.600,0 V5.600 M47.600,128.700 V134.300"/>
+<path d="M60.300,0 V5.600 M60.300,128.700 V134.300"/>
+<path d="M60.800,0 V5.600 M60.800,128.700 V134.300"/>
+<path d="M73.500,0 V5.600 M73.500,128.700 V134.300"/>
+<path d="M74.000,0 V5.600 M74.000,128.700 V134.300"/>
+<path d="M86.700,0 V5.600 M86.700,128.700 V134.300"/>
+<path d="M87.200,0 V5.600 M87.200,128.700 V134.300"/>
+<path d="M99.900,0 V5.600 M99.900,128.700 V134.300"/>
+<path d="M100.400,0 V5.600 M100.400,128.700 V134.300"/>
+<path d="M113.100,0 V5.600 M113.100,128.700 V134.300"/>
+<path d="M0,8.000 H5.600 M115.500,8.000 H121.100"/>
+<path d="M0,20.700 H5.600 M115.500,20.700 H121.100"/>
+<path d="M0,21.200 H5.600 M115.500,21.200 H121.100"/>
+<path d="M0,33.900 H5.600 M115.500,33.900 H121.100"/>
+<path d="M0,34.400 H5.600 M115.500,34.400 H121.100"/>
+<path d="M0,47.100 H5.600 M115.500,47.100 H121.100"/>
+<path d="M0,47.600 H5.600 M115.500,47.600 H121.100"/>
+<path d="M0,60.300 H5.600 M115.500,60.300 H121.100"/>
+<path d="M0,60.800 H5.600 M115.500,60.800 H121.100"/>
+<path d="M0,73.500 H5.600 M115.500,73.500 H121.100"/>
+<path d="M0,74.000 H5.600 M115.500,74.000 H121.100"/>
+<path d="M0,86.700 H5.600 M115.500,86.700 H121.100"/>
+<path d="M0,87.200 H5.600 M115.500,87.200 H121.100"/>
+<path d="M0,99.900 H5.600 M115.500,99.900 H121.100"/>
+<path d="M0,100.400 H5.600 M115.500,100.400 H121.100"/>
+<path d="M0,113.100 H5.600 M115.500,113.100 H121.100"/>
+<path d="M0,113.600 H5.600 M115.500,113.600 H121.100"/>
+<path d="M0,126.300 H5.600 M115.500,126.300 H121.100"/>
+<path d="M1.333,4.000 H6.667 M4.000,1.333 V6.667" stroke-width="0.25"/><circle cx="4.000" cy="4.000" r="2.000" fill="none" stroke-width="0.25"/>
+<path d="M114.433,4.000 H119.767 M117.100,1.333 V6.667" stroke-width="0.25"/><circle cx="117.100" cy="4.000" r="2.000" fill="none" stroke-width="0.25"/>
+<path d="M1.333,130.300 H6.667 M4.000,127.633 V132.967" stroke-width="0.25"/><circle cx="4.000" cy="130.300" r="2.000" fill="none" stroke-width="0.25"/>
+<path d="M114.433,130.300 H119.767 M117.100,127.633 V132.967" stroke-width="0.25"/><circle cx="117.100" cy="130.300" r="2.000" fill="none" stroke-width="0.25"/>
+</g>
+<text x="8.00" y="133.10" font-size="2.80" fill="#333333">Dai Senso! representative counters -- back</text>
+</svg>

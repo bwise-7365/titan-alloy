@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package id="toy" title="Toy package for the hexsearch tests">
+  <rules path="toy-rules.xml"/>
+  <sheet path="toy-sheet.xml"/>
+  <counters path="toy-counters.xml"/>
+  <side rules="a" styles="plain"/>
+  <hexside line="wall" rules="wall"/>
+  <unit type="infantry" match="^toy-.*$"/>
+</package>

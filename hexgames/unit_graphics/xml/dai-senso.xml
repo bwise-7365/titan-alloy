@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<counters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexcounters.xsd"
+          id="dai-senso" title="Axis Empires: Dai Senso! -- representative counters" size="12.7" corner="0.05"
+          source="pic1753886.png, pic1753887.png (2011 fronts); Living Rules Feb 2014 pp. 6-8 for anatomy and backs">
+  <palette>
+    <color id="ink" value="#111111"/>
+    <color id="white" value="#ffffff"/>
+    <color id="jp" value="#e8542a" name="Japan"/>
+    <color id="kwa" value="#a8202a" name="Kwantung Army"/>
+    <color id="ru" value="#8a5a2a" name="Russia"/>
+    <color id="gb" value="#d2b48c" name="Great Britain and Commonwealth"/>
+    <color id="us" value="#9aae7a" name="United States"/>
+    <color id="nat" value="#f0d040" name="Nationalist China"/>
+    <color id="ccp" value="#d02020" name="Communist China"/>
+    <color id="cyan" value="#40d0e0"/>
+    <color id="siam" value="#8a5ab0" name="Siam"/>
+    <color id="nei" value="#f09030" name="Netherlands East Indies"/>
+    <color id="fra" value="#3050a0" name="France"/>
+    <color id="man" value="#7a8a40" name="Manchukuo"/>
+    <color id="phil" value="#f4f4f4" name="Philippines"/>
+    <color id="green" value="#2a8a3a"/>
+    <color id="red" value="#d02020"/>
+    <color id="orange" value="#f08020"/>
+    <color id="black" value="#000000"/>
+    <color id="gold" value="#f0c020" name="elite box"/>
+    <color id="grey" value="#9a9a9a"/>
+    <color id="mud" value="#8a6a3a"/>
+    <color id="storm" value="#4a5a8a"/>
+    <color id="snow" value="#dde8f0"/>
+  </palette>
+  <styles>
+    <style id="japan" ground="jp" text="ink" box-stroke="ink"/>
+    <style id="kwantung" ground="kwa" text="white" box-stroke="white"/>
+    <style id="russia" ground="ru" text="white" box-stroke="white"/>
+    <style id="britain" ground="gb" text="ink" box-stroke="ink"/>
+    <style id="usa" ground="us" text="ink" box-stroke="ink"/>
+    <style id="nationalist" ground="nat" text="red" box-stroke="red"/>
+    <style id="communist" ground="ccp" text="cyan" box-stroke="cyan"/>
+    <style id="siamese" ground="siam" text="white" box-stroke="white"/>
+    <style id="dutch" ground="nei" text="fra" box-stroke="fra"/>
+    <style id="french" ground="fra" text="white" box-stroke="white"/>
+    <style id="manchukuo" ground="man" text="ink" box-stroke="ink"/>
+    <style id="philippine" ground="phil" text="green" box-stroke="green"/>
+    <style id="plain" ground="white" text="ink" box-stroke="ink"/>
+  </styles>
+  <counter id="jp-inf-16" family="unit" name="jp-inf-16">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">44</text>
+      <text slot="MR" rotate="90" size="small">16</text>
+      <value>7-6-2</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot" slot="UR"/><value>4-4-2</value></back>
+  </counter>
+  <counter id="jp-inf-2" family="unit" name="jp-inf-2">
+    <front style="japan">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">A</text>
+      <text slot="MR" rotate="90" size="small">2</text>
+      <value>3-3-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-guards" family="unit" name="jp-guards">
+    <front style="japan">
+      <symbol icon="infantry" fill="gold"/>
+      <steps count="2" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">B</text>
+      <text slot="MR" rotate="90" size="small">Gds</text>
+      <value>4-4-1</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value>2-2-1</value></back>
+  </counter>
+  <counter id="jp-snlf" family="unit" name="jp-snlf">
+    <front style="japan">
+      <symbol icon="infantry" modifiers="marine"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">12</text>
+      <text slot="MR" rotate="90" size="small">SNLF</text>
+      <value>2-2-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-armour" family="unit" name="jp-armour">
+    <front style="japan">
+      <symbol icon="armour"/>
+      <steps count="2" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">18</text>
+      <text slot="MR" rotate="90" size="small">1</text>
+      <value>3-2-2</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value>1-1-2</value></back>
+  </counter>
+  <counter id="jp-airborne" family="unit" name="jp-airborne">
+    <front style="japan">
+      <symbol icon="infantry" modifiers="airborne"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">27</text>
+      <text slot="MR" rotate="90" size="small">1Ab</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-fortress" family="unit" name="jp-fortress">
+    <front style="japan">
+      <symbol icon="fortress"/>
+      <steps count="3" mark="square" slot="UR"/>
+      <text slot="UL" size="small">E</text>
+      <text slot="MR" rotate="90" size="small">Rab</text>
+      <band color="black" text-color="white"/>
+      <value color="white">0-3-0</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-garrison" family="unit" name="jp-garrison">
+    <front style="japan">
+      <symbol icon="garrison"/>
+      <steps count="1" mark="square" slot="UR"/>
+      <text slot="UL" size="small">N</text>
+      <text slot="MR" rotate="90" size="small">Kor</text>
+      <value>0-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kwa-hq" family="unit" name="kwa-hq">
+    <front style="kwantung">
+      <symbol icon="hq-checker"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">44</text>
+      <text slot="MR" rotate="90" size="small">Kwa</text>
+      <text slot="ML" rotate="-90" size="small">Kwa</text>
+      <band color="black" text-color="white"/>
+      <value color="white">3-2-1</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value color="white">1-1-1</value></back>
+  </counter>
+  <counter id="kwa-inf" family="unit" name="kwa-inf">
+    <front style="kwantung">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">44</text>
+      <text slot="MR" rotate="90" size="small">4</text>
+      <text slot="ML" rotate="-90" size="small">Kwa</text>
+      <value>3-3-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="kwa-cav" family="unit" name="kwa-cav">
+    <front style="kwantung">
+      <symbol icon="cavalry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">44</text>
+      <text slot="MR" rotate="90" size="small">1</text>
+      <text slot="ML" rotate="-90" size="small">Kwa</text>
+      <value>1-1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ru-army" family="unit" name="ru-army">
+    <front style="russia">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">3</text>
+      <text slot="MR" rotate="90" size="small">1FE</text>
+      <value>5-5-1</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot" slot="UR"/><value>3-3-1</value></back>
+  </counter>
+  <counter id="ru-mech" family="unit" name="ru-mech">
+    <front style="russia">
+      <symbol icon="mechanized"/>
+      <steps count="2" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">ASR</text>
+      <text slot="MR" rotate="90" size="small">6</text>
+      <value>4-3-2</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value>2-1-2</value></back>
+  </counter>
+  <counter id="ru-cavmech" family="unit" name="ru-cavmech">
+    <front style="russia">
+      <symbol icon="cav-mech"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">9</text>
+      <text slot="MR" rotate="90" size="small">KMG</text>
+      <value>2-1-3</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="gb-ind" family="unit" name="gb-ind">
+    <front style="britain">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">5</text>
+      <text slot="MR" rotate="90" size="small">17</text>
+      <text slot="ML" rotate="-90" size="small">Ind</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="gb-aus" family="unit" name="gb-aus">
+    <front style="britain">
+      <symbol icon="infantry" fill="white"/>
+      <steps count="2" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">2</text>
+      <text slot="MR" rotate="90" size="small">8</text>
+      <text slot="ML" rotate="-90" size="small">Aus</text>
+      <value>2-1-1</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value>1-1-1</value></back>
+  </counter>
+  <counter id="gb-nz" family="unit" name="gb-nz">
+    <front style="britain">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">2</text>
+      <text slot="MR" rotate="90" size="small">Exp</text>
+      <text slot="ML" rotate="-90" size="small">NZ</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="gb-hk" family="unit" name="gb-hk">
+    <front style="britain">
+      <symbol icon="garrison"/>
+      <steps count="1" mark="square" slot="UR"/>
+      <text slot="UL" size="small">E</text>
+      <text slot="MR" rotate="90" size="small">HK</text>
+      <text slot="ML" rotate="-90" size="small">HK</text>
+      <value>0-1-0</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-army" family="unit" name="us-army">
+    <front style="usa">
+      <symbol icon="infantry"/>
+      <echelon level="army"/>
+      <steps count="3" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">60</text>
+      <text slot="MR" rotate="90" size="small">6</text>
+      <value>7-7-2</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot" slot="UR"/><value>4-4-2</value></back>
+  </counter>
+  <counter id="us-marine" family="unit" name="us-marine">
+    <front style="usa">
+      <symbol icon="infantry" modifiers="marine"/>
+      <steps count="2" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">48</text>
+      <text slot="MR" rotate="90" size="small">1</text>
+      <value>3-2-2</value>
+    </front>
+    <back derived="reduced"><steps count="1" mark="dot" slot="UR"/><value>1-1-2</value></back>
+  </counter>
+  <counter id="us-arm" family="unit" name="us-arm">
+    <front style="usa">
+      <symbol icon="armour" fill="gold"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">55</text>
+      <text slot="MR" rotate="90" size="small">1</text>
+      <value>2-1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-phil" family="unit" name="us-phil">
+    <front style="philippine">
+      <symbol icon="infantry" fill="white"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">E</text>
+      <text slot="MR" rotate="90" size="small">Res</text>
+      <text slot="ML" rotate="-90" size="small">Phil</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="nat-warzone" family="unit" name="nat-warzone">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <echelon level="army-group"/>
+      <steps count="3" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">N</text>
+      <text slot="MR" rotate="90" size="small">5WZ</text>
+      <value>3-4-1</value>
+    </front>
+    <back derived="reduced"><steps count="2" mark="dot" slot="UR"/><value>1-2-1</value></back>
+  </counter>
+  <counter id="nat-inf" family="unit" name="nat-inf">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">N</text>
+      <text slot="MR" rotate="90" size="small">Exp</text>
+      <value>1-2-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="nat-kan" family="unit" name="nat-kan">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">A</text>
+      <text slot="MR" rotate="90" size="small">Res</text>
+      <text slot="ML" rotate="-90" size="small">Kan</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="nat-yun" family="unit" name="nat-yun">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">A</text>
+      <text slot="MR" rotate="90" size="small">Exp</text>
+      <text slot="ML" rotate="-90" size="small">Yun</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="nat-sze" family="unit" name="nat-sze">
+    <front style="nationalist">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">A</text>
+      <text slot="MR" rotate="90" size="small">Res</text>
+      <text slot="ML" rotate="-90" size="small">Sze</text>
+      <value>1-2-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ccp-inf" family="unit" name="ccp-inf">
+    <front style="communist">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">ASR</text>
+      <text slot="MR" rotate="90" size="small">8Rt</text>
+      <value>1-2-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="siam-inf" family="unit" name="siam-inf">
+    <front style="siamese">
+      <symbol icon="infantry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">C</text>
+      <text slot="MR" rotate="90" size="small">Exp</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="nei-inf" family="unit" name="nei-inf">
+    <front style="dutch">
+      <symbol icon="infantry" fill="white"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">E</text>
+      <text slot="MR" rotate="90" size="small">KNIL</text>
+      <text slot="ML" rotate="-90" size="small">NEI</text>
+      <value>1-2-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="fra-inf" family="unit" name="fra-inf">
+    <front style="french">
+      <symbol icon="infantry" fill="white"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">E</text>
+      <text slot="MR" rotate="90" size="small">Exp</text>
+      <text slot="ML" rotate="-90" size="small">Fra</text>
+      <value>1-1-1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="man-cav" family="unit" name="man-cav">
+    <front style="manchukuo">
+      <symbol icon="cavalry"/>
+      <steps count="1" mark="dot" slot="UR"/>
+      <text slot="UL" size="small">N</text>
+      <text slot="MR" rotate="90" size="small">Mong</text>
+      <text slot="ML" rotate="-90" size="small">Mong</text>
+      <value>1-1-2</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-cv-strike" family="support" name="Japanese CV Strike">
+    <front style="japan">
+      <text slot="UL" size="small">4</text><glyph kind="range" slot="UR" text="2"/><silhouette kind="aircraft" color="ink"/><band color="black" text-color="white">CV Strike</band>
+    </front>
+    <back ref="jp-cv-fleet"/>
+  </counter>
+  <counter id="jp-cv-fleet" family="support" name="Japanese CV Fleet Kido Butai">
+    <front style="japan">
+      <text slot="UL" size="small">4</text><text slot="TC" size="small">Kido Butai</text><silhouette kind="carrier" color="ink"/><band color="black" text-color="white">CV Fleet</band>
+    </front>
+    <back ref="jp-cv-strike"/>
+  </counter>
+  <counter id="jp-airforce" family="support" name="Japanese Air Force">
+    <front style="japan">
+      <text slot="UL" size="small">A</text><glyph kind="range" slot="UR" text="3"/><silhouette kind="aircraft" color="ink"/><text slot="MR" size="small">1</text><band color="black" text-color="white">Air Force</band>
+    </front>
+    <back ref="jp-troop-convoy"/>
+  </counter>
+  <counter id="jp-troop-convoy" family="marker" name="Japanese Escort Troop Convoy">
+    <front style="japan">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Escort|Troop Convoy</text>
+    </front>
+    <back ref="jp-airforce"/>
+  </counter>
+  <counter id="us-bomber" family="support" name="US Bomber">
+    <front style="usa">
+      <text slot="UL" size="small">57</text><glyph kind="range" slot="UR" text="4"/><silhouette kind="bomber" color="ink"/><glyph kind="arrow-down" slot="LL" color="ink"/><glyph kind="drm" slot="LR" color="green" text="-1"/><band color="black" text-color="white">Bomber</band>
+    </front>
+    <back style="usa">
+      <emblem kind="cloud" color="grey"/><text slot="BOTTOM" size="small" weight="bold">Devastation</text>
+    </back>
+  </counter>
+  <counter id="us-interceptor" family="support" name="US Interceptor">
+    <front style="usa">
+      <text slot="UL" size="small">57</text><glyph kind="range" slot="UR" text="2"/><silhouette kind="interceptor" color="ink"/><glyph kind="arrow-up" slot="LL" color="ink"/><band color="black" text-color="white">Interceptor</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="us-surf-fleet" family="support" name="US Surface Fleet TF 11/17">
+    <front style="usa">
+      <text slot="UL" size="small">4</text><text slot="TC" size="small">TF 11/17</text><silhouette kind="ship" color="ink"/><band color="black" text-color="white">Surf Fleet</band>
+    </front>
+    <back style="usa">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Escort|Troop Convoy</text>
+    </back>
+  </counter>
+  <counter id="us-sub-fleet" family="support" name="US Sub Fleet">
+    <front style="usa">
+      <text slot="UL" size="small">B</text><silhouette kind="submarine" color="ink"/><glyph kind="arrow-down" slot="LL" color="ink"/><glyph kind="drm" slot="LR" color="black" text="+1"/><band color="black" text-color="white">Sub Fleet</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="ru-airforce" family="support" name="Russian Air Force">
+    <front style="russia">
+      <text slot="UL" size="small">3</text><glyph kind="range" slot="UR" text="2"/><silhouette kind="aircraft" color="white"/><glyph kind="drm" slot="LR" color="red" text="-1"/><band color="black" text-color="white">Air Force</band>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-airdrop" family="marker" name="Japanese Airdrop">
+    <front style="japan">
+      <emblem kind="parachute" color="ink"/><text slot="BOTTOM" size="small" weight="bold">Airdrop</text>
+    </front>
+    <back ref="jp-airborne"/>
+  </counter>
+  <counter id="jp-detachment" family="marker" name="Japanese Detachment">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="white"/><text slot="BOTTOM" size="small" weight="bold">Detachment</text>
+    </front>
+    <back ref="jp-inf-2"/>
+  </counter>
+  <counter id="jp-logistics" family="marker" name="Japanese Logistics">
+    <front style="japan">
+      <emblem kind="pennant" color="ink" color2="red"/><text slot="BOTTOM" size="small" weight="bold">Logistics</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="jp-beachhead-2" family="marker" name="Beachhead 2">
+    <front style="japan">
+      <glyph kind="arrow-up" slot="TC" color="ink"/><emblem kind="anchor" color="ink" scale="0.6"/><text slot="LL" size="small">Port</text><text slot="LR" size="small">Air</text><value size="medium">Beachhead 2</value>
+    </front>
+    <back style="japan">
+      <glyph kind="arrow-up" slot="TC" color="ink"/><silhouette kind="ship" color="ink" scale="0.6"/><value size="medium">Beachhead 2</value>
+    </back>
+  </counter>
+  <counter id="jp-convoy" family="marker" name="Japanese Convoy">
+    <front style="japan">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Supply|Convoy</text>
+    </front>
+    <back style="japan">
+      <emblem kind="anchor" color="ink" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Troop|Convoy</text>
+    </back>
+  </counter>
+  <counter id="ccp-partisan-base" family="marker" name="Partisan Base">
+    <front style="communist">
+      <glyph kind="disc" x="50" y="44" color="black"/><text slot="BOTTOM" size="small" weight="bold">Partisan|Base</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-neutrality" family="marker" name="Neutrality">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Neutrality</text><value size="medium">+1</value>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-armistice" family="marker" name="Armistice">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Armistice</text>
+    </front>
+    <back style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">Enforced|Peace</text>
+    </back>
+  </counter>
+  <counter id="mk-allied-collapse" family="marker" name="Allied Collapse">
+    <front style="plain">
+      <glyph kind="hexagon" color="green"/><text slot="CENTRE" size="small" weight="bold">Allied|Collapse</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-oil-embargo" family="marker" name="Oil Embargo">
+    <front style="plain">
+      <glyph kind="hexagon" color="orange"/><text slot="CENTRE" size="small" weight="bold">Oil|Embargo</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-british-entry" family="marker" name="British Entry">
+    <front style="britain">
+      <emblem kind="roundel" color="fra" color2="red" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">British Entry</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-us-entry" family="marker" name="US Entry">
+    <front style="usa">
+      <emblem kind="star" color="white" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">US Entry</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-soviet-influence" family="marker" name="Soviet Influence">
+    <front style="plain">
+      <emblem kind="flag" color="ink" color2="red" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Soviet|Influence</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-western-influence" family="marker" name="Western Influence">
+    <front style="plain">
+      <emblem kind="flag" color="ink" color2="green" scale="0.8"/><text slot="BOTTOM" size="small" weight="bold">Western|Influence</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-a-bomb" family="marker" name="A-bomb">
+    <front style="usa">
+      <emblem kind="cloud" color="ink"/><text slot="BOTTOM" size="small" weight="bold">A-Bomb</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-govt-army" family="marker" name="Government Army">
+    <front style="japan">
+      <emblem kind="roundel" color="red" color2="white" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Government|Army</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-war-production" family="marker" name="War Production -1">
+    <front style="plain">
+      <text slot="TC" size="small" weight="bold">War|Production</text><glyph kind="drm" x="50" y="70" color="black" text="-1"/>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-minor-prod" family="marker" name="Minor Country Prod">
+    <front style="plain" split="orange">
+      <text slot="CENTRE" size="small" weight="bold">Minor|Country|Prod</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-hainan" family="marker" name="Japanese Dependent Hainan">
+    <front style="japan" split="gold">
+      <text slot="CENTRE" size="small" weight="bold">Japanese|Dependent|Hainan</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-blitz" family="marker" name="BLITZ">
+    <front style="japan" ground="black">
+      <text slot="CENTRE" size="large" weight="bold" color="white">BLITZ</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-mud" family="marker" name="MUD">
+    <front style="plain" ground="mud">
+      <text slot="CENTRE" size="large" weight="bold" color="white">MUD</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-storms" family="marker" name="STORMS">
+    <front style="plain" ground="storm">
+      <text slot="CENTRE" size="medium" weight="bold" color="white">STORMS</text>
+    </front>
+    <back style="plain" ground="snow">
+      <text slot="CENTRE" size="medium" weight="bold">SNOW</text>
+    </back>
+  </counter>
+  <counter id="mk-vj-day" family="marker" name="V-J Day">
+    <front style="plain">
+      <text slot="CENTRE" size="medium" weight="bold">V-J|Day</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-war-state" family="marker" name="Pacific War State">
+    <front style="plain">
+      <text slot="TC" size="small" weight="bold">Pacific|War State</text><text slot="BOTTOM" size="medium" weight="bold">Limited War</text>
+    </front>
+    <back style="plain">
+      <text slot="TC" size="small" weight="bold">Pacific|War State</text><text slot="BOTTOM" size="medium" weight="bold">Total War</text>
+    </back>
+  </counter>
+  <counter id="mk-open-city" family="marker" name="Open City">
+    <front style="plain">
+      <text slot="TC" size="medium" weight="bold">Open City</text><text slot="BOTTOM" size="small">in this hex</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <counter id="mk-kamikazes" family="marker" name="Kamikazes">
+    <front style="japan">
+      <emblem kind="skull" color="ink" color2="white" scale="0.7"/><text slot="BOTTOM" size="small" weight="bold">Kamikazes</text>
+    </front>
+    <back derived="same"/>
+  </counter>
+  <sheet id="sheet" title="Dai Senso! representative counters" cols="8" rows="9" gutter="0.5" margin="8" mirror="horizontal">
+    <place counter="jp-inf-16"/>
+    <place counter="jp-inf-2"/>
+    <place counter="jp-guards"/>
+    <place counter="jp-snlf"/>
+    <place counter="jp-armour"/>
+    <place counter="jp-airborne"/>
+    <place counter="jp-fortress"/>
+    <place counter="jp-garrison"/>
+    <place counter="kwa-hq"/>
+    <place counter="kwa-inf"/>
+    <place counter="kwa-cav"/>
+    <place counter="ru-army"/>
+    <place counter="ru-mech"/>
+    <place counter="ru-cavmech"/>
+    <place counter="gb-ind"/>
+    <place counter="gb-aus"/>
+    <place counter="gb-nz"/>
+    <place counter="gb-hk"/>
+    <place counter="us-army"/>
+    <place counter="us-marine"/>
+    <place counter="us-arm"/>
+    <place counter="us-phil"/>
+    <place counter="nat-warzone"/>
+    <place counter="nat-inf"/>
+    <place counter="nat-kan"/>
+    <place counter="nat-yun"/>
+    <place counter="nat-sze"/>
+    <place counter="ccp-inf"/>
+    <place counter="siam-inf"/>
+    <place counter="nei-inf"/>
+    <place counter="fra-inf"/>
+    <place counter="man-cav"/>
+    <place counter="jp-cv-strike"/>
+    <place counter="jp-cv-fleet"/>
+    <place counter="jp-airforce"/>
+    <place counter="jp-troop-convoy"/>
+    <place counter="us-bomber"/>
+    <place counter="us-interceptor"/>
+    <place counter="us-surf-fleet"/>
+    <place counter="us-sub-fleet"/>
+    <place counter="ru-airforce"/>
+    <place counter="jp-airdrop"/>
+    <place counter="jp-detachment"/>
+    <place counter="jp-logistics"/>
+    <place counter="jp-beachhead-2"/>
+    <place counter="jp-convoy"/>
+    <place counter="ccp-partisan-base"/>
+    <place counter="mk-neutrality"/>
+    <place counter="mk-armistice"/>
+    <place counter="mk-allied-collapse"/>
+    <place counter="mk-oil-embargo"/>
+    <place counter="mk-british-entry"/>
+    <place counter="mk-us-entry"/>
+    <place counter="mk-soviet-influence"/>
+    <place counter="mk-western-influence"/>
+    <place counter="mk-a-bomb"/>
+    <place counter="mk-govt-army"/>
+    <place counter="mk-war-production"/>
+    <place counter="mk-minor-prod"/>
+    <place counter="mk-hainan"/>
+    <place counter="mk-blitz"/>
+    <place counter="mk-mud"/>
+    <place counter="mk-storms"/>
+    <place counter="mk-vj-day"/>
+    <place counter="mk-war-state"/>
+    <place counter="mk-open-city"/>
+    <place counter="mk-kamikazes"/>
+  </sheet>
+</counters>

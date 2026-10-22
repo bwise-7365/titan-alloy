@@ -1,7 +1,12 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
+//
+// NOTE: this is not a backup file. It implements the "Save" function for the GUI
+
 #include "MainWindow.h"
 #include "LoadedGraph.h"
 #include "RectangularGraph.h"
+#include "PlaybackBar.h"
+#include <algorithm>
 #include <QActionGroup>
 #include <QCheckBox>
 //#include <QFile>
@@ -15,26 +20,33 @@
 using namespace IrrGo;
 
 void MainWindow::onSave() {
-    if (currentFilePath_.isEmpty())
+    if (currentFilePath_.isEmpty()) {
         onSaveAs();
-    else
+    } else {
         saveToFile(currentFilePath_);
+    }
 }
 
 void MainWindow::onSaveAs() {
     QString path = QFileDialog::getSaveFileName(
         this, "Save Game", QString(),
         "IrrGo XML files (*.xml);;All files (*)");
-    if (path.isEmpty()) return;
+    if (path.isEmpty()) {
+        return;
+    }
     currentFilePath_ = path;
     saveToFile(currentFilePath_);
 }
 
 void MainWindow::saveToFile(const QString& path) {
-    if (!game_) return;
+    if (!game_) {
+        return;
+    }
 
     QFile file(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
 
     const auto& nodes   = graph_->nodes();
     const auto& history = game_->moveHistory();
@@ -153,10 +165,14 @@ void MainWindow::onLoad() {
     QString path = QFileDialog::getOpenFileName(
         this, "Load Game", QString(),
         "IrrGo XML files (*.xml);;All files (*)");
-    if (path.isEmpty()) return;
+    if (path.isEmpty()) {
+        return;
+    }
 
     QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
 
     QXmlStreamReader xml(&file);
 
@@ -209,10 +225,19 @@ void MainWindow::onLoad() {
                 state = IN_MOVE; curMove = {};
             } else if (name == QLatin1String("node")) {
                 auto id = xml.attributes().value("id").toString().toStdString();
-                if      (state == IN_COORD) curNode.label = id;
-                else if (state == IN_EDGE)  { if (curEdge.a.empty()) curEdge.a = id; else curEdge.b = id; }
-                else if (state == IN_STONE) curStone.label = id;
-                else if (state == IN_MOVE)  curMove.label  = id;
+                if (state == IN_COORD) {
+                    curNode.label = id;
+                } else if (state == IN_EDGE) {
+                    if (curEdge.a.empty()) {
+                        curEdge.a = id;
+                    } else {
+                        curEdge.b = id;
+                    }
+                } else if (state == IN_STONE) {
+                    curStone.label = id;
+                } else if (state == IN_MOVE) {
+                    curMove.label = id;
+                }
             } else if (name == QLatin1String("R") && state == IN_COORD) {
                 curNode.row = xml.attributes().value("val").toInt();
             } else if (name == QLatin1String("C") && state == IN_COORD) {
@@ -227,11 +252,13 @@ void MainWindow::onLoad() {
             else if (name == QLatin1String("edge"))      { edgeRecs.push_back(curEdge); state = TOP; }
             else if (name == QLatin1String("stone") && inSetup) { setupStones.push_back(curStone); state = TOP; }
             else if (name == QLatin1String("move") && inMoveList) { playMoves.push_back(curMove); state = TOP; }
-            else if (name == QLatin1String("move_list")) inMoveList = false;
+            else if (name == QLatin1String("move_list")) { inMoveList = false; }
         }
     }
 
-    if (xml.hasError() || nodeRecs.empty()) return;
+    if (xml.hasError() || nodeRecs.empty()) {
+        return;
+    }
 
     std::vector<LoadedGraph::NodeData> graphNodes;
     graphNodes.reserve(nodeRecs.size());
@@ -248,18 +275,20 @@ void MainWindow::onLoad() {
         graphEdges.push_back({er.a, er.b});
 
     std::unique_ptr<Graph> newGraph;
-    if (isRect && xmlRows > 0 && xmlCols > 0)
+    if (isRect && xmlRows > 0 && xmlCols > 0) {
         newGraph = std::make_unique<RectangularGraph>(xmlRows, xmlCols);
-    else
+    } else {
         newGraph = std::make_unique<LoadedGraph>(graphNodes, graphEdges, xmlSeed);
+    }
     auto newGame = std::make_unique<Game>(*newGraph);
 
     int newSetupPlaced = 0;
     newGame->setSetupMode(true);
     for (const auto& s : setupStones) {
         auto it = labelToId.find(s.label);
-        if (it != labelToId.end() && newGame->placeStone(it->second))
+        if (it != labelToId.end() && newGame->placeStone(it->second)) {
             ++newSetupPlaced;
+        }
     }
     newGame->setSetupMode(false);
 
@@ -268,12 +297,14 @@ void MainWindow::onLoad() {
             newGame->pass();
         } else {
             auto it = labelToId.find(m.label);
-            if (it != labelToId.end())
+            if (it != labelToId.end()) {
                 newGame->placeStone(it->second);
+            }
         }
     }
 
-    cancelSearch();
+    search().cancelSearch();
+    endVersus();  // a loaded game leaves any human-vs-computer game
     stopStoneSetup();
     clearSuggestion();
 
@@ -282,6 +313,17 @@ void MainWindow::onLoad() {
     setupPlaced_     = newSetupPlaced;
     currentFilePath_ = path;
 
+    // Split the reconstructed history into the fixed seed (the ply-0 position) and
+    // the play-move timeline the bar steps through.
+    {
+        const auto& h = game_->moveHistory();
+        setupNodes_.clear();
+        const int n = std::min(newSetupPlaced, static_cast<int>(h.size()));
+        for (int i = 0; i < n; ++i)
+            setupNodes_.push_back(h[i].nodeId);
+        timeline_.assign(h.begin() + n, h.end());
+    }
+
     boardWidget_->setGame(game_.get());
     blackDvrCheck_->setChecked(false);
     whiteDvrCheck_->setChecked(false);
@@ -289,21 +331,15 @@ void MainWindow::onLoad() {
     boardWidget_->setBoardInfo(isRect
         ? QString("Loaded (%1x%2)").arg(xmlRows).arg(xmlCols)
         : QString("Loaded, seed %1").arg(xmlSeed));
-    if (!isRect)
+    if (!isRect) {
         randomSeedEdit_->setText(QString::number(xmlSeed));
+    }
     stonesGroup_->actions().first()->setChecked(true);
 
-    moveLog_->clear();
-    for (const auto& mv : game_->moveHistory()) {
-        QString clr = (mv.turn % 2 == 1) ? "B" : "W";
-        QString text = (mv.nodeId < 0)
-            ? QString("%1: %2 PASS").arg(mv.turn, 3).arg(clr)
-            : QString("%1: %2 %3")
-                  .arg(mv.turn, 3).arg(clr)
-                  .arg(QString::fromStdString(game_->graph().node(mv.nodeId).label));
-        moveLog_->append(text);
-    }
-
-    updateControls();
+    // Populate the clickable log, then open the replay at the start (ply 0); the
+    // board steps forward from the seeded position.
+    rebuildMoveList();
+    playback_->setPlyCount(static_cast<int>(timeline_.size()));
+    gotoPly(0);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

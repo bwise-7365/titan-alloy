@@ -11,7 +11,15 @@
 
 using namespace IrrGo;
 
-static int starCoord(int n) { return n < 11 ? 2 : 3; }
+// Board layout / rendering tuning.
+static constexpr int   kStarSmallBoardMax  = 11;   // boards < this use 2-2 star points
+static constexpr int   kStarCenterMinCells = 100;  // add centre/side stars at/above this many cells
+static constexpr float kStonePaddingStones = 4.0f; // viewport padding, in stone radii
+static constexpr float kDotRadiusMinPx     = 2.0f;
+static constexpr float kDotRadiusFactor    = 0.3f; // node-dot radius / stone radius
+static constexpr float kLabelTextScale     = 0.6f; // label pixel size / stone radius
+
+static int starCoord(int n) { return n < kStarSmallBoardMax ? 2 : 3; }
 
 static const QColor kOrange    { 255, 140,   0 };
 static const QColor kGreen     {   0, 200,   0 };
@@ -21,9 +29,8 @@ static const QColor kRed       { 220,   0,   0, 180 };
 static constexpr float kStoneRPhys      = 0.875f / 2.0f;
 static constexpr float kGridLineThickness = 2.5f; // normally 1.5f;
 
-BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
+BoardWidget::BoardWidget(QWidget* parent) : guicommon::BoardWidgetBase(parent) {
     setMinimumSize(500, 250);
-    setMouseTracking(true);
     confirmTimer_ = new QTimer(this);
     confirmTimer_->setSingleShot(true);
     confirmTimer_->setInterval(3000);
@@ -37,37 +44,50 @@ BoardWidget::BoardWidget(QWidget* parent) : QWidget(parent) {
 void BoardWidget::loadTextures() {
     for (int i = 1; i <= 7; ++i) {
         QPixmap pm(QString(":/stones/black%1.png").arg(i, 2, 10, QChar('0')));
-        if (!pm.isNull()) blackSrc_.push_back(pm);
+        if (!pm.isNull()) {
+            blackSrc_.push_back(pm);
+        }
     }
     for (int i = 1; i <= 6; ++i) {
         QPixmap pm(QString(":/stones/white%1.png").arg(i, 2, 10, QChar('0')));
-        if (!pm.isNull()) whiteSrc_.push_back(pm);
+        if (!pm.isNull()) {
+            whiteSrc_.push_back(pm);
+        }
     }
     fabricSrc_ = QPixmap(":/textures/texture_bg.png");
-    if (fabricSrc_.isNull())
+    if (fabricSrc_.isNull()) {
         qDebug() << "BoardWidget: texture_bg.png not found in resources";
+    }
+}
+
+// Rescale every pixmap in `src` to sz x sz (smooth, aspect-preserving) into `dst`.
+static void scaleStones(const std::vector<QPixmap>& src,
+                        std::vector<QPixmap>& dst, int sz) {
+    dst.clear();
+    dst.reserve(src.size());
+    for (const auto& pm : src)
+        dst.push_back(pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void BoardWidget::rescaleTextures() {
-    if (!useTexture_) return;
+    if (!useTexture_) {
+        return;
+    }
     // Texture background — stretch to fill widget, no aspect-ratio constraint
     int tmpW = width();
     int tmpH = height();
-    if (!fabricSrc_.isNull() && width() > 0 && height() > 0)
+    if (!fabricSrc_.isNull() && width() > 0 && height() > 0) {
         fabricScaled_ = fabricSrc_.scaled(tmpW, tmpH,
                                                 Qt::IgnoreAspectRatio,
                                           Qt::SmoothTransformation);
+    }
     // Stone textures
-    if (blackSrc_.empty() || whiteSrc_.empty()) return;
+    if (blackSrc_.empty() || whiteSrc_.empty()) {
+        return;
+    }
     int sz = std::max(1, static_cast<int>(stoneR_ * 2.0f));
-    blackScaled_.clear();
-    for (const auto& pm : blackSrc_)
-        blackScaled_.push_back(
-            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    whiteScaled_.clear();
-    for (const auto& pm : whiteSrc_)
-        whiteScaled_.push_back(
-            pm.scaled(sz, sz, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    scaleStones(blackSrc_, blackScaled_, sz);
+    scaleStones(whiteSrc_, whiteScaled_, sz);
 }
 
 void BoardWidget::setUseTexture(bool on) {
@@ -84,17 +104,25 @@ void BoardWidget::setUseTexture(bool on) {
 
 void BoardWidget::setGame(const IrrGo::Game* game) {
     game_         = game;
-    hoverNode_    = -1;
+    resetFeedback();          // clears the hover + last-move markers (base)
     tentativeNode_= -1;
     suggestedNode_= -1;
-    lastMoveNode_ = -1;
     showBlackDvr_         = false;
     showWhiteDvr_         = false;
     showNeighborhoodSize_ = false;
     showLabels_           = false;
     confirmTimer_->stop();
     updateTransform();
+    refreshNeighborhoodSizes();
     update();
+}
+
+void BoardWidget::refreshNeighborhoodSizes() {
+    if (!game_) {
+        neighborhoodSizes_.clear();
+        return;
+    }
+    neighborhoodSizes_ = game_->graph().neighborhoodSizes(dvrRadius_);
 }
 
 void BoardWidget::setSuggestion(int nodeId, bool isBlack) {
@@ -113,16 +141,6 @@ void BoardWidget::setBoardInfo(const QString& info) {
     update();
 }
 
-void BoardWidget::setLastMove(int nodeId) {
-    lastMoveNode_ = nodeId;
-    update();
-}
-
-void BoardWidget::setSearching(bool s) {
-    searching_ = s;
-    if (s) { hoverNode_ = -1; update(); }
-}
-
 void BoardWidget::setShowBlackDvr(bool show) {
     showBlackDvr_ = show;
     update();
@@ -135,6 +153,7 @@ void BoardWidget::setShowWhiteDvr(bool show) {
 
 void BoardWidget::setDvrRadius(int r) {
     dvrRadius_ = r;
+    refreshNeighborhoodSizes();
     update();
 }
 
@@ -167,14 +186,10 @@ void BoardWidget::resizeEvent(QResizeEvent*) {
     updateTransform();
 }
 
-void BoardWidget::leaveEvent(QEvent*) {
-    hoverNode_ = -1;
-    update();
-    emit hoverChanged(-1);
-}
-
 void BoardWidget::updateTransform() {
-    if (!game_ || game_->graph().nodeCount() == 0) return;
+    if (!game_ || game_->graph().nodeCount() == 0) {
+        return;
+    }
     const auto& nodes = game_->graph().nodes();
 
     minX_ = minY_ =  std::numeric_limits<float>::max();
@@ -187,12 +202,14 @@ void BoardWidget::updateTransform() {
     rangeX_ = (maxX - minX_ < 1e-4f) ? 1.0f : maxX - minX_;
     rangeY_ = (maxY - minY_ < 1e-4f) ? 1.0f : maxY - minY_;
 
-    float paddedRX = rangeX_ + 4.0f * kStoneRPhys;
-    float paddedRY = rangeY_ + 4.0f * kStoneRPhys;
+    float paddedRX = rangeX_ + kStonePaddingStones * kStoneRPhys;
+    float paddedRY = rangeY_ + kStonePaddingStones * kStoneRPhys;
     const float kExtra = 10.0f;
     scale_ = std::min((width()  - 2.0f * kExtra) / paddedRX,
                       (height() - 2.0f * kExtra) / paddedRY);
-    if (scale_ < 1.0f) scale_ = 1.0f;
+    if (scale_ < 1.0f) {
+        scale_ = 1.0f;
+    }
     stoneR_ = kStoneRPhys * scale_;
 
     float usedW = paddedRX * scale_;
@@ -202,8 +219,10 @@ void BoardWidget::updateTransform() {
     rescaleTextures();
 }
 
-int BoardWidget::nodeAt(QPointF pos) const {
-    if (!game_) return -1;
+int BoardWidget::cellAt(const QPointF& pos) const {
+    if (!game_) {
+        return -1;
+    }
     float r2   = stoneR_ * stoneR_;
     int   found = -1;
     float best  = r2 + 1.0f;
@@ -243,18 +262,18 @@ void BoardWidget::paintStoneBordered(QPainter& p, QPointF pt,
 
 // ── Mouse events ──────────────────────────────────────────────────────────────
 
-void BoardWidget::mouseMoveEvent(QMouseEvent* e) {
-    if (searching_) return;
-    int n = nodeAt(e->position());
-    if (n != hoverNode_) { hoverNode_ = n; update(); emit hoverChanged(n); }
-}
-
 void BoardWidget::mousePressEvent(QMouseEvent* e) {
-    if (searching_) return;
-    if (e->button() != Qt::LeftButton || !game_) return;
+    if (isSearching()) {
+        return;
+    }
+    if (e->button() != Qt::LeftButton || !game_) {
+        return;
+    }
     emit clearSuggestionRequested();
-    int n = nodeAt(e->position());
-    if (n < 0 || game_->colorAt(n) != Color::Empty) return;
+    int n = cellAt(e->position());
+    if (n < 0 || game_->colorAt(n) != Color::Empty) {
+        return;
+    }
 
     if (n == tentativeNode_) {
         confirmTimer_->stop();
@@ -280,12 +299,15 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    if (useTexture_ && !fabricScaled_.isNull())
+    if (useTexture_ && !fabricScaled_.isNull()) {
         p.drawPixmap(0, 0, fabricScaled_);
-    else
+    } else {
         p.fillRect(rect(), bgColor_);
+    }
 
-    if (!game_ || game_->graph().nodeCount() == 0) return;
+    if (!game_ || game_->graph().nodeCount() == 0) {
+        return;
+    }
 
     const auto& nodes = game_->graph().nodes();
     const auto* rg = dynamic_cast<const RectangularGraph*>(&game_->graph());
@@ -307,21 +329,22 @@ void BoardWidget::paintEvent(QPaintEvent*) {
     p.setPen(QPen(lineColor_, kGridLineThickness));
     for (const auto& nd : nodes)
         for (int nb : nd.neighbors)
-            if (nb > nd.id)
+            if (nb > nd.id) {
                 p.drawLine(toWidget(nd.x, nd.y),
                            toWidget(nodes[nb].x, nodes[nb].y));
+            }
 
     // Non-rectangular hover: incident edges in medium purple
-    if (!rg && hoverNode_ >= 0) {
+    if (!rg && hoverCell() >= 0) {
         p.setPen(QPen(kMedPurple, 2.5)); // normally kMedPurple kDarkBlue
-        const auto& hn = nodes[hoverNode_];
+        const auto& hn = nodes[hoverCell()];
         for (int nb : hn.neighbors)
             p.drawLine(toWidget(hn.x, hn.y), toWidget(nodes[nb].x, nodes[nb].y));
     }
 
     // Node dots: all nodes for irregular; corner star points for rectangular
     {
-        float dotR = std::max(2.0f, stoneR_ * 0.3f);
+        float dotR = std::max(kDotRadiusMinPx, stoneR_ * kDotRadiusFactor);
         p.setPen(Qt::NoPen);
         p.setBrush(lineColor_);
         if (!rg) {
@@ -337,7 +360,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                     p.drawEllipse(toWidget(nd.x, nd.y), dotR, dotR);
                 }
             // If large enough, draw center + 4 side star points
-            if (rows * cols >= 100) {
+            if (rows * cols >= kStarCenterMinCells) {
                 int cr = rows / 2, cc = cols / 2;
                 p.drawEllipse(toWidget(nodes[rg->nodeId(cr, cc)].x,
                                        nodes[rg->nodeId(cr, cc)].y), dotR, dotR);
@@ -353,7 +376,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
 
     if (showLabels_) {
         QFont f = p.font();
-        float textScale = 0.6f;
+        float textScale = kLabelTextScale;
         f.setPixelSize(qBound(4, qRound(stoneR_ * textScale), 9));
         f.setBold(true);
         p.setFont(f);
@@ -365,22 +388,24 @@ void BoardWidget::paintEvent(QPaintEvent*) {
             p.drawText(textRect, Qt::AlignCenter, QString::fromStdString(nd.label));
         }
     } else if (showNeighborhoodSize_) {
-        // For each node, count neighbours within Manhattan distance <= dvrRadius_
-        int radius = dvrRadius_;
+        // Counts come from IrrGo::Graph::neighborhoodSizes(), computed once per graph
+        // or radius change (see refreshNeighborhoodSizes) rather than per repaint. The
+        // size check catches a graph swapped in without going through setGame: refill
+        // rather than index a stale vector.
+        if (neighborhoodSizes_.size() != nodes.size()) {
+            refreshNeighborhoodSizes();
+        }
         QFont f = p.font();
         f.setPixelSize(qBound(8, qRound(stoneR_ * 0.95f), 18));
         f.setBold(true);
         p.setFont(f);
         p.setPen(Qt::white);
         for (const auto& nd : nodes) {
-            int count = 0;
-            for (const auto& other : nodes)
-                if (qAbs(other.row - nd.row) + qAbs(other.col - nd.col) <= radius)
-                    ++count;
             QPointF pt = toWidget(nd.x, nd.y);
             QRectF textRect(pt.x() - stoneR_, pt.y() - stoneR_,
                             stoneR_ * 2.0f, stoneR_ * 2.0f);
-            p.drawText(textRect, Qt::AlignCenter, QString::number(count));
+            p.drawText(textRect, Qt::AlignCenter,
+                       QString::number(neighborhoodSizes_[nd.id]));
         }
     } else {
         // DVR overlay — drawn before stones so occupied intersections stay clean
@@ -405,7 +430,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         // Stones
         for (const auto& nd : nodes) {
             Color c = game_->colorAt(nd.id);
-            if (c == Color::Empty) continue;
+            if (c == Color::Empty) {
+                continue;
+            }
             QPointF pt = toWidget(nd.x, nd.y);
             const auto& scaled = (c == Color::Black) ? blackScaled_ : whiteScaled_;
             if (useTexture_ && !scaled.empty()) {
@@ -419,13 +446,14 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         }
 
         // Last-move marker: small contrasting dot on the most recently placed stone
-        if (lastMoveNode_ >= 0 && lastMoveNode_ < static_cast<int>(nodes.size())) {
-            Color lmc = game_->colorAt(lastMoveNode_);
+        const int lm = lastMoveCell();
+        if (lm >= 0 && lm < static_cast<int>(nodes.size())) {
+            Color lmc = game_->colorAt(lm);
             if (lmc != Color::Empty) {
                 float dotR = stoneR_ * 0.28f;
                 p.setPen(Qt::NoPen);
                 p.setBrush(lmc == Color::Black ? Qt::white : lineColor_);
-                p.drawEllipse(toWidget(nodes[lastMoveNode_].x, nodes[lastMoveNode_].y), dotR, dotR);
+                p.drawEllipse(toWidget(nodes[lm].x, nodes[lm].y), dotR, dotR);
             }
         }
 
@@ -435,7 +463,7 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                                suggestIsBlack_, kGreen, suggestedNode_);
         }
 
-        // Tentative stone: player colour with grey cross-hatch
+        // Tentative stone: player color with grey cross-hatch
         if (tentativeNode_ >= 0) {
             QPointF pt = toWidget(nodes[tentativeNode_].x, nodes[tentativeNode_].y);
             bool isBlack = (game_->toMove() == Player::Black);
@@ -454,10 +482,11 @@ void BoardWidget::paintEvent(QPaintEvent*) {
         }
 
         // Hover effect
-        if (hoverNode_ >= 0 && hoverNode_ != tentativeNode_) {
-            QPointF pt = toWidget(nodes[hoverNode_].x, nodes[hoverNode_].y);
-            if (game_->colorAt(hoverNode_) == Color::Empty) {
-                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange, hoverNode_);
+        const int hv = hoverCell();
+        if (hv >= 0 && hv != tentativeNode_) {
+            QPointF pt = toWidget(nodes[hv].x, nodes[hv].y);
+            if (game_->colorAt(hv) == Color::Empty) {
+                paintStoneBordered(p, pt, game_->toMove() == Player::Black, kOrange, hv);
             } else {
                 p.setPen(Qt::NoPen);
                 p.setBrush(kRed);
@@ -484,8 +513,9 @@ void BoardWidget::paintEvent(QPaintEvent*) {
                       fr.width() * 0.5f - margin,              bandH);
 
         p.drawText(leftR,  Qt::AlignLeft  | Qt::AlignVCenter, "IrrGo");
-        if (!boardInfoRight_.isEmpty())
+        if (!boardInfoRight_.isEmpty()) {
             p.drawText(rightR, Qt::AlignRight | Qt::AlignVCenter, boardInfoRight_);
+        }
     }
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

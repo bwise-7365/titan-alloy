@@ -1,0 +1,97 @@
+# Copyright Ben Paul Wise. All Rights Reserved.
+# roads-west (strip B, cols 01-21, left photo). W18b. Chains are literal by the fitted lattice; roads on coastal slivers are listed in the hexes they lie in (pale C beach hexes included).
+road: 1003 1104 1203 | ends: place junction
+road: 1203 1303 1402 | ends: junction coast
+road: 1203 1304 1305 | ends: junction junction
+road: 1305 1205 1206 | ends: junction junction
+road: 1206 1107 1108 | ends: junction place
+road: 1305 1405 1506 1606 1706 | ends: junction place
+road: 1506 1406 1407 1408 | ends: junction junction
+road: 1003 1004 1005 0906 | ends: place junction  # doubt: 1005/0906 road hugs the hexside
+road: 0906 1006 1106 1205 | ends: junction junction
+road: 0906 0907 0807 0808 0909 0908 | ends: junction junction  # doubt: 0909->0908 passes near vertex with 1008
+road: 0907 0908 | ends: junction(0907, on coast road) junction
+road: 0908 1008 1108 | ends: junction place
+road: 1108 1207 1308 | ends: place junction
+road: 1206 1307 1308 | ends: junction junction
+place: 1003 Makurazaki (town)
+place: 1108 Kure (town)
+road: 1308 1408 | ends: junction junction
+road: 1408 1509 | ends: junction junction(city)
+road: 1509 1608 1708 1808 1809 | ends: junction(city) junction
+road: 1509 1609 1610 1710 1711 | ends: junction(city) junction(with the 1810 road)
+road: 1706 1707 1708 | ends: place junction
+place: 1509 Kagoshima (city)  # doubt: the city drawing spans 1509, 1608 and 1609; sheet has 1509
+road: 1706 1805 1906 | ends: place junction  # literal: the coast road runs on the land sliver of pale hex 1805 (about 19 px inside at quarter scale); the 1806 route was the alternative
+road: 1906 2006 | ends: junction place
+road: 1805 1806 1907 1908 1909 1809 | ends: junction junction
+place: 1706 Kushikino (town)
+road: 2006 2106 2205 | ends: place strip  # literal: land sliver of pale hex 2205
+road: 2006 2107 2207 2206 | ends: place strip  # joins the previous road just east of 2206 (in 2306)
+road: 2107 2108 2109 | ends: junction junction
+place: 2006 Sendai (town)
+road: 1809 1810 | ends: junction junction
+road: 1810 1910 2009 2109 2208 | ends: junction strip
+road: 1810 1711 | ends: junction junction
+road: 2109 2110 2111 2011 2012 1913 1914 1814 1815 1916 1917 | ends: junction junction(1917 with Kobayashi road)
+road: 1711 1712 | ends: junction junction
+road: 1712 1811 1912 2012 2113 2213 2214 | ends: junction place
+road: 1712 1612 1513 1412 1411 | ends: junction junction  # doubt: bay-shore road runs on the land sliver of pale hex 1612, close to the 1612/1613 and 1612/1713 hexsides
+road: 1712 1713 1813 1714 1715 1615 1616 | ends: junction place
+road: 2111 2211 | ends: junction strip
+place: 2214 Yokomachi (town)  # printed spelling looks like Yokamaechi; col 22, just outside strip
+road: 2214 2215 2116 2016 | ends: place place
+road: 2016 2017 2018 1919 1920 | ends: place junction
+road: 2016 1917 | ends: place junction
+place: 2016 Kobayashi (town)  # DISCREPANCY: sheet has Kobayashi at 2116; the dot is in 2016 (red L in same hex)
+road: 1917 1817 | ends: junction junction
+road: 1616 1717 1817 | ends: place junction
+road: 1817 1818 1819 1920 1921 2021 2122 2123 2223 2224 | ends: junction junction(coast road, 2224)
+road: 1616 1517 1617 1618 1719 1619 1620 1721 1621 1622 | ends: place junction(coast road, 1622)  # doubt: 1616->1517->1617 follows the west vertex/river
+place: 1616 Miyakonojo (town)
+road: 1616 1516 1415 1315 1214 1115 1116 | ends: place place
+road: 1411 1410 1510 | ends: junction coast(north tip of Sakurajima)
+road: 1411 1311 1210 1111 1011 0911 0810 0710 0609 0509 0408 | ends: junction coast(north tip)  # coast road on the land slivers of the pale beach (C) hexes 1210 1111 0911 0810 0710 0609; the road is well inside those hexes, not on a hexside
+road: 1412 1313 1213 1113 1012 0913 | ends: junction place
+road: 1513 1514 1414 1315 | ends: junction junction
+road: 0710 0711 0611 0712 0812 0913 | ends: junction(coast road, 0710) place
+road: 0911 0912 0913 | ends: junction(coast road, 0911) place
+road: 0913 1013 1014 1015 1116 | ends: place place
+place: 0913 Kanoya (town)
+road: 0408 0409 0509 | ends: junction junction  # loop: two roads leave the tip junction and rejoin in 0509
+road: 0609 0510 0511 0512 0513 0613 0714 0715 | ends: junction place
+road: 0715 0815 0915 1014 | ends: place junction
+place: 0715 Kitano (town)
+road: 1116 1117 1017 | ends: place place
+place: 1116 Shibushi (town)
+place: 1017 Fukushima (town)  # NOT in the sheet
+road: 1017 0918 0818 | ends: place place
+road: 1017 1118 1119 1120 1220 | ends: place place
+road: 0818 0919 1019 1120 1220 | ends: place place
+place: 0818 Miyanoura (town)
+place: 1220 Obi (town)
+road: 1616 1517 1518 1519 1419 1420 | ends: place junction
+road: 1220 1320 1420 1521 1621 | ends: place junction
+road: 1220 1221 1322 1422 1522 1622 1722 1822 | ends: place place  # south-coast road, Obi to Miyazaki
+place: 1822 Miyazaki (town)
+road: 1721 1820 1921 | ends: junction junction
+road: 1822 1923 2023 2124 2224 | ends: place strip
+road: 1923 2022 2123 2222 | ends: junction strip
+# doubt: 1003/1004/1005/0906 coast road hugs the 1005/0906 hexside; chain 1005 0906 taken as drawn.
+# doubt: 0909->0908->1008 near the 0908/0909/1008 vertex (junction of the 0907 road and the coast road); could be 0909 1008 directly.
+# doubt: Kagoshima city (1509/1608/1609 drawing): roads 1408->1509, 1509->1608 and 1509->1609 all start inside the city; exact street junction hex unknown.
+# doubt: 1805 vs 1806 (Kushikino coast road, junction with the south branch) and 2205 vs 2206 (road east of Sendai): road lies on the land sliver of a pale hex about 15-20 px inside at quarter scale; literal hex used (1805, 2205).
+# doubt: 1612 vs 1613/1713: bay-shore road 1712-1612-1513; 1613 is the alternative.
+# doubt: 1616->1517->1617: road leaves Miyakonojo along the river close to the 1517/1617 west vertex.
+# doubt: north coast road 1311 1210 1111 1011 0911 0810 0710 0609 0509: all lie on slivers of pale/sea-coloured beach hexes; land alternatives would be 1211 1112 1011 0912 0811 0711 (not used).
+# doubt: 0710/0711: junction of the interior road with the coast road sits at the hexside; 0710 used.
+# doubt: 0609: the coast road and the branch to 0510 pass through pale hex 0609 (land strip), not 0510.
+# doubt: two roads leave the tip junction in 0408 and rejoin in 0509 (0408 0409 0509 loop); looked like a genuine loop.
+# doubt: 2205/2206 pair: both Sendai roads end at col 22 and meet in 2306 (outside strip).
+# place discrepancy: sheet 2116 Kobayashi; dot is in 2016 (red L in same hex).
+# place discrepancy: sheet 0918 Tokashi; no town dot seen in 0918 (only a red C).
+# place discrepancy: Fukushima (dot in 1017) is not in the sheet.
+# place note: 2214 printed Yokamaechi (sheet Yokomachi), hex agrees.
+# not covered: no roads seen in the mountain block cols 20-22 rows 17-22, none in cols 17-19 rows 1-4 or open sea.
+# Report: 62 road lines (pieces), 12 place dots checked (all in the sheet except 2016/2116 and 1017), 3 place discrepancies, about 12 doubts. Strip ends at cols 22 (2205 2206 2208 2211 2214 2222 2224).
+# Copyright Ben Paul Wise. All Rights Reserved.

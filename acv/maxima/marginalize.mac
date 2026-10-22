@@ -1,0 +1,59 @@
+/* marginalize.mac
+   Verification of the two hyper-parameter integrals in the posterior for A.
+
+   Notation
+     M   : number of non-zero entries of A
+     n   : N*T, the number of scalar observations
+     R   : residual sum of squares, sum over i,t of (Y_it - Z_it)^2
+     q   : N^2, the number of cells in A
+
+   The joint density, up to factors independent of (A,p,sigma), is
+
+     p^M * prod(1/|A_ij|) * (1/sigma) * sigma^(-n) * exp(-R/(2*sigma^2))
+
+   with p uniform on [0,1] and sigma carrying the improper prior 1/sigma.
+*/
+
+/* n = N*T is a count, hence an integer. */
+declare(n, integer)$
+assume(M > -1, n > 0, R > 0, q > M, M >= 0, q - M + 1 > 0, q - M > 0, n - 2 > 0, n > 2);
+
+/* ---- 1. Integral over p, as written in preliminary-goals.md ---- */
+Ip : integrate(p^M, p, 0, 1);
+print("integral of p^M over [0,1] =", Ip)$
+
+/* ---- 2. Integral over p for the normalized Bernoulli prior ---- */
+Ip2 : integrate(p^M * (1-p)^(q-M), p, 0, 1);
+print("integral of p^M (1-p)^(q-M) over [0,1] =", factor(Ip2))$
+/* Expected: beta(M+1, q-M+1) = M! (q-M)! / (q+1)! */
+chk2 : ratsimp(Ip2 - beta(M+1, q-M+1));
+print("difference from beta(M+1,q-M+1) =", chk2)$
+
+/* ---- 3. Integral over sigma ---- */
+/* Substituting u = 1/sigma^2, so that dsigma = -(1/2) u^(-3/2) du,
+   turns the integral into a gamma integral.                        */
+/* Write m for n/2 to keep the exponent a single symbol.  The gamma
+   formula below holds for every real m > 0; declaring m non-integer
+   only stops Maxima from asking about the integer branch.          */
+declare(m, noninteger)$
+assume(m > 0)$
+Is : (1/2) * integrate(u^(m-1) * exp(-R*u/2), u, 0, inf);
+print("integral over sigma, with m = n/2, =", Is)$
+/* Expected: (1/2) * gamma(m) * (2/R)^m */
+chk3 : ratsimp(Is - (1/2)*gamma(m)*(2/R)^m);
+print("difference from (1/2) gamma(m) (2/R)^m =", chk3)$
+
+/* ---- 4. The resulting objective ---- */
+/* Up to an additive constant, minus the log of the marginal posterior is
+      (n/2) log R + sum over non-zero entries of log|A_ij| + log(M+1)
+   for form 1, or with log(M+1) replaced by log C(q,M) + log(q+1)
+   for form 2.                                                        */
+F1 : (n/2)*log(R) - log(Ip);
+print("form 1 objective (to minimize, plus sum log|A_ij|) =", F1)$
+F2 : (n/2)*log(R) - log(Ip2);
+print("form 2 objective (to minimize, plus sum log|A_ij|) =", ratsimp(F2))$
+
+/* ---- 5. Confirm the density is unbounded as one entry tends to zero ---- */
+/* Hold R fixed at its value plus a bounded change; the term -log|a| diverges. */
+lim : limit(-log(abs(a)), a, 0);
+print("limit of -log|a| as a -> 0 =", lim)$

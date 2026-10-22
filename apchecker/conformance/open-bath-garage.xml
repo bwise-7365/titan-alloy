@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  A house whose garage and bathroom are joined to it by archways rather than by
+  doors. The graph is identical to a perfectly ordinary house; only the kind of
+  the connections differs, and that is exactly the point of giving the edges a
+  kind.
+
+  Findings:
+    IRC-R302.5.1b  the garage gives onto the mud room through an opening (CODE)
+    BATH-DOOR      the bathroom gives onto the hall through an opening (PATTERN)
+-->
+<plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="plan.xsd"
+      name="Doorless bath and garage">
+  <rooms>
+    <room id="street" label="Street"      kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="mud"    label="Mud room"    kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="hall"   label="Hall"        kind="PASSAGE"    privacy="PUBLIC" lengthFeet="16"/>
+    <room id="living" label="Living room" kind="COMMON"     privacy="PUBLIC"/>
+    <room id="dining" label="Dining room" kind="DINING"     privacy="PUBLIC"/>
+    <room id="bath"   label="Bathroom"    kind="BATH"       privacy="PUBLIC"/>
+    <room id="garage" label="Garage"      kind="GARAGE"     privacy="PUBLIC"/>
+  </rooms>
+  <connections>
+    <connection from="street" to="mud"    kind="DOOR"/>
+    <connection from="street" to="garage" kind="DOOR"/>
+    <connection from="garage" to="mud"    kind="OPENING"/>
+    <connection from="mud"    to="hall"   kind="OPENING"/>
+    <connection from="hall"   to="living" kind="OPENING"/>
+    <connection from="hall"   to="bath"   kind="OPENING"/>
+    <connection from="living" to="dining" kind="OPENING"/>
+    <connection from="dining" to="hall"   kind="OPENING"/>
+  </connections>
+</plan>

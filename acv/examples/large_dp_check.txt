@@ -1,0 +1,13 @@
+seed 20260726, case block
+
+rows whose true size is admissible in the row table: 194 of 200
+  first few inadmissible rows and why:
+    row   5 true size 15: a coefficient falls outside the range of the prior
+    row  23 true size 15: a coefficient falls outside the range of the prior
+    row  30 true size 18: a coefficient falls outside the range of the prior
+    row 102 true size 14: a coefficient falls outside the range of the prior
+    row 127 true size 11: a coefficient falls outside the range of the prior
+    row 135 true size 14: a coefficient falls outside the range of the prior
+
+allocation matching the true row counts: M=2573 R=133.14  Phi=-6734.06
+search records                        : M=2555 R=767.23  Phi=5094.95

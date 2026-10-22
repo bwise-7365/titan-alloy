@@ -1,0 +1,17 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/fonts">
+        <file alias="Marcellus-Regular.ttf">fonts/Marcellus-Regular.ttf</file>
+        <file alias="Constantine.ttf">fonts/Constantine.ttf</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="latrunculi16.ico">../images/latrunculi16.ico</file>
+        <file alias="latrunculi32.ico">../images/latrunculi32.ico</file>
+        <file alias="latrunculi48.ico">../images/latrunculi48.ico</file>
+        <file alias="latrunculi256.ico">../images/latrunculi256.ico</file>
+    </qresource>
+    <qresource prefix="/doc">
+        <file alias="rules.md">../doc/latrunculi-rules-for-beginners.md</file>
+        <file alias="usage.md">../doc/latrunculi-usage.md</file>
+    </qresource>
+</RCC>

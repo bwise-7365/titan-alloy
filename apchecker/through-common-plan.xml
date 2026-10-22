@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The other extreme, and the one people actually build: the open-plan house whose
+  living room is the only way to anywhere. It reads as generous, and it fails
+  pattern 129 for the opposite reason to the corridor plan - not that nobody
+  passes the common area, but that everybody must cross it.
+
+  Findings:
+    APL-129-through  every route to bed passes through the living room (twice,
+                     once per bedroom)
+
+  Worth noting what does NOT fire. APL-129-bypass is satisfied, because deleting
+  the living room certainly lengthens the trip to bed - to infinity, in fact.
+  APL-131b passes too: the loop living-dining-kitchen-living exists. The house is
+  legal, loop-connected, and still wrong, and it is wrong in a way that only the
+  through test names.
+
+  Bypass and through are two different failures, and a plan can fail either
+  without failing the other. That is why they are two rules.
+-->
+<plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="plan.xsd"
+      name="Through-the-living-room house">
+  <rooms>
+    <room id="outside" label="Outdoors"    kind="EXTERIOR"   privacy="EXTERIOR" outdoor="STREET"/>
+    <room id="porch"   label="Porch"       kind="ENTRY_ROOM" privacy="ENTRY"/>
+    <room id="living"  label="Living room" kind="COMMON"     privacy="PUBLIC"/>
+    <room id="dining"  label="Dining room" kind="DINING"     privacy="PUBLIC"/>
+    <room id="kitchen" label="Kitchen"     kind="KITCHEN"    privacy="PUBLIC"/>
+    <room id="stair"   label="Stair"       kind="STAIR"      privacy="PUBLIC"/>
+    <room id="landing" label="Landing"     kind="PASSAGE"    privacy="SEMI_PRIVATE" lengthFeet="8"/>
+    <room id="bed1"    label="Bedroom 1"   kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bed2"    label="Bedroom 2"   kind="BEDROOM"    privacy="PRIVATE"/>
+    <room id="bath"    label="Bathroom"    kind="BATH"       privacy="PRIVATE"/>
+  </rooms>
+
+  <connections>
+    <connection from="outside" to="porch" kind="DOOR"/>
+    <connection from="porch" to="living" kind="OPENING"/>
+    <!-- The living room is the hub: the loop exists, but it runs through the
+         middle of the room everyone is trying to sit in. -->
+    <connection from="living" to="dining" kind="OPENING"/>
+    <connection from="living" to="kitchen" kind="OPENING"/>
+    <connection from="dining" to="kitchen" kind="OPENING"/>
+    <connection from="living" to="stair" kind="OPENING"/>
+    <connection from="stair" to="landing" kind="OPENING"/>
+    <connection from="landing" to="bed1" kind="DOOR"/>
+    <connection from="landing" to="bed2" kind="DOOR"/>
+    <connection from="landing" to="bath" kind="DOOR"/>
+  </connections>
+</plan>

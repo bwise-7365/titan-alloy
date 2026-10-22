@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+      format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
+      seed="20260914" title="TRC rail movement: two corps along Axis rail, capacity counted, then a normal move">
+  <cursor turn="1" phase="axis-i1-move" side="axis"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ge-1-infantry" counter="g-ge-1-infantry" type="infantry" owner="axis" hex="J29"/>
+    <unit id="g-ge-2-infantry" counter="g-ge-2-infantry" type="infantry" owner="axis" hex="I29"/>
+    <unit id="g-ge-41-armour" counter="g-ge-41-armour" type="armour" owner="axis" hex="J29"/>
+  </units>
+  <control>
+    <link network="rail" hexes="J29 I29" side="axis"/>
+    <link network="rail" hexes="I29 H29" side="axis"/>
+    <link network="rail" hexes="H29 G29" side="axis"/>
+    <link network="rail" hexes="G29 G30" side="axis"/>
+    <link network="rail" hexes="G30 F31" side="axis"/>
+    <link network="rail" hexes="F31 E31" side="axis"/>
+  </control>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-move" side="axis" cmd="rail-move" units="g-ge-1-infantry"
+          path="J29 I29 H29 G29 G30 F31"/>
+    <move n="2" turn="1" phase="axis-i1-move" side="axis" cmd="rail-move" units="g-ge-2-infantry"
+          path="I29 H29 G29"/>
+    <move n="3" turn="1" phase="axis-i1-move" side="axis" cmd="move" units="g-ge-41-armour" mode="normal"
+          path="J29 I29"/>
+    <move n="4" turn="1" phase="axis-i1-move" side="axis" cmd="end-phase"/>
+  </log>
+  <notes>
+    <note>9.0: rail movement is unlimited along a chain of links the side owns, terrain ignored; each unit
+      counts against the turn's capacity (the golden's rail-moves flag reads 2 until the Axis end phase).
+      A unit that moved by rail does nothing else that impulse (its "railed" marker).</note>
+  </notes>
+</save>

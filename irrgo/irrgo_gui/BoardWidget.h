@@ -1,16 +1,16 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
+#include "BoardWidgetBase.h"
 #include "DVR.h"
 #include "Game.h"
 #include <QColor>
 #include <QPixmap>
 #include <QString>
-#include <QWidget>
 #include <vector>
 
 class QTimer;
 
-class BoardWidget : public QWidget {
+class BoardWidget : public guicommon::BoardWidgetBase {
     Q_OBJECT
 public:
     explicit BoardWidget(QWidget* parent = nullptr);
@@ -18,12 +18,11 @@ public:
     void setGame(const IrrGo::Game* game);
     void setBgColor(QColor c);
 
-    // Highlight a suggested move with a coloured border; -1 clears it.
+    // Highlight a suggested move with a colored border; -1 clears it.
     void setSuggestion(int nodeId, bool isBlack);
     void clearSuggestion();
     void setBoardInfo(const QString& info);   // right-corner label ("rows x cols: seed")
 
-    void setSearching(bool s);
     void setShowBlackDvr(bool show);
     void setShowWhiteDvr(bool show);
     void setDvrRadius(int r);
@@ -32,27 +31,26 @@ public:
     void showLabels();
     void hideLabels();
 
-    // Mark the most recently placed stone with a contrasting dot; -1 clears it.
-    void setLastMove(int nodeId);
     void setUseTexture(bool on);
 
 signals:
     void moveRequested(int nodeId);
     void clearSuggestionRequested();  // any left-click anywhere in the board area
-    void hoverChanged(int nodeId);    // -1 when no node is highlighted
 
 protected:
     void paintEvent(QPaintEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
     void mousePressEvent(QMouseEvent*) override;
-    void leaveEvent(QEvent*) override;
     void resizeEvent(QResizeEvent*) override;
+    int  cellAt(const QPointF& pos) const override;  // pixel -> node id (or -1)
 
 private:
     void updateTransform();
-    int  nodeAt(QPointF pos) const;
 
-    // Shared helper: draws a stone-sized disc with a coloured border.
+    // Refill neighborhoodSizes_ from the graph. Called only when the graph or the
+    // radius changes -- the counts are a property of the board, not of a repaint.
+    void refreshNeighborhoodSizes();
+
+    // Shared helper: draws a stone-sized disc with a colored border.
     // nodeId is used to select the texture variant; -1 → variant 0.
     void paintStoneBordered(QPainter& p, QPointF pt,
                             bool isBlack, QColor borderColor, int nodeId = -1) const;
@@ -65,18 +63,19 @@ private:
     QColor      lineColor_ { "#373C65" };
     QString     boardInfoRight_;            // right corner label, set via setBoardInfo()
 
-    bool    searching_       = false;
-    int     hoverNode_       = -1;
     int     tentativeNode_   = -1;
     int     suggestedNode_   = -1;
     bool    suggestIsBlack_  = true;
-    int     lastMoveNode_    = -1;
     bool    showBlackDvr_         = false;
     bool    showWhiteDvr_         = false;
     int     dvrRadius_            = 4;
     bool    showNeighborhoodSize_ = false;
     bool    showLabels_           = false;
     QTimer* confirmTimer_    = nullptr;
+
+    // Node-id-indexed neighbourhood counts for the current graph at dvrRadius_.
+    // Empty when there is no game.
+    std::vector<int> neighborhoodSizes_;
 
     // Texture stone images: source (full-res) and scaled to current stoneR_
     bool useTexture_ = false;

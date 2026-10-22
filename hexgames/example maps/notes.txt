@@ -1,0 +1,116 @@
+
+Arctic Disaster
+Subtle features on the water, tricky textures on the ice and shore.
+Some map regions are just ice, and are not part of the playable hexgrid.
+Hexes on the mountains are marked only by little triangles where the hex-corners meet.
+In some wargames, every hex on the entire map is marked only by little triangles at corners.
+Source: LPS, INC. 2016
+
+
+Battle of Borodino
+Simple graphics, classic game system, low-resolution photo
+Source: SPI, 1972
+
+
+Bagration Stopped
+Modern, sharp graphics. Complex road and terrain.
+Source: Decision Games, 2023
+
+
+Battle of Tannenberg
+Control measures of game are thin black lines extending out past the edges of the map (like Panzergruppe Guderian).
+Two different kinds of railroads: single track as dashed blue line, double-track as solid blue line.
+Color of hex edges and of political boundaries (alternating dots and dash) are similar greyish shade.
+Disconnected black segments for blocked, impassable hex edges.
+Two different kinds of rivers: pale blue for 'river', pale blue with dark edge for 'major river'
+Trenches across hexes.
+Two different kinds of fortress.
+Hexes with nearly 50/50 split of water and land.
+Source: SPI, 1978
+
+BFM
+Battle for Moscow: a very small and simple introductory map.
+BFM map 1.png has no legend at all, because the symbology is so standard that the reader is expected to know.
+BFM Map redone.jpg has the same map with different colors and more information, such as a legend to explain graphics.
+Source: Game Designer's Workshop, 1986
+
+Dai Senso
+Large map with complex road networks, military unit information in boxes all across the board. Sometimes the boxes are rotated.
+The basic map is a hex-grid, but there are separate regions of the ocean delineated by while or yellow lines.
+Water hexes have three different shades for tactical information.
+Complex land borders along hex-edges: white-grey dashed, red-yellow dashed, solid red, solid brown, solid orange, solid green.
+Complex symbology inside hexes: stars, dot, two different kinds of anchors.
+On the marked map, Green oval is 1613, Red is 1106, Yellow is 3211.
+Rows start at bottom with 11; columns start from left with 01. 
+Source: Decision Games, 2011
+
+D-Day at Tarawa has many small symbols, dots and half-dots, on the map to indicate properties of the hexes and edges.
+There are also areas of approach in the ocean, marked with colored edges.
+The hexes are regular, but the map outline is irregular.
+Source: Decision Games, 2014
+
+Downfall
+complex overlapping boundary types.
+Several "abstract locations" that connect to each other, such as "South Atlantic Ocean" hex in lower left that has a little arrow pointing
+to the text "to Indian Ocean" indicating a direct but nonvisual connection to the "Indian Ocean" hex in the lower right. The Indian Ocean
+also has a little arrow pointing to the text "to South Atlantic Ocean" indicating the direct link back. 
+While there are explicit hexes along the Northern edge of Africa, there is also an abstract location in the "African Colonies" box.
+Around Sweden and northern Soviet Union, there are map features that are not part of the playable hex grid.
+Source: GMT, 2023
+
+Olympic
+"Olympic map wrinkled" is a fairly standard map with legend - but it is wrinkled and not flat.
+This would be a challenge for image processing, but knowing that it really represents a perfect hex grid
+you should be able to count hexes to get the cell numbers and thus match the cells of the map with the cells of a grid.
+I created a new map, "Olympic map wrinkled and marked.png"
+I marked cell number 1106 (column 11, row 06) with a red oval in the open hex just south of Makurazaki.
+I marked cell number 1613 (column 16, row 13) with a green oval in the mostly forest hex near the southern shore below Kagoshima.
+By counting hexes, you should be able to reconstruct all the hex numbers on the map.
+To help you check if you counted correctly, I marked cell number 3211 (written 2011 here until 2026-09-19), two hexes NE of Hinagu, with a yellow oval.
+Source: Decision Games, 2012
+
+Panzergruppe Guderian
+A standard classic map style.
+Cyrillic lettering. Many "forest" hexes have only a little green in them (e.g. 25% of pixels) but still could as 100% forest.
+Similarly, some "water" hexes have only a little blue in them.
+There are several deliberate short gaps in the transportation network (e.g. roads cut by rivers) that could be mistaken for incorrect reading.
+The only hint that the break is not a mistake is that each deliberate end has a small grey circle on it.
+Hex 1006 seems to be equally swamp and water; the rules decree that it is swamp. This hex is a test of flagging ambiguous cases for user decision.
+Several control measures extend off the edge of the map (like Tannenberg).
+Source: Avalon Hill, 1976
+
+Red Dragon, Blue Dragon
+A small introductory game. Like "Battle for Mosow", not graphical legend is available because it is assumed
+that the symbols are so standard that they need no explanation.
+Source: Against the Odds and LPS, Inc, 2015
+
+Siege of Tallinn
+Just a classic map that should be easy.
+Source: unknown
+
+Stalin Moves West
+A fairly classic game, but the overall map has an irregular outline.
+The railroad lines are thin and hard to see.
+Bridges are small yellow rectangles perpendicular to hex-edges (as explained in legend).
+Two very similar national boundaries: red dash-dot lines for most, red dash-dash for Russian.
+Source: Decision Games, 2018
+
+Target Leningrad
+A small, basic game.
+A small introductory game. Like "Battle for Mosow", not graphical legend is available because it is assumed
+that the symbols are so standard that they need no explanation.
+Source: Victory Point Games, 2010
+
+The Invasion of Russia, 1812
+A European (Italion) game with two similar maps. One legend is more thorough than the other. Hazy.
+Source: Europa Simulazioni 2021
+
+The Russian Campaign
+5th edition, delux.
+A classic game, but low resolution
+Source: GMT Games, 2021
+
+Totaler Krieg
+A clear sharp map, with complexity and symbology similar to Dai Senso (same publisher, same year).
+However, it is in two pieces that need to be aligned and fitted together based on hex numbers.
+Source: Decision Games, 2011

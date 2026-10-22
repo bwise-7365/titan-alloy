@@ -1,0 +1,176 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml hexengine-session
+title hexengine -- Session, steps, resolution stack, game state, policies [PROPOSED, M6b]
+hide empty members
+
+package HexRules {
+  class GameDefinition <<immutable, shared const>> {
+    rules : RuleSet
+    board : Board
+    roster : Roster
+  }
+  class RuleSet {
+    +phases() : PhaseNode[]
+  }
+  class PhaseNode {
+    id : PhaseId
+    sides : SideMask
+    turns : TurnSelector
+    steps : Step[]
+    children : PhaseNode[]
+  }
+  class Step {
+    id
+    does
+    at : StepAt
+    commands : verb[]
+    rules : RuleId[]
+    turns : TurnSelector
+  }
+  enum StepAt {
+    Enter
+    BeforeCommand
+    AfterCommand
+    End
+  }
+  class Ledger {
+    {static} +checkLedger(ledger, ruleIds, claims) : LedgerReport
+  }
+}
+
+package HexModel {
+  class Position <<value>> {
+    +resolution() : Resolution[]
+    +push(Obligation) / pop() / top()
+    +pending() : PendingDecision
+    +ask(PendingDecision)
+    +gameState<T>() : T&
+    +setGameState(Polymorphic<GameState>)
+    +digest()
+  }
+  class Resolution {
+    owed : Obligation
+    asked : PendingDecision
+  }
+  class Obligation <<variant>> {
+    OwedLoss
+    OwedRetreat
+    UnitRetreat
+    Polymorphic<GameObligation>
+  }
+  interface GameObligation {
+    +clone()
+    +kind()
+    +appendDigest()
+  }
+  interface GameState {
+    +clone()
+    +appendDigest()
+  }
+  interface GameStateCodec {
+    +decode(SideFlags) : Polymorphic<GameState>
+    +encode(GameState) : SideFlags
+  }
+  class UninterpretedFlags
+  class VerbatimFlagCodec
+}
+
+package HexEngine {
+  class Session {
+    -definition : shared_ptr<const GameDefinition>
+    -policies : Policies
+    -position : Position
+    -streams : PrngStreams
+    -scratch : SearchScratch
+    -log : EventLog
+    +Session(definition, policies, start, seed) : verifies steps
+    +prompt() : Prompt
+    +legalCommands() : Command[]
+    +reachable(units, mode) : Reachability
+    +apply(Command) : Applied
+    +fork() : Session
+  }
+  class Sequence <<pure functions>> {
+    check(Env, Position, Command, verb)
+    afterCommand(Env, Position, Command, verb, issued)
+    endPhase(Env, Position, Command)
+    commandSteps(cursor, phase, turn, at, verb)
+    boundary(cursor, stop, activeP)
+  }
+  class StepRegistry {
+    +addCheck(does, CheckFn)
+    +addEffect(does, EffectFn)
+    +addCommand(verb, CommandFn)
+    +withhold(does, kind, why)
+    +verify(RuleSet)
+    +claims(RuleSet) : RuleId[]
+  }
+  class PhaseCursor {
+    +next(stop, activeP)
+    +lineage(stop, activeP) : Frame[]
+    +ancestry(phase) : PhaseId[]
+  }
+  class Policies <<struct of const pointers>> {
+    zoc, movement, supply, combat, retreat
+    stacking, victory, phases, grammar
+    steps : StepRegistry
+    obligations : ObligationPolicy
+    state : GameStateCodec
+  }
+  interface ObligationPolicy {
+    +settle(Ctx, streams, sink) : Position
+    +answer(Ctx, DecisionAnswer, streams, sink) : Position
+  }
+  class Adjudicators <<pure functions>> {
+    applyMove / applyAttack / applyDecision
+    settleStack / applyStackingRepair / applySupplyCheck
+    advancePhase(Ctx, Stop, sink)
+  }
+  class DefaultPolicySet {
+    +DefaultPolicySet(definition, GameSteps)
+    +steps() : StepRegistry
+  }
+}
+
+package Trc {
+  class TrcPolicySet
+  class TrcSteps <<registered behaviours>>
+  class TrcState
+  class TrcStateCodec
+}
+
+Session o-- GameDefinition
+Session *-- Position
+Session ..> Sequence
+Session ..> Adjudicators
+Sequence ..> PhaseCursor
+Sequence ..> StepRegistry : runs by does
+PhaseCursor ..> PhaseNode
+PhaseNode *-- Step
+Step --> StepAt
+Position *-- "0..*" Resolution
+Resolution *-- Obligation
+Obligation ..> GameObligation
+Position o-- "0..1" GameState
+UninterpretedFlags ..|> GameState
+VerbatimFlagCodec ..|> GameStateCodec
+Policies o-- StepRegistry
+Policies o-- ObligationPolicy
+Policies o-- GameStateCodec
+Adjudicators ..> ObligationPolicy : game obligation on top
+DefaultPolicySet ..> VerbatimFlagCodec
+TrcPolicySet ..> TrcSteps
+TrcState ..|> GameState
+TrcStateCodec ..|> GameStateCodec
+Ledger ..> StepRegistry : claims()
+
+note bottom of Session
+  apply(command): pending gate; before-command checks of the
+  phase and its ancestors; the engine's adjudication (an EndPhase
+  runs end steps innermost first, moves the clock, runs enter
+  steps outermost first; Place and game verbs go to the command
+  registered for their verb); after-command effects.
+  No globals, no caches, no thread_local; fork() copies the rest.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,0 +1,39 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml seq-replay-golden
+title Golden-record system test and parallel rollouts [PROPOSED]
+
+== golden test (one per script, ctest label golden) ==
+participant "trc_golden_test" as Test
+participant "compareWithGolden\n(hexrecord)" as Cmp
+participant Session
+participant ScriptedPlayer
+participant "writeRecord\n(canonical)" as Writer
+
+Test -> Cmp : compareWithGolden(slug.script.xml, slug.golden.xml, definition, policies, grammar)
+Cmp -> Session : sessionFor(record) (scenario position, seed)
+loop each move in the script
+  Cmp -> ScriptedPlayer : choose(session, side)
+  ScriptedPlayer --> Cmp : Command
+  Cmp -> Session : apply(Command)
+  Session --> Cmp : Applied (events, draws)
+end
+Cmp -> Writer : writeRecord(slug.actual.xml, Golden, session, log)
+Cmp -> Cmp : byte compare with slug.golden.xml ; first divergent move if not equal
+Cmp --> Test : GoldenReport{matchP, first, unifiedDiff, actualWritten}
+note over Test
+  On mismatch the report prints the move, golden vs
+  actual outcome and draw, the diff, and the re-bless
+  command. Goldens are never edited by hand.
+end note
+
+== parallel rollouts (parallel_rollout_test, hexgames_bench) ==
+participant Main
+participant "Session (root)" as Root
+collections "Session (fork) x N" as Forks
+Main -> Root : Session(definition, policies, position, seed)
+Main -> Root : fork() x N (Position, streams, scratch copied; definition shared const)
+Main -> Forks : each on its own std::thread: play(RandomPlayer on Player streams, 200 commands)
+Forks --> Main : final digests
+Main -> Main : each equals its serial twin; no data race under the sanitizers
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

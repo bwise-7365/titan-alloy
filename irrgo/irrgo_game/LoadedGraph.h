@@ -1,4 +1,4 @@
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.
 #pragma once
 #include "Graph.h"
 #include <cstdint>
@@ -20,4 +20,4 @@ public:
 };
 
 } // namespace IrrGo
-// Copyright Group W, SPA. All Rights Reserved.
+// Copyright Ben Paul Wise. All Rights Reserved.

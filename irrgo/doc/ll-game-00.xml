@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LatrunculiBoard xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="latrunculi.xsd">
+    <dims rows="6" cols="8"/>
+    <perSide val="15"/>
+    <phase val="Movement"/>
+    <sideToMove val="0"/>
+    <placed p0="15" p1="15"/>
+    <colors sideA="#fae5be" sideB="#852532" background="#8c8e7e"/>
+    <Position>
+        <cell sq="0" state="P1Free"/>
+        <cell sq="2" state="P1Free"/>
+        <cell sq="5" state="P0Free"/>
+        <cell sq="6" state="P0Free"/>
+        <cell sq="7" state="P0Free"/>
+        <cell sq="8" state="P1Free"/>
+        <cell sq="9" state="P1Free"/>
+        <cell sq="10" state="P0Free"/>
+        <cell sq="12" state="P0Free"/>
+        <cell sq="13" state="P0Free"/>
+        <cell sq="14" state="P0Free"/>
+        <cell sq="15" state="P1Free"/>
+        <cell sq="16" state="P1Free"/>
+        <cell sq="17" state="P1Free"/>
+        <cell sq="20" state="P1Free"/>
+        <cell sq="24" state="P1Free"/>
+        <cell sq="25" state="P0Free"/>
+        <cell sq="27" state="P0Free"/>
+        <cell sq="28" state="P1Free"/>
+        <cell sq="29" state="P1Free"/>
+        <cell sq="30" state="P0Free"/>
+        <cell sq="34" state="P0Free"/>
+        <cell sq="35" state="P0Free"/>
+        <cell sq="36" state="P0Free"/>
+        <cell sq="39" state="P0Free"/>
+        <cell sq="40" state="P1Free"/>
+        <cell sq="42" state="P1Free"/>
+        <cell sq="47" state="P0Free"/>
+    </Position>
+    <move_list>
+        <move turn="1" player="0" from="-1" to="3" removed="-1" path=""/>
+        <move turn="2" player="1" from="-1" to="17" removed="-1" path=""/>
+        <move turn="3" player="0" from="-1" to="35" removed="-1" path=""/>
+        <move turn="4" player="1" from="-1" to="42" removed="-1" path=""/>
+        <move turn="5" player="0" from="-1" to="5" removed="-1" path=""/>
+        <move turn="6" player="1" from="-1" to="8" removed="-1" path=""/>
+        <move turn="7" player="0" from="-1" to="7" removed="-1" path=""/>
+        <move turn="8" player="1" from="-1" to="18" removed="-1" path=""/>
+        <move turn="9" player="0" from="-1" to="26" removed="-1" path=""/>
+        <move turn="10" player="1" from="-1" to="16" removed="-1" path=""/>
+        <move turn="11" player="0" from="-1" to="14" removed="-1" path=""/>
+        <move turn="12" player="1" from="-1" to="27" removed="-1" path=""/>
+        <move turn="13" player="0" from="-1" to="39" removed="-1" path=""/>
+        <move turn="14" player="1" from="-1" to="2" removed="-1" path=""/>
+        <move turn="15" player="0" from="-1" to="47" removed="-1" path=""/>
+        <move turn="16" player="1" from="-1" to="19" removed="-1" path=""/>
+        <move turn="17" player="0" from="-1" to="22" removed="-1" path=""/>
+        <move turn="18" player="1" from="-1" to="32" removed="-1" path=""/>
+        <move turn="19" player="0" from="-1" to="13" removed="-1" path=""/>
+        <move turn="20" player="1" from="-1" to="9" removed="-1" path=""/>
+        <move turn="21" player="0" from="-1" to="36" removed="-1" path=""/>
+        <move turn="22" player="1" from="-1" to="21" removed="-1" path=""/>
+        <move turn="23" player="0" from="-1" to="25" removed="-1" path=""/>
+        <move turn="24" player="1" from="-1" to="15" removed="-1" path=""/>
+        <move turn="25" player="0" from="-1" to="34" removed="-1" path=""/>
+        <move turn="26" player="1" from="-1" to="0" removed="-1" path=""/>
+        <move turn="27" player="0" from="-1" to="12" removed="-1" path=""/>
+        <move turn="28" player="1" from="-1" to="40" removed="-1" path=""/>
+        <move turn="29" player="0" from="-1" to="30" removed="-1" path=""/>
+        <move turn="30" player="1" from="-1" to="20" removed="-1" path=""/>
+        <move turn="31" player="0" from="22" to="6" removed="-1" path="22 6"/>
+        <move turn="32" player="1" from="27" to="28" removed="-1" path="27 28"/>
+        <move turn="33" player="0" from="3" to="11" removed="-1" path="3 11"/>
+        <move turn="34" player="1" from="21" to="29" removed="-1" path="21 29"/>
+        <move turn="35" player="0" from="25" to="27" removed="-1" path="25 27"/>
+        <move turn="36" player="1" from="17" to="1" removed="-1" path="17 1"/>
+        <move turn="37" player="0" from="11" to="10" removed="19" path="11 10"/>
+        <move turn="38" player="1" from="32" to="24" removed="-1" path="32 24"/>
+        <move turn="39" player="0" from="26" to="25" removed="18" path="26 25"/>
+        <move turn="40" player="1" from="1" to="17" removed="-1" path="1 17"/>
+    </move_list>
+</LatrunculiBoard>

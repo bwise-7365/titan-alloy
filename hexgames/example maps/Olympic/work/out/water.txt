@@ -1,0 +1,68 @@
+# W18a: water hexes, sub-task A. Method: median hue/sat and per-pixel pale fraction inside each hex on all three photos
+# (pale = warm-grey, hue ~21, sat <0.26, v >0.6; sea = hue ~205; land sat >0.3), then every cluster confirmed by eye on unlined crops.
+# Only two water colours seen; darker blue patches are shadow. Pale fraction is given for the mixed (coastal, lettered) hexes.
+assault: 0805
+assault: 0903
+assault: 0904
+assault: 0905
+assault: 0906 letter C
+assault: 1002
+assault: 1003 letter L
+assault: 0816
+assault: 0817
+assault: 0915 letter C
+assault: 0916
+assault: 0917
+assault: 1015 letter C
+assault: 1016
+assault: 1404
+assault: 1505
+assault: 1605
+assault: 1705
+assault: 1706 letter L
+assault: 1804
+assault: 1805 letter C
+assault: 1904
+assault: 1905 letter C
+assault: 1622 letter C
+assault: 1623
+assault: 1723
+assault: 1724
+assault: 1823
+assault: 1824
+assault: 1924
+assault: 1925
+assault: 2024
+assault: 2025
+assault: 2104
+assault: 2105 letter C
+assault: 2204
+assault: 2205 letter C
+assault: 2305
+assault: 2306 letter C
+assault: 2405 letter C
+assault: 2225
+assault: 2326
+assault: 2426
+assault: 2427
+assault: 2527 letter C
+assault: 2528
+assault: 5311 letter C
+assault: 5410
+assault: 5411
+assault: 5412 letter C
+assault: 5512
+assault: 5717
+assault: 5718
+assault: 5719
+# comparison with the sheet's current list (41 ids)
+# was sea, is assault: 0906 0915 0917 1003 1015 1622 1705 1706 1805 1905 2105 2205 2306 2405 2527 5311 5411 5412
+# was assault, is sea: 0706 3010 4505 4605 5206   (0706, 3010, 4505, 5206 plain sea; 4605 is coast/land-and-sea, never pale)
+# doubt: 1004 is about 41% pale (left half pale, right half land, a C printed on the land side); left OUT of the list. Same kind as 0915/2306 below, which are 47%/50% and were put IN; coordinator may want one rule for all coastal lettered hexes.
+# doubt: mixed coastal hexes with a red letter, pale fraction of the hex: 0915 0.47, 2306 0.50, 1706 0.54, 1622 0.54, 1015 0.59, 2405 0.60, 2105 0.58, 2527 0.62, 1905 0.65, 2205 0.63, 1805 0.69, 5412 0.69, 1003 0.67. Listed as assault when >= about half pale. They read as pale-blue hexes with land drawn over part of them; if Ben means "assault only if wholly water", these drop out.
+# doubt: 0907 (C, 13% pale), 1405 (C, 17%), 1017 (28%): mostly land with a pale sliver; NOT listed.
+# doubt: red letter placement: C in 5311 sits near its west edge; C/L attribution to the hex containing the letter's centre, could be a neighbour by a few pixels only for 5311 and 1003 (L near the Makurazaki dot).
+# doubt: the sheet's 1622 was missing; if 1622 is land the town-side coast C at 1622 would be its beach marker instead.
+# report: 54 assault hexes, of which 15 carry a red letter (0906 1003 0915 1015 1622 1706 1805 1905 2105 2205 2306 2405 2527 5311 5412).
+# report: 18 hexes newly assault vs the sheet, 5 sheet assault hexes are really sea. 6 doubts above (the first two cover 15 hexes).
+# report: surprising: fits on all three photos agree (1824 1904 1905 1924 1925 2024 2025 2104..2527 seen on left and middle with matching results). No third water colour anywhere; the darker patches are shadow only.

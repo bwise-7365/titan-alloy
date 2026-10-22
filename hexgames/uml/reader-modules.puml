@@ -1,0 +1,61 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml reader-modules
+title Grammar-first map reader: modules and the files between them (contract D3, 2026-09-18)
+
+skinparam componentStyle rectangle
+
+component "lattice.py" as L
+component "legend.py" as G
+component "cells.py" as C
+component "structure.py" as S
+component "chain2catalogue.py\nassemble.py\nhexsheet2svg.py" as A
+component "compare.py" as R
+component "editor (task 16)" as E
+
+file "scan" as scan
+file "lattice.json" as lat
+file "legend/vocabulary.json\nlegend/swatch-NN.jpg" as voc
+file "library/index.json" as lib
+file "cells.json" as cells
+file "terrain.json\n<kind>.json chains\nregions.json\nplaces.json\ndoubts.json" as struct
+file "sheet.xml (structure)\nstyle declarations" as sheet
+file "sheet.png\ndiff.png\nroundtrip.txt" as out
+
+scan --> L
+L --> lat
+scan --> G
+lat --> G
+lib --> G
+G --> voc
+scan --> C
+lat --> C
+voc --> C
+C --> cells
+cells --> S
+voc --> S
+S --> struct
+struct --> A
+voc --> A
+A --> sheet
+sheet --> R
+scan --> R
+R --> out
+R ..> C : reads the render back\n(round trip)
+struct --> E
+sheet --> E
+E --> sheet : saves XSD-valid structure
+
+note right of L
+  the only module that sees the whole scan;
+  one look by a person at its overlay
+end note
+note right of G
+  the only module that uses a model:
+  one look to name the swatches
+end note
+note bottom of S
+  priors rank, never invent:
+  no cell is written without a score
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

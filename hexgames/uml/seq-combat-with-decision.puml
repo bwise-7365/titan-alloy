@@ -1,0 +1,53 @@
+' Copyright Ben Paul Wise. All Rights Reserved.
+@startuml seq-combat-with-decision
+title Combat with mid-resolution decisions on the resolution stack (TRC EX result) [PROPOSED, M6b]
+
+actor Attacker
+actor Defender
+participant Session
+participant "Sequence\n(rules steps)" as Steps
+participant "applyAttack /\napplyDecision (pure)" as Apply
+participant "settleStack (pure)" as Settle
+participant "CombatResolver" as CRT
+participant PrngStreams
+participant RetreatPolicy
+participant Position
+participant EventLog
+
+Attacker -> Session : apply(DeclareAttack{attackers, target, modifiers})
+Session -> Steps : check(): before-command steps for "attack" (TRC turn-check-attack)
+Session -> Apply : applyAttack(ctx, policies, cmd, streams, sink)
+Apply -> CRT : report(ctx, CombatContext, streams)
+CRT -> PrngStreams : rollDie(Combat, 6)
+PrngStreams --> CRT : 3
+CRT --> Apply : [StepLoss{attacker,1}, StepLoss{defender,1}, RetreatEffect{defender,2,2}]
+Apply -> Position : push OwedRetreat{battle, defender}, OwedLoss{battle, defender}, OwedLoss{battle, attacker} (top)
+Apply -> Settle : settleStack
+Settle -> Position : top OwedLoss has a real choice: ask(ChooseLoss{attacker, candidates, 1})
+Apply -> EventLog : CombatDeclared, DieRolled, CombatResolved("3-1","EX"), DecisionRequested
+Session -> Steps : afterCommand(): after-command steps (air used, workers, leaders; stacking and control wait while the stack is not empty)
+Session --> Attacker : Applied ; prompt().side == attacker, decisionPendingP
+
+Attacker -> Session : apply(DecisionAnswer{"loss", unit})
+Session -> Session : pending() is the top entry's decision; any other command throws
+Session -> Apply : applyDecision -> step lost, OwedLoss popped
+Apply -> Settle : settleStack
+Settle -> Position : next OwedLoss: ask(ChooseLoss{defender ...})
+Session --> Defender : prompt().side == defender
+
+Defender -> Session : apply(DecisionAnswer{"loss", unit})
+Apply -> Settle : OwedLoss popped; OwedRetreat expands into one UnitRetreat per defender (first on top)
+Settle -> RetreatPolicy : fate(), candidates(ctx, unit, hex)
+Settle -> Position : ask(ChooseRetreat{router = attacker, unit, hexes})
+Attacker -> Session : apply(DecisionAnswer{"retreat", hex}) ... until the walk is done
+Settle -> Position : last UnitRetreat popped; the stack is empty, pending() is NoDecision
+Session -> Steps : afterCommand(): stacking after combat, control update
+Session -> EventLog : DecisionAnswered, UnitReduced / UnitEliminated, Retreated, ControlChanged
+note over Session
+  Every answer is a command in the log, so a script replays
+  combat exactly; the die values are events. A game pushes its
+  own GameObligation (Dai Senso card effects, Tarawa's reveal and
+  consult again) and settles it through Policies::obligations.
+end note
+@enduml
+' Copyright Ben Paul Wise. All Rights Reserved.

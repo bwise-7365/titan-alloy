@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd" id="trc" title="The Russian Campaign, Deluxe Fifth Edition" source="TRC map v1 adjusted.png, 1224 x 1483; Consim Press / GMT 2022" width="1224" height="1483" background="frame" font="Georgia, Times New Roman, serif" urban="buildings" junctions="explicit">
+  <!-- written by HexMapEd; the structure and its style, validated against hexsheet.xsd -->
+  <grid id="main" orientation="pointy" offset="odd" cols="33" rows="43" size="20.65" ox="22.27" oy="155.4" id-format="{rowletter}{col}" col-start="33" col-step="-1" terrain="clear"/>
+  <palette>
+    <color id="frame" value="#8c8c8c" name="sheet frame"/>
+    <color id="steppe" value="#d5d59b"/>
+    <color id="leaf" value="#6f9a4f"/>
+    <color id="rock" value="#97915b"/>
+    <color id="marsh" value="#b6c495"/>
+    <color id="deep" value="#206f93"/>
+    <color id="grid" value="#8f8f6a"/>
+    <color id="gridw" value="#5f93b0"/>
+    <color id="riverblue" value="#3f7fb3"/>
+    <color id="railgrey" value="#6a6a6a"/>
+    <color id="ink" value="#111111"/>
+    <color id="cream" value="#f3edc0"/>
+    <color id="citygrey" value="#8a8a8a"/>
+    <color id="white" value="#ffffff"/>
+    <color id="panel" value="#f4efd6"/>
+    <color id="paneldark" value="#2d4a63"/>
+    <color id="red" value="#b0201f"/>
+    <color id="label" value="#333322"/>
+  </palette>
+  <terrains>
+    <terrain id="clear" name="Clear" fill="steppe" stroke="grid"/>
+    <terrain id="woods" name="Woods" fill="leaf" stroke="grid" pattern="mottle"/>
+    <terrain id="mountain" name="Mountain" fill="rock" stroke="grid" pattern="mottle"/>
+    <terrain id="swamp" name="Swamp" fill="marsh" stroke="grid" pattern="dots"/>
+    <terrain id="sea" name="Sea" fill="deep" stroke="gridw"/>
+    <terrain id="lake" name="Lake" fill="deep" stroke="gridw"/>
+  </terrains>
+  <lines>
+    <line id="river" stroke="riverblue" width="3.2"/>
+    <line id="rail" stroke="railgrey" width="1.6" dash="4 3"/>
+    <line id="border" stroke="ink" width="2.4"/>
+    <line id="district" stroke="railgrey" width="1.2" dash="6 2 1 2"/>
+    <line id="blocked" stroke="white" width="2.2" dash="1 3"/>
+    <line id="coast" stroke="ink" width="1.4"/>
+  </lines>
+  <hexes terrain="clear" ids="A33 A32 A31 A30 A18 A15 A14 A13 A12 A11 A10 A9 A8 A7 A4 B33 B32 B31 B30 B23 B22 B20 B18 B15 B14 B13 B12 B11 B10 B9 B8 B7 B5 B4 C33 C32 C31 C30 C29 C28 C15 C10 C9 C7 C6 C5 C4 C3 D33 D32 D31 D30 D29 D28 D18 D16 D15 D14 D10 D7 D6 D4 E33 E32 E31 E30 E29 E28 E27 E26 E25 E19 E18 E15 E14 E13 E12 E11 E7 E6 E5 E4 E3 F33 F32 F31 F30 F29 F28 F27 F26 F20 F19 F18 F17 F16 F15 F13 F6 F5 F4 F3 G33 G32 G31 G30 G29 G28 G27 G26 G25 G24 G23 G21 G20 G19 G18 G17 G16 G15 G13 G12 G6 G5 G4 G3 G2 H33 H32 H31 H30 H29 H28 H27 H26 H25 H24 H23 H22 H21 H20 H19 H18 H17 H16 H15 H14 H13 H6 H3 H2 H1 I33 I32 I31 I30 I29 I28 I27 I26 I25 I24 I23 I22 I21 I20 I19 I18 I17 I16 I15 I14 I13 I8 I7 I4 I3 I2 I1 J31 J30 J29 J28 J27 J26 J25 J23 J22 J21 J20 J19 J18 J17 J16 J15 J14 J13 J9 J8 J5 J4 J3 J2 J1 K30 K29 K28 K27 K26 K25 K24 K23 K22 K21 K20 K19 K18 K17 K16 K15 K14 K13 K8 K7 K5 K4 K3 K2 K1 L30 L29 L28 L27 L26 L25 L24 L22 L21 L20 L19 L18 L17 L16 L15 L14 L13 L9 L8 L7 L5 L4 L3 L2 L1 M33 M30 M28 M27 M26 M25 M24 M23 M22 M21 M18 M17 M16 M15 M14 M13 M12 M11 M10 M9 M8 M7 M6 M4 M3 M2 M1 N33 N31 N30 N28 N27 N26 N25 N24 N23 N22 N21 N18 N17 N16 N15 N14 N13 N12 N11 N10 N9 N8 N7 N6 N5 N4 N3 N2 N1 O28 O27 O26 O25 O24 O23 O19 O18 O16 O15 O14 O13 O12 O11 O10 O9 O8 O7 O6 O5 O4 O3 O2 O1 P28 P27 P26 P25 P24 P20 P16 P15 P14 P13 P12 P11 P10 P8 P7 P6 P5 P4 P3 P2 P1 Q27 Q26 Q25 Q24 Q23 Q16 Q15 Q14 Q13 Q12 Q9 Q8 Q7 Q6 Q5 Q4 Q3 Q2 Q1 R33 R32 R31 R30 R27 R26 R25 R24 R17 R16 R15 R13 R12 R10 R9 R8 R7 R6 R5 R4 R3 R2 R1 S33 S32 S31 S30 S29 S26 S25 S24 S16 S15 S12 S11 S10 S9 S8 S7 S6 S5 S4 S3 S2 S1 T33 T32 T31 T30 T29 T26 T17 T16 T15 T13 T12 T11 T10 T9 T8 T7 T6 T5 T4 T3 T2 T1 U33 U32 U31 U30 U29 U25 U23 U22 U20 U17 U16 U15 U14 U13 U12 U11 U10 U9 U8 U7 U6 U5 U4 U3 U2 U1 V33 V32 V31 V30 V29 V25 V24 V23 V22 V21 V20 V18 V17 V16 V15 V14 V13 V12 V11 V10 V9 V8 V7 V6 V5 V4 V3 V2 V1 W30 W29 W25 W24 W23 W22 W21 W20 W19 W17 W16 W15 W14 W13 W12 W11 W10 W9 W8 W7 W6 W5 W4 W3 W2 W1 X26 X25 X24 X23 X22 X21 X20 X19 X18 X17 X16 X15 X14 X13 X12 X11 X10 X9 X8 X7 X6 X5 X4 X1 Y25 Y24 Y23 Y22 Y21 Y20 Y19 Y18 Y17 Y16 Y15 Y14 Y13 Y12 Y11 Y10 Y9 Y8 Y7 Y6 Y5 Z26 Z25 Z24 Z23 Z22 Z21 Z20 Z19 Z18 Z17 Z16 Z15 Z14 Z13 Z12 Z11 Z10 Z9 Z8 Z7 Z6 Z2 Z1 AA33 AA32 AA31 AA30 AA26 AA25 AA24 AA23 AA22 AA21 AA20 AA19 AA18 AA17 AA16 AA15 AA14 AA13 AA12 AA11 AA10 AA9 AA8 AA7 AA6 AA5 AA2 AA1 BB33 BB32 BB31 BB30 BB27 BB26 BB25 BB24 BB23 BB22 BB21 BB20 BB19 BB18 BB17 BB16 BB15 BB14 BB13 BB12 BB11 BB10 BB9 BB8 BB7 BB6 BB5 BB4 BB3 BB2 BB1 CC33 CC32 CC31 CC30 CC29 CC28 CC27 CC26 CC25 CC24 CC23 CC22 CC21 CC20 CC19 CC18 CC17 CC16 CC15 CC14 CC13 CC12 CC11 CC10 CC9 CC8 CC7 CC6 CC5 CC4 CC3 CC2 CC1 DD33 DD32 DD31 DD30 DD29 DD28 DD27 DD26 DD25 DD24 DD23 DD22 DD21 DD20 DD19 DD18 DD17 DD16 DD15 DD14 DD13 DD12 DD11 DD10 DD9 DD8 DD7 DD6 DD5 DD4 DD3 DD2 DD1 EE33 EE32 EE30 EE29 EE28 EE27 EE26 EE25 EE22 EE21 EE20 EE19 EE18 EE17 EE16 EE15 EE14 EE13 EE12 EE11 EE10 EE9 EE8 EE7 EE6 EE5 EE4 EE3 EE2 EE1 FF33 FF29 FF28 FF27 FF23 FF22 FF21 FF20 FF19 FF18 FF17 FF16 FF15 FF14 FF13 FF12 FF11 FF10 FF9 FF8 FF7 FF6 FF5 FF4 FF3 FF2 FF1 GG33 GG32 GG29 GG28 GG21 GG19 GG18 GG17 GG16 GG15 GG14 GG13 GG12 GG11 GG10 GG9 GG8 GG7 GG6 GG5 GG4 GG3 GG2 GG1 HH33 HH32 HH23 HH22 HH21 HH19 HH18 HH17 HH16 HH15 HH14 HH13 HH12 HH11 HH10 HH9 HH8 HH7 HH6 HH5 HH4 HH3 HH2 HH1 II33 II32 II31 II22 II21 II20 II14 II13 II12 II11 II10 II9 II8 II7 II6 II5 II4 II3 II2 II1 JJ33 JJ32 JJ31 JJ30 JJ23 JJ21 JJ17 JJ16 JJ15 JJ14 JJ13 JJ12 JJ11 JJ10 JJ9 JJ8 JJ7 JJ6 JJ5 JJ4 JJ3 JJ2 JJ1 KK33 KK32 KK31 KK30 KK20 KK19 KK18 KK17 KK16 KK15 KK14 KK13 KK12 KK11 KK10 KK9 KK8 KK7 KK6 KK5 KK4 KK3 KK2 KK1 LL33 LL32 LL31 LL30 LL29 LL19 LL18 LL17 LL16 LL15 LL14 LL13 LL12 LL11 LL10 LL9 LL8 LL7 LL6 LL5 LL4 LL3 LL2 LL1 MM33 MM32 MM31 MM30 MM29 MM28 MM18 MM17 MM16 MM15 MM14 MM13 MM12 MM11 MM10 MM9 MM8 MM7 MM6 MM5 MM4 MM3 MM2 MM1 NN33 NN32 NN31 NN30 NN29 NN28 NN27 NN26 NN25 NN24 NN23 NN18 NN16 NN15 NN14 NN13 NN12 NN11 NN10 NN9 NN8 NN7 NN6 NN5 NN4 NN3 NN2 NN1 OO33 OO32 OO31 OO30 OO29 OO28 OO27 OO26 OO25 OO24 OO23 OO17 OO14 OO13 OO12 OO11 OO10 OO9 OO8 OO7 OO6 OO5 OO4 OO3 OO2 OO1 PP33 PP32 PP31 PP30 PP29 PP28 PP27 PP26 PP25 PP24 PP23 PP17 PP14 PP11 PP10 PP9 PP8 PP7 PP6 PP5 PP4 PP3 PP2 PP1 QQ33 QQ32 QQ31 QQ30 QQ29 QQ28 QQ27 QQ26 QQ25 QQ24 QQ23 QQ13 QQ10 QQ9 QQ8 QQ7 QQ6 QQ5"/>
+  <hexes terrain="woods" ids="J24 L23 L12 M20 M19 N20 N19 O22 O21 O20 P23 P9 Q11 Q10 R14 R11 S14 S13 T14"/>
+  <hexes terrain="mountain" ids="B28 J33 J32 J11 J10 K33 K32 K31 K11 K10 K9 L33 L32 L31 L11 L10 M32 M31 M29 N32 N29 O33 O32 O31 O30 O29 P33 P32 P31 P30 P29 Q33 Q32 Q31 Q30 Q29 Q28 R29 R28 S28 S27 T28 T27 T25 T24 U28 U27 U26 U24 V28 V27 V26 W33 W32 W31 W28 W27 W26 X33 X32 X31 X30 X29 X28 X27 X3 X2 Y33 Y32 Y31 Y30 Y29 Y28 Y27 Y26 Y4 Y3 Y2 Y1 Z33 Z32 Z31 Z30 Z29 Z28 Z27 Z5 Z4 Z3 AA29 AA28 AA27 AA4 AA3 BB29 BB28 EE31 FF32 FF31 FF30 GG31 GG30 JJ22 NN17 OO16 OO15 PP16 PP15 PP13 PP12 QQ16 QQ15 QQ14 QQ12 QQ11"/>
+  <hexes terrain="swamp" ids="A6 A5 B26 B6 B3 B1 C2 C1 D3 D2 D1 E10 E2 E1 F12 F11 F10 F9 F8 F7 F2 F1 G11 G10 G9 G8 G7 G1 H12 H11 H10 H9 H8 H7 H5 I12 I10 I9 I6 I5 J12 J7 J6 K12 K6 L6 O17 P22 P21 P19 P18 P17 Q22 Q21 Q20 Q19 Q18 Q17 R23 R22 R21 R20 R19 R18 S23 S22 S21 S20 S19 S18 S17 T23 T22 T21 T20 T19 T18 U21 U19 U18 V19 W18 PP22 PP21 PP20 PP19"/>
+  <hexes terrain="sea" ids="A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A17 A16 A3 A2 A1 B29 B27 B25 B24 B21 B19 B17 B16 B2 C27 C26 C25 C24 C23 C22 C21 C20 C19 C18 C17 C16 C14 C13 C12 C11 D27 D26 D25 D24 D23 D22 D21 D20 D19 D17 D13 D12 D11 E24 E23 E22 E21 E20 E17 E16 F24 F23 F22 F21 G22 EE24 EE23 FF26 FF25 FF24 GG27 GG26 GG25 GG24 GG23 GG22 GG20 HH31 HH30 HH29 HH28 HH27 HH26 HH25 HH24 HH20 II30 II29 II28 II27 II26 II25 II24 II23 II19 II18 II17 II16 II15 JJ29 JJ28 JJ27 JJ26 JJ25 JJ24 JJ20 JJ19 JJ18 KK29 KK28 KK27 KK26 KK25 KK24 KK23 KK22 KK21 LL28 LL27 LL26 LL25 LL24 LL23 LL22 LL21 LL20 MM27 MM26 MM25 MM24 MM23 MM22 MM21 MM20 MM19 NN22 NN21 NN20 NN19 OO22 OO21 OO20 OO19 OO18 PP18 QQ22 QQ21 QQ20 QQ19 QQ18 QQ17 QQ4 QQ3 QQ2 QQ1 F25"/>
+  <hexes terrain="lake" ids="C8 D9 D8 D5 E9 E8 F14 G14 H4 I11 M5"/>
+  <edge at="C28:sw" line="blocked"/>
+  <edge at="C28:se" line="blocked"/>
+  <edge at="G24:e" line="blocked"/>
+  <edge at="G23:sw" line="blocked"/>
+  <edge at="F18:e" line="blocked"/>
+  <edge at="B15:sw" line="blocked"/>
+  <edge at="B4:e" line="blocked"/>
+  <edge at="C2:e" line="blocked"/>
+  <edge at="B5:sw" line="blocked"/>
+  <edge at="C5:e" line="blocked"/>
+  <edge at="E5:e" line="blocked"/>
+  <edge at="E5:se" line="blocked"/>
+  <edge at="FF28:e" line="blocked"/>
+  <edge at="II20:sw" line="blocked"/>
+  <edge at="KK19:e" line="blocked"/>
+  <edge at="JJ17:sw" line="blocked"/>
+  <edge at="A6:e" line="district"/>
+  <edge at="A6:se" line="district"/>
+  <edge at="B7:e" line="district"/>
+  <edge at="B7:se" line="district"/>
+  <edge at="C7:e" line="district"/>
+  <edge at="C7:se" line="district"/>
+  <edge at="D11:se" line="district"/>
+  <edge at="D10:sw" line="district"/>
+  <edge at="E19:e" line="district"/>
+  <edge at="E18:sw" line="district"/>
+  <edge at="F19:e" line="district"/>
+  <edge at="F18:sw" line="district"/>
+  <edge at="G18:e" line="district"/>
+  <edge at="G18:se" line="district"/>
+  <edge at="H21:se" line="district"/>
+  <edge at="H19:e" line="district"/>
+  <edge at="H19:se" line="district"/>
+  <edge at="I21:e" line="district"/>
+  <edge at="I20:se" line="district"/>
+  <edge at="I20:sw" line="district"/>
+  <edge at="I19:e" line="district"/>
+  <edge at="I19:se" line="district"/>
+  <edge at="I19:sw" line="district"/>
+  <edge at="J20:e" line="district"/>
+  <edge at="J20:se" line="district"/>
+  <edge at="K21:se" line="district"/>
+  <edge at="K20:e" line="district"/>
+  <edge at="K20:se" line="district"/>
+  <edge at="K20:sw" line="district"/>
+  <edge at="L22:e" line="district"/>
+  <edge at="L21:sw" line="district"/>
+  <edge at="M21:e" line="district"/>
+  <edge at="M21:se" line="district"/>
+  <edge at="N22:e" line="district"/>
+  <edge at="N22:se" line="district"/>
+  <edge at="O22:e" line="district"/>
+  <edge at="O22:se" line="district"/>
+  <edge at="O22:sw" line="district"/>
+  <edge at="P24:se" line="district"/>
+  <edge at="P24:sw" line="district"/>
+  <edge at="P23:e" line="district"/>
+  <edge at="P23:se" line="district"/>
+  <edge at="P23:sw" line="district"/>
+  <edge at="Q23:e" line="district"/>
+  <edge at="Q23:se" line="district"/>
+  <edge at="R24:e" line="district"/>
+  <edge at="R24:se" line="district"/>
+  <edge at="S25:se" line="district"/>
+  <edge at="S24:e" line="district"/>
+  <edge at="S24:se" line="district"/>
+  <edge at="S24:sw" line="district"/>
+  <edge at="T26:e" line="district"/>
+  <edge at="T25:sw" line="district"/>
+  <edge at="U25:e" line="district"/>
+  <edge at="U24:sw" line="district"/>
+  <edge at="V25:e" line="district"/>
+  <edge at="V24:sw" line="district"/>
+  <edge at="W25:se" line="district"/>
+  <edge at="W24:e" line="district"/>
+  <edge at="W24:se" line="district"/>
+  <edge at="W24:sw" line="district"/>
+  <edge at="W23:sw" line="district"/>
+  <edge at="X24:e" line="district"/>
+  <edge at="X24:se" line="district"/>
+  <edge at="Y24:e" line="district"/>
+  <edge at="Y23:sw" line="district"/>
+  <edge at="Z24:e" line="district"/>
+  <edge at="Z24:se" line="district"/>
+  <edge at="AA24:e" line="district"/>
+  <edge at="AA23:sw" line="district"/>
+  <edge at="BB24:e" line="district"/>
+  <edge at="BB24:se" line="district"/>
+  <edge at="CC24:e" line="district"/>
+  <edge at="CC24:se" line="district"/>
+  <edge at="DD25:e" line="district"/>
+  <edge at="P33:se" line="border"/>
+  <edge at="P33:sw" line="border"/>
+  <edge at="V33:e" line="border"/>
+  <edge at="V33:se" line="border"/>
+  <edge at="V33:sw" line="border"/>
+  <edge at="CC33:se" line="border"/>
+  <edge at="DD33:e" line="border"/>
+  <edge at="DD33:ne" line="border"/>
+  <edge at="HH33:se" line="border"/>
+  <edge at="HH33:sw" line="border"/>
+  <edge at="P32:se" line="border"/>
+  <edge at="P32:sw" line="border"/>
+  <edge at="U32:se" line="border"/>
+  <edge at="V32:ne" line="border"/>
+  <edge at="DD32:se" line="border"/>
+  <edge at="DD32:sw" line="border"/>
+  <edge at="HH32:sw" line="border"/>
+  <edge at="II32:e" line="border"/>
+  <edge at="JJ32:ne" line="border"/>
+  <edge at="H31:e" line="border"/>
+  <edge at="P31:se" line="border"/>
+  <edge at="P31:sw" line="border"/>
+  <edge at="U31:se" line="border"/>
+  <edge at="V31:e" line="border"/>
+  <edge at="V31:ne" line="border"/>
+  <edge at="DD31:se" line="border"/>
+  <edge at="DD31:sw" line="border"/>
+  <edge at="II31:se" line="border"/>
+  <edge at="F30:se" line="border"/>
+  <edge at="G30:e" line="border"/>
+  <edge at="G30:se" line="border"/>
+  <edge at="H30:sw" line="border"/>
+  <edge at="I30:e" line="border"/>
+  <edge at="J30:e" line="border"/>
+  <edge at="J30:ne" line="border"/>
+  <edge at="L30:e" line="border"/>
+  <edge at="P30:sw" line="border"/>
+  <edge at="Q30:e" line="border"/>
+  <edge at="R30:ne" line="border"/>
+  <edge at="V30:sw" line="border"/>
+  <edge at="W30:e" line="border"/>
+  <edge at="X30:e" line="border"/>
+  <edge at="X30:ne" line="border"/>
+  <edge at="DD30:sw" line="border"/>
+  <edge at="EE30:e" line="border"/>
+  <edge at="FF30:e" line="border"/>
+  <edge at="FF30:ne" line="border"/>
+  <edge at="F29:se" line="border"/>
+  <edge at="F29:sw" line="border"/>
+  <edge at="J29:sw" line="border"/>
+  <edge at="K29:e" line="border"/>
+  <edge at="K29:se" line="border"/>
+  <edge at="L29:sw" line="border"/>
+  <edge at="M29:e" line="border"/>
+  <edge at="N29:e" line="border"/>
+  <edge at="N29:se" line="border"/>
+  <edge at="N29:ne" line="border"/>
+  <edge at="O29:e" line="border"/>
+  <edge at="P29:e" line="border"/>
+  <edge at="P29:ne" line="border"/>
+  <edge at="Q29:se" line="border"/>
+  <edge at="R29:e" line="border"/>
+  <edge at="R29:ne" line="border"/>
+  <edge at="X29:sw" line="border"/>
+  <edge at="Y29:e" line="border"/>
+  <edge at="Z29:ne" line="border"/>
+  <edge at="FF29:sw" line="border"/>
+  <edge at="GG29:e" line="border"/>
+  <edge at="F28:se" line="border"/>
+  <edge at="F28:sw" line="border"/>
+  <edge at="P28:sw" line="border"/>
+  <edge at="Q28:e" line="border"/>
+  <edge at="R28:e" line="border"/>
+  <edge at="R28:se" line="border"/>
+  <edge at="R28:sw" line="border"/>
+  <edge at="R28:ne" line="border"/>
+  <edge at="S28:e" line="border"/>
+  <edge at="T28:e" line="border"/>
+  <edge at="T28:se" line="border"/>
+  <edge at="T28:ne" line="border"/>
+  <edge at="U28:e" line="border"/>
+  <edge at="V28:e" line="border"/>
+  <edge at="V28:se" line="border"/>
+  <edge at="V28:ne" line="border"/>
+  <edge at="W28:e" line="border"/>
+  <edge at="X28:e" line="border"/>
+  <edge at="X28:se" line="border"/>
+  <edge at="X28:ne" line="border"/>
+  <edge at="Y28:e" line="border"/>
+  <edge at="Y28:se" line="border"/>
+  <edge at="F27:se" line="border"/>
+  <edge at="F27:sw" line="border"/>
+  <edge at="Q27:se" line="border"/>
+  <edge at="R27:ne" line="border"/>
+  <edge at="V27:se" line="border"/>
+  <edge at="V27:sw" line="border"/>
+  <edge at="DD27:e" line="border"/>
+  <edge at="F26:se" line="border"/>
+  <edge at="F26:sw" line="border"/>
+  <edge at="H26:e" line="border"/>
+  <edge at="Q26:se" line="border"/>
+  <edge at="R26:ne" line="border"/>
+  <edge at="V26:sw" line="border"/>
+  <edge at="W26:e" line="border"/>
+  <edge at="X26:e" line="border"/>
+  <edge at="X26:se" line="border"/>
+  <edge at="X26:ne" line="border"/>
+  <edge at="Y26:e" line="border"/>
+  <edge at="Z26:e" line="border"/>
+  <edge at="Z26:se" line="border"/>
+  <edge at="Z26:ne" line="border"/>
+  <edge at="AA26:e" line="border"/>
+  <edge at="BB26:e" line="border"/>
+  <edge at="BB26:se" line="border"/>
+  <edge at="BB26:ne" line="border"/>
+  <edge at="CC26:e" line="border"/>
+  <edge at="CC26:se" line="border"/>
+  <edge at="DD26:sw" line="border"/>
+  <edge at="EE26:e" line="border"/>
+  <edge at="G25:e" line="border"/>
+  <edge at="G25:se" line="border"/>
+  <edge at="H25:sw" line="border"/>
+  <edge at="I25:e" line="border"/>
+  <edge at="J25:e" line="border"/>
+  <edge at="J25:ne" line="border"/>
+  <edge at="P25:e" line="border"/>
+  <edge at="P25:se" line="border"/>
+  <edge at="Q25:e" line="border"/>
+  <edge at="Q25:se" line="border"/>
+  <edge at="J24:se" line="border"/>
+  <edge at="J24:sw" line="border"/>
+  <edge at="L24:e" line="border"/>
+  <edge at="N24:e" line="border"/>
+  <edge at="N24:se" line="border"/>
+  <edge at="O24:e" line="border"/>
+  <edge at="O24:se" line="border"/>
+  <edge at="J23:e" line="border"/>
+  <edge at="J23:se" line="border"/>
+  <edge at="J23:sw" line="border"/>
+  <edge at="K23:e" line="border"/>
+  <edge at="K23:se" line="border"/>
+  <edge at="L23:sw" line="border"/>
+  <edge at="M23:e" line="border"/>
+  <edge at="M23:se" line="border"/>
+  <edge at="I22:se" line="border"/>
+  <edge at="J22:ne" line="border"/>
+  <edge at="H21:e" line="border"/>
+  <edge at="H21:se" line="border"/>
+  <edge at="I21:e" line="border"/>
+  <edge at="I21:se" line="border"/>
+  <edge at="F20:sw" line="border"/>
+  <edge at="G20:e" line="border"/>
+  <edge at="G20:se" line="border"/>
+  <edge at="KK20:e" symbol="strait" color="white" label="Kerch Strait"/>
+  <link id="rv-oder" kind="river" name="Oder" line="river" hexes="N31 M30 L30 K30 J30 I30 H30 G30 F30 E30 E29 D29 D28 C27" ends="source sea"/>
+  <link id="rv-vistula" kind="river" name="Vistula" line="river" hexes="R28 Q27 P27 O26 N26 M26 L26 K26 J27 I27 H27 H26 G25 G24 F24" ends="source sea"/>
+  <link id="rv-vistula-tributary" kind="river" name="Vistula tributary" line="river" hexes="O28 O27 O26" ends="source junction"/>
+  <link id="rv-neman" kind="river" name="Neman" line="river" hexes="P20 P21 O21 N21 M21 L22 K21 J21 I20 H21 G21 F22" ends="source sea"/>
+  <link id="rv-western-dvina" kind="river" name="Western Dvina" line="river" hexes="M12 M13 M14 L15 K15 K16 J16 I16 H17 G16 F17" ends="source sea"/>
+  <link id="rv-velikaya" kind="river" name="Velikaya" line="river" hexes="H15" ends="source unexplained"/>
+  <link id="rv-velikaya-2" kind="river" name="Velikaya" line="river" hexes="H14" ends="unexplained bank"/>
+  <link id="rv-narva" kind="river" name="Narva" line="river" hexes="F14 E13 E12 D12" ends="bank sea"/>
+  <link id="rv-volkhov" kind="river" name="Volkhov" line="river" hexes="I11 H11 H10 G9 F9 E8" ends="bank bank"/>
+  <link id="rv-vuoksi" kind="river" name="Vuoksi" line="river" hexes="A10 B11" ends="bank unexplained"/>
+  <link id="rv-vuoksi-2" kind="river" name="Vuoksi" line="river" hexes="A9 B10 C9 D9" ends="unexplained bank"/>
+  <link id="rv-svir" kind="river" name="Svir" line="river" hexes="D8 E7 E6 E5 D5" ends="bank bank"/>
+  <link id="rv-neva" kind="river" name="Neva" line="river" hexes="D10" ends="bank unexplained"/>
+  <link id="rv-neva-2" kind="river" name="Neva" line="river" hexes="E10" ends="unexplained sea"/>
+  <link id="rv-kovzha" kind="river" name="Kovzha" line="river" hexes="E5 F5 G4 H4" ends="junction bank"/>
+  <link id="rv-northern-dvina" kind="river" name="Northern Dvina" line="river" hexes="B2 C1 D2 E1 F1" ends="sea edge"/>
+  <link id="rv-volga" kind="river" name="Volga" line="river" hexes="L11 M10 N10 O9 O8 O7 O6 N6 N5 O4 O3 P3 Q2 R2 S2 T2 U1 V1" ends="source edge"/>
+  <link id="rv-volga-east-of-gorki" kind="river" name="Volga (east of Gorki)" line="river" hexes="Z1 Z2 AA2 BB3 BB4 CC4 DD5 EE4 EE5 FF6 GG6 HH7 II7 JJ7 KK6 LL6 MM6 NN6 OO5 PP5 QQ4" ends="edge sea"/>
+  <link id="rv-moscow-volga-canal" kind="river" name="Moscow-Volga Canal" line="river" hexes="O8 P8 Q8 R9" ends="junction junction"/>
+  <link id="rv-moskva" kind="river" name="Moskva" line="river" hexes="R9 S8 S7 S6 T6 T5 T4 T3 U2" ends="junction junction"/>
+  <link id="rv-oka" kind="river" name="Oka" line="river" hexes="W12 V12 U11 T11 T10 T9 T8 U7 V7 V6 W5 W4 V4 U3 U2 U1" ends="source junction"/>
+  <link id="rv-ugra" kind="river" name="Ugra" line="river" hexes="R12 R11 S10 T10" ends="source junction"/>
+  <link id="rv-don" kind="river" name="Don" line="river" hexes="V9 W9 X9 Y9 Z9 AA9 BB9 CC9 DD10 EE9 FF9 FF8 GG7 HH8 II8 JJ9 JJ10 JJ11 JJ12 II12 II13 II14 II15" ends="source sea"/>
+  <link id="rv-donets" kind="river" name="Donets" line="river" hexes="Y12 Z13 AA12 BB13 BB14 CC14 DD14 EE13 FF13 GG12 HH12 II12" ends="source junction"/>
+  <link id="rv-dnieper" kind="river" name="Dnieper" line="river" hexes="P12 P13 P14 O14 O15 P16 Q16 R17 S17 T18 U18 V19 W19 X20 Y19 Z19 AA18 BB18 CC17 DD18 EE18 EE19 EE20 EE21 EE22" ends="source sea"/>
+  <link id="rv-pripyat" kind="river" name="Pripyat" line="river" hexes="T23 T22 S21 S20 S19 T19 U19 V19" ends="source junction"/>
+  <link id="rv-southern-bug" kind="river" name="Southern Bug" line="river" hexes="V23 W22 X23 Y22 Z22 AA22 BB22 CC22 DD23 EE23" ends="source sea"/>
+  <link id="rv-dniester" kind="river" name="Dniester" line="river" hexes="S26 T26 U25 V25 W24 X25 Y24 Z25 AA24 BB25 CC24 DD25" ends="source sea"/>
+  <link id="rv-prut" kind="river" name="Prut" line="river" hexes="V27 W26 X26 Y26 Z26 AA26 BB26 CC26 DD27" ends="source junction"/>
+  <link id="rv-danube" kind="river" name="Danube" line="river" hexes="DD33 DD32 DD31 EE30 EE29 EE28 DD28 DD27 EE27 FF27 GG26" ends="edge sea"/>
+  <link id="rv-kuban" kind="river" name="Kuban" line="river" hexes="QQ13 PP14 OO13 NN14 NN15 NN16 NN17 MM17 LL18 LL19 KK18 JJ19" ends="edge sea"/>
+  <link id="rl-berlin-west" kind="rail" name="Berlin west" line="rail" hexes="E31 E32 E33" ends="place edge"/>
+  <link id="rl-berlin-north-west" kind="rail" name="Berlin north-west" line="rail" hexes="E31 D32 C32 B33 A33" ends="place edge"/>
+  <link id="rl-berlin-konigsberg" kind="rail" name="Berlin - Konigsberg" line="rail" hexes="E31 E30 E29 E28 E27 F27 F26 G25 H25 H24 H23" ends="place place"/>
+  <link id="rl-berlin-posen" kind="rail" name="Berlin - Posen" line="rail" hexes="E31 F31 G30 G29 H29" ends="place place"/>
+  <link id="rl-berlin-south-west" kind="rail" name="Berlin - south-west" line="rail" hexes="E31 F32 G32 H33 I33 J33 K33" ends="place edge"/>
+  <link id="rl-breslau-west" kind="rail" name="Breslau west" line="rail" hexes="K30 K31 K32 J33" ends="place junction"/>
+  <link id="rl-breslau-warsaw" kind="rail" name="Breslau - Warsaw" line="rail" hexes="K30 K29 L29 L28 L27 L26" ends="place place"/>
+  <link id="rl-posen-lvov" kind="rail" name="Posen - Lvov" line="rail" hexes="H29 I29 J29 K28 L28 M28 N28 O27 P27 Q26 R26 S25" ends="place place"/>
+  <link id="rl-posen-l27" kind="rail" name="Posen - L27" line="rail" hexes="H29 I28 J28 K27 L27" ends="place junction"/>
+  <link id="rl-lvov-west" kind="rail" name="Lvov west" line="rail" hexes="S25 S26 T27 T28 T29 T30 T31 T32 T33" ends="place edge"/>
+  <link id="rl-konigsberg-j24" kind="rail" name="Konigsberg - J24" line="rail" hexes="H23 I23 J24" ends="place unexplained"/>
+  <link id="rl-konigsberg-kaunus" kind="rail" name="Konigsberg - Kaunus" line="rail" hexes="H23 I22 J22 J21" ends="place place"/>
+  <link id="rl-kaunus-riga" kind="rail" name="Kaunus - Riga" line="rail" hexes="J21 J20 I19 H19 G18 G17 F17" ends="place place"/>
+  <link id="rl-warsaw-east" kind="rail" name="Warsaw - east" line="rail" hexes="L26 L25 L24 L23 L22 L21 L20 L19 K18 K17 K16" ends="place junction"/>
+  <link id="rl-warsaw-brest" kind="rail" name="Warsaw - Brest" line="rail" hexes="L26 M25 N25 O24 O23" ends="place place"/>
+  <link id="rl-brest-minsk-east" kind="rail" name="Brest - Minsk - east" line="rail" hexes="O23 O22 O21 O20 O19 O18 O17 O16" ends="place junction"/>
+  <link id="rl-brest-bryansk" kind="rail" name="Brest - Bryansk" line="rail" hexes="O23 O22 P22 Q21 R21 R20 S19 S18 S17 T17 T16 T15 T14" ends="place place"/>
+  <link id="rl-helsinki-leningrad" kind="rail" name="Helsinki - Leningrad" line="rail" hexes="A14 B14 B13 B12 B11 C10 D10 E10" ends="edge unexplained"/>
+  <link id="rl-helsinki-leningrad-2" kind="rail" name="Helsinki - Leningrad" line="rail" hexes="E10" ends="unexplained place"/>
+  <link id="rl-riga-leningrad" kind="rail" name="Riga - Leningrad" line="rail" hexes="F17 F16 E15 E14 E13 E12 E11 E10" ends="place place"/>
+  <link id="rl-riga-vitebsk" kind="rail" name="Riga - Vitebsk" line="rail" hexes="F17 G16 H16 I15 J15 K15 L15" ends="place place"/>
+  <link id="rl-leningrad-vitebsk" kind="rail" name="Leningrad - Vitebsk" line="rail" hexes="E10 F11 G11 H12 I12 J13 K13 K14 L15" ends="place place"/>
+  <link id="rl-leningrad-k16" kind="rail" name="Leningrad - K16" line="rail" hexes="E10 F11 F12 G12 H13 H14 I14 J15 J16 K16" ends="place junction"/>
+  <link id="rl-leningrad-kalinin" kind="rail" name="Leningrad - Kalinin" line="rail" hexes="E10 F10 G10 H10 I9 J9 K9 L9 M8 N8 O8" ends="place place"/>
+  <link id="rl-leningrad-east" kind="rail" name="Leningrad - east" line="rail" hexes="E10 F10 F9 F8 E7" ends="place junction"/>
+  <link id="rl-vitebsk-l14" kind="rail" name="Vitebsk - L14" line="rail" hexes="L15 L14" ends="place unexplained"/>
+  <link id="rl-vitebsk-smolensk" kind="rail" name="Vitebsk - Smolensk" line="rail" hexes="L15 M14 N14 O14 P14" ends="place place"/>
+  <link id="rl-vitebsk-orsha" kind="rail" name="Vitebsk - Orsha" line="rail" hexes="L15 M15 N16 O16 O17" ends="place junction"/>
+  <link id="rl-smolensk-moscow" kind="rail" name="Smolensk - Moscow" line="rail" hexes="P14 P13 Q12 Q11 Q10 R10 R9" ends="place place"/>
+  <link id="rl-smolensk-tula" kind="rail" name="Smolensk - Tula" line="rail" hexes="P14 Q13 R13 S12 S11 T11 T10 U9" ends="place place"/>
+  <link id="rl-kalinin-moscow" kind="rail" name="Kalinin - Moscow" line="rail" hexes="O8 P9 Q9 R9" ends="place place"/>
+  <link id="rl-bryansk-moscow" kind="rail" name="Bryansk - Moscow" line="rail" hexes="T14 T13 S12 S11 S10 R10 R9" ends="place place"/>
+  <link id="rl-bryansk-south" kind="rail" name="Bryansk - south" line="rail" hexes="T14 U14 V15 W15" ends="place junction"/>
+  <link id="rl-leningrad-north" kind="rail" name="Leningrad - north" line="rail" hexes="E7 D7 C6 B6 A5" ends="junction edge"/>
+  <link id="rl-leningrad-east-diagonal" kind="rail" name="Leningrad - east diagonal" line="rail" hexes="F9 G8 H8 H7 I6 I5 I4 J4 K3 K2 K1 L1" ends="junction edge"/>
+  <link id="rl-archangel-moscow" kind="rail" name="Archangel - Moscow" line="rail" hexes="C1 D2 E1 F2 G2 H2 I2 J2 K2 L3 M3 N4 O4 P5 P6 Q6 R7 R8 R9" ends="place place"/>
+  <link id="rl-moscow-gorki" kind="rail" name="Moscow - Gorki" line="rail" hexes="R9 R8 S7 S6 S5 S4 T4 T3 U2 U1" ends="place place"/>
+  <link id="rl-gorki-east" kind="rail" name="Gorki - east" line="rail" hexes="U1" ends="place edge"/>
+  <link id="rl-moscow-t9" kind="rail" name="Moscow - T9" line="rail" hexes="R9 S9 T9" ends="place junction"/>
+  <link id="rl-t9-tula" kind="rail" name="T9 - Tula" line="rail" hexes="T9 U9" ends="junction place"/>
+  <link id="rl-orsha-smolensk" kind="rail" name="Orsha - Smolensk" line="rail" hexes="O16 O15 P15 P14" ends="junction place"/>
+  <link id="rl-brest-kiev" kind="rail" name="Brest - Kiev" line="rail" hexes="O23 P24 Q24 R24 S23 T23 U22 V22 W21 X21" ends="place junction"/>
+  <link id="rl-lvov-x22" kind="rail" name="Lvov - X22" line="rail" hexes="S25 T25 U24 V24 W23 W22 X22" ends="place junction"/>
+  <link id="rl-kiev-odessa" kind="rail" name="Kiev - Odessa" line="rail" hexes="W19 W20 X21 X22 X23 Y22 Z23 AA23 BB23 CC23 DD24" ends="place place"/>
+  <link id="rl-kiev-dnepropetrovsk" kind="rail" name="Kiev - Dnepropetrovsk" line="rail" hexes="W20 X21 Y20 Z20 AA19 BB19 CC18 DD18" ends="junction place"/>
+  <link id="rl-kiev-kharkov" kind="rail" name="Kiev - Kharkov" line="rail" hexes="W19 X19 Y18 Z18 AA17 BB17 CC16 CC15" ends="place junction"/>
+  <link id="rl-kiev-kursk" kind="rail" name="Kiev - Kursk" line="rail" hexes="W19 W18 W17 W16 W15 W14 W13 X13" ends="place place"/>
+  <link id="rl-kursk-kharkov" kind="rail" name="Kursk - Kharkov" line="rail" hexes="X13 Y13 Z14 AA14" ends="place place"/>
+  <link id="rl-kharkov-stalino" kind="rail" name="Kharkov - Stalino" line="rail" hexes="AA14 BB15 CC15 DD16 EE16 FF16" ends="place place"/>
+  <link id="rl-kursk-voronezh" kind="rail" name="Kursk - Voronezh" line="rail" hexes="X13 X12 X11 Y10 Z10 AA9" ends="place place"/>
+  <link id="rl-kursk-tula" kind="rail" name="Kursk - Tula" line="rail" hexes="X13 W12 W11 V11 V10 U9" ends="place place"/>
+  <link id="rl-t9-saratov" kind="rail" name="T9 - Saratov" line="rail" hexes="T9 U8 V8 W8 X8 Y7 Y6 Z6 AA5 BB5 CC4" ends="junction place"/>
+  <link id="rl-voronezh-x8" kind="rail" name="Voronezh - X8" line="rail" hexes="AA9 Z9 Y8 X8" ends="place junction"/>
+  <link id="rl-x8-stalingrad" kind="rail" name="X8 - Stalingrad" line="rail" hexes="X8 Y8 Z8 AA7 BB7 CC7 DD7 EE7 FF7 GG7 HH7 II7" ends="junction place"/>
+  <link id="rl-moscow-east" kind="rail" name="Moscow - east" line="rail" hexes="R9 S8 T8 T7 U6 V6 W5 X5 X4 X3 X2 X1" ends="place edge"/>
+  <link id="rl-saratov-astrakhan" kind="rail" name="Saratov - Astrakhan" line="rail" hexes="CC4 DD4 EE3 FF3 GG3 HH4 II4 JJ5 KK5 LL6 MM5 NN5 OO4 PP5" ends="place place"/>
+  <link id="rl-ff3-east" kind="rail" name="FF3 - east" line="rail" hexes="FF3 FF2 FF1" ends="junction edge"/>
+  <link id="rl-astrakhan-south-west" kind="rail" name="Astrakhan - south-west" line="rail" hexes="PP5 PP6 QQ6" ends="place edge"/>
+  <link id="rl-rostov-stalingrad" kind="rail" name="Rostov - Stalingrad" line="rail" hexes="II14 HH14 HH13 HH12 II11 II10 II9 II8 II7" ends="place place"/>
+  <link id="rl-hh13-voronezh" kind="rail" name="HH13 - Voronezh" line="rail" hexes="HH13 GG12 FF12 EE11 DD11 CC10 BB10 AA9" ends="junction place"/>
+  <link id="rl-stalingrad-krasnodar" kind="rail" name="Stalingrad - Krasnodar" line="rail" hexes="II7 JJ8 JJ9 KK9 KK10 LL11 LL12 MM12 MM13 MM14 MM15 NN16" ends="place place"/>
+  <link id="rl-stalino-rostov" kind="rail" name="Stalino - Rostov" line="rail" hexes="FF16 GG15 HH15 II14" ends="place place"/>
+  <link id="rl-rostov-krasnodar" kind="rail" name="Rostov - Krasnodar" line="rail" hexes="II14 JJ15 KK15 LL16 MM16 NN16" ends="place place"/>
+  <link id="rl-krasnodar-maikop" kind="rail" name="Krasnodar - Maikop" line="rail" hexes="NN16 OO15 OO14 OO13 PP13 QQ12" ends="place edge"/>
+  <link id="rl-dnepropetrovsk-stalino" kind="rail" name="Dnepropetrovsk - Stalino" line="rail" hexes="DD18 EE17 EE16 FF16" ends="place place"/>
+  <link id="rl-dnepropetrovsk-sevastopol" kind="rail" name="Dnepropetrovsk - Sevastopol" line="rail" hexes="DD18 EE18 FF18 FF19 GG19 HH21 HH22 II22 JJ23" ends="place place"/>
+  <link id="rl-lvov-bucharest" kind="rail" name="Lvov - Bucharest" line="rail" hexes="S25 T26 U26 V26 W26 X26 Y26 Z27 AA27 BB27 CC27 CC28 CC29 BB30 BB31" ends="place place"/>
+  <link id="rl-bucharest-west" kind="rail" name="Bucharest west" line="rail" hexes="BB31 BB32 BB33" ends="place edge"/>
+  <link id="rl-bucharest-south" kind="rail" name="Bucharest south" line="rail" hexes="BB31 CC31 DD32 EE32 FF33 GG33" ends="place edge"/>
+  <link id="rv-southern-bug-mouth" kind="river" name="Southern Bug mouth" line="river" hexes="EE23 EE22" ends="sea junction"/>
+  <link id="rv-dniester-mouth" kind="river" name="Dniester mouth" line="river" hexes="DD25 EE24" ends="junction sea"/>
+  <link id="river-new-1" kind="river" line="river" hexes="C11 B11"/>
+  <junction at="AA14" links="rl-kursk-kharkov rl-kharkov-stalino" name="KHARKOV"/>
+  <junction at="AA9" links="rl-kursk-voronezh rl-voronezh-x8 rl-hh13-voronezh" name="VORONEZH"/>
+  <junction at="BB31" links="rl-lvov-bucharest rl-bucharest-west rl-bucharest-south" name="BUCHAREST"/>
+  <junction at="CC15" links="rl-kiev-kharkov rl-kharkov-stalino"/>
+  <junction at="CC4" links="rl-t9-saratov rl-saratov-astrakhan" name="SARATOV"/>
+  <junction at="DD18" links="rl-kiev-dnepropetrovsk rl-dnepropetrovsk-stalino rl-dnepropetrovsk-sevastopol" name="DNEPROPETROVSK"/>
+  <junction at="E10" links="rl-helsinki-leningrad-2 rl-riga-leningrad rl-leningrad-vitebsk rl-leningrad-k16 rl-leningrad-kalinin rl-leningrad-east" name="LENINGRAD"/>
+  <junction at="E31" links="rl-berlin-west rl-berlin-north-west rl-berlin-konigsberg rl-berlin-posen rl-berlin-south-west" name="BERLIN"/>
+  <junction at="E7" links="rl-leningrad-east rl-leningrad-north"/>
+  <junction at="EE16" links="rl-kharkov-stalino rl-dnepropetrovsk-stalino"/>
+  <junction at="F10" links="rl-leningrad-kalinin rl-leningrad-east"/>
+  <junction at="F11" links="rl-leningrad-vitebsk rl-leningrad-k16"/>
+  <junction at="F17" links="rl-kaunus-riga rl-riga-leningrad rl-riga-vitebsk" name="RIGA"/>
+  <junction at="F9" links="rl-leningrad-east rl-leningrad-east-diagonal"/>
+  <junction at="FF16" links="rl-kharkov-stalino rl-stalino-rostov rl-dnepropetrovsk-stalino" name="STALINO"/>
+  <junction at="FF3" links="rl-saratov-astrakhan rl-ff3-east"/>
+  <junction at="H23" links="rl-berlin-konigsberg rl-konigsberg-j24 rl-konigsberg-kaunus" name="Königsberg"/>
+  <junction at="H29" links="rl-berlin-posen rl-posen-lvov rl-posen-l27" name="Posen"/>
+  <junction at="HH13" links="rl-rostov-stalingrad rl-hh13-voronezh"/>
+  <junction at="II14" links="rl-rostov-stalingrad rl-stalino-rostov rl-rostov-krasnodar" name="ROSTOV"/>
+  <junction at="II7" links="rl-x8-stalingrad rl-rostov-stalingrad rl-stalingrad-krasnodar" name="STALINGRAD"/>
+  <junction at="J15" links="rl-riga-vitebsk rl-leningrad-k16"/>
+  <junction at="J21" links="rl-konigsberg-kaunus rl-kaunus-riga" name="Kaunas"/>
+  <junction at="K16" links="rl-warsaw-east rl-leningrad-k16"/>
+  <junction at="K2" links="rl-leningrad-east-diagonal rl-archangel-moscow"/>
+  <junction at="K30" links="rl-breslau-west rl-breslau-warsaw" name="Breslau"/>
+  <junction at="J33" links="rl-berlin-south-west rl-breslau-west"/>
+  <junction at="L15" links="rl-riga-vitebsk rl-leningrad-vitebsk rl-vitebsk-l14 rl-vitebsk-smolensk rl-vitebsk-orsha" name="Vitebsk"/>
+  <junction at="L26" links="rl-breslau-warsaw rl-warsaw-east rl-warsaw-brest" name="WARSAW"/>
+  <junction at="L27" links="rl-breslau-warsaw rl-posen-l27"/>
+  <junction at="L28" links="rl-breslau-warsaw rl-posen-lvov"/>
+  <junction at="NN16" links="rl-stalingrad-krasnodar rl-rostov-krasnodar rl-krasnodar-maikop" name="Krasnodar"/>
+  <junction at="O16" links="rl-brest-minsk-east rl-vitebsk-orsha rl-orsha-smolensk"/>
+  <junction at="O17" links="rl-brest-minsk-east rl-vitebsk-orsha"/>
+  <junction at="O22" links="rl-brest-minsk-east rl-brest-bryansk"/>
+  <junction at="O23" links="rl-warsaw-brest rl-brest-minsk-east rl-brest-bryansk rl-brest-kiev" name="Brest"/>
+  <junction at="O8" links="rl-leningrad-kalinin rl-kalinin-moscow" name="Kalinin"/>
+  <junction at="P14" links="rl-vitebsk-smolensk rl-smolensk-moscow rl-smolensk-tula rl-orsha-smolensk" name="Smolensk"/>
+  <junction at="PP5" links="rl-saratov-astrakhan rl-astrakhan-south-west" name="ASTRAKHAN"/>
+  <junction at="R10" links="rl-smolensk-moscow rl-bryansk-moscow"/>
+  <junction at="R8" links="rl-archangel-moscow rl-moscow-gorki"/>
+  <junction at="R9" links="rl-smolensk-moscow rl-kalinin-moscow rl-bryansk-moscow rl-archangel-moscow rl-moscow-gorki rl-moscow-t9 rl-moscow-east" name="MOSCOW"/>
+  <junction at="S11" links="rl-smolensk-tula rl-bryansk-moscow"/>
+  <junction at="S12" links="rl-smolensk-tula rl-bryansk-moscow"/>
+  <junction at="S25" links="rl-posen-lvov rl-lvov-west rl-lvov-x22 rl-lvov-bucharest" name="Lvov"/>
+  <junction at="T14" links="rl-brest-bryansk rl-bryansk-moscow rl-bryansk-south" name="Bryansk"/>
+  <junction at="T9" links="rl-moscow-t9 rl-t9-tula rl-t9-saratov"/>
+  <junction at="U1" links="rl-moscow-gorki rl-gorki-east" name="GORKI"/>
+  <junction at="U9" links="rl-smolensk-tula rl-t9-tula rl-kursk-tula" name="Tula"/>
+  <junction at="W15" links="rl-bryansk-south rl-kiev-kursk"/>
+  <junction at="W19" links="rl-kiev-odessa rl-kiev-kharkov rl-kiev-kursk" name="KIEV"/>
+  <junction at="W20" links="rl-kiev-odessa rl-kiev-dnepropetrovsk"/>
+  <junction at="X13" links="rl-kiev-kursk rl-kursk-kharkov rl-kursk-voronezh rl-kursk-tula" name="Kursk"/>
+  <junction at="X21" links="rl-brest-kiev rl-kiev-odessa rl-kiev-dnepropetrovsk"/>
+  <junction at="X22" links="rl-lvov-x22 rl-kiev-odessa"/>
+  <junction at="X8" links="rl-t9-saratov rl-voronezh-x8 rl-x8-stalingrad"/>
+  <junction at="Y8" links="rl-voronezh-x8 rl-x8-stalingrad"/>
+  <junction at="DD25" links="rv-dniester rv-dniester-mouth"/>
+  <junction at="DD27" links="rv-prut rv-danube"/>
+  <junction at="E5" links="rv-svir rv-kovzha"/>
+  <junction at="EE22" links="rv-dnieper rv-southern-bug-mouth"/>
+  <junction at="EE23" links="rv-southern-bug rv-southern-bug-mouth"/>
+  <junction at="II12" links="rv-don rv-donets"/>
+  <junction at="O26" links="rv-vistula rv-vistula-tributary"/>
+  <junction at="O8" links="rv-volga rv-moscow-volga-canal" name="Kalinin"/>
+  <junction at="R9" links="rv-moscow-volga-canal rv-moskva" name="MOSCOW"/>
+  <junction at="T10" links="rv-oka rv-ugra"/>
+  <junction at="U1" links="rv-volga rv-oka" name="GORKI"/>
+  <junction at="U2" links="rv-moskva rv-oka"/>
+  <junction at="V19" links="rv-dnieper rv-pripyat"/>
+  <hex id="E31" ring="cream" name="BERLIN"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="L26" ring="cream" name="WARSAW"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="F17" ring="cream" name="RIGA"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="n" color="white" scale="0.7"/></hex>
+  <hex id="B14" ring="cream" name="HELSINKI"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <hex id="E10" ring="cream" name="LENINGRAD"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="w" color="white" scale="0.7"/></hex>
+  <hex id="O19" ring="cream" name="MINSK"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="R9" ring="cream" name="MOSCOW"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="W19" ring="cream" name="KIEV"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="AA14" ring="cream" name="KHARKOV"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="AA9" ring="cream" name="VORONEZH"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="CC4" ring="cream" name="SARATOV"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="II7" ring="cream" name="STALINGRAD"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="DD18" ring="cream" name="DNEPROPETROVSK"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="DD24" ring="cream" name="ODESSA"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <hex id="JJ23" ring="cream" name="SEVASTOPOL"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <hex id="II14" ring="cream" name="ROSTOV"><glyph symbol="city-major" color="citygrey"/><glyph symbol="port" slot="s" color="white" scale="0.7"/></hex>
+  <hex id="FF16" ring="cream" name="STALINO"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="PP5" ring="cream" name="ASTRAKHAN"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="BB31" ring="cream" name="BUCHAREST"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="C1" ring="cream" name="ARCHANGEL"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="U1" ring="cream" name="GORKI"><glyph symbol="city-major" color="citygrey"/></hex>
+  <hex id="H29" ring="cream" name="Posen"><glyph symbol="city-minor"/></hex>
+  <hex id="K30" ring="cream" name="Breslau"><glyph symbol="city-minor"/></hex>
+  <hex id="O23" ring="cream" name="Brest"><glyph symbol="city-minor"/></hex>
+  <hex id="J21" ring="cream" name="Kaunas"><glyph symbol="city-minor"/></hex>
+  <hex id="H23" ring="cream" name="Königsberg"><glyph symbol="city-minor"/></hex>
+  <hex id="D15" ring="cream" name="Tallinn"><glyph symbol="city-minor"/><glyph symbol="port" slot="n" color="white" scale="0.7"/></hex>
+  <hex id="L15" ring="cream" name="Vitebsk"><glyph symbol="city-minor"/></hex>
+  <hex id="P14" ring="cream" name="Smolensk"><glyph symbol="city-minor"/></hex>
+  <hex id="O8" ring="cream" name="Kalinin"><glyph symbol="city-minor"/></hex>
+  <hex id="T14" ring="cream" name="Bryansk"><glyph symbol="city-minor"/></hex>
+  <hex id="U9" ring="cream" name="Tula"><glyph symbol="city-minor"/></hex>
+  <hex id="S25" ring="cream" name="Lvov"><glyph symbol="city-minor"/></hex>
+  <hex id="X13" ring="cream" name="Kursk"><glyph symbol="city-minor"/></hex>
+  <hex id="NN16" ring="cream" name="Krasnodar"><glyph symbol="city-minor"/></hex>
+  <hex id="AA29" ring="cream" name="Ploesti Oil Fields"><glyph symbol="oil" color="ink"/></hex>
+  <hex id="PP13" ring="cream" name="Maikop Oil Fields"><glyph symbol="oil" color="ink"/></hex>
+  <hex id="QQ7" ring="cream" name="Grozny Oil Fields"><glyph symbol="oil" color="ink"/></hex>
+  <label text="BERLIN" at="E31" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="WARSAW" at="L26" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="RIGA" at="F17" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="HELSINKI" at="B14" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="LENINGRAD" at="E10" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="MINSK" at="O19" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="MOSCOW" at="R9" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="KIEV" at="W19" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="KHARKOV" at="AA14" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="VORONEZH" at="AA9" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="SARATOV" at="CC4" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="STALINGRAD" at="II7" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="DNEPROPETROVSK" at="DD18" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="ODESSA" at="DD24" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="SEVASTOPOL" at="JJ23" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="ROSTOV" at="II14" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="STALINO" at="FF16" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="ASTRAKHAN" at="PP5" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="BUCHAREST" at="BB31" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="ARCHANGEL" at="C1" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="GORKI" at="U1" slot="s" size="11" color="ink" weight="bold"/>
+  <label text="Posen" at="H29" slot="s" size="9" color="ink"/>
+  <label text="Breslau" at="K30" slot="s" size="9" color="ink"/>
+  <label text="Brest" at="O23" slot="s" size="9" color="ink"/>
+  <label text="Kaunas" at="J21" slot="s" size="9" color="ink"/>
+  <label text="Königsberg" at="H23" slot="s" size="9" color="ink"/>
+  <label text="Tallinn" at="D15" slot="s" size="9" color="ink"/>
+  <label text="Vitebsk" at="L15" slot="s" size="9" color="ink"/>
+  <label text="Smolensk" at="P14" slot="s" size="9" color="ink"/>
+  <label text="Kalinin" at="O8" slot="s" size="9" color="ink"/>
+  <label text="Bryansk" at="T14" slot="s" size="9" color="ink"/>
+  <label text="Tula" at="U9" slot="s" size="9" color="ink"/>
+  <label text="Lvov" at="S25" slot="s" size="9" color="ink"/>
+  <label text="Kursk" at="X13" slot="s" size="9" color="ink"/>
+  <label text="Krasnodar" at="NN16" slot="s" size="9" color="ink"/>
+  <label text="Ploesti Oil Fields" at="AA29" slot="s" size="6" color="ink"/>
+  <label text="Maikop Oil Fields" at="PP13" slot="s" size="6" color="ink"/>
+  <label text="Grozny Oil Fields" at="QQ7" slot="s" size="6" color="ink"/>
+  <label text="GERMANY" x="110" y="232" angle="-35" size="40" color="label" spacing="6"/>
+  <label text="POLAND" x="312" y="519" size="36" color="label" spacing="6"/>
+  <label text="HUNGARY" x="55" y="723" angle="-60" size="34" color="label" spacing="5"/>
+  <label text="RUMANIA" x="101" y="936" size="34" color="label" spacing="5"/>
+  <label text="FINLAND" x="818" y="162" angle="30" size="32" color="label" spacing="5"/>
+  <label text="RUSSIA" x="1057" y="862" size="60" color="label" spacing="10"/>
+  <label text="Baltic Sea" x="404" y="232" size="40" color="white" italic="true"/>
+  <label text="White Sea" x="1139" y="148" size="30" color="white" italic="true"/>
+  <label text="Black Sea" x="322" y="1307" size="46" color="white" italic="true"/>
+  <label text="Sea of Azov" x="556" y="1233" size="22" color="white" italic="true"/>
+  <label text="Caspian Sea" x="1130" y="1464" size="30" color="white" italic="true"/>
+  <label text="Gulf of Finland" x="790" y="227" size="18" color="white" italic="true"/>
+  <label text="Lake Ladoga" x="910" y="248" size="15" color="white" italic="true"/>
+  <label text="Lake Onega" x="1029" y="248" size="15" color="white" italic="true"/>
+  <label text="Lake Peipus" x="698" y="338" size="15" color="white" italic="true"/>
+  <label text="Lake Ilmen" x="799" y="403" size="15" color="white" italic="true"/>
+  <label text="Lake Beloje" x="1071" y="371" size="15" color="white" italic="true"/>
+  <label text="Rybinsk Reservoir" x="1015" y="528" size="14" color="white" italic="true"/>
+  <label text="Dnieper" x="515" y="927" angle="-80" size="8" color="riverblue" italic="true"/>
+  <label text="Don" x="827" y="1094" angle="-60" size="8" color="riverblue" italic="true"/>
+  <label text="Volga" x="1057" y="1112" angle="-70" size="8" color="riverblue" italic="true"/>
+  <label text="Dvina" x="588" y="389" angle="-40" size="8" color="riverblue" italic="true"/>
+  <label text="Narva R." x="763" y="283" size="8" color="riverblue" italic="true"/>
+  <label text="Moskva R." x="919" y="714" size="8" color="riverblue" italic="true"/>
+  <label text="Pripet Marshes" x="524" y="686" angle="-30" size="8" color="riverblue" italic="true"/>
+  <panel id="title" x="8" y="8" w="300" h="68" fill="ink" stroke="ink">
+    <text x="10" y="30" size="22" weight="bold" color="red">The Russian Campaign</text>
+    <text x="10" y="56" size="11" color="white">Designer Signature Edition  --  John Edwards, Todd Davis</text>
+  </panel>
+  <panel id="axis-pool" title="Axis Replacement Pool" x="322" y="8" w="140" h="68" fill="panel" stroke="ink">
+  </panel>
+  <panel id="russian-surrendered" title="Russian Surrendered Units" x="470" y="8" w="140" h="68" fill="panel" stroke="ink">
+  </panel>
+  <panel id="weather" title="Weather Chart" x="620" y="8" w="300" h="68" fill="panel" stroke="ink">
+    <table x="6" y="18" cell-w="32" cell-h="15" size="6">
+      <row><cell>Months</cell><cell>0-</cell><cell>1</cell><cell>2</cell><cell>3</cell><cell>4</cell><cell>5</cell><cell>6</cell><cell>7+</cell></row>
+      <row><cell>Mar/Apr</cell><cell>Clear</cell><cell>LtMud</cell><cell>LtMud</cell><cell>LtMud</cell><cell>LtMud</cell><cell>Mud</cell><cell>Mud</cell><cell>Snow</cell></row>
+      <row><cell>Sep/Oct</cell><cell>Clear</cell><cell>Clear</cell><cell>Clear</cell><cell>LtMud</cell><cell>LtMud</cell><cell>Mud</cell><cell>Mud</cell><cell>Snow</cell></row>
+    </table>
+  </panel>
+  <panel id="russian-pool" title="Russian Replacement Pool" x="930" y="8" w="140" h="68" fill="panel" stroke="ink">
+  </panel>
+  <panel id="axis-surrendered" title="Axis Surrendered Units" x="1078" y="8" w="138" h="68" fill="panel" stroke="ink">
+  </panel>
+  <panel id="turn-track" x="8" y="84" w="1208" h="42" fill="panel" stroke="ink">
+    <text x="4" y="26" size="9" weight="bold">Turn Record Track</text>
+    <track x="90" y="4" cell-w="44" cell-h="34" cells="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" fill="cream"/>
+  </panel>
+  <panel id="baltic-box" x="195" y="140" w="160" h="70" fill="paneldark" stroke="ink">
+    <text x="6" y="14" size="8" weight="bold" color="white">Baltic Sea - Gulf of Finland Movement</text>
+    <text x="6" y="28" size="6" color="white">1 unit/side per turn. No invasions.</text>
+    <text x="6" y="40" size="6" color="white">Successful on die roll of 2 or less.</text>
+    <text x="6" y="52" size="6" color="white">-1 for each of Helsinki, Leningrad, Riga, Tallinn controlled</text>
+    <text x="6" y="64" size="6" color="white">+1 evacuation; +2 Russian, if Germans control Leningrad</text>
+  </panel>
+  <panel id="airpower" title="Airpower Availability" x="362" y="140" w="120" h="70" fill="panel" stroke="ink">
+    <table x="4" y="18" cell-w="28" cell-h="10" size="5">
+      <row><cell>Year</cell><cell>Clear</cell><cell>LtMud</cell><cell>Mud</cell></row>
+      <row><cell>1941</cell><cell>3/0</cell><cell>1/0</cell><cell>1/0</cell></row>
+      <row><cell>1942</cell><cell>2/0</cell><cell>1/0</cell><cell>1/0</cell></row>
+      <row><cell>1943</cell><cell>1/1</cell><cell>0/0</cell><cell>0/0</cell></row>
+      <row><cell>1944</cell><cell>0/2</cell><cell>0/1</cell><cell>0/0</cell></row>
+    </table>
+  </panel>
+  <panel id="black-sea-box" x="470" y="1385" w="130" h="58" rotate="180" fill="paneldark" stroke="ink">
+    <text x="6" y="14" size="7" weight="bold" color="white">Black Sea - Sea of Azov Movement</text>
+    <text x="6" y="26" size="5" color="white">1 unit per side per turn. Successful on die roll of 3 or less.</text>
+    <text x="6" y="36" size="5" color="white">-1 for each of Odessa, Sevastopol, Rostov controlled</text>
+  </panel>
+  <panel id="crt" title="Combat Results Table" x="214" y="1300" w="200" h="150" rotate="180" fill="panel" stroke="ink">
+    <table x="4" y="18" cell-w="19" cell-h="13" size="6">
+      <row><cell>Die</cell><cell>1-5</cell><cell>1-3</cell><cell>1-2</cell><cell>1-1</cell><cell>2-1</cell><cell>3-1</cell><cell>4-1</cell><cell>5-1</cell><cell>7-1</cell></row>
+      <row><cell>1</cell><cell>AE</cell><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell></row>
+      <row><cell>2</cell><cell>AE</cell><cell>AE</cell><cell>A1</cell><cell>A1</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell></row>
+      <row><cell>3</cell><cell>AE</cell><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell></row>
+      <row><cell>4</cell><cell>A1</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell></row>
+      <row><cell>5</cell><cell>AR</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DE</cell><cell>DS</cell></row>
+      <row><cell>6</cell><cell>AR</cell><cell>C</cell><cell>EX</cell><cell>DR</cell><cell>D1</cell><cell>DE</cell><cell>DS</cell><cell>DS</cell><cell>DS</cell></row>
+    </table>
+  </panel>
+  <panel id="tec" title="Terrain Effects Chart" x="8" y="1220" w="200" h="230" rotate="180" fill="panel" stroke="ink">
+    <box label="Clear: 1 MP" x="8" y="22" w="184" h="20" fill="steppe"/>
+    <box label="Woods: 1 MP, stop; no retreat" x="8" y="46" w="184" h="20" fill="leaf"/>
+    <box label="Mountain: 1 MP, stop; defender x2" x="8" y="70" w="184" h="20" fill="rock"/>
+    <box label="Swamp: 1 MP, stop; clear in Snow" x="8" y="94" w="184" h="20" fill="marsh"/>
+    <box label="River: defender x2 if all attackers on river hexes" x="8" y="118" w="184" h="20" fill="riverblue"/>
+    <box label="Major City: defender x2" x="8" y="142" w="184" h="20" fill="citygrey"/>
+    <box label="Sea or Lake: prohibited" x="8" y="166" w="184" h="20" fill="deep"/>
+    <box label="Blocked hexside: no movement, no ZOC" x="8" y="190" w="184" h="20"/>
+  </panel>
+</sheet>

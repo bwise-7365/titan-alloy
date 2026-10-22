@@ -1,0 +1,164 @@
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<!--
+  XML Schema for a saved Latrunculi ("Ludus Latrunculorum") game, as written by the
+  latrunculi_gui "Save As..." command. It records the authoritative board state, the
+  side/background colors, and a move log (for display). The hand-scratched grid-line
+  and disc geometry is deliberately NOT stored: it is cosmetic and reproducible from a
+  PRNG seed if desired. (No XML declaration so the copyright comment can be the first
+  line, per project convention; UTF-8 is the XML default.)
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- An #rrggbb hex color, e.g. #fae5be (QColor::name() form). -->
+  <xs:simpleType name="hexColor">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[0-9a-fA-F]{6}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="phaseName">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Placement"/>
+      <xs:enumeration value="Movement"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Movement rule set: "Slide" = Kharebga rook-like movement, "StepLeap" = the older
+       Seneca step / own-colour leap. Optional because files written before the rule was
+       selectable have no such element; those are all StepLeap games. -->
+  <xs:simpleType name="movementRule">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Slide"/>
+      <xs:enumeration value="StepLeap"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- A positive half-integer, e.g. 0.5, 1.5, 12.5. -->
+  <xs:simpleType name="halfInteger">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]+\.5"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cellState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="P0Free"/>
+      <xs:enumeration value="P0Bound"/>
+      <xs:enumeration value="P1Free"/>
+      <xs:enumeration value="P1Bound"/>
+      <xs:enumeration value="Empty"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="playerIndex">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- A space-separated list of square indices (a move's leap path); may be empty. -->
+  <xs:simpleType name="squareList">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(-?[0-9]+( -?[0-9]+)*)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="LatrunculiBoard">
+    <xs:complexType>
+      <xs:sequence>
+
+        <xs:element name="dims">
+          <xs:complexType>
+            <xs:attribute name="rows" type="xs:positiveInteger" use="required"/>
+            <xs:attribute name="cols" type="xs:positiveInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="perSide">
+          <xs:complexType>
+            <xs:attribute name="val" type="xs:nonNegativeInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="movement" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="val" type="movementRule" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Komi credited to side B. A half-integer: an integral komi would allow an
+             exact tie, which the engine has no draw to report. Optional because files
+             written before komi was selectable have none; those all used 0.5. -->
+        <xs:element name="komi" minOccurs="0">
+          <xs:complexType>
+            <xs:attribute name="val" type="halfInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="phase">
+          <xs:complexType>
+            <xs:attribute name="val" type="phaseName" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="sideToMove">
+          <xs:complexType>
+            <xs:attribute name="val" type="playerIndex" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="placed">
+          <xs:complexType>
+            <xs:attribute name="p0" type="xs:nonNegativeInteger" use="required"/>
+            <xs:attribute name="p1" type="xs:nonNegativeInteger" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Side and background colors (the only cosmetic data that is stored). -->
+        <xs:element name="colors">
+          <xs:complexType>
+            <xs:attribute name="sideA"      type="hexColor" use="required"/>
+            <xs:attribute name="sideB"      type="hexColor" use="required"/>
+            <xs:attribute name="background" type="hexColor" use="required"/>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Authoritative board state: one entry per non-empty square. -->
+        <xs:element name="Position">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="cell" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="sq"    type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="state" type="cellState"             use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Move log (for display; not required to reconstruct the position). -->
+        <xs:element name="move_list">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="move" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="turn"    type="xs:nonNegativeInteger" use="required"/>
+                  <xs:attribute name="player"  type="playerIndex"           use="required"/>
+                  <xs:attribute name="from"    type="xs:integer"            use="required"/>
+                  <xs:attribute name="to"      type="xs:integer"            use="required"/>
+                  <xs:attribute name="removed" type="xs:integer"            use="required"/>
+                  <xs:attribute name="path"    type="squareList"            use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

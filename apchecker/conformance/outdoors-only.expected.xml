@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="report.xsd"
+        plan="Exterior only"
+        rooms="1"
+        connections="0"
+        satisfied="0"
+        broken="0"
+        undetermined="18">
+  <verdict rule="IRC-R302.5.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R311.1" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="NYCBC-1210.4" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="IRC-R302.5.1b" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="BATH-DOOR" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="PLAN-CONNECTED" severity="CODE" result="UNDETERMINED"/>
+  <verdict rule="APL-127" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-130a" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-130b" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-129-exists" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-129-single" severity="ADVICE" result="UNDETERMINED"/>
+  <verdict rule="APL-129-centroid" severity="ADVICE" result="UNDETERMINED"/>
+  <verdict rule="APL-129-bypass" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-129-through" severity="ADVICE" result="UNDETERMINED"/>
+  <verdict rule="APL-131a" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-131b" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-132" severity="PATTERN" result="UNDETERMINED"/>
+  <verdict rule="APL-133" severity="PATTERN" result="UNDETERMINED"/>
+</report>

@@ -1,0 +1,30 @@
+The HexKrieg system is for hex-based wargame. Examine the FractalTerrainBuilder
+file, because I want you to implement two terrain generators.  This is the TODO for the first terrain builder.
+(*) First, pull out the fractalHeights , randomCorner, subdivide, etc. code into
+a separate file called fractalheight.
+(**) The 'perturb' function should normalize the 'int d' input using a 'scaleFactor' determined by
+the size of the whole map i.e. scaleFactor = 200.0/(rows + cols). Then the 'd * frac' term
+becomes 'd * scaleFactor * frac'.
+(*) Next, re-write the current FractalTerrainBuilder  algorithm. It should build two completely
+separate fractal height maps, one for vHeight and another for fCover. 
+(**) The vHeight map should
+be used to generate mountains and water using the current algorithm. Using the weights, 
+the hexes with highest vHeight are assigned type Mountain and the lowest are assigned type Water.
+The rest remain Open.
+(**) The fCover map determines forest cover. The highest hexes in the fCover map that are still Open
+are assigned type Forest, until the amount required by the weights are inserted. Only Open are converted
+to Forest; Mountain and Water from the previous step are not changed.
+(**) Again using the weights, the required number of Urban hexes are marked. They can be dropped on
+any non-Water hex.
+(*) In the test/Main file, change the 'Fractal' button on the 'Map' tab to invoke the new fractal terrain builder, using the 'frac' from the current numeric input.
+
+If you need clarification, ask; otherwise proceed.
+
+------------------
+Next, I want a second terrain generator, 'PerlinTerrainBuilder'.
+(*) It should use the same 'vHeight' and 'fCover' as FractalTerrainBuilder, but generate each one
+with Perlin noise.
+(*) Add a 'Perlin' button to the 'Map' tab, which generates a terrain using PerlinTerrainBuilder.
+
+
+If you need clarification, ask; otherwise proceed.

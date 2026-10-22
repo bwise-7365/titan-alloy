@@ -2,8 +2,7 @@
 #pragma once
 #include "MancalaWidget.h"
 #include "Game.h"
-#include "Searcher.h"
-#include <QElapsedTimer>
+#include "GameMainWindow.h"
 #include <QMainWindow>
 #include <memory>
 
@@ -17,7 +16,7 @@ class QTextEdit;
 class QProgressBar;
 class QTimer;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public guicommon::GameMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget* parent = nullptr);
@@ -27,18 +26,19 @@ private slots:
     void onMoveRequested(int pitIndex);
     void onPlayNegamaxGo();
     void onPlayMctsGo();
+    void onPlayComputerGo();  // enter human-vs-computer mode with the chosen side + time
     void onSuggestNegamaxGo();
     void onSuggestMctsGo();
 
 private:
     void buildMenuBar();
-    void updateControls();
+    void updateControls() override;
     void logMove(int pitIndex, int player);
-    void applyComputedMove(AbsGame::MoveId mv);
 
-    void startSearchIndicator(int budgetSeconds = 0);
-    void stopSearchIndicator();
-    void cancelSearch();
+    // guicommon::GameMainWindow hooks.
+    AbsGame::Game* currentGame() override;
+    void applyComputedMove(AbsGame::MoveId mv) override;
+
     void updateWindowSize();
 
     // Central UI
@@ -49,27 +49,20 @@ private:
     QTextEdit*     suggestedLog_;
     QPushButton*   clearSuggestBtn_;
 
-    // Play menu controls
+    // Play menu controls. NegaMax runs iterative deepening bounded by a wall clock, so it
+    // is budgeted by time like MCTS and its control is a time combo, not a depth spinbox.
     QAction*  manualAction_      = nullptr;
-    QSpinBox* playDepthSpin_     = nullptr;
+    QComboBox* playNegamaxSecCombo_ = nullptr;
     QComboBox* playMctsSecCombo_ = nullptr;
     QSpinBox*  playTurnsSpin_    = nullptr;
     QSpinBox*  playMctsTurnsSpin_ = nullptr;
+    // Human-vs-computer controls: NegaMax think time and which side (P0/P1) the human plays.
+    QComboBox* playComputerSecCombo_  = nullptr;
+    QComboBox* playComputerSideCombo_ = nullptr;
 
     // Suggest menu controls
-    QSpinBox*  suggestDepthSpin_     = nullptr;
+    QComboBox* suggestNegamaxSecCombo_ = nullptr;
     QComboBox* suggestMctsSecCombo_  = nullptr;
-
-    // Search progress
-    QProgressBar*  searchProgress_ = nullptr;
-    QTimer*        searchBarTimer_ = nullptr;
-    QElapsedTimer  searchElapsed_;
-    int            searchBudgetMs_ = 0;
-    bool           isSearching_    = false;
-    unsigned       searchGen_      = 0;
-    int            playTurnsRemaining_ = 0;
-    int            playTurnsTotal_     = 0;
-    QProgressBar*  turnProgress_   = nullptr;
 
     // Game state
     std::unique_ptr<Mancala::Game> game_;

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
+      format="hexsave-1.0" kind="scenario" game="pgg" package="../../packages/xml/pgg.package.xml"
+      seed="20260914" title="PGG engine test position: a few units near Vitebsk and Smolensk, turn 1">
+  <cursor turn="1" phase="soviet-move" side="soviet"/>
+  <sides>
+    <side id="german"/>
+    <side id="soviet"/>
+  </sides>
+  <units>
+    <unit id="s1-lukin-16th-army-hq" counter="s1-lukin-16th-army-hq-3-10" type="soviet-leader" owner="soviet" hex="2216">Lukin, 16th Army</unit>
+    <unit id="s1-64-inf" counter="s1-64-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="2216" revealed="false"/>
+    <unit id="s1-f-inf" counter="s1-f-inf-2-4-6" type="soviet-rifle" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s1-7-arm" counter="s1-7-arm-3-10" type="soviet-armour" owner="soviet" hex="1414" revealed="false"/>
+    <unit id="s2-5-inf" counter="s2-5-inf-2-7" type="german-infantry" owner="german" hex="0120">5th Infantry Division</unit>
+    <unit id="s2-6-3-arm" counter="s2-6-3-arm-4-10" type="german-panzer" owner="german" hex="0210">6th Panzer Regiment / 3rd Panzer Division</unit>
+    <unit id="s2-lw-air-marker" counter="s2-lw-air" type="german-air-interdiction-marker" owner="german" hex="0513"/>
+  </units>
+  <control>
+    <hex id="0120" side="german"/>
+    <hex id="2216" side="soviet"/>
+    <hex id="1414" side="soviet"/>
+  </control>
+  <streams>
+    <stream tag="combat" draws="0"/>
+  </streams>
+  <notes>
+    <note>Hex ids are real hexes on the PGG sheet: 2216 and 1414 are the Soviet 16th and 19th
+      Army set-up hexes (5.1); 0120 is the German west-edge supply road hex (11.11); 0513 is
+      Vitebsk. Placement here is an engine test position, not the authentic turn-1 set-up: the
+      German Player has no combat units on the map at all before his first reinforcement (2.0), so
+      any mixed test position necessarily departs from Section 5.0, the way TRC's own test scenario
+      departs from its 1941 campaign set-up for the same reason.</note>
+  </notes>
+</save>

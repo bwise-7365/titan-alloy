@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->
+<!-- Two steps whose @commands misspell a verb, and one that spells its verb right. -->
+<game id="synthetic-bad-verbs" title="Synthetic bad verbs" players="2">
+  <sides>
+    <side id="a" name="A" control="human"/>
+    <side id="b" name="B" control="human"/>
+  </sides>
+  <map>
+    <hex-ids pattern="[A-Z]" example="A"/>
+    <hex-terrain id="clear" name="Clear" move-cost="1"/>
+  </map>
+  <counters>
+    <unit-type id="infantry" name="Infantry" kind="ground"/>
+  </counters>
+  <sequence>
+    <phase id="turn" name="Turn">
+      <step id="good-gate" does="gate" at="before-command" commands="move"/>
+      <phase id="a-turn" name="A player turn" side="a">
+        <step id="first-typo" does="mark" at="after-command" commands="attack mvoe"/>
+        <step id="second-typo" does="gate" at="before-command" commands="end-phse"/>
+      </phase>
+    </phase>
+  </sequence>
+  <stacking enforced="always" repair="none"/>
+  <zoc id="zoc" name="ZOC" range="1"/>
+  <movement budget="hexes">
+    <mode id="normal" name="Normal"/>
+  </movement>
+  <supply>
+    <trace id="supply" name="Supply" sources="a" max-length="8" blocked-by-zoc="true" fatal="true" checked="always"/>
+  </supply>
+  <combat mandatory="true">
+    <resolver id="crt" name="CRT" kind="odds-table"/>
+  </combat>
+  <randomizer id="die" name="Die" kind="die" size="6"/>
+  <victory>
+    <condition id="win" side="a" kind="immediate"/>
+  </victory>
+</game>
+<!-- Copyright Ben Paul Wise. All Rights Reserved. -->

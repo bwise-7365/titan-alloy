@@ -9,7 +9,7 @@ class ViewSiteEntry : public QDialog {
     Q_OBJECT
 
 public:
-    explicit ViewSiteEntry(const SiteEntry *entry, QWidget *parent = nullptr);
+    explicit ViewSiteEntry(const SiteEntry *entry, int clipboardClearMs, QWidget *parent = nullptr);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

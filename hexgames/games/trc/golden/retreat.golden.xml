@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd" format="hexsave-1.0" kind="golden" game="trc" package="../../../packages/xml/trc.package.xml" seed="2">
+  <cursor turn="1" phase="axis-i1-combat" side="axis" moves="3" over="false"/>
+  <sides>
+    <side id="axis">
+      <register track="turn-track" value="1"/>
+      <flag name="weather" value="clear"/>
+      <flag name="weather-drm" value="0"/>
+    </side>
+  </sides>
+  <units>
+    <unit id="g-ss-2-armour" counter="g-ss-2-armour" type="armour" owner="axis" hex="MM11" face="front" moved="false"/>
+    <unit id="r-ru-52-infantry" counter="r-ru-52-infantry" type="infantry" owner="russian" hex="NN9" face="front" moved="false"/>
+  </units>
+  <streams>
+    <stream tag="combat" draws="1"/>
+  </streams>
+  <log>
+    <move n="1" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="attack" units="g-ss-2-armour" target="MM10">
+      <result outcome="DR"/>
+      <draw stream="combat" n="1" value="4"/>
+      <event kind="combat-declared" hex="MM10" value="g-ss-2-armour"/>
+      <event kind="die" value="4">combat</event>
+      <event kind="combat-resolved" hex="MM10" value="3-1">DR</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="2" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="MM9"/>
+      <event kind="decision-answered" value="retreat">MM9</event>
+      <event kind="decision-requested" value="retreat"/>
+    </move>
+    <move n="3" turn="1" phase="axis-i1-combat" side="axis" by="script" cmd="answer">
+      <arg name="what" value="retreat"/>
+      <arg name="answer" value="NN9"/>
+      <event kind="decision-answered" value="retreat">NN9</event>
+      <event kind="retreated" unit="r-ru-52-infantry" hex="NN9" value="MM9 NN9"/>
+    </move>
+  </log>
+</save>

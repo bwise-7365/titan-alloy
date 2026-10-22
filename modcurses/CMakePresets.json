@@ -1,0 +1,136 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+        "CMAKE_DEFAULT_BUILD_TYPE": "Debug",
+        "CMAKE_CROSS_CONFIGS": "all",
+        "MODCURSES_BUILD_EXAMPLES": "ON",
+        "MODCURSES_BUILD_TESTS": "ON"
+      },
+      "vendor": {
+        "note": [
+          "Ninja Multi-Config: ONE configure directory produces both Debug and",
+          "Release for every target. Pick one per build with --config, or build",
+          "both at once with the *-all build preset (CMAKE_CROSS_CONFIGS).",
+          "Binaries land in <binaryDir>/<Config>/bin and /<Config>/lib."
+        ]
+      }
+    },
+    {
+      "name": "windows-msvc",
+      "displayName": "Windows / MSVC / Ninja Multi-Config / vcpkg",
+      "inherits": "base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "vendor": {
+        "note": [
+          "Requires the VS developer shell; CMake has no Visual Studio 2026",
+          "generator, so Ninja is not optional here.",
+          "The vcpkg toolchain is NOT named here on purpose: CMakeLists.txt",
+          "picks it up from the VCPKG_ROOT environment variable. Spelling it",
+          "as $env{VCPKG_ROOT} in this file would expand to a broken path when",
+          "the variable is unset, instead of reaching the diagnostic in",
+          "CMakeLists.txt. To point at a specific vcpkg, override",
+          "CMAKE_TOOLCHAIN_FILE in CMakeUserPresets.json (see the 'here' preset)."
+        ]
+      }
+    },
+    {
+      "name": "linux-gcc",
+      "displayName": "Linux / GCC / Ninja Multi-Config / system ncursesw",
+      "inherits": "base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "cacheVariables": { "CMAKE_CXX_COMPILER": "g++" }
+    },
+    {
+      "name": "linux-clang",
+      "displayName": "Linux / Clang / Ninja Multi-Config / system ncursesw",
+      "inherits": "base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "cacheVariables": { "CMAKE_CXX_COMPILER": "clang++" }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-msvc-debug",
+      "configurePreset": "windows-msvc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-msvc-release",
+      "configurePreset": "windows-msvc",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-msvc-all",
+      "displayName": "Windows: every target, both configurations",
+      "configurePreset": "windows-msvc",
+      "configuration": "Debug",
+      "targets": ["all:all"]
+    },
+
+    { "name": "linux-gcc-debug", "configurePreset": "linux-gcc", "configuration": "Debug" },
+    { "name": "linux-gcc-release", "configurePreset": "linux-gcc", "configuration": "Release" },
+    {
+      "name": "linux-gcc-all",
+      "displayName": "Linux/GCC: every target, both configurations",
+      "configurePreset": "linux-gcc",
+      "configuration": "Debug",
+      "targets": ["all:all"]
+    },
+
+    { "name": "linux-clang-debug", "configurePreset": "linux-clang", "configuration": "Debug" },
+    { "name": "linux-clang-release", "configurePreset": "linux-clang", "configuration": "Release" },
+    {
+      "name": "linux-clang-all",
+      "displayName": "Linux/Clang: every target, both configurations",
+      "configurePreset": "linux-clang",
+      "configuration": "Debug",
+      "targets": ["all:all"]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-msvc-debug",
+      "configurePreset": "windows-msvc",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "windows-msvc-release",
+      "configurePreset": "windows-msvc",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "linux-gcc-debug",
+      "configurePreset": "linux-gcc",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "linux-gcc-release",
+      "configurePreset": "linux-gcc",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "linux-clang-debug",
+      "configurePreset": "linux-clang",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "linux-clang-release",
+      "configurePreset": "linux-clang",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  plan.xsd - schema for the room-graph plan language.
+
+  Deliberately has NO target namespace, so that a plan file references it as
+
+      <plan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="plan.xsd"
+            name="Example house">
+
+  and so that PlanReader can stay namespace-unaware. If you later add a target
+  namespace, PlanReader must be switched to namespace-aware parsing and to
+  getLocalName() rather than getNodeName().
+
+  This is XSD 1.0, which is what the JDK's built-in validator implements. Two
+  constraints in the model cannot be stated in XSD 1.0 and are therefore
+  enforced in the Java constructors instead; both are noted below where they
+  arise, and both are given as XSD 1.1 assertions in the comments, should you
+  validate with Xerces instead.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           version="1.0">
+
+  <!-- ============================================================= types -->
+
+  <xs:simpleType name="NonEmptyToken">
+    <xs:annotation>
+      <xs:documentation>A token with at least one non-space character.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="PositiveFeet">
+    <xs:annotation>
+      <xs:documentation>
+        A length in feet, strictly positive. There is no default: a passage of
+        unknown length cannot be checked against pattern 132, and a silently
+        assumed length would hide exactly the fault we are looking for.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:minExclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RoomKind">
+    <xs:annotation>
+      <xs:documentation>
+        What a room is for. The checks key off this value, so a kitchen labelled
+        OTHER is simply not checked against the kitchen rules; no kind is ever
+        guessed from the room's label.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="EXTERIOR">
+        <xs:annotation><xs:documentation>The outdoors. Any number per plan, including none: street, driveway and garden are different places.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ENTRY_ROOM">
+        <xs:annotation><xs:documentation>Mud room, vestibule, foyer. Pattern 130.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="COMMON">
+        <xs:annotation><xs:documentation>The common area: living room, family room. Pattern 129.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="KITCHEN"/>
+      <xs:enumeration value="DINING"/>
+      <xs:enumeration value="PASSAGE">
+        <xs:annotation><xs:documentation>A room whose only purpose is movement. Must carry lengthFeet. Pattern 132.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="STAIR">
+        <xs:annotation><xs:documentation>A stair, treated as a room. Patterns 133 and 158.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BATH"/>
+      <xs:enumeration value="BEDROOM"/>
+      <xs:enumeration value="GARAGE"/>
+      <xs:enumeration value="OTHER">
+        <xs:annotation><xs:documentation>Library, study, workshop, laundry: rooms with no rule of their own.</xs:documentation></xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ExteriorKind">
+    <xs:annotation>
+      <xs:documentation>
+        Which outdoors an EXTERIOR vertex stands for. A bedroom door onto the
+        GARDEN is not the privacy fault that a bedroom door onto the STREET is,
+        and only this distinction lets a rule say so.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="STREET"/>
+      <xs:enumeration value="DRIVEWAY"/>
+      <xs:enumeration value="GARDEN"/>
+      <xs:enumeration value="TERRACE"/>
+      <xs:enumeration value="COURT"/>
+      <xs:enumeration value="OTHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ConnectionKind">
+    <xs:annotation>
+      <xs:documentation>
+        DOOR: a closable leaf in the opening.
+        OPENING: a cased opening or arch. No leaf; cannot be closed.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="DOOR"/>
+      <xs:enumeration value="OPENING"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="PrivacyLevel">
+    <xs:annotation>
+      <xs:documentation>
+        Position on Alexander's intimacy gradient (pattern 127). An ordinal
+        scale: the checks use only the ordering
+        EXTERIOR &lt; ENTRY &lt; PUBLIC &lt; SEMI_PRIVATE &lt; PRIVATE.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="EXTERIOR"/>
+      <xs:enumeration value="ENTRY"/>
+      <xs:enumeration value="PUBLIC"/>
+      <xs:enumeration value="SEMI_PRIVATE"/>
+      <xs:enumeration value="PRIVATE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ========================================================== elements -->
+
+  <xs:element name="plan">
+    <xs:annotation>
+      <xs:documentation>
+        A dwelling as an undirected graph: rooms are vertices, doors are edges.
+        Geometry is deliberately absent. This language describes what connects
+        to what, not where anything is.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rooms" type="RoomList" minOccurs="0"/>
+        <xs:element name="connections" type="ConnectionList" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="name" type="NonEmptyToken" use="required"/>
+    </xs:complexType>
+
+    <!--
+      Room ids are unique, and every door refers to a declared room. XSD 1.0
+      does express this much, so the Java reader's duplicate-id and dangling-
+      reference errors become schema errors and are caught before parsing.
+    -->
+    <xs:key name="RoomId">
+      <xs:selector xpath="rooms/room"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:keyref name="DoorFromRoom" refer="RoomId">
+      <xs:selector xpath="connections/connection"/>
+      <xs:field xpath="@from"/>
+    </xs:keyref>
+    <xs:keyref name="DoorToRoom" refer="RoomId">
+      <xs:selector xpath="connections/connection"/>
+      <xs:field xpath="@to"/>
+    </xs:keyref>
+  </xs:element>
+
+  <xs:complexType name="RoomList">
+    <xs:annotation>
+      <xs:documentation>
+        Possibly empty, and the whole element may be omitted. The empty design -
+        no rooms, no doors, not even the outdoors - is the root of a search and a
+        legitimate input. Every rule returns UNDETERMINED for it.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="room" type="Room" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Room">
+    <xs:annotation>
+      <xs:documentation>
+        NOT EXPRESSIBLE IN XSD 1.0, enforced in the Room constructor:
+          lengthFeet is required when kind = PASSAGE and forbidden otherwise;
+          outdoor   is required when kind = EXTERIOR and forbidden otherwise.
+        In XSD 1.1 these would be
+          &lt;xs:assert test="(@kind = 'PASSAGE') = exists(@lengthFeet)"/&gt;
+          &lt;xs:assert test="(@kind = 'EXTERIOR') = exists(@outdoor)"/&gt;
+        together with
+          &lt;xs:assert test="(@kind = 'EXTERIOR') = (@privacy = 'EXTERIOR')"/&gt;
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="id"         type="NonEmptyToken" use="required"/>
+    <xs:attribute name="label"      type="NonEmptyToken" use="required"/>
+    <xs:attribute name="kind"       type="RoomKind"      use="required"/>
+    <xs:attribute name="privacy"    type="PrivacyLevel"  use="required"/>
+    <xs:attribute name="outdoor"    type="ExteriorKind"/>
+    <xs:attribute name="lengthFeet" type="PositiveFeet"  use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="ConnectionList">
+    <xs:annotation>
+      <xs:documentation>
+        Possibly empty. A partial design in which no rooms have yet been joined
+        is a legitimate plan and must receive a verdict like any other.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="connection" type="Connection" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Connection">
+    <xs:annotation>
+      <xs:documentation>
+        An undirected edge; from and to are interchangeable.
+
+        NOT EVERY ADJACENCY IS A DOOR. A living room usually gives onto its hall
+        through a cased opening with no leaf in it. That is a different fact
+        about the house: it cannot be closed, and a code that requires a garage
+        to be "equipped with" a door is not satisfied by an archway. The kind is
+        required, because there is no sensible default and guessing would be the
+        kind of silent substitution that surfaces as a bug much later.
+
+        The kind is not part of the edge's identity: two rooms are joined once,
+        and a duplicate pair is rejected whatever its kind.
+
+        NOT EXPRESSIBLE IN XSD, enforced in the PlanGraph constructor:
+          - no connection may join a room to itself;
+          - no unordered pair may appear twice.
+        XSD's uniqueness is over ordered tuples, so it cannot see that
+        (a,b) and (b,a) are the same connection.
+
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="from" type="NonEmptyToken" use="required"/>
+    <xs:attribute name="to"   type="NonEmptyToken" use="required"/>
+    <xs:attribute name="kind" type="ConnectionKind" use="required"/>
+  </xs:complexType>
+
+</xs:schema>
