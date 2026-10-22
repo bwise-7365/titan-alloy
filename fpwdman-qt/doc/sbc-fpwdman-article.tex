@@ -48,6 +48,11 @@ weaknesses and how they were repaired in SBC version 1 and in a new file format
 called FPMQ2, which \code{fpwdman} 4.0 writes. It gives pseudo-code for both,
 and it lists the attacks and analyses that remain to be done.
 \end{abstract}
+\clearpage
+
+
+\tableofcontents
+\clearpage
 
 \section{Introduction}
 
@@ -121,7 +126,36 @@ and
 $c$ be odd positive.
 
 To ensure that  $q$ has no fixed points , we require
-that  $a$ is positive.
+that  $a$ is odd positive.
+
+The choice of $n$ matters in one further way: it should be twice an odd
+number. Expanding the product gives
+\begin{eqnarray}
+q(x) &=& n x^2 + (an+c)\,x + ac \bmod 2^{m}. \label{eq:qparts_A}
+\end{eqnarray}
+Let $2^k$ be the largest power of two that divides $n$. The squared term
+$n x^2$ is then zero modulo $2^k$, so the lowest $k$ bits of $q(x)$ come from the
+other two terms alone:
+\begin{eqnarray}
+q(x) &\equiv& (an+c)\,x + ac \pmod{2^k}. \label{eq:qparts_B}
+\end{eqnarray}
+In those $k$ bits, $q$ only multiplies its input by an odd number and adds a
+constant, which is close to linear; the nonlinear squared term begins only at
+bit $k$. It begins as low as it can, at bit 1, when $k = 1$, that is, when $n$
+is twice an odd number. The present choice $n = 2$ meets this. A multiple of
+four does not: with $(a,n,c) = (3,8,17)$, for example, $k = 3$, and the lowest
+three bits of $q(x)$ are simply those of $x + 3$. Whether the odd factor is
+prime does not matter; only its oddness does. (Four is twice a prime, and fails.)
+A larger $n = 2u$, with $u$ odd and with many of its bits set, would still
+satisfy the rule and might spread each input bit into more of the higher output
+bits in a single application; whether it actually does would have to be
+measured.
+
+The final set of conditions are that 
+$a$ is odd,
+$n$ is twice an odd number, 
+$c$ be odd,
+and all three are positive.
 
 Every 64 steps (two rounds) the words of the ring are rearranged by a
 permutation called \code{perm1}. It does not change any word; it only moves
@@ -626,6 +660,40 @@ cipher must survive before it can be trusted for important data.
       the integers modulo $2^{32}$, mixed with exclusive-or. Methods that
       solve systems of such equations should be tried on reduced rounds.
 
+\item \textbf{A rotation that depends on the data.} Every step of SBC rotates
+      by the same fixed amount, seven places. RC5 \cite{rivest1995} and RC6
+      \cite{rivest1998} instead rotate by an amount taken from the data; in
+      RC6 it is the five high bits of a quadratic of another word. SBC could
+      do the same, for example by rotating $q(x_{p-1} \xor s_i)$ by its own
+      five high bits instead of by seven. The step would remain reversible,
+      because $x_{p-1}$ and $s_i$ are unchanged by it. This would help in
+      three ways.
+
+      First, it would break the property that each output bit of $q$ depends
+      only on the input bits at the same place and below. The high bits of
+      $q$ depend on every input bit, and they would decide where every bit
+      lands, so within a single step the low bits of the result would depend
+      on the high bits of the input. Today that happens only through the
+      fixed rotation, over several steps.
+
+      Second, it would break the regular algebra of the step. A rotation by a
+      varying amount is not a polynomial over the integers modulo $2^{32}$,
+      so the regularities of a quadratic, such as its constant second
+      difference, $q(x+d_1+d_2) - q(x+d_1) - q(x+d_2) + q(x) = 2n\,d_1 d_2$,
+      would no longer pass through the step intact. That would make the
+      algebraic and higher-order differential attacks above harder.
+
+      Third, a differential or linear attack follows a chosen pattern of
+      differences or bits through the steps. With a data-dependent rotation
+      it must also predict the rotation amount at every step, one of 32
+      values, unless it can force those five bits. That multiplies its cost
+      at every step.
+
+      Data-dependent rotations have weaknesses of their own: the best attacks
+      on RC5 work by controlling the rotation amounts \cite{biryukov1998}. So
+      the change would need the same analyses as the rest of this list. It
+      would also define a new version of SBC and a new file format.
+
 \item \textbf{Statistical tests.} Run the output of SBC in counter mode
       through standard test batteries for random numbers, such as NIST SP
       800-22 or PractRand, at full and at reduced rounds.
@@ -745,6 +813,11 @@ E. Biham and A. Shamir,
 ``Differential cryptanalysis of DES-like cryptosystems,''
 \emph{Journal of Cryptology}, vol. 4, no. 1, 1991.
 
+\bibitem{biryukov1998}
+A. Biryukov and E. Kushilevitz,
+``Improved cryptanalysis of RC5,''
+\emph{Advances in Cryptology -- EUROCRYPT '98}, LNCS 1403, Springer, 1998.
+
 \bibitem{biryukov1999}
 A. Biryukov and D. Wagner,
 ``Slide attacks,''
@@ -797,6 +870,16 @@ RFC 8018, 2017.
 A. Biryukov, D. Dinu, D. Khovratovich and S. Josefsson,
 \emph{Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work
 Applications}, RFC 9106, 2021.
+
+\bibitem{rivest1995}
+R. L. Rivest,
+``The RC5 encryption algorithm,''
+\emph{Fast Software Encryption (FSE '94)}, LNCS 1008, Springer, 1995.
+
+\bibitem{rivest1998}
+R. L. Rivest, M. J. B. Robshaw, R. Sidney and Y. L. Yin,
+\emph{The RC6 Block Cipher}, submission to the Advanced Encryption Standard
+process, 1998.
 
 \bibitem{wise2006}
 B. P. Wise,
