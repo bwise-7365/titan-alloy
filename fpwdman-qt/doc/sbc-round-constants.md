@@ -157,7 +157,8 @@ Items 1 to 5 were done on 2026-10-21; item 6 is the user's.
    fixtures opening and migrating to FPMQ2 on save; a changed kdf name, stray
    header field, relabelled version, salt, tag or ciphertext being rejected;
    and wrong iteration counts being refused before derivation in both formats.
-6. To do: re-save the password file, then delete its `.bak` and any older
+6. To do: re-save the password file, then delete any `.bak` left by an earlier
+   version (4.0 writes none) and any older
    copies. An old-format copy under the same passphrase allows fast passphrase
    guessing, so change the master passphrase once nothing old remains.
 

@@ -41,8 +41,8 @@ Design, Repairs, and Open Questions}
 The Sliding Block Cipher (SBC) is a block cipher of the author's design, first
 built in 2002 \cite{wise2006}. It encrypts the password file of \code{fpwdman}, the author's
 password manager. A review in October 2026 found no practical way to break SBC,
-but it found one structural weakness in the cipher and three weaknesses in the
-file format around it. This article explains in plain language how the cipher
+but it found one structural weakness in the cipher and four weaknesses in the
+file format and the program around it. This article explains in plain language how the cipher
 and the file format work and why each part is there. It then describes the
 weaknesses and how they were repaired in SBC version 1 and in a new file format
 called FPMQ2, which \code{fpwdman} 4.0 writes. It gives pseudo-code for both,
@@ -84,6 +84,9 @@ Opening a file in an older format and saving it converts it to FPMQ2.
 SBC treats a block of data as a ring of $K$ words of 32 bits each. The
 \code{fpwdman} settings use $K = 32$, so a block holds 1024 bits (128 bytes).
 The ring has no first or last word: the word before word 0 is word $K-1$.
+A classic Feistel cipher (such as the US Data Encryption Standard, Blowfish, and many more)
+uses the same ring structure with $K=2$. As there are only two elements in such a  ring,
+they are conventionally referred to as the left and right blocks.
 
 Encryption proceeds one \emph{step} at a time. A step changes exactly one word,
 using the word just before it in the ring and one 32-bit \emph{subkey}. Step 0
@@ -103,6 +106,22 @@ subkey for step $i$, $\xor$ is bitwise exclusive-or, and $\rotl 7$ rotates the
 code) is a quadratic that maps each 32-bit number to a different 32-bit number.
 It was adapted from the cipher RC6, and the added constant 1 removes the fixed
 points that RC6's version has.
+
+The author adapted the quadratic transformation of RC6 to 
+derive the general form of $q$ as follows.
+
+\begin{equation}
+q(x) = (x+a)(nx+c) \bmod 2^{m},
+\end{equation}
+
+To ensure that  $q(x) = q(y)$ if and only if $x = y$ , we require
+that 
+$n$ is even positive, 
+and
+$c$ be odd positive.
+
+To ensure that  $q$ has no fixed points , we require
+that  $a$ is positive.
 
 Every 64 steps (two rounds) the words of the ring are rearranged by a
 permutation called \code{perm1}. It does not change any word; it only moves
@@ -145,7 +164,7 @@ is what a random result would do (Appendix \ref{sec:measure}).
 
 \item[The permutation moves words apart.]
 The step relates only neighbouring words. Moving words to new places between
-rounds makes words that were far apart into neighbours.
+rounds makes words that were far apart into neighbours and vice versa.
 
 \item[Many rounds give a margin.]
 Most attacks on block ciphers grow harder with every round. Twenty-four rounds
@@ -233,6 +252,9 @@ FPMQ2: one PBKDF2 run, expanded with HKDF \\
 Header outside the authentication code &
 Header could be changed without detection &
 FPMQ2: the code covers the header \\
+A backup copy kept at every save &
+The previous file survived in its old format and under its old passphrase &
+Version 4.0 keeps no backup \\
 \hline
 \end{tabular}
 \caption{Weaknesses found in the October 2026 review and their repairs.}
@@ -345,6 +367,19 @@ FPMQ2 computes the code over both header lines and the encrypted text, and it
 rejects any header that differs from what the program writes. In particular, an
 FPMQ2 file relabelled as FPMQ1 is refused, so it cannot be steered onto the
 older reading path.
+
+\subsection{The backup copy}
+
+Before version 4.0, every save first copied the existing file to a backup with
+the extension \code{.bak}. The backup kept the previous file exactly, in its old
+format and under its old passphrase. Two cases made that a weakness. After a
+legacy file was converted, the backup was the legacy file itself, which allows
+fast guessing of a passphrase that also opens the new file. After a change of
+master passphrase, the backup could still be opened with the old one, which
+defeats the purpose of changing it. Version 4.0 keeps no backup. A failed save
+is still harmless: the program writes the new file under a temporary name and
+replaces the old one only when the new one is complete, so an interrupted save
+leaves the old file as it was.
 
 \subsection{Earlier repairs}
 
@@ -606,10 +641,12 @@ cipher must survive before it can be trusted for important data.
 \begin{enumerate}[resume]
 \item \textbf{Old copies of the file.} A legacy copy of the file, under the same
       passphrase as the current one, lets an attacker guess that passphrase
-      quickly and then open the current file. The first save after converting
-      a legacy file leaves the legacy original as the \code{.bak} copy. After
-      converting, the user should delete the \code{.bak} and older copies and
-      then change the master passphrase.
+      quickly and then open the current file. Version 4.0 makes no backup copy,
+      but copies can survive elsewhere: a \code{.bak} written by an earlier
+      version, the user's own backups, synchronized folders, and snapshots kept
+      by the operating system. After converting, the user should delete such
+      copies where possible and then change the master passphrase, which makes
+      any copy that cannot be found harmless to the current file.
 
 \item \textbf{Memory-hard key derivation.} PBKDF2 can be computed cheaply in
       parallel on graphics processors. Argon2id \cite{rfc9106}, which also

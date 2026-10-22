@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <QByteArray>
+#include <QDir>
 #include <QFile>
 #include <QList>
 #include <QString>
@@ -193,22 +194,22 @@ TEST(Store, OpensFpmq1Fixture) {
     }
 }
 
-// Opening an older file and saving it writes FPMQ2 holding the same entries;
-// the .bak keeps the original file byte for byte.
+// Opening an older file and saving it writes FPMQ2 holding the same entries,
+// and leaves no copy of the original (in its weaker format) beside it.
 TEST(Store, SavingMigratesOlderFormatsToFpmq2) {
     for (const char* fixture : {"example-good-UTF-xml.sbc", "example-good-UTF-xml-v2.sbc"}) {
         QTemporaryDir tempDir;
         ASSERT_TRUE(tempDir.isValid());
         const QString path = tempDir.filePath("db.sbc");
         ASSERT_TRUE(QFile::copy(dataPath(fixture), path)) << fixture;
-        const QByteArray original = readAll(path);
 
         const auto entries = openFile(path, "qwerty");
         saveFile(path, "qwerty", entries);
 
         EXPECT_EQ(detectFormat(readAll(path)), Format::Fpmq2) << fixture;
         expectSameEntries(openFile(path, "qwerty"), entries);
-        EXPECT_EQ(readAll(path + ".bak"), original) << fixture;
+        EXPECT_EQ(QDir(tempDir.path()).entryList(QDir::Files | QDir::Hidden),
+                  QStringList{"db.sbc"}) << fixture;
     }
 }
 
@@ -302,36 +303,28 @@ TEST(Store, GeneratorLengthAndAlphabet) {
         EXPECT_TRUE(set.contains(ch));
 }
 
-TEST(Store, SaveFileCreatesBackupAndAtomicFile) {
+// Saving replaces the file and keeps no backup: after a passphrase change no
+// copy remains that the old passphrase would open.
+TEST(Store, SaveFileKeepsNoBackup) {
     QTemporaryDir tempDir;
     ASSERT_TRUE(tempDir.isValid());
 
     const QString path = tempDir.filePath("test_db.sbc");
-    const QString bakPath = path + ".bak";
+    const QStringList onlyTheFile{"test_db.sbc"};
     const auto entries1 = sampleEntries();
 
-    // First save: file created, no .bak yet
+    // First save: the file is created, and nothing else.
     saveFile(path, "pass1", entries1);
-    EXPECT_TRUE(QFile::exists(path));
-    EXPECT_FALSE(QFile::exists(bakPath));
+    EXPECT_EQ(QDir(tempDir.path()).entryList(QDir::Files | QDir::Hidden), onlyTheFile);
+    expectSameEntries(openFile(path, "pass1"), entries1);
 
-    const auto loaded1 = openFile(path, "pass1");
-    ASSERT_EQ(loaded1.size(), entries1.size());
-
-    // Second save: update database and verify .bak is created holding pass1 data
+    // Second save, with new entries and a new passphrase: still one file.
     std::vector<SiteEntry> entries2 = entries1;
     entries2.push_back(makeEntry("GitHub", "https://github.com", "user", "secret", "note"));
     saveFile(path, "pass2", entries2);
 
-    EXPECT_TRUE(QFile::exists(path));
-    EXPECT_TRUE(QFile::exists(bakPath));
-
-    // Verify main file has pass2 / entries2
-    const auto loaded2 = openFile(path, "pass2");
-    ASSERT_EQ(loaded2.size(), entries2.size());
-
-    // Verify backup file has pass1 / entries1
-    const auto loadedBak = openFile(bakPath, "pass1");
-    ASSERT_EQ(loadedBak.size(), entries1.size());
+    EXPECT_EQ(QDir(tempDir.path()).entryList(QDir::Files | QDir::Hidden), onlyTheFile);
+    expectSameEntries(openFile(path, "pass2"), entries2);
+    EXPECT_THROW(openFile(path, "pass1"), WrongPassphrase);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

@@ -476,14 +476,11 @@ std::vector<SiteEntry> openFile(const QString& path, const QString& passphrase) 
 
 void saveFile(const QString& path, const QString& passphrase,
               const std::vector<SiteEntry>& entries) {
-    // If the file already exists, create/overwrite a .bak backup prior to saving.
-    if (QFile::exists(path)) {
-        const QString bakPath = path + ".bak";
-        if (QFile::exists(bakPath))
-            QFile::remove(bakPath);
-        QFile::copy(path, bakPath);
-    }
-
+    // No .bak copy is kept. A backup would preserve the previous file under its
+    // old format and old passphrase -- after converting a legacy file, a copy
+    // that allows fast passphrase guessing. QSaveFile already protects against a
+    // failed save: it writes to a temporary file and replaces `path` only on a
+    // successful commit, so the old file survives any error.
     const QByteArray out = encodeModern(passphrase, entries);
     QSaveFile saveFile(path);
     if (!saveFile.open(QIODevice::WriteOnly))
