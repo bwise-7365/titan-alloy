@@ -2,7 +2,8 @@
 % Copyright Ben Paul Wise. All rights reserved.
 % ---------------------------------------------
 % SBC versions 1 and 2 and the FPMQ2 and FPMQ3 password files.
-% Process with pdfLaTeX, twice (for the cross-references).
+% Process with pdfLaTeX, then BibTeX, then pdfLaTeX twice. The references come
+% from CPVI/shared-tex/fdp.bib.
 
 \input{../../../CPVI/shared-tex/prolog-article.tex}
 
@@ -51,12 +52,13 @@ make SBC version 2 and the file format FPMQ3, which \code{fpwdman} 4.1 writes.
 The article gives pseudo-code for the cipher and the file format, and it lists
 the attacks and analyses that remain to be done.
 \end{abstract}
+
+
 \clearpage
-
-
 \tableofcontents
-\clearpage
 
+
+\clearpage
 \section{Introduction}
 
 A password manager keeps many secrets under one secret. The user remembers a
@@ -130,10 +132,49 @@ To ensure that  $q(x) = q(y)$ if and only if $x = y$ , we require
 that 
 $n$ is even positive, 
 and
-$c$ be odd positive.
+$c$ be odd positive.  We prove the bilateral implication first by assuming $x \neq y$
+and showing that $q(x) \neq q(y)$ follows.
+\begin{eqnarray}
+q(x) - q(y) &=& \left( nx^2 +(an+ c)x + ac \right) - \left( ny^2 + (an+c)y  + ac \right) \label{eq:qinj_A} \\
+ &=& \left( n (x+y) + (an+c) \right)  (x-y) \label{eq:qinj_B}
+\end{eqnarray}
+
+Here $x$ and $y$ are words, numbers from $0$ to $2^m - 1$, and the right-hand
+side is computed in ordinary integers. Without loss of generality, assume that $x > y$. Write $u$ for 
+the first factor of the right-hand side:
+\begin{eqnarray}
+u &=& n(x+y) + an + c. \label{eq:qinj_C}
+\end{eqnarray}
+The number $u$ is odd, because $n(x+y)$ and $an$ are even (as $n$ is even) and
+$c$ is odd.
+
+Suppose, to the contrary, that $q(x) = q(y)$, that is, that $q(x) - q(y)$ is a
+multiple of $2^m$. Then $2^m$ divides the product $u\,(x-y)$. Since $u$ is odd,
+it contains no factor of 2, so all $m$ of the factors of 2 must lie in $x - y$:
+\begin{eqnarray}
+2^m \mid u\,(x-y) \ \text{ and } \ u \text{ odd} &\Longrightarrow& 2^m \mid (x-y).
+\label{eq:qinj_D}
+\end{eqnarray}
+But $x$ and $y$ are different numbers from $0$ to $2^m - 1$, so
+$0 < x - y < 2^m$, and no multiple of $2^m$ lies strictly between $0$ and
+$2^m$. The supposition is therefore false, and $q(x) \neq q(y)$.
+
+The converse, that $x = y$ gives $q(x) = q(y)$, is immediate. Hence
+$q(x) = q(y)$ if and only if $x = y$: $q$ maps the $2^m$ possible words to
+$2^m$ different words, so it merely reorders them, and it can be undone.
 
 To ensure that  $q$ has no fixed points , we require
-that  $a$ is odd positive.
+that  $a$ is odd positive. The proof is particularly simple.
+Expanding the product and subtracting $x$ gives
+\begin{eqnarray}
+q(x) - x &=& \left( n x^2 + (an+c)\,x + ac \right) - x \label{eq:qfix_A} \\
+ &=& n x^2 + (an + c - 1)\,x + ac. \label{eq:qfix_B}
+\end{eqnarray}
+The first term is even, because $n$ is even. The second is even, because $an$
+is even and $c - 1$ is even, $c$ being odd. The last term, $ac$, is odd,
+because $a$ and $c$ are both odd. The right-hand side is therefore odd for
+every $x$. But $q(x) = x$ would require $q(x) - x$ to be a multiple of $2^m$,
+and so even. Hence there can be no fixed point.
 
 The choice of $n$ matters in one further way: it should be twice an odd
 number. Expanding the product gives
@@ -744,6 +785,46 @@ cipher must survive before it can be trusted for important data.
       shown for SBC. How much work recovers the key from one input and output
       of 64 steps?
 
+      A single step, by contrast, is easily undone, because $q$ is easy to
+      invert. It is a T-function \cite{klimov2002}, and its derivative
+      $q'(x) = 2nx + (an + c)$ is odd for every $x$. Once input bits 0 to
+      $j-1$ are known, output bit $j$ is input bit $j$ plus a known quantity,
+      so the input can be recovered from $y = q(x)$ bit by bit, from the
+      lowest up, in 32 short steps. Newton's method is faster. It works modulo
+      $2^{32}$ because $q'(x)$ is odd, and so has an inverse modulo $2^{32}$:
+      \begin{eqnarray}
+      x &\leftarrow& x - \bigl( q(x) - y \bigr)\, q'(x)^{-1} \bmod 2^{32}.
+      \label{eq:qinv_A}
+      \end{eqnarray}
+      Each pass doubles the number of correct low bits, provided the starting
+      value already has the right lowest bit. For $q(x) = (x+1)(2x+1)$ that
+      bit is easy to find, because $q(x) \equiv x + 1 \pmod 2$: start from $y$
+      with its lowest bit reversed. One correct bit then becomes 2, 4, 8, 16
+      and 32, so five passes give all 32. (Tested on 20,000 random values:
+      five passes inverted every one; four inverted about half.) Rivest characterized exactly which polynomials are one-to-one
+      modulo $2^w$ \cite{rivest2001}, and inverting them is routine. Neither
+      RC6 nor SBC relies on its quadratic being hard to invert: decryption
+      never inverts $q$, but only computes it again, forward.
+
+      The consequence is that one step whose input and output are both known
+      gives up its subkey at once. If $x_p$ and $x_{p-1}$ are the words before
+      a version 0 or 1 step and $x_p'$ the changed word after it, then
+      \begin{eqnarray}
+      t &=& (x_p' - x_p) \ggg 7, \label{eq:qinv_B} \\
+      s_i &=& q^{-1}(t) \xor x_{p-1}. \label{eq:qinv_C}
+      \end{eqnarray}
+      In version 2 the rotation amount $r$ is unknown. An attacker can try
+      all 32 values, compute $t = \bigl( (x_p' \ggg r) - x_p \bigr) \ggg 7$
+      for each, and keep those for which $r$ equals the five high bits of $t$.
+      The true value always survives, and each of the 31 wrong ones survives
+      by chance with probability $1/32$, so on average about two candidates
+      for the subkey remain. (Over 20,000 random steps the mean was 1.96, and
+      the true subkey was always among them.) So in every version the
+      protection lies not
+      in any single step but in keeping the words between steps hidden.
+      Within 64 steps each word is changed twice, and the question above is
+      how much of that hiding survives.
+
 \item \textbf{Differential cryptanalysis} \cite{biham1991}. Search for
       differences in the input that pass through a few rounds with high
       probability, and from them estimate how many rounds an attack could
@@ -786,7 +867,7 @@ cipher must survive before it can be trusted for important data.
 
 \item \label{item:rotation}\textbf{A rotation that depends on the data.} In
       versions 0 and 1 every step rotates by the same fixed amount, seven
-      places. RC5 \cite{rivest1995} and RC6 \cite{rivest1998} instead rotate by
+      places. RC5 \cite{rivest1995} and RC6 \cite{RRSY98} instead rotate by
       an amount taken from the data; in RC6 it is the five high bits of a
       quadratic of another word, and what is rotated is the word being
       changed. Version 2 of SBC does the same (Section \ref{sec:v2}): it
@@ -1029,92 +1110,9 @@ tests of the file formats, including the conversion of legacy, FPMQ1 and FPMQ2
 files to FPMQ3, the rejection of altered FPMQ3 files, and the rejection of FPMQ3
 files relabelled as older versions.
 
-\begin{thebibliography}{99}
-
-\bibitem{bellare2000}
-M. Bellare and C. Namprempre,
-``Authenticated encryption: relations among notions and analysis of the
-generic composition paradigm,''
-\emph{Advances in Cryptology -- ASIACRYPT 2000}, LNCS 1976, Springer, 2000.
-
-\bibitem{biham1991}
-E. Biham and A. Shamir,
-``Differential cryptanalysis of DES-like cryptosystems,''
-\emph{Journal of Cryptology}, vol. 4, no. 1, 1991.
-
-\bibitem{biryukov1998}
-A. Biryukov and E. Kushilevitz,
-``Improved cryptanalysis of RC5,''
-\emph{Advances in Cryptology -- EUROCRYPT '98}, LNCS 1403, Springer, 1998.
-
-\bibitem{biryukov1999}
-A. Biryukov and D. Wagner,
-``Slide attacks,''
-\emph{Fast Software Encryption (FSE '99)}, LNCS 1636, Springer, 1999.
-
-\bibitem{biryukov2000}
-A. Biryukov and D. Wagner,
-``Advanced slide attacks,''
-\emph{Advances in Cryptology -- EUROCRYPT 2000}, LNCS 1807, Springer, 2000.
-
-\bibitem{fips180}
-National Institute of Standards and Technology,
-\emph{Secure Hash Standard (SHS)}, FIPS PUB 180-4, 2015.
-
-\bibitem{fips197}
-National Institute of Standards and Technology,
-\emph{Advanced Encryption Standard (AES)}, FIPS PUB 197, 2001.
-
-\bibitem{klimov2002}
-A. Klimov and A. Shamir,
-``A new class of invertible mappings,''
-\emph{Cryptographic Hardware and Embedded Systems (CHES 2002)}, LNCS 2523,
-Springer, 2002.
-
-\bibitem{matsui1993}
-M. Matsui,
-``Linear cryptanalysis method for DES cipher,''
-\emph{Advances in Cryptology -- EUROCRYPT '93}, LNCS 765, Springer, 1994.
-
-\bibitem{owasp}
-OWASP Foundation,
-\emph{Password Storage Cheat Sheet},
-\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}.
-
-\bibitem{rfc2104}
-H. Krawczyk, M. Bellare and R. Canetti,
-\emph{HMAC: Keyed-Hashing for Message Authentication}, RFC 2104, 1997.
-
-\bibitem{rfc5869}
-H. Krawczyk and P. Eronen,
-\emph{HMAC-based Extract-and-Expand Key Derivation Function (HKDF)},
-RFC 5869, 2010.
-
-\bibitem{rfc8018}
-K. Moriarty, B. Kaliski and A. Rusch,
-\emph{PKCS \#5: Password-Based Cryptography Specification Version 2.1},
-RFC 8018, 2017.
-
-\bibitem{rfc9106}
-A. Biryukov, D. Dinu, D. Khovratovich and S. Josefsson,
-\emph{Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work
-Applications}, RFC 9106, 2021.
-
-\bibitem{rivest1995}
-R. L. Rivest,
-``The RC5 encryption algorithm,''
-\emph{Fast Software Encryption (FSE '94)}, LNCS 1008, Springer, 1995.
-
-\bibitem{rivest1998}
-R. L. Rivest, M. J. B. Robshaw, R. Sidney and Y. L. Yin,
-\emph{The RC6 Block Cipher}, submission to the Advanced Encryption Standard
-process, 1998.
-
-\bibitem{wise2006}
-B. P. Wise,
-\emph{Sliding Block Ciphers}, draft, 2006.
-
-\end{thebibliography}
+\clearpage
+\bibliographystyle{ieeetr}
+\bibliography{../../../CPVI/shared-tex/fdp}
 
 \end{document}
 
