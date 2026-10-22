@@ -39,12 +39,14 @@ else()
   add_compile_options(-Wall -Wextra)
 endif()
 
-option(HEXGAMES_BUILD_GUI "Build the Qt6 GUI targets" ON)
+option(HEXGAMES_BUILD_GUI "Build the Qt GUI targets (Qt6, or Qt5 on Debian)" ON)
 option(HEXGAMES_SYSTEM_TINYXML2 "Use an installed TinyXML2 instead of fetching it" OFF)
 
 # Qt6 convenience default for a standard Windows install, only when the user has not pointed CMake at Qt.
-if(HEXGAMES_BUILD_GUI AND WIN32 AND NOT DEFINED Qt6_DIR AND NOT DEFINED CMAKE_PREFIX_PATH)
-  set(Qt6_DIR "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6")
+# A prefix, not Qt6_DIR: hexmaped/app's find_package(QT NAMES Qt6 Qt5) searches prefixes and ignores
+# Qt6_DIR. Elsewhere (Debian) the system Qt is found without help.
+if(HEXGAMES_BUILD_GUI AND WIN32 AND NOT DEFINED CMAKE_PREFIX_PATH)
+  set(CMAKE_PREFIX_PATH "C:/Qt/6.8.3/msvc2022_64")
 endif()
 set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
 
@@ -76,7 +78,7 @@ include(HexGamesQtDeploy)
 
 # ---- hygiene and schema checks (Python; skipped with a message if Python or lxml is absent) --------
 # HEXGAMES_PYTHON names the interpreter that has lxml (machine-specific, so it lives in the presets, as
-# Qt6_DIR does); otherwise whatever find_package turns up is tried.
+# the Qt prefix does); otherwise whatever find_package turns up is tried.
 set(HEXGAMES_PYTHON "" CACHE FILEPATH "Python interpreter with lxml for the xsd ctest entries")
 if(HEXGAMES_PYTHON AND EXISTS "${HEXGAMES_PYTHON}")
   set(_py "${HEXGAMES_PYTHON}")

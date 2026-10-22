@@ -502,7 +502,7 @@ namespace HexQt {
     return;
   }
 
-  // The user guide, compiled in from hexmaped/README.md (CMakeLists.txt qt_add_resources), so the
+  // The user guide, compiled in from hexmaped/README.md (help.qrc), so the
   // program carries its own instructions wherever it is copied.
   void
   MainWindow::showAbout()
