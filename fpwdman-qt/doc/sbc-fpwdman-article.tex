@@ -647,7 +647,7 @@ cipher must survive before it can be trusted for important data.
       more rounds, to learn how large the safety margin of 24 rounds actually
       is. This is the standard way of measuring a new cipher.
 
-\item \textbf{The permutation.} \code{perm1} uses no key, and its choice depends
+\item \label{item:perm}\textbf{The permutation.} \code{perm1} uses no key, and its choice depends
       on the exclusive-or of $q$ applied to every word, which does not depend on
       their order. It reads only 30 of those 32 bits. It produces a great
       variety of rearrangements (65,535 different ones from 65,536 random
@@ -660,7 +660,7 @@ cipher must survive before it can be trusted for important data.
       the integers modulo $2^{32}$, mixed with exclusive-or. Methods that
       solve systems of such equations should be tried on reduced rounds.
 
-\item \textbf{A rotation that depends on the data.} Every step of SBC rotates
+\item \label{item:rotation}\textbf{A rotation that depends on the data.} Every step of SBC rotates
       by the same fixed amount, seven places. RC5 \cite{rivest1995} and RC6
       \cite{rivest1998} instead rotate by an amount taken from the data; in
       RC6 it is the five high bits of a quadratic of another word. SBC could
@@ -716,7 +716,7 @@ cipher must survive before it can be trusted for important data.
       copies where possible and then change the master passphrase, which makes
       any copy that cannot be found harmless to the current file.
 
-\item \textbf{Memory-hard key derivation.} PBKDF2 can be computed cheaply in
+\item \label{item:argon}\textbf{Memory-hard key derivation.} PBKDF2 can be computed cheaply in
       parallel on graphics processors. Argon2id \cite{rfc9106}, which also
       requires much memory, is now preferred \cite{owasp}. A future format
       could use it.
@@ -740,7 +740,25 @@ cipher must survive before it can be trusted for important data.
       reached and erased. The clipboard, the operating system's swap file and
       crash dumps can also hold secrets.
 
-\item \textbf{Comparison with standard ciphers.} SBC has had one reviewer. The
+\item \textbf{Word size.} SBC could use 64-bit words, with a 64-bit $q$, in
+      place of 32-bit ones. This would not make the password file noticeably
+      safer. The practical attack on a stolen file is guessing the passphrase,
+      which costs the same whatever the word size, and the key and block
+      sizes, which would stay at 512 and 1024 bits, are already far beyond
+      exhaustive search. Inside the cipher the change would cut both ways.
+      Only the two lowest bits of $q$ are linear, so the weak share of each
+      word would fall from 2 bits in 32 to 2 in 64, and the longer carries of
+      64-bit addition and multiplication would mix the high bits more. But $q$
+      moves information only upward within a word, and only the fixed rotation
+      brings it down again: with a rotation of seven places, a high bit takes
+      about nine steps to reach the bottom of a 64-bit word, against about five
+      in a 32-bit word. A 1024-bit block would also hold 16 words instead of
+      32, and the regularities of the quadratic, such as its constant second
+      difference, would be unchanged. A 64-bit SBC would therefore have to be
+      measured afresh, and it would be a new version of the cipher and of the
+      file format.
+
+\item \label{item:standard}\textbf{Comparison with standard ciphers.} SBC has had one reviewer. The
       standard ciphers, such as AES-256-GCM \cite{fips197} and
       XChaCha20-Poly1305, have had decades of study by many. Two earlier
       reviews of \code{fpwdman} recommended writing new files with one of them
@@ -748,6 +766,24 @@ cipher must survive before it can be trusted for important data.
       the work in this article is the alternative of strengthening SBC and
       inviting its analysis.
 \end{enumerate}
+
+\paragraph{Where further effort would count most.} In order of their benefit to
+the safety of the password file, the most useful changes are these.
+\begin{enumerate}[label=(\alph*)]
+\item Argon2id in place of PBKDF2 (item \ref{item:argon}). It defends against
+      the attack that matters most in practice, guessing the passphrase on
+      many processors at once.
+\item A rotation that depends on the data (item \ref{item:rotation}). It
+      attacks directly the weakness that each output bit of $q$ depends only
+      on the input bits at its own place and below.
+\item A keyed permutation in place of \code{perm1} (item \ref{item:perm}). It
+      would give the permutation secrecy as well as mixing.
+\item A standard cipher for new files (item \ref{item:standard}). It gives
+      the greatest assurance, at the price of giving up SBC.
+\end{enumerate}
+The first three keep SBC; the fourth replaces it. A change of word size is not
+on the list, for the reasons given above. For now the author keeps SBC, so as to
+continue its study.
 
 \appendix
 
