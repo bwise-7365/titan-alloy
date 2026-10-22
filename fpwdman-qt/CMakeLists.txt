@@ -36,54 +36,35 @@ option(FPWDMAN_STATIC "Link Qt and the CRT statically: one self-contained .exe" 
 set(FPWDMAN_QT_SHARED_DIR ""
     CACHE PATH "Prefix of the stock shared Qt, used by the default build (empty: auto-detect)")
 
-# Machines differ in which Qt they have installed, so unless a prefix was given
-# explicitly, take the first candidate that exists. A cached prefix that has
-# since vanished -- a build directory carried over from another machine -- is
+# On Linux the distribution's Qt -- on Debian, qt6-base-dev and friends from apt
+# or Synaptic -- installs where a plain find_package already looks, so there is
+# nothing to probe: FPWDMAN_QT_SHARED_DIR stays empty unless given explicitly.
+#
+# On Windows, machines differ in which Qt they have installed under C:/Qt, so
+# unless a prefix was given explicitly, take the first one that exists: newest
+# version first, in the kit flavor that matches the compiler (an MSVC-built Qt
+# cannot link with MinGW and vice versa). A cached prefix that has since
+# vanished -- a build directory carried over from another machine -- is
 # re-probed rather than trusted.
-if(NOT FPWDMAN_QT_SHARED_DIR OR NOT EXISTS "${FPWDMAN_QT_SHARED_DIR}")
-    set(_fpwdman_qt_candidates "")
-    if(WIN32)
-        # The Qt online installer's layout under C:/Qt: newest version first, in
-        # the kit flavor that matches the compiler (an MSVC-built Qt cannot link
-        # with MinGW and vice versa). VS 2026's toolset is binary-compatible with
-        # VS 2022's, so either MSVC kit links fine with it.
-        if(MSVC)
-            set(_fpwdman_qt_kits msvc2026_64 msvc2022_64)
-        else()
-            set(_fpwdman_qt_kits mingw_64)
-        endif()
-        foreach(_fpwdman_qt_version IN ITEMS 6.12.0 6.8.3)
-            foreach(_fpwdman_qt_kit_dir IN LISTS _fpwdman_qt_kits)
-                list(APPEND _fpwdman_qt_candidates
-                    "C:/Qt/${_fpwdman_qt_version}/${_fpwdman_qt_kit_dir}")
-            endforeach()
-        endforeach()
-        set(_fpwdman_qt_hint "Install Qt under C:/Qt with the online installer")
+if(WIN32 AND (NOT FPWDMAN_QT_SHARED_DIR OR NOT EXISTS "${FPWDMAN_QT_SHARED_DIR}"))
+    # VS 2026's toolset is binary-compatible with VS 2022's, so either MSVC kit
+    # links fine with it.
+    if(MSVC)
+        set(_fpwdman_qt_kits msvc2026_64 msvc2022_64)
     else()
-        # Linux. The distribution's Qt -- on Debian, qt6-base-dev and friends from
-        # apt or Synaptic -- installs under /usr, with its CMake package files in
-        # /usr/lib/<multiarch>/cmake/Qt6 (lib64 or lib on other distributions).
-        # /usr itself always exists, so test for the package file, not the prefix.
-        # Failing that, try the online installer's gcc_64 kit under ~/Qt or /opt/Qt.
-        foreach(_fpwdman_qt_libdir IN ITEMS "lib/${CMAKE_LIBRARY_ARCHITECTURE}" lib64 lib)
-            if(EXISTS "/usr/${_fpwdman_qt_libdir}/cmake/Qt6/Qt6Config.cmake")
-                list(APPEND _fpwdman_qt_candidates "/usr")
+        set(_fpwdman_qt_kits mingw_64)
+    endif()
+    string(REPLACE ";" "/" _fpwdman_qt_kit "${_fpwdman_qt_kits}")
+    set(_fpwdman_qt_found "")
+    foreach(_fpwdman_qt_version IN ITEMS 6.12.0 6.8.3)
+        foreach(_fpwdman_qt_kit_dir IN LISTS _fpwdman_qt_kits)
+            set(_fpwdman_qt_candidate "C:/Qt/${_fpwdman_qt_version}/${_fpwdman_qt_kit_dir}")
+            if(EXISTS "${_fpwdman_qt_candidate}")
+                set(_fpwdman_qt_found "${_fpwdman_qt_candidate}")
                 break()
             endif()
         endforeach()
-        foreach(_fpwdman_qt_root IN ITEMS "$ENV{HOME}/Qt" "/opt/Qt")
-            foreach(_fpwdman_qt_version IN ITEMS 6.12.0 6.8.3)
-                list(APPEND _fpwdman_qt_candidates
-                    "${_fpwdman_qt_root}/${_fpwdman_qt_version}/gcc_64")
-            endforeach()
-        endforeach()
-        set(_fpwdman_qt_hint "On Debian: apt install qt6-base-dev")
-    endif()
-
-    set(_fpwdman_qt_found "")
-    foreach(_fpwdman_qt_candidate IN LISTS _fpwdman_qt_candidates)
-        if(EXISTS "${_fpwdman_qt_candidate}")
-            set(_fpwdman_qt_found "${_fpwdman_qt_candidate}")
+        if(_fpwdman_qt_found)
             break()
         endif()
     endforeach()
@@ -91,19 +72,13 @@ if(NOT FPWDMAN_QT_SHARED_DIR OR NOT EXISTS "${FPWDMAN_QT_SHARED_DIR}")
         set(FPWDMAN_QT_SHARED_DIR "${_fpwdman_qt_found}" CACHE PATH
             "Prefix of the stock shared Qt, used by the default build (empty: auto-detect)" FORCE)
     elseif(NOT FPWDMAN_STATIC)
-        list(JOIN _fpwdman_qt_candidates "\n    " _fpwdman_qt_tried)
         message(FATAL_ERROR
-            "No Qt 6 found. Looked in:\n    ${_fpwdman_qt_tried}\n"
-            "${_fpwdman_qt_hint}, or pass -DFPWDMAN_QT_SHARED_DIR=<Qt prefix>.")
+            "No ${_fpwdman_qt_kit} Qt found under C:/Qt/6.12.0 or C:/Qt/6.8.3. "
+            "Pass -DFPWDMAN_QT_SHARED_DIR=<Qt prefix>.")
     endif()
 endif()
 message(STATUS "Shared Qt prefix: ${FPWDMAN_QT_SHARED_DIR}")
-if(WIN32)
-    set(_fpwdman_qt_static_default "C:/Qt/6.8.3-static")
-else()
-    set(_fpwdman_qt_static_default "$ENV{HOME}/Qt/6.8.3-static")
-endif()
-set(FPWDMAN_QT_STATIC_DIR "${_fpwdman_qt_static_default}"
+set(FPWDMAN_QT_STATIC_DIR "C:/Qt/6.8.3-static"
     CACHE PATH "Prefix of the self-built static Qt, used when FPWDMAN_STATIC is ON")
 
 if(FPWDMAN_STATIC)
@@ -140,7 +115,7 @@ if(FPWDMAN_STATIC)
     # bake a literal /MD back into their flags.
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
-else()
+elseif(FPWDMAN_QT_SHARED_DIR)
     set(CMAKE_PREFIX_PATH "${FPWDMAN_QT_SHARED_DIR}")
 endif()
 
@@ -149,8 +124,16 @@ endif()
 # The app does not use Vulkan, so skip the search.
 set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
-qt_standard_project_setup()
+# Take whichever major version of Qt is installed, Qt6 preferred: the first
+# find_package sets QT_VERSION_MAJOR, and every Qt target below is spelled
+# Qt${QT_VERSION_MAJOR}::... so the same file builds against either.
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+message(STATUS "Qt version: ${Qt${QT_VERSION_MAJOR}_VERSION}  (${Qt${QT_VERSION_MAJOR}_DIR})")
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 include(FetchContent)
 
@@ -195,12 +178,12 @@ add_library(pwcrypto STATIC
     src/crypto/PasswordGenerator.cpp
 )
 target_include_directories(pwcrypto PUBLIC src/crypto src)
-target_link_libraries(pwcrypto PUBLIC Qt6::Core sbc)
+target_link_libraries(pwcrypto PUBLIC Qt${QT_VERSION_MAJOR}::Core sbc)
 
 # -----------------------------------------------------------------------------
 # The Qt application
 # -----------------------------------------------------------------------------
-qt_add_executable(qpwdman
+add_executable(qpwdman
     WIN32
     src/main.cpp
     src/MainWindow.h
@@ -223,7 +206,7 @@ qt_add_executable(qpwdman
     src/PreferencesDialog.cpp
 )
 
-target_link_libraries(qpwdman PRIVATE Qt6::Widgets sbc pwcrypto)
+target_link_libraries(qpwdman PRIVATE Qt${QT_VERSION_MAJOR}::Widgets sbc pwcrypto)
 
 if(FPWDMAN_STATIC)
     # Nothing to deploy: the exe is the entire product, so there is no
