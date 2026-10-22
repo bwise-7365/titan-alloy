@@ -7,11 +7,12 @@
 // Every click becomes one Document edit; the Document refuses what the schema would; the view
 // redraws from the Document. Save writes the sheet and runs tools/validate-xml.py on the result.
 
-#include "MapView.h"
-#include "hexmaped/Document.h"
-
+// Qt headers first, for Qt5's moc on GCC: see the note in MapView.h.
 #include <QMainWindow>
 #include <QString>
+
+#include "MapView.h"
+#include "hexmaped/Document.h"
 
 #include <memory>
 #include <optional>

@@ -9,12 +9,18 @@
 // editor adds on top: the "show ids" toggle and the hand-scratched waviness of roads, railways and
 // rivers (HexView::MapStyle::scratch); neither touches the document.
 
+// The Qt headers come first, ahead of our own, for Qt5's moc on GCC (Debian). In a C++20 build moc
+// misreads `#if __cplusplus < 201103L` in <type_traits> (it cannot parse the L suffix), skips
+// <bits/c++config.h>, and then stops on `namespace std _GLIBCXX_VISIBILITY(default)` with "Parse
+// error at std" -- first met in <concepts>, which <compare> pulls in from hexcoord/Abc.h. Qt's own
+// headers reach c++config.h unconditionally through <cstddef>, so once they are read the rest
+// parses. QTBUG-83160; fixed in later Qt6.
+#include <QGraphicsView>
+#include <QString>
+
 #include "hexmaped/Document.h"
 #include "hexview/Scene.h"
 #include "hexview/SymbolLibrary.h"
-
-#include <QGraphicsView>
-#include <QString>
 
 #include <optional>
 #include <string>
