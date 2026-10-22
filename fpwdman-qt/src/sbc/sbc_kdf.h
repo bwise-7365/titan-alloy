@@ -101,8 +101,9 @@ void pbkdf2HmacSha256(const uint8_t* password, size_t passwordLen,
 // bound to the label `info`. Unlike PBKDF2 it is fast on purpose: it spreads
 // key material that is already strong, and does nothing to slow guessing.
 //
-// Used by the FPMQ2 container (one PBKDF2 block, expanded into the cipher and
-// MAC keys) and by SBC version 1 (expanding the key into per-step subkeys).
+// Used by the FPMQ2 and FPMQ3 containers (one PBKDF2 block, expanded into the
+// cipher and MAC keys) and by SBC versions 1 and 2 (expanding the key into
+// per-step and per-permutation subkeys).
 constexpr size_t kHkdfMaxLen = 255 * 32; // RFC 5869's limit for SHA-256
 
 // An empty salt (saltLen 0) means 32 zero bytes, per RFC 5869.

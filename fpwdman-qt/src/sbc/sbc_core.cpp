@@ -2,9 +2,12 @@
 #include "sbc_core.h"
 #include "sbc_kdf.h"
 
+#include <bit>
+
 // Faithful port of the SBC "version 0" cipher (perm1 / subkey0 / j0 / fe4-fd4).
 // Every arithmetic detail mirrors the original reference library so that files
-// encrypted by the old FLTK app decrypt bit-for-bit.
+// encrypted by the old FLTK app decrypt bit-for-bit. Versions 1 and 2 change
+// only what Version in sbc_core.h describes.
 
 namespace SBC {
 
@@ -16,7 +19,8 @@ constexpr Word kMagicPrime0 = 0x9ebd87a7u; // magicPrimes[0], used by fitOctet
 constexpr Word kMixP1 = 0x9bf7f721u;
 constexpr Word kMixP2 = 0x8da7e0e7u;
 constexpr unsigned int kFoldNum = 8;      // perm1 fold count
-constexpr unsigned int kFoldRot = 7;      // perm1 fold rotation
+constexpr unsigned int kFoldRot = 7;      // perm1 fold rotation, versions 0 and 1
+constexpr unsigned int kFoldRotV2 = 5;    // version 2: 8 folds x 5 bits read all 32
 
 // j0: J(i) = i-1, wrapping to blockSize-1 at 0
 inline Word j0(Word i, Word blockSize) {
@@ -28,8 +32,10 @@ inline Word subkey0(const std::vector<Word>& key, unsigned int i) {
     return qTransform(key[i % key.size()]);
 }
 
-// Version-1 HKDF label; the block size and round count are appended to it.
+// HKDF labels for versions 1 and 2; the block size and round count are
+// appended to them.
 constexpr char kV1Label[] = "SBC v1 subkeys";
+constexpr char kV2Label[] = "SBC v2 subkeys";
 
 void appendBe32(std::vector<uint8_t>& v, uint32_t x) {
     v.push_back(static_cast<uint8_t>(x >> 24));
@@ -62,18 +68,35 @@ inline Word fd4(Word C, Word B, Word S) {
     return C - rotl32(qTransform(B ^ S), 7); // wraps mod 2^32 naturally
 }
 
-// perm1: the rotate-stretch-fold permutation (data-dependent, key-independent).
-// permP == true permutes (encipher); false inverts (decipher).
-void perm1(Word* words, uint32_t blockSize, bool permP) {
+// Version 2's step: the version-0 step, then a rotation of the changed word by
+// the top five bits of t. t depends only on x[p-1] and the subkey, which the step
+// leaves unchanged, so the decipherer can recompute it.
+inline Word fe4v2(Word A, Word B, Word S) {
+    const Word t = qTransform(B ^ S);
+    return std::rotl(static_cast<Word>(A + std::rotl(t, 7)), static_cast<int>(t >> 27));
+}
+
+inline Word fd4v2(Word C, Word B, Word S) {
+    const Word t = qTransform(B ^ S);
+    return std::rotr(C, static_cast<int>(t >> 27)) - std::rotl(t, 7);
+}
+
+// perm1: the rotate-stretch-fold permutation. permP == true permutes
+// (encipher); false inverts (decipher). The combined value it is driven by is
+// the XOR of qTransform over the words, which does not depend on their order,
+// so the decipherer can recompute it from the permuted block.
+//   versions 0 and 1: key = 0, foldRot = 7 (data-dependent, key-independent);
+//   version 2:        key = p_m, foldRot = 5 (keyed, and reads all 32 bits).
+void perm1(Word* words, uint32_t blockSize, bool permP, Word key, unsigned int foldRot) {
     std::vector<Word> Y(blockSize);
-    Word sumBlock = 0;
+    Word sumBlock = key;
     for (uint32_t j = 0; j < blockSize; ++j)
         sumBlock ^= qTransform(words[j]);
 
     std::vector<Word> sum(kFoldNum);
     for (unsigned int i = 0; i < kFoldNum; ++i) {
         sum[i] = sumBlock;
-        sumBlock = rotl32(sumBlock, kFoldRot);
+        sumBlock = rotl32(sumBlock, foldRot);
     }
 
     for (unsigned int i = 0; i < kFoldNum; ++i) {
@@ -96,24 +119,22 @@ void perm1(Word* words, uint32_t blockSize, bool permP) {
 
 // --- primitives -------------------------------------------------------------
 
+// std::rotl and std::rotr compile to a single rotate instruction, with no branch
+// on the amount (the earlier `y == 0 ? x : ...` form branched on it).
 Word rotl32(Word x, unsigned int y) {
-    y &= 31u;
-    return y == 0 ? x : static_cast<Word>((x << y) | (x >> (32 - y)));
+    return std::rotl(x, static_cast<int>(y & 31u));
 }
 
 Word rotr32(Word x, unsigned int y) {
-    y &= 31u;
-    return y == 0 ? x : static_cast<Word>((x >> y) | (x << (32 - y)));
+    return std::rotr(x, static_cast<int>(y & 31u));
 }
 
 uint8_t rotl8(uint8_t x, unsigned int y) {
-    y &= 7u;
-    return y == 0 ? x : static_cast<uint8_t>((x << y) | (x >> (8 - y)));
+    return std::rotl(x, static_cast<int>(y & 7u));
 }
 
 uint8_t rotr8(uint8_t x, unsigned int y) {
-    y &= 7u;
-    return y == 0 ? x : static_cast<uint8_t>((x >> y) | (x << (8 - y)));
+    return std::rotr(x, static_cast<int>(y & 7u));
 }
 
 Word qTransform(Word x) {
@@ -209,15 +230,20 @@ std::vector<Word> deoctify(const std::vector<uint8_t>& bytes) {
 // --- SBCipher ---------------------------------------------------------------
 
 SBCipher::SBCipher(uint32_t blockSizeWords, uint32_t keySizeWords, uint32_t rounds,
-                   KeySchedule schedule)
+                   Version version)
     : K_(blockSizeWords), N_(keySizeWords), rounds_(rounds),
-      permInterval_(2 * blockSizeWords), schedule_(schedule), key_(keySizeWords, 0) {
+      permInterval_(2 * blockSizeWords), version_(version), key_(keySizeWords, 0) {
     if (K_ == 0)
         throw BadBlockSize();
     if (N_ == 0)
         throw BadKeySize();
-    if (schedule_ == KeySchedule::V1 &&
-        4u * static_cast<uint64_t>(rounds_) * K_ > kHkdfMaxLen)
+    // Versions 1 and 2 draw all their subkeys from one HKDF expansion.
+    uint64_t subkeyWords = 0;
+    if (version_ == Version::V1)
+        subkeyWords = static_cast<uint64_t>(rounds_) * K_;
+    else if (version_ == Version::V2)
+        subkeyWords = static_cast<uint64_t>(rounds_) * K_ + permutationCount();
+    if (4u * subkeyWords > kHkdfMaxLen)
         throw BadBlockSize();
 
     // Start from an all-zero key, as the original did, so the cipher is usable
@@ -229,6 +255,13 @@ SBCipher::SBCipher(uint32_t blockSizeWords, uint32_t keySizeWords, uint32_t roun
 SBCipher::~SBCipher() {
     wipeVector(key_);
     wipeVector(sub_);
+    wipeVector(permSub_);
+}
+
+uint32_t SBCipher::permutationCount() const {
+    // perm1 runs after every step i > 0 with i a multiple of permInterval_.
+    const uint64_t total = static_cast<uint64_t>(rounds_) * K_;
+    return total == 0 ? 0u : static_cast<uint32_t>((total - 1) / permInterval_);
 }
 
 void SBCipher::keySetupFromString(const std::string& passphrase) {
@@ -243,8 +276,9 @@ void SBCipher::keySetupFromString(const std::string& passphrase) {
 void SBCipher::keySetupRaw(const uint8_t* keyBytes, size_t n) {
     const uint32_t total = rounds_ * K_;
     std::vector<Word> sub(total);
+    std::vector<Word> permSub;
 
-    if (schedule_ == KeySchedule::V0) {
+    if (version_ == Version::V0) {
         if (n != 4u * N_)
             throw BadKeySize();
         for (uint32_t i = 0; i < N_; ++i) {
@@ -256,49 +290,73 @@ void SBCipher::keySetupRaw(const uint8_t* keyBytes, size_t n) {
         for (uint32_t i = 0; i < total; ++i)
             sub[i] = subkey0(key_, i);
     } else {
+        // Version 1: rounds*K step subkeys. Version 2: the same number under its
+        // own label, followed by one subkey per permutation.
         if (n == 0)
             throw BadKeySize();
-        std::vector<uint8_t> info(kV1Label, kV1Label + sizeof kV1Label - 1);
+        const bool v2 = (version_ == Version::V2);
+        const char* label = v2 ? kV2Label : kV1Label;
+        std::vector<uint8_t> info(label, label + (v2 ? sizeof kV2Label : sizeof kV1Label) - 1);
         appendBe32(info, K_);
         appendBe32(info, rounds_);
 
-        std::vector<uint8_t> okm(4u * total);
+        const uint32_t perms = v2 ? permutationCount() : 0u;
+        std::vector<uint8_t> okm(4u * (total + perms));
         if (!hkdfSha256(nullptr, 0, keyBytes, n, info.data(), info.size(),
                         okm.data(), okm.size()))
             throw BadBlockSize(); // unreachable: the constructor checked the size
-        for (uint32_t i = 0; i < total; ++i) {
-            sub[i] = (static_cast<Word>(okm[4 * i]) << 24) |
-                     (static_cast<Word>(okm[4 * i + 1]) << 16) |
-                     (static_cast<Word>(okm[4 * i + 2]) << 8) |
-                     static_cast<Word>(okm[4 * i + 3]);
-        }
+        auto wordAt = [&okm](uint32_t w) {
+            return (static_cast<Word>(okm[4 * w]) << 24) |
+                   (static_cast<Word>(okm[4 * w + 1]) << 16) |
+                   (static_cast<Word>(okm[4 * w + 2]) << 8) |
+                   static_cast<Word>(okm[4 * w + 3]);
+        };
+        for (uint32_t i = 0; i < total; ++i)
+            sub[i] = wordAt(i);
+        permSub.resize(perms);
+        for (uint32_t m = 0; m < perms; ++m)
+            permSub[m] = wordAt(total + m);
         wipeVector(okm);
     }
 
     wipeVector(sub_);
     sub_.swap(sub);
+    wipeVector(permSub_);
+    permSub_.swap(permSub);
 }
 
+// The branches on version_ select the cipher, which is public; nothing here
+// branches on the data or the key.
 void SBCipher::encipherBlock(Word* x) const {
     const uint32_t k = K_;
     const uint32_t total = rounds_ * k;
+    const bool v2 = (version_ == Version::V2);
     for (uint32_t i = 0; i < total; ++i) {
         const Word j = j0(i % k, k);
-        x[i % k] = fe4(x[i % k], x[j], sub_[i]);
-        if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0)
-            perm1(x, k, /*permP=*/true);
+        x[i % k] = v2 ? fe4v2(x[i % k], x[j], sub_[i]) : fe4(x[i % k], x[j], sub_[i]);
+        if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0) {
+            if (v2)
+                perm1(x, k, /*permP=*/true, permSub_[i / permInterval_ - 1], kFoldRotV2);
+            else
+                perm1(x, k, /*permP=*/true, 0u, kFoldRot);
+        }
     }
 }
 
 void SBCipher::decipherBlock(Word* y) const {
     const uint32_t k = K_;
     const uint32_t total = rounds_ * k;
+    const bool v2 = (version_ == Version::V2);
     for (uint32_t ii = total; ii-- > 0;) {
         const uint32_t i = ii;
-        if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0)
-            perm1(y, k, /*permP=*/false);
+        if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0) {
+            if (v2)
+                perm1(y, k, /*permP=*/false, permSub_[i / permInterval_ - 1], kFoldRotV2);
+            else
+                perm1(y, k, /*permP=*/false, 0u, kFoldRot);
+        }
         const Word j = j0(i % k, k);
-        y[i % k] = fd4(y[i % k], y[j], sub_[i]);
+        y[i % k] = v2 ? fd4v2(y[i % k], y[j], sub_[i]) : fd4(y[i % k], y[j], sub_[i]);
     }
 }
 

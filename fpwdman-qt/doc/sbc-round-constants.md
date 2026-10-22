@@ -2,11 +2,14 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # SBC version 1: a key schedule with a different subkey for every step
 
-Status: implemented 2026-10-21 (`KeySchedule::V1` in `src/sbc/sbc_core.*`,
-the FPMQ2 container in `src/crypto/PasswordStore.cpp`). Written the same day
-from a cryptanalysis of `src/sbc/sbc_core.cpp`. It replaces an earlier version
-of this note, whose formula was flawed (see "A tempting fix that does not
-work").
+Status: implemented 2026-10-21 (`Version::V1` in `src/sbc/sbc_core.*`, named
+`KeySchedule::V1` at the time; the FPMQ2 container in
+`src/crypto/PasswordStore.cpp`). Written the same day from a cryptanalysis of
+`src/sbc/sbc_core.cpp`. It replaces an earlier version of this note, whose
+formula was flawed (see "A tempting fix that does not work").
+
+Superseded for new files, 2026-10-22, by SBC version 2 and the FPMQ3 format
+(see the last section). Version 1 and FPMQ2 remain readable.
 
 One change is meant to serve both uses of SBC: SBC as a standalone cipher, and
 SBC inside fpwdman. Both would call the same encipher and decipher with the
@@ -161,5 +164,26 @@ Items 1 to 5 were done on 2026-10-21; item 6 is the user's.
    version (4.0 writes none) and any older
    copies. An old-format copy under the same passphrase allows fast passphrase
    guessing, so change the master passphrase once nothing old remains.
+
+## Version 2 and FPMQ3 (2026-10-22)
+
+Version 2 keeps version 1's per-step subkeys (under the label
+"SBC v2 subkeys") and adds two changes:
+
+- **Data-dependent rotation.** With `t = qTransform(x[p-1] ^ s_i)` and `r` its
+  top five bits, the step is `x[p] = rotl(x[p] + rotl(t, 7), r)`; decryption
+  is `x[p] = rotr(x[p], r) - rotl(t, 7)`. The changed word is rotated, not `t`.
+  All rotations use `std::rotl` / `std::rotr`, which have no branch on the
+  amount.
+- **Keyed permutation.** The same HKDF expansion yields one more word per
+  permutation (11 for the default shape), `p_m`. `perm1`'s driving value
+  becomes `p_m ^ XOR of qTransform(words)`, and it is rotated by 5 between the
+  eight folds instead of by 7, so all 32 bits are read.
+
+FPMQ3 is FPMQ2 with SBC version 2 and its own HKDF labels ("FPMQ3 sbc",
+"FPMQ3 mac"). The app (4.1) writes FPMQ3 and reads all four formats. Tests:
+`SbcCore.Version2*` (including a known-answer vector from an independent Python
+reference) and the FPMQ3 cases in `StoreTest`. The reasoning and the open
+questions are in `doc/sbc-fpwdman-article.tex`, Sections 3 and 5.
 
 Copyright Ben Paul Wise. All Rights Reserved.

@@ -1,7 +1,7 @@
 % ---------------------------------------------
 % Copyright Ben Paul Wise. All rights reserved.
 % ---------------------------------------------
-% SBC version 1 and the FPMQ2 password file.
+% SBC versions 1 and 2 and the FPMQ2 and FPMQ3 password files.
 % Process with pdfLaTeX, twice (for the cross-references).
 
 \input{../../../CPVI/shared-tex/prolog-article.tex}
@@ -21,14 +21,14 @@
 \renewcommand{\floatpagefraction}{0.8}
 
 \lhead{B. P. Wise}
-\rhead{SBC version 1 and FPMQ2}
+\rhead{SBC version 2 and FPMQ3}
 \cfoot{\thepage\ of \pageref{LastPage}}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\xor}{\oplus}
 \newcommand{\rotl}{\lll}
 
-\title{Sliding Block Cipher Version 1\\ and the FPMQ2 Password File:\\
+\title{Sliding Block Cipher Version 2\\ and the FPMQ3 Password File:\\
 Design, Repairs, and Open Questions}
 \author{Ben P. Wise}
 \date{21 October 2026}
@@ -45,8 +45,11 @@ but it found one structural weakness in the cipher and four weaknesses in the
 file format and the program around it. This article explains in plain language how the cipher
 and the file format work and why each part is there. It then describes the
 weaknesses and how they were repaired in SBC version 1 and in a new file format
-called FPMQ2, which \code{fpwdman} 4.0 writes. It gives pseudo-code for both,
-and it lists the attacks and analyses that remain to be done.
+called FPMQ2, which \code{fpwdman} 4.0 writes. Two further changes, a rotation
+whose amount depends on the data and a permutation that depends on the key,
+make SBC version 2 and the file format FPMQ3, which \code{fpwdman} 4.1 writes.
+The article gives pseudo-code for the cipher and the file format, and it lists
+the attacks and analyses that remain to be done.
 \end{abstract}
 \clearpage
 
@@ -71,15 +74,19 @@ pseudo-code for the cipher and for the file format. Section \ref{sec:open}
 lists what remains to be studied. Appendix \ref{sec:measure} records the
 measurements on which the article relies.
 
-Three file formats appear throughout:
+Four file formats appear throughout:
 \begin{itemize}[nosep]
 \item the \emph{legacy} format, written by the original FLTK program, which is
       read but no longer written;
 \item \emph{FPMQ1}, written by the Qt program before version 4.0, which is also
       read but no longer written;
-\item \emph{FPMQ2}, written by version 4.0 and later.
+\item \emph{FPMQ2}, written by version 4.0, which is also read but no longer
+      written;
+\item \emph{FPMQ3}, written by version 4.1 and later.
 \end{itemize}
-Opening a file in an older format and saving it converts it to FPMQ2.
+Opening a file in an older format and saving it converts it to FPMQ3. The
+cipher likewise has three versions: version 0 for the legacy format and FPMQ1,
+version 1 for FPMQ2, and version 2 for FPMQ3.
 
 \section{How it works, and why}
 \label{sec:how}
@@ -157,11 +164,31 @@ $n$ is twice an odd number,
 $c$ be odd,
 and all three are positive.
 
+In version 2 each step ends with a second rotation, of the word being changed,
+by an amount taken from the data. With $t$ the output of $q$ and $r$ its five
+highest bits, a number from 0 to 31, the step is
+\begin{eqnarray}
+t &=& q(x_{p-1} \xor s_i), \label{eq:stepv2_A} \\
+r &=& \lfloor t / 2^{27} \rfloor, \label{eq:stepv2_B} \\
+x_p &\leftarrow& \bigl( x_p + (t \rotl 7) \bmod 2^{32} \bigr) \rotl r.
+\label{eq:stepv2_C}
+\end{eqnarray}
+Versions 0 and 1 stop at step (\ref{eq:step_B}), which is (\ref{eq:stepv2_C})
+with $r = 0$.
+
 Every 64 steps (two rounds) the words of the ring are rearranged by a
 permutation called \code{perm1}. It does not change any word; it only moves
 words to new places. The new order depends on the data: \code{perm1} combines
 all the words into one 32-bit number, by applying $q$ to each and taking the
 exclusive-or of the results, and uses that number to choose the rearrangement.
+It does so in eight moves. At each it adds a different part of the number to
+every word's position, modulo $K$, and then folds the positions over: a word in
+the first half moves to twice its position, and a word in the second half moves,
+in reverse order, to an odd position. Version 2 makes two changes. It combines the number, by exclusive-or,
+with one more secret subkey for each permutation, so that the rearrangement can
+no longer be computed without the key. And it rotates the number by five places
+between the moves, instead of by seven, so that the eight moves use all 32 of
+its bits; with seven, two of the bits are never used.
 
 A file is longer than one block, so the blocks are chained: each block is
 combined, by exclusive-or, with the encrypted block before it, and then
@@ -190,6 +217,17 @@ below. Without the rotation, a change in a high bit could never reach the low
 bits. Rotating by seven places brings high bits to the bottom, so over many
 steps every bit influences every other.
 
+\item[The second rotation depends on the data (version 2).]
+The amount $r$ comes from the five highest bits of $q$, which depend on every
+input bit. Where each bit of the changed word lands therefore depends on the
+whole of $x_{p-1}$ and the subkey, so within a single step the low bits of the
+result depend on the high bits of the input. The fixed rotation by seven is
+kept, so that the high bits of $q$ still reach the bottom in the one step in 32
+where $r$ is zero. The step can still be undone, because $r$, like $t$, depends
+only on $x_{p-1}$ and $s_i$. The rotation is computed by a single processor
+instruction whose time does not depend on the amount, so the time a step takes
+reveals nothing about $r$.
+
 \item[The ring spreads a change to every word.]
 A change to word $p$ alters the next step's change to word $p+1$, which alters
 word $p+2$, and so on. Measured on random data, one round changes about a
@@ -200,18 +238,27 @@ is what a random result would do (Appendix \ref{sec:measure}).
 The step relates only neighbouring words. Moving words to new places between
 rounds makes words that were far apart into neighbours and vice versa.
 
+\item[The permutation can be undone, and in version 2 it is secret.]
+The number that chooses the rearrangement does not depend on the order of the
+words, so decryption can compute it again from the rearranged block. In version
+2 it also includes a subkey, so the rearrangement cannot be computed without the
+key. Because the number depends on every word, the two blocks of a pair that
+differ almost always receive different rearrangements, which breaks the pattern
+of differences that a differential attack follows.
+
 \item[Many rounds give a margin.]
 Most attacks on block ciphers grow harder with every round. Twenty-four rounds
 are far more than are needed to mix the bits, which leaves room against attacks
 not yet known.
 
-\item[Every step has its own subkey (version 1).]
+\item[Every step has its own subkey (versions 1 and 2).]
 Section \ref{sec:slide} explains why this matters.
 \end{description}
 
 \subsection{The password file}
 
-Saving the password file in FPMQ2 takes the following stages.
+Saving the password file in FPMQ3 takes the following stages. (FPMQ2 differs
+only in using SBC version 1 and its own labels in stage 3.)
 \begin{enumerate}[nosep]
 \item Choose 16 random bytes, the \emph{salt}.
 \item Run PBKDF2 \cite{rfc8018} on the passphrase and salt, with 600,000
@@ -221,7 +268,7 @@ Saving the password file in FPMQ2 takes the following stages.
       64 bytes for the cipher and 32 bytes for the authentication code.
 \item Place 16 more random bytes, the \emph{nonce}, before the list of entries,
       followed by its length; pad the whole to a multiple of 128 bytes.
-\item Encrypt it with SBC version 1 in CBC mode.
+\item Encrypt it with SBC version 2 in CBC mode.
 \item Compute an authentication code (HMAC-SHA-256) over the file's header and
       the encrypted text, and write the header, the code, and the encrypted
       text.
@@ -289,6 +336,13 @@ FPMQ2: the code covers the header \\
 A backup copy kept at every save &
 The previous file survived in its old format and under its old passphrase &
 Version 4.0 keeps no backup \\
+A fixed rotation of seven places &
+Low output bits depend on high input bits only after several steps; the step
+keeps the regular algebra of a quadratic &
+SBC version 2: a further rotation by the five high bits of $q$ \\
+A permutation with no key, reading 30 of its 32 bits &
+Anyone who knows the state can compute the rearrangement &
+SBC version 2: a subkey for each permutation, and all 32 bits read \\
 \hline
 \end{tabular}
 \caption{Weaknesses found in the October 2026 review and their repairs.}
@@ -400,7 +454,8 @@ the key, but the version name and the other header text were not protected.
 FPMQ2 computes the code over both header lines and the encrypted text, and it
 rejects any header that differs from what the program writes. In particular, an
 FPMQ2 file relabelled as FPMQ1 is refused, so it cannot be steered onto the
-older reading path.
+older reading path. FPMQ3 does the same, and since each format derives its keys
+with its own labels, an FPMQ3 file relabelled as FPMQ2 or FPMQ1 is refused too.
 
 \subsection{The backup copy}
 
@@ -415,13 +470,44 @@ is still harmless: the program writes the new file under a temporary name and
 replaces the old one only when the new one is complete, so an interrupted save
 leaves the old file as it was.
 
+\subsection{The fixed rotation and the unkeyed permutation}
+\label{sec:v2}
+
+These two weaknesses were not found by an attack but by reasoning about where an
+attack would begin; Section \ref{sec:open} (items \ref{item:perm} and
+\ref{item:rotation}) gives the reasoning. Version 2 of SBC repairs both, and
+FPMQ3 is the file format that uses it.
+
+\emph{The rotation.} In versions 0 and 1, each output bit of $q$ depends only on
+the input bits at its own place and below, and only the fixed rotation by seven
+places carries information downward, over several steps. The step also keeps
+the regular algebra of a quadratic. Version 2 adds the rotation of steps
+(\ref{eq:stepv2_A}) to (\ref{eq:stepv2_C}): the changed word is rotated by the
+five highest bits of $q$. A differential or linear attack must now predict one
+of 32 rotation amounts at every step, and a rotation by a varying amount is not
+a polynomial, so the step no longer has a quadratic's regular algebra. The
+rotation is computed without any branch on its amount, so its timing reveals
+nothing.
+
+\emph{The permutation.} In versions 0 and 1, \code{perm1} uses no key: anyone who
+knows the state at that point can compute the rearrangement. It also reads only
+30 of the 32 bits of the number that drives it. Version 2 combines that number
+with a secret subkey for each permutation, drawn from the same HKDF expansion as
+the step subkeys, and rotates the number by five places between moves, so that
+all 32 bits are read. Decryption is unchanged in form: it computes the number
+from the rearranged block, combines it with the same subkey, and undoes the
+moves in reverse order.
+
+Version 2 needs 11 more subkeys than version 1, one for each permutation, and a
+few more instructions per step. Its cost is negligible beside that of PBKDF2.
+
 \subsection{Earlier repairs}
 
 For completeness: the legacy format of the FLTK program had no key-derivation
 function. The passphrase was scrambled into the key by a reversible function,
 with no salt and no delay, and a wrong guess could be recognized after
 decrypting a single block. Guessing was therefore millions of times cheaper
-than for FPMQ1 or FPMQ2. The Qt program corrected this with FPMQ1 before the
+than for FPMQ1, FPMQ2 or FPMQ3. The Qt program corrected this with FPMQ1 before the
 present review, and it now only reads the legacy format.
 
 \section{Pseudo-code}
@@ -435,13 +521,15 @@ permutation interval $M = 2K$ (64).
 \subsection{The basic SBC}
 
 Algorithms \ref{alg:prim} to \ref{alg:cbc} give the cipher: its primitive
-functions, its two key schedules, the encryption and decryption of one block,
-and the chaining of blocks. Two points need comment. First, in \textsc{Perm1}
-the value $\sigma$ does not depend on the order of the words, so decryption can
-compute it from the permuted block, and so undo the permutation. Second, the
-chaining starts from zero rather than from a random value, but the first 16
-bytes of every plaintext are random (Algorithm \ref{alg:save}), which serves
-the same purpose.
+functions, its three key schedules, the encryption and decryption of one block,
+and the chaining of blocks. The version $v$ (0, 1 or 2) selects the lines that
+differ. Three points need comment. First, in \textsc{Perm1} the value $\sigma$
+does not depend on the order of the words, so decryption can compute it from the
+permuted block, and so undo the permutation. Second, in version 2 the rotation
+amount $r$ depends only on $x_{p-1}$ and $s_i$, which the step leaves unchanged,
+so decryption can compute it too. Third, the chaining starts from zero rather
+than from a random value, but the first 16 bytes of every plaintext are random
+(Algorithm \ref{alg:save}), which serves the same purpose.
 
 \begin{algorithm}[htbp]
 \caption{The primitive functions}
@@ -457,11 +545,12 @@ the same purpose.
     \State \Return $2(K-j)-1$
   \EndIf
 \EndFunction
-\Function{Perm1}{$x$, $\mathit{forward}$}
-  \State $\sigma \gets q(x_0) \xor q(x_1) \xor \cdots \xor q(x_{K-1})$
+\Function{Perm1}{$x$, $\mathit{forward}$, $\kappa$, $\rho$}
+  \Comment{versions 0, 1: $\kappa = 0$, $\rho = 7$; version 2: $\kappa = \pi_m$, $\rho = 5$}
+  \State $\sigma \gets \kappa \xor q(x_0) \xor q(x_1) \xor \cdots \xor q(x_{K-1})$
     \Comment{does not depend on the order}
   \For{$t \gets 0$ \textbf{to} $7$}
-    \State $\sigma_t \gets \sigma \rotl 7t$
+    \State $\sigma_t \gets \sigma \rotl \rho t$
   \EndFor
   \If{$\mathit{forward}$}
     \For{$t \gets 0$ \textbf{to} $7$}
@@ -497,6 +586,14 @@ the same purpose.
   \EndFor
   \State \Return $s$ \Comment{$RK \le 2040$, the limit of HKDF}
 \EndFunction
+\Function{KeySetupV2}{$\mathit{key}$} \Comment{FPMQ3; any non-empty byte string}
+  \State $P \gets \lfloor (RK-1)/M \rfloor$ \Comment{permutations per block: 11}
+  \State $\mathit{info} \gets$ ``SBC v2 subkeys'' $\|$ \textsc{be32}($K$) $\|$ \textsc{be32}($R$)
+  \State $b \gets \textsc{HKDF-SHA-256}(\mathit{key}, \text{empty salt}, \mathit{info}, 4(RK+P))$
+  \State $w_0, \ldots, w_{RK+P-1} \gets$ the words of $b$, read most significant first
+  \State $s_i \gets w_i$ for $0 \le i < RK$; \quad $\pi_m \gets w_{RK+m}$ for $0 \le m < P$
+  \State \Return $s$, $\pi$ \Comment{$RK + P \le 2040$}
+\EndFunction
 \end{algorithmic}
 \end{algorithm}
 
@@ -504,23 +601,39 @@ the same purpose.
 \caption{Encrypting and decrypting one block}
 \label{alg:block}
 \begin{algorithmic}[1]
-\Function{EncipherBlock}{$x_0, \ldots, x_{K-1}$; $s$}
+\Function{EncipherBlock}{$x_0, \ldots, x_{K-1}$; $s$, $\pi$, $v$}
   \For{$i \gets 0$ \textbf{to} $RK-1$}
     \State $p \gets i \bmod K$
-    \State $x_p \gets x_p + \bigl(q(x_{(p-1) \bmod K} \xor s_i) \rotl 7\bigr)$
+    \State $t \gets q(x_{(p-1) \bmod K} \xor s_i)$
+    \State $x_p \gets x_p + (t \rotl 7)$
+    \If{$v = 2$}
+      \State $x_p \gets x_p \rotl \lfloor t/2^{27} \rfloor$ \Comment{the five high bits of $t$}
+    \EndIf
     \If{$i > 0$ \textbf{and} $i \bmod M = 0$}
-      \State $x \gets \textsc{Perm1}(x, \text{true})$
+      \If{$v = 2$}
+        \State $x \gets \textsc{Perm1}(x, \text{true}, \pi_{i/M - 1}, 5)$
+      \Else
+        \State $x \gets \textsc{Perm1}(x, \text{true}, 0, 7)$
+      \EndIf
     \EndIf
   \EndFor
   \State \Return $x$
 \EndFunction
-\Function{DecipherBlock}{$x_0, \ldots, x_{K-1}$; $s$}
+\Function{DecipherBlock}{$x_0, \ldots, x_{K-1}$; $s$, $\pi$, $v$}
   \For{$i \gets RK-1$ \textbf{down to} $0$}
     \If{$i > 0$ \textbf{and} $i \bmod M = 0$}
-      \State $x \gets \textsc{Perm1}(x, \text{false})$
+      \If{$v = 2$}
+        \State $x \gets \textsc{Perm1}(x, \text{false}, \pi_{i/M - 1}, 5)$
+      \Else
+        \State $x \gets \textsc{Perm1}(x, \text{false}, 0, 7)$
+      \EndIf
     \EndIf
     \State $p \gets i \bmod K$
-    \State $x_p \gets x_p - \bigl(q(x_{(p-1) \bmod K} \xor s_i) \rotl 7\bigr)$
+    \State $t \gets q(x_{(p-1) \bmod K} \xor s_i)$
+    \If{$v = 2$}
+      \State $x_p \gets x_p \ggg \lfloor t/2^{27} \rfloor$ \Comment{right rotation}
+    \EndIf
+    \State $x_p \gets x_p - (t \rotl 7)$
   \EndFor
   \State \Return $x$
 \EndFunction
@@ -531,19 +644,20 @@ the same purpose.
 \caption{Chaining blocks (CBC with a zero starting value)}
 \label{alg:cbc}
 \begin{algorithmic}[1]
-\Function{EncipherCBC}{$P_0, \ldots, P_{m-1}$; $s$}
+\Function{EncipherCBC}{$P_0, \ldots, P_{n-1}$; $S$}
+  \Comment{$S$: the schedule ($s$, $\pi$, $v$)}
   \State $C_{-1} \gets 0$
-  \For{$b \gets 0$ \textbf{to} $m-1$}
-    \State $C_b \gets \textsc{EncipherBlock}(P_b \xor C_{b-1}; s)$
+  \For{$b \gets 0$ \textbf{to} $n-1$}
+    \State $C_b \gets \textsc{EncipherBlock}(P_b \xor C_{b-1}; S)$
   \EndFor
-  \State \Return $C_0, \ldots, C_{m-1}$
+  \State \Return $C_0, \ldots, C_{n-1}$
 \EndFunction
-\Function{DecipherCBC}{$C_0, \ldots, C_{m-1}$; $s$}
+\Function{DecipherCBC}{$C_0, \ldots, C_{n-1}$; $S$}
   \State $C_{-1} \gets 0$
-  \For{$b \gets 0$ \textbf{to} $m-1$}
-    \State $P_b \gets \textsc{DecipherBlock}(C_b; s) \xor C_{b-1}$
+  \For{$b \gets 0$ \textbf{to} $n-1$}
+    \State $P_b \gets \textsc{DecipherBlock}(C_b; S) \xor C_{b-1}$
   \EndFor
-  \State \Return $P_0, \ldots, P_{m-1}$
+  \State \Return $P_0, \ldots, P_{n-1}$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -556,19 +670,19 @@ numbers, and is decoded by a separate reader that reproduces the FLTK program
 exactly. Saving any file, whatever its format, calls \textsc{Save}.
 
 \begin{algorithm}[htbp]
-\caption{Saving the password file (FPMQ2)}
+\caption{Saving the password file (FPMQ3)}
 \label{alg:save}
 \begin{algorithmic}[1]
 \Function{Save}{$\mathit{passphrase}$, $\mathit{entries}$}
   \State $\mathit{xml} \gets$ the entries written as XML
   \State $\mathit{salt} \gets$ 16 random bytes
   \State $\mathit{master} \gets \textsc{PBKDF2-HMAC-SHA-256}(\mathit{passphrase}, \mathit{salt}, 600000, 32)$
-  \State $k_c \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ2 sbc''}, 64)$
-  \State $k_m \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ2 mac''}, 32)$
+  \State $k_c \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ3 sbc''}, 64)$
+  \State $k_m \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ3 mac''}, 32)$
   \State $F \gets$ 16 random bytes $\|$ \textsc{le32}(length of $\mathit{xml}$) $\|$ $\mathit{xml}$
   \State pad $F$ with bytes $\mathrm{FF}_{16}$ to a multiple of 128 bytes
-  \State $C \gets \textsc{EncipherCBC}(F;\ \textsc{KeySetupV1}(k_c))$
-  \State $H \gets$ ``FPMQ2\textbackslash n'' $\|$
+  \State $C \gets \textsc{EncipherCBC}(F;\ \textsc{KeySetupV2}(k_c), v = 2)$
+  \State $H \gets$ ``FPMQ3\textbackslash n'' $\|$
          ``kdf=pbkdf2-sha256; iters=600000; salt='' $\|$ \textsc{base64}($\mathit{salt}$) $\|$ ``\textbackslash n''
   \State $\mathit{tag} \gets \textsc{HMAC-SHA-256}(k_m, H \,\|\, C)$
   \State write $H$, then ``mac=hmac-sha256; tag='' $\|$ \textsc{base64}($\mathit{tag}$),
@@ -579,27 +693,30 @@ exactly. Saving any file, whatever its format, calls \textsc{Save}.
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{Opening the password file (FPMQ1 or FPMQ2)}
+\caption{Opening the password file (FPMQ1, FPMQ2 or FPMQ3)}
 \label{alg:open}
 \begin{algorithmic}[1]
 \Function{Open}{$\mathit{file}$, $\mathit{passphrase}$}
   \State read the version line, the salt, the repetition count $c$, the tag and $C$
-  \If{the version is neither FPMQ1 nor FPMQ2}
+  \If{the version is not FPMQ1, FPMQ2 or FPMQ3}
     \State \textbf{fail}: corrupt file
   \EndIf
   \If{$c \ne 600000$} \Comment{checked before any key is made}
     \State \textbf{fail}: corrupt file
   \EndIf
-  \If{FPMQ2 \textbf{and} the header differs from what \textsc{Save} writes}
+  \If{not FPMQ1 \textbf{and} the header differs from what \textsc{Save} writes}
     \State \textbf{fail}: corrupt file
   \EndIf
-  \If{FPMQ2}
+  \If{FPMQ3}
     \State derive $k_c$, $k_m$ as in \textsc{Save}; $\mathit{data} \gets H \,\|\, C$;
-           $\mathit{schedule} \gets \textsc{KeySetupV1}$
+           $\mathit{schedule} \gets \textsc{KeySetupV2}$, $v = 2$
+  \ElsIf{FPMQ2}
+    \State the same, with the labels ``FPMQ2 sbc'' and ``FPMQ2 mac'';
+           $\mathit{schedule} \gets \textsc{KeySetupV1}$, $v = 1$
   \Else \Comment{FPMQ1}
     \State $d \gets \textsc{PBKDF2-HMAC-SHA-256}(\mathit{passphrase}, \mathit{salt}, 600000, 96)$
     \State $k_c \gets d_{0 \ldots 63}$; $k_m \gets d_{64 \ldots 95}$; $\mathit{data} \gets C$;
-           $\mathit{schedule} \gets \textsc{KeySetupV0}$
+           $\mathit{schedule} \gets \textsc{KeySetupV0}$, $v = 0$
   \EndIf
   \If{$\textsc{HMAC-SHA-256}(k_m, \mathit{data}) \ne \mathit{tag}$}
     \Comment{compared in constant time}
@@ -647,41 +764,53 @@ cipher must survive before it can be trusted for important data.
       more rounds, to learn how large the safety margin of 24 rounds actually
       is. This is the standard way of measuring a new cipher.
 
-\item \label{item:perm}\textbf{The permutation.} \code{perm1} uses no key, and its choice depends
-      on the exclusive-or of $q$ applied to every word, which does not depend on
-      their order. It reads only 30 of those 32 bits. It produces a great
-      variety of rearrangements (65,535 different ones from 65,536 random
-      blocks), so it mixes well, but anyone who knows the state at that point
-      can compute it. Does it add strength, or only spreading? Are there blocks
-      it leaves in a predictable order? A keyed permutation would be worth
-      studying as a version 2.
+\item \label{item:perm}\textbf{The permutation.} In versions 0 and 1,
+      \code{perm1} uses no key, and its choice depends on the exclusive-or of
+      $q$ applied to every word, which does not depend on their order. It reads
+      only 30 of those 32 bits. It produces a great variety of rearrangements
+      (65,535 different ones from 65,536 random blocks), so it mixes well, but
+      anyone who knows the state at that point can compute it. Version 2
+      (Section \ref{sec:v2}) combines the driving number with a secret subkey
+      for each permutation and reads all 32 bits. Questions remain for both
+      forms. Does the permutation add strength, or only spreading? Are there
+      blocks it leaves in a predictable order? The rearrangements all come from
+      one family, eight moves of adding and folding, so even when keyed there
+      are at most $2^{32}$ of them for each permutation, out of the $32!$, or
+      about $2^{117}$, possible orders. Whether that family has structure an
+      attacker can use is not known. A permutation drawn from all $32!$ orders
+      with the key would remove the question, at the cost of more code.
 
 \item \textbf{Algebraic attacks.} Each step is a polynomial of low degree over
       the integers modulo $2^{32}$, mixed with exclusive-or. Methods that
       solve systems of such equations should be tried on reduced rounds.
 
-\item \label{item:rotation}\textbf{A rotation that depends on the data.} Every step of SBC rotates
-      by the same fixed amount, seven places. RC5 \cite{rivest1995} and RC6
-      \cite{rivest1998} instead rotate by an amount taken from the data; in
-      RC6 it is the five high bits of a quadratic of another word. SBC could
-      do the same, for example by rotating $q(x_{p-1} \xor s_i)$ by its own
-      five high bits instead of by seven. The step would remain reversible,
-      because $x_{p-1}$ and $s_i$ are unchanged by it. This would help in
+\item \label{item:rotation}\textbf{A rotation that depends on the data.} In
+      versions 0 and 1 every step rotates by the same fixed amount, seven
+      places. RC5 \cite{rivest1995} and RC6 \cite{rivest1998} instead rotate by
+      an amount taken from the data; in RC6 it is the five high bits of a
+      quadratic of another word, and what is rotated is the word being
+      changed. Version 2 of SBC does the same (Section \ref{sec:v2}): it
+      rotates the changed word $x_p$ by the five high bits of
+      $q(x_{p-1} \xor s_i)$, after the fixed rotation and the addition. An
+      earlier idea, rotating the output of $q$ by its own high bits, was set
+      aside: there the amount is tied to the very value it moves, whereas the
+      changed word holds independent data. The step remains reversible,
+      because $x_{p-1}$ and $s_i$ are unchanged by it. The change helps in
       three ways.
 
-      First, it would break the property that each output bit of $q$ depends
+      First, it breaks the property that each output bit of $q$ depends
       only on the input bits at the same place and below. The high bits of
-      $q$ depend on every input bit, and they would decide where every bit
-      lands, so within a single step the low bits of the result would depend
-      on the high bits of the input. Today that happens only through the
-      fixed rotation, over several steps.
+      $q$ depend on every input bit, and they decide where every bit of $x_p$
+      lands, so within a single step the low bits of the result depend
+      on the high bits of the input. In versions 0 and 1 that happens only
+      through the fixed rotation, over several steps.
 
-      Second, it would break the regular algebra of the step. A rotation by a
+      Second, it breaks the regular algebra of the step. A rotation by a
       varying amount is not a polynomial over the integers modulo $2^{32}$,
       so the regularities of a quadratic, such as its constant second
       difference, $q(x+d_1+d_2) - q(x+d_1) - q(x+d_2) + q(x) = 2n\,d_1 d_2$,
-      would no longer pass through the step intact. That would make the
-      algebraic and higher-order differential attacks above harder.
+      no longer pass through the step intact. That makes the algebraic and
+      higher-order differential attacks above harder.
 
       Third, a differential or linear attack follows a chosen pattern of
       differences or bits through the steps. With a data-dependent rotation
@@ -690,15 +819,16 @@ cipher must survive before it can be trusted for important data.
       at every step.
 
       Data-dependent rotations have weaknesses of their own: the best attacks
-      on RC5 work by controlling the rotation amounts \cite{biryukov1998}. So
-      the change would need the same analyses as the rest of this list. It
-      would also define a new version of SBC and a new file format.
+      on RC5 work by controlling the rotation amounts \cite{biryukov1998}. What
+      remains is to learn whether an attacker can steer the five high bits of
+      $q$ often enough to matter, and to repeat for version 2 the differential,
+      linear and reduced-round analyses of items 2 to 4.
 
 \item \textbf{Statistical tests.} Run the output of SBC in counter mode
       through standard test batteries for random numbers, such as NIST SP
       800-22 or PractRand, at full and at reduced rounds.
 
-\item \textbf{Related keys under version 1.} With subkeys from HKDF, no
+\item \textbf{Related keys under versions 1 and 2.} With subkeys from HKDF, no
       relation between keys is known to carry over to the subkeys. In
       \code{fpwdman} the keys come from PBKDF2 and cannot be chosen by an
       attacker, so this matters mainly for SBC as a standalone cipher.
@@ -730,10 +860,13 @@ cipher must survive before it can be trusted for important data.
       their approximate size, which reveals roughly how many entries the file
       holds. Padding to a fixed size would hide it.
 
-\item \textbf{Timing.} \code{perm1} writes words to places that depend on the
-      data. On a shared computer, the timing of memory caches could in
-      principle reveal something about those places. This matters only to an
-      attacker running programs on the same machine at the same time.
+\item \textbf{Timing.} The rotations, including version 2's data-dependent
+      one, are single processor instructions whose time does not depend on the
+      amount. But \code{perm1} writes words to places that depend on the data,
+      and in version 2 on a subkey as well. On a shared computer, the timing of
+      memory caches could in principle reveal something about those places,
+      and so about the subkey. This matters only to an attacker running
+      programs on the same machine at the same time.
 
 \item \textbf{Secrets left in memory.} The program erases keys and plaintext
       after use, but Qt's strings are copied freely, so some copies cannot be
@@ -749,10 +882,11 @@ cipher must survive before it can be trusted for important data.
       Only the two lowest bits of $q$ are linear, so the weak share of each
       word would fall from 2 bits in 32 to 2 in 64, and the longer carries of
       64-bit addition and multiplication would mix the high bits more. But $q$
-      moves information only upward within a word, and only the fixed rotation
-      brings it down again: with a rotation of seven places, a high bit takes
-      about nine steps to reach the bottom of a 64-bit word, against about five
-      in a 32-bit word. A 1024-bit block would also hold 16 words instead of
+      moves information only upward within a word, and in versions 0 and 1 only
+      the fixed rotation brings it down again: with a rotation of seven places,
+      a high bit takes about nine steps to reach the bottom of a 64-bit word,
+      against about five in a 32-bit word. (Version 2's data-dependent rotation
+      narrows that difference.) A 1024-bit block would also hold 16 words instead of
       32, and the regularities of the quadratic, such as its constant second
       difference, would be unchanged. A 64-bit SBC would therefore have to be
       measured afresh, and it would be a new version of the cipher and of the
@@ -767,17 +901,21 @@ cipher must survive before it can be trusted for important data.
       inviting its analysis.
 \end{enumerate}
 
-\paragraph{Where further effort would count most.} In order of their benefit to
-the safety of the password file, the most useful changes are these.
+\paragraph{Where further effort would count most.} Version 2 has made two of
+the changes this list once recommended: the rotation that depends on the data
+(item \ref{item:rotation}) and the keyed permutation (item \ref{item:perm}). In
+order of their benefit to the safety of the password file, the most useful
+remaining steps are these.
 \begin{enumerate}[label=(\alph*)]
 \item Argon2id in place of PBKDF2 (item \ref{item:argon}). It defends against
       the attack that matters most in practice, guessing the passphrase on
       many processors at once.
-\item A rotation that depends on the data (item \ref{item:rotation}). It
-      attacks directly the weakness that each output bit of $q$ depends only
-      on the input bits at its own place and below.
-\item A keyed permutation in place of \code{perm1} (item \ref{item:perm}). It
-      would give the permutation secrecy as well as mixing.
+\item Analysis of version 2: the differential, linear and reduced-round
+      studies of items 2 to 4, repeated for the new step, and the open
+      questions of items \ref{item:perm} and \ref{item:rotation}.
+\item A permutation drawn from all $32!$ orders with the key (item
+      \ref{item:perm}), if that analysis finds the add-and-fold family to be a
+      weakness.
 \item A standard cipher for new files (item \ref{item:standard}). It gives
       the greatest assurance, at the price of giving up SBC.
 \end{enumerate}
@@ -793,8 +931,9 @@ continue its study.
 All measurements below used keys and data generated at random for the purpose,
 or fixed test vectors. A Python implementation of SBC version 0 was first
 checked bit for bit against the compiled C++ program on a two-block test vector;
-the version 1 test vector in the program's tests was computed with the same
-Python implementation, using Python's own HMAC and SHA-256.
+the version 1 and version 2 test vectors in the program's tests were computed
+with a Python implementation written from the specification, using Python's own
+HMAC and SHA-256, which also reproduces the version 0 vector.
 
 \paragraph{Spreading of changes.} Mean number of the 1024 output bits changed
 when one bit of the input is changed, over 100 random keys and blocks (a random
@@ -815,13 +954,63 @@ result would change 512):
 \end{center}
 Changing one bit of the key changed 510.5 bits on average after 24 rounds.
 
+The same comparison for versions 1 and 2, over 2,000 random keys and blocks
+each, with the standard error of the mean:
+
+\begin{center}
+\begin{tabular}{rrr}
+\hline
+\textbf{Rounds} & \textbf{Version 1} & \textbf{Version 2} \\
+\hline
+1 & $261.3 \pm 3.3$ & $266.5 \pm 3.3$ \\
+2 & $511.8 \pm 0.4$ & $511.0 \pm 0.4$ \\
+\hline
+\end{tabular}
+\end{center}
+After one round the result depends strongly on which word was changed, since a
+change late in the ring passes through few steps; in some trials only 2 or 3
+bits changed. Across the block, then, version 2 spreads a change no faster than
+version 1, which already matched a random result after two rounds. What version
+2 changes is the behaviour within each word, below.
+
+\paragraph{Within one step (version 2's rotation).} For random $x_p$, $x_{p-1}$
+and $s_i$, one input bit of $x_{p-1}$ was flipped and the bits of the new $x_p$
+that changed were counted, over 5,000 trials for each bit:
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\hline
+\textbf{Input bit flipped} & \textbf{0} & \textbf{8} & \textbf{16} & \textbf{24} & \textbf{31} \\
+\hline
+Version 1, bits changed & 16.45 & 13.42 & 9.19 & 5.18 & 2.02 \\
+Version 2, bits changed & 15.95 & 15.92 & 15.76 & 15.57 & 16.06 \\
+\hline
+\end{tabular}
+\end{center}
+In version 1 a high input bit reaches few output bits, because each output bit
+of $q$ depends only on the input bits at its own place and below. In version 2
+every input bit changes about half of the 32. When bit 31 was flipped, over
+20,000 trials, each of the output bits 0 to 5 changed with a frequency between
+0.495 and 0.505 in version 2, and never in version 1.
+
 \paragraph{Linearity of $q$.} The algebraic degree of output bits 0 to 5 of $q$,
 as functions of the input bits at the same place and below, is 1, 1, 2, 3, 4,
 5. Only the two lowest bits are linear.
 
-\paragraph{The permutation.} \code{perm1} reads 30 of the 32 bits of its
-combined value (bits 9 and 10 are never used). Among 65,536 random values it
-produced 65,535 different rearrangements.
+\paragraph{The permutation.} In versions 0 and 1, \code{perm1} reads 30 of the
+32 bits of its combined value (bits 9 and 10 are never used); with the rotation
+by five of version 2 it reads all 32. Among 65,536 random values it produced
+65,535 different rearrangements in one sample, and 65,536 in a second sample
+for each of the two rotations.
+
+In version 2, one random block rearranged under two random permutation subkeys
+put on average 31.0 of its 32 words in different places, and in 2,000 trials the
+two orders were never the same. Two blocks that differed in a single bit,
+rearranged under the same subkey, never received the same order in 2,000 trials.
+
+\paragraph{Timing of the rotation.} In the optimized program, the version 2
+rotation compiles to two instructions, a shift that extracts the amount
+(\code{shr ecx,1Bh}) and a rotation by it (\code{rol edx,cl}), with no branch.
 
 \paragraph{Identical rounds in version 0.} In all 10 checks, the state after
 permutation $m+1$ equalled one fixed 64-step function applied to the state after
@@ -829,12 +1018,16 @@ permutation $m$. Under version 1, no two of the 24 rounds have the same
 subkeys, while under version 0 all 24 do; the program's tests check both.
 
 \paragraph{Speed.} One save and one open, in the program's debug build: 6.6
-seconds for FPMQ1 and 2.3 seconds for FPMQ2.
+seconds for FPMQ1 and 2.3 seconds for FPMQ2. In a later run, made while other
+programs were being compiled, FPMQ1 took 9.0 seconds, FPMQ2 3.0 and FPMQ3 3.0;
+version 2 of the cipher adds no measurable time.
 
-\paragraph{Tests.} Version 4.0 passes 36 tests of the cipher and key
+\paragraph{Tests.} Version 4.1 passes 41 tests of the cipher and key
 derivation, including the published test vectors for SHA-256, HMAC-SHA-256,
-PBKDF2 and HKDF, and 23 tests of the file formats, including the conversion of
-legacy and FPMQ1 files and the rejection of altered FPMQ2 files.
+PBKDF2 and HKDF and known-answer vectors for all three cipher versions, and 26
+tests of the file formats, including the conversion of legacy, FPMQ1 and FPMQ2
+files to FPMQ3, the rejection of altered FPMQ3 files, and the rejection of FPMQ3
+files relabelled as older versions.
 
 \begin{thebibliography}{99}
 

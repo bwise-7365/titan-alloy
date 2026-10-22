@@ -98,11 +98,11 @@ void katInputs(std::vector<uint8_t>& key, std::vector<Word>& plain) {
         w = g.next();
 }
 
-std::vector<Word> katCipher(KeySchedule schedule) {
+std::vector<Word> katCipher(Version version) {
     std::vector<uint8_t> key;
     std::vector<Word> plain;
     katInputs(key, plain);
-    SBCipher cipher(32, 16, 24, schedule);
+    SBCipher cipher(32, 16, 24, version);
     cipher.keySetupRaw(key.data(), key.size());
     const auto c = cipher.encipherCBC(plain);
     EXPECT_EQ(cipher.decipherCBC(c), plain);
@@ -124,7 +124,7 @@ TEST(SbcCore, Version0KnownAnswer) {
         0x022c2da3u, 0xc50a8eefu, 0x6c42ed36u, 0x1dddab4au, 0x5e20f449u, 0x70d11b7du, 0x8412d8ebu, 0x21bd6580u,
         0x449bdf75u, 0xdda5e6edu, 0x54e99180u, 0x8bf4615bu, 0x1b9548d1u, 0xd7de3103u, 0x7e3877d7u, 0x20cac468u,
     };
-    EXPECT_EQ(katCipher(KeySchedule::V0), expected);
+    EXPECT_EQ(katCipher(Version::V0), expected);
 }
 
 // Version 1 on the same inputs. The expected words come from an independent
@@ -141,7 +141,7 @@ TEST(SbcCore, Version1KnownAnswer) {
         0x63d92355u, 0x4311e4dcu, 0xcfbbdef4u, 0xf49b6314u, 0x48103a53u, 0x1d39abd7u, 0x9fd1a509u, 0x4469fe6au,
         0x24526367u, 0xf8a5f74du, 0xce159ebdu, 0xe0bd5c2bu, 0x5d1695c3u, 0xc50327e4u, 0x5041a2afu, 0xc1d38aaeu,
     };
-    EXPECT_EQ(katCipher(KeySchedule::V1), expected);
+    EXPECT_EQ(katCipher(Version::V1), expected);
 }
 
 // --- the version-1 key schedule ---------------------------------------------
@@ -167,8 +167,8 @@ std::vector<Word> roundSubkeys(const SBCipher& c, uint32_t r) {
 // subkeys; under version 1 no two rounds do.
 TEST(SbcCore, Version1RoundsAreAllDifferent) {
     const auto key = sampleKey(64);
-    SBCipher v0(32, 16, 24, KeySchedule::V0);
-    SBCipher v1(32, 16, 24, KeySchedule::V1);
+    SBCipher v0(32, 16, 24, Version::V0);
+    SBCipher v1(32, 16, 24, Version::V1);
     v0.keySetupRaw(key.data(), key.size());
     v1.keySetupRaw(key.data(), key.size());
     ASSERT_EQ(v1.subkeys().size(), 24u * 32u);
@@ -183,8 +183,8 @@ TEST(SbcCore, Version1RoundsAreAllDifferent) {
 // subkeys are not simply the start of another's.
 TEST(SbcCore, Version1ScheduleDependsOnShape) {
     const auto key = sampleKey(64);
-    SBCipher r24(32, 16, 24, KeySchedule::V1);
-    SBCipher r25(32, 16, 25, KeySchedule::V1);
+    SBCipher r24(32, 16, 24, Version::V1);
+    SBCipher r25(32, 16, 25, Version::V1);
     r24.keySetupRaw(key.data(), key.size());
     r25.keySetupRaw(key.data(), key.size());
     EXPECT_NE(roundSubkeys(r24, 0), roundSubkeys(r25, 0));
@@ -192,20 +192,82 @@ TEST(SbcCore, Version1ScheduleDependsOnShape) {
 
 TEST(SbcCore, Version1AcceptsAnyKeyLength) {
     for (size_t n : {1u, 16u, 64u, 200u}) {
-        SBCipher c(32, 16, 24, KeySchedule::V1);
+        SBCipher c(32, 16, 24, Version::V1);
         const auto key = sampleKey(n);
         c.keySetupRaw(key.data(), key.size());
         std::vector<Word> plain(32, 0x01234567u);
         EXPECT_EQ(c.decipherCBC(c.encipherCBC(plain)), plain) << n;
     }
-    SBCipher c(32, 16, 24, KeySchedule::V1);
+    SBCipher c(32, 16, 24, Version::V1);
     EXPECT_THROW(c.keySetupRaw(nullptr, 0), BadKeySize);
 }
 
 // HKDF can produce at most 2040 subkeys; a larger shape is refused up front.
 TEST(SbcCore, Version1RefusesTooManySteps) {
-    EXPECT_NO_THROW(SBCipher(85, 16, 24, KeySchedule::V1));  // 2040 steps
-    EXPECT_THROW(SBCipher(86, 16, 24, KeySchedule::V1), BadBlockSize); // 2064
-    EXPECT_NO_THROW(SBCipher(86, 16, 24, KeySchedule::V0));  // version 0 has no limit
+    EXPECT_NO_THROW(SBCipher(85, 16, 24, Version::V1));  // 2040 steps
+    EXPECT_THROW(SBCipher(86, 16, 24, Version::V1), BadBlockSize); // 2064
+    EXPECT_NO_THROW(SBCipher(86, 16, 24, Version::V0));  // version 0 has no limit
+}
+
+// --- version 2: data-dependent rotation and keyed permutation -----------------
+
+// Same inputs as the other vectors. The expected words come from the independent
+// Python reference, written from the specification in sbc_core.h, which also
+// reproduces Version0KnownAnswer and Version1KnownAnswer.
+TEST(SbcCore, Version2KnownAnswer) {
+    const std::vector<Word> expected = {
+        0xd64291efu, 0xb5c798a7u, 0x8e2b711bu, 0x3a4b32a1u, 0xbbccd0d2u, 0xb990dc94u, 0xa34d56c2u, 0xfcd7c51au,
+        0xeb8c063bu, 0x55749423u, 0x200e0325u, 0x40457bb4u, 0x39438a66u, 0x4966bcdeu, 0xb8052128u, 0x05306f59u,
+        0xd156f53du, 0x470a97ebu, 0xa50ad263u, 0xdfc1a64bu, 0x96b822fbu, 0xc9f29f45u, 0x397865c2u, 0x7f322b5eu,
+        0x5412fe52u, 0x47297c57u, 0xf953e2acu, 0x814c2022u, 0xf51ddeceu, 0x3eea3e85u, 0x435cb0ceu, 0xfdb193e9u,
+        0xcc3f05ebu, 0xa6c598dcu, 0x63fb1310u, 0x946fbab4u, 0xa924ce7au, 0x55397ff9u, 0x9a3965ecu, 0xfb2cd436u,
+        0xf80d9cf5u, 0xe693801fu, 0x4b28768cu, 0xabf5c3b4u, 0xfc4b914fu, 0xff5e5019u, 0x1e5cd146u, 0x80a6eae7u,
+        0xb9336c25u, 0x4e1b68f0u, 0xa462b6f8u, 0x9e194f4eu, 0xac162b88u, 0x20a6a935u, 0x7cba07e2u, 0x3ad3c2d7u,
+        0xa84d060fu, 0xb07b0597u, 0x51f54efcu, 0x24918a5bu, 0x9cc3be56u, 0xa7d32187u, 0x818dd125u, 0xbc0be303u,
+    };
+    EXPECT_EQ(katCipher(Version::V2), expected);
+}
+
+// One permutation subkey for each of the 11 permutations in 768 steps; versions
+// 0 and 1 have none.
+TEST(SbcCore, Version2HasOnePermutationSubkeyPerPermutation) {
+    const auto key = sampleKey(64);
+    SBCipher v1(32, 16, 24, Version::V1);
+    SBCipher v2(32, 16, 24, Version::V2);
+    v1.keySetupRaw(key.data(), key.size());
+    v2.keySetupRaw(key.data(), key.size());
+    EXPECT_EQ(v2.permutationCount(), 11u);
+    EXPECT_EQ(v2.permSubkeys().size(), 11u);
+    EXPECT_TRUE(v1.permSubkeys().empty());
+    // Version 2's subkeys are its own, not version 1's under another name.
+    EXPECT_NE(v1.subkeys(), v2.subkeys());
+}
+
+TEST(SbcCore, Version2AcceptsAnyKeyLength) {
+    for (size_t n : {1u, 16u, 64u, 200u}) {
+        SBCipher c(32, 16, 24, Version::V2);
+        const auto key = sampleKey(n);
+        c.keySetupRaw(key.data(), key.size());
+        std::vector<Word> plain(64);
+        for (size_t i = 0; i < plain.size(); ++i)
+            plain[i] = static_cast<Word>(0x9e3779b9u * (i + 1));
+        EXPECT_EQ(c.decipherCBC(c.encipherCBC(plain)), plain) << n;
+    }
+}
+
+// Version 2 also needs one subkey per permutation from the same HKDF output.
+TEST(SbcCore, Version2RefusesTooManySteps) {
+    EXPECT_NO_THROW(SBCipher(84, 16, 24, Version::V2));  // 2016 + 11 = 2027 words
+    EXPECT_THROW(SBCipher(85, 16, 24, Version::V2), BadBlockSize); // 2040 + 11
+}
+
+// The rotations are branch-free and must treat amounts modulo the word size.
+TEST(SbcCore, RotationAmountsWrap) {
+    EXPECT_EQ(rotl32(0x12345678u, 32), 0x12345678u);
+    EXPECT_EQ(rotl32(0x12345678u, 33), rotl32(0x12345678u, 1));
+    EXPECT_EQ(rotr32(0x12345678u, 32), 0x12345678u);
+    EXPECT_EQ(rotl8(0x81u, 8), 0x81u);
+    EXPECT_EQ(rotl8(0x81u, 1), 0x03u);
+    EXPECT_EQ(rotr8(0x81u, 1), 0xC0u);
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

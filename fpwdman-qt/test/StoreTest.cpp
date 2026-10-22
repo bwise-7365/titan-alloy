@@ -58,9 +58,16 @@ std::vector<SiteEntry> sampleEntries() {
     return v;
 }
 
-// One real FPMQ1 file, encoded once: every encode pays a full key derivation.
+// One real FPMQ3 file (what the app writes), encoded once: every encode pays a
+// full key derivation.
 const QByteArray& modernBlob() {
     static const QByteArray blob = encodeModern("correct horse", sampleEntries());
+    return blob;
+}
+
+// One FPMQ2 file, likewise encoded once.
+const QByteArray& fpmq2Blob() {
+    static const QByteArray blob = encodeFpmq2("correct horse", sampleEntries());
     return blob;
 }
 
@@ -154,13 +161,20 @@ TEST(Store, ParsesLegacyRootedXml) {
 TEST(Store, ModernRoundTrip) {
     const auto entries = sampleEntries();
     const QByteArray blob = encodeModern("correct horse", entries);
-    EXPECT_TRUE(blob.startsWith("FPMQ2\n"));
-    EXPECT_EQ(detectFormat(blob), Format::Fpmq2);
+    EXPECT_TRUE(blob.startsWith("FPMQ3\n"));
+    EXPECT_EQ(detectFormat(blob), Format::Fpmq3);
 
     const auto out = decodeModern(blob, "correct horse");
     ASSERT_EQ(out.size(), entries.size());
     for (size_t i = 0; i < entries.size(); ++i)
         EXPECT_TRUE(sameEntry(out[i], entries[i]));
+}
+
+// FPMQ2 is no longer written, but must still be read.
+TEST(Store, Fpmq2StillDecodes) {
+    EXPECT_TRUE(fpmq2Blob().startsWith("FPMQ2\n"));
+    EXPECT_EQ(detectFormat(fpmq2Blob()), Format::Fpmq2);
+    expectSameEntries(decodeModern(fpmq2Blob(), "correct horse"), sampleEntries());
 }
 
 // FPMQ1 is no longer written, but must still be read.
@@ -194,9 +208,9 @@ TEST(Store, OpensFpmq1Fixture) {
     }
 }
 
-// Opening an older file and saving it writes FPMQ2 holding the same entries,
+// Opening an older file and saving it writes FPMQ3 holding the same entries,
 // and leaves no copy of the original (in its weaker format) beside it.
-TEST(Store, SavingMigratesOlderFormatsToFpmq2) {
+TEST(Store, SavingMigratesOlderFormatsToFpmq3) {
     for (const char* fixture : {"example-good-UTF-xml.sbc", "example-good-UTF-xml-v2.sbc"}) {
         QTemporaryDir tempDir;
         ASSERT_TRUE(tempDir.isValid());
@@ -206,14 +220,30 @@ TEST(Store, SavingMigratesOlderFormatsToFpmq2) {
         const auto entries = openFile(path, "qwerty");
         saveFile(path, "qwerty", entries);
 
-        EXPECT_EQ(detectFormat(readAll(path)), Format::Fpmq2) << fixture;
+        EXPECT_EQ(detectFormat(readAll(path)), Format::Fpmq3) << fixture;
         expectSameEntries(openFile(path, "qwerty"), entries);
         EXPECT_EQ(QDir(tempDir.path()).entryList(QDir::Files | QDir::Hidden),
                   QStringList{"db.sbc"}) << fixture;
     }
 }
 
-// --- FPMQ2 authenticates its header -------------------------------------------
+// There is no FPMQ2 fixture file, so write one with the test-only encoder.
+TEST(Store, SavingMigratesFpmq2ToFpmq3) {
+    QTemporaryDir tempDir;
+    ASSERT_TRUE(tempDir.isValid());
+    const QString path = tempDir.filePath("db.sbc");
+    {
+        QFile f(path);
+        ASSERT_TRUE(f.open(QIODevice::WriteOnly));
+        ASSERT_EQ(f.write(fpmq2Blob()), fpmq2Blob().size());
+    }
+    const auto entries = openFile(path, "correct horse");
+    saveFile(path, "correct horse", entries);
+    EXPECT_EQ(detectFormat(readAll(path)), Format::Fpmq3);
+    expectSameEntries(openFile(path, "correct horse"), sampleEntries());
+}
+
+// --- FPMQ3 authenticates its header -------------------------------------------
 // Each change below is caught. CorruptFile means it was refused before key
 // derivation; WrongPassphrase means the MAC check caught it.
 
@@ -228,10 +258,20 @@ TEST(Store, ModernRejectsStrayHeaderField) {
     EXPECT_THROW(decodeModern(b, "correct horse"), CorruptFile);
 }
 
-// Relabelling an FPMQ2 file as FPMQ1 must not let it be read the weaker way.
+// Relabelling an FPMQ3 file as an older version must not let it be read the
+// weaker way: each version derives different keys, so the MAC check fails.
 TEST(Store, ModernRejectsRelabelledVersion) {
-    QByteArray b = modernBlob();
-    b.replace(0, 5, "FPMQ1");
+    for (const char* older : {"FPMQ1", "FPMQ2"}) {
+        QByteArray b = modernBlob();
+        b.replace(0, 5, older);
+        EXPECT_THROW(decodeModern(b, "correct horse"), WrongPassphrase) << older;
+    }
+}
+
+// And an FPMQ2 file relabelled as FPMQ3 is refused the same way.
+TEST(Store, Fpmq2RejectsRelabelling) {
+    QByteArray b = fpmq2Blob();
+    b.replace(0, 5, "FPMQ3");
     EXPECT_THROW(decodeModern(b, "correct horse"), WrongPassphrase);
 }
 
@@ -260,7 +300,7 @@ TEST(Store, ModernWrongPassphrase) {
 }
 
 // The iteration count is read from the unauthenticated header, so anything but
-// FPMQ1's fixed 600000 must be refused before key derivation. CorruptFile (not
+// the formats' fixed 600000 must be refused before key derivation. CorruptFile (not
 // WrongPassphrase) shows the refusal came first: had PBKDF2 run, the MAC check
 // would have failed and thrown WrongPassphrase instead.
 TEST(Store, ModernRejectsWrongIterationCount) {
@@ -284,10 +324,12 @@ TEST(Store, ModernRejectsMalformedIterationCount) {
         EXPECT_THROW(decodeModern(withIters(v), "correct horse"), CorruptFile) << v;
 }
 
-// The same refusal applies to FPMQ1 files.
-TEST(Store, Fpmq1RejectsWrongIterationCount) {
-    for (const char* v : {"1", "600001", "2147483647", "-600000", "600000x"})
+// The same refusal applies to FPMQ1 and FPMQ2 files.
+TEST(Store, OlderFormatsRejectWrongIterationCount) {
+    for (const char* v : {"1", "600001", "2147483647", "-600000", "600000x"}) {
         EXPECT_THROW(decodeModern(withIters(fpmq1Blob(), v), "correct horse"), CorruptFile) << v;
+        EXPECT_THROW(decodeModern(withIters(fpmq2Blob(), v), "correct horse"), CorruptFile) << v;
+    }
 }
 
 TEST(Store, DetectLegacyFormat) {

@@ -5,16 +5,18 @@
 // -----------------------------------------------------------------------------
 // PasswordStore: reads and writes the encrypted password database.
 //
-//   * Reading auto-detects the container: the current "FPMQ2" format, the
-//     earlier "FPMQ1" format, or the legacy .sbc format written by the old FLTK
-//     app (decoded via the Qt-free SBC library).
-//   * Writing always produces FPMQ2: a random salt, one PBKDF2-HMAC-SHA256
+//   * Reading auto-detects the container: the current "FPMQ3" format, the
+//     earlier "FPMQ2" and "FPMQ1" formats, or the legacy .sbc format written by
+//     the old FLTK app (decoded via the Qt-free SBC library).
+//   * Writing always produces FPMQ3: a random salt, one PBKDF2-HMAC-SHA256
 //     block expanded with HKDF into separate cipher and MAC keys, SBC-CBC
-//     encryption with key schedule version 1, and an encrypt-then-MAC
-//     HMAC-SHA256 tag over the header and ciphertext (which gives clean
-//     wrong-passphrase detection). Opening an older file and saving it converts it.
-//   * FPMQ1 differed in three ways: 96 bytes straight from PBKDF2 (three times
-//     the work, for no extra security), SBC key schedule version 0, and a tag
+//     encryption with SBC version 2, and an encrypt-then-MAC HMAC-SHA256 tag
+//     over the header and ciphertext (which gives clean wrong-passphrase
+//     detection). Opening an older file and saving it converts it.
+//   * FPMQ2 differs from FPMQ3 only in its HKDF labels and in using SBC
+//     version 1 (no data-dependent rotation, unkeyed permutation).
+//   * FPMQ1 differed from FPMQ2 in three ways: 96 bytes straight from PBKDF2
+//     (three times the work, for no extra security), SBC version 0, and a tag
 //     over the ciphertext only. See doc/sbc-round-constants.md.
 //
 // The on-disk payload is XML (the same SiteEntry schema the old app used); both
@@ -43,7 +45,7 @@ public:
     QString message;
 };
 
-enum class Format { Fpmq2, Fpmq1, Legacy };
+enum class Format { Fpmq3, Fpmq2, Fpmq1, Legacy };
 
 // Detect which container `fileText` holds (does not decrypt).
 Format detectFormat(const QByteArray& fileText);
@@ -51,19 +53,20 @@ Format detectFormat(const QByteArray& fileText);
 // Decrypt+parse a file into entries. Throws Error subclasses on failure.
 std::vector<SiteEntry> openFile(const QString& path, const QString& passphrase);
 
-// Serialize+encrypt entries to FPMQ2 and write to `path`.
+// Serialize+encrypt entries to FPMQ3 and write to `path`.
 void saveFile(const QString& path, const QString& passphrase,
               const std::vector<SiteEntry>& entries);
 
 // --- exposed for unit tests -------------------------------------------------
 // Container round-trip on in-memory text (no file I/O). encodeModern writes
-// FPMQ2; decodeModern reads FPMQ1 or FPMQ2.
+// FPMQ3; decodeModern reads FPMQ1, FPMQ2 or FPMQ3.
 QByteArray encodeModern(const QString& passphrase, const std::vector<SiteEntry>& entries);
 std::vector<SiteEntry> decodeModern(const QByteArray& fileText, const QString& passphrase);
 
-// Writes the superseded FPMQ1 format, so its reader stays tested. The app never
-// calls this.
+// Write the superseded FPMQ1 and FPMQ2 formats, so their readers stay tested.
+// The app never calls these.
 QByteArray encodeFpmq1(const QString& passphrase, const std::vector<SiteEntry>& entries);
+QByteArray encodeFpmq2(const QString& passphrase, const std::vector<SiteEntry>& entries);
 
 QByteArray serializeXml(const std::vector<SiteEntry>& entries);
 std::vector<SiteEntry> parseXml(const QByteArray& xml);

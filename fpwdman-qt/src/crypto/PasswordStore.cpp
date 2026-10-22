@@ -20,11 +20,12 @@ namespace pwstore {
 namespace {
 
 const QByteArray kMagic1 = QByteArrayLiteral("FPMQ1"); // read only
-const QByteArray kMagic2 = QByteArrayLiteral("FPMQ2"); // read and written
+const QByteArray kMagic2 = QByteArrayLiteral("FPMQ2"); // read only
+const QByteArray kMagic3 = QByteArrayLiteral("FPMQ3"); // read and written
 constexpr int kIterations = 600000; // OWASP-recommended floor for PBKDF2-HMAC-SHA256
 constexpr int kSaltLen = 16;
 constexpr int kNonceLen = 16;
-constexpr int kMasterLen = 32; // FPMQ2: one PBKDF2 block, expanded with HKDF
+constexpr int kMasterLen = 32; // FPMQ2/3: one PBKDF2 block, expanded with HKDF
 constexpr int kSbcKeyLen = 64; // 4 * 16-word key
 constexpr int kMacKeyLen = 32;
 constexpr int kBlockBytes = 128; // 32 words
@@ -93,7 +94,7 @@ QByteArray headerField(const QByteArray& line, const char* key) {
     return line.mid(idx, end - idx);
 }
 
-// The key-derivation header line, identical in FPMQ1 and FPMQ2.
+// The key-derivation header line, identical in FPMQ1, FPMQ2 and FPMQ3.
 QByteArray kdfLine(int iterations, const QByteArray& salt) {
     return "kdf=pbkdf2-sha256; iters=" + QByteArray::number(iterations) +
            "; salt=" + salt.toBase64();
@@ -119,19 +120,19 @@ QByteArray hkdfExpand(const QByteArray& prk, const char* info, int len) {
     return out;
 }
 
-// SBC-CBC encrypt a byte-aligned (multiple of 128) framing buffer. FPMQ1 used key
-// schedule version 0; FPMQ2 uses version 1.
+// SBC-CBC encrypt a byte-aligned (multiple of 128) framing buffer. FPMQ1 uses SBC
+// version 0, FPMQ2 version 1, FPMQ3 version 2.
 QByteArray sbcEncryptFraming(const QByteArray& sbcKey, const QByteArray& framing,
-                             SBC::KeySchedule schedule) {
-    SBC::SBCipher cipher(32, 16, 24, schedule);
+                             SBC::Version version) {
+    SBC::SBCipher cipher(32, 16, 24, version);
     cipher.keySetupRaw(reinterpret_cast<const uint8_t*>(sbcKey.constData()), sbcKey.size());
     const std::vector<SBC::Word> words = SBC::deoctify(toBytes(framing));
     return fromBytes(SBC::octify(cipher.encipherCBC(words)));
 }
 
 QByteArray sbcDecryptFraming(const QByteArray& sbcKey, const QByteArray& cipherBytes,
-                             SBC::KeySchedule schedule) {
-    SBC::SBCipher cipher(32, 16, 24, schedule);
+                             SBC::Version version) {
+    SBC::SBCipher cipher(32, 16, 24, version);
     cipher.keySetupRaw(reinterpret_cast<const uint8_t*>(sbcKey.constData()), sbcKey.size());
     const std::vector<SBC::Word> words = SBC::deoctify(toBytes(cipherBytes));
     return fromBytes(SBC::octify(cipher.decipherCBC(words)));
@@ -184,19 +185,32 @@ DerivedKeys deriveKeysFpmq1(const QString& passphrase, const QByteArray& salt, i
     return keys;
 }
 
-// FPMQ2: one 32-byte PBKDF2 block (the slow, guess-resisting step), expanded
-// with HKDF into separate cipher and MAC keys (fast, and needs no slowing: its
-// input is already a strong key).
-DerivedKeys deriveKeysFpmq2(const QString& passphrase, const QByteArray& salt, int iterations) {
+// FPMQ2 and FPMQ3: one 32-byte PBKDF2 block (the slow, guess-resisting step),
+// expanded with HKDF into separate cipher and MAC keys (fast, and needs no
+// slowing: its input is already a strong key). Each format has its own labels,
+// so the same passphrase and salt give unrelated keys in the two formats.
+DerivedKeys deriveKeysHkdf(const QString& passphrase, const QByteArray& salt, int iterations,
+                           const char* sbcLabel, const char* macLabel) {
     QByteArray pw = passphrase.toUtf8();
     QByteArray master = pbkdf2HmacSha256(pw, salt, iterations, kMasterLen);
     DerivedKeys keys;
-    keys.sbcKey = hkdfExpand(master, "FPMQ2 sbc", kSbcKeyLen);
-    keys.macKey = hkdfExpand(master, "FPMQ2 mac", kMacKeyLen);
+    keys.sbcKey = hkdfExpand(master, sbcLabel, kSbcKeyLen);
+    keys.macKey = hkdfExpand(master, macLabel, kMacKeyLen);
     secureZero(master);
     secureZero(pw);
     return keys;
 }
+
+// What distinguishes the two header-authenticated formats.
+struct HkdfFormat {
+    const QByteArray& magic;
+    const char* sbcLabel;
+    const char* macLabel;
+    SBC::Version version;
+};
+
+const HkdfFormat kFpmq2{kMagic2, "FPMQ2 sbc", "FPMQ2 mac", SBC::Version::V1};
+const HkdfFormat kFpmq3{kMagic3, "FPMQ3 sbc", "FPMQ3 mac", SBC::Version::V2};
 
 // framing: [ 16 nonce | 4 LE len | xml | 0xFF pad to 128 ]
 QByteArray frame(const QByteArray& xml) {
@@ -234,9 +248,9 @@ std::vector<SiteEntry> unframe(QByteArray& framing) {
     }
 }
 
-// A parsed FPMQ1 or FPMQ2 file, not yet authenticated.
+// A parsed FPMQ1, FPMQ2 or FPMQ3 file, not yet authenticated.
 struct ModernFile {
-    QByteArray magic;   // kMagic1 or kMagic2
+    QByteArray magic;   // kMagic1, kMagic2 or kMagic3
     QByteArray kdfLine; // the key-derivation header line, trimmed
     QByteArray salt;
     QByteArray tag;
@@ -253,7 +267,7 @@ ModernFile parseModern(const QByteArray& fileText) {
 
     ModernFile f;
     f.magic = lines.first().trimmed();
-    if (f.magic != kMagic1 && f.magic != kMagic2)
+    if (f.magic != kMagic1 && f.magic != kMagic2 && f.magic != kMagic3)
         throw CorruptFile();
 
     QByteArray body;
@@ -270,7 +284,7 @@ ModernFile parseModern(const QByteArray& fileText) {
         }
     }
 
-    // Both formats always write kIterations, so any other count is not one of
+    // Every format always writes kIterations, so any other count is not one of
     // them. The count must be checked here, before deriving keys: it cannot be
     // authenticated first (the MAC key comes out of PBKDF2), so an unchecked value
     // would let a crafted file run PBKDF2 for as long as it likes on the GUI
@@ -278,9 +292,9 @@ ModernFile parseModern(const QByteArray& fileText) {
     if (f.salt.isEmpty() || f.tag.isEmpty() || f.iters != kIterations)
         throw CorruptFile();
 
-    // FPMQ2 authenticates its header, so it must be exactly what the writer
-    // produces; stray fields would otherwise sit outside the MAC.
-    if (f.magic == kMagic2 && f.kdfLine != kdfLine(f.iters, f.salt))
+    // FPMQ2 and FPMQ3 authenticate their header, so it must be exactly what the
+    // writer produces; stray fields would otherwise sit outside the MAC.
+    if (f.magic != kMagic1 && f.kdfLine != kdfLine(f.iters, f.salt))
         throw CorruptFile();
 
     f.cipherBytes = QByteArray::fromBase64(body);
@@ -371,17 +385,20 @@ std::vector<SiteEntry> parseXml(const QByteArray& xml) {
 
 // --- modern containers ------------------------------------------------------
 
-// FPMQ2: PBKDF2 + HKDF keys, SBC version 1, and an HMAC over the header lines
-// and the ciphertext (encrypt-then-MAC).
-QByteArray encodeModern(const QString& passphrase, const std::vector<SiteEntry>& entries) {
+namespace {
+
+// FPMQ2 and FPMQ3: PBKDF2 + HKDF keys, SBC version 1 or 2, and an HMAC over the
+// header lines and the ciphertext (encrypt-then-MAC).
+QByteArray encodeHkdfFormat(const HkdfFormat& fmt, const QString& passphrase,
+                            const std::vector<SiteEntry>& entries) {
     QByteArray xml = serializeXml(entries);
     const QByteArray salt = randomBytes(kSaltLen);
-    const DerivedKeys keys = deriveKeysFpmq2(passphrase, salt, kIterations);
+    const DerivedKeys keys =
+        deriveKeysHkdf(passphrase, salt, kIterations, fmt.sbcLabel, fmt.macLabel);
 
     QByteArray framing = frame(xml);
-    const QByteArray cipherBytes =
-        sbcEncryptFraming(keys.sbcKey, framing, SBC::KeySchedule::V1);
-    const QByteArray header = kMagic2 + "\n" + kdfLine(kIterations, salt) + "\n";
+    const QByteArray cipherBytes = sbcEncryptFraming(keys.sbcKey, framing, fmt.version);
+    const QByteArray header = fmt.magic + "\n" + kdfLine(kIterations, salt) + "\n";
     const QByteArray tag = hmacSha256(keys.macKey, header + cipherBytes);
 
     // The cleartext copies have served their purpose; scrub them before they free.
@@ -394,6 +411,19 @@ QByteArray encodeModern(const QString& passphrase, const std::vector<SiteEntry>&
     return out;
 }
 
+} // namespace
+
+// FPMQ3: SBC version 2 (data-dependent rotation and keyed permutation).
+QByteArray encodeModern(const QString& passphrase, const std::vector<SiteEntry>& entries) {
+    return encodeHkdfFormat(kFpmq3, passphrase, entries);
+}
+
+// FPMQ2, exactly as the app wrote it before FPMQ3. Kept so the FPMQ2 reader
+// stays tested.
+QByteArray encodeFpmq2(const QString& passphrase, const std::vector<SiteEntry>& entries) {
+    return encodeHkdfFormat(kFpmq2, passphrase, entries);
+}
+
 // FPMQ1, exactly as the app wrote it before FPMQ2: three-block PBKDF2, SBC
 // version 0, HMAC over the ciphertext only. Kept so the FPMQ1 reader stays tested.
 QByteArray encodeFpmq1(const QString& passphrase, const std::vector<SiteEntry>& entries) {
@@ -402,8 +432,7 @@ QByteArray encodeFpmq1(const QString& passphrase, const std::vector<SiteEntry>& 
     const DerivedKeys keys = deriveKeysFpmq1(passphrase, salt, kIterations);
 
     QByteArray framing = frame(xml);
-    const QByteArray cipherBytes =
-        sbcEncryptFraming(keys.sbcKey, framing, SBC::KeySchedule::V0);
+    const QByteArray cipherBytes = sbcEncryptFraming(keys.sbcKey, framing, SBC::Version::V0);
     const QByteArray tag = hmacSha256(keys.macKey, cipherBytes); // encrypt-then-MAC
 
     secureZero(xml);
@@ -418,23 +447,27 @@ QByteArray encodeFpmq1(const QString& passphrase, const std::vector<SiteEntry>& 
 
 std::vector<SiteEntry> decodeModern(const QByteArray& fileText, const QString& passphrase) {
     const ModernFile f = parseModern(fileText);
-    const bool fpmq2 = (f.magic == kMagic2);
+    const HkdfFormat* fmt = (f.magic == kMagic3) ? &kFpmq3
+                          : (f.magic == kMagic2) ? &kFpmq2
+                                                 : nullptr; // FPMQ1
 
-    const DerivedKeys keys = fpmq2 ? deriveKeysFpmq2(passphrase, f.salt, f.iters)
-                                   : deriveKeysFpmq1(passphrase, f.salt, f.iters);
+    const DerivedKeys keys =
+        fmt ? deriveKeysHkdf(passphrase, f.salt, f.iters, fmt->sbcLabel, fmt->macLabel)
+            : deriveKeysFpmq1(passphrase, f.salt, f.iters);
 
-    // encrypt-then-MAC: a mismatch means wrong passphrase (or tampering). FPMQ2's
-    // tag also covers the header, so the version and parameters are bound to it.
-    // The compare is constant-time so verification leaks no timing about the tag.
+    // encrypt-then-MAC: a mismatch means wrong passphrase (or tampering). The
+    // FPMQ2 and FPMQ3 tags also cover the header, so the version and parameters
+    // are bound to them. The compare is constant-time so verification leaks no
+    // timing about the tag.
     const QByteArray macInput =
-        fpmq2 ? (f.magic + "\n" + f.kdfLine + "\n" + f.cipherBytes) : f.cipherBytes;
+        fmt ? (f.magic + "\n" + f.kdfLine + "\n" + f.cipherBytes) : f.cipherBytes;
     if (!constantTimeEquals(hmacSha256(keys.macKey, macInput), f.tag))
         throw WrongPassphrase();
 
     QByteArray framing;
     try {
         framing = sbcDecryptFraming(keys.sbcKey, f.cipherBytes,
-                                    fpmq2 ? SBC::KeySchedule::V1 : SBC::KeySchedule::V0);
+                                    fmt ? fmt->version : SBC::Version::V0);
     } catch (const SBC::SbcError&) {
         throw CorruptFile();
     }
@@ -445,6 +478,8 @@ std::vector<SiteEntry> decodeModern(const QByteArray& fileText, const QString& p
 
 Format detectFormat(const QByteArray& fileText) {
     const QByteArray head = fileText.left(64).trimmed();
+    if (head.startsWith(kMagic3))
+        return Format::Fpmq3;
     if (head.startsWith(kMagic2))
         return Format::Fpmq2;
     if (head.startsWith(kMagic1))
