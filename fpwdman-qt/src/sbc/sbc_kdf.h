@@ -95,6 +95,32 @@ void pbkdf2HmacSha256(const uint8_t* password, size_t passwordLen,
                       uint32_t iterations,
                       uint8_t* out, size_t dkLen);
 
+// --- HKDF-SHA-256 -----------------------------------------------------------
+// RFC 5869. Extract turns key material of any length and quality into a 32-byte
+// pseudorandom key (PRK); Expand stretches a PRK into up to kHkdfMaxLen bytes,
+// bound to the label `info`. Unlike PBKDF2 it is fast on purpose: it spreads
+// key material that is already strong, and does nothing to slow guessing.
+//
+// Used by the FPMQ2 container (one PBKDF2 block, expanded into the cipher and
+// MAC keys) and by SBC version 1 (expanding the key into per-step subkeys).
+constexpr size_t kHkdfMaxLen = 255 * 32; // RFC 5869's limit for SHA-256
+
+// An empty salt (saltLen 0) means 32 zero bytes, per RFC 5869.
+void hkdfExtract(const uint8_t* salt, size_t saltLen,
+                 const uint8_t* ikm, size_t ikmLen,
+                 uint8_t prk[32]);
+
+// Returns false, writing nothing, if len exceeds kHkdfMaxLen.
+bool hkdfExpand(const uint8_t* prk, size_t prkLen,
+                const uint8_t* info, size_t infoLen,
+                uint8_t* out, size_t len);
+
+// Extract then Expand. Returns false, writing nothing, if len exceeds kHkdfMaxLen.
+bool hkdfSha256(const uint8_t* salt, size_t saltLen,
+                const uint8_t* ikm, size_t ikmLen,
+                const uint8_t* info, size_t infoLen,
+                uint8_t* out, size_t len);
+
 } // namespace SBC
 
 #endif // SBC_KDF_H

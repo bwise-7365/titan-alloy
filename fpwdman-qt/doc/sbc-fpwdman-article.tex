@@ -1,0 +1,774 @@
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------
+% SBC version 1 and the FPMQ2 password file.
+% Process with pdfLaTeX, twice (for the cross-references).
+
+\input{../../../CPVI/shared-tex/prolog-article.tex}
+
+\usepackage{array} % ragged-right table columns
+\usepackage{placeins} % \FloatBarrier keeps the algorithms in their section
+\setlength{\headheight}{14.5pt} % room for the 12 pt running head
+
+% Start pages that hold only floats (the algorithms) at the top, not centred,
+% and let tall algorithms share a page with text or with each other.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
+
+\lhead{B. P. Wise}
+\rhead{SBC version 1 and FPMQ2}
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\xor}{\oplus}
+\newcommand{\rotl}{\lll}
+
+\title{Sliding Block Cipher Version 1\\ and the FPMQ2 Password File:\\
+Design, Repairs, and Open Questions}
+\author{Ben P. Wise}
+\date{21 October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The Sliding Block Cipher (SBC) is a block cipher of the author's design, first
+built in 2002 \cite{wise2006}. It encrypts the password file of \code{fpwdman}, the author's
+password manager. A review in October 2026 found no practical way to break SBC,
+but it found one structural weakness in the cipher and three weaknesses in the
+file format around it. This article explains in plain language how the cipher
+and the file format work and why each part is there. It then describes the
+weaknesses and how they were repaired in SBC version 1 and in a new file format
+called FPMQ2, which \code{fpwdman} 4.0 writes. It gives pseudo-code for both,
+and it lists the attacks and analyses that remain to be done.
+\end{abstract}
+
+\section{Introduction}
+
+A password manager keeps many secrets under one secret. The user remembers a
+single master passphrase; the program keeps every other password in a file
+encrypted under a key made from that passphrase. Anyone who copies the file can
+try to open it at leisure, on as many computers as they can afford. The design
+must therefore make two things hard: recovering the contents without the
+passphrase, and finding the passphrase by guessing.
+
+\code{fpwdman} meets the first need with the Sliding Block Cipher (SBC), and the
+second with a standard key-derivation function. Section \ref{sec:how} explains
+both in plain language. Section \ref{sec:fixed} describes the weaknesses found
+in the review and how they were repaired. Section \ref{sec:pseudo} gives
+pseudo-code for the cipher and for the file format. Section \ref{sec:open}
+lists what remains to be studied. Appendix \ref{sec:measure} records the
+measurements on which the article relies.
+
+Three file formats appear throughout:
+\begin{itemize}[nosep]
+\item the \emph{legacy} format, written by the original FLTK program, which is
+      read but no longer written;
+\item \emph{FPMQ1}, written by the Qt program before version 4.0, which is also
+      read but no longer written;
+\item \emph{FPMQ2}, written by version 4.0 and later.
+\end{itemize}
+Opening a file in an older format and saving it converts it to FPMQ2.
+
+\section{How it works, and why}
+\label{sec:how}
+
+\subsection{The cipher}
+
+SBC treats a block of data as a ring of $K$ words of 32 bits each. The
+\code{fpwdman} settings use $K = 32$, so a block holds 1024 bits (128 bytes).
+The ring has no first or last word: the word before word 0 is word $K-1$.
+
+Encryption proceeds one \emph{step} at a time. A step changes exactly one word,
+using the word just before it in the ring and one 32-bit \emph{subkey}. Step 0
+changes word 0, step 1 changes word 1, and so on around the ring. One pass
+around the ring is one \emph{round}. \code{fpwdman} uses $R = 24$ rounds, that
+is $24 \times 32 = 768$ steps.
+
+The change made at each step is
+\begin{eqnarray}
+q(x) &=& (x+1)(2x+1) \bmod 2^{32}, \label{eq:step_A} \\
+x_p &\leftarrow& x_p + \bigl( q(x_{p-1} \xor s_i) \rotl 7 \bigr) \bmod 2^{32},
+\label{eq:step_B}
+\end{eqnarray}
+where $x_p$ is the word being changed, $x_{p-1}$ the word before it, $s_i$ the
+subkey for step $i$, $\xor$ is bitwise exclusive-or, and $\rotl 7$ rotates the
+32 bits left by seven places. The function $q$ (called \code{qTransform} in the
+code) is a quadratic that maps each 32-bit number to a different 32-bit number.
+It was adapted from the cipher RC6, and the added constant 1 removes the fixed
+points that RC6's version has.
+
+Every 64 steps (two rounds) the words of the ring are rearranged by a
+permutation called \code{perm1}. It does not change any word; it only moves
+words to new places. The new order depends on the data: \code{perm1} combines
+all the words into one 32-bit number, by applying $q$ to each and taking the
+exclusive-or of the results, and uses that number to choose the rearrangement.
+
+A file is longer than one block, so the blocks are chained: each block is
+combined, by exclusive-or, with the encrypted block before it, and then
+encrypted. This is the standard cipher-block-chaining (CBC) mode. Decryption
+runs every step backward, from the last step to the first, subtracting where
+encryption added.
+
+\subsection{Why each part of the cipher is there}
+
+\begin{description}[style=nextline]
+\item[The step can always be undone.]
+Step (\ref{eq:step_B}) changes $x_p$ by an amount that depends only on
+$x_{p-1}$ and $s_i$, and $x_{p-1}$ is not changed by that step. Whoever holds
+the key can therefore compute the same amount again and subtract it. This is
+the same idea as the Feistel ciphers, generalized from two words to a ring of
+any size, which is what lets SBC handle blocks of any length.
+
+\item[The step mixes bits nonlinearly.]
+Encryption that used only exclusive-or and addition could be undone by solving
+linear equations. The product in $q$ and the mixing of exclusive-or with
+addition prevent that.
+
+\item[The rotation moves the high bits down.]
+In $q$, each output bit depends only on the input bits at the same place and
+below. Without the rotation, a change in a high bit could never reach the low
+bits. Rotating by seven places brings high bits to the bottom, so over many
+steps every bit influences every other.
+
+\item[The ring spreads a change to every word.]
+A change to word $p$ alters the next step's change to word $p+1$, which alters
+word $p+2$, and so on. Measured on random data, one round changes about a
+quarter of the 1024 bits of a block, and two rounds change half of them, which
+is what a random result would do (Appendix \ref{sec:measure}).
+
+\item[The permutation moves words apart.]
+The step relates only neighbouring words. Moving words to new places between
+rounds makes words that were far apart into neighbours.
+
+\item[Many rounds give a margin.]
+Most attacks on block ciphers grow harder with every round. Twenty-four rounds
+are far more than are needed to mix the bits, which leaves room against attacks
+not yet known.
+
+\item[Every step has its own subkey (version 1).]
+Section \ref{sec:slide} explains why this matters.
+\end{description}
+
+\subsection{The password file}
+
+Saving the password file in FPMQ2 takes the following stages.
+\begin{enumerate}[nosep]
+\item Choose 16 random bytes, the \emph{salt}.
+\item Run PBKDF2 \cite{rfc8018} on the passphrase and salt, with 600,000
+      repetitions of HMAC-SHA-256 \cite{rfc2104,fips180}, to obtain a 32-byte
+      \emph{master key}.
+\item Expand the master key with HKDF \cite{rfc5869} into two independent keys:
+      64 bytes for the cipher and 32 bytes for the authentication code.
+\item Place 16 more random bytes, the \emph{nonce}, before the list of entries,
+      followed by its length; pad the whole to a multiple of 128 bytes.
+\item Encrypt it with SBC version 1 in CBC mode.
+\item Compute an authentication code (HMAC-SHA-256) over the file's header and
+      the encrypted text, and write the header, the code, and the encrypted
+      text.
+\end{enumerate}
+Opening the file repeats stages 2 and 3, recomputes the authentication code,
+and decrypts only if it matches.
+
+\subsection{Why each part of the file is there}
+
+\begin{description}[style=nextline]
+\item[The 600,000 repetitions make guessing slow.]
+The user pays the cost once when opening the file, about a second. An attacker
+pays it for every passphrase tried. This cost is the main protection for a
+stolen file, and it must not be reduced to make the program feel faster.
+
+\item[The salt prevents precomputation.]
+Because every file has its own salt, an attacker cannot compute a table of
+common passphrases and their keys once and use it against every file. Each
+guess is good for one file only. The salt need not be secret, and it cannot be:
+the program needs it to make the key, and the key is needed to decrypt anything.
+It is therefore written in the clear, as in every standard format.
+
+\item[The nonce makes every encryption different.]
+The random bytes at the front of the plaintext change the whole encrypted file,
+because CBC carries the change from the first block into every later one. Since
+the salt is also new at every save, the key changes too; the nonce is a second
+safeguard.
+
+\item[The authentication code detects a wrong passphrase and any tampering.]
+The code is checked before anything is decrypted. A wrong passphrase gives a
+wrong key, and therefore a code that does not match. A file changed by anyone
+without the passphrase also fails the check. Checking the code before
+decrypting (``encrypt-then-MAC'') is the order that is known to be safe
+\cite{bellare2000}.
+
+\item[The cipher and authentication keys are separate.]
+Using one key for two purposes invites unforeseen interactions between them.
+\end{description}
+
+\section{Weaknesses found and repaired}
+\label{sec:fixed}
+
+Table \ref{tab:fixes} summarizes the weaknesses. The subsections explain each.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.24\textwidth}
+                >{\raggedright\arraybackslash}p{0.30\textwidth}
+                >{\raggedright\arraybackslash}p{0.36\textwidth}}
+\hline
+\textbf{Weakness} & \textbf{Effect} & \textbf{Repair} \\
+\hline
+Every round of SBC the same &
+Slide attacks, whose cost does not depend on the number of rounds &
+SBC version 1: a different subkey for every step, made with HKDF \\
+Iteration count read from the file without a check &
+A crafted file could freeze the program for about 40 minutes &
+Only 600,000 is accepted, checked before any key is made \\
+Three PBKDF2 runs per open &
+The user paid three times what an attacker pays &
+FPMQ2: one PBKDF2 run, expanded with HKDF \\
+Header outside the authentication code &
+Header could be changed without detection &
+FPMQ2: the code covers the header \\
+\hline
+\end{tabular}
+\caption{Weaknesses found in the October 2026 review and their repairs.}
+\label{tab:fixes}
+\end{table}
+
+\subsection{Identical rounds and the slide attack}
+\label{sec:slide}
+
+In version 0 of SBC, step $i$ used the subkey $s_i = q(k_{i \bmod 16})$, where
+$k_0, \ldots, k_{15}$ are the 16 words of the key. The subkeys therefore
+repeat every 16 steps, the word positions repeat every 32, and \code{perm1},
+which uses no key, runs every 64. Between one permutation and the next, the
+cipher applied exactly the same function. A test confirmed that the state after
+each permutation is that same function applied to the state after the one
+before (Appendix \ref{sec:measure}).
+
+A cipher built of identical keyed rounds is open to the \emph{slide attack} of
+Biryukov and Wagner \cite{biryukov1999,biryukov2000}. Let $F$ be one round
+under a fixed key, and let the cipher be $E = F^{r}$, that is $F$ applied $r$
+times. Then
+\begin{eqnarray}
+E(F(P)) &=& F^{r+1}(P) \label{eq:slide_A} \\
+        &=& F(E(P)). \label{eq:slide_B}
+\end{eqnarray}
+Suppose an attacker holds two plaintexts $P$ and $P'$ with $P' = F(P)$, a
+\emph{slid pair}. By (\ref{eq:slide_B}) their ciphertexts satisfy
+$C' = F(C)$. The attacker then has two inputs and outputs of a single round,
+$(P, P')$ and $(C, C')$. A single round is far weaker than the whole cipher, so
+the key can be sought from one round instead of 24.
+
+The attacker cannot compute $F$, and so cannot make a slid pair on purpose, but
+must find one by chance among many known plaintexts and ciphertexts. By the
+birthday argument this takes about $2^{n/2}$ pairs for an $n$-bit block, and the
+number does not depend on $r$. Adding rounds does not raise it.
+
+For SBC, with $n = 1024$, the cost is about $2^{512}$ known blocks under one
+key, which no one can collect; \code{fpwdman}, besides, uses a new key at every
+save. The weakness is therefore one of principle, not of practice. It is still
+a design defect, because it bypasses the number of rounds, which is the
+cipher's main margin of safety.
+
+\paragraph{The repair.}
+Version 1 makes a separate subkey for every step from the key, by HKDF:
+\begin{eqnarray}
+(s_0, s_1, \ldots, s_{RK-1}) &=& \mathrm{HKDF}\bigl(\mathit{key},\
+  \mathit{salt} = \text{empty}, \label{eq:v1_A} \\
+ & & \quad \mathit{info} = \text{``SBC v1 subkeys''} \,\|\, K \,\|\, R,\
+  L = 4RK \text{ bytes}\bigr), \nonumber
+\end{eqnarray}
+where $\|$ joins byte strings and $K$ and $R$ are written as four-byte numbers.
+Each run of four output bytes is one subkey. Nothing else in the cipher
+changes. No two rounds now use the same subkeys, and there is no simple rule
+that links the subkeys of one key to those of another. Writing $K$ and $R$ into
+the label keeps the schedules of different shapes unrelated: without them, the
+24-round schedule would be the start of the 25-round one.
+
+\paragraph{A repair that does not work.}
+An obvious alternative is to add a different constant at each step, for
+example
+\begin{eqnarray}
+s_i &=& q\bigl(k_{i \bmod 16} + (i+1)\varphi\bigr) \bmod 2^{32},
+\label{eq:additive_A} \\
+\varphi &=& \mathrm{9E3779B9}_{16}. \label{eq:additive_B}
+\end{eqnarray}
+Every step then has its own subkey, but the subkeys are related in a simple
+way. Take a second key $k'$ whose every word is larger by $64\varphi$. Step $i$
+under $k'$ then uses exactly the subkey of step $i+64$ under $k$. Sixty-four
+steps is a whole number of rounds and also matches the permutation schedule, so
+the two keys give the same cipher shifted by 64 steps, and the slide attack
+returns for pairs of related keys. Any constant that grows regularly with the
+step number has this flaw. HKDF has no such regularity. A milder alternative
+that keeps the key word in every step is
+\begin{equation}
+s_i = q\bigl(k_{i \bmod N} \xor c_i\bigr),
+\label{eq:table}
+\end{equation}
+with $c_i$ the first 32 bits of SHA-256 of ``SBC-RC'' and $i$. It also defeats
+the slide attack, but it leaves the subkeys simply related to the key, so
+version 1 uses HKDF.
+
+\subsection{The unchecked iteration count}
+
+The header of an FPMQ1 file states the number of PBKDF2 repetitions, and the
+program used that number as written, checking only that it was positive. The
+number cannot be authenticated before it is used, because the authentication
+key itself comes out of PBKDF2. A crafted file giving 2,147,483,647 repetitions
+would have made the program compute about 6.4 billion HMACs, roughly 40 minutes
+in which the window would not respond. Nothing secret would leak, so the defect
+was a nuisance rather than a break. Both formats now accept only 600,000, and
+the check is made before any key is derived.
+
+\subsection{The threefold cost of key derivation}
+
+PBKDF2 produces 32 bytes for each full run of its repetitions. FPMQ1 asked for
+96 bytes, so every open ran PBKDF2 three times: 1.8 million HMACs. But the
+authentication key was the third 32-byte block by itself, so an attacker
+testing a guess needed to compute only that block, 600,000 HMACs. The extra 1.2
+million gave the user delay and no protection. FPMQ2 runs PBKDF2 once for 32
+bytes and expands them with HKDF, which costs two HMACs. Saving and opening a
+file now takes about a third as long as before (Appendix \ref{sec:measure}),
+with the attacker's cost unchanged.
+
+\subsection{The unauthenticated header}
+
+FPMQ1 computed its authentication code over the encrypted text only. Changing
+the salt or the repetition count would still have failed, because those change
+the key, but the version name and the other header text were not protected.
+FPMQ2 computes the code over both header lines and the encrypted text, and it
+rejects any header that differs from what the program writes. In particular, an
+FPMQ2 file relabelled as FPMQ1 is refused, so it cannot be steered onto the
+older reading path.
+
+\subsection{Earlier repairs}
+
+For completeness: the legacy format of the FLTK program had no key-derivation
+function. The passphrase was scrambled into the key by a reversible function,
+with no salt and no delay, and a wrong guess could be recognized after
+decrypting a single block. Guessing was therefore millions of times cheaper
+than for FPMQ1 or FPMQ2. The Qt program corrected this with FPMQ1 before the
+present review, and it now only reads the legacy format.
+
+\section{Pseudo-code}
+\label{sec:pseudo}
+
+Throughout, words are 32 bits; $+$ and $-$ are modulo $2^{32}$; $\xor$ is
+exclusive-or; $\rotl$ is left rotation. The cipher's parameters are the block
+size $K$ (32), the key size $N$ (16 words), the rounds $R$ (24), and the
+permutation interval $M = 2K$ (64).
+
+\subsection{The basic SBC}
+
+Algorithms \ref{alg:prim} to \ref{alg:cbc} give the cipher: its primitive
+functions, its two key schedules, the encryption and decryption of one block,
+and the chaining of blocks. Two points need comment. First, in \textsc{Perm1}
+the value $\sigma$ does not depend on the order of the words, so decryption can
+compute it from the permuted block, and so undo the permutation. Second, the
+chaining starts from zero rather than from a random value, but the first 16
+bytes of every plaintext are random (Algorithm \ref{alg:save}), which serves
+the same purpose.
+
+\begin{algorithm}[htbp]
+\caption{The primitive functions}
+\label{alg:prim}
+\begin{algorithmic}[1]
+\Function{q}{$x$}
+  \State \Return $(x+1)(2x+1)$ \Comment{modulo $2^{32}$}
+\EndFunction
+\Function{fold}{$j$} \Comment{stretch and fold of the indices $0 \ldots K-1$}
+  \If{$2j \le K-1$}
+    \State \Return $2j$
+  \Else
+    \State \Return $2(K-j)-1$
+  \EndIf
+\EndFunction
+\Function{Perm1}{$x$, $\mathit{forward}$}
+  \State $\sigma \gets q(x_0) \xor q(x_1) \xor \cdots \xor q(x_{K-1})$
+    \Comment{does not depend on the order}
+  \For{$t \gets 0$ \textbf{to} $7$}
+    \State $\sigma_t \gets \sigma \rotl 7t$
+  \EndFor
+  \If{$\mathit{forward}$}
+    \For{$t \gets 0$ \textbf{to} $7$}
+      \State for every $j$: $y_{\textsc{fold}((j + \sigma_t) \bmod K)} \gets x_j$;
+             then $x \gets y$
+    \EndFor
+  \Else \Comment{undo the eight moves in reverse order}
+    \For{$t \gets 7$ \textbf{down to} $0$}
+      \State for every $j$: $y_j \gets x_{\textsc{fold}((j + \sigma_t) \bmod K)}$;
+             then $x \gets y$
+    \EndFor
+  \EndIf
+  \State \Return $x$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Key setup}
+\label{alg:keysetup}
+\begin{algorithmic}[1]
+\Function{KeySetupV0}{$k_0, \ldots, k_{N-1}$} \Comment{legacy and FPMQ1 only}
+  \For{$i \gets 0$ \textbf{to} $RK-1$}
+    \State $s_i \gets q(k_{i \bmod N})$ \Comment{repeats every $N$ steps}
+  \EndFor
+  \State \Return $s$
+\EndFunction
+\Function{KeySetupV1}{$\mathit{key}$} \Comment{any non-empty byte string}
+  \State $\mathit{info} \gets$ ``SBC v1 subkeys'' $\|$ \textsc{be32}($K$) $\|$ \textsc{be32}($R$)
+  \State $b \gets \textsc{HKDF-SHA-256}(\mathit{key}, \text{empty salt}, \mathit{info}, 4RK)$
+  \For{$i \gets 0$ \textbf{to} $RK-1$}
+    \State $s_i \gets$ bytes $4i \ldots 4i+3$ of $b$, read most significant first
+  \EndFor
+  \State \Return $s$ \Comment{$RK \le 2040$, the limit of HKDF}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Encrypting and decrypting one block}
+\label{alg:block}
+\begin{algorithmic}[1]
+\Function{EncipherBlock}{$x_0, \ldots, x_{K-1}$; $s$}
+  \For{$i \gets 0$ \textbf{to} $RK-1$}
+    \State $p \gets i \bmod K$
+    \State $x_p \gets x_p + \bigl(q(x_{(p-1) \bmod K} \xor s_i) \rotl 7\bigr)$
+    \If{$i > 0$ \textbf{and} $i \bmod M = 0$}
+      \State $x \gets \textsc{Perm1}(x, \text{true})$
+    \EndIf
+  \EndFor
+  \State \Return $x$
+\EndFunction
+\Function{DecipherBlock}{$x_0, \ldots, x_{K-1}$; $s$}
+  \For{$i \gets RK-1$ \textbf{down to} $0$}
+    \If{$i > 0$ \textbf{and} $i \bmod M = 0$}
+      \State $x \gets \textsc{Perm1}(x, \text{false})$
+    \EndIf
+    \State $p \gets i \bmod K$
+    \State $x_p \gets x_p - \bigl(q(x_{(p-1) \bmod K} \xor s_i) \rotl 7\bigr)$
+  \EndFor
+  \State \Return $x$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Chaining blocks (CBC with a zero starting value)}
+\label{alg:cbc}
+\begin{algorithmic}[1]
+\Function{EncipherCBC}{$P_0, \ldots, P_{m-1}$; $s$}
+  \State $C_{-1} \gets 0$
+  \For{$b \gets 0$ \textbf{to} $m-1$}
+    \State $C_b \gets \textsc{EncipherBlock}(P_b \xor C_{b-1}; s)$
+  \EndFor
+  \State \Return $C_0, \ldots, C_{m-1}$
+\EndFunction
+\Function{DecipherCBC}{$C_0, \ldots, C_{m-1}$; $s$}
+  \State $C_{-1} \gets 0$
+  \For{$b \gets 0$ \textbf{to} $m-1$}
+    \State $P_b \gets \textsc{DecipherBlock}(C_b; s) \xor C_{b-1}$
+  \EndFor
+  \State \Return $P_0, \ldots, P_{m-1}$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{FPWDMAN}
+
+Algorithm \ref{alg:save} saves the password file and Algorithm \ref{alg:open}
+opens it. A legacy file is recognized by its first line, which holds two
+numbers, and is decoded by a separate reader that reproduces the FLTK program
+exactly. Saving any file, whatever its format, calls \textsc{Save}.
+
+\begin{algorithm}[htbp]
+\caption{Saving the password file (FPMQ2)}
+\label{alg:save}
+\begin{algorithmic}[1]
+\Function{Save}{$\mathit{passphrase}$, $\mathit{entries}$}
+  \State $\mathit{xml} \gets$ the entries written as XML
+  \State $\mathit{salt} \gets$ 16 random bytes
+  \State $\mathit{master} \gets \textsc{PBKDF2-HMAC-SHA-256}(\mathit{passphrase}, \mathit{salt}, 600000, 32)$
+  \State $k_c \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ2 sbc''}, 64)$
+  \State $k_m \gets \textsc{HKDF-Expand}(\mathit{master}, \text{``FPMQ2 mac''}, 32)$
+  \State $F \gets$ 16 random bytes $\|$ \textsc{le32}(length of $\mathit{xml}$) $\|$ $\mathit{xml}$
+  \State pad $F$ with bytes $\mathrm{FF}_{16}$ to a multiple of 128 bytes
+  \State $C \gets \textsc{EncipherCBC}(F;\ \textsc{KeySetupV1}(k_c))$
+  \State $H \gets$ ``FPMQ2\textbackslash n'' $\|$
+         ``kdf=pbkdf2-sha256; iters=600000; salt='' $\|$ \textsc{base64}($\mathit{salt}$) $\|$ ``\textbackslash n''
+  \State $\mathit{tag} \gets \textsc{HMAC-SHA-256}(k_m, H \,\|\, C)$
+  \State write $H$, then ``mac=hmac-sha256; tag='' $\|$ \textsc{base64}($\mathit{tag}$),
+         then \textsc{base64}($C$) in lines of 64 characters
+  \State erase $\mathit{master}$, $k_c$, $k_m$, $F$ and $\mathit{xml}$ from memory
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Opening the password file (FPMQ1 or FPMQ2)}
+\label{alg:open}
+\begin{algorithmic}[1]
+\Function{Open}{$\mathit{file}$, $\mathit{passphrase}$}
+  \State read the version line, the salt, the repetition count $c$, the tag and $C$
+  \If{the version is neither FPMQ1 nor FPMQ2}
+    \State \textbf{fail}: corrupt file
+  \EndIf
+  \If{$c \ne 600000$} \Comment{checked before any key is made}
+    \State \textbf{fail}: corrupt file
+  \EndIf
+  \If{FPMQ2 \textbf{and} the header differs from what \textsc{Save} writes}
+    \State \textbf{fail}: corrupt file
+  \EndIf
+  \If{FPMQ2}
+    \State derive $k_c$, $k_m$ as in \textsc{Save}; $\mathit{data} \gets H \,\|\, C$;
+           $\mathit{schedule} \gets \textsc{KeySetupV1}$
+  \Else \Comment{FPMQ1}
+    \State $d \gets \textsc{PBKDF2-HMAC-SHA-256}(\mathit{passphrase}, \mathit{salt}, 600000, 96)$
+    \State $k_c \gets d_{0 \ldots 63}$; $k_m \gets d_{64 \ldots 95}$; $\mathit{data} \gets C$;
+           $\mathit{schedule} \gets \textsc{KeySetupV0}$
+  \EndIf
+  \If{$\textsc{HMAC-SHA-256}(k_m, \mathit{data}) \ne \mathit{tag}$}
+    \Comment{compared in constant time}
+    \State \textbf{fail}: wrong passphrase, or the file was changed
+  \EndIf
+  \State $F \gets \textsc{DecipherCBC}(C;\ \mathit{schedule}(k_c))$
+  \State skip 16 bytes; read the length; \Return the entries parsed from the XML
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\FloatBarrier
+\section{Remaining attacks and analyses}
+\label{sec:open}
+
+The review established the weaknesses above and measured some properties
+(Appendix \ref{sec:measure}). It did not attempt the analyses below, which a
+cipher must survive before it can be trusted for important data.
+
+\subsection{Analyses of the cipher}
+
+\begin{enumerate}
+\item \textbf{Strength of a single round group.} The slide attack pays only
+      if 64 steps are much weaker than 768. That is usual, but it has not been
+      shown for SBC. How much work recovers the key from one input and output
+      of 64 steps?
+
+\item \textbf{Differential cryptanalysis} \cite{biham1991}. Search for
+      differences in the input that pass through a few rounds with high
+      probability, and from them estimate how many rounds an attack could
+      reach. The quadratic $q$ is a \emph{T-function} \cite{klimov2002}: each
+      output bit depends only on the input bits at the same place and below.
+      Differences in the low bits therefore propagate predictably within $q$,
+      and only the rotation and the addition carry them upward.
+
+\item \textbf{Linear cryptanalysis} \cite{matsui1993}. The two lowest output
+      bits of $q$ are linear: bit 0 is the complement of input bit 0, and bit 1
+      is a linear function of input bits 0 and 1. In version 0 of the 64-bit
+      library a similar property made four bits of every step exactly linear.
+      In the 32-bit cipher the addition in step (\ref{eq:step_B}) hides them
+      behind carries. Whether useful linear approximations survive several
+      rounds is not known.
+
+\item \textbf{Reduced-round attacks.} Attack versions of SBC with 1, 2, 3, and
+      more rounds, to learn how large the safety margin of 24 rounds actually
+      is. This is the standard way of measuring a new cipher.
+
+\item \textbf{The permutation.} \code{perm1} uses no key, and its choice depends
+      on the exclusive-or of $q$ applied to every word, which does not depend on
+      their order. It reads only 30 of those 32 bits. It produces a great
+      variety of rearrangements (65,535 different ones from 65,536 random
+      blocks), so it mixes well, but anyone who knows the state at that point
+      can compute it. Does it add strength, or only spreading? Are there blocks
+      it leaves in a predictable order? A keyed permutation would be worth
+      studying as a version 2.
+
+\item \textbf{Algebraic attacks.} Each step is a polynomial of low degree over
+      the integers modulo $2^{32}$, mixed with exclusive-or. Methods that
+      solve systems of such equations should be tried on reduced rounds.
+
+\item \textbf{Statistical tests.} Run the output of SBC in counter mode
+      through standard test batteries for random numbers, such as NIST SP
+      800-22 or PractRand, at full and at reduced rounds.
+
+\item \textbf{Related keys under version 1.} With subkeys from HKDF, no
+      relation between keys is known to carry over to the subkeys. In
+      \code{fpwdman} the keys come from PBKDF2 and cannot be chosen by an
+      attacker, so this matters mainly for SBC as a standalone cipher.
+\end{enumerate}
+
+\subsection{Analyses of the file format and the program}
+
+\begin{enumerate}[resume]
+\item \textbf{Old copies of the file.} A legacy copy of the file, under the same
+      passphrase as the current one, lets an attacker guess that passphrase
+      quickly and then open the current file. The first save after converting
+      a legacy file leaves the legacy original as the \code{.bak} copy. After
+      converting, the user should delete the \code{.bak} and older copies and
+      then change the master passphrase.
+
+\item \textbf{Memory-hard key derivation.} PBKDF2 can be computed cheaply in
+      parallel on graphics processors. Argon2id \cite{rfc9106}, which also
+      requires much memory, is now preferred \cite{owasp}. A future format
+      could use it.
+
+\item \textbf{Unbounded inputs.} The program does not yet limit the size of a
+      file it will read, nor the size a legacy file may claim for its
+      decompressed contents. A crafted file could therefore demand a very large
+      allocation. Limits should be set before any decoding.
+
+\item \textbf{The length of the file.} Encryption hides the contents but not
+      their approximate size, which reveals roughly how many entries the file
+      holds. Padding to a fixed size would hide it.
+
+\item \textbf{Timing.} \code{perm1} writes words to places that depend on the
+      data. On a shared computer, the timing of memory caches could in
+      principle reveal something about those places. This matters only to an
+      attacker running programs on the same machine at the same time.
+
+\item \textbf{Secrets left in memory.} The program erases keys and plaintext
+      after use, but Qt's strings are copied freely, so some copies cannot be
+      reached and erased. The clipboard, the operating system's swap file and
+      crash dumps can also hold secrets.
+
+\item \textbf{Comparison with standard ciphers.} SBC has had one reviewer. The
+      standard ciphers, such as AES-256-GCM \cite{fips197} and
+      XChaCha20-Poly1305, have had decades of study by many. Two earlier
+      reviews of \code{fpwdman} recommended writing new files with one of them
+      and reading SBC files only. That remains the most conservative choice;
+      the work in this article is the alternative of strengthening SBC and
+      inviting its analysis.
+\end{enumerate}
+
+\appendix
+
+\section{Measurements}
+\label{sec:measure}
+
+All measurements below used keys and data generated at random for the purpose,
+or fixed test vectors. A Python implementation of SBC version 0 was first
+checked bit for bit against the compiled C++ program on a two-block test vector;
+the version 1 test vector in the program's tests was computed with the same
+Python implementation, using Python's own HMAC and SHA-256.
+
+\paragraph{Spreading of changes.} Mean number of the 1024 output bits changed
+when one bit of the input is changed, over 100 random keys and blocks (a random
+result would change 512):
+
+\begin{center}
+\begin{tabular}{rrr}
+\hline
+\textbf{Rounds} & \textbf{Mean bits changed} & \textbf{Fewest in any trial} \\
+\hline
+1  & 249.2 & 14 \\
+2  & 512.2 & 481 \\
+3  & 511.9 & 476 \\
+4  & 513.4 & 470 \\
+24 & 513.6 & 475 \\
+\hline
+\end{tabular}
+\end{center}
+Changing one bit of the key changed 510.5 bits on average after 24 rounds.
+
+\paragraph{Linearity of $q$.} The algebraic degree of output bits 0 to 5 of $q$,
+as functions of the input bits at the same place and below, is 1, 1, 2, 3, 4,
+5. Only the two lowest bits are linear.
+
+\paragraph{The permutation.} \code{perm1} reads 30 of the 32 bits of its
+combined value (bits 9 and 10 are never used). Among 65,536 random values it
+produced 65,535 different rearrangements.
+
+\paragraph{Identical rounds in version 0.} In all 10 checks, the state after
+permutation $m+1$ equalled one fixed 64-step function applied to the state after
+permutation $m$. Under version 1, no two of the 24 rounds have the same
+subkeys, while under version 0 all 24 do; the program's tests check both.
+
+\paragraph{Speed.} One save and one open, in the program's debug build: 6.6
+seconds for FPMQ1 and 2.3 seconds for FPMQ2.
+
+\paragraph{Tests.} Version 4.0 passes 36 tests of the cipher and key
+derivation, including the published test vectors for SHA-256, HMAC-SHA-256,
+PBKDF2 and HKDF, and 23 tests of the file formats, including the conversion of
+legacy and FPMQ1 files and the rejection of altered FPMQ2 files.
+
+\begin{thebibliography}{99}
+
+\bibitem{bellare2000}
+M. Bellare and C. Namprempre,
+``Authenticated encryption: relations among notions and analysis of the
+generic composition paradigm,''
+\emph{Advances in Cryptology -- ASIACRYPT 2000}, LNCS 1976, Springer, 2000.
+
+\bibitem{biham1991}
+E. Biham and A. Shamir,
+``Differential cryptanalysis of DES-like cryptosystems,''
+\emph{Journal of Cryptology}, vol. 4, no. 1, 1991.
+
+\bibitem{biryukov1999}
+A. Biryukov and D. Wagner,
+``Slide attacks,''
+\emph{Fast Software Encryption (FSE '99)}, LNCS 1636, Springer, 1999.
+
+\bibitem{biryukov2000}
+A. Biryukov and D. Wagner,
+``Advanced slide attacks,''
+\emph{Advances in Cryptology -- EUROCRYPT 2000}, LNCS 1807, Springer, 2000.
+
+\bibitem{fips180}
+National Institute of Standards and Technology,
+\emph{Secure Hash Standard (SHS)}, FIPS PUB 180-4, 2015.
+
+\bibitem{fips197}
+National Institute of Standards and Technology,
+\emph{Advanced Encryption Standard (AES)}, FIPS PUB 197, 2001.
+
+\bibitem{klimov2002}
+A. Klimov and A. Shamir,
+``A new class of invertible mappings,''
+\emph{Cryptographic Hardware and Embedded Systems (CHES 2002)}, LNCS 2523,
+Springer, 2002.
+
+\bibitem{matsui1993}
+M. Matsui,
+``Linear cryptanalysis method for DES cipher,''
+\emph{Advances in Cryptology -- EUROCRYPT '93}, LNCS 765, Springer, 1994.
+
+\bibitem{owasp}
+OWASP Foundation,
+\emph{Password Storage Cheat Sheet},
+\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}.
+
+\bibitem{rfc2104}
+H. Krawczyk, M. Bellare and R. Canetti,
+\emph{HMAC: Keyed-Hashing for Message Authentication}, RFC 2104, 1997.
+
+\bibitem{rfc5869}
+H. Krawczyk and P. Eronen,
+\emph{HMAC-based Extract-and-Expand Key Derivation Function (HKDF)},
+RFC 5869, 2010.
+
+\bibitem{rfc8018}
+K. Moriarty, B. Kaliski and A. Rusch,
+\emph{PKCS \#5: Password-Based Cryptography Specification Version 2.1},
+RFC 8018, 2017.
+
+\bibitem{rfc9106}
+A. Biryukov, D. Dinu, D. Khovratovich and S. Josefsson,
+\emph{Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work
+Applications}, RFC 9106, 2021.
+
+\bibitem{wise2006}
+B. P. Wise,
+\emph{Sliding Block Ciphers}, draft, 2006.
+
+\end{thebibliography}
+
+\end{document}
+
+% ---------------------------------------------
+% Copyright Ben Paul Wise. All rights reserved.
+% ---------------------------------------------

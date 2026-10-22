@@ -21,6 +21,11 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
+    // Program version, shown in Help -> About. 4.0 is the first version that
+    // writes the FPMQ2 format (SBC key schedule version 1).
+    static const int kVersionMajor = 4;
+    static const int kVersionMinor = 0;
+
     explicit MainWindow(const QString& initialPath = QString(), QWidget* parent = nullptr);
     ~MainWindow();
 

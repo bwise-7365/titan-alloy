@@ -177,6 +177,11 @@ nothing when a process is swapped or dumped.
 
 ## What is left
 
+**Update, 2026-10-21: the 3x is gone in FPMQ2**, which derives one PBKDF2
+block and expands it with HKDF, as proposed below. FPMQ1 files are still read
+the old way. One save and one open in the debug build went from 6.6 s to 2.3 s.
+See `doc/sbc-round-constants.md`. The original analysis follows.
+
 **The 3x from problem 1 is still there**, and it is the largest remaining win.
 The fix is to stop stretching PBKDF2 across three output blocks: derive a single
 32-byte block, then expand it to 96 bytes with HKDF, which costs two cheap HMAC

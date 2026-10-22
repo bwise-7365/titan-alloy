@@ -1,10 +1,10 @@
 Copyright Ben Paul Wise. All Rights Reserved.
 
-# Building fpwdman_qt as a single static executable
+# Building qpwdman as a single static executable
 
 The default build links against the Qt DLLs in `C:/Qt/6.8.3/msvc2022_64` and has
 to ship with a directory of them beside the exe. This document covers the other
-option: one `fpwdman_qt.exe` that runs on a bare Windows machine with no Qt DLLs,
+option: one `qpwdman.exe` that runs on a bare Windows machine with no Qt DLLs,
 no `platforms/` folder, and no VC++ redistributable.
 
 The prebuilt Qt under `C:/Qt` cannot be linked statically -- it contains DLLs and
@@ -146,7 +146,7 @@ Deployment > CMake > `+`, then:
     Build directory  cmake-build-static
 
 Apply, then pick **Static** in the toolbar's configuration dropdown and build the
-`fpwdman_qt` target as usual. If `cmake-build-static` was already configured from
+`qpwdman` target as usual. If `cmake-build-static` was already configured from
 the command line, CLion adopts it and does not re-run CMake.
 
 Build type has to be Release, for the reason above. The build directory has to be
@@ -163,8 +163,8 @@ To ship:
 
     cmake --build cmake-build-static --target package
 
-This produces `cmake-build-static/fpwdman_qt.tgz`, unpacking to a single
-`fpwdman_qt/` folder as before -- now holding one file. The `package` target
+This produces `cmake-build-static/qpwdman.tgz`, unpacking to a single
+`qpwdman/` folder as before -- now holding one file. The `package` target
 works the same way in both link flavors; under `FPWDMAN_STATIC` there is simply
 no Qt runtime to stage alongside the exe, and windeployqt is not run at all.
 
@@ -173,7 +173,7 @@ no Qt runtime to stage alongside the exe, and windeployqt is not run at all.
 The claim to check is that the exe imports nothing but Windows system DLLs. From
 the VS command prompt:
 
-    dumpbin /dependents cmake-build-static\fpwdman_qt.exe
+    dumpbin /dependents cmake-build-static\qpwdman.exe
 
 The list should hold only Windows system libraries. Any `Qt6*.dll` means the
 static Qt was not picked up; any `VCRUNTIME140.dll` or `MSVCP140.dll` means

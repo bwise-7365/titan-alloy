@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 
     // Identify the app so QSettings has a stable per-user location for preferences.
     QApplication::setOrganizationName("BenPaulWise");
-    QApplication::setApplicationName("fpwdman-qt");
+    QApplication::setApplicationName("qpwdman");
 
     // All colors and the frame/field split live in ui::Theme (src/UiTheme.h),
     // so the palette can be retuned in one place. The menu gutter stays collapsed

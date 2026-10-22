@@ -35,8 +35,8 @@ constexpr int kMinMasterFloor = 6;    // matches the old MinKeyLength
 } // namespace
 
 MainWindow::MainWindow(const QString& initialPath, QWidget* parent) : QMainWindow(parent) {
-    setWindowTitle("fpwdman-qt");
-    resize(280, 380);
+    setWindowTitle("QPwdMan");
+    resize(280, 450);
 
     loadPreferences();
     qApp->setStyleSheet(ui::Theme::styleSheet(m_darkMode));
@@ -452,13 +452,16 @@ void MainWindow::onChangeMasterPassphrase() {
 
 void MainWindow::onAbout() {
     QMessageBox::about(
-        this, tr("About fpwdman-qt"),
-        tr("<b>fpwdman-qt</b><br>"
+        this, tr("About qpwdman"),
+        tr("<b>qpwdman</b><br>"
+           "Version %1.%2<br>"
            "Copyright &copy; Ben Paul Wise. All Rights Reserved.<br><br>"
            "A Qt password manager.<br><br>"
            "Reads legacy SBC-encrypted (.sbc) files and writes a modern, salted, "
            "authenticated container. Each entry holds a title, site, user ID, "
-           "password, and comments."));
+           "password, and comments.")
+            .arg(kVersionMajor)
+            .arg(kVersionMinor));
 }
 
 void MainWindow::onUsage() {

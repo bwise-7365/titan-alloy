@@ -5,7 +5,8 @@
 // so every case here is quoted from a standard rather than captured from our own
 // output -- a self-generated "expected" value would only prove the code agrees
 // with itself. Sources: FIPS 180-4 (SHA-256), RFC 4231 (HMAC-SHA-256),
-// RFC 7914 s11 and RFC 6070's structure (PBKDF2-HMAC-SHA-256).
+// RFC 7914 s11 and RFC 6070's structure (PBKDF2-HMAC-SHA-256), RFC 5869
+// Appendix A (HKDF-SHA-256).
 //
 // These also pin the format: PasswordStore's PBKDF2 must keep producing exactly
 // these bytes, or every existing FPMQ1 file becomes unreadable.
@@ -227,5 +228,70 @@ TEST(SbcPbkdf2, OutputBlocksAreIndependentOfDkLen) {
     const std::string thirtyTwo = pbkdf2Hex("password", "salt", 2, 32);
     EXPECT_EQ(thirtyTwo, ninetySix.substr(0, 64));
     EXPECT_EQ(ninetySix.size(), size_t(192));
+}
+
+// --- HKDF-SHA-256 (RFC 5869, Appendix A.1-A.3) -----------------------------
+// FPMQ2 and SBC version 1 both depend on these exact bytes.
+
+namespace {
+
+std::vector<uint8_t> range(int from, int to) { // [from, to)
+    std::vector<uint8_t> v;
+    for (int b = from; b < to; ++b)
+        v.push_back(static_cast<uint8_t>(b));
+    return v;
+}
+
+struct HkdfOut {
+    std::string prk;
+    std::string okm;
+};
+
+HkdfOut hkdfHex(const std::vector<uint8_t>& ikm, const std::vector<uint8_t>& salt,
+                const std::vector<uint8_t>& info, size_t len) {
+    uint8_t prk[32];
+    SBC::hkdfExtract(salt.data(), salt.size(), ikm.data(), ikm.size(), prk);
+    std::vector<uint8_t> okm(len);
+    EXPECT_TRUE(SBC::hkdfExpand(prk, sizeof prk, info.data(), info.size(), okm.data(), len));
+
+    std::vector<uint8_t> oneShot(len);
+    EXPECT_TRUE(SBC::hkdfSha256(salt.data(), salt.size(), ikm.data(), ikm.size(),
+                                info.data(), info.size(), oneShot.data(), len));
+    EXPECT_EQ(oneShot, okm); // the convenience wrapper is extract-then-expand
+    return {toHex(prk, sizeof prk), toHex(okm.data(), okm.size())};
+}
+
+} // namespace
+
+TEST(SbcHkdf, Rfc5869Case1) {
+    const HkdfOut r = hkdfHex(std::vector<uint8_t>(22, 0x0b), range(0x00, 0x0d),
+                              range(0xf0, 0xfa), 42);
+    EXPECT_EQ(r.prk, "077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5");
+    EXPECT_EQ(r.okm, "3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf"
+                     "34007208d5b887185865");
+}
+
+// Long inputs: 80-byte IKM, salt and info, and an output spanning three blocks.
+TEST(SbcHkdf, Rfc5869Case2_LongInputs) {
+    const HkdfOut r = hkdfHex(range(0x00, 0x50), range(0x60, 0xb0), range(0xb0, 0x100), 82);
+    EXPECT_EQ(r.prk, "06a6b88c5853361a06104c9ceb35b45cef760014904671014a193f40c15fc244");
+    EXPECT_EQ(r.okm, "b11e398dc80327a1c8e7f78c596a49344f012eda2d4efad8a050cc4c19afa97c"
+                     "59045a99cac7827271cb41c65e590e09da3275600c2f09b8367793a9aca3db71"
+                     "cc30c58179ec3e87c14c01d5c1f3434f1d87");
+}
+
+// Empty salt and info: the case SBC version 1 uses (empty salt).
+TEST(SbcHkdf, Rfc5869Case3_EmptySaltAndInfo) {
+    const HkdfOut r = hkdfHex(std::vector<uint8_t>(22, 0x0b), {}, {}, 42);
+    EXPECT_EQ(r.prk, "19ef24a32c717b167f33a91d6f648bdf96596776afdb6377ac434c1c293ccb04");
+    EXPECT_EQ(r.okm, "8da4e775a563c18f715f802a063c5a31b8a11f5c5ee1879ec3454e5f3c738d2d"
+                     "9d201395faa4b61a96c8");
+}
+
+TEST(SbcHkdf, RefusesOverlongOutput) {
+    const uint8_t prk[32] = {};
+    std::vector<uint8_t> out(SBC::kHkdfMaxLen + 1, 0xAA);
+    EXPECT_TRUE(SBC::hkdfExpand(prk, sizeof prk, nullptr, 0, out.data(), SBC::kHkdfMaxLen));
+    EXPECT_FALSE(SBC::hkdfExpand(prk, sizeof prk, nullptr, 0, out.data(), out.size()));
 }
 // Copyright Ben Paul Wise. All Rights Reserved.

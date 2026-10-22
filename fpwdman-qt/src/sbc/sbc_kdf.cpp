@@ -231,5 +231,58 @@ void pbkdf2HmacSha256(const uint8_t* password, size_t passwordLen,
     wipe(t, sizeof t);
 }
 
+// --- HKDF-SHA-256 -----------------------------------------------------------
+
+void hkdfExtract(const uint8_t* salt, size_t saltLen,
+                 const uint8_t* ikm, size_t ikmLen,
+                 uint8_t prk[32]) {
+    // PRK = HMAC(salt, IKM). An empty HMAC key is zero-padded to the block, which
+    // is exactly RFC 5869's "HashLen zero bytes" default, so no special case.
+    hmacSha256(salt, saltLen, ikm, ikmLen, prk);
+}
+
+bool hkdfExpand(const uint8_t* prk, size_t prkLen,
+                const uint8_t* info, size_t infoLen,
+                uint8_t* out, size_t len) {
+    if (len > kHkdfMaxLen)
+        return false;
+
+    HmacSha256 mac;
+    mac.setKey(prk, prkLen);
+
+    // T(i) = HMAC(PRK, T(i-1) || info || i), with T(0) empty.
+    uint8_t t[HmacSha256::kDigestLen];
+    size_t tLen = 0;
+    size_t off = 0;
+    for (uint8_t i = 1; off < len; ++i) {
+        mac.begin();
+        mac.update(t, tLen);
+        mac.update(info, infoLen);
+        mac.update(&i, 1);
+        mac.finish(t);
+        tLen = sizeof t;
+
+        const size_t take = (len - off) < tLen ? (len - off) : tLen;
+        std::memcpy(out + off, t, take);
+        off += take;
+    }
+
+    wipe(t, sizeof t);
+    return true;
+}
+
+bool hkdfSha256(const uint8_t* salt, size_t saltLen,
+                const uint8_t* ikm, size_t ikmLen,
+                const uint8_t* info, size_t infoLen,
+                uint8_t* out, size_t len) {
+    if (len > kHkdfMaxLen)
+        return false;
+    uint8_t prk[HmacSha256::kDigestLen];
+    hkdfExtract(salt, saltLen, ikm, ikmLen, prk);
+    const bool ok = hkdfExpand(prk, sizeof prk, info, infoLen, out, len);
+    wipe(prk, sizeof prk);
+    return ok;
+}
+
 } // namespace SBC
 // Copyright Ben Paul Wise. All Rights Reserved.

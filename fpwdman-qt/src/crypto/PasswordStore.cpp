@@ -19,10 +19,12 @@ namespace pwstore {
 
 namespace {
 
-const QByteArray kMagic = QByteArrayLiteral("FPMQ1");
+const QByteArray kMagic1 = QByteArrayLiteral("FPMQ1"); // read only
+const QByteArray kMagic2 = QByteArrayLiteral("FPMQ2"); // read and written
 constexpr int kIterations = 600000; // OWASP-recommended floor for PBKDF2-HMAC-SHA256
 constexpr int kSaltLen = 16;
 constexpr int kNonceLen = 16;
+constexpr int kMasterLen = 32; // FPMQ2: one PBKDF2 block, expanded with HKDF
 constexpr int kSbcKeyLen = 64; // 4 * 16-word key
 constexpr int kMacKeyLen = 32;
 constexpr int kBlockBytes = 128; // 32 words
@@ -91,6 +93,12 @@ QByteArray headerField(const QByteArray& line, const char* key) {
     return line.mid(idx, end - idx);
 }
 
+// The key-derivation header line, identical in FPMQ1 and FPMQ2.
+QByteArray kdfLine(int iterations, const QByteArray& salt) {
+    return "kdf=pbkdf2-sha256; iters=" + QByteArray::number(iterations) +
+           "; salt=" + salt.toBase64();
+}
+
 QByteArray hmacSha256(const QByteArray& key, const QByteArray& data) {
     QByteArray out(32, Qt::Uninitialized);
     SBC::hmacSha256(reinterpret_cast<const uint8_t*>(key.constData()),
@@ -101,16 +109,29 @@ QByteArray hmacSha256(const QByteArray& key, const QByteArray& data) {
     return out;
 }
 
-// SBC-CBC encrypt a byte-aligned (multiple of 128) framing buffer.
-QByteArray sbcEncryptFraming(const QByteArray& sbcKey, const QByteArray& framing) {
-    SBC::SBCipher cipher(32, 16);
+// HKDF-Expand of a 32-byte pseudorandom key into `len` bytes bound to `info`.
+QByteArray hkdfExpand(const QByteArray& prk, const char* info, int len) {
+    QByteArray out(len, Qt::Uninitialized);
+    SBC::hkdfExpand(reinterpret_cast<const uint8_t*>(prk.constData()),
+                    static_cast<size_t>(prk.size()),
+                    reinterpret_cast<const uint8_t*>(info), std::strlen(info),
+                    reinterpret_cast<uint8_t*>(out.data()), static_cast<size_t>(len));
+    return out;
+}
+
+// SBC-CBC encrypt a byte-aligned (multiple of 128) framing buffer. FPMQ1 used key
+// schedule version 0; FPMQ2 uses version 1.
+QByteArray sbcEncryptFraming(const QByteArray& sbcKey, const QByteArray& framing,
+                             SBC::KeySchedule schedule) {
+    SBC::SBCipher cipher(32, 16, 24, schedule);
     cipher.keySetupRaw(reinterpret_cast<const uint8_t*>(sbcKey.constData()), sbcKey.size());
     const std::vector<SBC::Word> words = SBC::deoctify(toBytes(framing));
     return fromBytes(SBC::octify(cipher.encipherCBC(words)));
 }
 
-QByteArray sbcDecryptFraming(const QByteArray& sbcKey, const QByteArray& cipherBytes) {
-    SBC::SBCipher cipher(32, 16);
+QByteArray sbcDecryptFraming(const QByteArray& sbcKey, const QByteArray& cipherBytes,
+                             SBC::KeySchedule schedule) {
+    SBC::SBCipher cipher(32, 16, 24, schedule);
     cipher.keySetupRaw(reinterpret_cast<const uint8_t*>(sbcKey.constData()), sbcKey.size());
     const std::vector<SBC::Word> words = SBC::deoctify(toBytes(cipherBytes));
     return fromBytes(SBC::octify(cipher.decipherCBC(words)));
@@ -138,8 +159,8 @@ bool constantTimeEquals(const QByteArray& a, const QByteArray& b) {
     return diff == 0;
 }
 
-// The two subkeys the container needs, split from one PBKDF2 output. Zeroizes
-// itself on destruction so the derived key material does not linger in memory.
+// The two subkeys the container needs. Zeroizes itself on destruction so the
+// derived key material does not linger in memory.
 struct DerivedKeys {
     QByteArray sbcKey;
     QByteArray macKey;
@@ -149,7 +170,10 @@ struct DerivedKeys {
     }
 };
 
-DerivedKeys deriveKeys(const QString& passphrase, const QByteArray& salt, int iterations) {
+// FPMQ1: 96 bytes straight from PBKDF2. That runs the iteration count three
+// times, yet an attacker testing a guess needs only the block holding the MAC
+// key, so two of the three runs cost the user time and add no security.
+DerivedKeys deriveKeysFpmq1(const QString& passphrase, const QByteArray& salt, int iterations) {
     QByteArray pw = passphrase.toUtf8();
     QByteArray dk = pbkdf2HmacSha256(pw, salt, iterations, kSbcKeyLen + kMacKeyLen);
     DerivedKeys keys;
@@ -158,6 +182,111 @@ DerivedKeys deriveKeys(const QString& passphrase, const QByteArray& salt, int it
     secureZero(dk);
     secureZero(pw);
     return keys;
+}
+
+// FPMQ2: one 32-byte PBKDF2 block (the slow, guess-resisting step), expanded
+// with HKDF into separate cipher and MAC keys (fast, and needs no slowing: its
+// input is already a strong key).
+DerivedKeys deriveKeysFpmq2(const QString& passphrase, const QByteArray& salt, int iterations) {
+    QByteArray pw = passphrase.toUtf8();
+    QByteArray master = pbkdf2HmacSha256(pw, salt, iterations, kMasterLen);
+    DerivedKeys keys;
+    keys.sbcKey = hkdfExpand(master, "FPMQ2 sbc", kSbcKeyLen);
+    keys.macKey = hkdfExpand(master, "FPMQ2 mac", kMacKeyLen);
+    secureZero(master);
+    secureZero(pw);
+    return keys;
+}
+
+// framing: [ 16 nonce | 4 LE len | xml | 0xFF pad to 128 ]
+QByteArray frame(const QByteArray& xml) {
+    QByteArray framing = randomBytes(kNonceLen);
+    framing += le32(static_cast<quint32>(xml.size()));
+    framing += xml;
+    const int rem = framing.size() % kBlockBytes;
+    if (rem != 0)
+        framing += QByteArray(kBlockBytes - rem, static_cast<char>(0xFF));
+    return framing;
+}
+
+// Undo frame() and parse the XML, scrubbing the cleartext either way.
+std::vector<SiteEntry> unframe(QByteArray& framing) {
+    if (framing.size() < kNonceLen + 4) {
+        secureZero(framing);
+        throw CorruptFile();
+    }
+    const quint32 xlen = readLe32(framing, kNonceLen);
+    if (static_cast<qint64>(kNonceLen) + 4 + xlen > framing.size()) {
+        secureZero(framing);
+        throw CorruptFile();
+    }
+
+    QByteArray xml = framing.mid(kNonceLen + 4, static_cast<int>(xlen));
+    try {
+        std::vector<SiteEntry> entries = parseXml(xml);
+        secureZero(xml);
+        secureZero(framing);
+        return entries;
+    } catch (...) {
+        secureZero(xml); // scrub the cleartext even when the XML is malformed
+        secureZero(framing);
+        throw;
+    }
+}
+
+// A parsed FPMQ1 or FPMQ2 file, not yet authenticated.
+struct ModernFile {
+    QByteArray magic;   // kMagic1 or kMagic2
+    QByteArray kdfLine; // the key-derivation header line, trimmed
+    QByteArray salt;
+    QByteArray tag;
+    int iters = 0;
+    QByteArray cipherBytes;
+};
+
+// Parse the header and body, and check everything that can be checked before
+// deriving keys.
+ModernFile parseModern(const QByteArray& fileText) {
+    const QList<QByteArray> lines = fileText.split('\n');
+    if (lines.isEmpty())
+        throw CorruptFile();
+
+    ModernFile f;
+    f.magic = lines.first().trimmed();
+    if (f.magic != kMagic1 && f.magic != kMagic2)
+        throw CorruptFile();
+
+    QByteArray body;
+    for (int i = 1; i < lines.size(); ++i) {
+        const QByteArray ln = lines[i];
+        if (ln.contains("salt=")) {
+            f.kdfLine = ln.trimmed();
+            f.salt = QByteArray::fromBase64(headerField(ln, "salt="));
+            f.iters = headerField(ln, "iters=").toInt();
+        } else if (ln.contains("tag=")) {
+            f.tag = QByteArray::fromBase64(headerField(ln, "tag="));
+        } else {
+            body += ln.trimmed();
+        }
+    }
+
+    // Both formats always write kIterations, so any other count is not one of
+    // them. The count must be checked here, before deriving keys: it cannot be
+    // authenticated first (the MAC key comes out of PBKDF2), so an unchecked value
+    // would let a crafted file run PBKDF2 for as long as it likes on the GUI
+    // thread. Malformed text needs no separate test: toInt() returns 0 for it.
+    if (f.salt.isEmpty() || f.tag.isEmpty() || f.iters != kIterations)
+        throw CorruptFile();
+
+    // FPMQ2 authenticates its header, so it must be exactly what the writer
+    // produces; stray fields would otherwise sit outside the MAC.
+    if (f.magic == kMagic2 && f.kdfLine != kdfLine(f.iters, f.salt))
+        throw CorruptFile();
+
+    f.cipherBytes = QByteArray::fromBase64(body);
+    if (f.cipherBytes.isEmpty() || (f.cipherBytes.size() % kBlockBytes) != 0)
+        throw CorruptFile();
+    return f;
 }
 
 } // namespace
@@ -240,109 +369,86 @@ std::vector<SiteEntry> parseXml(const QByteArray& xml) {
     return entries;
 }
 
-// --- modern container -------------------------------------------------------
+// --- modern containers ------------------------------------------------------
 
+// FPMQ2: PBKDF2 + HKDF keys, SBC version 1, and an HMAC over the header lines
+// and the ciphertext (encrypt-then-MAC).
 QByteArray encodeModern(const QString& passphrase, const std::vector<SiteEntry>& entries) {
     QByteArray xml = serializeXml(entries);
     const QByteArray salt = randomBytes(kSaltLen);
-    const DerivedKeys keys = deriveKeys(passphrase, salt, kIterations);
+    const DerivedKeys keys = deriveKeysFpmq2(passphrase, salt, kIterations);
 
-    // framing: [ 16 nonce | 4 LE len | xml | 0xFF pad to 128 ]
-    QByteArray framing = randomBytes(kNonceLen);
-    framing += le32(static_cast<quint32>(xml.size()));
-    framing += xml;
-    const int rem = framing.size() % kBlockBytes;
-    if (rem != 0)
-        framing += QByteArray(kBlockBytes - rem, static_cast<char>(0xFF));
-
-    const QByteArray cipherBytes = sbcEncryptFraming(keys.sbcKey, framing);
-    const QByteArray tag = hmacSha256(keys.macKey, cipherBytes); // encrypt-then-MAC
+    QByteArray framing = frame(xml);
+    const QByteArray cipherBytes =
+        sbcEncryptFraming(keys.sbcKey, framing, SBC::KeySchedule::V1);
+    const QByteArray header = kMagic2 + "\n" + kdfLine(kIterations, salt) + "\n";
+    const QByteArray tag = hmacSha256(keys.macKey, header + cipherBytes);
 
     // The cleartext copies have served their purpose; scrub them before they free.
     secureZero(xml);
     secureZero(framing);
 
-    QByteArray out = kMagic + "\n";
-    out += "kdf=pbkdf2-sha256; iters=" + QByteArray::number(kIterations) +
-           "; salt=" + salt.toBase64() + "\n";
+    QByteArray out = header;
+    out += "mac=hmac-sha256; tag=" + tag.toBase64() + "\n";
+    out += wrapBase64(cipherBytes.toBase64(), 64);
+    return out;
+}
+
+// FPMQ1, exactly as the app wrote it before FPMQ2: three-block PBKDF2, SBC
+// version 0, HMAC over the ciphertext only. Kept so the FPMQ1 reader stays tested.
+QByteArray encodeFpmq1(const QString& passphrase, const std::vector<SiteEntry>& entries) {
+    QByteArray xml = serializeXml(entries);
+    const QByteArray salt = randomBytes(kSaltLen);
+    const DerivedKeys keys = deriveKeysFpmq1(passphrase, salt, kIterations);
+
+    QByteArray framing = frame(xml);
+    const QByteArray cipherBytes =
+        sbcEncryptFraming(keys.sbcKey, framing, SBC::KeySchedule::V0);
+    const QByteArray tag = hmacSha256(keys.macKey, cipherBytes); // encrypt-then-MAC
+
+    secureZero(xml);
+    secureZero(framing);
+
+    QByteArray out = kMagic1 + "\n";
+    out += kdfLine(kIterations, salt) + "\n";
     out += "mac=hmac-sha256; tag=" + tag.toBase64() + "\n";
     out += wrapBase64(cipherBytes.toBase64(), 64);
     return out;
 }
 
 std::vector<SiteEntry> decodeModern(const QByteArray& fileText, const QString& passphrase) {
-    const QList<QByteArray> lines = fileText.split('\n');
-    if (lines.isEmpty() || lines.first().trimmed() != kMagic)
-        throw CorruptFile();
+    const ModernFile f = parseModern(fileText);
+    const bool fpmq2 = (f.magic == kMagic2);
 
-    QByteArray salt;
-    QByteArray tag;
-    int iters = 0;
-    QByteArray body;
-    for (int i = 1; i < lines.size(); ++i) {
-        const QByteArray ln = lines[i];
-        if (ln.contains("salt=")) {
-            salt = QByteArray::fromBase64(headerField(ln, "salt="));
-            iters = headerField(ln, "iters=").toInt();
-        } else if (ln.contains("tag=")) {
-            tag = QByteArray::fromBase64(headerField(ln, "tag="));
-        } else {
-            body += ln.trimmed();
-        }
-    }
+    const DerivedKeys keys = fpmq2 ? deriveKeysFpmq2(passphrase, f.salt, f.iters)
+                                   : deriveKeysFpmq1(passphrase, f.salt, f.iters);
 
-    if (salt.isEmpty() || tag.isEmpty() || iters <= 0)
-        throw CorruptFile();
-
-    const QByteArray cipherBytes = QByteArray::fromBase64(body);
-    if (cipherBytes.isEmpty() || (cipherBytes.size() % kBlockBytes) != 0)
-        throw CorruptFile();
-
-    const DerivedKeys keys = deriveKeys(passphrase, salt, iters);
-
-    // encrypt-then-MAC: a mismatch means wrong passphrase (or tampering). The
-    // compare is constant-time so verification leaks no timing about the tag.
-    if (!constantTimeEquals(hmacSha256(keys.macKey, cipherBytes), tag))
+    // encrypt-then-MAC: a mismatch means wrong passphrase (or tampering). FPMQ2's
+    // tag also covers the header, so the version and parameters are bound to it.
+    // The compare is constant-time so verification leaks no timing about the tag.
+    const QByteArray macInput =
+        fpmq2 ? (f.magic + "\n" + f.kdfLine + "\n" + f.cipherBytes) : f.cipherBytes;
+    if (!constantTimeEquals(hmacSha256(keys.macKey, macInput), f.tag))
         throw WrongPassphrase();
 
     QByteArray framing;
     try {
-        framing = sbcDecryptFraming(keys.sbcKey, cipherBytes);
+        framing = sbcDecryptFraming(keys.sbcKey, f.cipherBytes,
+                                    fpmq2 ? SBC::KeySchedule::V1 : SBC::KeySchedule::V0);
     } catch (const SBC::SbcError&) {
         throw CorruptFile();
     }
-
-    if (framing.size() < kNonceLen + 4) {
-        secureZero(framing);
-        throw CorruptFile();
-    }
-    const quint32 xlen = readLe32(framing, kNonceLen);
-    if (static_cast<qint64>(kNonceLen) + 4 + xlen > framing.size()) {
-        secureZero(framing);
-        throw CorruptFile();
-    }
-
-    QByteArray xml = framing.mid(kNonceLen + 4, static_cast<int>(xlen));
-    try {
-        std::vector<SiteEntry> entries = parseXml(xml);
-        secureZero(xml);
-        secureZero(framing);
-        return entries;
-    } catch (...) {
-        secureZero(xml); // scrub the cleartext even when the XML is malformed
-        secureZero(framing);
-        throw;
-    }
+    return unframe(framing);
 }
 
 // --- public entry points ----------------------------------------------------
 
 Format detectFormat(const QByteArray& fileText) {
-    QByteArray head = fileText;
-    if (head.size() > 64)
-        head = head.left(64);
-    if (head.trimmed().startsWith(kMagic))
-        return Format::Modern;
+    const QByteArray head = fileText.left(64).trimmed();
+    if (head.startsWith(kMagic2))
+        return Format::Fpmq2;
+    if (head.startsWith(kMagic1))
+        return Format::Fpmq1;
     return Format::Legacy;
 }
 
@@ -353,7 +459,7 @@ std::vector<SiteEntry> openFile(const QString& path, const QString& passphrase) 
     const QByteArray text = f.readAll();
     f.close();
 
-    if (detectFormat(text) == Format::Modern)
+    if (detectFormat(text) != Format::Legacy)
         return decodeModern(text, passphrase);
 
     // Legacy path: decode via the Qt-free SBC library, then parse the XML.

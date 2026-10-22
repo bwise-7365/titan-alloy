@@ -1,5 +1,6 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 #include "sbc_core.h"
+#include "sbc_kdf.h"
 
 // Faithful port of the SBC "version 0" cipher (perm1 / subkey0 / j0 / fe4-fd4).
 // Every arithmetic detail mirrors the original reference library so that files
@@ -25,6 +26,30 @@ inline Word j0(Word i, Word blockSize) {
 // subkey0(i) = qTransform(key[i mod keySize])
 inline Word subkey0(const std::vector<Word>& key, unsigned int i) {
     return qTransform(key[i % key.size()]);
+}
+
+// Version-1 HKDF label; the block size and round count are appended to it.
+constexpr char kV1Label[] = "SBC v1 subkeys";
+
+void appendBe32(std::vector<uint8_t>& v, uint32_t x) {
+    v.push_back(static_cast<uint8_t>(x >> 24));
+    v.push_back(static_cast<uint8_t>(x >> 16));
+    v.push_back(static_cast<uint8_t>(x >> 8));
+    v.push_back(static_cast<uint8_t>(x));
+}
+
+// Overwrite memory that held key material. The volatile pointer stops the
+// compiler from deleting stores it can prove nobody reads.
+void wipeBytes(void* p, size_t n) {
+    volatile uint8_t* q = static_cast<volatile uint8_t*>(p);
+    while (n--)
+        *q++ = 0;
+}
+
+template <typename T>
+void wipeVector(std::vector<T>& v) {
+    if (!v.empty())
+        wipeBytes(v.data(), v.size() * sizeof(T));
 }
 
 // fe4: C = (qTransform(B ^ S) <<< 7) + A
@@ -183,13 +208,27 @@ std::vector<Word> deoctify(const std::vector<uint8_t>& bytes) {
 
 // --- SBCipher ---------------------------------------------------------------
 
-SBCipher::SBCipher(uint32_t blockSizeWords, uint32_t keySizeWords, uint32_t rounds)
+SBCipher::SBCipher(uint32_t blockSizeWords, uint32_t keySizeWords, uint32_t rounds,
+                   KeySchedule schedule)
     : K_(blockSizeWords), N_(keySizeWords), rounds_(rounds),
-      permInterval_(2 * blockSizeWords), key_(keySizeWords, 0) {
+      permInterval_(2 * blockSizeWords), schedule_(schedule), key_(keySizeWords, 0) {
     if (K_ == 0)
         throw BadBlockSize();
     if (N_ == 0)
         throw BadKeySize();
+    if (schedule_ == KeySchedule::V1 &&
+        4u * static_cast<uint64_t>(rounds_) * K_ > kHkdfMaxLen)
+        throw BadBlockSize();
+
+    // Start from an all-zero key, as the original did, so the cipher is usable
+    // (if pointless) before keySetup.
+    const std::vector<uint8_t> zeros(4 * N_, 0);
+    keySetupRaw(zeros.data(), zeros.size());
+}
+
+SBCipher::~SBCipher() {
+    wipeVector(key_);
+    wipeVector(sub_);
 }
 
 void SBCipher::keySetupFromString(const std::string& passphrase) {
@@ -202,14 +241,42 @@ void SBCipher::keySetupFromString(const std::string& passphrase) {
 }
 
 void SBCipher::keySetupRaw(const uint8_t* keyBytes, size_t n) {
-    if (n != 4u * N_)
-        throw BadKeySize();
-    for (uint32_t i = 0; i < N_; ++i) {
-        key_[i] = (static_cast<Word>(keyBytes[4 * i]) << 24) |
-                  (static_cast<Word>(keyBytes[4 * i + 1]) << 16) |
-                  (static_cast<Word>(keyBytes[4 * i + 2]) << 8) |
-                  static_cast<Word>(keyBytes[4 * i + 3]);
+    const uint32_t total = rounds_ * K_;
+    std::vector<Word> sub(total);
+
+    if (schedule_ == KeySchedule::V0) {
+        if (n != 4u * N_)
+            throw BadKeySize();
+        for (uint32_t i = 0; i < N_; ++i) {
+            key_[i] = (static_cast<Word>(keyBytes[4 * i]) << 24) |
+                      (static_cast<Word>(keyBytes[4 * i + 1]) << 16) |
+                      (static_cast<Word>(keyBytes[4 * i + 2]) << 8) |
+                      static_cast<Word>(keyBytes[4 * i + 3]);
+        }
+        for (uint32_t i = 0; i < total; ++i)
+            sub[i] = subkey0(key_, i);
+    } else {
+        if (n == 0)
+            throw BadKeySize();
+        std::vector<uint8_t> info(kV1Label, kV1Label + sizeof kV1Label - 1);
+        appendBe32(info, K_);
+        appendBe32(info, rounds_);
+
+        std::vector<uint8_t> okm(4u * total);
+        if (!hkdfSha256(nullptr, 0, keyBytes, n, info.data(), info.size(),
+                        okm.data(), okm.size()))
+            throw BadBlockSize(); // unreachable: the constructor checked the size
+        for (uint32_t i = 0; i < total; ++i) {
+            sub[i] = (static_cast<Word>(okm[4 * i]) << 24) |
+                     (static_cast<Word>(okm[4 * i + 1]) << 16) |
+                     (static_cast<Word>(okm[4 * i + 2]) << 8) |
+                     static_cast<Word>(okm[4 * i + 3]);
+        }
+        wipeVector(okm);
     }
+
+    wipeVector(sub_);
+    sub_.swap(sub);
 }
 
 void SBCipher::encipherBlock(Word* x) const {
@@ -217,7 +284,7 @@ void SBCipher::encipherBlock(Word* x) const {
     const uint32_t total = rounds_ * k;
     for (uint32_t i = 0; i < total; ++i) {
         const Word j = j0(i % k, k);
-        x[i % k] = fe4(x[i % k], x[j], subkey0(key_, i));
+        x[i % k] = fe4(x[i % k], x[j], sub_[i]);
         if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0)
             perm1(x, k, /*permP=*/true);
     }
@@ -231,7 +298,7 @@ void SBCipher::decipherBlock(Word* y) const {
         if (permInterval_ > 0 && i > 0 && (i % permInterval_) == 0)
             perm1(y, k, /*permP=*/false);
         const Word j = j0(i % k, k);
-        y[i % k] = fd4(y[i % k], y[j], subkey0(key_, i));
+        y[i % k] = fd4(y[i % k], y[j], sub_[i]);
     }
 }
 

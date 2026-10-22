@@ -1,6 +1,6 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
 cmake_minimum_required(VERSION 3.20)
-project(fpwdman_qt)
+project(qpwdman)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -113,6 +113,11 @@ else()
     set(CMAKE_PREFIX_PATH "${FPWDMAN_QT_SHARED_DIR}")
 endif()
 
+# Qt6Gui looks for the Vulkan headers as an optional dependency, and without a
+# Vulkan SDK installed every configure prints "Could NOT find WrapVulkanHeaders".
+# The app does not use Vulkan, so skip the search.
+set(CMAKE_DISABLE_FIND_PACKAGE_WrapVulkanHeaders TRUE)
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
@@ -164,7 +169,7 @@ target_link_libraries(pwcrypto PUBLIC Qt6::Core sbc)
 # -----------------------------------------------------------------------------
 # The Qt application
 # -----------------------------------------------------------------------------
-qt_add_executable(fpwdman_qt
+qt_add_executable(qpwdman
     WIN32
     src/main.cpp
     src/MainWindow.h
@@ -187,27 +192,27 @@ qt_add_executable(fpwdman_qt
     src/PreferencesDialog.cpp
 )
 
-target_link_libraries(fpwdman_qt PRIVATE Qt6::Widgets sbc pwcrypto)
+target_link_libraries(qpwdman PRIVATE Qt6::Widgets sbc pwcrypto)
 
 if(FPWDMAN_STATIC)
     # Nothing to deploy: the exe is the entire product, so there is no
     # windeployqt step and the build folder runs stand-alone by construction.
-    # 'package' still exists, and still produces fpwdman_qt.tgz unpacking to a
-    # single fpwdman_qt/ folder, so the shipping command does not change with the
+    # 'package' still exists, and still produces qpwdman.tgz unpacking to a
+    # single qpwdman/ folder, so the shipping command does not change with the
     # link flavor -- there is just one file to stage instead of a runtime tree.
-    set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/fpwdman_qt")
+    set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/qpwdman")
     add_custom_target(package
         COMMAND "${CMAKE_COMMAND}" -E rm -rf "${PACKAGE_STAGE_DIR}"
         COMMAND "${CMAKE_COMMAND}" -E make_directory "${PACKAGE_STAGE_DIR}"
         COMMAND "${CMAKE_COMMAND}" -E copy
-                "$<TARGET_FILE:fpwdman_qt>" "${PACKAGE_STAGE_DIR}/"
+                "$<TARGET_FILE:qpwdman>" "${PACKAGE_STAGE_DIR}/"
         COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/dist"
                 "${CMAKE_COMMAND}" -E tar czf
-                "${CMAKE_BINARY_DIR}/fpwdman_qt.tgz" fpwdman_qt
-        COMMENT "Packaging stand-alone fpwdman_qt.tgz (single static exe)"
+                "${CMAKE_BINARY_DIR}/qpwdman.tgz" qpwdman
+        COMMENT "Packaging stand-alone qpwdman.tgz (single static exe)"
         VERBATIM
     )
-    add_dependencies(package fpwdman_qt)
+    add_dependencies(package qpwdman)
 
 # Automatic DLL deployment for Windows. windeployqt drops the Qt runtime next to
 # the exe -- the five Qt6 DLLs plus the platforms/ plugin -- so the build folder
@@ -225,10 +230,10 @@ elseif(WIN32)
     find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
     if(WINDEPLOYQT_EXECUTABLE)
         message(STATUS "Found windeployqt: ${WINDEPLOYQT_EXECUTABLE}")
-        add_custom_command(TARGET fpwdman_qt POST_BUILD
+        add_custom_command(TARGET qpwdman POST_BUILD
             COMMAND "${WINDEPLOYQT_EXECUTABLE}"
                     "${FPWDMAN_DEPLOY_FLAVOR}"
-                    "$<TARGET_FILE:fpwdman_qt>"
+                    "$<TARGET_FILE:qpwdman>"
             COMMENT "Deploying Qt libraries to the executable directory..."
         )
 
@@ -237,9 +242,9 @@ elseif(WIN32)
         #
         # The build folder is full of artifacts a user must not have to sort
         # through (.pdb/.ilk, _deps/, autogen, the test exes, CMake scaffolding).
-        # This stages ONLY the runtime into dist/fpwdman_qt/ -- the exe plus the
+        # This stages ONLY the runtime into dist/qpwdman/ -- the exe plus the
         # Qt runtime windeployqt certifies as required -- then gzips it into
-        # fpwdman_qt.tgz, which unpacks to a single top-level fpwdman_qt/ folder.
+        # qpwdman.tgz, which unpacks to a single top-level qpwdman/ folder.
         #
         # The stage is wiped and rebuilt every run, so nothing stale survives.
         # Bloat is stripped (translations, software OpenGL, the D3D compiler) and
@@ -248,12 +253,12 @@ elseif(WIN32)
         # this is only meaningful against a Release build:
         #     cmake --build <release-build-dir> --target package
         # ---------------------------------------------------------------------
-        set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/fpwdman_qt")
+        set(PACKAGE_STAGE_DIR "${CMAKE_BINARY_DIR}/dist/qpwdman")
         add_custom_target(package
             COMMAND "${CMAKE_COMMAND}" -E rm -rf "${PACKAGE_STAGE_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E make_directory "${PACKAGE_STAGE_DIR}"
             COMMAND "${CMAKE_COMMAND}" -E copy
-                    "$<TARGET_FILE:fpwdman_qt>" "${PACKAGE_STAGE_DIR}/"
+                    "$<TARGET_FILE:qpwdman>" "${PACKAGE_STAGE_DIR}/"
             COMMAND "${WINDEPLOYQT_EXECUTABLE}"
                     "${FPWDMAN_DEPLOY_FLAVOR}"
                     --dir "${PACKAGE_STAGE_DIR}"
@@ -261,18 +266,18 @@ elseif(WIN32)
                     --no-opengl-sw
                     --no-system-d3d-compiler
                     --no-compiler-runtime
-                    "${PACKAGE_STAGE_DIR}/fpwdman_qt.exe"
+                    "${PACKAGE_STAGE_DIR}/qpwdman.exe"
             # tar from inside dist/ so the archive holds a single top-level
-            # fpwdman_qt/ folder. chdir (not the target's WORKING_DIRECTORY) is
+            # qpwdman/ folder. chdir (not the target's WORKING_DIRECTORY) is
             # used because dist/ does not exist until make_directory above runs;
             # a target-level WORKING_DIRECTORY would cd there before any command.
             COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/dist"
                     "${CMAKE_COMMAND}" -E tar czf
-                    "${CMAKE_BINARY_DIR}/fpwdman_qt.tgz" fpwdman_qt
-            COMMENT "Packaging stand-alone fpwdman_qt.tgz (exe + required Qt runtime)"
+                    "${CMAKE_BINARY_DIR}/qpwdman.tgz" qpwdman
+            COMMENT "Packaging stand-alone qpwdman.tgz (exe + required Qt runtime)"
             VERBATIM
         )
-        add_dependencies(package fpwdman_qt)
+        add_dependencies(package qpwdman)
     else()
         message(WARNING "windeployqt not found. DLLs will not be deployed automatically.")
     endif()
@@ -314,13 +319,16 @@ target_compile_definitions(sbc_test PRIVATE
     SBC_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test/data")
 gtest_discover_tests(sbc_test)
 
-# store_test: Qt-linked tests for the modern container, PBKDF2, XML mapping,
-# and the password generator. DISCOVERY_MODE PRE_TEST defers running the exe
-# (which needs the Qt Core DLL) from build time to test time.
+# store_test: Qt-linked tests for the FPMQ1/FPMQ2 containers, migration of old
+# files to FPMQ2, PBKDF2, XML mapping, and the password generator.
+# DISCOVERY_MODE PRE_TEST defers running the exe (which needs the Qt Core DLL)
+# from build time to test time.
 add_executable(store_test
     test/StoreTest.cpp
 )
 target_link_libraries(store_test PRIVATE pwcrypto GTest::gtest GTest::gtest_main)
+target_compile_definitions(store_test PRIVATE
+    SBC_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test/data")
 gtest_discover_tests(store_test DISCOVERY_MODE PRE_TEST)
 
 # Copyright Ben Paul Wise. All Rights Reserved.
