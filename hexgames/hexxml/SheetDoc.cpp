@@ -14,9 +14,10 @@ namespace HexXml {
 
   namespace {
 
-    constexpr std::initializer_list<std::string_view> kDirs = {"n", "ne", "e", "se",
+    // remove constexper avoid modification of '<temporary>'
+     std::initializer_list<std::string_view> kDirs = {"n", "ne", "e", "se",
                                                                  "s", "sw", "w", "nw"};
-    constexpr std::initializer_list<std::string_view> kSlots = {"c",  "n",  "ne", "e", "se",
+     std::initializer_list<std::string_view> kSlots = {"c",  "n",  "ne", "e", "se",
                                                                   "s", "sw", "w",  "nw"};
 
     SheetGridDoc

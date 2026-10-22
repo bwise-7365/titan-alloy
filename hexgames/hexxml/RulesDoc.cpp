@@ -13,9 +13,10 @@ namespace HexXml {
 
   namespace {
 
-    constexpr std::initializer_list<std::string_view> kPurposes = {
+    // remove constexper avoid modification of '<temporary>'
+     std::initializer_list<std::string_view> kPurposes = {
         "movement", "zoc", "supply", "retreat", "network", "control", "grouping"};
-    constexpr std::initializer_list<std::string_view> kTopics = {
+     std::initializer_list<std::string_view> kTopics = {
         "sequence",  "geometry",  "counters", "stacking",      "zoc",       "control",  "movement",
         "supply",    "combat",    "retreat",  "reinforcement", "replacement", "weather", "cards",
         "politics",  "naval",     "leaders",  "markers",       "hidden",    "victory",  "other"};

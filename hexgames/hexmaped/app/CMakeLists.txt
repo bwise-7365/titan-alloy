@@ -4,7 +4,7 @@
 # executable after every link, so it runs from the build tree.
 # Takes whichever major version of Qt is installed, Qt6 preferred (Qt5 on Debian); QT_VERSION_MAJOR
 # names the targets below.
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets Svg)
+find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Svg)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
