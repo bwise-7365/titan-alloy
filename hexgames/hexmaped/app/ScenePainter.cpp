@@ -70,7 +70,7 @@ namespace HexQt {
           break;
       }
       if (!s.dash.empty() && 0.0 < s.width) {
-        QList<qreal> pattern;  // Qt dashes are in pen widths
+        QVector<qreal> pattern;  // Qt dashes are in pen widths; QVector, which Qt5's setDashPattern takes (Qt6: = QList)
         for (double d : s.dash) {
           pattern.push_back(std::max(0.05, d / s.width));
         }

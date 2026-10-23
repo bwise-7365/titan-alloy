@@ -88,15 +88,18 @@ namespace HexQt {
   void
   MainWindow::buildMenus()
   {
+    // Shortcuts are set on the returned action, not passed to addAction: addAction(text, shortcut,
+    // functor) is Qt 6.3+ only, and Qt5 (Debian) wants addAction(text, functor, shortcut) instead.
     QMenu* file = menuBar()->addMenu("&File");
-    file->addAction("&Open sheet...", QKeySequence::Open, [this] {
+    file->addAction("&Open sheet...", [this] {
       const QString path = QFileDialog::getOpenFileName(this, "Open sheet", QString(HEXGAMES_SOURCE_DIR) + "/map_graphics/xml", "Sheets (*.xml)");
       if (!path.isEmpty()) {
         open(path);
       }
-    });
-    saveAction_ = file->addAction("&Save", QKeySequence::Save, [this] { save(); });
-    file->addAction("Save &as...", QKeySequence::SaveAs, [this] { saveAs(); });
+    })->setShortcut(QKeySequence::Open);
+    saveAction_ = file->addAction("&Save", [this] { save(); });
+    saveAction_->setShortcut(QKeySequence::Save);
+    file->addAction("Save &as...", [this] { saveAs(); })->setShortcut(QKeySequence::SaveAs);
     file->addAction("&Validate saved file", [this] { validateSaved(); });
     file->addAction("&Export SVG...", [this] { exportSvg(); });
     file->addAction("Open &doubts...", [this] {
@@ -106,34 +109,36 @@ namespace HexQt {
       }
     });
     file->addSeparator();
-    file->addAction("&Quit", QKeySequence::Quit, [this] { close(); });
+    file->addAction("&Quit", [this] { close(); })->setShortcut(QKeySequence::Quit);
 
     QMenu* edit = menuBar()->addMenu("&Edit");
-    undoAction_ = edit->addAction("&Undo", QKeySequence::Undo, [this] {
+    undoAction_ = edit->addAction("&Undo", [this] {
       if (doc_) {
         doc_->undo();
         view_->rebuild();
         refreshActions();
       }
     });
-    redoAction_ = edit->addAction("&Redo", QKeySequence::Redo, [this] {
+    undoAction_->setShortcut(QKeySequence::Undo);
+    redoAction_ = edit->addAction("&Redo", [this] {
       if (doc_) {
         doc_->redo();
         view_->rebuild();
         refreshActions();
       }
     });
+    redoAction_->setShortcut(QKeySequence::Redo);
 
     QMenu* viewMenu = menuBar()->addMenu("&View");
-    viewMenu->addAction("Zoom &in", QKeySequence::ZoomIn, [this] { view_->zoomBy(1.25); });
-    viewMenu->addAction("Zoom &out", QKeySequence::ZoomOut, [this] { view_->zoomBy(0.8); });
-    viewMenu->addAction("&Fit", QKeySequence(Qt::Key_F), [this] { view_->fitAll(); });
+    viewMenu->addAction("Zoom &in", [this] { view_->zoomBy(1.25); })->setShortcut(QKeySequence::ZoomIn);
+    viewMenu->addAction("Zoom &out", [this] { view_->zoomBy(0.8); })->setShortcut(QKeySequence::ZoomOut);
+    viewMenu->addAction("&Fit", [this] { view_->fitAll(); })->setShortcut(QKeySequence(Qt::Key_F));
     QAction* ids = viewMenu->addAction("Show hex &ids");
     ids->setCheckable(true);
     ids->setChecked(true);
     connect(ids, &QAction::toggled, view_, &MapView::setIdsVisible);
     QMenu* help = menuBar()->addMenu("&Help");
-    help->addAction("&About HexMapEd...", QKeySequence::HelpContents, [this] { showAbout(); });
+    help->addAction("&About HexMapEd...", [this] { showAbout(); })->setShortcut(QKeySequence::HelpContents);
     return;
   }
 
@@ -157,10 +162,11 @@ namespace HexQt {
     wavinessBox_->setValue(0);
     wavinessBox_->setToolTip("Hand-scratched roads, railways and rivers, as irrgo draws its boards: 0 is straight. Presentation only.");
     bar->addWidget(wavinessBox_);
-    connect(wavinessBox_, &QSpinBox::valueChanged, view_, &MapView::setWaviness);
+    // qOverload<int>: in Qt5 valueChanged and currentIndexChanged also have QString overloads.
+    connect(wavinessBox_, qOverload<int>(&QSpinBox::valueChanged), view_, &MapView::setWaviness);
     bar->addSeparator();
     bar->addAction("About", [this] { showAbout(); });
-    connect(modeBox_, &QComboBox::currentIndexChanged, this, [this](int) {
+    connect(modeBox_, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int) {
       linkStart_.reset();
       view_->setPanningP(Mode::Select == mode());
       refreshKinds();
@@ -561,7 +567,11 @@ namespace HexQt {
     QProcess proc;
     QString python = QString(HEXGAMES_PYTHON);
     if (python.isEmpty()) {
+#ifdef Q_OS_WIN
       python = "python";
+#else
+      python = "python3";  // Debian has no plain "python"
+#endif
     }
     // validate-xml.py takes directories: every sheet beside the saved one is checked with it
     proc.start(python, {QString(HEXGAMES_SOURCE_DIR) + "/tools/validate-xml.py", q(doc_->path().parent_path().string())});
