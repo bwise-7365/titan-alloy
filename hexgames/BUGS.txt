@@ -18,6 +18,10 @@ hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newes
     no save or package yet, so nothing else names these ids. The VL strips have show-ids="false", so
     renaming G00-G09 and R00-R09 to grid ids changes nothing printed.
 
+*** 2026-10-30 grid/@id-side defaults to w, which is not a flat-top direction: hexsheet2svg.py fails on a
+    flat grid that omits id-side (KeyError: 'w' in edge_angle). Every committed flat sheet sets id-side, and
+    HexKrieg now writes id-side="n". Fix: a default per orientation in the renderer, or no XSD default.
+
 *** 2026-10-30 HexMapEd's SheetWriter does not write the four optional attributes added to hexsheet.xsd
     for HexKrieg (sheet/@seed, terrain/@move-cost, hex/@alt, edge/@cost). A sheet written by HexKrieg and
     saved from HexMapEd loses its altitudes, seed, move costs and edge-cost overrides. SheetDoc does not
