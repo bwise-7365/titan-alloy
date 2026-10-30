@@ -29,8 +29,8 @@ only one city symbol, so the "major city on the network" check is vacuous here, 
   river  no piece of 5 or fewer hexsides; every piece drains; no river hexside with sea on both sides or
          on the map edge
   border no hexside in water; a continuous chain whose loose ends lie on sea or the map edge
-Dai Senso (tasks/09-ds-map.md). The map edge includes the hexes outside the printed map (DS_OFFMAP); the
-west and east grids are neighbours across their seam.
+Dai Senso (tasks/09-ds-map.md). The map edge includes the hexes outside the printed map (DS_OFFMAP). The
+sheet is one grid; the hex ids below are its numbering, not the print's w/e ids (README.md).
   links     every step joins neighbouring hexes; no hex in sea or off the map
   rail      no piece under 3 hexes (DS_SHORT excepted); each piece, with the connected straits DS_STRAITS as
             joins, holds exactly one hex of DS_RAIL_SYSTEMS (the print's separate rail systems, named)
@@ -71,41 +71,41 @@ NAMED = ("capital", "city")
 # Hexes outside the printed map (paper margin and off-map furniture), per grid row, west to east. Read off the
 # game-map scan: paper or white round the hex centre, or the centre inside an off-map panel of the sheet.
 DS_OFFMAP = """
-w6101-w6127 w6001-w6010 w5901-w5911 w5801-w5809 w5701-w5708 w5601-w5609 w5501-w5508 w5401-w5410 w5301-w5311
-w5201-w5209 w5101-w5109 w5001-w5008 w4901-w4907 w4801-w4806 w4705 w4601-w4604 w4401-w4402 w4301-w4302 w4201
-w4101 w3901 w3701 w3601 w3501-w3505 w3401-w3404 w3301-w3305 w3201-w3204 w3101-w3105 w2901-w2905 w2801-w2804
-w2701-w2713 w2601-w2613 w2501-w2514 w2401-w2413 w2301-w2304 w2306-w2314 w2201-w2215 w2101-w2116 w2001-w2015
-w1901-w1916 w1801-w1815 w1701-w1716 w1601-w1615 w1501-w1515 w1517-w1520 w1401-w1420 w1301-w1322 w1201-w1219
-w1101-w1122 w1001-w1021 w1024-w1027 w0901-w0927
-e6101-e6129 e6012-e6029 e5915-e5929 e5814-e5821 e5829 e5717-e5719 e5725-e5729 e5625-e5629 e5525 e5425-e5429
-e5325-e5329 e5225-e5229 e5126-e5129 e5025-e5029 e4925-e4929 e4829 e4729 e4629 e4529 e4429 e4329 e4229 e4129
-e4029 e3929 e3829 e3729 e3629 e3529 e3429 e3325-e3329 e3225-e3229 e3124 e3126-e3129 e3023 e3025-e3029
-e2923-e2924 e2926-e2929 e2822 e2829 e2722-e2729 e2622-e2629 e2522-e2529 e2422-e2429 e2322-e2329 e2222-e2229
-e2122-e2129 e2022-e2029 e1922-e1929 e1828-e1829 e1723-e1729 e1622-e1629 e1523-e1529 e1422-e1429 e1320 e1329
-e1220-e1229 e1121-e1129 e1001-e1029 e0901-e0929
+6100-6126 6000-6009 5900-5910 5800-5808 5700-5707 5600-5608 5500-5507 5400-5409 5300-5310
+5200-5208 5100-5108 5000-5007 4900-4906 4800-4805 4704 4600-4603 4400-4401 4300-4301 4200
+4100 3900 3700 3600 3500-3504 3400-3403 3300-3304 3200-3203 3100-3104 2900-2904 2800-2803
+2700-2712 2600-2612 2500-2513 2400-2412 2300-2303 2305-2313 2200-2214 2100-2115 2000-2014
+1900-1915 1800-1814 1700-1715 1600-1614 1500-1514 1516-1519 1400-1419 1300-1321 1200-1218
+1100-1121 1000-1020 1023-1026 0900-0926
+6127-6155 6038-6055 5941-5955 5840-5847 5855 5743-5745 5751-5755 5651-5655 5551 5451-5455
+5351-5355 5251-5255 5152-5155 5051-5055 4951-4955 4855 4755 4655 4555 4455 4355 4255 4155
+4055 3955 3855 3755 3655 3555 3455 3351-3355 3251-3255 3150 3152-3155 3049 3051-3055
+2949-2950 2952-2955 2848 2855 2748-2755 2648-2655 2548-2555 2448-2455 2348-2355 2248-2255
+2148-2155 2048-2055 1948-1955 1854-1855 1749-1755 1648-1655 1549-1555 1448-1455 1346 1355
+1246-1255 1147-1155 1027-1055 0927-0955
 """
 # Hex pairs joined by a connected strait arrow; they count as joined for the rail and network rules.
-DS_STRAITS = "e4801-e4902 e4802-e4803 e4802-e4902 e5105-e5205 e1317-e1318"
+DS_STRAITS = "4827-4928 4828-4829 4828-4928 5131-5231 1343-1344"
 # Capitals and cities the print leaves off every rail and road line: Lhasa, Kyzyl Khoto, Yenan, Petropavlovsk,
 # Colombo; Borneo (Kuching, Brunei, Balikpapan, Sandakan, Tarakan); Celebes (Menado, Kendari, Makassar); New Guinea
 # (Hollandia, Wewak, Lae, Sorong, Port Moresby); cities alone on their islands: Davao (Mindanao), Rabaul (New
 # Britain), Honolulu (Oahu).
-DS_UNLINKED = ("w4715 w5818 w5021 e5810 w3509 w3220 w3322 w3022 w3423 w3223 w3126 w2925 w2824 e3004 e2906 e2707 "
-               "e3001 e2606 w3426 e2808 e4226")
+DS_UNLINKED = ("4714 5817 5020 5836 3508 3219 3321 3021 3422 3222 3125 2924 2823 3030 2932 2733 "
+               "3027 2632 3425 2834 4252")
 # Printed mountain hexsides shorter than a range (canonical hexside refs, all of a piece's sides listed).
 DS_SPECKS = ""
 # Printed rail or road pieces shorter than 3 hexes (all of a piece's hexes listed): rail Palembang-Telukbetung,
 # Taihoku-Tainan, the South Island line; road Ledo-Myitkyina, Kweilin-Nanning.
-DS_SHORT = "w2919 w2818 w4325 w4224 e1217 e1317 w4516 w4416 w4420 w4320"
+DS_SHORT = "2918 2817 4324 4223 1243 1343 4515 4415 4419 4319"
 # One hex of each printed network (rail, road and connected straits together): Asia, Sumatra, Java, Japan, Formosa,
 # Luzon, Australia, New Zealand, Sakhalin. Hex adjacency joins islands the print keeps apart (Malacca, Sunda, Korea,
 # Formosa, Tatar, La Perouse and Palk straits), so the networks are named rather than derived from land.
-DS_NETWORKS = "w6012 w2919 w2819 e4905 w4325 w3824 w1423 e1517 e5806"
+DS_NETWORKS = "6011 2918 2818 4931 4324 3823 1422 1543 5832"
 # One hex of each printed rail system: Russia-Manchuria-China-Korea, India, Burma, Indochina-Siam-Malaya, Sumatra,
 # Java, Japan, Formosa, Luzon, Australia, New Zealand.
-DS_RAIL_SYSTEMS = "w6012 w4405 w4215 w3817 w2919 w2819 e4905 w4325 w3824 w1423 e1517"
+DS_RAIL_SYSTEMS = "6011 4404 4214 3816 2918 2818 4931 4324 3823 1422 1543"
 # Printed ports whose water lies inside their own hex (a delta), with no all-sea neighbour: pid:slot facing the water.
-DS_DELTA_PORTS = "w4314:sw"
+DS_DELTA_PORTS = "4313:sw"
 
 
 class Corners:
@@ -182,7 +182,7 @@ class Sheet:
         return out
 
     def id_ranges(self, text):
-        """Hex ids from tokens 'w6101' or 'w6101-w6110' (a run along one grid row, west to east)."""
+        """Hex ids from tokens '6100' or '6100-6109' (a run along one grid row, west to east)."""
         out = set()
         for tok in text.split():
             a, _, b = tok.partition("-")

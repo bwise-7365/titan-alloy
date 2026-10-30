@@ -2,7 +2,7 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
-*** 2026-10-30 dai-senso.xml and velikiye-luki.xml each split one continuous hex lattice into several
+--- 2026-10-30 dai-senso.xml and velikiye-luki.xml each split one continuous hex lattice into several
     grid elements (Ben: a data error; each map is one lattice). Merge each into one grid. hexsheet.xsd keeps
     grid maxOccurs="unbounded", because some games do have two or three maps. HexKrieg's sheet reader
     rejects a sheet with more than one grid, so neither sheet loads there until this is fixed.
@@ -17,6 +17,15 @@ hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newes
     produce both, so a merged grid either renumbers the hexes or needs a schema change. games/ds holds
     no save or package yet, so nothing else names these ids. The VL strips have show-ids="false", so
     renaming G00-G09 and R00-R09 to grid ids changes nothing printed.
+    Fixed the same day. Ben's ruling on the DS ids: drop the prefixes, keep the printed rows, count columns
+    from 00 at the West Map's west edge. The scan shows the seam on row 37 as w3726 w3727 e3701 and on row 36
+    as w3627 w3628 e3602, so printed wRRCC is RR(CC-1) and eRRCC is RR(CC+26); one grid of 56 columns, 00-55
+    (Ben had estimated about 70). The east hexes move 0.05 px west onto the exact lattice. VL is one grid of
+    11 columns, offset="even"; the strips are columns 00 and 10 (G05 is 0005, R09 is 1009), main's ids are
+    unchanged. show-ids is per grid, so the strip hexes now print their ids, which the physical map does not.
+    The tests of multi-grid sheets read hexxml/test/sheet-two-maps.xml, two three-column maps cut from DS as
+    first transcribed. Not rerun and still in the old numbering: tools/build_ds.py and tools/tidy_networks.py
+    (one-off builders; rerunning build_ds.py would bring back the two grids) and tasks/09-ds-map.md.
 
 *** 2026-10-30 grid/@id-side defaults to w, which is not a flat-top direction: hexsheet2svg.py fails on a
     flat grid that omits id-side (KeyError: 'w' in edge_angle). Every committed flat sheet sets id-side, and

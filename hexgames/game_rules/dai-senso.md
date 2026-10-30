@@ -683,6 +683,11 @@ Map. The two sheets are laid side by side and are geographically continuous, but
 numbering is independent. Named ranges of hexes appear in the rules as inclusive spans
 along a map edge — `w5311` to `w6011` for the Russian western edge.
 
+**In hexgames** (Ben, 2026-10-30) the two sheets are one grid, `map_graphics/xml/dai-senso.xml`, and
+the prefix is dropped: the row stays as printed and the column counts from 00 at the West Map's west
+edge, so printed `wRRCC` is `RR(CC-1)` and `eRRCC` is `RR(CC+26)`. Tokyo, `e4904`, is `4930`; the
+Russian western edge is `5310` to `6010`. The rest of this section describes the print.
+
 A coordinate in this game is therefore a **(sheet, first pair, second pair)** triple. Which
 half of the four digits indexes north–south is not established here. The library also needs
 a notion of sheet-crossing adjacency distinct from the numbering, since the two sheets are

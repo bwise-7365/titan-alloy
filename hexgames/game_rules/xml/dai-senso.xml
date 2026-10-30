@@ -17,7 +17,7 @@
 
   <!-- ================= map ================= -->
   <map>
-    <hex-ids pattern="[we]\d{4}" example="e4904">A sheet prefix, w for the West Map and e for the East Map, plus four digits. The two sheets are geometrically continuous but numbered independently, so a hex is a (sheet, number) pair and sheet-crossing adjacency is separate from the numbering. Named spans appear as inclusive ranges along a map edge, such as w5311 to w6011. Which digit pair is north-south is not established.</hex-ids>
+    <hex-ids pattern="\d{4}" example="4930">Four digits, row then column, on one grid across both sheets: the row as printed (numbered from the south), the column counted from 00 at the West Map's west edge (Ben, 2026-10-30). The print numbers each sheet from its own west edge behind a w or e prefix; printed wRRCC is RR(CC-1) here and eRRCC is RR(CC+26), so Tokyo, printed e4904, is 4930. Named spans appear as inclusive ranges along a map edge, such as 5310 to 6010 (printed w5311 to w6011).</hex-ids>
 
     <hex-terrain id="clear" name="Clear, including Desert" move-cost="1" shift="0"/>
     <hex-terrain id="city" name="City or Capital" move-cost="1" shift="1"/>
