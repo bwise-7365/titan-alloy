@@ -124,7 +124,8 @@ namespace {
 
   TEST(MapFrameTest, TwoGridSheetSharesOneLatticeAndNumbersHexesGridByGrid)
   {
-    const MapFrame frame = MapFrame::of(loadSheet("dai-senso"));
+    const MapFrame frame = MapFrame::of(HexXml::SheetDoc::parse(
+        HexXml::XmlDocument::load(sourceRoot() / "hexxml" / "test" / "sheet-two-maps.xml")));
     ASSERT_EQ(2u, frame.grids().size());
     const std::size_t west = frame.grids()[0].ids().size();
     EXPECT_EQ(0u, frame.index(frame.grids()[0].ids().front()).value);

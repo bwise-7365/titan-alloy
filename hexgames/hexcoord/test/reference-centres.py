@@ -21,8 +21,7 @@ import hexsheet2svg  # noqa: E402
 SAMPLES = [
     ("the-russian-campaign.xml", "main", ["A33", "KK19", "KK20", "QQ1"]),
     ("d-day-at-tarawa.xml", "main", ["2336", "2502", "0143"]),
-    ("dai-senso.xml", "west", ["w5227", "w6101", "w5201"]),
-    ("dai-senso.xml", "east", ["e3411", "e5201", "e6101"]),
+    ("dai-senso.xml", "main", ["5226", "6100", "5200", "3437", "5227", "6127"]),
     ("panzergruppe-guderian.xml", "main", ["0101", "0109", "5631"]),
 ]
 

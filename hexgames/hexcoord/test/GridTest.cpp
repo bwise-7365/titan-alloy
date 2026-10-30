@@ -3,7 +3,7 @@
 // ----------------------------------------------
 // Sheet grids: offset indices, printed ids, pixels and the shared lattice of a two-map sheet.
 //
-// The reference pixels in kTrc, kDdat, kDsWest, kDsEast and kPgg were printed by
+// The reference pixels in kTrc, kDdat, kDs and kPgg were printed by
 // hexcoord/test/reference-centres.py, which runs map_graphics/xml/hexsheet2svg.py's own Grid class
 // over the four sheets. Regenerate them with that script if the renderer's geometry ever changes.
 // ----------------------------------------------
@@ -87,7 +87,27 @@ namespace {
     return spec;
   }
 
-  // dai-senso.xml, the western map
+  // dai-senso.xml: the West and East Maps as one grid, columns numbered from 00 at the west edge
+  GridSpec
+  dsSpec()
+  {
+    GridSpec spec;
+    spec.id = "main";
+    spec.orientation = Orientation::Pointy;
+    spec.offset = Parity::Odd;
+    spec.cols = 56;
+    spec.rows = 53;
+    spec.size = 40.95;
+    spec.ox = 62.54;
+    spec.oy = -8.05;
+    spec.idFormat = "{row:02}{col:02}";
+    spec.colStart = 0;
+    spec.rowStart = 61;
+    spec.rowStep = -1;
+    return spec;
+  }
+
+  // A two-map sheet: dai-senso.xml as first transcribed, the West Map as one grid ...
   GridSpec
   dsWestSpec()
   {
@@ -107,7 +127,7 @@ namespace {
     return spec;
   }
 
-  // dai-senso.xml, the eastern map: the same lattice, 27 columns further east
+  // ... and the East Map as another: the same lattice, 27 columns further east
   GridSpec
   dsEastSpec()
   {
@@ -145,12 +165,13 @@ namespace {
   const Sample kDdat[] = {{"2336", 34, 2, 1474.944214, 296.800000},
                           {"2502", 0, 0, 8.590000, 222.100000},
                           {"0143", 41, 24, 1776.840669, 1118.500000}};
-  const Sample kDsWest[] = {{"w5227", 26, 9, 1942.118235, 544.775000},
-                            {"w6101", 0, 0, 62.540000, -8.050000},
-                            {"w5201", 0, 9, 98.003740, 544.775000}};
-  const Sample kDsEast[] = {{"e3411", 10, 27, 2722.368546, 1650.425000},
-                            {"e5201", 0, 9, 2013.093740, 544.775000},
-                            {"e6101", 0, 0, 1977.630000, -8.050000}};
+  // 5226 and 5227 were w5227 and e5201, the two sides of the old seam.
+  const Sample kDs[] = {{"5226", 26, 9, 1942.118235, 544.775000},
+                        {"6100", 0, 0, 62.540000, -8.050000},
+                        {"5200", 0, 9, 98.003740, 544.775000},
+                        {"3437", 37, 27, 2722.320521, 1650.425000},
+                        {"5227", 27, 9, 2013.045716, 544.775000},
+                        {"6127", 27, 0, 1977.581975, -8.050000}};
   const Sample kPgg[] = {{"0101", 0, 0, 138.130000, 125.020000},
                          {"0109", 0, 8, 138.130000, 979.267458},
                          {"5631", 55, 30, 5224.255000, 3381.838435}};
@@ -362,10 +383,8 @@ TEST(GridTest, PixelMatchesRendererFourSheets)
   checkSamples(trc, kTrc, std::size(kTrc));
   const Grid ddat{ddatSpec()};
   checkSamples(ddat, kDdat, std::size(kDdat));
-  const Grid west{dsWestSpec()};
-  checkSamples(west, kDsWest, std::size(kDsWest));
-  const Grid east{dsEastSpec()};
-  checkSamples(east, kDsEast, std::size(kDsEast));
+  const Grid ds{dsSpec()};
+  checkSamples(ds, kDs, std::size(kDs));
   const Grid pgg{pggSpec()};
   checkSamples(pgg, kPgg, std::size(kPgg));
 

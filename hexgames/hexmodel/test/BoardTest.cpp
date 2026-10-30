@@ -109,20 +109,20 @@ TEST(BoardTest, EveryPackageAvailableBuilds)
   }
 }
 
-TEST(BoardTest, DaiSensoTwoGridsOneLattice)
+TEST(BoardTest, TwoGridsOneLattice)
 {
-  // No package manifest exists yet for Dai Senso; its sheet and rules terrain vocabularies do not
-  // match by identity (sheet: sea/hills/clear/desert/forest/swamp; rules: clear/city/port/town/
-  // rough/all-sea-hex/ice), so this test supplies just enough terrain bindings, locally, to
-  // exercise the grid-sharing mechanism it is actually about.
+  // sheet-two-maps.xml is two three-column maps cut from Dai Senso as it was first transcribed
+  // (dai-senso.xml is one grid now). Its sheet and rules terrain vocabularies do not match by
+  // identity (sheet: sea/hills; rules: clear/city/port/town/rough/all-sea-hex/ice), so this test
+  // supplies just enough terrain bindings, locally, to exercise the grid-sharing mechanism it is
+  // actually about.
   const HexRules::RuleSet ruleSet = HexRules::RuleSetBuilder::build(
       HexXml::RulesDoc::parse(HexXml::XmlDocument::load(root() / "game_rules" / "xml" / "dai-senso.xml")));
   const HexXml::SheetDoc sheet = HexXml::SheetDoc::parse(
-      HexXml::XmlDocument::load(root() / "map_graphics" / "xml" / "dai-senso.xml"));
+      HexXml::XmlDocument::load(root() / "hexxml" / "test" / "sheet-two-maps.xml"));
   HexXml::PackageDoc package;
   for (const auto& [sheetTerrain, rulesTerrain] :
-       {std::pair{"sea", "all-sea-hex"}, std::pair{"hills", "rough"}, std::pair{"desert", "rough"},
-        std::pair{"forest", "rough"}, std::pair{"swamp", "rough"}}) {
+       {std::pair{"sea", "all-sea-hex"}, std::pair{"hills", "rough"}}) {
     HexXml::PackageTerrainBindingDoc binding;
     binding.sheet = sheetTerrain;
     binding.rules = rulesTerrain;
