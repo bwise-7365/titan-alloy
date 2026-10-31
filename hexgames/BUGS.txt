@@ -26,10 +26,19 @@ hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newes
     The tests of multi-grid sheets read hexxml/test/sheet-two-maps.xml, two three-column maps cut from DS as
     first transcribed. Not rerun and still in the old numbering: tools/build_ds.py and tools/tidy_networks.py
     (one-off builders; rerunning build_ds.py would bring back the two grids) and tasks/09-ds-map.md.
+    Later the same day: build_ds.py builds the one grid and renumbers its tracer fragments as it reads them
+    (the fragments were never committed, so it cannot be rerun as it stands); tidy_networks.py's Dai Senso
+    data uses the new ids (all 321 exist, and its capital, city, town and port lists match the sheet's
+    glyphs); tasks/09-ds-map.md and map_graphics/dai-senso-graphics.md note the mapping.
 
-*** 2026-10-30 grid/@id-side defaults to w, which is not a flat-top direction: hexsheet2svg.py fails on a
+--- 2026-10-30 grid/@id-side defaults to w, which is not a flat-top direction: hexsheet2svg.py fails on a
     flat grid that omits id-side (KeyError: 'w' in edge_angle). Every committed flat sheet sets id-side, and
     HexKrieg now writes id-side="n". Fix: a default per orientation in the renderer, or no XSD default.
+    Fixed the same day: hexsheet2svg.py and SheetDoc default id-side to "n" on a flat grid and "w" on a
+    pointy one, and the renderer names a side that is not a hexside of the grid's orientation instead of
+    failing with a KeyError. Test: SheetDocTest FlatIdSideDefaultsToNorth (hexxml/test/sheet-flat-no-id-side.xml).
+    hexsheet.xsd's default="w", which no flat grid can use, is removed (Ben, same day); its documentation
+    gives the per-orientation rule.
 
 *** 2026-10-30 HexMapEd's SheetWriter does not write the four optional attributes added to hexsheet.xsd
     for HexKrieg (sheet/@seed, terrain/@move-cost, hex/@alt, edge/@cost). A sheet written by HexKrieg and

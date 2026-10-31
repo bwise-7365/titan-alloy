@@ -338,6 +338,11 @@ during play.
 of the four digits indexes north–south is not established here. Named ranges of hexes appear in
 the rules as inclusive spans along a sheet edge, such as `w5311` to `w6011`.
 
+In hexgames the two maps are one grid and the prefix is dropped (Ben, 2026-10-30): the first two
+digits are the row, as printed, and the last two count columns from 00 at the West Map's west edge,
+so printed `wRRCC` is `RR(CC-1)` and `eRRCC` is `RR(CC+26)`. `e4904` is `4930`, `w3218` is `3217`,
+and the span above is `5310` to `6010`.
+
 ---
 
 ## 5. Rendering Implications

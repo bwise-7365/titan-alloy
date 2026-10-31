@@ -75,7 +75,11 @@ class Grid:
         self.rstep = int(el.get("row-step") or 1)
         self.terrain = el.get("terrain")
         self.show_ids = (el.get("show-ids") or "true") == "true"
-        self.id_side = el.get("id-side") or "w"
+        # The XSD's default "w" is a pointy hexside only; a flat grid has no "w" side, so it defaults to "n".
+        self.id_side = el.get("id-side") or ("n" if self.flat else "w")
+        if self.id_side not in self.geom["edges"]:
+            raise SystemExit("grid '%s': id-side '%s' is not a %s hexside (%s)" % (
+                self.id, self.id_side, "flat" if self.flat else "pointy", " ".join(self.geom["edges"])))
         self.ids = {}     # printed id -> (c, r) zero-based
         self.cells = {}   # (c, r) -> printed id
         clipped = self.parse_clip(el.get("clip"))

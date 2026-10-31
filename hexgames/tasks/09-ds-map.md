@@ -2,6 +2,10 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # Task 09: Dai Senso map sheet cleanup and network continuity (milestone M6d)
 
+Note (2026-10-30): this log records the work in the printed ids, with a w/e prefix. The sheet is now one
+grid and those ids are renumbered: printed `wRRCC` is `RR(CC-1)`, `eRRCC` is `RR(CC+26)` (`e4904` is
+`4930`). tools/tidy_networks.py and tools/build_ds.py use the new ids; the log below is left as written.
+
 status: review
 worker: W5 (opus)            started: 2026-09-14
 resume: done 2026-09-14 - dai-senso.xml repaired (network_check 1989 -> 0 broken, tidy idempotent), TRC/PGG 0, SVG/PNG regenerated and looked at, validate-xml 4 valid, banners 0 failures, hygiene_map_networks covers dai-senso.xml, foreground ctest --preset win-msvc-debug 185/185; no git writes; awaiting review

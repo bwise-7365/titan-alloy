@@ -114,126 +114,126 @@ SHEETS = {
     "dai-senso": dict(
         repair_lines=("border", "zone", "region", "mountain", "river", "lake"),
         # Printed stretches the scan trace missed, read off photo crops (tasks/09 repair log).
-        boundary_add={"zone": "w3108:se w3007:e w3007:se w2907:e",
+        boundary_add={"zone": "3107:se 3006:e 3006:se 2906:e",
                       # the Bangladesh region border's dots running south past Dacca to the Bay of Bengal
-                      "region": "w4313:e w4213:ne w4213:e"},
-        # Traced hexsides the print does not show: the pale forest edge round w4309/w4310, taken for region dots.
-        boundary_remove={"region": "w4207:ne w4208:ne w4307:se w4308:se"},
+                      "region": "4312:e 4212:ne 4212:e"},
+        # Traced hexsides the print does not show: the pale forest edge round 4308/4309, taken for region dots.
+        boundary_remove={"region": "4206:ne 4207:ne 4306:se 4307:se"},
         link_lines={"rail": "rail", "road": "road"},
         links={
             "rail": [
-                ("Trans-Siberian", "w6011 w6012 w6013 w6014 w6015 w6016 w6017 w6018 w6019 w6020 w5921 w5821 w5722 "
-                                   "w5723 w5724 w5824 w5825 w5926 w5927 w5827 e5701 e5702 e5703 e5603 e5503 e5402 "
-                                   "e5302"),
-                ("Omsk-Semipalatinsk", "w6012 w5913 w5813 w5714"),
-                ("Novosibirsk-Semipalatinsk", "w6015 w5915 w5814 w5714"),
-                ("Turksib", "w5714 w5613 w5513 w5412 w5411"),
-                ("Volochaevsk-Sovetskaya Gavan", "e5703 e5803 e5704 e5604"),
-                ("Chinese Eastern", "w5824 w5725 w5625 w5626 w5527 w5427 e5401 e5302"),
-                ("South Manchurian", "w5427 w5327 w5226 w5126"),
-                ("Hsinking-Vladivostok", "w5327 e5301 e5302"),
-                ("Mukden-Fusan", "w5226 w5127 w5027 e4901"),
-                ("Mukden-Peiping", "w5226 w5225 w5124 w5223"),
-                ("Peiping-Kweisui", "w5223 w5222"),
-                ("Peiping-Hankow-Canton", "w5223 w5022 w4923 w4723 w4622 w4521 w4322 w4222"),
-                ("Hengyang-Kweilin", "w4521 w4420"),
-                ("Kweiyang-Nanning", "w4520 w4320"),
-                ("Lunghai", "w4921 w4922 w4923 w4924 w4925"),
-                ("Tientsin-Pukow-Shanghai", "w5124 w5024 w4925 w4825 w4725 w4726"),
-                ("Tsinan-Tsingtao", "w5024 w5025"),
-                ("Yunnan", "w4418 w4318 w4219"),
-                ("Hanoi-Nanning", "w4219 w4320"),
-                ("Indochina coast", "w4219 w3920 w3619"),
-                ("Saigon-Bangkok", "w3619 w3618 w3817"),
-                ("Bangkok-Chiengmai", "w3817 w4016"),
-                ("Bangkok-Singapore", "w3817 w3716 w3616 w3517 w3417 w3317 w3217 w3218"),
-                ("Rangoon-Moulmein", "w4015 w3916"),
-                ("Burma", "w4416 w4316 w4215 w4115 w4015"),
-                ("Assam", "w4415 w4516"),
-                ("Peshawar-New Delhi", "w4908 w4808 w4709 w4609 w4510"),
-                ("New Delhi-Karachi", "w4510 w4509 w4508 w4507 w4406 w4405"),
-                ("Jaipur-Ahmadabad", "w4509 w4408 w4308"),
-                ("Ganges", "w4510 w4410 w4411 w4412 w4413 w4414 w4415"),
-                ("Ahmadabad-Nagpur", "w4308 w4208 w4209"),
-                ("Bombay-Nagpur", "w4107 w4108 w4109 w4209"),
-                ("Nagpur-Hyderabad", "w4209 w4110 w4009"),
-                ("Hyderabad-Kakinada", "w4009 w4010"),
-                ("Hyderabad-Bangalore", "w4009 w3909 w3808"),
-                ("Bombay-Mangalore", "w4107 w4007 w3908 w3807"),
-                ("Mangalore-Madras", "w3807 w3808 w3809"),
-                ("Calcutta-Dacca", "w4213 w4314 w4414"),
-                ("Calcutta-Nagpur", "w4213 w4212 w4211 w4210 w4209"),
-                ("Calcutta coast", "w4213 w4212 w4112 w4011 w4010"),
-                ("Java", "w2819 w2720 w2721 w2722"),
-                ("Sumatra", "w2919 w2818"),
-                ("Formosa", "w4325 w4224"),
-                ("Luzon", "w4025 w3824"),
-                ("Hokkaido", "e5405 e5306 e5305 e5205"),
-                ("Asahigawa-Kushiro", "e5306 e5307"),
-                ("Tohoku", "e5105 e5005 e4905"),
-                ("Aomori-Niigata", "e5105 e5004"),
-                ("Tokaido", "e4902 e4903 e4904 e4905"),
-                ("Kyoto-Osaka", "e4903 e4803"),
-                ("Nagoya-Osaka", "e4904 e4803"),
-                ("Hokuriku", "e4904 e5003 e5004 e4905"),
-                ("Geraldton-Perth", "w1622 w1523 w1423"),
-                ("Trans-Australian", "w1423 w1424 w1525 w1526 w1527 e1501 e1502 e1503 e1504 e1404 e1304"),
-                ("Adelaide-Canberra", "e1304 e1305 e1306 e1307 e1308"),
-                ("Canberra-Sydney", "e1308 e1309"),
-                ("North Coast", "e1309 e1408 e1509 e1609 e1709 e1808"),
-                ("Canberra-Melbourne", "e1308 e1207 e1107"),
-                ("Adelaide-Melbourne", "e1304 e1204 e1105 e1106 e1107"),
-                ("Queensland coast", "e1808 e1908 e2007 e2107 e2206"),
-                ("Cloncurry-Townsville", "e2004 e2005 e1906 e2006 e2107"),
-                ("Rockhampton inland", "e1808 e1807 e1806"),
-                ("North Island", "e1517 e1417 e1318"),
-                ("South Island", "e1217 e1317"),
+                ("Trans-Siberian", "6010 6011 6012 6013 6014 6015 6016 6017 6018 6019 5920 5820 5721 "
+                                   "5722 5723 5823 5824 5925 5926 5826 5727 5728 5729 5629 5529 5428 "
+                                   "5328"),
+                ("Omsk-Semipalatinsk", "6011 5912 5812 5713"),
+                ("Novosibirsk-Semipalatinsk", "6014 5914 5813 5713"),
+                ("Turksib", "5713 5612 5512 5411 5410"),
+                ("Volochaevsk-Sovetskaya Gavan", "5729 5829 5730 5630"),
+                ("Chinese Eastern", "5823 5724 5624 5625 5526 5426 5427 5328"),
+                ("South Manchurian", "5426 5326 5225 5125"),
+                ("Hsinking-Vladivostok", "5326 5327 5328"),
+                ("Mukden-Fusan", "5225 5126 5026 4927"),
+                ("Mukden-Peiping", "5225 5224 5123 5222"),
+                ("Peiping-Kweisui", "5222 5221"),
+                ("Peiping-Hankow-Canton", "5222 5021 4922 4722 4621 4520 4321 4221"),
+                ("Hengyang-Kweilin", "4520 4419"),
+                ("Kweiyang-Nanning", "4519 4319"),
+                ("Lunghai", "4920 4921 4922 4923 4924"),
+                ("Tientsin-Pukow-Shanghai", "5123 5023 4924 4824 4724 4725"),
+                ("Tsinan-Tsingtao", "5023 5024"),
+                ("Yunnan", "4417 4317 4218"),
+                ("Hanoi-Nanning", "4218 4319"),
+                ("Indochina coast", "4218 3919 3618"),
+                ("Saigon-Bangkok", "3618 3617 3816"),
+                ("Bangkok-Chiengmai", "3816 4015"),
+                ("Bangkok-Singapore", "3816 3715 3615 3516 3416 3316 3216 3217"),
+                ("Rangoon-Moulmein", "4014 3915"),
+                ("Burma", "4415 4315 4214 4114 4014"),
+                ("Assam", "4414 4515"),
+                ("Peshawar-New Delhi", "4907 4807 4708 4608 4509"),
+                ("New Delhi-Karachi", "4509 4508 4507 4506 4405 4404"),
+                ("Jaipur-Ahmadabad", "4508 4407 4307"),
+                ("Ganges", "4509 4409 4410 4411 4412 4413 4414"),
+                ("Ahmadabad-Nagpur", "4307 4207 4208"),
+                ("Bombay-Nagpur", "4106 4107 4108 4208"),
+                ("Nagpur-Hyderabad", "4208 4109 4008"),
+                ("Hyderabad-Kakinada", "4008 4009"),
+                ("Hyderabad-Bangalore", "4008 3908 3807"),
+                ("Bombay-Mangalore", "4106 4006 3907 3806"),
+                ("Mangalore-Madras", "3806 3807 3808"),
+                ("Calcutta-Dacca", "4212 4313 4413"),
+                ("Calcutta-Nagpur", "4212 4211 4210 4209 4208"),
+                ("Calcutta coast", "4212 4211 4111 4010 4009"),
+                ("Java", "2818 2719 2720 2721"),
+                ("Sumatra", "2918 2817"),
+                ("Formosa", "4324 4223"),
+                ("Luzon", "4024 3823"),
+                ("Hokkaido", "5431 5332 5331 5231"),
+                ("Asahigawa-Kushiro", "5332 5333"),
+                ("Tohoku", "5131 5031 4931"),
+                ("Aomori-Niigata", "5131 5030"),
+                ("Tokaido", "4928 4929 4930 4931"),
+                ("Kyoto-Osaka", "4929 4829"),
+                ("Nagoya-Osaka", "4930 4829"),
+                ("Hokuriku", "4930 5029 5030 4931"),
+                ("Geraldton-Perth", "1621 1522 1422"),
+                ("Trans-Australian", "1422 1423 1524 1525 1526 1527 1528 1529 1530 1430 1330"),
+                ("Adelaide-Canberra", "1330 1331 1332 1333 1334"),
+                ("Canberra-Sydney", "1334 1335"),
+                ("North Coast", "1335 1434 1535 1635 1735 1834"),
+                ("Canberra-Melbourne", "1334 1233 1133"),
+                ("Adelaide-Melbourne", "1330 1230 1131 1132 1133"),
+                ("Queensland coast", "1834 1934 2033 2133 2232"),
+                ("Cloncurry-Townsville", "2030 2031 1932 2032 2133"),
+                ("Rockhampton inland", "1834 1833 1832"),
+                ("North Island", "1543 1443 1344"),
+                ("South Island", "1243 1343"),
             ],
             "road": [
-                ("Semipalatinsk-Urumchi", "w5613 w5514 w5415"),
-                ("Urumchi-Lanchow", "w5415 w5416 w5317 w5217 w5118 w5119 w5019"),
-                ("Lanchow-Sian", "w5019 w4920 w4921"),
-                ("Lanchow-Chungking", "w5019 w4919 w4819 w4719 w4620"),
-                ("Chungking-Kunming", "w4620 w4520 w4419 w4418"),
-                ("Burma Road", "w4418 w4317 w4216 w4215"),
-                ("Ledo Road", "w4516 w4416"),
-                ("Kweilin-Nanning", "w4420 w4320"),
-                ("Ulan Ude-Kweisui", "w5722 w5621 w5522 w5422 w5323 w5222"),
-                ("Komsomolsk-Nikolaevsk", "e5803 e5804 e5805"),
-                ("Sakhalin", "e5806 e5706 e5606"),
+                ("Semipalatinsk-Urumchi", "5612 5513 5414"),
+                ("Urumchi-Lanchow", "5414 5415 5316 5216 5117 5118 5018"),
+                ("Lanchow-Sian", "5018 4919 4920"),
+                ("Lanchow-Chungking", "5018 4918 4818 4718 4619"),
+                ("Chungking-Kunming", "4619 4519 4418 4417"),
+                ("Burma Road", "4417 4316 4215 4214"),
+                ("Ledo Road", "4515 4415"),
+                ("Kweilin-Nanning", "4419 4319"),
+                ("Ulan Ude-Kweisui", "5721 5620 5521 5421 5322 5221"),
+                ("Komsomolsk-Nikolaevsk", "5829 5830 5831"),
+                ("Sakhalin", "5832 5732 5632"),
             ],
         },
         places=dict(
-            capital="w5415 w5019 w4715 w5821 w5621 w5818 w5824 w5427 w5223 w5027 w4725 w4620 w4418 w3817 w4015 w4314 "
-                    "w4510 w4405 w3509 w3218 w2819 w3824 e5603 e5810 e4905 e1308 e1318",
-            city="w6012 w6015 w5411 w5118 w4719 w5226 w5126 w5022 w5021 w4921 w4923 w4723 w4622 w4726 w4520 w4420 "
-                 "w4219 w3920 w4215 w4213 w4410 w4509 w4709 w4308 w4107 w4009 w3808 w2919 w2722 w3220 w3322 w3022 "
-                 "w3423 w3223 w3426 w3126 w2925 w2824 w1423 w4322 w4222 "
-                 "e5701 e5302 e5305 e5005 e4904 e4903 e4803 e4902 e4801 e4226 e3004 e2906 e2707 e2808 e3001 e2606 "
-                 "e2107 e1304 e1309 e1609 e1107 e1517",
-            town="w6018 w6020 w5714 w5210 w5212 w5012 w5722 w5625 w5527 w5327 w5222 w5024 w4924 w4925 w5127 w4625 "
-                 "w4525 w4224 w4320 w3618 w4016 w3916 w4018 w4216 w4416 w4516 w4415 w4115 w4412 w4513 w4908 w4406 "
-                 "w4209 w3608 w3609 w3217 w3016 w2720 w2922 w3825 w2626 w1622 w4521 "
-                 "e5703 e5803 e5706 e5606 e5306 e5105 e5004 e5003 e4802 e3504 e3003 e2806 e2605 e2607 e2508 e2004 "
-                 "e1802",
-            port="w4405 w4107 w4010 w4314 w4112 w3807 w3809 w3509 w3510 w3406 w3714 w4015 w3517 w3417 w3218 w2818 "
-                 "w2722 w3220 w3223 w3423 w2925 w2824 w2927 w3126 w3824 w3625 w3626 w3426 w4025 w4219 w3920 w3619 "
-                 "w4121 w4222 w4726 w5025 w5124 w2625 w2519 w3206 w2806 w2225 w1423 "
-                 "e5101 e4901 e4902 e4904 e4803 e4801 e4905 e5005 e5106 e5205 e5307 e5407 e5302 e5604 e5805 e5806 "
-                 "e5810 e5813 e5616 e5618 e5723 e4309 e3806 e3604 e3411 e3514 e3516 e3014 e3117 e3923 e4323 e4114 "
-                 "e4520 e4128 e3425 e2922 e3004 e2906 e2907 e2808 e2611 e2618 e2314 e1914 e2118 e2420 e1920 e2606 "
-                 "e2206 e2401 e1808 e1408 e1309 e1304 e1318 e1217",
+            capital="5414 5018 4714 5820 5620 5817 5823 5426 5222 5026 4724 4619 4417 3816 4014 4313 "
+                    "4509 4404 3508 3217 2818 3823 5629 5836 4931 1334 1344",
+            city="6011 6014 5410 5117 4718 5225 5125 5021 5020 4920 4922 4722 4621 4725 4519 4419 "
+                 "4218 3919 4214 4212 4409 4508 4708 4307 4106 4008 3807 2918 2721 3219 3321 3021 "
+                 "3422 3222 3425 3125 2924 2823 1422 4321 4221 "
+                 "5727 5328 5331 5031 4930 4929 4829 4928 4827 4252 3030 2932 2733 2834 3027 2632 "
+                 "2133 1330 1335 1635 1133 1543",
+            town="6017 6019 5713 5209 5211 5011 5721 5624 5526 5326 5221 5023 4923 4924 5126 4624 "
+                 "4524 4223 4319 3617 4015 3915 4017 4215 4415 4515 4414 4114 4411 4512 4907 4405 "
+                 "4208 3607 3608 3216 3015 2719 2921 3824 2625 1621 4520 "
+                 "5729 5829 5732 5632 5332 5131 5030 5029 4828 3530 3029 2832 2631 2633 2534 2030 "
+                 "1828",
+            port="4404 4106 4009 4313 4111 3806 3808 3508 3509 3405 3713 4014 3516 3416 3217 2817 "
+                 "2721 3219 3222 3422 2924 2823 2926 3125 3823 3624 3625 3425 4024 4218 3919 3618 "
+                 "4120 4221 4725 5024 5123 2624 2518 3205 2805 2224 1422 "
+                 "5127 4927 4928 4930 4829 4827 4931 5031 5132 5231 5333 5433 5328 5630 5831 5832 "
+                 "5836 5839 5642 5644 5749 4335 3832 3630 3437 3540 3542 3040 3143 3949 4349 4140 "
+                 "4546 4154 3451 2948 3030 2932 2933 2834 2637 2644 2340 1940 2144 2446 1946 2632 "
+                 "2232 2427 1834 1434 1335 1330 1344 1243",
         ),
         # Hexes the sheet's sampled terrain calls sea but the print shows as land: each holds a printed capital,
         # city, town or port, or a printed rail line runs through it (the print draws many pale blue, part land).
-        land="w4825 w3716 w3317 w4011 w1523 w3925 e5405 e1509 e1105 e1106 e1417 e1317 "
-             "w4405 w3406 w3206 w2806 w4107 w3807 w3609 w3509 w3510 w4112 w4213 w3714 w3916 w3016 w3217 w3618 w3218 "
-             "w3619 w2919 w2819 w2519 w3220 w4322 w4222 w3322 w2922 w2722 w1622 w3423 w3223 w4224 w2824 w4925 w4625 "
-             "w4525 w4025 w3825 w3625 w2925 w2625 w2225 w3626 w3426 w3126 w2626 w5127 w2927 "
-             "e4901 e4801 e4902 e4802 e5003 e4803 e3003 e3604 e3504 e3004 e1304 e5305 e5205 e5105 e2605 e5806 e5606 "
-             "e5106 e3806 e2906 e2606 e2206 e5407 e5307 e2907 e2607 e2107 e1107 e2808 e2508 e4309 e1609 e1309 e3411 "
-             "e2611 e5813 e3514 e3014 e2314 e1914 e5616 e3117 e1517 e1217 e5618 e2618 e2118 e1318 e2420 e1920 e2922 "
-             "e5723 e4323 e3923 e3425 e4128"),
+        land="4824 3715 3316 4010 1522 3924 5431 1535 1131 1132 1443 1343 "
+             "4404 3405 3205 2805 4106 3806 3608 3508 3509 4111 4212 3713 3915 3015 3216 3617 3217 "
+             "3618 2918 2818 2518 3219 4321 4221 3321 2921 2721 1621 3422 3222 4223 2823 4924 4624 "
+             "4524 4024 3824 3624 2924 2624 2224 3625 3425 3125 2625 5126 2926 "
+             "4927 4827 4928 4828 5029 4829 3029 3630 3530 3030 1330 5331 5231 5131 2631 5832 5632 "
+             "5132 3832 2932 2632 2232 5433 5333 2933 2633 2133 1133 2834 2534 4335 1635 1335 3437 "
+             "2637 5839 3540 3040 2340 1940 5642 3143 1543 1243 5644 2644 2144 1344 2446 1946 2948 "
+             "5749 4349 3949 3451 4154"),
 }
 
 # ---------------------------------------------------------------- tuning

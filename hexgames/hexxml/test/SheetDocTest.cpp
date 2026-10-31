@@ -68,6 +68,15 @@ TEST(SheetDocTest, DaiSensoIsOneGrid)
   EXPECT_EQ(56, doc.grids[0].cols);
 }
 
+TEST(SheetDocTest, FlatIdSideDefaultsToNorth)
+{
+  // The XSD's default "w" is a pointy hexside; a flat grid has none, so it defaults to "n".
+  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(
+      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-flat-no-id-side.xml"));
+  ASSERT_EQ(1u, doc.grids.size());
+  EXPECT_EQ("n", doc.grids[0].idSide);
+}
+
 TEST(SheetDocTest, FourSheetsParse)
 {
   for (const char* name : {"the-russian-campaign.xml", "dai-senso.xml", "d-day-at-tarawa.xml",
