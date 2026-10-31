@@ -24,8 +24,8 @@ conventions are the spec the C++ renderers reproduce.
   `headless` (no Qt at all), `linux-debug`, `linux-release`. Must build on Windows 11 (Ninja + MSVC) and
   Debian. Qt 6.8.3 (`C:/Qt/6.8.3/msvc2022_64`) for the GUI only.
 - `cmake --preset win-msvc-debug && cmake --build --preset win-msvc-debug && ctest --preset win-msvc-debug`
-- ctest labels: `xsd hygiene core package records golden long gui trc pgg ds ddat`. `ctest -LE long` is
-  the fast set.
+- ctest labels: `xsd hygiene core package records golden long gui trc pgg ds ddat conformance`. `ctest -LE long`
+  is the fast set.
 - Only `hexqt` and the `*_gui` executables may link Qt. Everything else must build under the `headless`
   preset.
 - Google Test via FetchContent; one `<thing>_test.cpp` per suite; `hexgames_add_gtest(...)`; literal

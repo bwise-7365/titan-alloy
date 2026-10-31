@@ -121,6 +121,16 @@ namespace HexEngine {
     std::vector<CombatEffect> resolve(const Ctx&, const CombatContext&, PrngStreams&) const override;
     CombatReport report(const Ctx&, const CombatContext&, PrngStreams&) const override;
 
+    // The two lookups report() makes once it has the strengths, split out so that a caller holding
+    // a die value (the HexRules conformance cases) reads the table without drawing one. column: the
+    // odds for two strengths already scaled by every multiplier, rounded and bounded as the
+    // resolver says, then moved `shift` columns along the table's odds and held at its ends; below
+    // the minimum or above the maximum comes back as such. code: the table's own result code in
+    // that column on that die value.
+    HexModel::OddsOutcome column(HexModel::Strength attack, HexModel::Strength defence,
+                                 int shift) const;
+    std::string code(HexModel::Odds odds, int die) const;
+
     // The code map: TRC's AE A1 AR C EX DR D1 DE DS AS by default, anything else a GameEffect.
     static std::vector<CombatEffect> effectsOf(const std::string& code, SideId attacker, SideId defender);
 

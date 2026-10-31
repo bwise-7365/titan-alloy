@@ -5,4 +5,11 @@ hexgames_add_gtest(smoke_test
   SOURCES SmokeTest.cpp
   LIBS tinyxml2::tinyxml2 hexcoord hexmodel hexsearch hexrules hexengine hexrecord
   LABELS core)
+
+# The HexRules rule conformance cases (HEXRULES_DIR/corpus/cases, one gtest per case) answered by the
+# engine's default policies.
+hexgames_add_gtest(conformance_test
+  SOURCES ConformanceTest.cpp
+  LIBS hexengine hexrules hexxml
+  LABELS conformance)
 # Copyright Ben Paul Wise. All Rights Reserved.
