@@ -16,8 +16,15 @@ tests them on this repository's game documents.
 - `hexcounters.xsd` — counters: styles, two faces, sheets.
 - `hexsave.xsd` — scenarios, saves, scripts, goldens (one schema, `@kind`).
 - `hexpackage.xsd` — a game package: paths + id bindings across the languages.
+- `hexgen.xsd` — the settings of a generated map, read by `hexgen` (below).
 Reference renderers: HexRules `python/hexsheet2svg.py`, `python/counters2svg.py`. Their
 conventions are the spec the C++ renderers reproduce.
+
+`hexgen/` is the map generator (plan `doc/2026-10-31-map-generator-plan.md`; iteration 1 built):
+HexKrieg's procedural generator in C++, `HexGen::generate(Settings) -> SheetDoc`, a pure function.
+Headless (links hexcoord, hexxml, hexsearch, hexmaped's writer); `hexgen_cli` is its command, and
+HexMapEd's Generate dock its GUI. Its golden, `hexgen/test/golden/generator-hexkrieg.sheet.xml`, is
+regenerated only with `hexgen_cli` after a deliberate change. ctest label `hexgen`.
 
 ## Build and test
 - C++20, CMake ≥ 3.20, presets in `CMakePresets.json`: `win-msvc-debug`, `win-msvc-release`,
@@ -43,7 +50,7 @@ conventions are the spec the C++ renderers reproduce.
 - No silent default substitution. Surface bad state.
 - Concision and clarity over efficiency. Small functions and files.
 - `#pragma once`; PascalCase file names; `namespace HexCoord`, `HexModel`, `HexXml`, `HexRules`,
-  `HexSearch`, `HexEngine`, `HexRecord`, `HexView`, `HexQt`, `Trc`, `Pgg`, `Ds`, `Ddat`.
+  `HexSearch`, `HexEngine`, `HexRecord`, `HexView`, `HexQt`, `HexGen`, `Trc`, `Pgg`, `Ds`, `Ddat`.
 - Braces on every `if`/`else`; `throw`, never `assert`; exhaustive `switch` with no `default`; Yoda
   literals; trailing-`P` predicate names; explicit `return;` at the end of void functions.
 - `.clang-format` (2-space, column 100) is authoritative.

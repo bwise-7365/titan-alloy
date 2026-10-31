@@ -161,8 +161,9 @@ It links `hexcoord`, `hexxml`, `hexmaped` and `hexsearch`, and builds under the 
 **Deliberate departures from Java,** each recorded in the header comment:
 - **Water.** A pair of cities with no land path between them is not joined. Java gives water a cost
   of 10000 and so builds roads across it.
-- **Edge cities.** An edge city is joined to the network like any other city. Java's choice of the
-  nearest road hex is kept.
+- **Edge ends.** An edge end may be any hex a road can enter (Java: any hex but water); each is
+  joined to the nearest hex already on a road, as in Java.
+- **Ids.** Without `id-format`, the ids widen to three digits at 100 columns or rows, as in Java.
 - **Altitude.** Java's `buildBoard` never writes altitude. Here altitude is written only when
   `<altitude>` is present.
 
