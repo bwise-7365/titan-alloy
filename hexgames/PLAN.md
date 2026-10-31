@@ -54,6 +54,12 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-10-31 MAP GENERATOR (branch `10-map-generator`, from `9-hexrules`). Plan:
+  `doc/2026-10-31-map-generator-plan.md`. A new module `hexgen` (namespace `HexGen`): HexKrieg's procedural
+  generator in C++ (fractal and Perlin heights, terrain by percentage, cities, roads by spanning tree and tour,
+  roads and cities on each map edge), a command `hexgen_cli`, and a Generate dock in HexMapEd. Settings are a
+  new language, HexRules `xsd/hexgen.xsd` (HexRules branch `2-hexgen`; the schema waits for Ben's review).
+  Ben asked for iteration 1 only; iteration 2 (Dai Senso and Circling Dragons detail) is not started.
 - 2026-10-31 HEXRULES STEPS 2 AND 3 DONE (branch `9-hexrules`, not merged). The five XSDs, `validate.py`, both
   reference renderers and the `hexcoord` and `hexxml` modules are now in HexRules; this repository builds them
   through `add_subdirectory(${HEXRULES_DIR}/cpp)` and validates through HexRules `python/validate.py`.
