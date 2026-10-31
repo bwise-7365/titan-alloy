@@ -133,7 +133,10 @@ else()
 endif()
 
 # ---- modules, in dependency order; each is added as it comes into existence ------------------------
-foreach(_mod hexcoord hexxml hexmodel hexrules hexsearch hexengine hexrecord)
+# hexcoord and hexxml are HexRules' C++ binding, built here with their own tests; hexxml_games tests the
+# hexxml models on this repository's game documents.
+add_subdirectory(${HEXRULES_DIR}/cpp ${CMAKE_BINARY_DIR}/hexrules-cpp)
+foreach(_mod hexxml_games hexmodel hexrules hexsearch hexengine hexrecord)
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_mod}/CMakeLists.txt")
     add_subdirectory(${_mod})
   endif()

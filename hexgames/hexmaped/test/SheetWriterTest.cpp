@@ -43,6 +43,7 @@ namespace {
     EXPECT_EQ(a.title, b.title);
     EXPECT_EQ(a.width, b.width);
     EXPECT_EQ(a.urban, b.urban);
+    EXPECT_EQ(a.seed, b.seed);
     ASSERT_EQ(a.grids.size(), b.grids.size());
     for (std::size_t i = 0; i < a.grids.size(); ++i) {
       EXPECT_EQ(a.grids[i].cols, b.grids[i].cols);
@@ -52,7 +53,10 @@ namespace {
       EXPECT_DOUBLE_EQ(a.grids[i].size, b.grids[i].size);
     }
     EXPECT_EQ(a.palette.size(), b.palette.size());
-    EXPECT_EQ(a.terrains.size(), b.terrains.size());
+    ASSERT_EQ(a.terrains.size(), b.terrains.size());
+    for (std::size_t i = 0; i < a.terrains.size(); ++i) {
+      EXPECT_EQ(a.terrains[i].moveCost, b.terrains[i].moveCost);
+    }
     EXPECT_EQ(a.lines.size(), b.lines.size());
     ASSERT_EQ(a.hexesBulk.size(), b.hexesBulk.size());
     for (std::size_t i = 0; i < a.hexesBulk.size(); ++i) {
@@ -64,6 +68,7 @@ namespace {
       EXPECT_EQ(a.edges[i].at, b.edges[i].at);
       EXPECT_EQ(a.edges[i].line, b.edges[i].line);
       EXPECT_EQ(a.edges[i].symbol, b.edges[i].symbol);
+      EXPECT_EQ(a.edges[i].cost, b.edges[i].cost);
     }
     ASSERT_EQ(a.links.size(), b.links.size());
     for (std::size_t i = 0; i < a.links.size(); ++i) {
@@ -82,6 +87,7 @@ namespace {
       EXPECT_EQ(a.hexes[i].id, b.hexes[i].id);
       EXPECT_EQ(a.hexes[i].name, b.hexes[i].name);
       EXPECT_EQ(a.hexes[i].ring, b.hexes[i].ring);
+      EXPECT_EQ(a.hexes[i].alt, b.hexes[i].alt);
       ASSERT_EQ(a.hexes[i].glyphs.size(), b.hexes[i].glyphs.size());
       for (std::size_t j = 0; j < a.hexes[i].glyphs.size(); ++j) {
         EXPECT_EQ(a.hexes[i].glyphs[j].symbol, b.hexes[i].glyphs[j].symbol);
@@ -127,6 +133,18 @@ TEST(SheetWriterTest, RoundTripsEverySheetInTheTree)
     const HexXml::SheetDoc doc = load(sheetPath(name));
     expectSame(doc, roundTrip(doc, "roundtrip"));
   }
+}
+
+TEST(SheetWriterTest, KeepsTheFourHexKriegAttributes)
+{
+  // sheet/@seed, terrain/@move-cost, hex/@alt and edge/@cost, on the HexRules corpus sheet that HexKrieg
+  // wrote (HexRules BUGS 2026-10-31; hexgames BUGS 2026-10-30).
+  const HexXml::SheetDoc doc =
+      load(std::filesystem::path(HEXRULES_DIR) / "corpus" / "valid" / "hexkrieg-save-sheet.xml");
+  ASSERT_TRUE(doc.seed.has_value());
+  const HexXml::SheetDoc back = roundTrip(doc, "hexkrieg");
+  expectSame(doc, back);
+  EXPECT_EQ(46, back.seed.value());
 }
 
 TEST(SheetWriterTest, WritesTheSchemaOrderAndEscapesText)

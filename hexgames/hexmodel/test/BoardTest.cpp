@@ -119,7 +119,7 @@ TEST(BoardTest, TwoGridsOneLattice)
   const HexRules::RuleSet ruleSet = HexRules::RuleSetBuilder::build(
       HexXml::RulesDoc::parse(HexXml::XmlDocument::load(root() / "game_rules" / "xml" / "dai-senso.xml")));
   const HexXml::SheetDoc sheet = HexXml::SheetDoc::parse(
-      HexXml::XmlDocument::load(root() / "hexxml" / "test" / "sheet-two-maps.xml"));
+      HexXml::XmlDocument::load(std::filesystem::path(HEXRULES_DIR) / "corpus" / "valid" / "sheet-two-maps.xml"));
   HexXml::PackageDoc package;
   for (const auto& [sheetTerrain, rulesTerrain] :
        {std::pair{"sea", "all-sea-hex"}, std::pair{"hills", "rough"}}) {

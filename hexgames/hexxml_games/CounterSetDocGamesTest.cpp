@@ -1,6 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
+// The CounterSetDoc model on the hexgames game documents; HexRules cpp/hexxml/test
+// covers the same model on the HexRules corpus.
 #include "hexxml/CounterSetDoc.h"
 
 #include <gtest/gtest.h>
@@ -30,7 +32,7 @@ namespace {
 
 }  // namespace
 
-TEST(CounterSetDocTest, TrcParsesAllTwoHundredFourteenCounters)
+TEST(CounterSetDocGamesTest, TrcParsesAllTwoHundredFourteenCounters)
 {
   const HexXml::XmlDocument xml = HexXml::XmlDocument::load(unitGraphics("the-russian-campaign.xml"));
   const HexXml::CounterSetDoc doc = HexXml::CounterSetDoc::parse(xml);
@@ -78,21 +80,13 @@ TEST(CounterSetDocTest, TrcParsesAllTwoHundredFourteenCounters)
   EXPECT_EQ(197, units);
 }
 
-TEST(CounterSetDocTest, FourCounterSetsParse)
+TEST(CounterSetDocGamesTest, FourCounterSetsParse)
 {
   for (const char* name : {"the-russian-campaign.xml", "dai-senso.xml", "d-day-at-tarawa.xml",
                             "panzergruppe-guderian.xml"}) {
     const HexXml::XmlDocument xml = HexXml::XmlDocument::load(unitGraphics(name));
     EXPECT_NO_THROW((void)HexXml::CounterSetDoc::parse(xml)) << name;
   }
-}
-
-TEST(CounterSetDocTest, BadFamilyThrows)
-{
-  const std::filesystem::path bad =
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "counters-bad-family.xml";
-  const HexXml::XmlDocument xml = HexXml::XmlDocument::load(bad);
-  EXPECT_THROW((void)HexXml::CounterSetDoc::parse(xml), std::invalid_argument);
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

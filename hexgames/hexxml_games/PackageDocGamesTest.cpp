@@ -1,6 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
+// The PackageDoc model on the hexgames game documents; HexRules cpp/hexxml/test
+// covers the same model on the HexRules corpus.
 #include "hexxml/PackageDoc.h"
 
 #include <gtest/gtest.h>
@@ -18,7 +20,7 @@ namespace {
 
 }  // namespace
 
-TEST(PackageDocTest, TrcParses)
+TEST(PackageDocGamesTest, TrcParses)
 {
   const HexXml::XmlDocument xml = HexXml::XmlDocument::load(packagesXml("trc.package.xml"));
   const HexXml::PackageDoc doc = HexXml::PackageDoc::parse(xml);

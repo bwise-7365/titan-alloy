@@ -54,6 +54,13 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-10-31 HEXRULES STEPS 2 AND 3 DONE (branch `9-hexrules`, not merged). The five XSDs, `validate.py`, both
+  reference renderers and the `hexcoord` and `hexxml` modules are now in HexRules; this repository builds them
+  through `add_subdirectory(${HEXRULES_DIR}/cpp)` and validates through HexRules `python/validate.py`.
+  `hexxml_games/` holds the hexxml tests that read this repository's game documents. SheetDoc reads, and
+  HexMapEd's SheetWriter writes, the four HexKrieg sheet attributes (BUGS entry of 2026-10-30 closed). ctest
+  313/313 (304 before; the gain is HexRules' corpus tests and one SheetWriter test). Goldens unchanged. NEXT:
+  HexRules plan step 4 (HexKrieg's Java binding) runs in HexKrieg and HexRules; this repository waits for step 6.
 - 2026-10-30 HEXRULES (coordinator, from a HexKrieg session). The five XML languages, `tools/validate-xml.py`,
   `hexsheet2svg.py`, `counters2svg.py`, and the `hexcoord` and `hexxml` modules move to the sibling repository
   `C:\repos\ghub-per\HexRules` (plan: HexRules `doc/2026-10-30-hexrules-repo-plan.md`, also in HexKrieg `doc/`).

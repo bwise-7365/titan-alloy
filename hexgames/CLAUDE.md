@@ -7,7 +7,9 @@ first: its RESUME HERE block is the state of the work; its decision log is bindi
 The five XSDs, `validate.py` and the reference renderers are in `C:\repos\ghub-per\HexRules` (plan:
 HexRules `doc/2026-10-30-hexrules-repo-plan.md`), found by the CMake cache variable `HEXRULES_DIR` (default
 `../../HexRules`) and, from Python, by `map_graphics/xml/hexrules_path.py`. Documents name their schema by bare
-file name. Game documents stay here.
+file name. Game documents stay here. The modules `hexcoord` and `hexxml` are HexRules' C++ binding
+(`cpp/`), added by `add_subdirectory(${HEXRULES_DIR}/cpp)` with the same target names; `hexxml_games/`
+tests them on this repository's game documents.
 - `hexrules.xsd` — rules: typed tables plus prose `<rule @id>` elements.
 - `hexsheet.xsd` — map sheets: `grid` (orientation, offset, id-format), terrain,
   edges, links, regions, panels. Hexes are addressed by PRINTED ID everywhere.
@@ -47,7 +49,8 @@ conventions are the spec the C++ renderers reproduce.
 - `.clang-format` (2-space, column 100) is authoritative.
 
 ## Engine rules that are easy to get wrong
-- Coordinates are the author's ABC system (`hexcoord`), re-implemented from `panj\hexmap\libsrc\tricoord.*`.
+- Coordinates are the author's ABC system (`hexcoord`, now in HexRules `cpp/hexcoord`), re-implemented from
+  `panj\hexmap\libsrc\tricoord.*`.
   Never introduce cube/axial/offset "hacks"; offset (col,row) exists only at the sheet-grid boundary.
 - Printed hex ids are the identity in every document; `hexcoord::Grid` maps id ↔ ABC.
 - PRNG: `std::mt19937_64` per named stream, seeded `mixSeed(seed, tag)`; generators passed by reference;
