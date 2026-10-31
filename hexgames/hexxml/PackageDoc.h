@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// A hexpackage document (packages/xml/hexpackage.xsd), mirrored one to one. Paths are kept exactly as
+// A hexpackage document (HexRules xsd/hexpackage.xsd), mirrored one to one. Paths are kept exactly as
 // written (relative to the manifest file); PackageLoader (hexrules) resolves them and applies every
 // binding, reporting the offending id on failure. Types are prefixed Package* to avoid colliding with
 // the same-named element of another hexxml document.

@@ -5,6 +5,7 @@ python overlay.py SRC OUT x0 y0 x1 y1 scale orientation offset size ox oy cols r
 """
 import sys
 sys.path.insert(0, r"C:\repos\ghub-per\titan-alloy\hexgames\map_graphics\xml")
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 from PIL import Image, ImageDraw
 from lxml import etree
 import hexsheet2svg as H

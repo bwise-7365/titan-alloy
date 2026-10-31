@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="scenario" game="pgg" package="../../../packages/xml/pgg.package.xml"
       seed="19410703" title="Panzergruppe Guderian, 3 July 1941: the campaign set-up">
   <cursor turn="1" phase="set-up" side="german"/>

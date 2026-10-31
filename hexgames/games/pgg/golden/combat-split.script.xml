@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="script" game="pgg" package="../../../packages/xml/pgg.package.xml"
       seed="2" title="PGG combat: a split result, the defenders retreat routed by the attacker, who loses a step and advances">
   <cursor turn="3" phase="german-combat" side="german"/>

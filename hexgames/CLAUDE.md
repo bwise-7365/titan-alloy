@@ -3,14 +3,18 @@
 Hex-and-counter wargame engine (C++20, headless), Qt6 GUI, and four XML languages. Read `PLAN.md`
 first: its RESUME HERE block is the state of the work; its decision log is binding.
 
-## The languages (all validated by `tools/validate-xml.py`, ctest label `xsd`)
-- `game_rules/xml/hexrules.xsd` — rules: typed tables plus prose `<rule @id>` elements.
-- `map_graphics/xml/hexsheet.xsd` — map sheets: `grid` (orientation, offset, id-format), terrain,
+## The languages (schemas in the sibling repository HexRules; validated by its `python/validate.py`, ctest label `xsd`)
+The five XSDs, `validate.py` and the reference renderers are in `C:\repos\ghub-per\HexRules` (plan:
+HexRules `doc/2026-10-30-hexrules-repo-plan.md`), found by the CMake cache variable `HEXRULES_DIR` (default
+`../../HexRules`) and, from Python, by `map_graphics/xml/hexrules_path.py`. Documents name their schema by bare
+file name. Game documents stay here.
+- `hexrules.xsd` — rules: typed tables plus prose `<rule @id>` elements.
+- `hexsheet.xsd` — map sheets: `grid` (orientation, offset, id-format), terrain,
   edges, links, regions, panels. Hexes are addressed by PRINTED ID everywhere.
-- `unit_graphics/xml/hexcounters.xsd` — counters: styles, two faces, sheets.
-- `game_records/xml/hexsave.xsd` — scenarios, saves, scripts, goldens (one schema, `@kind`).
-- `packages/xml/hexpackage.xsd` — a game package: paths + id bindings across the languages.
-Reference renderers: `map_graphics/xml/hexsheet2svg.py`, `unit_graphics/xml/counters2svg.py`. Their
+- `hexcounters.xsd` — counters: styles, two faces, sheets.
+- `hexsave.xsd` — scenarios, saves, scripts, goldens (one schema, `@kind`).
+- `hexpackage.xsd` — a game package: paths + id bindings across the languages.
+Reference renderers: HexRules `python/hexsheet2svg.py`, `python/counters2svg.py`. Their
 conventions are the spec the C++ renderers reproduce.
 
 ## Build and test
@@ -54,8 +58,8 @@ conventions are the spec the C++ renderers reproduce.
 - Adjudicators are pure functions; mid-resolution choices become `PendingDecision`, never a blocking call.
 - Goldens are never hand-edited: `tools/bless-goldens.ps1`, then review by `git diff`, commit cites
   `refactor` / `bugfix` / `rules <id>`.
-- Any change to an `.xsd` is a review gate: propose it in `PLAN.md` ("XSD proposals awaiting review")
-  and wait for Ben.
+- Any change to an `.xsd` is a review gate: propose it in HexRules `PLAN.md` ("XSD proposals awaiting
+  review") and wait for Ben.
 
 ## Workflow (Fable coordinator + ≤ 5 workers)
 - Contracts before code: compiling interface headers, `uml/*.puml`, `doc/.../test-lists/*.md`.

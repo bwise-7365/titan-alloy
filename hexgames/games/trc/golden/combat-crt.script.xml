@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
       seed="3" title="TRC Combat Results Table: twelve factors and a Stuka against four, on open steppe">
   <cursor turn="1" phase="axis-i1-combat" side="axis"/>

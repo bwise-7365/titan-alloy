@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// A hexcounters document (unit_graphics/xml/hexcounters.xsd), mirrored one to one. A Face's content
+// A hexcounters document (HexRules xsd/hexcounters.xsd), mirrored one to one. A Face's content
 // is a choice of ten element kinds in any order, any number of times; parse() keeps each kind in its
 // own vector, in document order (RosterBuilder only ever needs the value line, front.values.front(),
 // so no cross-kind ordering is needed). Types are prefixed Counter* to avoid colliding with the

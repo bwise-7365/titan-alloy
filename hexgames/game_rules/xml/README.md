@@ -2,7 +2,7 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # hexrules — an XML rule language for hex wargames
 
-`hexrules.xsd` defines the language. The three instance documents rebuild the
+`hexrules.xsd` (HexRules `xsd/`) defines the language. The three instance documents rebuild the
 rule digests in `..\*.md`:
 
 | File | Game | Validates |
@@ -75,10 +75,10 @@ document; attributes that name other elements (`blocked-by`, `units`, `phase`,
 ## Validate
 
 ```bash
-python validate.py
+python ../../../../HexRules/python/validate.py .
 ```
 
-(`validate.py` sits beside the files; it loads the XSD, validates each
-`*.xml`, and checks table cell counts.)
+(HexRules `validate.py` picks the schema by root element, validates each `*.xml`, and checks
+table cell counts.)
 
 Copyright Ben Paul Wise. All Rights Reserved.

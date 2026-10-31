@@ -573,10 +573,10 @@ namespace HexQt {
       python = "python3";  // Debian has no plain "python"
 #endif
     }
-    // validate-xml.py takes directories: every sheet beside the saved one is checked with it
-    proc.start(python, {QString(HEXGAMES_SOURCE_DIR) + "/tools/validate-xml.py", q(doc_->path().parent_path().string())});
+    // HexRules validate.py takes directories: every document beside the saved sheet is checked with it
+    proc.start(python, {QString(HEXRULES_DIR) + "/python/validate.py", q(doc_->path().parent_path().string())});
     if (!proc.waitForFinished(30000)) {
-      status_->setText("validate-xml.py did not finish");
+      status_->setText("validate.py did not finish");
       return;
     }
     const QString out = QString::fromUtf8(proc.readAllStandardOutput() + proc.readAllStandardError()).trimmed();

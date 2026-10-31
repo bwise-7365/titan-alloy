@@ -23,6 +23,7 @@ from PIL import Image
 from lxml import etree
 
 sys.path.insert(0, r"C:\repos\ghub-per\titan-alloy\hexgames\map_graphics\xml")
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 import hexsheet2svg as H
 
 Image.MAX_IMAGE_PIXELS = None

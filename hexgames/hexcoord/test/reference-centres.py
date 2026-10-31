@@ -13,6 +13,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 XML = os.path.normpath(os.path.join(HERE, "..", "..", "map_graphics", "xml"))
 sys.path.insert(0, XML)
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 
 from lxml import etree  # noqa: E402  (the renderer's own parser, found beside it)
 

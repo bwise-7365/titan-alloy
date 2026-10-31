@@ -2,7 +2,7 @@
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
 #pragma once
-// Schema -- the closed vocabularies of map_graphics/xml/hexsheet.xsd, as the editor offers them. The
+// Schema -- the closed vocabularies of HexRules xsd/hexsheet.xsd, as the editor offers them. The
 // editor never writes a value outside these lists or an IDREF that the sheet does not declare, so
 // every document it saves is one the schema accepts. (The names end in List because Qt defines
 // `slots` as a macro.) (Ben, 2026-09-21: the editor allows only the

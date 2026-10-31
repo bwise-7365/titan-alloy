@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// A hexsave document (game_records/xml/hexsave.xsd), mirrored one to one. One schema, four flavours
+// A hexsave document (HexRules xsd/hexsave.xsd), mirrored one to one. One schema, four flavours
 // told apart by @kind (scenario, save, script, golden); parse() does not resolve any id against the
 // rules/sheet/counters documents -- that is PositionBuilder's job in hexmodel, and readRecord's job
 // in hexrecord, both of which report "file:line attribute -> target document" on failure. Types are

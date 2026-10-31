@@ -23,6 +23,7 @@ from xml.sax.saxutils import quoteattr
 from lxml import etree
 
 import common as C
+import hexrules_path  # noqa: E402  (common.py put map_graphics/xml on sys.path)
 
 
 def order_key(grid):
@@ -167,7 +168,7 @@ def main(argv):
     x.append("</sheet>")
     text = "\n".join(x) + "\n"
     doc = etree.fromstring(text.encode("utf-8"))
-    schema = etree.XMLSchema(etree.parse(os.path.join(C.XML_DIR, "hexsheet.xsd")))
+    schema = etree.XMLSchema(etree.parse(os.path.join(hexrules_path.XSD_DIR, "hexsheet.xsd")))
     if not schema.validate(doc):
         for e in schema.error_log:
             print("invalid: line %d: %s" % (e.line, e.message))

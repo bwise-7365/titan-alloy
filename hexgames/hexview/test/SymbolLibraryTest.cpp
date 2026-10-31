@@ -41,7 +41,7 @@ namespace {
   std::string
   referenceSource()
   {
-    return readFile(sourceRoot() / "map_graphics" / "xml" / "hexsheet2svg.py");
+    return readFile(std::filesystem::path(HEXRULES_DIR) / "python" / "hexsheet2svg.py");
   }
 
   TEST(SymbolLibraryTest, HasEveryReferenceSymbol)

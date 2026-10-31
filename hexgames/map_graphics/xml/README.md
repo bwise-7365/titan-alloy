@@ -2,7 +2,8 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 # hexsheet — an XML map-sheet language for hex wargames
 
-`hexsheet.xsd` defines the language; `hexsheet2svg.py` is the reference renderer
+`hexsheet.xsd` (HexRules `xsd/`) defines the language; `hexsheet2svg.py` (HexRules `python/`) is the
+reference renderer
 (validates against the XSD, writes SVG, and with `--png` rasterises through Inkscape).
 Instance documents approximate real sheets; each is compared with its scan in
 `C:\Library\War-Games\...`.
@@ -20,7 +21,7 @@ Sheet width and height are the scan's pixel size, so a render at `--scale 1` ove
 scan directly.
 
 ```bash
-python hexsheet2svg.py the-russian-campaign.xml --png --scale 1
+python ../../../../HexRules/python/hexsheet2svg.py the-russian-campaign.xml --png --scale 1
 ```
 
 ## Design

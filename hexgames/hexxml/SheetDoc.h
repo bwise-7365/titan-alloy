@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// A hexsheet document (map_graphics/xml/hexsheet.xsd), mirrored one to one. The sheet body is a
+// A hexsheet document (HexRules xsd/hexsheet.xsd), mirrored one to one. The sheet body is a
 // mixed-content choice of hexes/hex/edge/path/link/junction/region/label/panel, repeated in any order; parse()
 // keeps each kind in its own vector, in the document order it was written (BoardBuilder needs no
 // cross-kind interleaving: bulk and per-hex terrain, edges, links and regions each write disjoint

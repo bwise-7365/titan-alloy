@@ -20,6 +20,7 @@ from lxml import etree
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "map_graphics", "xml"))
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 import hexsheet2svg as H  # noqa: E402
 
 AXIS = ["BERLIN", "Posen", "Breslau", "WARSAW", "Königsberg", "BUCHAREST", "Ploesti Oil Fields", "HELSINKI"]

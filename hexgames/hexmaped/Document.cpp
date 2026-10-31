@@ -181,19 +181,10 @@ namespace HexMapEd {
   }  // namespace
 
   std::string
-  Document::schemaLocationFor(const std::filesystem::path& file)
+  Document::schemaLocationFor(const std::filesystem::path&)
   {
-    // hexsheet.xsd relative to the file: the schema lives in map_graphics/xml, found by walking up
-    // from the file (a sheet saved under tools/reader/work/<map>/chain/ still names it correctly)
-    std::error_code ec;
-    std::filesystem::path dir = std::filesystem::absolute(file, ec).parent_path();
-    for (std::filesystem::path up = dir; !up.empty() && up != up.root_path(); up = up.parent_path()) {
-      const std::filesystem::path xsd = up / "map_graphics" / "xml" / "hexsheet.xsd";
-      if (std::filesystem::exists(xsd, ec)) {
-        const std::filesystem::path rel = std::filesystem::relative(xsd, dir, ec);
-        return ec ? "hexsheet.xsd" : rel.generic_string();
-      }
-    }
+    // The bare name wherever the file is: the schema is in the HexRules checkout, and HexRules
+    // validate.py and xsd/catalog.xml resolve the name, not a path relative to the sheet.
     return "hexsheet.xsd";
   }
 

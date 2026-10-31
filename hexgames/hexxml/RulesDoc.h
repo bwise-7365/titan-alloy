@@ -1,7 +1,7 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
-// A hexrules document (game_rules/xml/hexrules.xsd), mirrored one to one: one struct per complex
+// A hexrules document (HexRules xsd/hexrules.xsd), mirrored one to one: one struct per complex
 // type, attributes as typed fields, element children as vectors. parse() re-checks everything the
 // XSD promised (required attributes, enumerations, one cell per table column) so a C++ caller never
 // has to trust the file alone; IDREFS attributes come back as token vectors, left unresolved -- that
