@@ -13,6 +13,14 @@ function(hexgames_add_gtest target)
   target_link_libraries(${target} PRIVATE ${HG_LIBS} GTest::gtest_main)
   if(HG_GUI)
     hexgames_deploy_qt(${target})
+    # The deployment brings only the windows platform plugin; the test runs on the offscreen one.
+    if(WIN32 AND TARGET Qt6::QOffscreenIntegrationPlugin)
+      add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target}>/platforms"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt6::QOffscreenIntegrationPlugin>
+                "$<TARGET_FILE_DIR:${target}>/platforms"
+        VERBATIM)
+    endif()
     set(_env "QT_QPA_PLATFORM=offscreen")
   else()
     set(_env "")

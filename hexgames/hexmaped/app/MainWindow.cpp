@@ -3,6 +3,8 @@
 // ----------------------------------------------
 #include "MainWindow.h"
 
+#include "GenerateDock.h"
+
 #include "hexmaped/Schema.h"
 
 #include <QAction>
@@ -97,6 +99,10 @@ namespace HexQt {
         open(path);
       }
     })->setShortcut(QKeySequence::Open);
+    file->addAction("&New from generator...", [this] {
+      generateDock_->show();
+      generateDock_->raise();
+    });
     saveAction_ = file->addAction("&Save", [this] { save(); });
     saveAction_->setShortcut(QKeySequence::Save);
     file->addAction("Save &as...", [this] { saveAs(); })->setShortcut(QKeySequence::SaveAs);
@@ -188,6 +194,10 @@ namespace HexQt {
     inspector_->setReadOnly(true);
     inspectorDock->setWidget(inspector_);
     addDockWidget(Qt::RightDockWidgetArea, inspectorDock);
+    generateDock_ = new QDockWidget("Generate", this);
+    generateDock_->setWidget(new GenerateDock([this](HexXml::SheetDoc sheet) { adoptSheet(std::move(sheet)); }, generateDock_));
+    addDockWidget(Qt::LeftDockWidgetArea, generateDock_);
+    generateDock_->hide();
     return;
   }
 
@@ -262,6 +272,30 @@ namespace HexQt {
     refreshKinds();
     refreshActions();
     loadDoubtsBeside(path);
+    return;
+  }
+
+  void
+  MainWindow::adoptSheet(HexXml::SheetDoc sheet)
+  {
+    if (doc_ && doc_->dirtyP()) {
+      const auto answer = QMessageBox::question(this, "Unsaved changes", "Discard the changes to the open sheet?",
+                                                QMessageBox::Discard | QMessageBox::Cancel);
+      if (QMessageBox::Cancel == answer) {
+        return;
+      }
+    }
+    try {
+      doc_ = std::make_unique<HexMapEd::Document>(std::move(sheet));
+    } catch (const std::exception& e) {
+      QMessageBox::critical(this, "Cannot open the generated sheet", e.what());
+      return;
+    }
+    view_->setDocument(doc_.get());
+    view_->fitAll();
+    doubts_->clear();
+    refreshKinds();
+    refreshActions();
     return;
   }
 
@@ -474,6 +508,10 @@ namespace HexQt {
   MainWindow::save()
   {
     if (!doc_) {
+      return;
+    }
+    if (doc_->path().empty()) {
+      saveAs();  // a generated sheet has no file yet
       return;
     }
     try {
