@@ -4,6 +4,7 @@
 #include "hexmaped/SheetWriter.h"
 
 #include <cmath>
+#include <cstdint>
 #include <cstdio>
 #include <fstream>
 #include <optional>
@@ -100,6 +101,13 @@ namespace HexMapEd {
         }
         return *this;
       }
+      Attrs& add(std::string_view name, const std::optional<std::int64_t>& value)
+      {
+        if (value.has_value()) {
+          add(name, std::to_string(*value));
+        }
+        return *this;
+      }
       Attrs& flag(std::string_view name, bool value, bool schemaDefault)
       {
         if (value != schemaDefault) {
@@ -186,7 +194,8 @@ namespace HexMapEd {
       line(out, 1, "<terrains>");
       for (const HexXml::SheetTerrainDoc& t : s.terrains) {
         emptyElement(out, 2, "terrain",
-              Attrs().add("id", t.id).add("name", t.name).add("fill", t.fill).add("stroke", t.stroke).unlessDefault("pattern", t.pattern, "none"));
+              Attrs().add("id", t.id).add("name", t.name).add("fill", t.fill).add("stroke", t.stroke).unlessDefault("pattern", t.pattern, "none")
+                    .add("move-cost", t.moveCost));
       }
       line(out, 1, "</terrains>");
       if (!s.lines.empty()) {
@@ -220,7 +229,7 @@ namespace HexMapEd {
     writeHex(std::string& out, const HexXml::SheetHexDoc& h)
     {
       Attrs a;
-      a.add("id", h.id).add("terrain", h.terrain).add("ring", h.ring).add("ring-width", h.ringWidth).add("name", h.name);
+      a.add("id", h.id).add("terrain", h.terrain).add("ring", h.ring).add("ring-width", h.ringWidth).add("name", h.name).add("alt", h.alt);
       if (h.glyphs.empty() && h.sides.empty()) {
         emptyElement(out, 1, "hex", a);
         return;
@@ -338,7 +347,8 @@ namespace HexMapEd {
       .add("background", s.background)
       .unlessDefault("font", s.font, "Arial, Helvetica, sans-serif")
       .add("urban", s.urban)
-      .add("junctions", s.junctions);
+      .add("junctions", s.junctions)
+      .add("seed", s.seed);
     line(out, 0, "<sheet" + root.text() + ">");
     line(out, 1, "<!-- written by HexMapEd; the structure and its style, validated against hexsheet.xsd -->");
     for (const HexXml::SheetGridDoc& g : s.grids) {
@@ -351,7 +361,7 @@ namespace HexMapEd {
       }
     }
     for (const HexXml::SheetEdgeDoc& e : s.edges) {
-      emptyElement(out, 1, "edge", Attrs().add("at", e.at).add("line", e.line).add("symbol", e.symbol).add("mark", e.mark).add("color", e.color).add("label", e.label));
+      emptyElement(out, 1, "edge", Attrs().add("at", e.at).add("line", e.line).add("symbol", e.symbol).add("mark", e.mark).add("color", e.color).add("label", e.label).add("cost", e.cost));
     }
     for (const HexXml::SheetPathDoc& p : s.paths) {
       emptyElement(out, 1, "path",

@@ -16,7 +16,7 @@ LINE = "Copyright Ben Paul Wise. All Rights Reserved."
 RULER = "// ----------------------------------------------"
 CPP = (".h", ".hpp", ".cpp")
 ONE_LINE = {".md": "", ".txt": "", ".cmake": "# ", ".py": "# ", ".ps1": "# ", ".puml": "' "}
-ROOTS = ["hexcoord", "hexxml", "hexmodel", "hexrules", "hexsearch", "hexengine", "hexrecord",
+ROOTS = ["hexxml_games", "hexmodel", "hexrules", "hexsearch", "hexengine", "hexrecord",
          "hexview", "hexqt", "games", "tools", "tasks", "tests", "cmake", "uml", "doc",
          "game_records", "packages", "game_rules", "map_graphics", "unit_graphics"]
 TOP_FILES = ["PLAN.md", "BUGS.txt", "CMakeLists.txt", ".gitignore"]
@@ -25,7 +25,6 @@ EXEMPT = {
     "CMakePresets.json": "JSON has no comments",
     "2026-09-12-2002-plan-request.txt": "Ben's request, not a project file",
     "military-unit-icons-handoff.md": "a hand-off document, not written for this project",
-    "validate.py": "game_rules/xml/validate.py, the pre-project validator tools/validate-xml.py replaces",
 }
 SKIP_DIRS = {"cmake-build-debug", "cmake-build-release", "cmake-build-headless", "build", "out",
              "__pycache__", ".idea", ".vs", "_deps", "CMakeFiles", "golden",

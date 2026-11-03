@@ -54,6 +54,20 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-10-31 HEXRULES STEPS 2 AND 3 DONE (branch `9-hexrules`, not merged). The five XSDs, `validate.py`, both
+  reference renderers and the `hexcoord` and `hexxml` modules are now in HexRules; this repository builds them
+  through `add_subdirectory(${HEXRULES_DIR}/cpp)` and validates through HexRules `python/validate.py`.
+  `hexxml_games/` holds the hexxml tests that read this repository's game documents. SheetDoc reads, and
+  HexMapEd's SheetWriter writes, the four HexKrieg sheet attributes (BUGS entry of 2026-10-30 closed). ctest
+  313/313 (304 before; the gain is HexRules' corpus tests and one SheetWriter test). Goldens unchanged. NEXT:
+  HexRules plan step 4 (HexKrieg's Java binding) runs in HexKrieg and HexRules; this repository waits for step 6.
+- 2026-10-30 HEXRULES (coordinator, from a HexKrieg session). The five XML languages, `tools/validate-xml.py`,
+  `hexsheet2svg.py`, `counters2svg.py`, and the `hexcoord` and `hexxml` modules move to the sibling repository
+  `C:\repos\ghub-per\HexRules` (plan: HexRules `doc/2026-10-30-hexrules-repo-plan.md`, also in HexKrieg `doc/`).
+  hexgames will find it through the CMake cache variable `HEXRULES_DIR` (default `../../HexRules`). Game documents
+  stay here. Until step 2 of that plan lands, the files here remain authoritative; from then on, XSD proposals go
+  to HexRules `PLAN.md`. Branch `9-hexrules`. The uncommitted items of the entry below were committed in bf1bf49,
+  except `hexxml/test/sheet-flat-no-id-side.xml`, which `SheetDocTest` reads; it is committed on `9-hexrules`.
 - 2026-10-30 PAUSED (Ben rebooting). UNCOMMITTED, on disk, all tests green (ctest 304/304, every committed
   sheet validates and renders with 0 warnings): BUGS.txt, PLAN.md, hexxml/SheetDoc.cpp,
   hexxml/test/SheetDocTest.cpp, hexxml/test/sheet-flat-no-id-side.xml (new), map_graphics/dai-senso-graphics.md,

@@ -25,6 +25,8 @@ import lattice as L
 from legend import option
 
 XML_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+sys.path.insert(0, XML_DIR)
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 SQRT3 = math.sqrt(3.0)
 SYMBOLS = {"position-badge", "fire-intense", "fire-steady", "fire-square", "lvt-wreck", "arrival-box", "artillery", "tank",
            "pier-head", "city-major", "city-minor", "city", "capital", "town", "port", "port-multi", "port-key", "oil",
@@ -215,7 +217,7 @@ def main(argv):
     x.append("</sheet>")
     text = "\n".join(x) + "\n"
     doc = etree.fromstring(text.encode("utf-8"))
-    schema = etree.XMLSchema(etree.parse(os.path.join(XML_DIR, "hexsheet.xsd")))
+    schema = etree.XMLSchema(etree.parse(os.path.join(hexrules_path.XSD_DIR, "hexsheet.xsd")))
     if not schema.validate(doc):
         for e in schema.error_log:
             print("invalid: line %d: %s" % (e.line, e.message))

@@ -3,14 +3,20 @@
 Hex-and-counter wargame engine (C++20, headless), Qt6 GUI, and four XML languages. Read `PLAN.md`
 first: its RESUME HERE block is the state of the work; its decision log is binding.
 
-## The languages (all validated by `tools/validate-xml.py`, ctest label `xsd`)
-- `game_rules/xml/hexrules.xsd` — rules: typed tables plus prose `<rule @id>` elements.
-- `map_graphics/xml/hexsheet.xsd` — map sheets: `grid` (orientation, offset, id-format), terrain,
+## The languages (schemas in the sibling repository HexRules; validated by its `python/validate.py`, ctest label `xsd`)
+The five XSDs, `validate.py` and the reference renderers are in `C:\repos\ghub-per\HexRules` (plan:
+HexRules `doc/2026-10-30-hexrules-repo-plan.md`), found by the CMake cache variable `HEXRULES_DIR` (default
+`../../HexRules`) and, from Python, by `map_graphics/xml/hexrules_path.py`. Documents name their schema by bare
+file name. Game documents stay here. The modules `hexcoord` and `hexxml` are HexRules' C++ binding
+(`cpp/`), added by `add_subdirectory(${HEXRULES_DIR}/cpp)` with the same target names; `hexxml_games/`
+tests them on this repository's game documents.
+- `hexrules.xsd` — rules: typed tables plus prose `<rule @id>` elements.
+- `hexsheet.xsd` — map sheets: `grid` (orientation, offset, id-format), terrain,
   edges, links, regions, panels. Hexes are addressed by PRINTED ID everywhere.
-- `unit_graphics/xml/hexcounters.xsd` — counters: styles, two faces, sheets.
-- `game_records/xml/hexsave.xsd` — scenarios, saves, scripts, goldens (one schema, `@kind`).
-- `packages/xml/hexpackage.xsd` — a game package: paths + id bindings across the languages.
-Reference renderers: `map_graphics/xml/hexsheet2svg.py`, `unit_graphics/xml/counters2svg.py`. Their
+- `hexcounters.xsd` — counters: styles, two faces, sheets.
+- `hexsave.xsd` — scenarios, saves, scripts, goldens (one schema, `@kind`).
+- `hexpackage.xsd` — a game package: paths + id bindings across the languages.
+Reference renderers: HexRules `python/hexsheet2svg.py`, `python/counters2svg.py`. Their
 conventions are the spec the C++ renderers reproduce.
 
 ## Build and test
@@ -18,8 +24,8 @@ conventions are the spec the C++ renderers reproduce.
   `headless` (no Qt at all), `linux-debug`, `linux-release`. Must build on Windows 11 (Ninja + MSVC) and
   Debian. Qt 6.8.3 (`C:/Qt/6.8.3/msvc2022_64`) for the GUI only.
 - `cmake --preset win-msvc-debug && cmake --build --preset win-msvc-debug && ctest --preset win-msvc-debug`
-- ctest labels: `xsd hygiene core package records golden long gui trc pgg ds ddat`. `ctest -LE long` is
-  the fast set.
+- ctest labels: `xsd hygiene core package records golden long gui trc pgg ds ddat conformance`. `ctest -LE long`
+  is the fast set.
 - Only `hexqt` and the `*_gui` executables may link Qt. Everything else must build under the `headless`
   preset.
 - Google Test via FetchContent; one `<thing>_test.cpp` per suite; `hexgames_add_gtest(...)`; literal
@@ -43,7 +49,8 @@ conventions are the spec the C++ renderers reproduce.
 - `.clang-format` (2-space, column 100) is authoritative.
 
 ## Engine rules that are easy to get wrong
-- Coordinates are the author's ABC system (`hexcoord`), re-implemented from `panj\hexmap\libsrc\tricoord.*`.
+- Coordinates are the author's ABC system (`hexcoord`, now in HexRules `cpp/hexcoord`), re-implemented from
+  `panj\hexmap\libsrc\tricoord.*`.
   Never introduce cube/axial/offset "hacks"; offset (col,row) exists only at the sheet-grid boundary.
 - Printed hex ids are the identity in every document; `hexcoord::Grid` maps id ↔ ABC.
 - PRNG: `std::mt19937_64` per named stream, seeded `mixSeed(seed, tag)`; generators passed by reference;
@@ -54,8 +61,8 @@ conventions are the spec the C++ renderers reproduce.
 - Adjudicators are pure functions; mid-resolution choices become `PendingDecision`, never a blocking call.
 - Goldens are never hand-edited: `tools/bless-goldens.ps1`, then review by `git diff`, commit cites
   `refactor` / `bugfix` / `rules <id>`.
-- Any change to an `.xsd` is a review gate: propose it in `PLAN.md` ("XSD proposals awaiting review")
-  and wait for Ben.
+- Any change to an `.xsd` is a review gate: propose it in HexRules `PLAN.md` ("XSD proposals awaiting
+  review") and wait for Ben.
 
 ## Workflow (Fable coordinator + ≤ 5 workers)
 - Contracts before code: compiling interface headers, `uml/*.puml`, `doc/.../test-lists/*.md`.

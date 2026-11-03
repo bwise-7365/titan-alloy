@@ -31,7 +31,7 @@ namespace HexMapEd {
     bool dirtyP() const { return dirtyP_; }
 
     void save();                                   // writes path(), clears dirty
-    static std::string schemaLocationFor(const std::filesystem::path& file);  // hexsheet.xsd relative to the file
+    static std::string schemaLocationFor(const std::filesystem::path& file);  // "hexsheet.xsd", the bare name
     void saveAs(const std::filesystem::path&);
 
     // ---- queries the panels need

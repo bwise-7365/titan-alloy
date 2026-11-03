@@ -1,6 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
+// The SheetDoc model on the hexgames game documents; HexRules cpp/hexxml/test
+// covers the same model on the HexRules corpus.
 #include "hexxml/SheetDoc.h"
 
 #include <gtest/gtest.h>
@@ -19,7 +21,7 @@ namespace {
 
 }  // namespace
 
-TEST(SheetDocTest, TrcParsesWithExpectedShape)
+TEST(SheetDocGamesTest, TrcParsesWithExpectedShape)
 {
   const HexXml::XmlDocument xml = HexXml::XmlDocument::load(mapGraphics("the-russian-campaign.xml"));
   const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(xml);
@@ -50,17 +52,7 @@ TEST(SheetDocTest, TrcParsesWithExpectedShape)
   ASSERT_NE(doc.panels.end(), panelIt);
 }
 
-TEST(SheetDocTest, TwoMapSheetHasTwoGrids)
-{
-  const HexXml::XmlDocument xml =
-      HexXml::XmlDocument::load(std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-two-maps.xml");
-  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(xml);
-  ASSERT_EQ(2u, doc.grids.size());
-  EXPECT_EQ("west", doc.grids[0].id.value());
-  EXPECT_EQ("east", doc.grids[1].id.value());
-}
-
-TEST(SheetDocTest, DaiSensoIsOneGrid)
+TEST(SheetDocGamesTest, DaiSensoIsOneGrid)
 {
   // West and East Maps are one lattice, numbered by column from 00 at the West Map's west edge.
   const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(mapGraphics("dai-senso.xml")));
@@ -68,16 +60,7 @@ TEST(SheetDocTest, DaiSensoIsOneGrid)
   EXPECT_EQ(56, doc.grids[0].cols);
 }
 
-TEST(SheetDocTest, FlatIdSideDefaultsToNorth)
-{
-  // The XSD's default "w" is a pointy hexside; a flat grid has none, so it defaults to "n".
-  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-flat-no-id-side.xml"));
-  ASSERT_EQ(1u, doc.grids.size());
-  EXPECT_EQ("n", doc.grids[0].idSide);
-}
-
-TEST(SheetDocTest, FourSheetsParse)
+TEST(SheetDocGamesTest, FourSheetsParse)
 {
   for (const char* name : {"the-russian-campaign.xml", "dai-senso.xml", "d-day-at-tarawa.xml",
                             "panzergruppe-guderian.xml"}) {
@@ -86,7 +69,7 @@ TEST(SheetDocTest, FourSheetsParse)
   }
 }
 
-TEST(SheetDocTest, VelikiyeLukiHasExplicitJunctions)
+TEST(SheetDocGamesTest, VelikiyeLukiHasExplicitJunctions)
 {
   const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(mapGraphics("velikiye-luki.xml")));
   EXPECT_EQ("explicit", doc.junctions);
@@ -102,21 +85,6 @@ TEST(SheetDocTest, VelikiyeLukiHasExplicitJunctions)
     EXPECT_LE(2u, j.links.size()) << j.at;
     EXPECT_TRUE(j.paths.empty()) << j.at;
   }
-}
-
-TEST(SheetDocTest, ImplicitSheetWithJunctionThrows)
-{
-  const std::filesystem::path bad =
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-implicit-junction.xml";
-  EXPECT_THROW((void)HexXml::SheetDoc::parse(HexXml::XmlDocument::load(bad)), std::invalid_argument);
-}
-
-TEST(SheetDocTest, BadEnumThrows)
-{
-  const std::filesystem::path bad =
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-bad-orientation.xml";
-  const HexXml::XmlDocument xml = HexXml::XmlDocument::load(bad);
-  EXPECT_THROW((void)HexXml::SheetDoc::parse(xml), std::invalid_argument);
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

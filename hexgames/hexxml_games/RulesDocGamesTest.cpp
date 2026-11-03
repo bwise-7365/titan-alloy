@@ -1,6 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
+// The RulesDoc model on the hexgames game documents; HexRules cpp/hexxml/test
+// covers the same model on the HexRules corpus.
 #include "hexxml/RulesDoc.h"
 
 #include <gtest/gtest.h>
@@ -19,7 +21,7 @@ namespace {
 
 }  // namespace
 
-TEST(RulesDocTest, TrcParsesWithExpectedShape)
+TEST(RulesDocGamesTest, TrcParsesWithExpectedShape)
 {
   const HexXml::XmlDocument xml = HexXml::XmlDocument::load(gameRules("the-russian-campaign.xml"));
   const HexXml::RulesDoc doc = HexXml::RulesDoc::parse(xml);
@@ -83,7 +85,7 @@ TEST(RulesDocTest, TrcParsesWithExpectedShape)
   EXPECT_FALSE(doc.allNotes.empty());
 }
 
-TEST(RulesDocTest, DaiSensoAndTarawaParse)
+TEST(RulesDocGamesTest, DaiSensoAndTarawaParse)
 {
   const HexXml::XmlDocument ds = HexXml::XmlDocument::load(gameRules("dai-senso.xml"));
   const HexXml::RulesDoc dsDoc = HexXml::RulesDoc::parse(ds);
@@ -94,28 +96,6 @@ TEST(RulesDocTest, DaiSensoAndTarawaParse)
   const HexXml::RulesDoc tarawaDoc = HexXml::RulesDoc::parse(tarawa);
   EXPECT_EQ(35u, tarawaDoc.allRules.size());
   EXPECT_EQ(1, tarawaDoc.players);
-}
-
-TEST(RulesDocTest, MissingRequiredAttributeThrows)
-{
-  const std::filesystem::path bad =
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "rules-missing-id.xml";
-  const HexXml::XmlDocument xml = HexXml::XmlDocument::load(bad);
-  EXPECT_THROW((void)HexXml::RulesDoc::parse(xml), std::invalid_argument);
-}
-
-TEST(RulesDocTest, TableCellArityMismatchThrows)
-{
-  const std::filesystem::path bad =
-      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "rules-bad-table.xml";
-  const HexXml::XmlDocument xml = HexXml::XmlDocument::load(bad);
-  try {
-    (void)HexXml::RulesDoc::parse(xml);
-    FAIL() << "expected std::invalid_argument";
-  } catch (const std::invalid_argument& e) {
-    const std::string message = e.what();
-    EXPECT_NE(std::string::npos, message.find("crt"));
-  }
 }
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.

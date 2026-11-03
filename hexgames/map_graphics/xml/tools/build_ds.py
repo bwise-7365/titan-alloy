@@ -8,6 +8,7 @@ import re
 import sys
 
 sys.path.insert(0, r"C:\repos\ghub-per\titan-alloy\hexgames\map_graphics\xml")
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 from lxml import etree
 import hexsheet2svg as H
 

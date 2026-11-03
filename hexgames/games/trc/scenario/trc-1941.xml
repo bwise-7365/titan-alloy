@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="scenario" game="trc" package="../../../packages/xml/trc.package.xml"
       seed="19410622" title="The Russian Campaign, June 1941: the campaign set-up (derived start line)">
   <cursor turn="1" phase="axis-i1-move" side="axis"/>

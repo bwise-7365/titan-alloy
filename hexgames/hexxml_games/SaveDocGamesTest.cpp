@@ -1,6 +1,8 @@
 // ----------------------------------------------
 // Copyright Ben Paul Wise. All Rights Reserved.
 // ----------------------------------------------
+// The SaveDoc model on the hexgames game documents; HexRules cpp/hexxml/test
+// covers the same model on the HexRules corpus.
 #include "hexxml/SaveDoc.h"
 
 #include <gtest/gtest.h>
@@ -18,7 +20,7 @@ namespace {
 
 }  // namespace
 
-TEST(SaveDocTest, TrcTestScenarioParses)
+TEST(SaveDocGamesTest, TrcTestScenarioParses)
 {
   const HexXml::XmlDocument xml = HexXml::XmlDocument::load(gameRecords("trc-test.xml"));
   const HexXml::SaveDoc doc = HexXml::SaveDoc::parse(xml);
@@ -57,7 +59,7 @@ TEST(SaveDocTest, TrcTestScenarioParses)
   EXPECT_FALSE(doc.notes.empty());
 }
 
-TEST(SaveDocTest, SideFlagsParse)
+TEST(SaveDocGamesTest, SideFlagsParse)
 {
   const std::filesystem::path scenario =
       std::filesystem::path(HEXGAMES_SOURCE_DIR) / "games" / "trc" / "scenario" / "trc-1941.xml";

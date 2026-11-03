@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
       seed="20260914" title="TRC full game turn: September/October 1941 from the Weather Phase to the next, both players">
   <cursor turn="2" phase="russian-end" side="russian"/>

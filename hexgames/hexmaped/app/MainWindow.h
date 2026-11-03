@@ -5,7 +5,7 @@
 // MainWindow -- HexMapEd: a Document, the MapView, a mode (select, terrain, hexside, link, clip,
 // glyph, name) with the kind the mode paints, the doubts list, the inspector, and File/Edit menus.
 // Every click becomes one Document edit; the Document refuses what the schema would; the view
-// redraws from the Document. Save writes the sheet and runs tools/validate-xml.py on the result.
+// redraws from the Document. Save writes the sheet and runs HexRules python/validate.py on the result.
 
 // Qt headers first, for Qt5's moc on GCC: see the note in MapView.h.
 #include <QMainWindow>

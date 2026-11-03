@@ -17,7 +17,7 @@ namespace {
   enumerationOf(const std::string& typeName)
   {
     const HexXml::XmlDocument xsd =
-      HexXml::XmlDocument::load(std::string(HEXGAMES_SOURCE_DIR) + "/map_graphics/xml/hexsheet.xsd");
+      HexXml::XmlDocument::load(std::string(HEXRULES_DIR) + "/xsd/hexsheet.xsd");
     for (const HexXml::XmlNode& t : xsd.root().children("xs:simpleType")) {
       if (t.optional("name") != typeName) {
         continue;

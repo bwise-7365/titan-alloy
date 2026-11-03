@@ -256,12 +256,7 @@ namespace HexEngine {
     defence = scaled(defence, defenderMultiplier);
 
     // ---- odds -------------------------------------------------------------------------------------
-    const HexModel::Odds minimum =
-        resolver_.minOdds ? parseOdds(*resolver_.minOdds) : HexModel::Odds{1, 99};
-    const HexModel::Odds maximum =
-        resolver_.maxOdds ? parseOdds(*resolver_.maxOdds) : HexModel::Odds{99, 1};
-    const HexModel::OddsOutcome outcome =
-        HexModel::makeOdds(attack, defence, resolver_.rounding, minimum, maximum);
+    const HexModel::OddsOutcome outcome = column(attack, defence, shift);
 
     CombatReport out;
     if (std::holds_alternative<HexModel::BelowMinimum>(outcome)) {
@@ -277,8 +272,30 @@ namespace HexEngine {
       return out;
     }
 
+    const HexModel::Odds odds = std::get<HexModel::Odds>(outcome);
+    const int die = rollDie(streams, StreamTag::Combat, faces_);
+    out.dice.push_back(die);
+    out.odds = oddsText(odds);
+    out.outcome = code(odds, die);
+    out.effects = effectsOf(out.outcome, attackerSide, defenderSide);
+    return out;
+  }
+
+  HexModel::OddsOutcome
+  OddsTableResolver::column(HexModel::Strength attack, HexModel::Strength defence, int shift) const
+  {
+    const HexModel::Odds minimum =
+        resolver_.minOdds ? parseOdds(*resolver_.minOdds) : HexModel::Odds{1, 99};
+    const HexModel::Odds maximum =
+        resolver_.maxOdds ? parseOdds(*resolver_.maxOdds) : HexModel::Odds{99, 1};
+    const HexModel::OddsOutcome outcome =
+        HexModel::makeOdds(attack, defence, resolver_.rounding, minimum, maximum);
+    if (!std::holds_alternative<HexModel::Odds>(outcome)) {
+      return outcome;
+    }
+
     const std::vector<HexModel::Odds> ladder = oddsLadder(table_);
-    HexModel::Odds odds = std::get<HexModel::Odds>(outcome);
+    const HexModel::Odds odds = std::get<HexModel::Odds>(outcome);
     const auto rung = std::find(ladder.begin(), ladder.end(), odds);
     if (ladder.end() == rung) {
       throw std::invalid_argument("OddsTableResolver: no column names odds " + oddsText(odds));
@@ -286,14 +303,13 @@ namespace HexEngine {
     const long long shifted =
         std::clamp<long long>(std::distance(ladder.begin(), rung) + shift, 0,
                                static_cast<long long>(ladder.size()) - 1);
-    odds = ladder[static_cast<std::size_t>(shifted)];
+    return ladder[static_cast<std::size_t>(shifted)];
+  }
 
-    const int die = rollDie(streams, StreamTag::Combat, faces_);
-    out.dice.push_back(die);
-    out.odds = oddsText(odds);
-    out.outcome = table_.cell(rowOf(table_, die), columnOf(table_, odds));
-    out.effects = effectsOf(out.outcome, attackerSide, defenderSide);
-    return out;
+  std::string
+  OddsTableResolver::code(HexModel::Odds odds, int die) const
+  {
+    return table_.cell(rowOf(table_, die), columnOf(table_, odds));
   }
 
   std::vector<CombatEffect>

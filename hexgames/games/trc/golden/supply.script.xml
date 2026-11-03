@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../game_records/xml/hexsave.xsd"
+<save xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsave.xsd"
       format="hexsave-1.0" kind="script" game="trc" package="../../../packages/xml/trc.package.xml"
       seed="20260914" title="TRC general supply: the Axis end phase keeps a corps beside Berlin and eliminates one cut off in the Ukraine">
   <cursor turn="1" phase="axis-i2-combat" side="axis"/>

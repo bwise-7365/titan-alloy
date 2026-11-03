@@ -31,7 +31,8 @@ import lattice as L  # noqa: E402
 import cd_data as D  # noqa: E402
 
 UG = os.path.join(REPO, "unit_graphics", "xml")
-sys.path.insert(0, UG)
+sys.path.insert(0, os.path.join(REPO, "map_graphics", "xml"))
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 from counters2svg import Renderer  # noqa: E402
 
 MAP_SVG = os.path.join(REPO, "map_graphics", "xml", "circling-dragons%s.svg" % L.SUFFIX)   # the sheet of this scale

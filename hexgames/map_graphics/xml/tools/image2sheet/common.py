@@ -18,6 +18,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 XML_DIR = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, XML_DIR)
+import hexrules_path  # noqa: E402,F401  (HexRules/python on sys.path: hexsheet2svg, counters2svg)
 
 import hexsheet2svg as H  # noqa: E402
 from lxml import etree  # noqa: E402

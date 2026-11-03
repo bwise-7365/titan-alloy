@@ -72,6 +72,18 @@ else()
   FetchContent_MakeAvailable(tinyxml2)
 endif()
 
+# ---- HexRules: the XML schemas, validate.py and the reference renderers -------------------------------
+# A sibling checkout (C:/repos/ghub-per/HexRules beside titan-alloy), not a copy. Python run outside
+# ctest finds it through map_graphics/xml/hexrules_path.py, which honours the environment variable of
+# the same name; set both when HexRules is elsewhere.
+set(HEXRULES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../HexRules" CACHE PATH "The HexRules checkout")
+get_filename_component(HEXRULES_DIR "${HEXRULES_DIR}" ABSOLUTE)
+if(NOT EXISTS "${HEXRULES_DIR}/xsd/hexsheet.xsd")
+  message(FATAL_ERROR "HexRules not found at ${HEXRULES_DIR} (no xsd/hexsheet.xsd). Clone "
+                      "git@github.com:Neolithic-Wolf/HexRules.git beside titan-alloy, or set HEXRULES_DIR.")
+endif()
+add_compile_definitions(HEXRULES_DIR="${HEXRULES_DIR}")
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(HexGamesGtest)
 include(HexGamesQtDeploy)
@@ -97,7 +109,7 @@ if(_py)
     foreach(_lang game_rules map_graphics unit_graphics game_records packages)
       if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_lang}/xml")
         add_test(NAME xsd_validate_${_lang}
-                 COMMAND "${_py}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/validate-xml.py"
+                 COMMAND "${_py}" "${HEXRULES_DIR}/python/validate.py"
                          "${CMAKE_CURRENT_SOURCE_DIR}/${_lang}/xml")
         set_tests_properties(xsd_validate_${_lang} PROPERTIES LABELS "xsd")
       endif()
@@ -113,14 +125,18 @@ if(_py)
              # river pieces that are short or do not drain, not yet individually investigated. Add this
              # sheet to the COMMAND above once that count reaches zero or every remaining item is a named,
              # crop-confirmed printed exception (see PGG_EXCEPTED in network_check.py for the pattern).
-    set_tests_properties(hygiene_map_networks PROPERTIES LABELS "hygiene")
+    set_tests_properties(hygiene_map_networks PROPERTIES LABELS "hygiene"
+                         ENVIRONMENT "HEXRULES_DIR=${HEXRULES_DIR}")
   endif()
 else()
   message(STATUS "Python3 not found: hygiene and xsd ctest entries are skipped")
 endif()
 
 # ---- modules, in dependency order; each is added as it comes into existence ------------------------
-foreach(_mod hexcoord hexxml hexmodel hexrules hexsearch hexengine hexrecord)
+# hexcoord and hexxml are HexRules' C++ binding, built here with their own tests; hexxml_games tests the
+# hexxml models on this repository's game documents.
+add_subdirectory(${HEXRULES_DIR}/cpp ${CMAKE_BINARY_DIR}/hexrules-cpp)
+foreach(_mod hexxml_games hexmodel hexrules hexsearch hexengine hexrecord)
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_mod}/CMakeLists.txt")
     add_subdirectory(${_mod})
   endif()
