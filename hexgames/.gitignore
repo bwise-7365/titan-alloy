@@ -31,4 +31,8 @@ map_graphics/xml/tools/cd/ne/
 map_graphics/xml/tools/cd/diag_*.png
 # the logo tracer's intermediates (labels, palette, posterized preview)
 Circling Dragons/work/
+# scans and photographs of published maps: Ben keeps them in a separate library
+example maps/**/*.png
+example maps/**/*.jpg
+example maps/**/*.jpeg
 # Copyright Ben Paul Wise. All Rights Reserved.
