@@ -152,6 +152,9 @@ endif()
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/hexmaped/CMakeLists.txt")
   add_subdirectory(hexmaped)  # the editor's Qt-free model always; the HexMapEd app under HEXGAMES_BUILD_GUI
 endif()
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/hexgen/CMakeLists.txt")
+  add_subdirectory(hexgen)  # the map generator and hexgen_cli
+endif()
 if(HEXGAMES_BUILD_GUI)
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/hexqt/CMakeLists.txt")
     add_subdirectory(hexqt)

@@ -5,6 +5,8 @@
 // with the stream's tag, so adding a consumer to one purpose never shifts another.
 // ----------------------------------------------
 #pragma once
+#include "hexmodel/Seed.h"
+
 #include <array>
 #include <cstdint>
 #include <random>
@@ -18,14 +20,12 @@ namespace HexEngine {
   std::string_view streamName(StreamTag);  // "combat", as written in hexsave stream/@tag
   StreamTag streamTag(std::string_view);   // throws std::invalid_argument for an unknown name
 
-  // SplitMix64 finaliser over seed and tag: distinct tags give decorrelated generators.
+  // SplitMix64 finaliser over seed and tag (HexModel::mixSeed): distinct tags give decorrelated
+  // generators.
   constexpr std::uint64_t
   mixSeed(std::uint64_t seed, StreamTag tag)
   {
-    std::uint64_t z = seed ^ ((static_cast<std::uint64_t>(tag) + 1ull) * 0x9E3779B97F4A7C15ull);
-    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
-    z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
-    return z ^ (z >> 31);
+    return HexModel::mixSeed(seed, static_cast<std::uint64_t>(tag));
   }
 
   class PrngStreams {

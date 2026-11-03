@@ -98,6 +98,16 @@ message if anything fails. File > Save as writes to a new path; `xsi:noNamespace
 written relative to wherever the file lands, so a sheet saved under `tools/reader/work/...` still
 names the schema. Closing with unsaved edits asks first.
 
+File > New from generator shows the Generate dock: a new map made by the generator (hexgen), as
+HexKrieg's Map tab makes one. Set the size, the seed (Random picks a fresh one), Fractal or Perlin
+heights and their roughness, the percentage of each terrain role (the rest takes what is left), and
+how many roads leave each edge and how many of them end in a city; tick Write altitudes for hex
+altitudes in metres. Generate opens the map as a new, unsaved sheet, which you edit as any other;
+Save asks where to write it. Load settings and Save settings read and write the dock's settings as a
+hexgen.xsd document, which also keeps the terrain names, colours and costs the dock does not show.
+The same settings give the same map; `hexgen_cli settings.xml sheet.xml --svg sheet.svg` makes it
+without the window.
+
 File > Export SVG writes the map exactly as the window draws it (the same hexview Scene, the current
 Waviness and the View > Show hex ids choice included) to an SVG file; the sheet itself is not changed.
 

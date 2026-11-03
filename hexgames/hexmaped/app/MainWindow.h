@@ -19,6 +19,7 @@
 #include <string>
 
 class QComboBox;
+class QDockWidget;
 class QLabel;
 class QListWidget;
 class QListWidgetItem;
@@ -33,6 +34,9 @@ namespace HexQt {
     explicit MainWindow(QWidget* parent = nullptr);
 
     void open(const QString& path);
+    // A sheet with no file yet (the generator's): it replaces the open one, asking first if that has
+    // unsaved changes; Save then asks for a path.
+    void adoptSheet(HexXml::SheetDoc sheet);
 
   protected:
     void closeEvent(QCloseEvent*) override;
@@ -71,6 +75,7 @@ namespace HexQt {
     QAction* saveAction_ = nullptr;
     QAction* undoAction_ = nullptr;
     QAction* redoAction_ = nullptr;
+    QDockWidget* generateDock_ = nullptr;  // the map generator's form, shown by File > New from generator
     std::optional<std::string> linkStart_;  // Link mode: the first hex of the step being added
   };
 
