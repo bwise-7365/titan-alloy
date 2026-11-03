@@ -1,5 +1,9 @@
 # Copyright Ben Paul Wise. All Rights Reserved.
-"""build_ds.py -- assemble the Dai Senso sheet (two independently numbered pointy-topped grids)."""
+"""build_ds.py -- assemble the Dai Senso sheet (West and East Maps as one pointy-topped grid).
+
+One-off: the ds_*.txt tracer fragments it reads were never committed, and the committed sheet has been
+edited by hand and by tidy_networks.py since. The fragments carry the printed ids, which have a sheet prefix
+(w or e) and count columns from each map's own west edge; renumber() turns them into the sheet's ids."""
 import re
 import sys
 
@@ -8,27 +12,33 @@ from lxml import etree
 import hexsheet2svg as H
 
 OUT = r"C:\repos\ghub-per\titan-alloy\hexgames\map_graphics\xml\dai-senso.xml"
-grids = []
-for gid, ox, cols in (("west", "62.54", "27"), ("east", "1977.63", "29")):
-    el = etree.Element("grid", terrain="sea", orientation="pointy", offset="odd", size="40.95", ox=ox, oy="-8.05", cols=cols, rows="53")
-    el.set("id-format", gid[0] + "{row:02}{col:02}"); el.set("col-start", "1"); el.set("row-start", "61"); el.set("row-step", "-1")
-    grids.append(H.Grid(el))
+el = etree.Element("grid", terrain="sea", orientation="pointy", offset="odd", size="40.95", ox="62.54", oy="-8.05", cols="56", rows="53")
+el.set("id-format", "{row:02}{col:02}"); el.set("col-start", "0"); el.set("row-start", "61"); el.set("row-step", "-1")
+grid = H.Grid(el)
+
+# Printed w..01 is the sheet's column 00 and e..01 its column 27 (the seam on row 37 reads w3726 w3727 e3701),
+# so printed wRRCC is RRcc with cc = CC - 1, and eRRCC is RRcc with cc = CC + 26.
+PRINTED_ID = re.compile(r"(?<![A-Za-z0-9_#])([we])(\d\d)(\d\d)(?![A-Za-z0-9])")
+
+
+def renumber(txt):
+    """Printed ids (w5227, e5201) to the sheet's ids (5226, 5227); text already renumbered is unchanged."""
+    return PRINTED_ID.sub(lambda m: "%s%02d" % (m.group(2), int(m.group(3)) + (-1 if "w" == m.group(1) else 26)), txt)
 
 
 def near(x, y):
     best = None
-    for g in grids:
-        for (c, r), pid in g.cells.items():
-            cx, cy = g.centre(c, r)
-            d = (cx - x) ** 2 + (cy - y) ** 2
-            if best is None or d < best[0]:
-                best = (d, pid)
+    for (c, r), pid in grid.cells.items():
+        cx, cy = grid.centre(c, r)
+        d = (cx - x) ** 2 + (cy - y) ** 2
+        if best is None or d < best[0]:
+            best = (d, pid)
     return best[1]
 
 
 def frag(name, subs=()):
     lines = [l for l in open(name, encoding="utf-8").read().splitlines() if l.startswith("<")]
-    txt = "\n".join(lines)
+    txt = renumber("\n".join(lines))
     for a, b in subs:
         txt = re.sub(a, b, txt)
     return txt
@@ -39,7 +49,7 @@ def ports_on_land(ports, terrain):
     for l in open(terrain, encoding="utf-8"):
         m = re.match(r'<hexes terrain="(\w+)" ids="([^"]*)"', l)
         if m and m.group(1) in ("hills", "clear", "desert", "forest", "swamp", "city"):
-            land.update(m.group(2).split())
+            land.update(renumber(m.group(2)).split())
     keep = [l for l in frag(ports, [('color="port"', 'color="cyan"')]).splitlines()
             if re.search(r'id="(\w+)"', l) and re.search(r'id="(\w+)"', l).group(1) in land]
     return "\n".join(keep)
@@ -76,12 +86,12 @@ TER = [('terrain="panel"', 'terrain="clear"'), ('terrain="pink"', 'terrain="sea"
 x = ['<?xml version="1.0" encoding="UTF-8"?>',
      '<sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd"',
      '       id="dai-senso" title="Axis Empires: Dai Senso!"',
-     '       source="Dai Senso game map adjusted.png, 3990 x 3198; Decision Games 2011. West Map and East Map side by side."',
+     '       source="Dai Senso game map adjusted.png, 3990 x 3198; Decision Games 2011. West Map and East Map side by side, '
+     'one hex grid; hexes renumbered by column from 00 at the West Map\'s west edge (Ben, 2026-10-30), so the printed w/e '
+     'prefixes are dropped."',
      '       width="3990" height="3198" background="paper" font="Georgia, Times New Roman, serif" urban="symbol" junctions="implicit">',
-     '  <grid id="west" orientation="pointy" offset="odd" cols="27" rows="53" size="40.95" ox="62.54" oy="-8.05"',
-     '        id-format="w{row:02}{col:02}" col-start="1" row-start="61" row-step="-1" terrain="sea" id-side="w"/>',
-     '  <grid id="east" orientation="pointy" offset="odd" cols="29" rows="53" size="40.95" ox="1977.63" oy="-8.05"',
-     '        id-format="e{row:02}{col:02}" col-start="1" row-start="61" row-step="-1" terrain="sea" id-side="w"/>',
+     '  <grid id="main" orientation="pointy" offset="odd" cols="56" rows="53" size="40.95" ox="62.54" oy="-8.05"',
+     '        id-format="{row:02}{col:02}" col-start="0" row-start="61" row-step="-1" terrain="sea" id-side="w"/>',
      '''  <palette>
     <color id="paper" value="#f3efe2" name="sheet background"/>
     <color id="seablue" value="#69b9ec"/>

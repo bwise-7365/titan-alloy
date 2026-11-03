@@ -50,13 +50,31 @@ TEST(SheetDocTest, TrcParsesWithExpectedShape)
   ASSERT_NE(doc.panels.end(), panelIt);
 }
 
-TEST(SheetDocTest, DaiSensoHasTwoGridsOnOneLattice)
+TEST(SheetDocTest, TwoMapSheetHasTwoGrids)
 {
-  const HexXml::XmlDocument xml = HexXml::XmlDocument::load(mapGraphics("dai-senso.xml"));
+  const HexXml::XmlDocument xml =
+      HexXml::XmlDocument::load(std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-two-maps.xml");
   const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(xml);
   ASSERT_EQ(2u, doc.grids.size());
   EXPECT_EQ("west", doc.grids[0].id.value());
   EXPECT_EQ("east", doc.grids[1].id.value());
+}
+
+TEST(SheetDocTest, DaiSensoIsOneGrid)
+{
+  // West and East Maps are one lattice, numbered by column from 00 at the West Map's west edge.
+  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(mapGraphics("dai-senso.xml")));
+  ASSERT_EQ(1u, doc.grids.size());
+  EXPECT_EQ(56, doc.grids[0].cols);
+}
+
+TEST(SheetDocTest, FlatIdSideDefaultsToNorth)
+{
+  // The XSD's default "w" is a pointy hexside; a flat grid has none, so it defaults to "n".
+  const HexXml::SheetDoc doc = HexXml::SheetDoc::parse(HexXml::XmlDocument::load(
+      std::filesystem::path(HEXGAMES_SOURCE_DIR) / "hexxml" / "test" / "sheet-flat-no-id-side.xml"));
+  ASSERT_EQ(1u, doc.grids.size());
+  EXPECT_EQ("n", doc.grids[0].idSide);
 }
 
 TEST(SheetDocTest, FourSheetsParse)

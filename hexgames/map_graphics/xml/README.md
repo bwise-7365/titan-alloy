@@ -11,9 +11,9 @@ Instance documents approximate real sheets; each is compared with its scan in
 |---|---|---|---|---|
 | `d-day-at-tarawa.xml` | D-Day at Tarawa, 1786 × 1153 | pointy | `{row:02}{col:02}`, rows 25→1 southward, A14 = 2336 | yes |
 | `the-russian-campaign.xml` | The Russian Campaign 5th, 1224 × 1483 | pointy | `{rowletter}{col}`, A..QQ southward, columns 33→1 eastward, Kerch Strait KK19/KK20 | yes |
-| `dai-senso.xml` | Dai Senso!, 3990 × 3198, two sheets | pointy | `w`/`e` + `{row:02}{col:02}`, rows numbered from the south, columns from each sheet's west edge | yes |
+| `dai-senso.xml` | Dai Senso!, 3990 × 3198, two sheets on one grid | pointy | `{row:02}{col:02}`, rows numbered from the south as printed, columns 00-55 from the West Map's west edge (printed `wRRCC` = `RR(CC-1)`, `eRRCC` = `RR(CC+26)`) | yes |
 | `panzergruppe-guderian.xml` | Panzergruppe Guderian (Cyrillic), 5615 × 3727 | **flat** | `{col:02}{row:02}` | yes |
-| `velikiye-luki.xml` | Velikiye Luki (Legion Wargames 2023), 5182 × 8021 photograph, map area only | **flat** | `{col:02}{row:02}`, even columns half a hex lower with rows 00-08; entry strips `G00-G09`, `R00-R09` | yes |
+| `velikiye-luki.xml` | Velikiye Luki (Legion Wargames 2023), 5182 × 8021 photograph, map area only | **flat** | `{col:02}{row:02}`, columns 00-10, even columns half a hex lower; the entry strips are columns 00 (German) and 10 (Russian) | yes |
 | `circling-dragons.xml` | Circling Dragons (designed sheet, no scan), 3386 × 3825; China 1944-45 at 75 km per hex (the standard since 2026-10-06; `CD_HEX_KM=100` builds the first, 100 km sheet as `circling-dragons-100.xml`), built by `tools/cd/build_cd.py`; includes the Mongolian operations features, the political layer (under development) and two minor rivers (line `minor-river`) | **flat** | `{col:02}{row:02}`, 47 × 46, odd columns half a hex lower | yes |
 
 Sheet width and height are the scan's pixel size, so a render at `--scale 1` overlays the

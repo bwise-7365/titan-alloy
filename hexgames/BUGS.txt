@@ -2,6 +2,49 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
+--- 2026-10-30 dai-senso.xml and velikiye-luki.xml each split one continuous hex lattice into several
+    grid elements (Ben: a data error; each map is one lattice). Merge each into one grid. hexsheet.xsd keeps
+    grid maxOccurs="unbounded", because some games do have two or three maps. HexKrieg's sheet reader
+    rejects a sheet with more than one grid, so neither sheet loads there until this is fixed.
+    Evidence. Dai Senso: west is 27 pointy columns of step sqrt(3)*40.95 = 70.93, so it ends at
+    x = 62.54 + 27*70.93 = 1977.6, the ox of east; one grid of 56 columns. Velikiye Luki: german lies one
+    flat column (1.5*262.3 = 393.45) west of main (619.5 = 1013 - 393.5) and russian nine columns east
+    (4554.5 = 1013 + 9*393.45); their offset="even" agrees with main's odd parity at grid columns -1 and 9,
+    so the merged grid has 11 columns with offset="even", and the two entry strips become hexes of
+    terrain german-entry and russian-entry in its first and last columns.
+    OPEN QUESTION for Ben before the DS merge: the printed ids carry a w/e prefix and number columns from
+    each sheet's own west edge (w{row:02}{col:02}, e{row:02}{col:02}). One id-format template cannot
+    produce both, so a merged grid either renumbers the hexes or needs a schema change. games/ds holds
+    no save or package yet, so nothing else names these ids. The VL strips have show-ids="false", so
+    renaming G00-G09 and R00-R09 to grid ids changes nothing printed.
+    Fixed the same day. Ben's ruling on the DS ids: drop the prefixes, keep the printed rows, count columns
+    from 00 at the West Map's west edge. The scan shows the seam on row 37 as w3726 w3727 e3701 and on row 36
+    as w3627 w3628 e3602, so printed wRRCC is RR(CC-1) and eRRCC is RR(CC+26); one grid of 56 columns, 00-55
+    (Ben had estimated about 70). The east hexes move 0.05 px west onto the exact lattice. VL is one grid of
+    11 columns, offset="even"; the strips are columns 00 and 10 (G05 is 0005, R09 is 1009), main's ids are
+    unchanged. show-ids is per grid, so the strip hexes now print their ids, which the physical map does not.
+    The tests of multi-grid sheets read hexxml/test/sheet-two-maps.xml, two three-column maps cut from DS as
+    first transcribed. Not rerun and still in the old numbering: tools/build_ds.py and tools/tidy_networks.py
+    (one-off builders; rerunning build_ds.py would bring back the two grids) and tasks/09-ds-map.md.
+    Later the same day: build_ds.py builds the one grid and renumbers its tracer fragments as it reads them
+    (the fragments were never committed, so it cannot be rerun as it stands); tidy_networks.py's Dai Senso
+    data uses the new ids (all 321 exist, and its capital, city, town and port lists match the sheet's
+    glyphs); tasks/09-ds-map.md and map_graphics/dai-senso-graphics.md note the mapping.
+
+--- 2026-10-30 grid/@id-side defaults to w, which is not a flat-top direction: hexsheet2svg.py fails on a
+    flat grid that omits id-side (KeyError: 'w' in edge_angle). Every committed flat sheet sets id-side, and
+    HexKrieg now writes id-side="n". Fix: a default per orientation in the renderer, or no XSD default.
+    Fixed the same day: hexsheet2svg.py and SheetDoc default id-side to "n" on a flat grid and "w" on a
+    pointy one, and the renderer names a side that is not a hexside of the grid's orientation instead of
+    failing with a KeyError. Test: SheetDocTest FlatIdSideDefaultsToNorth (hexxml/test/sheet-flat-no-id-side.xml).
+    hexsheet.xsd's default="w", which no flat grid can use, is removed (Ben, same day); its documentation
+    gives the per-orientation rule.
+
+*** 2026-10-30 HexMapEd's SheetWriter does not write the four optional attributes added to hexsheet.xsd
+    for HexKrieg (sheet/@seed, terrain/@move-cost, hex/@alt, edge/@cost). A sheet written by HexKrieg and
+    saved from HexMapEd loses its altitudes, seed, move costs and edge-cost overrides. SheetDoc does not
+    read them either; neither defect affects the hexgames games, which take movement from hexrules.
+
 +++ 2026-09-26 Olympic roads are a DRAFT (108 road links in operation-olympic.xml, traced on the tilted photo):
     right pattern, hexes often a column off, 5 pieces, 6 places unreached. Ben to correct against the physical map;
     details in example maps/Olympic/reading-notes.md.

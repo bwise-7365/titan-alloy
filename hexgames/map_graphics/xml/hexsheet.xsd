@@ -180,7 +180,7 @@ Conventions
   <!-- ================= definitions ================= -->
 
   <xs:complexType name="Grid">
-    <xs:annotation><xs:documentation>One numbered hex field. Dai Senso has two. size is the circumradius; ox, oy the centre of the hex at (col-start, row-start). offset says which columns (flat) or rows (pointy), counted from zero, are shifted by half a hex. terrain is the default terrain. id-side is the hexside the rotated identifier sits inside.</xs:documentation></xs:annotation>
+    <xs:annotation><xs:documentation>One numbered hex field. A sheet has one grid per continuous hex lattice (maps laid edge to edge, as Dai Senso's West and East Maps, are one grid); several grids are for games with separate maps, and they share one lattice. size is the circumradius; ox, oy the centre of the hex at (col-start, row-start). offset says which columns (flat) or rows (pointy), counted from zero, are shifted by half a hex. terrain is the default terrain. id-side is the hexside the rotated identifier sits inside.</xs:documentation></xs:annotation>
     <xs:attribute name="id" type="xs:ID"/>
     <xs:attribute name="orientation" use="required">
       <xs:simpleType>
@@ -214,7 +214,9 @@ Conventions
     </xs:attribute>
     <xs:attribute name="terrain" type="xs:IDREF" use="required"/>
     <xs:attribute name="show-ids" type="xs:boolean" default="true"/>
-    <xs:attribute name="id-side" type="Dir" default="w"/>
+    <xs:attribute name="id-side" type="Dir">
+      <xs:annotation><xs:documentation>The hexside of the grid's orientation that the identifier sits inside. No schema default, because no one side exists in both orientations: when it is absent, readers take "n" on a flat grid and "w" on a pointy one.</xs:documentation></xs:annotation>
+    </xs:attribute>
     <xs:attribute name="clip" type="xs:string">
       <xs:annotation><xs:documentation>Optional list of hexes to omit, as ranges "A1-A9 B1-B3", for irregular sheet outlines. Rule (Ben, 2026-09-21): the outline of a hex grid may be irregular, but there is never a hole inside it; every cell enclosed by cells of the grid is a cell of the grid. A clip list that leaves an enclosed hole is an error of the document, not a feature of the map.</xs:documentation></xs:annotation>
     </xs:attribute>
@@ -233,6 +235,9 @@ Conventions
     <xs:attribute name="fill" type="xs:IDREF" use="required"/>
     <xs:attribute name="stroke" type="xs:IDREF" use="required"/>
     <xs:attribute name="pattern" type="Pattern" default="none"/>
+    <xs:attribute name="move-cost" type="xs:decimal">
+      <xs:annotation><xs:documentation>Cost to enter a hex of this terrain. Written by HexKrieg, which has no rules document; hexgames games take movement from hexrules and ignore it. Approved 2026-10-30.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Line">
@@ -301,6 +306,9 @@ Conventions
     <xs:attribute name="ring" type="xs:IDREF"/>
     <xs:attribute name="ring-width" type="xs:decimal"/>
     <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="alt" type="xs:decimal">
+      <xs:annotation><xs:documentation>Altitude of the hex centre in metres, zero at sea level and negative under water; absent means zero. Written by HexKrieg. Approved 2026-10-30.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Edge">
@@ -311,6 +319,9 @@ Conventions
     <xs:attribute name="mark" type="xs:IDREF"/>
     <xs:attribute name="color" type="xs:IDREF"/>
     <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="cost" type="xs:decimal">
+      <xs:annotation><xs:documentation>Movement cost of crossing this hexside, in either direction. It replaces the cost the reader would derive from the terrain of the two hexes and any road between them (HexKrieg's aggregated upper-level maps, whose costs cannot be derived). Written by HexKrieg, which has no rules document; hexgames games take movement from hexrules and ignore it. Approved 2026-10-30.</xs:documentation></xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Vertex">
@@ -544,6 +555,9 @@ Conventions
       <xs:attribute name="height" type="xs:decimal" use="required"/>
       <xs:attribute name="background" type="xs:IDREF" use="required"/>
       <xs:attribute name="font" type="xs:string" default="Arial, Helvetica, sans-serif"/>
+      <xs:attribute name="seed" type="xs:long">
+        <xs:annotation><xs:documentation>The seed from which the map was generated. Written by HexKrieg, whose road builder derives its random streams from it. Approved 2026-10-30.</xs:documentation></xs:annotation>
+      </xs:attribute>
       <xs:attribute name="urban" use="required">
         <xs:annotation><xs:documentation>How hexes carrying a city-major, city or capital glyph are drawn. buildings: the hex is tinted pale grey and the glyph drawn as a few scattered buildings (a sparse map such as PGG or TRC); symbol: the glyph's own symbol (a dense map such as Dai Senso). Every sheet chooses; there is no default.</xs:documentation></xs:annotation>
         <xs:simpleType>

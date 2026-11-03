@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexsheet.xsd" id="vl" title="Velikiye Luki: Stalingrad of the North, November 1942 - February 1943 (Legion Wargames, 2023)" source="example maps/Velikiye-Luki/Velikiye Luki map complete.png, 5182 x 8021 (a photograph: the lattice drifts about 2% across the sheet); checked against the north and south scans" width="5182" height="8021" background="margin" urban="buildings" junctions="explicit">
   <!-- written by HexMapEd; the structure and its style, validated against hexsheet.xsd -->
-  <grid id="main" orientation="flat" offset="odd" cols="9" rows="10" size="262.3" ox="1013" oy="3389" id-format="{col:02}{row:02}" row-start="0" terrain="open" id-side="s" clip="0209 0409 0609 0809"/>
-  <grid id="german" orientation="flat" offset="even" cols="1" rows="10" size="262.3" ox="619.5" oy="3389" id-format="G{row:02}" row-start="0" terrain="german-entry" show-ids="false"/>
-  <grid id="russian" orientation="flat" offset="even" cols="1" rows="10" size="262.3" ox="4554.5" oy="3389" id-format="R{row:02}" row-start="0" terrain="russian-entry" show-ids="false"/>
+  <grid id="main" orientation="flat" offset="even" cols="11" rows="10" size="262.3" ox="619.5" oy="3389" id-format="{col:02}{row:02}" col-start="0" row-start="0" terrain="open" id-side="s" clip="0209 0409 0609 0809"/>
   <palette>
     <color id="margin" value="#f3efe6" name="sheet margin"/>
     <color id="paper" value="#f1ede3" name="open"/>
@@ -43,6 +41,8 @@
     <mark id="russian-objective" name="Russian objective (red star)" shape="star" color="red" size="0.22 0.22"/>
     <mark id="bridge" name="Bridge hexside (negates the river)" shape="bar" color="tan" size="0.12 0.3" across="edge"/>
   </legend>
+  <hexes terrain="german-entry" ids="0000 0001 0002 0003 0004 0005 0006 0007 0008 0009"/>
+  <hexes terrain="russian-entry" ids="1000 1001 1002 1003 1004 1005 1006 1007 1008 1009"/>
   <hexes terrain="open" ids="0100 0101 0102 0104 0105 0106 0109 0201 0202 0203 0204 0300 0303 0304 0305 0404 0405 0406 0408 0502 0503 0504 0505 0506 0507 0508 0509 0602 0604 0605 0704 0705 0706 0800 0804 0805 0806 0900 0905 0906"/>
   <hexes terrain="wooded" ids="0108 0200 0205 0207 0208 0301 0302 0307 0308 0309 0400 0401 0402 0407 0500 0501 0600 0601 0603 0607 0608 0700 0701 0702 0703 0707 0708 0709 0801 0802 0803 0807 0808 0901 0902 0903 0904 0907 0908"/>
   <hexes terrain="hill" ids="0403"/>
@@ -167,13 +167,13 @@
   <edge at="0507:se" line="major-river"/>
   <edge at="0704:s" line="minor-river"/>
   <edge at="0904:s" line="minor-river"/>
-  <link id="rl-nasva" kind="rail" name="Nasva line" line="rail" hexes="0100 0101 0201 0202 0203 0204 0105 G05" ends="edge edge"/>
+  <link id="rl-nasva" kind="rail" name="Nasva line" line="rail" hexes="0100 0101 0201 0202 0203 0204 0105 0005" ends="edge edge"/>
   <link id="rl-nvl-vl" kind="rail" name="Novoskolniki - Velikiye Luki" line="rail" hexes="0105 0205 0305 0404 0505 0604" ends="place place"/>
-  <link id="rl-krposelok" kind="rail" name="Kr Poselok line" line="rail" hexes="0105 0106 0107 0108 G08" ends="place edge"/>
+  <link id="rl-krposelok" kind="rail" name="Kr Poselok line" line="rail" hexes="0105 0106 0107 0108 0008" ends="place edge"/>
   <link id="rl-opukhliki" kind="rail" name="Opukhliki line" line="rail" hexes="0604 0505 0506 0406 0307 0308 0208 0109" ends="place edge"/>
-  <link id="rl-north-east" kind="rail" name="north line east" line="rail" hexes="0604 0704 0804 0904 R03" ends="place edge"/>
-  <link id="rl-south-east" kind="rail" name="south line east" line="rail" hexes="0604 0705 0804 0905 R05" ends="place edge"/>
-  <link id="rd-nasva" kind="road" name="Nasva road" line="road" hexes="0100 0101 0201 0202 0203 0104 0105 G04" ends="edge edge"/>
+  <link id="rl-north-east" kind="rail" name="north line east" line="rail" hexes="0604 0704 0804 0904 1003" ends="place edge"/>
+  <link id="rl-south-east" kind="rail" name="south line east" line="rail" hexes="0604 0705 0804 0905 1005" ends="place edge"/>
+  <link id="rd-nasva" kind="road" name="Nasva road" line="road" hexes="0100 0101 0201 0202 0203 0104 0105 0004" ends="edge edge"/>
   <link id="rd-shubino-vl" kind="road" name="Shubino - Ivanovo - Rusanovo - Velikiye Luki" line="road" hexes="0203 0303 0403 0504 0604" ends="junction place"/>
   <link id="rd-tulubevo" kind="road" name="Tulubevo spur" line="road" hexes="0303 0302" ends="junction place"/>
   <link id="rd-sidorovshchika" kind="road" name="Sidorovshchika road" line="road" hexes="0401 0402 0403 0504" ends="place junction"/>
@@ -181,13 +181,13 @@
   <link id="rd-pekhovo" kind="road" name="Pekhovo road" line="road" hexes="0105 0205 0206 0307" ends="place place"/>
   <link id="rd-east-bank" kind="road" name="Lovat east bank" line="road" hexes="0604 0605 0606 0607 0508 0509" ends="place edge"/>
   <link id="rd-borki" kind="road" name="Borki road" line="road" hexes="0508 0408 0309" ends="junction edge"/>
-  <link id="rd-lipets" kind="road" name="Lipets - Plaksino - Uspenskoe" line="road" hexes="0604 0605 0706 0707 0807 0808 0909 R09" ends="place edge"/>
+  <link id="rd-lipets" kind="road" name="Lipets - Plaksino - Uspenskoe" line="road" hexes="0604 0605 0706 0707 0807 0808 0909 1009" ends="place edge"/>
   <link id="rd-dokukino-lipets" kind="road" name="Dokukino - Lipets" line="road" hexes="0805 0706" ends="place place"/>
-  <link id="rd-vl-dokukino" kind="road" name="Velikiye Luki - Dokukino" line="road" hexes="0604 0705 0805 0906 R05" ends="place edge"/>
+  <link id="rd-vl-dokukino" kind="road" name="Velikiye Luki - Dokukino" line="road" hexes="0604 0705 0805 0906 1005" ends="place edge"/>
   <link id="rd-0605-0805" kind="road" name="0605 - 0805 connector" line="road" hexes="0605 0705 0805" ends="junction junction"/>
   <link id="rd-velikopole" kind="road" name="Velikopole - Gotrovo - Losevo" line="road" hexes="0705 0804 0803 0802 0801 0800" ends="junction edge"/>
-  <link id="rd-gotrovo-east" kind="road" name="Gotrovo east" line="road" hexes="0802 0902 R01" ends="place edge"/>
-  <link id="rd-kunya" kind="road" name="Kunya spur" line="road" hexes="0805 0905 R04" ends="place edge"/>
+  <link id="rd-gotrovo-east" kind="road" name="Gotrovo east" line="road" hexes="0802 0902 1001" ends="place edge"/>
+  <link id="rd-kunya" kind="road" name="Kunya spur" line="road" hexes="0805 0905 1004" ends="place edge"/>
   <link id="rd-gubani" kind="road" name="Gubani road" line="road" hexes="0700 0701 0702 0602 0703 0704 0604" ends="edge place"/>
   <link id="rd-losevo" kind="road" name="Losevo link" line="road" hexes="0701 0800" ends="junction place"/>
   <junction at="0604" links="rd-shubino-vl rd-demya-vl rd-east-bank rd-lipets rd-vl-dokukino rd-gubani" name="Velikiye Luki"/>
@@ -244,9 +244,9 @@
   <hex id="0706"><glyph mark="lake" slot="nw"/><glyph mark="lake" slot="w"/><glyph mark="lake" slot="e"/></hex>
   <hex id="0707"><glyph mark="lake" slot="n"/><glyph mark="lake" slot="e"/><glyph mark="lake" slot="sw"/></hex>
   <hex id="0708"><glyph mark="lake" slot="nw"/><glyph mark="lake" slot="ne"/><glyph mark="lake" slot="s"/></hex>
-  <hex id="R01"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
-  <hex id="R04"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
-  <hex id="R08"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <hex id="1001"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <hex id="1004"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
+  <hex id="1008"><glyph symbol="arrow" slot="n" color="red" dir="n" scale="1.2"/><glyph symbol="arrow" slot="s" color="red" dir="s" scale="1.2"/></hex>
   <label text="BASHEVO" at="0100" slot="n" size="34" color="brick" weight="bold"/>
   <label text="NASVA" at="0101" size="34" color="brick" weight="bold"/>
   <label text="SHUBINO" at="0203" slot="n" size="34" color="brick" weight="bold"/>
@@ -281,7 +281,7 @@
   <label text="Kunya" at="0905" slot="sw" angle="-75" size="30" color="riverblue" italic="true"/>
   <label text="GERMAN ENTRY HEXES" x="300" y="5650" angle="90" size="70" color="grey" weight="bold" spacing="14"/>
   <label text="RUSSIAN ENTRY HEXES" x="4900" y="5650" angle="90" size="70" color="pink" weight="bold" spacing="14"/>
-  <label text="2ND MC" at="R01" angle="90" size="34" color="red" weight="bold"/>
-  <label text="5TH GSC" at="R04" angle="90" size="34" color="red" weight="bold"/>
-  <label text="3RD SA" at="R08" angle="90" size="34" color="red" weight="bold"/>
+  <label text="2ND MC" at="1001" angle="90" size="34" color="red" weight="bold"/>
+  <label text="5TH GSC" at="1004" angle="90" size="34" color="red" weight="bold"/>
+  <label text="3RD SA" at="1008" angle="90" size="34" color="red" weight="bold"/>
 </sheet>

@@ -54,6 +54,26 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-10-30 PAUSED (Ben rebooting). UNCOMMITTED, on disk, all tests green (ctest 304/304, every committed
+  sheet validates and renders with 0 warnings): BUGS.txt, PLAN.md, hexxml/SheetDoc.cpp,
+  hexxml/test/SheetDocTest.cpp, hexxml/test/sheet-flat-no-id-side.xml (new), map_graphics/dai-senso-graphics.md,
+  map_graphics/xml/hexsheet.xsd, map_graphics/xml/hexsheet2svg.py, map_graphics/xml/tools/build_ds.py,
+  map_graphics/xml/tools/tidy_networks.py, tasks/09-ds-map.md. These are items 3 and 4 of the entry below.
+  NEXT, in order: (a) Ben commits them; (b) HexMapEd's SheetWriter writes seed, move-cost, alt and edge cost
+  (BUGS ***), and SheetDoc reads them; (c) Ben's Olympic review (road doubts, all-mountain hexsides, below);
+  (d) the milestones not started (M6f, M6g, M6h, M6j, M8, M15). Build: vcvars64 from VS 18, then CLion
+  2026.1's bundled cmake and ctest (the system CMake 4.1 fails at ctest's GoogleTestAddTests).
+- 2026-10-30 HEXKRIEG MAPS AND ONE-GRID SHEETS (coordinator, from a HexKrieg session; plan in the HexKrieg repo,
+  doc/2026-10-30-hexsheet-maps-plan.md). (1) hexsheet.xsd gained four optional attributes that HexKrieg writes:
+  sheet/@seed, terrain/@move-cost, hex/@alt, edge/@cost (Ben approved; every committed sheet still validates).
+  HexKrieg now reads and writes flat one-grid sheets, and writes its units as hexsave and hexcounters files.
+  (2) dai-senso.xml and velikiye-luki.xml are one grid each, and DS is renumbered (decision log 2026-10-30);
+  the tests of sheets with several grids read hexxml/test/sheet-two-maps.xml. (3) The id-side default is per
+  orientation in hexsheet2svg.py and SheetDoc, and hexsheet.xsd no longer declares a default (Ben approved);
+  the XSD's Grid documentation states the one-grid rule. (4) tools/build_ds.py and tools/tidy_networks.py use
+  the new DS ids. Items 1 and 2 are committed and pushed; 3 and 4 await Ben's commit. Open: HexMapEd's
+  SheetWriter drops the four new attributes (BUGS); the Olympic items below stand. The Olympic work the
+  entries below call staged was committed on 2026-10-01 (d3491ed).
 - 2026-09-30 PAUSED (machine sleeping). Olympic: Ben edited the sheet in HexMapEd; terrain palette re-coloured
   from `example maps/Olympic middle adjusted sample.png` (sea #4bb1fb, assault #b7e2fe, clear #f4f1e8, rough
   #b49e70, mountain #7d6636); all staged, uncommitted. Proposed next (info given to Ben, not started): re-measure
@@ -655,6 +675,18 @@ Engine and records
           uses the named PRNG streams, and how batch runs report problems.
 
 ## Decision log
+- 2026-10-30 Ben, one grid per lattice: a sheet whose maps form one continuous hex lattice has one grid
+  element. Dai Senso (West and East Maps) and Velikiye Luki (main map and its two entry strips) had several,
+  a data error now merged. hexsheet.xsd keeps grid maxOccurs="unbounded", because some games do have two or
+  three separate maps. HexKrieg's reader rejects a sheet with more than one grid; its writer writes one.
+- 2026-10-30 Ben, Dai Senso hex ids: no w/e prefix; rows as printed (11 in the south to 61 in the north),
+  columns from 00 at the West Map's west edge. The scan's seam (row 37: w3726 w3727 e3701) gives printed
+  wRRCC = RR(CC-1) and eRRCC = RR(CC+26), so 56 columns, 00-55 (Ben had estimated about 70). Tokyo, printed
+  e4904, is 4930.
+- 2026-10-30 Ben, HexKrieg: four optional hexsheet attributes for what HexKrieg models and hexgames takes
+  from the rules (seed, terrain move cost, altitude, hexside cost); hexgames games ignore them. Ben asked
+  that hexsheet2svg.py default id-side by orientation ("n" flat, "w" pointy); SheetDoc does the same, and
+  hexsheet.xsd drops its default="w", which no flat grid could use.
 - 2026-09-23 Ben, map reading: a model reading the scan by eye and writing hexsheet XML by hand
   (doc/map-reading-by-eye.md; Velikiye Luki in one evening, junctions and all) is faster and more
   accurate than the C++/Python detectors. Nothing is removed yet (the reader tools, HexMapEd stay);
@@ -1105,7 +1137,8 @@ names differ (flat: n ne se s sw nw; pointy: ne e se sw w nw — matching `hexsh
   `fromCompass`), `Orientation {Flat, Pointy}`, `Parity {Odd, Even}`.
 - `Grid` from the sheet `grid` spec: generates every printed id through `HexIdFormat` and interns them,
   `centreOf(col,row)` via the two offset formulas, inverse `indexOf`, `pixelOf`, `hexAt(Pixel)` by inverse
-  basis + cube rounding. DS's two grids share ONE lattice (origins lattice-integral, else throw).
+  basis + cube rounding. Several grids on one sheet share ONE lattice (origins lattice-integral, else
+  throw); DS was the case until its grids were merged on 2026-10-30, and hexxml/test/sheet-two-maps.xml is now.
 - Neighbourhood: `neighbours`, `ring`, `disc`, `ray`, `spineWalk`.
 - Tests port every `testtri.cpp` assertion plus `PixelMatchesRendererFourSheets`.
 

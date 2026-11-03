@@ -41,7 +41,8 @@ namespace HexXml {
       g.rowStep = node.optionalAs<int>("row-step").value_or(1);
       g.terrain = node.required("terrain");
       g.showIds = node.optionalAs<bool>("show-ids").value_or(true);
-      g.idSide = node.optional("id-side").value_or("w");
+      // The XSD's default "w" is a pointy hexside only; a flat grid defaults to "n", as hexsheet2svg.py does.
+      g.idSide = node.optional("id-side").value_or("flat" == g.orientation ? "n" : "w");
       checkEnum(node, "id-side", g.idSide, kDirs);
       g.clip = node.optional("clip");
       return g;
