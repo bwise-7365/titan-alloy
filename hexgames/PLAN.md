@@ -54,6 +54,12 @@ Engine and records
 
 ## RESUME HERE
 
+- 2026-11-04 PGG AGENTS (branch `12-pgg-agents`, from `integration`). Plan: `doc/2026-11-04-pgg-balance-plan.md`.
+  A new module `hexai` (namespace `HexAi`: tactics, `playOut`, `Fingerprint`) and `games/pgg/agent` (`PggAgent`,
+  `playGame`, the drawn set-up, the command `pgg_play`). Plan steps 1 to 4 done: whole games play from `pgg-1941.xml`
+  to a declared victory. 48 games, no fault, one refused command; 47 Soviet Strategic, German 15 in 44 (Vitebsk and
+  Orsha). The tactics do not seek locations; Ben names that the next tactic. The save fault in BUGS.txt (2026-11-04)
+  needs his decision. NOT BUILT: the 1000-game runner on threads and the isolation checks (plan steps 5 to 8).
 - 2026-10-31 MAP GENERATOR (branch `10-map-generator`, from `9-hexrules`). Plan:
   `doc/2026-10-31-map-generator-plan.md`. A new module `hexgen` (namespace `HexGen`): HexKrieg's procedural
   generator in C++ (fractal and Perlin heights, terrain by percentage, cities, roads by spanning tree and tour,

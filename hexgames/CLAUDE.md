@@ -26,6 +26,10 @@ Headless (links hexcoord, hexxml, hexsearch, hexmaped's writer); `hexgen_cli` is
 HexMapEd's Generate dock its GUI. Its golden, `hexgen/test/golden/generator-hexkrieg.sheet.xml`, is
 regenerated only with `hexgen_cli` after a deliberate change. ctest label `hexgen`.
 
+`hexai/` holds game-neutral tactics for scripted agents, ported from HexKrieg (attack nearest, attack or consolidate),
+and `playOut`, which plays a game with one agent per side (plan `doc/2026-11-04-pgg-balance-plan.md`). It depends on
+hexengine and hexsearch only. `games/pgg/agent/` holds the PGG agent and the command `pgg_play`.
+
 ## Build and test
 - C++20, CMake ≥ 3.20, presets in `CMakePresets.json`: `win-msvc-debug`, `win-msvc-release`,
   `headless` (no Qt at all), `linux-debug`, `linux-release`. Must build on Windows 11 (Ninja + MSVC) and
@@ -50,7 +54,7 @@ regenerated only with `hexgen_cli` after a deliberate change. ctest label `hexge
 - No silent default substitution. Surface bad state.
 - Concision and clarity over efficiency. Small functions and files.
 - `#pragma once`; PascalCase file names; `namespace HexCoord`, `HexModel`, `HexXml`, `HexRules`,
-  `HexSearch`, `HexEngine`, `HexRecord`, `HexView`, `HexQt`, `HexGen`, `Trc`, `Pgg`, `Ds`, `Ddat`.
+  `HexSearch`, `HexEngine`, `HexRecord`, `HexAi`, `HexView`, `HexQt`, `HexGen`, `Trc`, `Pgg`, `Ds`, `Ddat`.
 - Braces on every `if`/`else`; `throw`, never `assert`; exhaustive `switch` with no `default`; Yoda
   literals; trailing-`P` predicate names; explicit `return;` at the end of void functions.
 - `.clang-format` (2-space, column 100) is authoritative.

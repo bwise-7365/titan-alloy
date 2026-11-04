@@ -2,6 +2,17 @@ Copyright Ben Paul Wise. All Rights Reserved.
 
 hexgames bug list. Markers: *** unfixed   +++ partially fixed   --- fixed. Newest first, dated.
 
+*** 2026-11-04 A saved PGG game does not continue as it would have. writeRecord writes units sorted by id
+    (hexrecord, by design), and the reader rebuilds each stack and space in document order, so a write and a
+    read reorders them. Two things depend on that order: PggArrivals::draw picks a division by its index in
+    soviet-pool, so the same die gives a different division (a script written from a game of the agents
+    failed on replay with "counter 's1-275-inf-2-4-6' does not stand on the path's first hex"), and
+    PggStacking::excess removes the newest units of a hex first. Found by the first whole game with agents.
+    The goldens pass because each replays from its own script and none continues from a written save. A fix
+    either makes draw and excess independent of the order (sorting draw's candidates changes PGG's recorded
+    draws, and "newest" needs recording in the save), or has saves keep the order of each stack. Needs Ben's
+    decision. Until then pgg_play writes no scripts.
+
 --- 2026-10-30 dai-senso.xml and velikiye-luki.xml each split one continuous hex lattice into several
     grid elements (Ben: a data error; each map is one lattice). Merge each into one grid. hexsheet.xsd keeps
     grid maxOccurs="unbounded", because some games do have two or three maps. HexKrieg's sheet reader
