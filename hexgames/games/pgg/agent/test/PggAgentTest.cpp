@@ -164,6 +164,93 @@ TEST(PggAgentTest, ARefusedMoveIsNotTriedAgain)
   EXPECT_TRUE(std::holds_alternative<HexEngine::EndPhase>(agent.choose(session, set.facts().german())));
 }
 
+TEST(PggSeizeTest, ADivisionMovesAsOneTowardAnUnheldCity)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  HexModel::Position position = PggTest::blank(set, 3, "german-move1", "german");
+  const HexIndex from = PggTest::hex(set, "1020");
+  const std::vector<UnitId>& regiments = set.facts().members(*set.facts().division(PggTest::unit(set, "s2-6-3-arm-4-10")));
+  ASSERT_LT(1u, regiments.size());
+  for (UnitId regiment : regiments) {
+    position.place(regiment, from);
+  }
+  const HexEngine::Session session(definition, set.policies(), position, kSeed);
+  Pgg::PggAgent agent(set, set.facts().german(), HexAi::SeizeLocations{});
+  const HexEngine::Command command = agent.choose(session, set.facts().german());
+  const HexEngine::MoveUnit* move = std::get_if<HexEngine::MoveUnit>(&command);
+  ASSERT_NE(nullptr, move);
+  EXPECT_EQ(regiments.size(), move->units.size());
+  // No enemy is on the map, so what draws it can only be a city: the end of the path is nearer the nearest.
+  int nearestFrom = 1000;
+  int nearestTo = 1000;
+  for (const Pgg::VictoryHex& city : set.facts().victoryHexes()) {
+    nearestFrom = std::min(nearestFrom, definition->board->distance(from, city.hex));
+    nearestTo = std::min(nearestTo, definition->board->distance(move->path.back(), city.hex));
+  }
+  EXPECT_LT(nearestTo, nearestFrom);
+}
+
+TEST(PggSeizeTest, ASplitDivisionComesBackTogether)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  HexModel::Position position = PggTest::blank(set, 3, "german-move1", "german");
+  const std::vector<UnitId>& regiments = set.facts().members(*set.facts().division(PggTest::unit(set, "s2-6-3-arm-4-10")));
+  const HexIndex leadFrom = PggTest::hex(set, "1020");
+  const HexIndex straggler = PggTest::hex(set, "1026");
+  position.place(regiments.front(), leadFrom);
+  for (std::size_t i = 1; i < regiments.size(); ++i) {
+    position.place(regiments[i], straggler);
+  }
+  HexEngine::Session session(definition, set.policies(), position, kSeed);
+  Pgg::PggAgent agent(set, set.facts().german(), HexAi::SeizeLocations{});
+  const HexEngine::Command first = agent.choose(session, set.facts().german());
+  const HexEngine::MoveUnit* lead = std::get_if<HexEngine::MoveUnit>(&first);
+  ASSERT_NE(nullptr, lead);
+  ASSERT_EQ(regiments.front(), lead->units.front());
+  session.apply(first);
+  const HexIndex leadTo = lead->path.back();
+  const HexEngine::Command second = agent.choose(session, set.facts().german());
+  const HexEngine::MoveUnit* follow = std::get_if<HexEngine::MoveUnit>(&second);
+  ASSERT_NE(nullptr, follow);
+  EXPECT_EQ(regiments.size() - 1, follow->units.size());
+  EXPECT_LT(definition->board->distance(follow->path.back(), leadTo), definition->board->distance(straggler, leadTo));
+}
+
+TEST(PggSeizeTest, TheSovietsGoForWhatTheGermansHold)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  HexModel::Position position = PggTest::blank(set, 3, "soviet-move", "soviet");
+  const HexIndex city = PggTest::hex(set, "0513");
+  const HexIndex from = PggTest::hex(set, "1520");
+  position.setControl(city, set.facts().german());
+  position.place(PggTest::unit(set, "s1-64-inf-2-4-6"), from);
+  const HexEngine::Session session(definition, set.policies(), position, kSeed);
+  HexAi::SeizeLocations allToTheFringe;
+  allToTheFringe.fringeShare = 1.0;
+  Pgg::PggAgent agent(set, set.facts().soviet(), allToTheFringe);
+  const HexEngine::Command command = agent.choose(session, set.facts().soviet());
+  const HexEngine::MoveUnit* move = std::get_if<HexEngine::MoveUnit>(&command);
+  ASSERT_NE(nullptr, move);
+  EXPECT_LT(definition->board->distance(move->path.back(), city), definition->board->distance(from, city));
+}
+
+TEST(PggSeizeTest, ASeizingUnitStillAttacks)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  const auto [here, there] = plainPair(set);
+  HexModel::Position position = PggTest::blank(set, 3, "german-combat", "german");
+  position.place(PggTest::unit(set, "s2-6-3-arm-4-10"), here);
+  position.place(PggTest::unit(set, "s1-64-inf-2-4-6"), there);
+  HexEngine::Session session(definition, set.policies(), position, kSeed);
+  Pgg::PggAgent agent(set, set.facts().german(), HexAi::SeizeLocations{});
+  // The attack is declared by the same rule as the other tactics; a seizing unit still has to fight.
+  EXPECT_TRUE(std::holds_alternative<HexEngine::DeclareAttack>(agent.choose(session, set.facts().german())));
+}
+
 TEST(PggDrawnSetUpTest, ItKeepsEveryPlaceAndArmAndChangesWhoIsThere)
 {
   const Pgg::PggShared shared = Pgg::loadShared(PggTest::root());

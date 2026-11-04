@@ -28,9 +28,10 @@ namespace Pgg {
 
   }  // namespace
 
-  // The area's hexes a unit may enter, those with the fewest units first, then those nearest the enemy.
+  // The area's hexes a unit may enter, those with the fewest units first, then those nearest the enemy. A
+  // seizing division comes in together: a hex holding its own regiments comes before the rest.
   std::vector<HexIndex>
-  PggAgent::entryHexes(const Ctx& ctx, Area area) const
+  PggAgent::entryHexes(const Ctx& ctx, Area area, std::optional<UnitId> unit) const
   {
     std::vector<HexIndex> out;
     for (HexIndex hex : set_.facts().area(area)) {
@@ -38,8 +39,11 @@ namespace Pgg {
         out.push_back(hex);
       }
     }
+    const std::optional<Division> division = unit && seizingP() ? set_.facts().division(*unit) : std::nullopt;
     const auto key = [&](HexIndex hex) {
-      return std::make_tuple(ctx.position.unitsAt(hex).size(), field_->steps(hex).value_or(ctx.board.hexCount()), hex.value);
+      const std::vector<UnitId>& there = ctx.position.unitsAt(hex);
+      const bool strangerP = !division || std::none_of(there.begin(), there.end(), [&](UnitId occupant) { return division == set_.facts().division(occupant); });
+      return std::make_tuple(strangerP, there.size(), field_->steps(hex).value_or(ctx.board.hexCount()), hex.value);
     };
     std::sort(out.begin(), out.end(), [&](HexIndex l, HexIndex r) { return key(l) < key(r); });
     return out;
@@ -61,7 +65,7 @@ namespace Pgg {
       } else if (const std::optional<SovietArrival> leader = leaderArrivalOf(facts, unit)) {
         area = leader->area;
       }
-      const std::vector<HexIndex> hexes = area ? entryHexes(ctx, *area) : std::vector<HexIndex>{};
+      const std::vector<HexIndex> hexes = area ? entryHexes(ctx, *area, unit) : std::vector<HexIndex>{};
       if (!hexes.empty()) {
         return HexEngine::Place{unit, hexes.front()};
       }
@@ -82,7 +86,7 @@ namespace Pgg {
         if (0 >= count) {
           continue;
         }
-        for (HexIndex hex : entryHexes(ctx, area)) {
+        for (HexIndex hex : entryHexes(ctx, area, std::nullopt)) {
           const std::string id = ctx.board.id(hex).text;
           if (!memory_.entries.contains(type + " " + id)) {
             return HexEngine::GameCommand{"reinforce", {type, id, "scheduled"}};
@@ -175,6 +179,9 @@ namespace Pgg {
     const std::vector<HexAi::Piece> friends = seen.pieces(side_);
     const std::vector<HexAi::Piece> enemies = seen.pieces(facts.enemy(side_));
     const PggState& state = stateOf(ctx.position);
+    if (seizingP()) {
+      planSeizure(session, seen);
+    }
     for (UnitId unit : Units::onMap(ctx, facts, side_)) {
       if (!memory_.considered.insert(unit).second) {
         continue;
@@ -186,6 +193,12 @@ namespace Pgg {
         const std::optional<std::vector<HexIndex>> path = firstTurnPath(ctx, unit, army->second);
         if (path) {
           return HexEngine::MoveUnit{{unit}, mode, *path};
+        }
+        continue;
+      }
+      if (seizingP() && !facts.leaderP(unit)) {
+        if (const std::optional<HexEngine::Command> move = seizeMove(session, ctx, unit)) {
+          return move;
         }
         continue;
       }

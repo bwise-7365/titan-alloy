@@ -52,6 +52,19 @@ TEST(PggGameTest, AGameReachesAResultAndTheSameTaskIsTheSameGame)
   EXPECT_NE(once.play.fingerprint, other.play.fingerprint);
 }
 
+TEST(PggGameTest, TheSeizeTacticPlaysToAResultAndKeepsAShareForTheGame)
+{
+  const Pgg::PggShared shared = Pgg::loadShared(PggTest::root());
+  const Pgg::PggGameTask task = taskOf(4, Pgg::SetUp::Drawn, HexAi::SeizeLocations{}, HexAi::SeizeLocations{});
+  const Pgg::PggGameResult once = Pgg::playGame(shared, task);
+  expectAResult(once);
+  EXPECT_LE(0.5, once.sovietFringeShare);
+  EXPECT_GE(2.0 / 3.0, once.sovietFringeShare);
+  const Pgg::PggGameResult again = Pgg::playGame(shared, task);
+  EXPECT_EQ(once.play.fingerprint, again.play.fingerprint);
+  EXPECT_EQ(once.sovietFringeShare, again.sovietFringeShare);
+}
+
 TEST(PggGameTest, ADrawnSetUpAndTheOtherTacticPlayToAResult)
 {
   const Pgg::PggShared shared = Pgg::loadShared(PggTest::root());

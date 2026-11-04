@@ -6,8 +6,8 @@
 // go no further is reported as a fault, and the rest still play. Each game's seed is
 // mixSeed(base seed, game number), so one game can be played again alone.
 //
-//   pgg_play [--games N] [--seed S] [--setup fixed|drawn] [--german nearest|consolidate]
-//            [--soviet nearest|consolidate] [--first G] [--refusals] [--events] [--root hexgames-dir]
+//   pgg_play [--games N] [--seed S] [--setup fixed|drawn] [--german nearest|consolidate|seize]
+//            [--soviet nearest|consolidate|seize] [--first G] [--refusals] [--events] [--root hexgames-dir]
 //
 // --first starts the numbering at game G, --refusals prints each refused command, and --events prints each
 // game's events. Exit codes: 0 all finished, 1 a game faulted or
@@ -81,12 +81,67 @@ namespace {
     return options;
   }
 
+  // Means over the games that finished, and the rates of what the agents did.
+  struct Totals {
+    double german = 0.0, soviet = 0.0, battles = 0.0, recapture = 0.0, refused = 0.0;
+    Pgg::PggAgentStats g, s;
+
+    static void
+    addStats(Pgg::PggAgentStats& to, const Pgg::PggAgentStats& from)
+    {
+      to.attacks += from.attacks;
+      to.integratedAttacks += from.integratedAttacks;
+      to.targetsKept += from.targetsKept;
+      to.targetsChanged += from.targetsChanged;
+      to.unitsCounted += from.unitsCounted;
+      to.unitsBeyondRadius += from.unitsBeyondRadius;
+      return;
+    }
+
+    void
+    add(const Pgg::PggGameResult& result)
+    {
+      german += result.germanPoints.value_or(0);
+      soviet += result.sovietPoints.value_or(0);
+      battles += result.battles;
+      recapture += result.recapturePoints;
+      refused += static_cast<double>(result.play.refusals.size());
+      addStats(g, result.germanStats);
+      addStats(s, result.sovietStats);
+      return;
+    }
+
+    static double
+    rate(int part, int whole)
+    {
+      return 0 == whole ? 0.0 : 100.0 * part / whole;
+    }
+
+    void
+    print(double games) const
+    {
+      if (0.0 == games) {
+        return;
+      }
+      std::cout << "mean german " << german / games << " soviet " << soviet / games << " battles " << battles / games
+                << " recapture-points " << recapture / games << " refused " << refused / games << "\n";
+      std::cout << "german attacks integrated " << rate(g.integratedAttacks, g.attacks) << "%, targets changed "
+                << rate(g.targetsChanged, g.targetsChanged + g.targetsKept) << "%\n";
+      std::cout << "soviet units beyond radius " << rate(s.unitsBeyondRadius, s.unitsCounted) << "%, targets changed "
+                << rate(s.targetsChanged, s.targetsChanged + s.targetsKept) << "%\n";
+      return;
+    }
+  };
+
   int
   run(const Options& options)
   {
     const Pgg::PggShared shared = Pgg::loadShared(options.root);
     int faults = 0;
     std::map<std::string, int> levels;
+    std::map<std::string, int> cities;
+    double finished = 0.0;
+    Totals totals;
     for (int game = options.first; game < options.first + options.games; ++game) {
       Pgg::PggGameTask task;
       task.seed = HexModel::mixSeed(options.seed, static_cast<std::uint64_t>(game));
@@ -100,7 +155,8 @@ namespace {
         const auto took = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - began);
         std::cout << "game " << game << " seed " << task.seed << " german " << result.germanPoints.value_or(-1) << " soviet "
                   << result.sovietPoints.value_or(-1) << " '" << result.level << "' turn " << result.lastTurn << " commands "
-                  << result.play.commands.size() << " refused " << result.play.refusals.size() << " fingerprint "
+                  << result.play.commands.size() << " battles " << result.battles << " recapture " << result.recapturePoints
+                  << " refused " << result.play.refusals.size() << " fingerprint "
                   << result.play.fingerprint << " " << took.count() << " ms\n";
         if (options.refusalsP) {
           for (const std::string& refusal : result.play.refusals) {
@@ -112,6 +168,11 @@ namespace {
           faults += 1;
         }
         levels[result.level] += 1;
+        finished += 1.0;
+        totals.add(result);
+        for (const std::string& city : result.germanCities) {
+          cities[city] += 1;
+        }
         for (const std::string& event : result.events) {
           std::cout << "  " << event << "\n";
         }
@@ -123,6 +184,10 @@ namespace {
     for (const auto& [level, count] : levels) {
       std::cout << count << " x '" << level << "'\n";
     }
+    for (const auto& [city, count] : cities) {
+      std::cout << "held " << count << " x " << city << "\n";
+    }
+    totals.print(finished);
     std::cout << faults << " of " << options.games << " faulted or did not finish\n";
     return 0 == faults ? 0 : 1;
   }

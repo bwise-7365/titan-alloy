@@ -247,7 +247,10 @@ Orsha (5), the two victory cities nearest the German entry; the Soviets score ab
 As Ben expected, the agents make no effort to take or hold a place. In the one game followed closely, the
 German front moves from column 7 to column 21 in twelve turns, and Mogilev (column 4) stays Soviet.
 
-**The next tactic (Ben, 2026-11-04):** seizing and defending locations.
+**The seize tactic (Ben, 2026-11-04)** is built, with 48 more games on the same seeds: with both sides
+seizing, the mean net is 23 to 27 points and the score spreads across the levels. Its behaviour, the problems
+it avoids, its results and recommendations for TRC5 are in hexgames
+`doc/2026-11-04-seize-locations-tactic.md`.
 
 ## 4. Proving that the games do not interact
 

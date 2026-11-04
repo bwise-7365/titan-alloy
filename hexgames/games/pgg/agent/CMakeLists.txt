@@ -5,6 +5,7 @@ add_library(pgg_agent STATIC
   PggAgent.cpp
   PggAgentMove.cpp
   PggAgentCombat.cpp
+  PggAgentSeize.cpp
   PggGame.cpp)
 target_include_directories(pgg_agent PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(pgg_agent PUBLIC pgg_game hexai)

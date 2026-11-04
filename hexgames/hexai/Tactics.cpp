@@ -39,6 +39,9 @@ namespace HexAi {
     if ("consolidate" == name) {
       return AttackOrConsolidate{};
     }
+    if ("seize" == name) {
+      return SeizeLocations{};
+    }
     throw std::invalid_argument("HexAi: no tactic named '" + std::string(name) + "'");
   }
 
@@ -131,14 +134,21 @@ namespace HexAi {
   chooseDestination(const Board& board, const EnemyField& field, const Goal& goal, const HexEngine::Reachability& reach,
                     HexIndex from, bool mustLeaveP, const std::function<bool(HexIndex)>& allowedP)
   {
-    const long long here = goalDistance(board, field, goal, from).value_or(kFarthest);
+    return chooseDestination(reach, [&](HexIndex hex) { return goalDistance(board, field, goal, hex); }, from, mustLeaveP, allowedP);
+  }
+
+  std::optional<std::size_t>
+  chooseDestination(const HexEngine::Reachability& reach, const std::function<std::optional<long long>(HexIndex)>& distance,
+                    HexIndex from, bool mustLeaveP, const std::function<bool(HexIndex)>& allowedP)
+  {
+    const long long here = distance(from).value_or(kFarthest);
     std::optional<std::size_t> best;
     std::tuple<long long, int, std::uint32_t> bestKey{};
     for (std::size_t i = 0; i < reach.hexes.size(); ++i) {
       if (!allowedP(reach.hexes[i])) {
         continue;
       }
-      const long long there = goalDistance(board, field, goal, reach.hexes[i]).value_or(kFarthest);
+      const long long there = distance(reach.hexes[i]).value_or(kFarthest);
       if (!mustLeaveP && here <= there) {
         continue;
       }

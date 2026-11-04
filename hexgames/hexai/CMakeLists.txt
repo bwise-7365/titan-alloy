@@ -2,6 +2,7 @@
 # hexai -- game-neutral tactics and the loop that plays a game with one agent per side.
 add_library(hexai STATIC
   Tactics.cpp
+  Seize.cpp
   Fingerprint.cpp
   Agent.cpp)
 target_include_directories(hexai PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)

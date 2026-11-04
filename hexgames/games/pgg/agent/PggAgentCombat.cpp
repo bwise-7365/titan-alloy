@@ -48,6 +48,18 @@ namespace Pgg {
     const PggFacts& facts = set_.facts();
     const std::vector<HexAi::Piece> friends = seen.pieces(side_);
     const std::vector<HexAi::Piece> enemies = seen.pieces(facts.enemy(side_));
+    if (seizingP()) {
+      planSeizure(session, seen);
+    }
+    if (facts.soviet() == side_ && !memory_.countedP) {
+      memory_.countedP = true;
+      for (UnitId unit : Units::onMap(ctx, facts, side_)) {
+        if (!facts.leaderP(unit)) {
+          stats_.unitsCounted += 1;
+          stats_.unitsBeyondRadius += set_.supply().withinRadiusP(ctx, scratch_, unit) ? 0 : 1;
+        }
+      }
+    }
     std::set<HexIndex> targets;
     for (UnitId enemy : Units::onMap(ctx, facts, facts.enemy(side_))) {
       targets.insert(*Units::hexOf(ctx.position, enemy));
@@ -78,6 +90,9 @@ namespace Pgg {
       }
       defence *= set_.combat().defenceMultiple(ctx, attackers, target);
       if (attack >= kLeastOdds * defence) {
+        stats_.attacks += 1;
+        stats_.integratedAttacks += std::any_of(attackers.begin(), attackers.end(), [&](UnitId unit) { return set_.combat().integratedP(ctx, unit); }) ? 1 : 0;
+        lastTarget_ = target;
         return HexEngine::DeclareAttack{attackers, target, {}};
       }
     }

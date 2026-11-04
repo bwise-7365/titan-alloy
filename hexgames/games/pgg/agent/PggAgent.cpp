@@ -15,6 +15,9 @@ namespace Pgg {
   PggAgent::PggAgent(const PggPolicySet& set, SideId side, HexAi::Tactic tactic)
     : set_(set), side_(side), tactic_(std::move(tactic))
   {
+    if (seizingP()) {
+      buildCityFields();
+    }
   }
 
   void
@@ -67,7 +70,8 @@ namespace Pgg {
     const PggSeen seen(set_, ctx);
     if (session.prompt().decisionPendingP) {
       if (const HexModel::GameChoice* choice = std::get_if<HexModel::GameChoice>(&ctx.position.pending())) {
-        return HexEngine::DecisionAnswer{choice->verb, answerChoice(seen, *choice)};
+        const bool advanceP = "advance" == choice->verb || "advance-on" == choice->verb;
+        return HexEngine::DecisionAnswer{choice->verb, seizingP() && advanceP ? seizeAdvance(ctx, seen, *choice) : answerChoice(seen, *choice)};
       }
       return answer(session, seen);
     }
@@ -105,7 +109,9 @@ namespace Pgg {
       const UnitId unit = move->units.front();
       memory_.hexes[unit].insert(move->path.back());
       if (kTries > memory_.hexes[unit].size()) {
-        memory_.considered.erase(unit);
+        for (UnitId mover : move->units) {
+          memory_.considered.erase(mover);
+        }
       }
     } else if (const HexEngine::DeclareAttack* attack = std::get_if<HexEngine::DeclareAttack>(&command)) {
       memory_.targets.insert(attack->target);

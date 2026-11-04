@@ -34,8 +34,11 @@ namespace HexAi {
     double attackRatio = 1.0;
     int consolidateRadius = 4;
   };
-  using Tactic = std::variant<AttackNearest, AttackOrConsolidate>;
-  Tactic tacticNamed(std::string_view);  // "nearest" or "consolidate"; throws naming the text
+  struct SeizeLocations {  // Seize.h; fringeShare of the side's strength goes to the fringe
+    double fringeShare = 1.0;
+  };
+  using Tactic = std::variant<AttackNearest, AttackOrConsolidate, SeizeLocations>;
+  Tactic tacticNamed(std::string_view);  // "nearest", "consolidate" or "seize"; throws naming the text
 
   // A unit as the deciding side sees it.
   struct Piece {
@@ -85,6 +88,11 @@ namespace HexAi {
   // so that a unit moves only to gain something; under Hold only mustLeaveP moves it.
   std::optional<std::size_t> chooseDestination(const Board&, const EnemyField&, const Goal&,
                                                const HexEngine::Reachability& reach, HexIndex from, bool mustLeaveP,
+                                               const std::function<bool(HexIndex)>& allowedP);
+  // The same choice by any measure of how far a hex leaves the unit from where it wants to be.
+  std::optional<std::size_t> chooseDestination(const HexEngine::Reachability& reach,
+                                               const std::function<std::optional<long long>(HexIndex)>& distance,
+                                               HexIndex from, bool mustLeaveP,
                                                const std::function<bool(HexIndex)>& allowedP);
 
 }  // namespace HexAi

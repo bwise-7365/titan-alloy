@@ -93,8 +93,15 @@ namespace Pgg {
     PggGameResult result;
     HexEngine::Session session(shared.definition, set.policies(),
                                SetUp::Drawn == task.setUp ? drawnSetUp(set, shared.start, task.seed) : shared.start, task.seed);
+    HexAi::Tactic sovietTactic = task.soviet;
+    if (HexAi::SeizeLocations* seize = std::get_if<HexAi::SeizeLocations>(&sovietTactic)) {
+      std::mt19937_64 gen(HexEngine::mixSeed(task.seed, HexEngine::StreamTag::Player1));
+      constexpr double kToUnit = 1.0 / 9007199254740992.0;  // 2^-53, for the top 53 bits of a raw draw
+      seize->fringeShare = 0.5 + static_cast<double>(gen() >> 11) * kToUnit / 6.0;
+      result.sovietFringeShare = seize->fringeShare;
+    }
     PggAgent german(set, set.facts().german(), task.german);
-    PggAgent soviet(set, set.facts().soviet(), task.soviet);
+    PggAgent soviet(set, set.facts().soviet(), sovietTactic);
     std::vector<HexAi::Agent*> agents(2, nullptr);
     agents.at(set.facts().german().value) = &german;
     agents.at(set.facts().soviet().value) = &soviet;
@@ -117,10 +124,20 @@ namespace Pgg {
           result.germanPoints = germanPoints;
           result.sovietPoints = sovietPoints;
         }
+      } else if (std::holds_alternative<HexEngine::CombatDeclared>(event)) {
+        result.battles += 1;
       } else if (const HexEngine::VictoryDeclared* victory = std::get_if<HexEngine::VictoryDeclared>(&event)) {
         result.level = victory->condition;
       }
     }
+    result.recapturePoints = stateOf(session.position()).recaptureVp;
+    for (const VictoryHex& city : set.facts().victoryHexes()) {
+      if (set.facts().german() == session.position().control(city.hex)) {
+        result.germanCities.push_back(city.name);
+      }
+    }
+    result.germanStats = german.stats();
+    result.sovietStats = soviet.stats();
     return result;
   }
 
