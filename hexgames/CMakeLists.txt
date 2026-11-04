@@ -146,6 +146,7 @@ foreach(_game trc pgg ds ddat)
     add_subdirectory(games/${_game}/engine)
   endif()
 endforeach()
+add_subdirectory(hexai)  # game-neutral tactics for scripted agents
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/hexview/CMakeLists.txt")
   add_subdirectory(hexview)
 endif()
