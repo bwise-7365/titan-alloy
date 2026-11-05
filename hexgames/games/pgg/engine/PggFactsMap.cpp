@@ -181,7 +181,8 @@ namespace Pgg {
     }
     riverEdge_ = rules.edgeTerrain("river");
     supplyRoad_ = hex("0120");
-    smolensk_ = hex("2117");
+    smolenskNorth_ = hex("2216");
+    smolenskSouth_ = hex("2217");
     const HexModel::LinkNetwork& rail = board.network(board.networkId("rail"));
     bool southRailP = false;
     for (std::size_t h = 0; h < count; ++h) {

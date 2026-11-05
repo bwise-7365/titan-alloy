@@ -770,6 +770,8 @@
   <label text="РОСЛАВЛЬ" at="2626" slot="s" size="34" weight="bold"/>
   <hex id="3005" name="Белый"><glyph symbol="town" color="ink"/></hex>
   <label text="Белый" at="3005" slot="s" size="26" weight="normal"/>
+  <hex id="3122" name="ЕЛЬНЯ"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="10"/></hex>
+  <label text="ЕЛЬНЯ" at="3122" slot="s" size="34" weight="bold"/>
   <hex id="3901" name="РЖЕВ"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="5"/></hex>
   <label text="РЖЕВ" at="3901" slot="s" size="34" weight="bold"/>
   <hex id="4015" name="ВЯЗЬМА"><glyph symbol="city-major" color="ink"/><glyph symbol="text" slot="ne" color="ink" text="15"/></hex>

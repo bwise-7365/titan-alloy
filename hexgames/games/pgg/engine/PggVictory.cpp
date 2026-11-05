@@ -43,11 +43,13 @@ namespace Pgg {
   int
   PggVictory::hexPoints(const Ctx& ctx, const VictoryHex& vp) const
   {
-    if (vp.hex != facts_.smolensk()) {
+    const PggState& state = stateOf(ctx.position);
+    if (vp.hex != facts_.smolenskNorth() && vp.hex != facts_.smolenskSouth()) {
       return vp.points;
     }
-    const int taken = stateOf(ctx.position).smolenskTaken.value_or(ctx.position.clock().turn);
-    return std::max(0, vp.points - 2 * std::max(0, taken - 4));  // amendments 15.11
+    const std::optional<int>& held = vp.hex == facts_.smolenskNorth() ? state.smolenskNorthTaken : state.smolenskSouthTaken;
+    const int taken = held.value_or(ctx.position.clock().turn);
+    return std::max(0, vp.points - std::max(0, taken - 4));  // amendments 15.11: two a turn for the city, one for each hex
   }
 
   int
@@ -117,11 +119,16 @@ namespace Pgg {
         state.germanHeld.insert(vp.hex);
       }
     }
-    if (facts_.german() != ctx.position.control(facts_.smolensk())) {
-      state.smolenskTaken.reset();
-    } else if (!state.smolenskTaken) {
-      state.smolenskTaken = ctx.position.clock().turn;
-    }
+    const auto note = [&](HexIndex hex, std::optional<int>& taken) {
+      if (facts_.german() != ctx.position.control(hex)) {
+        taken.reset();
+      } else if (!taken) {
+        taken = ctx.position.clock().turn;
+      }
+      return;
+    };
+    note(facts_.smolenskNorth(), state.smolenskNorthTaken);
+    note(facts_.smolenskSouth(), state.smolenskSouthTaken);
     return next;
   }
 

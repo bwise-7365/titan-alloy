@@ -1,30 +1,32 @@
 Copyright Ben Paul Wise. All Rights Reserved.
 run game=pgg setup=fixed german=seize-first soviet=seize-first
-game 0 seed 8364332025578307927 german 49 soviet 17 'Soviet Marginal' turn 13 commands 1509 battles 79 recapture 14 refused 0 fingerprint 14099243476326837583 52850 ms
-game 1 seed 15129400471043649242 german 50 soviet 8 'Soviet Marginal' turn 13 commands 1398 battles 68 recapture 4 refused 0 fingerprint 6586114433969211853 40538 ms
-game 2 seed 15076568138900347930 german 42 soviet 25 'Soviet Strategic' turn 13 commands 1480 battles 85 recapture 18 refused 0 fingerprint 16154260071415209712 39930 ms
-game 3 seed 10899367893613646835 german 45 soviet 15 'Soviet Marginal' turn 13 commands 1475 battles 77 recapture 4 refused 0 fingerprint 6081237869157563661 32438 ms
-game 4 seed 5718080069210426826 german 39 soviet 21 'Soviet Strategic' turn 13 commands 1550 battles 84 recapture 14 refused 0 fingerprint 8659287498861697317 32503 ms
-game 5 seed 12592409721416316329 german 35 soviet 9 'Soviet Marginal' turn 13 commands 1396 battles 77 recapture 8 refused 0 fingerprint 14166882508131322878 32017 ms
-game 6 seed 14657204985391573939 german 48 soviet 15 'Soviet Marginal' turn 13 commands 1504 battles 83 recapture 12 refused 0 fingerprint 10193321039745475942 32433 ms
-game 7 seed 16758065308340073894 german 25 soviet 23 'Soviet Strategic' turn 13 commands 1309 battles 64 recapture 16 refused 0 fingerprint 17865539719041398343 27685 ms
-game 8 seed 4728256185809391287 german 58 soviet 25 'Soviet Marginal' turn 13 commands 1478 battles 83 recapture 18 refused 0 fingerprint 1651746308291739073 27490 ms
-game 9 seed 14428344862608264900 german 30 soviet 19 'Soviet Strategic' turn 13 commands 1429 battles 81 recapture 14 refused 0 fingerprint 10176349204878020754 27710 ms
-game 10 seed 16922128403194887742 german 70 soviet 22 'Soviet Marginal' turn 13 commands 1476 battles 76 recapture 18 refused 0 fingerprint 14634601577047526758 26817 ms
-game 11 seed 9515093534868395111 german 49 soviet 14 'Soviet Marginal' turn 13 commands 1491 battles 77 recapture 14 refused 0 fingerprint 1805206532829689798 29473 ms
-8 x 'Soviet Marginal'
+game 0 seed 8364332025578307927 german 66 soviet 11 'German Marginal' turn 13 commands 1316 battles 45 recapture 8 refused 0 fingerprint 18011427544874496477 1690 ms
+game 1 seed 15129400471043649242 german 26 soviet 20 'Soviet Strategic' turn 13 commands 1432 battles 66 recapture 12 refused 0 fingerprint 11864850451282129038 2042 ms
+game 2 seed 15076568138900347930 german 42 soviet 16 'Soviet Marginal' turn 13 commands 1454 battles 70 recapture 12 refused 0 fingerprint 2258643748634398397 1961 ms
+game 3 seed 10899367893613646835 german 40 soviet 9 'Soviet Marginal' turn 13 commands 1505 battles 73 recapture 6 refused 0 fingerprint 12725570147228699112 2059 ms
+game 4 seed 5718080069210426826 german 64 soviet 9 'German Marginal' turn 13 commands 1339 battles 54 recapture 6 refused 0 fingerprint 9692639504717983613 1688 ms
+game 5 seed 12592409721416316329 german 52 soviet 7 'Soviet Marginal' turn 13 commands 1356 battles 64 recapture 6 refused 0 fingerprint 5098702784730349761 1894 ms
+game 6 seed 14657204985391573939 german 15 soviet 18 'Soviet Decisive' turn 13 commands 1442 battles 75 recapture 14 refused 0 fingerprint 16774977244929716850 2292 ms
+game 7 seed 16758065308340073894 german 28 soviet 19 'Soviet Strategic' turn 13 commands 1344 battles 69 recapture 14 refused 0 fingerprint 11025983505918517486 2114 ms
+game 8 seed 4728256185809391287 german 48 soviet 21 'Soviet Marginal' turn 13 commands 1490 battles 68 recapture 16 refused 0 fingerprint 602825618008964825 2281 ms
+game 9 seed 14428344862608264900 german 22 soviet 15 'Soviet Strategic' turn 13 commands 1315 battles 61 recapture 12 refused 0 fingerprint 8442228919136260501 1729 ms
+game 10 seed 16922128403194887742 german 31 soviet 22 'Soviet Strategic' turn 13 commands 1571 battles 85 recapture 18 refused 0 fingerprint 17378198182976488224 2532 ms
+game 11 seed 9515093534868395111 german 58 soviet 17 'Soviet Marginal' turn 13 commands 1495 battles 73 recapture 16 refused 0 fingerprint 8454365181246519198 1990 ms
+2 x 'German Marginal'
+1 x 'Soviet Decisive'
+5 x 'Soviet Marginal'
 4 x 'Soviet Strategic'
-held 7 x Gzhatsk
-held 1 x Hex 5907
-held 11 x Mogilev
-held 9 x Orsha
-held 12 x Roslavl
-held 9 x Smolensk
-held 3 x Vitebsk
-held 8 x Vyazma
-held 10 x Yelnya
-mean german 45 soviet 17.75 battles 77.8333 recapture-points 12.8333 refused 0
-german attacks integrated 59.1241%, targets changed 37.1404%
-soviet units beyond radius 53.3111%, targets changed 61.9504%
+held 1 x Gzhatsk
+held 7 x Mogilev
+held 12 x North Smolensk
+held 8 x Orsha
+held 7 x Roslavl
+held 11 x South Smolensk
+held 4 x Vitebsk
+held 6 x Vyazma
+held 8 x Yelnya
+mean german 41 soviet 15.3333 battles 66.9167 recapture-points 11.6667 refused 0
+german attacks integrated 61.3699%, targets changed 52.1536%
+soviet units beyond radius 57.9168%, targets changed 36.1711%
 0 of 12 faulted or did not finish
 Copyright Ben Paul Wise. All Rights Reserved.

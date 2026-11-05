@@ -111,7 +111,8 @@ namespace Pgg {
     bool westmostColumnsP(HexIndex hex) const { return 2 >= column(hex); }  // hexrows 0100 and 0200 (6.4)
     std::optional<Direction> directionTo(HexIndex from, HexIndex to) const;
     HexIndex supplyRoadHex() const { return supplyRoad_; }  // 0120 (11.11)
-    HexIndex smolensk() const { return smolensk_; }         // 2117
+    HexIndex smolenskNorth() const { return smolenskNorth_; }  // 2216, which scores for itself (15.11)
+    HexIndex smolenskSouth() const { return smolenskSouth_; }  // 2217, as does this
     const std::vector<VictoryHex>& victoryHexes() const { return victoryHexes_; }
     const std::vector<VictoryLevel>& victoryLevels() const { return victoryLevels_; }
     const std::vector<HexIndex>& area(Area) const;
@@ -152,7 +153,7 @@ namespace Pgg {
     std::vector<std::uint8_t> lake_, woods_, swamp_, major_, minor_;
     int lastColumn_ = 0;
     int lastRow_ = 0;
-    HexIndex supplyRoad_, smolensk_;
+    HexIndex supplyRoad_, smolenskNorth_, smolenskSouth_;
     EdgeTerrainId riverEdge_;
     std::vector<VictoryHex> victoryHexes_;
     std::vector<VictoryLevel> victoryLevels_;

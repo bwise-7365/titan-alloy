@@ -64,6 +64,10 @@ Engine and records
   with targets kept and Leaders covering (mean net about 10 with both). Summaries: `doc/pgg-runs/`. `pgg_trc_viewer` (`hexqt/`) steps through a hexsave script of
   either game, or a game of a run file played again, with a fingerprint check.
   This branch holds further PGG and TRC5 work (Ben, 2026-11-04).
+  VICTORY POINT HEXES (Ben, 2026-11-05): the maps in HexRules `examples/PGG` are definitive for C++ and Java, and
+  `packages/xml/pgg.package.xml` reads the sheet and rules from there; the copies here must stay identical. Smolensk scores on
+  2216 and 2217 (13 and 12, `smolenskNorth`, `smolenskSouth`), and Yelnya is on the map at 3122. Goldens full-turn and supply
+  re-recorded (bugfix: two more hexes record control). `doc/pgg-runs/` played again; the briefing deck's figures predate this.
 - 2026-10-31 MAP GENERATOR (branch `10-map-generator`, from `9-hexrules`). Plan:
   `doc/2026-10-31-map-generator-plan.md`. A new module `hexgen` (namespace `HexGen`): HexKrieg's procedural
   generator in C++ (fractal and Perlin heights, terrain by percentage, cities, roads by spanning tree and tour,

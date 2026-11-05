@@ -1239,6 +1239,7 @@
 <path d="M2974.40,2153.83 L2943.52,2207.32 L2881.75,2207.32 L2850.87,2153.83 L2881.75,2100.34 L2943.52,2100.34 Z" fill="#f4faf3"/>
 <path d="M2974.40,2260.80 L2943.52,2314.29 L2881.75,2314.29 L2850.87,2260.80 L2881.75,2207.32 L2943.52,2207.32 Z" fill="#f4faf3"/>
 <path d="M2974.40,2367.78 L2943.52,2421.26 L2881.75,2421.26 L2850.87,2367.78 L2881.75,2314.29 L2943.52,2314.29 Z" fill="#f4faf3"/>
+<path d="M2974.40,2367.78 L2943.52,2421.26 L2881.75,2421.26 L2850.87,2367.78 L2881.75,2314.29 L2943.52,2314.29 Z" fill="#e3e3e3"/>
 <path d="M2974.40,2474.75 L2943.52,2528.24 L2881.75,2528.24 L2850.87,2474.75 L2881.75,2421.26 L2943.52,2421.26 Z" fill="#7ea153"/>
 <path d="M2974.40,2474.75 L2943.52,2528.24 L2881.75,2528.24 L2850.87,2474.75 L2881.75,2421.26 L2943.52,2421.26 Z" fill="url(#pat-mottle)"/>
 <path d="M2974.40,2581.72 L2943.52,2635.21 L2881.75,2635.21 L2850.87,2581.72 L2881.75,2528.24 L2943.52,2528.24 Z" fill="#f4faf3"/>
@@ -4125,6 +4126,8 @@
 <path d="M2421.70,2837.54 L2441.46,2837.54 L2441.46,2851.13 L2421.70,2851.13 Z M2406.67,2823.85 L2425.20,2823.85 L2425.20,2842.38 L2406.67,2842.38 Z M2441.06,2841.13 L2459.59,2841.13 L2459.59,2859.66 L2441.06,2859.66 Z M2441.41,2817.61 L2459.94,2817.61 L2459.94,2836.14 L2441.41,2836.14 Z M2406.44,2856.54 L2426.21,2856.54 L2426.21,2870.13 L2406.44,2870.13 Z" fill="#111111"/>
 <text x="2471.26" y="2827.32" font-family="Arial, Helvetica, sans-serif" font-size="18.53" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">10</text>
 <use xlink:href="#sym-town" transform="translate(2819.99,602.72) rotate(0.0) scale(61.76)" style="color:#111111"/>
+<path d="M2889.40,2379.15 L2902.99,2379.15 L2902.99,2392.74 L2889.40,2392.74 Z M2916.04,2366.43 L2934.57,2366.43 L2934.57,2384.95 L2916.04,2384.95 Z M2897.64,2336.07 L2921.11,2336.07 L2921.11,2348.42 L2897.64,2348.42 Z M2877.70,2343.20 L2897.47,2343.20 L2897.47,2356.79 L2877.70,2356.79 Z M2919.44,2342.95 L2946.61,2342.95 L2946.61,2357.77 L2919.44,2357.77 Z" fill="#111111"/>
+<text x="2934.47" y="2345.94" font-family="Arial, Helvetica, sans-serif" font-size="18.53" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">10</text>
 <path d="M3653.25,94.31 L3668.07,94.31 L3668.07,117.78 L3653.25,117.78 Z M3643.74,118.33 L3662.27,118.33 L3662.27,136.86 L3643.74,136.86 Z M3665.86,114.80 L3684.39,114.80 L3684.39,133.33 L3665.86,133.33 Z M3627.35,108.44 L3642.18,108.44 L3642.18,131.90 L3627.35,131.90 Z" fill="#111111"/>
 <text x="3675.60" y="99.50" font-family="Arial, Helvetica, sans-serif" font-size="18.53" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">5</text>
 <path d="M3746.99,1678.18 L3765.52,1678.18 L3765.52,1696.71 L3746.99,1696.71 Z M3731.63,1662.35 L3750.16,1662.35 L3750.16,1680.88 L3731.63,1680.88 Z M3763.26,1668.36 L3783.03,1668.36 L3783.03,1681.95 L3763.26,1681.95 Z M3750.78,1644.49 L3774.24,1644.49 L3774.24,1656.84 L3750.78,1656.84 Z M3710.88,1692.83 L3724.46,1692.83 L3724.46,1706.42 L3710.88,1706.42 Z" fill="#111111"/>
@@ -5977,6 +5980,7 @@
 <text x="2078.86" y="1835.01" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">СМОЛЕНСК</text>
 <text x="2449.43" y="2904.74" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">РОСЛАВЛЬ</text>
 <text x="2819.99" y="658.30" font-family="Arial, Helvetica, sans-serif" font-size="26.00" text-anchor="middle" dominant-baseline="central" fill="#111111">Белый</text>
+<text x="2912.63" y="2423.36" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">ЕЛЬНЯ</text>
 <text x="3653.77" y="176.92" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">РЖЕВ</text>
 <text x="3746.41" y="1728.04" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">ВЯЗЬМА</text>
 <text x="4302.26" y="872.25" font-family="Arial, Helvetica, sans-serif" font-size="34.00" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="#111111">ГЖАТСК</text>

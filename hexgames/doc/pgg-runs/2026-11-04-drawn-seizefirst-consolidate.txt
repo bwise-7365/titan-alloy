@@ -1,40 +1,36 @@
 Copyright Ben Paul Wise. All Rights Reserved.
 run game=pgg setup=drawn german=seize-first soviet=consolidate
-game 0 seed 8364332025578307927 german 40 soviet 16 'Soviet Strategic' turn 13 commands 1601 battles 78 recapture 0 refused 0 fingerprint 18098829875302997908 57001 ms
-game 1 seed 15129400471043649242 german 70 soviet 22 'Soviet Marginal' turn 13 commands 1644 battles 95 recapture 2 refused 0 fingerprint 9039019836814933715 56002 ms
-game 2 seed 15076568138900347930 german 74 soviet 12 'German Marginal' turn 13 commands 1557 battles 79 recapture 0 refused 0 fingerprint 8012935286540181637 46876 ms
-game 3 seed 10899367893613646835 german 60 soviet 17 'Soviet Marginal' turn 13 commands 1601 battles 91 recapture 2 refused 0 fingerprint 6540969412875695013 40032 ms
-game 4 seed 5718080069210426826 german 80 soviet 15 'German Marginal' turn 13 commands 1614 battles 87 recapture 4 refused 0 fingerprint 16766537400441980622 42411 ms
-game 5 seed 12592409721416316329 german 47 soviet 27 'Soviet Strategic' turn 13 commands 1590 battles 66 recapture 2 refused 4 fingerprint 5845991597800128951 38198 ms
-  refused 9 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 10 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 11 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 12 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-game 6 seed 14657204985391573939 german 70 soviet 17 'German Marginal' turn 13 commands 1543 battles 86 recapture 2 refused 0 fingerprint 16632544774922097996 39253 ms
-game 7 seed 16758065308340073894 german 70 soviet 11 'German Marginal' turn 13 commands 1484 battles 84 recapture 2 refused 0 fingerprint 3514416638338999449 36124 ms
-game 8 seed 4728256185809391287 german 30 soviet 20 'Soviet Strategic' turn 13 commands 1511 battles 59 recapture 2 refused 4 fingerprint 4384460861330475645 34977 ms
-  refused 9 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 10 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 11 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-  refused 12 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-game 9 seed 14428344862608264900 german 60 soviet 22 'Soviet Marginal' turn 13 commands 1540 battles 76 recapture 2 refused 0 fingerprint 2817016428844966362 35223 ms
-game 10 seed 16922128403194887742 german 30 soviet 21 'Soviet Strategic' turn 13 commands 1541 battles 70 recapture 6 refused 1 fingerprint 12183892031995254301 45421 ms
-  refused 10 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
-game 11 seed 9515093534868395111 german 80 soviet 24 'German Marginal' turn 13 commands 1706 battles 93 recapture 6 refused 0 fingerprint 16089738123831429477 47350 ms
-5 x 'German Marginal'
-3 x 'Soviet Marginal'
-4 x 'Soviet Strategic'
-held 2 x Gzhatsk
+game 0 seed 8364332025578307927 german 40 soviet 15 'Soviet Strategic' turn 13 commands 1600 battles 83 recapture 2 refused 0 fingerprint 514660550457457465 2692 ms
+game 1 seed 15129400471043649242 german 49 soviet 21 'Soviet Marginal' turn 13 commands 1602 battles 85 recapture 4 refused 0 fingerprint 9819423258369526957 3017 ms
+game 2 seed 15076568138900347930 german 60 soviet 17 'Soviet Marginal' turn 13 commands 1579 battles 86 recapture 0 refused 0 fingerprint 6983236082646542204 2463 ms
+game 3 seed 10899367893613646835 german 112 soviet 12 'German Strategic' turn 13 commands 1629 battles 103 recapture 2 refused 0 fingerprint 12415914474215170923 2468 ms
+game 4 seed 5718080069210426826 german 70 soviet 22 'Soviet Marginal' turn 13 commands 1645 battles 84 recapture 4 refused 0 fingerprint 6694015496971513849 2894 ms
+game 5 seed 12592409721416316329 german 25 soviet 31 'Soviet Decisive' turn 13 commands 1707 battles 86 recapture 6 refused 3 fingerprint 7465324430516967187 3368 ms
+game 6 seed 14657204985391573939 german 70 soviet 18 'German Marginal' turn 13 commands 1628 battles 86 recapture 4 refused 0 fingerprint 741180465362086702 2840 ms
+game 7 seed 16758065308340073894 german 30 soviet 23 'Soviet Strategic' turn 13 commands 1631 battles 84 recapture 4 refused 1 fingerprint 8393657544489952924 2899 ms
+game 8 seed 4728256185809391287 german 57 soviet 16 'Soviet Marginal' turn 13 commands 1514 battles 68 recapture 2 refused 2 fingerprint 11376233810807474743 2618 ms
+game 9 seed 14428344862608264900 german 55 soviet 9 'Soviet Marginal' turn 13 commands 1785 battles 84 recapture 0 refused 0 fingerprint 13011001359181378498 2499 ms
+game 10 seed 16922128403194887742 german 40 soviet 21 'Soviet Strategic' turn 13 commands 1536 battles 68 recapture 0 refused 4 fingerprint 17255366911323524639 2015 ms
+game 11 seed 9515093534868395111 german 70 soviet 12 'German Marginal' turn 13 commands 1554 battles 77 recapture 2 refused 0 fingerprint 13995567457073644973 1914 ms
+2 x 'German Marginal'
+1 x 'German Strategic'
+1 x 'Soviet Decisive'
+5 x 'Soviet Marginal'
+3 x 'Soviet Strategic'
+held 1 x Gzhatsk
+held 1 x Hex 5915
+held 1 x Kaluga
 held 12 x Mogilev
+held 7 x North Smolensk
 held 12 x Orsha
-held 10 x Roslavl
-held 2 x Rzhev
-held 8 x Smolensk
-held 7 x Vitebsk
-held 8 x Vyazma
-held 12 x Yelnya
-mean german 59.25 soviet 18.6667 battles 80.3333 recapture-points 2.5 refused 0.75
-german attacks integrated 50.904%, targets changed 27.0654%
-soviet units beyond radius 44.6143%, targets changed 0%
+held 12 x Roslavl
+held 1 x Rzhev
+held 9 x South Smolensk
+held 6 x Vitebsk
+held 9 x Vyazma
+held 11 x Yelnya
+mean german 56.5 soviet 18.0833 battles 82.8333 recapture-points 2.5 refused 0.833333
+german attacks integrated 51.8277%, targets changed 51.3906%
+soviet units beyond radius 47.8186%, targets changed 0%
 0 of 12 faulted or did not finish
 Copyright Ben Paul Wise. All Rights Reserved.

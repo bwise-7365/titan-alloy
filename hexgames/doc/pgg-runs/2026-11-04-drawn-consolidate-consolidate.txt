@@ -1,17 +1,24 @@
 Copyright Ben Paul Wise. All Rights Reserved.
 run game=pgg setup=drawn german=consolidate soviet=consolidate
-game 0 seed 8364332025578307927 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1874 refused 0 fingerprint 2448618159810485273 32805 ms
-game 1 seed 15129400471043649242 german 26 soviet 1 'Soviet Strategic' turn 13 commands 1728 refused 0 fingerprint 11185470837641470160 31372 ms
-game 2 seed 15076568138900347930 german 15 soviet 1 'Soviet Strategic' turn 13 commands 1781 refused 0 fingerprint 15854830981580815755 32108 ms
-game 3 seed 10899367893613646835 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1796 refused 0 fingerprint 3210469953105112164 38073 ms
-game 4 seed 5718080069210426826 german 15 soviet 6 'Soviet Strategic' turn 13 commands 1696 refused 0 fingerprint 7862812480256999005 32582 ms
-game 5 seed 12592409721416316329 german 15 soviet 5 'Soviet Strategic' turn 13 commands 1757 refused 0 fingerprint 8299666616032526640 36464 ms
-game 6 seed 14657204985391573939 german 15 soviet 1 'Soviet Strategic' turn 13 commands 1721 refused 0 fingerprint 10230176940161015006 30378 ms
-game 7 seed 16758065308340073894 german 15 soviet 8 'Soviet Strategic' turn 13 commands 1762 refused 0 fingerprint 6851186341916669249 33317 ms
-game 8 seed 4728256185809391287 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1765 refused 0 fingerprint 15406023000617508135 33583 ms
-game 9 seed 14428344862608264900 german 15 soviet 5 'Soviet Strategic' turn 13 commands 1755 refused 0 fingerprint 12948223113054806687 33522 ms
-game 10 seed 16922128403194887742 german 15 soviet 3 'Soviet Strategic' turn 13 commands 1757 refused 0 fingerprint 4894166218414894657 34794 ms
-game 11 seed 9515093534868395111 german 15 soviet 3 'Soviet Strategic' turn 13 commands 1801 refused 0 fingerprint 11004949417808065043 32752 ms
+game 0 seed 8364332025578307927 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1874 battles 85 recapture 0 refused 0 fingerprint 16598792838920514833 1966 ms
+game 1 seed 15129400471043649242 german 25 soviet 1 'Soviet Strategic' turn 13 commands 1728 battles 63 recapture 0 refused 0 fingerprint 9577422543638104905 1945 ms
+game 2 seed 15076568138900347930 german 15 soviet 1 'Soviet Strategic' turn 13 commands 1781 battles 66 recapture 0 refused 0 fingerprint 15774145246681985303 1723 ms
+game 3 seed 10899367893613646835 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1796 battles 71 recapture 0 refused 0 fingerprint 2970913957239246506 1969 ms
+game 4 seed 5718080069210426826 german 15 soviet 6 'Soviet Strategic' turn 13 commands 1696 battles 61 recapture 0 refused 0 fingerprint 14494849464621822950 1936 ms
+game 5 seed 12592409721416316329 german 15 soviet 5 'Soviet Strategic' turn 13 commands 1757 battles 72 recapture 0 refused 0 fingerprint 8221476681989007632 2173 ms
+game 6 seed 14657204985391573939 german 15 soviet 1 'Soviet Strategic' turn 13 commands 1721 battles 51 recapture 0 refused 0 fingerprint 7538348856831476031 1708 ms
+game 7 seed 16758065308340073894 german 15 soviet 8 'Soviet Strategic' turn 13 commands 1762 battles 62 recapture 0 refused 0 fingerprint 15262002611765667825 1792 ms
+game 8 seed 4728256185809391287 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1765 battles 72 recapture 0 refused 0 fingerprint 8460773830717558605 1829 ms
+game 9 seed 14428344862608264900 german 15 soviet 5 'Soviet Strategic' turn 13 commands 1755 battles 71 recapture 0 refused 0 fingerprint 4885710007672278042 1840 ms
+game 10 seed 16922128403194887742 german 15 soviet 3 'Soviet Strategic' turn 13 commands 1757 battles 60 recapture 0 refused 0 fingerprint 791054843129406165 1893 ms
+game 11 seed 9515093534868395111 german 15 soviet 3 'Soviet Strategic' turn 13 commands 1801 battles 74 recapture 0 refused 0 fingerprint 2019877445271832957 1874 ms
 12 x 'Soviet Strategic'
+held 1 x North Smolensk
+held 12 x Orsha
+held 1 x South Smolensk
+held 12 x Vitebsk
+mean german 15.8333 soviet 3.75 battles 67.3333 recapture-points 0 refused 0
+german attacks integrated 1.9337%, targets changed 0%
+soviet units beyond radius 61.8229%, targets changed 0%
 0 of 12 faulted or did not finish
 Copyright Ben Paul Wise. All Rights Reserved.

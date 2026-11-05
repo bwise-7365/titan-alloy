@@ -119,8 +119,10 @@ namespace Pgg {
       for (const std::string& token : tokensOf(flag.value)) {
         state.passedByGermans.insert(named(flag, token, hexOf));
       }
-    } else if ("smolensk-taken" == flag.name) {
-      state.smolenskTaken = numberOf(flag, flag.value);
+    } else if ("smolensk-north-taken" == flag.name) {
+      state.smolenskNorthTaken = numberOf(flag, flag.value);
+    } else if ("smolensk-south-taken" == flag.name) {
+      state.smolenskSouthTaken = numberOf(flag, flag.value);
     } else if ("german-held" == flag.name) {
       for (const std::string& token : tokensOf(flag.value)) {
         state.germanHeld.insert(named(flag, token, hexOf));
@@ -307,7 +309,8 @@ namespace Pgg {
         }
         put["rail-repaired"] = joined(repaired);
         put["passed"] = hexes(state->passedByGermans);
-        put["smolensk-taken"] = state->smolenskTaken ? std::to_string(*state->smolenskTaken) : "";
+        put["smolensk-north-taken"] = state->smolenskNorthTaken ? std::to_string(*state->smolenskNorthTaken) : "";
+        put["smolensk-south-taken"] = state->smolenskSouthTaken ? std::to_string(*state->smolenskSouthTaken) : "";
         put["german-held"] = hexes(state->germanHeld);
         put["eliminated"] = counters(state->germanEliminated);
         put["outcome"] = state->outcome ? facts_.victoryLevels().at(*state->outcome).code : "";

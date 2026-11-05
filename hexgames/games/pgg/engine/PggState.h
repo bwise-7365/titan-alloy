@@ -63,7 +63,8 @@ namespace Pgg {
     std::set<HexIndex> railCuts;             // at most six (errata 6.37)
     std::map<HexIndex, int> railRepaired;    // hex -> the turn a Soviet unit repaired it (6.37)
     std::set<HexIndex> passedByGermans;      // Railroad hexes a German combat unit entered this phase
-    std::optional<int> smolenskTaken;        // the turn the German Player took Smolensk (13.2, amendments 15.11)
+    std::optional<int> smolenskNorthTaken;   // the turn the German Player took 2216 (13.2, amendments 15.11)
+    std::optional<int> smolenskSouthTaken;   // the turn the German Player took 2217
     std::set<HexIndex> germanHeld;           // cities held, with a line west, as the last German player-turn ended
     std::set<UnitId> germanEliminated;       // counters eliminated, for 15.12
     std::optional<std::size_t> outcome;      // the level of victory, once the game is over (15.2)

@@ -35,7 +35,8 @@ namespace {
                                    {"rail-cuts", "0714 0715"},
                                    {"rail-repaired", "1215:3"},
                                    {"retreated-onto", "s2-5-inf-9-7"},
-                                   {"smolensk-taken", "5"},
+                                   {"smolensk-north-taken", "5"},
+                                   {"smolensk-south-taken", "6"},
                                    {"spent", "s2-25-7-arm-4-10:7"},
                                    {"unsupplied", "s2-26-inf-9-7"},
                                    {"zoc-entry", "s2-25-7-arm-4-10:2016"}};

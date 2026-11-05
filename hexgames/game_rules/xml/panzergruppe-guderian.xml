@@ -15,13 +15,13 @@
 
   <!-- ================= map ================= -->
   <map>
-    <hex-ids pattern="\d{2}\d{2}" example="2117">Two-digit column then two-digit row, no letter component (unlike The Russian Campaign's row-letter scheme). Grid is flat-topped, offset odd; the sheet's id-format is "{col:02}{row:02}", col-start 1, row-start 1. Smolensk is 2117; the German west-edge supply road hex is 0120.</hex-ids>
+    <hex-ids pattern="\d{2}\d{2}" example="2216">Two-digit column then two-digit row, no letter component (unlike The Russian Campaign's row-letter scheme). Grid is flat-topped, offset odd; the sheet's id-format is "{col:02}{row:02}", col-start 1, row-start 1. Smolensk is 2216 and 2217; the German west-edge supply road hex is 0120.</hex-ids>
 
     <hex-terrain id="clear" name="Clear" move-cost="1" ref="6.7"/>
     <hex-terrain id="woods" name="Forest" move-cost="1" ref="6.7">Infantry (not motorized) pays 1 MP; all other unit types pay 2 MP. No stop is required by the text supplied.</hex-terrain>
     <hex-terrain id="swamp" name="Swamp" move-cost="2" ref="6.7">Supply may be traced into a Swamp hex but not through one.</hex-terrain>
     <hex-terrain id="lake" name="Lake" move-cost="prohibited" ref="6.7">May not be entered or crossed by movement; no combat may be resolved across a Lake hexside (see the lake-hexside hexside-terrain); supply may not be traced through.</hex-terrain>
-    <hex-terrain id="major-city" name="Major City" move-cost="1" defence-multiplier="2" ref="6.7 15.11">A defender doubled and a Victory Point objective (15.1): Vitebsk 0513, Orsha 0420, Mogilev 0424, Smolensk 2117, Roslavl 2625, Yelnya, Rzhev 3901, Gzhatsk 4606, Vyazma 3915, Kaluga 5619, plus VP hexes 5907 and 5915 with no city glyph.</hex-terrain>
+    <hex-terrain id="major-city" name="Major City" move-cost="1" defence-multiplier="2" ref="6.7 15.11">A defender doubled and, where the map marks points, a Victory Point objective (15.1). As the map draws them: Vitebsk 0412 and 0513, Orsha 0420, Mogilev 0424 and 0525, Smolensk 2216 and 2217, Roslavl 2626, Yelnya 3122, Rzhev 3901, Gzhatsk 4607, Vyazma 4015, Kaluga 5921. The map also marks points on 5907 and 5915, which have no city glyph.</hex-terrain>
     <hex-terrain id="minor-city" name="Minor City" move-cost="1" ref="6.7">No combat effect. Drawn on the sheet as the "town" glyph: Velizh 1509, Bely 3005, Mstislavl 1524, Krichev 1427.</hex-terrain>
 
     <hexside-terrain id="river" name="River hexside" ref="6.7 9.32">Germans pay 2 extra MP to cross, Soviets 1. Doubles the defender only if every attacking unit attacks across a River hexside (9.32); roads are considered to cross rivers for German supply tracing even though normal movement may not use a road to cross one (11.13, corrected by errata from the rulebook's misprinted cross-reference "11.14").</hexside-terrain>
@@ -234,13 +234,14 @@
       <item code="3901">Rzhev: 5</item>
       <item code="0513">Vitebsk: 10</item>
       <item code="0420">Orsha: 5</item>
-      <item code="0424">Mogilev: 5</item>
-      <item code="2117">Smolensk: 25 (reduced by two per Game Turn from Turn 5 onward, amendments 15.11)</item>
-      <item code="2625">Roslavl: 10</item>
-      <item code="3122">Yelnya: 10 (hex from the original 1976 map; the sheet XML, traced from the Cyrillic map, does not mark it)</item>
-      <item code="4606">Gzhatsk: 5</item>
-      <item code="3915">Vyazma: 15</item>
-      <item code="5619">Kaluga: 20</item>
+      <item code="0525">Mogilev: 5</item>
+      <item code="2216">North Smolensk: 13 (reduced by one per Game Turn from Turn 5 onward; with South Smolensk, the printed 25 less two per Game Turn, amendments 15.11)</item>
+      <item code="2217">South Smolensk: 12 (reduced by one per Game Turn from Turn 5 onward, as North Smolensk)</item>
+      <item code="2626">Roslavl: 10</item>
+      <item code="3122">Yelnya: 10 (the Cyrillic map omitted it in error; hex from the original Avalon Hill map)</item>
+      <item code="4607">Gzhatsk: 5</item>
+      <item code="4015">Vyazma: 15</item>
+      <item code="5921">Kaluga: 20</item>
       <item code="5907">Hex 5907: 20</item>
       <item code="5915">Hex 5915: 20</item>
     </list>

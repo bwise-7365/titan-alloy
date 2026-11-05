@@ -199,6 +199,8 @@
     <hex id="0412" side="soviet"/>
     <hex id="0424" side="soviet"/>
     <hex id="0513" side="soviet"/>
+    <hex id="2216" side="soviet"/>
+    <hex id="4015" side="soviet"/>
     <hex id="5907" side="soviet"/>
   </control>
   <streams>
@@ -207,6 +209,8 @@
   <log>
     <move n="1" turn="1" phase="set-up" side="german" by="script" cmd="interdict" target="2117">
       <event kind="air-interdiction">2117</event>
+      <event kind="control" hex="2216" side="soviet"/>
+      <event kind="control" hex="4015" side="soviet"/>
     </move>
     <move n="2" turn="1" phase="set-up" side="german" by="script" cmd="interdict" target="3915">
       <event kind="air-interdiction">3915</event>

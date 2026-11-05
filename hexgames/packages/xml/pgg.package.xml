@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hexpackage.xsd"
          id="pgg" title="Panzergruppe Guderian: The Battle of Smolensk, July 1941" version="0.1">
-  <rules path="../../game_rules/xml/panzergruppe-guderian.xml"/>
-  <sheet path="../../map_graphics/xml/panzergruppe-guderian.xml"/>
+  <rules path="../../../../HexRules/examples/PGG/panzergruppe-guderian-rules.xml"/>
+  <sheet path="../../../../HexRules/examples/PGG/panzergruppe-guderian-map.xml"/>
   <counters path="../../unit_graphics/xml/panzergruppe-guderian.xml"/>
   <scenario id="pgg-test" path="../../game_records/xml/pgg-test.xml" title="Engine test position, a few units"/>
 

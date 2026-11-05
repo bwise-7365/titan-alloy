@@ -19,7 +19,7 @@ fighting follows when both sides make for the same places.
 
 ### 2.1 Locations and regions
 
-The locations are PGG's twelve Victory Point hexes. A region is a discrete Voronoi region: the hexes
+The locations are PGG's Victory Point hexes, as the map draws them: thirteen, since each of Smolensk's two hexes scores. A region is a discrete Voronoi region: the hexes
 nearer that location than any other. Nearness is by terrain cost, and it ignores enemy units and zones of
 control, because a path may run through an enemy who is to be fought. Lakes cannot be crossed. Each side
 uses one cost table, for its commonest kind of unit: motorised for the Germans, foot for the Soviets.
@@ -140,6 +140,9 @@ anything yet.
 - **This is not yet a measure of balance.** The figures describe these agents, and the options left out
   (overrun, rail) are large. The agents favour the Soviets compared with the historical result.
 
+The tables above and in section 4.1 are from before the Victory Point hexes were corrected, and those games can no longer be
+played again. Section 4.2 has the same batches on the corrected hexes.
+
 ### 4.1 Keeping targets and covering with Leaders
 
 Two weaknesses showed in the results above: about half the Soviet units could not attack because no Leader was
@@ -178,6 +181,29 @@ last aimed for. The table below is measured correctly: only units free to move c
    the Germans, since it is how they get out of a zone of control and past a line.
 2. **Why German targets change,** by watching games in `pgg_trc_viewer`.
 3. **Attacks.** Attacks are still chosen one hex at a time in hex order, with no concentration on a chosen breakthrough.
+
+### 4.2 On the corrected Victory Point hexes
+
+On 2026-11-05 Ben ruled that the maps in HexRules `examples/PGG` are definitive for both engines. Smolensk now scores on 2216
+(13 points) and 2217 (12), Roslavl on 2626, Mogilev on 0525, Gzhatsk on 4607, Vyazma on 4015 and Kaluga on 5921. Yelnya, which
+the Cyrillic map omitted, is on the map at 3122. All twelve batches were played again, on the same seeds; all finished.
+
+| Set-up | German | Soviet | German points | Soviet points | Net | Recapture points |
+|---|---|---|---|---|---|---|
+| Fixed | consolidate | consolidate | 15.0 | 5.9 | 9.1 | 0.0 |
+| Drawn | consolidate | consolidate | 15.8 | 3.8 | 12.1 | 0.0 |
+| Drawn | consolidate | nearest | 15.9 | 4.5 | 11.4 | 0.0 |
+| Drawn | nearest | nearest | 17.8 | 5.3 | 12.4 | 0.2 |
+| Fixed | seize-first | seize-first | 41.0 | 15.3 | 25.7 | 11.7 |
+| Drawn | seize-first | seize-first | 35.7 | 15.2 | 20.4 | 10.8 |
+| Drawn | seize-first | consolidate | 56.5 | 18.1 | 38.4 | 2.5 |
+| Drawn | consolidate | seize-first | 33.2 | 1.7 | 31.6 | 0.2 |
+| Drawn | seize-keep | seize-keep | 34.9 | 14.3 | 20.6 | 8.8 |
+| Drawn | seize-cover | seize-cover | 28.2 | 21.0 | 7.2 | 13.5 |
+| Drawn | seize | seize | 23.9 | 18.5 | 5.4 | 11.3 |
+| Fixed | seize | seize | 23.5 | 17.2 | 6.2 | 10.0 |
+
+With 12 games a row, the standard error of a mean net is about 4 to 6 points.
 
 The run summaries are in `doc/pgg-runs/`.
 

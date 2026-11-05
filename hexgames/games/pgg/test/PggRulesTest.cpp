@@ -185,7 +185,7 @@ TEST(PggRulesTest, GermanSupplyByRoadAndTheSovietMarker)
   const Pgg::PggFacts& facts = set.facts();
   HexModel::Position position = PggTest::blank(set, 3, "german-move1", "german");
   const UnitId panzer = PggTest::unit(set, "s2-6-3-arm-4-10");
-  const HexIndex smolensk = facts.smolensk();
+  const HexIndex smolensk = facts.smolenskNorth();
   position.place(panzer, smolensk);
   HexSearch::SearchScratch scratch;
   EXPECT_TRUE(set.supply().suppliedP(PggTest::ctx(set, position), scratch, panzer));

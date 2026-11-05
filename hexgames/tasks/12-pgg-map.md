@@ -671,7 +671,8 @@ Plan (written before the catalogue is final; each item is confirmed or dropped a
   byte-identical.
 
 ## Open questions for review (worker fills in)
-1. Victory Point hex codes in the rules XML (german-city-vp) name the hexes of the old sheet, several of them
+1. ANSWERED by Ben, 2026-11-05: the maps in HexRules examples/PGG are definitive, and Smolensk scores on both hexes, half
+   each. Vitebsk and Mogilev score on the one hex the map marks. Yelnya goes on the map at 3122. Victory Point hex codes in the rules XML (german-city-vp) name the hexes of the old sheet, several of them
    the hex of a city's NAME, not its blocks. The print: Smolensk 2216 + 2217 (rules 2117), Vyazma 4015 (3915),
    Kaluga 5921 (5619), Gzhatsk 4607 (4606), Vitebsk 0412 + 0513 (0513), Mogilev 0424 + 0525 (0424); Orsha 0420,
    Roslavl 2626 (rules 2625), Rzhev 3901 as the rules say. The rulebook scores "all hexes of the city" (15.12)

@@ -627,6 +627,7 @@ PGG_EXCEPTED = {
     "road enters lake hex 0703":
         "printed: the road skirts the lake inside 0703, lake by Ben's 22% ruling (2026-09-25)",
     "road misses named place 5921": "printed: no road reaches Kaluga (railway only)",
+    "road misses named place 3122": "printed: no road reaches Yelnya (railway only); the Cyrillic map omitted the city",
 }
 
 

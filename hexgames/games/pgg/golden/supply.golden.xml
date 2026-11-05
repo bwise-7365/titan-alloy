@@ -19,6 +19,9 @@
     <unit id="s2-5-inf-9-7" counter="s2-5-inf-9-7" type="german-infantry" owner="german" hex="1715" face="front" moved="false"/>
     <unit id="s2-6-inf-9-7" counter="s2-6-inf-9-7" type="german-infantry" owner="german" hex="5002" face="front" moved="true"/>
   </units>
+  <control>
+    <hex id="4015" side="soviet"/>
+  </control>
   <streams>
     <stream tag="setup" draws="1"/>
   </streams>
@@ -29,6 +32,7 @@
       <event kind="supply" unit="s1-f-inf-2-4-6" value="isolated"/>
       <event kind="die" value="3">setup</event>
       <event kind="provisional-none">area 3: no open hex or counter</event>
+      <event kind="control" hex="4015" side="soviet"/>
     </move>
     <move n="2" turn="2" phase="soviet-move" side="soviet" by="script" cmd="move" units="s1-f-inf-2-4-6" path="4515 4615" mode="normal">
       <event kind="moved" unit="s1-f-inf-2-4-6" hex="4615" value="4515 4615"/>

@@ -16,6 +16,9 @@ Any game can be played again, because the set-up, the tactics and the seed fix i
 
     pgg_play --first 7 --games 1 --setup drawn --german seize-first --soviet seize-first --events
 
+All twelve files were played again on 2026-11-05, on the Victory Point hexes as the map draws them. Their dates in the file
+names are those of the first runs.
+
 **A game number gives the same game only with the same code.** A later change to a tactic can change what a
 number gives, unless the old version stays as a named option, as `seize-first` does. A different fingerprint
 says this has happened.

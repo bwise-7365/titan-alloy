@@ -106,7 +106,7 @@ has no analogous command-radius constraint on attacking.
 ### 2.1 The hex grid
 
 A single grid, printed ids of the form `{col:02}{row:02}` (four digits: two-digit column, two-
-digit row), e.g. `2117` for Smolensk, `0120` for the German supply road hex on the west edge.
+digit row), e.g. `2216` for Smolensk, `0120` for the German supply road hex on the west edge.
 Both digits are needed to name a hex; there is no letter component. Hex `4015`, `2216`, `1414`,
 etc. are named directly in the setup rules (5.1) — the id is a plain coordinate pair, unlike
 TRC's row-letter-plus-number scheme.
@@ -449,9 +449,9 @@ without touching the event model.
 ### 4.1 Hex numbering
 
 Grid is **flat-topped**, offset odd, printed id format `{col:02}{row:02}` — a plain two-digit
-column then two-digit row, no letter component (unlike TRC's row-letter scheme). Examples: `2117`
-Smolensk, `0513` Vitebsk, `4606` Gzhatsk, `3915` Vyazma, `0420` Orsha, `0424` Mogilev, `2625`
-Roslavl, `5619` Kaluga, `3901` Rzhev (the nine Major Cities); `0120` the German west-edge supply
+column then two-digit row, no letter component (unlike TRC's row-letter scheme). As the map in
+HexRules `examples/PGG` draws them, which is definitive: `2216` and `2217` Smolensk, `0513` Vitebsk, `4607` Gzhatsk, `4015`
+Vyazma, `0420` Orsha, `0525` Mogilev, `2626` Roslavl, `5921` Kaluga, `3901` Rzhev, `3122` Yelnya (the Major Cities that score); `0120` the German west-edge supply
 road hex; `4015`/`2216`/`1414` the Soviet 24th/16th/19th Army setup hexes (5.1).
 
 ### 4.2 Hex-centred features

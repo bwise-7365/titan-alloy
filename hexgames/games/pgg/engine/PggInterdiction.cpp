@@ -56,9 +56,12 @@ namespace Pgg {
     }
     if (kEastmostColumn < facts_.column(hex)) {
       HexSearch::SearchScratch scratch;
-      const bool heldP = state.smolenskTaken && *state.smolenskTaken < ctx.position.clock().turn &&
-                         facts_.german() == ctx.position.control(facts_.smolensk()) &&
-                         supply_.lineWestP(ctx, scratch, facts_.smolensk());
+      const auto hexHeldP = [&](HexIndex city, const std::optional<int>& taken) {
+        return taken && *taken < ctx.position.clock().turn && facts_.german() == ctx.position.control(city) &&
+               supply_.lineWestP(ctx, scratch, city);
+      };
+      const bool heldP = hexHeldP(facts_.smolenskNorth(), state.smolenskNorthTaken) &&
+                         hexHeldP(facts_.smolenskSouth(), state.smolenskSouthTaken);  // both hexes (13.2)
       if (!heldP) {
         refuse("hex '" + ctx.board.id(hex).text + "' lies east of hex-row 4000 and Smolensk is not held (13.2)");
       }

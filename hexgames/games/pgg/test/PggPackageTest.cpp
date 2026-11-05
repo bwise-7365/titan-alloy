@@ -82,11 +82,29 @@ TEST(PggPackageTest, FactsReadOffTheDocuments)
   EXPECT_EQ(PggTest::unit(set, "s2-6-inf-2-7"), facts.successor(PggTest::unit(set, "s2-6-inf-9-7")));
   EXPECT_TRUE(facts.independentRegimentP(PggTest::unit(set, "s2-gd-mot-4-10")));
 
-  ASSERT_EQ(12u, facts.victoryHexes().size());  // ten cities and the printed "(20 ПО)" hexes 5907 and 5915
-  const auto smolensk = std::find_if(facts.victoryHexes().begin(), facts.victoryHexes().end(),
-                                     [&](const Pgg::VictoryHex& vp) { return vp.hex == facts.smolensk(); });
-  ASSERT_NE(facts.victoryHexes().end(), smolensk);
-  EXPECT_EQ(25, smolensk->points);
+  // Ten cities, Smolensk counted twice, and the printed "(20 ПО)" hexes 5907 and 5915. The map is definitive.
+  ASSERT_EQ(13u, facts.victoryHexes().size());
+  const auto pointsOf = [&](std::string_view id) {
+    const auto found = std::find_if(facts.victoryHexes().begin(), facts.victoryHexes().end(),
+                                    [&](const Pgg::VictoryHex& vp) { return vp.hex == facts.hex(id); });
+    return facts.victoryHexes().end() == found ? 0 : found->points;
+  };
+  EXPECT_EQ(13, pointsOf("2216"));
+  EXPECT_EQ(12, pointsOf("2217"));
+  EXPECT_EQ(0, pointsOf("2117"));
+  EXPECT_EQ(10, pointsOf("2626"));
+  EXPECT_EQ(0, pointsOf("2625"));
+  EXPECT_EQ(5, pointsOf("0525"));
+  EXPECT_EQ(5, pointsOf("4607"));
+  EXPECT_EQ(15, pointsOf("4015"));
+  EXPECT_EQ(20, pointsOf("5921"));
+  EXPECT_EQ(10, pointsOf("3122"));  // Yelnya, which the Cyrillic map omitted; hex from the Avalon Hill map
+  EXPECT_TRUE(facts.majorCityP(facts.hex("3122")));
+  int total = 0;
+  for (const Pgg::VictoryHex& vp : facts.victoryHexes()) {
+    total += vp.points;
+  }
+  EXPECT_EQ(150, total);
   ASSERT_EQ(6u, facts.victoryLevels().size());
   EXPECT_EQ(facts.german(), facts.victoryLevels()[3].winner);
   EXPECT_EQ(50, *facts.victoryLevels()[3].lowest);

@@ -111,7 +111,8 @@ namespace Pgg {
     }
     s += ';';
     appendHexes(s, passedByGermans);
-    s += (smolenskTaken ? std::to_string(*smolenskTaken) : std::string("-")) + ";";
+    s += (smolenskNorthTaken ? std::to_string(*smolenskNorthTaken) : std::string("-")) + ";";
+    s += (smolenskSouthTaken ? std::to_string(*smolenskSouthTaken) : std::string("-")) + ";";
     appendHexes(s, germanHeld);
     appendUnits(s, germanEliminated);
     s += (outcome ? std::to_string(*outcome) : std::string("-")) + ";";
