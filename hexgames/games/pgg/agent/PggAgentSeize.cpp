@@ -36,6 +36,13 @@ namespace Pgg {
     return std::holds_alternative<HexAi::SeizeLocations>(tactic_);
   }
 
+  bool
+  PggAgent::leadersCoverP() const
+  {
+    const HexAi::SeizeLocations* seize = std::get_if<HexAi::SeizeLocations>(&tactic_);
+    return nullptr != seize && seize->leadersCoverP;
+  }
+
   void
   PggAgent::buildCityFields()
   {
@@ -136,6 +143,12 @@ namespace Pgg {
     memory_.plannedP = true;
     const Ctx ctx = session.context();
     const PggFacts& facts = set_.facts();
+    const HexAi::SeizeLocations& seize = std::get<HexAi::SeizeLocations>(tactic_);
+    const bool movementP = PhaseKind::Combat != facts.phase(ctx.position.clock().phase).kind;
+    if (seize.keepTargetsP && !movementP) {
+      memory_.cityOf = lastCityOf_;  // no one can move, so there is nothing to allocate: an advance goes by the last plan
+      return;
+    }
     std::vector<std::vector<UnitId>> groups;
     std::vector<HexAi::Force> forces;
     std::set<UnitId> grouped;
@@ -157,11 +170,18 @@ namespace Pgg {
     }
     std::vector<std::size_t> cities;
     const std::vector<HexAi::Target> targets = seizeTargets(ctx, seen, cities);
-    const double share = std::get<HexAi::SeizeLocations>(tactic_).fringeShare;
-    const std::vector<std::optional<std::size_t>> chosen =
-        HexAi::allocate(forces, targets, share, [&](std::size_t target, HexIndex hex) { return cityFields_[cities[target]].cost(hex); });
+    // The targets stand in the order of the cities, so a city's index is its target's.
+    std::vector<std::optional<std::size_t>> previous;
+    if (seize.keepTargetsP) {
+      for (const std::vector<UnitId>& group : groups) {
+        const auto before = lastCityOf_.find(group.front());
+        previous.push_back(lastCityOf_.end() == before ? std::nullopt : std::optional<std::size_t>(before->second));
+      }
+    }
+    const std::vector<std::optional<std::size_t>> chosen = HexAi::allocate(
+        forces, targets, seize.fringeShare, [&](std::size_t target, HexIndex hex) { return cityFields_[cities[target]].cost(hex); },
+        previous, seize.keepMargin);
 
-    const bool movementP = PhaseKind::Combat != facts.phase(ctx.position.clock().phase).kind;
     for (std::size_t f = 0; f < groups.size(); ++f) {
       if (!chosen[f]) {
         continue;
@@ -169,8 +189,11 @@ namespace Pgg {
       const std::size_t city = cities[*chosen[f]];
       for (UnitId unit : groups[f]) {
         memory_.cityOf[unit] = city;
+        if (!movementP || !forces[f].freeP) {
+          continue;  // only a unit free to go somewhere has a target to keep or to change
+        }
         const auto before = lastCityOf_.find(unit);
-        if (movementP && lastCityOf_.end() != before) {
+        if (lastCityOf_.end() != before) {
           stats_.targetsKept += before->second == city ? 1 : 0;
           stats_.targetsChanged += before->second == city ? 0 : 1;
         }
@@ -178,6 +201,66 @@ namespace Pgg {
       }
     }
     return;
+  }
+
+  // A Leader moves after the divisions, to where it brings the most units within its radius that no Leader
+  // moved this phase already covers. A unit in an enemy zone counts for more, since it is the one that can
+  // attack now. With nothing to gain in reach, it makes for the centre of the units not yet covered. Distance
+  // is in hexes, so this is an estimate of the Line of Communications (11.22), which a zone can block.
+  std::optional<HexEngine::Command>
+  PggAgent::coverMove(const HexEngine::Session& session, const Ctx& ctx, UnitId leader)
+  {
+    constexpr int kInContact = 3;
+    const PggFacts& facts = set_.facts();
+    std::vector<HexIndex> covering;  // the hexes and ratings of the Leaders already placed
+    std::vector<int> ratings;
+    for (UnitId other : Units::onMap(ctx, facts, side_)) {
+      if (other != leader && facts.leaderP(other) && memory_.considered.contains(other)) {
+        covering.push_back(*Units::hexOf(ctx.position, other));
+        ratings.push_back(facts.leaderRating(other));
+      }
+    }
+    std::vector<HexAi::Piece> uncovered;
+    for (UnitId unit : Units::onMap(ctx, facts, side_)) {
+      if (facts.leaderP(unit)) {
+        continue;
+      }
+      const HexIndex hex = *Units::hexOf(ctx.position, unit);
+      bool coveredP = false;
+      for (std::size_t l = 0; l < covering.size(); ++l) {
+        coveredP = coveredP || ctx.board.distance(hex, covering[l]) <= ratings[l];
+      }
+      if (!coveredP) {
+        uncovered.push_back(HexAi::Piece{hex, set_.zoc().enemyZocP(ctx, hex, side_) ? double(kInContact) : 1.0});
+      }
+    }
+    if (uncovered.empty()) {
+      return std::nullopt;
+    }
+    const int rating = facts.leaderRating(leader);
+    const HexAi::Rally centre = HexAi::rallyOf(ctx.board, *Units::hexOf(ctx.position, leader), static_cast<int>(ctx.board.hexCount()), uncovered);
+    const HexAi::EnemyField& field = *field_;
+    // Fewest points left uncovered first, then nearest the centre: one number, so that the choice is as for any goal.
+    const long long scale = 1000000000LL;
+    const auto distance = [&](HexIndex hex) -> std::optional<long long> {
+      double gained = 0.0;
+      for (const HexAi::Piece& piece : uncovered) {
+        gained += ctx.board.distance(hex, piece.hex) <= rating ? piece.strength : 0.0;
+      }
+      const long long away = std::min(*HexAi::goalDistance(ctx.board, field, HexAi::Goal{centre}, hex), scale - 1);
+      return (static_cast<long long>(uncovered.size()) * kInContact - static_cast<long long>(gained)) * scale + away;
+    };
+    const std::set<HexIndex>& refusedHexes = memory_.hexes[leader];
+    const auto allowedP = [&](HexIndex hex) {
+      return !refusedHexes.contains(hex) && roomP(ctx, hex, leader) && !set_.zoc().enemyZocP(ctx, hex, side_);
+    };
+    const UnitId units[] = {leader};
+    const HexEngine::Reachability reach = session.reachable(units, facts.normalMode());
+    const std::optional<std::size_t> best = HexAi::chooseDestination(reach, distance, *Units::hexOf(ctx.position, leader), false, allowedP);
+    if (!best) {
+      return std::nullopt;
+    }
+    return HexEngine::MoveUnit{{leader}, facts.normalMode(), reach.paths[*best]};
   }
 
   // One group's stack moves together. The stack with the group's first unit makes for the group's city and

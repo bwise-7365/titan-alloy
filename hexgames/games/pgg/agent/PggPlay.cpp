@@ -6,10 +6,11 @@
 // go no further is reported as a fault, and the rest still play. Each game's seed is
 // mixSeed(base seed, game number), so one game can be played again alone.
 //
-//   pgg_play [--games N] [--seed S] [--setup fixed|drawn] [--german nearest|consolidate|seize]
-//            [--soviet nearest|consolidate|seize] [--first G] [--refusals] [--events] [--root hexgames-dir]
+//   pgg_play [--games N] [--seed S] [--setup fixed|drawn] [--german TACTIC]
+//            [--soviet TACTIC] [--first G] [--refusals] [--events] [--root hexgames-dir]
 //
-// --first starts the numbering at game G, --refusals prints each refused command, and --events prints each
+// A TACTIC is nearest, consolidate, seize, or for comparison seize-first, seize-keep or seize-cover. --first
+// starts the numbering at game G, --refusals prints each refused command, and --events prints each
 // game's events. Exit codes: 0 all finished, 1 a game faulted or
 // did not finish, 2 usage, 3 the data would not load.
 // ----------------------------------------------
@@ -37,6 +38,8 @@ namespace {
     bool refusalsP = false;
     bool eventsP = false;
     std::filesystem::path root = HEXGAMES_SOURCE_DIR;
+    std::string germanName = "consolidate";  // as named on the command line, for the run line
+    std::string sovietName = "consolidate";
   };
 
   Options
@@ -70,8 +73,10 @@ namespace {
         options.setUp = "drawn" == value ? Pgg::SetUp::Drawn : Pgg::SetUp::Fixed;
       } else if ("--german" == name) {
         options.german = HexAi::tacticNamed(value);
+        options.germanName = value;
       } else if ("--soviet" == name) {
         options.soviet = HexAi::tacticNamed(value);
+        options.sovietName = value;
       } else if ("--root" == name) {
         options.root = value;
       } else {
@@ -137,6 +142,8 @@ namespace {
   run(const Options& options)
   {
     const Pgg::PggShared shared = Pgg::loadShared(options.root);
+    std::cout << "run game=pgg setup=" << (Pgg::SetUp::Drawn == options.setUp ? "drawn" : "fixed") << " german="
+              << options.germanName << " soviet=" << options.sovietName << "\n";
     int faults = 0;
     std::map<std::string, int> levels;
     std::map<std::string, int> cities;

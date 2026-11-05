@@ -39,8 +39,11 @@ namespace HexAi {
     if ("consolidate" == name) {
       return AttackOrConsolidate{};
     }
-    if ("seize" == name) {
-      return SeizeLocations{};
+    if ("seize" == name || "seize-first" == name || "seize-keep" == name || "seize-cover" == name) {
+      SeizeLocations seize;
+      seize.keepTargetsP = "seize" == name || "seize-keep" == name;
+      seize.leadersCoverP = "seize" == name || "seize-cover" == name;
+      return seize;
     }
     throw std::invalid_argument("HexAi: no tactic named '" + std::string(name) + "'");
   }

@@ -86,13 +86,18 @@ namespace Pgg {
     return next;
   }
 
+  Position
+  startOf(const PggPolicySet& set, const Position& scenario, const PggGameTask& task)
+  {
+    return SetUp::Drawn == task.setUp ? drawnSetUp(set, scenario, task.seed) : scenario;
+  }
+
   PggGameResult
   playGame(const PggShared& shared, const PggGameTask& task)
   {
     const PggPolicySet& set = *shared.set;
     PggGameResult result;
-    HexEngine::Session session(shared.definition, set.policies(),
-                               SetUp::Drawn == task.setUp ? drawnSetUp(set, shared.start, task.seed) : shared.start, task.seed);
+    HexEngine::Session session(shared.definition, set.policies(), startOf(set, shared.start, task), task.seed);
     HexAi::Tactic sovietTactic = task.soviet;
     if (HexAi::SeizeLocations* seize = std::get_if<HexAi::SeizeLocations>(&sovietTactic)) {
       std::mt19937_64 gen(HexEngine::mixSeed(task.seed, HexEngine::StreamTag::Player1));

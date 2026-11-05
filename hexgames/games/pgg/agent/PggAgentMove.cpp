@@ -182,14 +182,18 @@ namespace Pgg {
     if (seizingP()) {
       planSeizure(session, seen);
     }
+    const auto restrictedP = [&](UnitId unit) {
+      const auto army = state.armies.find(unit);
+      return 1 == ctx.position.clock().turn && state.armies.end() != army &&
+             (marchingP(army->second) || state.frozen.contains(army->second));
+    };
     for (UnitId unit : Units::onMap(ctx, facts, side_)) {
-      if (!memory_.considered.insert(unit).second) {
+      if ((leadersCoverP() && facts.leaderP(unit) && !restrictedP(unit)) || !memory_.considered.insert(unit).second) {
         continue;
       }
       const HexIndex from = *Units::hexOf(ctx.position, unit);
       const auto army = state.armies.find(unit);
-      if (1 == ctx.position.clock().turn && state.armies.end() != army &&
-          (marchingP(army->second) || state.frozen.contains(army->second))) {
+      if (restrictedP(unit)) {
         const std::optional<std::vector<HexIndex>> path = firstTurnPath(ctx, unit, army->second);
         if (path) {
           return HexEngine::MoveUnit{{unit}, mode, *path};
@@ -217,6 +221,15 @@ namespace Pgg {
       const std::optional<std::size_t> best = HexAi::chooseDestination(ctx.board, *field_, goal, reach, from, mustLeaveP, allowedP);
       if (best) {
         return HexEngine::MoveUnit{{unit}, mode, reach.paths[*best]};
+      }
+    }
+    if (leadersCoverP()) {
+      for (UnitId unit : Units::onMap(ctx, facts, side_)) {
+        if (facts.leaderP(unit) && memory_.considered.insert(unit).second) {
+          if (const std::optional<HexEngine::Command> move = coverMove(session, ctx, unit)) {
+            return move;
+          }
+        }
       }
     }
     return std::nullopt;

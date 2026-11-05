@@ -115,7 +115,8 @@ namespace HexAi {
   }
 
   std::vector<std::optional<std::size_t>>
-  allocate(std::span<const Force> forces, std::span<const Target> targets, double fringeShare, const TargetCost& cost)
+  allocate(std::span<const Force> forces, std::span<const Target> targets, double fringeShare, const TargetCost& cost,
+           std::span<const std::optional<std::size_t>> previous, double keepMargin)
   {
     std::vector<std::optional<std::size_t>> out(forces.size());
     if (targets.empty()) {
@@ -132,7 +133,11 @@ namespace HexAi {
       }
     }
     std::sort(pairs.begin(), pairs.end());
-    std::vector<double> left = quotasOf(targets, strength, fringeShare);
+    const std::vector<double> quotas = quotasOf(targets, strength, fringeShare);
+    std::vector<double> left = quotas;
+    const auto hadP = [&](std::size_t force, std::size_t target) {
+      return !previous.empty() && previous[force] == target;
+    };
     std::vector<int> assigned(targets.size(), 0);
     const auto give = [&](std::size_t force, std::size_t target) {
       out[force] = target;
@@ -147,7 +152,17 @@ namespace HexAi {
       }
     }
     for (const auto& [halves, force, target] : pairs) {
+      if (!out[force] && targets[target].fringeP && 0 == assigned[target] && hadP(force, target)) {
+        give(force, target);
+      }
+    }
+    for (const auto& [halves, force, target] : pairs) {
       if (!out[force] && targets[target].fringeP && 0 == assigned[target]) {
+        give(force, target);
+      }
+    }
+    for (const auto& [halves, force, target] : pairs) {
+      if (!out[force] && hadP(force, target) && -keepMargin * quotas[target] <= left[target] - forces[force].strength) {
         give(force, target);
       }
     }

@@ -5,7 +5,8 @@
 // (doc/2026-11-04-pgg-balance-plan.md, section 3.2). It moves and attacks by a HexAi tactic and draws on
 // no random stream: it works through the units in roster order, and ties go to the lowest index.
 //
-//   movement phases   arrivals enter, then each unit moves toward its goal; Leaders follow their divisions
+//   movement phases   arrivals enter, then each unit moves toward its goal; Leaders follow their divisions, or
+//                     under the seize tactic move last, to bring the most units within their radius
 //   first Soviet move the 13th and 20th Armies march and overstacked hexes clear, as 5.0 and 5.2 require
 //   combat phases     each enemy hex, with every unit that can reach it, at 1-1 or better as far as it knows
 //   air interdiction  the westernmost Soviet hexes
@@ -36,7 +37,7 @@ namespace Pgg {
   struct PggAgentStats {
     int attacks = 0;
     int integratedAttacks = 0;    // attacks with a doubled division among the attackers
-    int targetsKept = 0;          // seize: units whose city was the same as last phase
+    int targetsKept = 0;          // seize: units free to move whose city is the one they last moved for
     int targetsChanged = 0;
     int unitsCounted = 0;         // Soviet: combat units on the map as each combat phase opened
     int unitsBeyondRadius = 0;    // of those, the ones no working Leader could send to attack
@@ -84,6 +85,8 @@ namespace Pgg {
     std::vector<HexAi::Target> seizeTargets(const Ctx&, const PggSeen&, std::vector<std::size_t>& cities) const;
     void planSeizure(const HexEngine::Session&, const PggSeen&);
     std::optional<HexEngine::Command> seizeMove(const HexEngine::Session&, const Ctx&, UnitId);
+    bool leadersCoverP() const;
+    std::optional<HexEngine::Command> coverMove(const HexEngine::Session&, const Ctx&, UnitId);
     std::string seizeAdvance(const Ctx&, const PggSeen&, const HexModel::GameChoice&);
 
     // PggAgentCombat.cpp
@@ -102,7 +105,7 @@ namespace Pgg {
     bool advancedP_ = false;                  // one unit advances after each battle
     HexAi::StepCost stepCost_;                // seize: the terrain, for this side's commonest kind of unit
     std::vector<HexAi::CostField> cityFields_;  // seize: parallel to the Victory Point hexes
-    std::map<UnitId, std::size_t> lastCityOf_;
+    std::map<UnitId, std::size_t> lastCityOf_;  // the city each unit was last free to move for
     std::optional<HexIndex> lastTarget_;      // the hex of the attack last declared
     std::optional<UnitId> advancing_;
     PggAgentStats stats_;

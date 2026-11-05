@@ -251,6 +251,51 @@ TEST(PggSeizeTest, ASeizingUnitStillAttacks)
   EXPECT_TRUE(std::holds_alternative<HexEngine::DeclareAttack>(agent.choose(session, set.facts().german())));
 }
 
+TEST(PggSeizeTest, ALeaderMovesLastToCoverTheUnitsInContact)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  HexModel::Position position = PggTest::blank(set, 3, "soviet-move", "soviet");
+  const UnitId leader = PggTest::unit(set, "s1-remezov-13th-army-hq-4-10");
+  const UnitId rifle = PggTest::unit(set, "s1-64-inf-2-4-6");
+  const HexIndex leaderHex = PggTest::hex(set, "3020");
+  const HexIndex rifleHex = PggTest::hex(set, "1520");
+  const HexIndex germanHex = PggTest::hex(set, "1420");
+  ASSERT_LT(set.facts().leaderRating(leader), definition->board->distance(leaderHex, rifleHex));
+  position.place(leader, leaderHex);
+  position.place(rifle, rifleHex);
+  position.place(PggTest::unit(set, "s2-1-cav-4-5"), germanHex);
+  HexEngine::Session session(definition, set.policies(), position, kSeed);
+  Pgg::PggAgent agent(set, set.facts().soviet(), HexAi::SeizeLocations{});
+  // The rifle is in the German zone and cannot move, so the first command is the Leader's, and it closes.
+  const HexEngine::Command command = agent.choose(session, set.facts().soviet());
+  const HexEngine::MoveUnit* move = std::get_if<HexEngine::MoveUnit>(&command);
+  ASSERT_NE(nullptr, move);
+  EXPECT_EQ(leader, move->units.front());
+  EXPECT_LT(definition->board->distance(move->path.back(), rifleHex), definition->board->distance(leaderHex, rifleHex));
+  EXPECT_FALSE(set.zoc().enemyZocP(session.context(), move->path.back(), set.facts().soviet()));
+}
+
+TEST(PggSeizeTest, AnAgentRemembersItsTargetAcrossAPhaseThatCannotMoveIt)
+{
+  const auto definition = PggTest::definition();
+  const Pgg::PggPolicySet set(*definition);
+  HexModel::Position position = PggTest::blank(set, 3, "german-move1", "german");
+  position.place(PggTest::unit(set, "s2-1-cav-4-5"), PggTest::hex(set, "1020"));
+  HexEngine::Session session(definition, set.policies(), position, kSeed);
+  Pgg::PggAgent agent(set, set.facts().german(), HexAi::SeizeLocations{});
+  session.apply(agent.choose(session, set.facts().german()));
+  for (int stops = 0; set.facts().phaseNamed("german-move1") != session.prompt().phase || 3 == session.prompt().turn; ++stops) {
+    ASSERT_GT(40, stops);
+    const std::optional<HexModel::SideId> side = session.prompt().side;
+    ASSERT_TRUE(side.has_value());
+    session.apply(side == set.facts().german() ? agent.choose(session, *side) : HexEngine::Command{HexEngine::EndPhase{}});
+  }
+  // The unit was free in every German movement phase, so no target was changed for want of one.
+  EXPECT_EQ(0, agent.stats().targetsChanged);
+  EXPECT_LT(0, agent.stats().targetsKept);
+}
+
 TEST(PggDrawnSetUpTest, ItKeepsEveryPlaceAndArmAndChangesWhoIsThere)
 {
   const Pgg::PggShared shared = Pgg::loadShared(PggTest::root());

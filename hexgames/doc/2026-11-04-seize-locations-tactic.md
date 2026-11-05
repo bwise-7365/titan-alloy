@@ -69,9 +69,16 @@ division, or any other unit alone. In order:
   the mean strength of its arm.
 - **Advancing.** After a battle, the strongest attacker for which the emptied hex is nearer its city goes
   in, and goes further only if that takes it nearer still.
-- **Unchanged rules.** The first Soviet Movement Phase (rules 5.0 and 5.2), Leaders, air interdiction and
-  the reinforcement entries work as before. Leaders rally on the friendly units within 8 hexes and stay out
-  of enemy zones of control.
+- **Keeping targets.** A force stays with its city while the city's quota has room for it, up to 1/4 over the
+  quota. It is also the first choice for that city's minimum force. A city with no quota, such as one just
+  taken, keeps no one. In a combat phase no one can move, so nothing is reallocated.
+- **Leaders** move last, after their divisions, each to the hex that brings the most units within its radius
+  that no Leader already placed this phase covers. A unit in an enemy zone counts three times, since it is the
+  one that can attack now. With nothing to gain in reach, a Leader makes for the centre of the uncovered units.
+  It stays out of enemy zones of control. Distance is in hexes, so this estimates the Line of Communications
+  (11.22), which a zone can block.
+- **Unchanged rules.** The first Soviet Movement Phase (rules 5.0 and 5.2), air interdiction and the
+  reinforcement entries work as before.
 - **Left out** until a later version: overrun, Soviet rail movement and the South-Western Front.
 
 ## 3. Problems avoided
@@ -116,7 +123,6 @@ anything yet.
 | German attacks with an integrated division | 59% and 62% | 4% with consolidate |
 | Battles a game | 78 and 72 | 74 in 2 games of consolidate |
 | Soviet recapture points a game | 12.8 and 9.7 | 0 in 2 games of consolidate |
-| Units changing target from one phase to the next | German 37% and 38%, Soviet 62% and 65% | not applicable |
 | Soviet units beyond a working Leader's radius | 53% and 54% | 67% in 2 games of consolidate |
 
 **What this shows:**
@@ -134,13 +140,46 @@ anything yet.
 - **This is not yet a measure of balance.** The figures describe these agents, and the options left out
   (overrun, rail) are large. The agents favour the Soviets compared with the historical result.
 
-**Weaknesses worth fixing next, in the order I would try them:**
+### 4.1 Keeping targets and covering with Leaders
 
-1. **Soviet Leaders.** About half the Soviet units cannot attack because no Leader is near. Leaders should
-   follow the largest allocated group rather than the centre of mass of whatever is nearby.
-2. **Changing targets.** 62% to 65% of Soviet units change target each phase, so much of their marching is
-   wasted. A force could keep its target until the city is taken or its quota changes by more than a margin.
-3. **Overrun and rail,** as planned for the second version, each as a player parameter.
+Two weaknesses showed in the results above: about half the Soviet units could not attack because no Leader was
+near, and units changed target often. Both fixes are parameters, named in `pgg_play`, so that each one's effect
+can be measured. These are 60 more games, both sides on the same tactic, on the same seeds; all finished.
+
+The earlier table, and a figure of 62% to 65% for Soviet units changing target that I gave at first, overstated
+that measure. The allocation also ran in combat phases, when no one could move, and overwrote what each unit
+last aimed for. The table below is measured correctly: only units free to move count.
+
+| Tactic | Set-up | German points | Soviet points | Net | Levels | Beyond a Leader's radius | Changing target: Soviet | German |
+|---|---|---|---|---|---|---|---|---|
+| `seize-first` | Drawn | 38.3 | 15.3 | 23.0 | 5 S Mar, 6 S Str, 1 S Dec | 54% | 35% | 54% |
+| `seize-keep` | Drawn | 48.3 | 14.7 | 33.7 | 2 G Mar, 6 S Mar, 4 S Str | 60% | 20% | 49% |
+| `seize-cover` | Drawn | 24.6 | 19.8 | 4.8 | 1 S Mar, 4 S Str, 7 S Dec | 22% | 33% | 50% |
+| `seize` (both) | Drawn | 27.2 | 16.9 | 10.2 | 2 S Mar, 7 S Str, 3 S Dec | 24% | 19% | 49% |
+| `seize` (both) | Fixed | 31.2 | 20.8 | 10.4 | 3 S Mar, 5 S Str, 4 S Dec | 23% | 18% | 50% |
+
+`seize-first` reproduced its earlier games exactly, with the same fingerprints, so the fixes are the only change.
+
+**What this shows:**
+
+- **Covering with Leaders** more than halves the Soviet units that cannot attack, from 54% to 22%, and shifts the
+  game sharply to the Soviets (net 23.0 to 4.8).
+- **Keeping targets** nearly halves Soviet changes of target (35% to 20%), and on its own it helps the Germans
+  (net 23.0 to 33.7). With Leaders covering, it raises the net by about 5. With 12 games a row, that is within the noise.
+- **German changes of target hardly move,** staying near 50%. I have not found out why. One likely cause is that the
+  German fringe changes as cities fall, while the Soviet fringe changes less.
+- **The agents now favour the Soviets more,** with a mean net of about 10 against a historical 50 to 79. The Soviet
+  agents have been improved and the German agents have not had the equivalent, so this says more about the agents
+  than about the game.
+
+**What I would try next:**
+
+1. **Overrun and rail,** as planned for the second version, each as a player parameter. Overrun should do the most for
+   the Germans, since it is how they get out of a zone of control and past a line.
+2. **Why German targets change,** by watching games in `pgg_trc_viewer`.
+3. **Attacks.** Attacks are still chosen one hex at a time in hex order, with no concentration on a chosen breakthrough.
+
+The run summaries are in `doc/pgg-runs/`.
 
 ## 5. Recommendations for TRC5
 

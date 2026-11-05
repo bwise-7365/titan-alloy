@@ -144,6 +144,58 @@ TEST(SeizeTest, TheFringeShareDividesTheStrengthAndTheRearGoesByValue)
   EXPECT_EQ(1, counts[2]);
 }
 
+TEST(SeizeTest, AForceKeepsItsTargetWhileTheQuotaHasRoom)
+{
+  const HexModel::Board board = ToyBoard::build();
+  const std::vector<Target> targets{{ToyBoard::at(board, "A1"), 1.0, true}, {ToyBoard::at(board, "E5"), 1.0, true}};
+  // Four forces beside A1. Without a memory, the nearest two go to A1 and the far two to E5.
+  const std::vector<Force> forces{{ToyBoard::at(board, "A2"), 1.0},
+                                  {ToyBoard::at(board, "B1"), 1.0},
+                                  {ToyBoard::at(board, "B2"), 1.0},
+                                  {ToyBoard::at(board, "C3"), 1.0}};
+  const auto fresh = HexAi::allocate(forces, targets, 1.0, byDistance(board, targets));
+  EXPECT_EQ(0u, fresh[0]);
+  EXPECT_EQ(1u, fresh[3]);
+  // Last time the first force was bound for E5, and the last for A1: each stays with its own.
+  const std::vector<std::optional<std::size_t>> previous{1u, std::nullopt, std::nullopt, 0u};
+  const auto kept = HexAi::allocate(forces, targets, 1.0, byDistance(board, targets), previous, 0.25);
+  EXPECT_EQ(1u, kept[0]);
+  EXPECT_EQ(0u, kept[3]);
+}
+
+TEST(SeizeTest, ATargetWithNoQuotaKeepsNoOne)
+{
+  const HexModel::Board board = ToyBoard::build();
+  // A1 has been taken, so it is a rear target and the whole strength goes to the fringe.
+  const std::vector<Target> targets{{ToyBoard::at(board, "A1"), 5.0, false}, {ToyBoard::at(board, "E5"), 1.0, true}};
+  const std::vector<Force> forces{{ToyBoard::at(board, "A2"), 1.0}, {ToyBoard::at(board, "B1"), 1.0}};
+  const std::vector<std::optional<std::size_t>> previous{0u, 0u};
+  const auto out = HexAi::allocate(forces, targets, 1.0, byDistance(board, targets), previous, 0.25);
+  EXPECT_EQ(1u, out[0]);
+  EXPECT_EQ(1u, out[1]);
+}
+
+TEST(SeizeTest, ATargetGoesOverItsQuotaOnlyByTheMargin)
+{
+  const HexModel::Board board = ToyBoard::build();
+  const std::vector<Target> targets{{ToyBoard::at(board, "A1"), 1.0, true}, {ToyBoard::at(board, "E5"), 1.0, true}};
+  // Eight of strength in all, so a quota of four each. A1 can keep five with a margin of 1/4, and no more.
+  std::vector<Force> forces;
+  std::vector<std::optional<std::size_t>> previous;
+  for (const char* hex : {"A2", "A3", "B1", "B2", "B3", "C1", "C2"}) {
+    forces.push_back({ToyBoard::at(board, hex), 1.0});
+    previous.push_back(0u);
+  }
+  forces.push_back({ToyBoard::at(board, "E4"), 1.0});
+  previous.push_back(1u);
+  const auto out = HexAi::allocate(forces, targets, 1.0, byDistance(board, targets), previous, 0.25);
+  int toFirst = 0;
+  for (const auto& target : out) {
+    toFirst += 0u == target ? 1 : 0;
+  }
+  EXPECT_EQ(5, toFirst);
+}
+
 TEST(SeizeTest, WithNoFringeEverythingGoesToTheRear)
 {
   const HexModel::Board board = ToyBoard::build();

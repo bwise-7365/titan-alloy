@@ -36,9 +36,14 @@ namespace HexAi {
   };
   struct SeizeLocations {  // Seize.h; fringeShare of the side's strength goes to the fringe
     double fringeShare = 1.0;
+    bool keepTargetsP = true;   // a force keeps its target until the target's quota no longer has room for it
+    double keepMargin = 0.25;   // how far over its quota a target may go, as a part of that quota, to keep a force
+    bool leadersCoverP = true;  // Leaders move last, to bring the most units within their radius
   };
   using Tactic = std::variant<AttackNearest, AttackOrConsolidate, SeizeLocations>;
-  Tactic tacticNamed(std::string_view);  // "nearest", "consolidate" or "seize"; throws naming the text
+  // "nearest", "consolidate", "seize", or for comparison "seize-first" (without keeping targets or covering
+  // with Leaders), "seize-keep" and "seize-cover" (with one of them). Throws naming the text.
+  Tactic tacticNamed(std::string_view);
 
   // A unit as the deciding side sees it.
   struct Piece {

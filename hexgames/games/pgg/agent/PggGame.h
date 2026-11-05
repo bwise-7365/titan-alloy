@@ -60,6 +60,8 @@ namespace Pgg {
     PggAgentStats sovietStats;
   };
 
+  // The position a task's game begins from.
+  Position startOf(const PggPolicySet&, const Position& scenario, const PggGameTask&);
   // Throws std::invalid_argument when the game can go no further: a fault to report.
   PggGameResult playGame(const PggShared&, const PggGameTask&);
 

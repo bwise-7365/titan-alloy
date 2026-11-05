@@ -65,9 +65,16 @@ namespace HexAi {
   // A force that is not free counts first against the nearest fringe target. Each fringe target then gets
   // one force at least, since an empty location is the easiest to take. The rest go to their quotas in
   // order of cost, closest pair first, and any left over go to their nearest target.
+  //
+  // With `previous` (each force's target last time, parallel to the forces), a force stays with its target
+  // rather than changing its mind each phase. It is the first choice for that target's one force, and it keeps
+  // the target while that leaves the target no more than keepMargin of its quota over the quota. A target with
+  // no quota, such as a city the side has now taken, keeps no one.
   using TargetCost = std::function<std::optional<int>(std::size_t target, HexIndex)>;
   std::vector<std::optional<std::size_t>> allocate(std::span<const Force>, std::span<const Target>, double fringeShare,
-                                                   const TargetCost&);
+                                                   const TargetCost&,
+                                                   std::span<const std::optional<std::size_t>> previous = {},
+                                                   double keepMargin = 0.0);
 
 }  // namespace HexAi
 // ----------------------------------------------
