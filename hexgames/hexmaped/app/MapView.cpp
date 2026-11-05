@@ -138,12 +138,37 @@ namespace HexQt {
   {
     scene_->clear();
     highlight_ = nullptr;
+    overlay_.clear();
     if (nullptr == doc_) {
       return;
     }
     const HexView::Scene scene = buildScene();
     scene_->setSceneRect(0.0, 0.0, scene.width(), scene.height());
     paintScene(scene, symbols_, *scene_, PaintOptions{idsVisibleP_});
+    return;
+  }
+
+  void
+  MapView::setOverlay(const HexView::Scene& overlay)
+  {
+    for (QGraphicsItem* item : overlay_) {
+      scene_->removeItem(item);
+      delete item;
+    }
+    overlay_.clear();
+    QGraphicsScene painted;
+    paintScene(overlay, symbols_, painted, PaintOptions{});
+    constexpr qreal kAboveTheMap = 1000000.0;
+    qreal z = kAboveTheMap;
+    for (QGraphicsItem* item : painted.items(Qt::AscendingOrder)) {
+      if (nullptr == item->parentItem()) {
+        painted.removeItem(item);
+        scene_->addItem(item);
+        item->setZValue(z);
+        z += 1.0;
+        overlay_.push_back(item);
+      }
+    }
     return;
   }
 

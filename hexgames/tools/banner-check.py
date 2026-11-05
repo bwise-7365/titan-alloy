@@ -16,7 +16,7 @@ LINE = "Copyright Ben Paul Wise. All Rights Reserved."
 RULER = "// ----------------------------------------------"
 CPP = (".h", ".hpp", ".cpp")
 ONE_LINE = {".md": "", ".txt": "", ".cmake": "# ", ".py": "# ", ".ps1": "# ", ".puml": "' "}
-ROOTS = ["hexxml_games", "hexmodel", "hexrules", "hexsearch", "hexengine", "hexrecord", "hexai",
+ROOTS = ["hexxml_games", "hexmodel", "hexrules", "hexsearch", "hexengine", "hexrecord", "hexai", "hexqt",
          "hexview", "hexqt", "games", "tools", "tasks", "tests", "cmake", "uml", "doc",
          "game_records", "packages", "game_rules", "map_graphics", "unit_graphics"]
 TOP_FILES = ["PLAN.md", "BUGS.txt", "CMakeLists.txt", ".gitignore"]

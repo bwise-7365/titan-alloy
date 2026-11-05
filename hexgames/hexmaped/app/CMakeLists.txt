@@ -9,16 +9,23 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Svg Conc
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 # help.qrc builds the user guide into the executable for Help > About (":/help/README.md").
+# hexqt_mapview -- the map view and the painter, shared with pgg_trc_viewer.
+add_library(hexqt_mapview STATIC
+  MapView.cpp
+  ScenePainter.cpp)
+target_include_directories(hexqt_mapview PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(hexqt_mapview PUBLIC hexmaped hexview
+  Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg)
+target_compile_features(hexqt_mapview PUBLIC cxx_std_20)
+
 add_executable(HexMapEd WIN32
   Main.cpp
   MainWindow.cpp
   GenerateDock.cpp
-  MapView.cpp
-  ScenePainter.cpp
   help.qrc)
 # Qt Svg renders a panel's SVG picture (hexsheet.xsd PanelImage, 2026-10-06); Qt Concurrent runs the
 # map generator (hexgen) off the GUI thread.
-target_link_libraries(HexMapEd PRIVATE hexmaped hexview hexgen
+target_link_libraries(HexMapEd PRIVATE hexqt_mapview hexmaped hexview hexgen
   Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::Concurrent)
 target_compile_features(HexMapEd PRIVATE cxx_std_20)
 target_compile_definitions(HexMapEd PRIVATE

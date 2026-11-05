@@ -24,6 +24,7 @@
 
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace HexQt {
 
@@ -43,6 +44,9 @@ namespace HexQt {
     // Presentation only: roads, railways and rivers drawn hand-scratched (hexview/Scratch.h), 0 = straight.
     static constexpr int kMaxWaviness = 10;
     void setWaviness(int level);
+    // A scene laid over the map, replacing the last: the units of a game, changed far more often than the map,
+    // so that dragging through a game does not rebuild the map each step.
+    void setOverlay(const HexView::Scene&);
     // The drawn map as an SVG document: the same Scene the window paints (hexview's writeSvg), with the
     // current waviness and the Show hex ids choice. Throws std::invalid_argument when no document is open.
     std::string svg() const;
@@ -62,6 +66,7 @@ namespace HexQt {
     const HexMapEd::Document* doc_ = nullptr;
     QGraphicsScene* scene_;
     QGraphicsItem* highlight_ = nullptr;
+    std::vector<QGraphicsItem*> overlay_;
     HexView::SymbolLibrary symbols_;
     bool idsVisibleP_ = true;
     bool panningP_ = true;

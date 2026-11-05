@@ -28,7 +28,8 @@ regenerated only with `hexgen_cli` after a deliberate change. ctest label `hexge
 
 `hexai/` holds game-neutral tactics for scripted agents, ported from HexKrieg (attack nearest, attack or consolidate),
 and `playOut`, which plays a game with one agent per side (plan `doc/2026-11-04-pgg-balance-plan.md`). It depends on
-hexengine and hexsearch only. `games/pgg/agent/` holds the PGG agent and the command `pgg_play`.
+hexengine and hexsearch only. `games/pgg/agent/` holds the PGG agent and the command `pgg_play`. `hexqt/` holds `pgg_trc_viewer`, on HexMapEd's
+map view and `hexview`'s ReplayController, which steps through a hexsave script or a game of a run file.
 
 ## Build and test
 - C++20, CMake ≥ 3.20, presets in `CMakePresets.json`: `win-msvc-debug`, `win-msvc-release`,

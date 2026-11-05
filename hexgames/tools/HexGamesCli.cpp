@@ -7,9 +7,7 @@
 // the engine's defaults instead, which is what the engine's own smoke golden is recorded with. A
 // PGG record (M7b) is loaded with PGG's own value-line reader and played with the PGG policy set.
 // ----------------------------------------------
-#include "PggBinding.h"
-#include "PggPolicySet.h"
-#include "TrcPolicySet.h"
+#include "GameOfRecord.h"
 
 #include "hexengine/Defaults.h"
 #include "hexengine/GameNames.h"
@@ -38,53 +36,17 @@ namespace {
     return 2;
   }
 
-  // The policy set a record is played with: the game's own module where there is one.
-  class PolicyChoice {
-  public:
-    PolicyChoice(const HexRules::GameDefinition& definition, bool defaultsP)
-    {
-      if (!defaultsP && "trc" == definition.rules->gameId()) {
-        trc_ = std::make_unique<Trc::TrcPolicySet>(definition);
-      } else if (!defaultsP && "pgg" == definition.rules->gameId()) {
-        pgg_ = std::make_unique<Pgg::PggPolicySet>(definition);
-      } else {
-        defaults_ = std::make_unique<HexEngine::DefaultPolicySet>(definition, HexEngine::GameSteps::Withheld);
+  // A run on engine defaults names every step behaviour of the rules it withheld (M6b).
+  void
+  reportWithheld(const HexGames::PolicyChoice& choice)
+  {
+    if (nullptr != choice.defaults()) {
+      for (const auto& [does, why] : choice.defaults()->steps().withheld()) {
+        std::cerr << "hexgames_cli: withheld step behaviour '" << does << "': " << why << "\n";
       }
     }
-    const HexEngine::Policies&
-    policies() const
-    {
-      if (trc_) {
-        return trc_->policies();
-      }
-      return pgg_ ? pgg_->policies() : defaults_->policies();
-    }
-    const HexEngine::GameNames&
-    names() const
-    {
-      if (trc_) {
-        return trc_->names();
-      }
-      return pgg_ ? pgg_->names() : defaults_->names();
-    }
-
-    // A run on engine defaults names every step behaviour of the rules it withheld (M6b).
-    void
-    reportWithheld() const
-    {
-      if (defaults_) {
-        for (const auto& [does, why] : defaults_->steps().withheld()) {
-          std::cerr << "hexgames_cli: withheld step behaviour '" << does << "': " << why << "\n";
-        }
-      }
-      return;
-    }
-
-  private:
-    std::unique_ptr<Trc::TrcPolicySet> trc_;
-    std::unique_ptr<Pgg::PggPolicySet> pgg_;
-    std::unique_ptr<HexEngine::DefaultPolicySet> defaults_;
-  };
+    return;
+  }
 
   int
   validate(const std::filesystem::path& manifest)
@@ -99,24 +61,12 @@ namespace {
     return problems.empty() ? 0 : 1;
   }
 
-  // The package a record names, resolved against the record's own directory.
-  std::shared_ptr<const HexRules::GameDefinition>
-  definitionOf(const std::filesystem::path& record)
-  {
-    const HexRecord::SaveModel model = HexRecord::SaveModel::read(record);
-    const std::filesystem::path manifest =
-        std::filesystem::weakly_canonical(record.parent_path() / model.package);
-    const HexModel::ValueLineReader reader =
-        "pgg" == model.game ? HexModel::ValueLineReader(&Pgg::valueLine) : HexModel::ValueLineReader(&HexEngine::defaultValueLine);
-    return std::make_shared<const HexRules::GameDefinition>(HexRules::PackageLoader::load(manifest, reader));
-  }
-
   int
   replay(const std::filesystem::path& script, const std::filesystem::path& golden, bool goldenGivenP, bool defaultsP)
   {
-    const std::shared_ptr<const HexRules::GameDefinition> definition = definitionOf(script);
-    const PolicyChoice choice(*definition, defaultsP);
-    choice.reportWithheld();
+    const std::shared_ptr<const HexRules::GameDefinition> definition = HexGames::definitionOf(script);
+    const HexGames::PolicyChoice choice(*definition, defaultsP);
+    reportWithheld(choice);
 
     if (goldenGivenP) {
       const HexRecord::GoldenReport report = HexRecord::compareWithGolden(
@@ -151,9 +101,9 @@ namespace {
   int
   record(const std::filesystem::path& script, const std::filesystem::path& out, bool defaultsP)
   {
-    const std::shared_ptr<const HexRules::GameDefinition> definition = definitionOf(script);
-    const PolicyChoice choice(*definition, defaultsP);
-    choice.reportWithheld();
+    const std::shared_ptr<const HexRules::GameDefinition> definition = HexGames::definitionOf(script);
+    const HexGames::PolicyChoice choice(*definition, defaultsP);
+    reportWithheld(choice);
     const HexRecord::Record read =
         HexRecord::readRecord(script, *definition, choice.policies());
     HexEngine::Session session = HexRecord::sessionFor(read, definition, choice.policies());

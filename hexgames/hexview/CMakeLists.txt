@@ -29,6 +29,15 @@ target_include_directories(hexview PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(hexview PUBLIC hexxml hexcoord hexmodel)
 target_compile_features(hexview PUBLIC cxx_std_20)
 
+# hexview_play -- the play state over the map, for what needs the engine: the replay of a record and plain
+# counters. hexview itself stays free of it, so that the editor draws a sheet with no rules loaded.
+add_library(hexview_play STATIC
+  Replay.cpp
+  PlayLayers.cpp)
+target_include_directories(hexview_play PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
+target_link_libraries(hexview_play PUBLIC hexview hexengine hexrecord)
+target_compile_features(hexview_play PUBLIC cxx_std_20)
+
 add_library(hexview_contracts OBJECT EXCLUDE_FROM_ALL ContractsCompile.cpp)
 target_include_directories(hexview_contracts PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(hexview_contracts PUBLIC hexrecord hexengine hexrules hexxml hexmodel hexcoord)
