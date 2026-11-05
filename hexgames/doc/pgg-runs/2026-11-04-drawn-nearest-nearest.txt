@@ -1,0 +1,17 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+run game=pgg setup=drawn german=nearest soviet=nearest
+game 0 seed 8364332025578307927 german 26 soviet 2 'Soviet Strategic' turn 13 commands 1946 refused 0 fingerprint 5067148851415826026 38598 ms
+game 1 seed 15129400471043649242 german 15 soviet 7 'Soviet Strategic' turn 13 commands 2074 refused 0 fingerprint 3230622629341359769 43050 ms
+game 2 seed 15076568138900347930 german 15 soviet 4 'Soviet Strategic' turn 13 commands 1822 refused 0 fingerprint 1944895412207650474 33216 ms
+game 3 seed 10899367893613646835 german 15 soviet 5 'Soviet Strategic' turn 13 commands 1886 refused 0 fingerprint 7142752804561574478 41036 ms
+game 4 seed 5718080069210426826 german 15 soviet 6 'Soviet Strategic' turn 13 commands 1932 refused 0 fingerprint 1525529615239772599 34945 ms
+game 5 seed 12592409721416316329 german 15 soviet 7 'Soviet Strategic' turn 13 commands 1936 refused 0 fingerprint 6879108300411185333 39456 ms
+game 6 seed 14657204985391573939 german 15 soviet 5 'Soviet Strategic' turn 13 commands 2006 refused 0 fingerprint 9050238834219998862 37167 ms
+game 7 seed 16758065308340073894 german 15 soviet 5 'Soviet Strategic' turn 13 commands 2075 refused 0 fingerprint 9958019507975201969 42517 ms
+game 8 seed 4728256185809391287 german 15 soviet 7 'Soviet Strategic' turn 13 commands 1849 refused 0 fingerprint 4696454046954249603 37879 ms
+game 9 seed 14428344862608264900 german 15 soviet 9 'Soviet Strategic' turn 13 commands 1915 refused 0 fingerprint 844436489952515527 37421 ms
+game 10 seed 16922128403194887742 german 15 soviet 6 'Soviet Strategic' turn 13 commands 1920 refused 0 fingerprint 5910593459339956195 31252 ms
+game 11 seed 9515093534868395111 german 15 soviet 1 'Soviet Strategic' turn 13 commands 1977 refused 0 fingerprint 17931656776256958672 26490 ms
+12 x 'Soviet Strategic'
+0 of 12 faulted or did not finish
+Copyright Ben Paul Wise. All Rights Reserved.

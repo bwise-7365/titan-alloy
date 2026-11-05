@@ -1,0 +1,35 @@
+Copyright Ben Paul Wise. All Rights Reserved.
+run game=pgg setup=drawn german=seize soviet=seize
+game 0 seed 8364332025578307927 german 28 soviet 15 'Soviet Strategic' turn 13 commands 1394 battles 82 recapture 10 refused 0 fingerprint 3849560294008819366 42264 ms
+game 1 seed 15129400471043649242 german 5 soviet 14 'Soviet Decisive' turn 13 commands 1426 battles 87 recapture 4 refused 0 fingerprint 10735469618247458513 42686 ms
+game 2 seed 15076568138900347930 german 40 soviet 13 'Soviet Marginal' turn 13 commands 1525 battles 91 recapture 10 refused 0 fingerprint 10326097586341649463 42042 ms
+game 3 seed 10899367893613646835 german 30 soviet 19 'Soviet Strategic' turn 13 commands 1453 battles 89 recapture 10 refused 0 fingerprint 619675663883458429 42696 ms
+game 4 seed 5718080069210426826 german 30 soviet 17 'Soviet Strategic' turn 13 commands 1420 battles 63 recapture 12 refused 0 fingerprint 3092552884549044193 35492 ms
+game 5 seed 12592409721416316329 german 30 soviet 18 'Soviet Strategic' turn 13 commands 1470 battles 81 recapture 10 refused 2 fingerprint 16509216377374893694 39605 ms
+  refused 11 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
+  refused 12 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
+game 6 seed 14657204985391573939 german 14 soviet 18 'Soviet Decisive' turn 13 commands 1456 battles 76 recapture 10 refused 0 fingerprint 16715068311818980950 37299 ms
+game 7 seed 16758065308340073894 german 33 soviet 16 'Soviet Strategic' turn 13 commands 1446 battles 71 recapture 8 refused 0 fingerprint 7821775106034979918 36641 ms
+game 8 seed 4728256185809391287 german 20 soviet 19 'Soviet Strategic' turn 13 commands 1289 battles 53 recapture 8 refused 3 fingerprint 5598531881869426208 26278 ms
+  refused 10 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
+  refused 11 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
+  refused 12 soviet-move reinforce: PggArrivals: no counter of that type is left in the pool or the dead pile (14.14)
+game 9 seed 14428344862608264900 german 26 soviet 19 'Soviet Strategic' turn 13 commands 1341 battles 78 recapture 12 refused 0 fingerprint 3486427494034229508 30238 ms
+game 10 seed 16922128403194887742 german 50 soviet 14 'Soviet Marginal' turn 13 commands 1631 battles 99 recapture 12 refused 0 fingerprint 10178407778810430068 40219 ms
+game 11 seed 9515093534868395111 german 20 soviet 21 'Soviet Decisive' turn 13 commands 1443 battles 79 recapture 20 refused 0 fingerprint 15125557689236353611 34580 ms
+3 x 'Soviet Decisive'
+2 x 'Soviet Marginal'
+7 x 'Soviet Strategic'
+held 3 x Gzhatsk
+held 8 x Mogilev
+held 8 x Orsha
+held 4 x Roslavl
+held 8 x Smolensk
+held 6 x Vitebsk
+held 4 x Vyazma
+held 3 x Yelnya
+mean german 27.1667 soviet 16.9167 battles 79.0833 recapture-points 10.5 refused 0.416667
+german attacks integrated 60.076%, targets changed 49.2847%
+soviet units beyond radius 24.1369%, targets changed 18.8939%
+0 of 12 faulted or did not finish
+Copyright Ben Paul Wise. All Rights Reserved.
