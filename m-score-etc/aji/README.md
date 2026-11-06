@@ -236,20 +236,31 @@ What the reports show:
 - **HexKrieg.** `src/` is one declared layer of 63 files, and its dependencies connect all of them into one module. That module costs 49.9 points, almost all of it size. The two front ends form a second module because `HKSimFrame` uses `SwingControls` and `HKSimPanel` uses `HexPanel`. Declaring finer layers inside `src/` would give a more informative score.
 - **aji.** Its own first run showed that `extract` depended on `graph` (the extractor derived layers itself), which joined two packages that should be independent. Moving that step to the command line raised the score from 52.9 % to 56.1 %.
 
+  On 6 November, with the explanation section and the tests on real projects added, aji had 31 files and scored 59.139 %. Three changes that the explanation pointed to raised the score to 75.289 %. The 117 dependencies between files are the same before and after; only the packages and their layers changed.
+
+  1. The `extract` package held two groups of four files with no dependency between them, joined only by `Extractor`. It was split into `aji.spec` and `aji.deps`, and `Extractor` went one layer down, beside `score` (+10.0 points).
+  2. `Params` and `Module`, which depend on nothing, moved from `score` to `aji.model` (+4.5). Of that gain, 3.3 points are a threshold effect: `score` now has four files, and a module of fewer than five files pays no inner penalty.
+  3. `Checks` moved to a package of its own, in a layer above the tests that share it (+1.6).
+
+  The 24.7 points still lost all come from dependencies from lower layers. In a program of 31 files, a few dependencies fill a large share of the possible pairs.
+
 ## 10. Code layout
 
 The packages are aji's own layers, declared in `projects/aji.aji.xml`:
 
 | Layer | Package | Contents |
 |---|---|---|
-| 1 | `aji.model` | `FileNode`, `Dep`, `SystemModel`: the input to the formula |
+| 1 | `aji.model` | `FileNode`, `Dep`, `SystemModel`: the input to the formula; `Params`: the switches for its open choices; `Module`: files of one layer that dependencies link |
 | 1 | `aji.lex` | a lexer for Java and C++ that drops comments and literals |
-| 2 | `aji.graph` | connected components, Tarjan's strongly connected components, the pieces left when nodes are taken out, derived layering, propagation cost |
-| 2 | `aji.extract` | project specification, path patterns, Java and C++ dependency extraction |
-| 3 | `aji.score` | the M-score: modules, dependency classes, the per-module terms, the parameters |
+| 2 | `aji.graph` | connected components, Tarjan's strongly connected components, the pieces left when nodes are taken out, a shortest cycle, derived layering, propagation cost |
+| 2 | `aji.spec` | the project specification: declared layers, path patterns, languages |
+| 2 | `aji.deps` | the Java and C++ dependency finders |
+| 3 | `aji.score` | the M-score: dependency classes, the per-module terms, the result |
+| 3 | `aji.extract` | `Extractor`, which turns a project specification into a model |
 | 4 | `aji.diagnose` | why the modules that lose the most lose points: folders, joining files, what-if scores, cycles, dependencies from lower layers |
 | 5 | `aji.io` | XML input and output, the text report and the CSV table |
 | 6 | `aji.app` | the command line |
-| 7 | `aji.selftest`, `aji.app` (in `test/`) | the self-test; the tests on HexKrieg and expert-goggles |
+| 7 | `aji.testing` (in `test/`) | `Checks`, which the tests share |
+| 8 | `aji.selftest`, `aji.app` (in `test/`) | the self-test; the tests on HexKrieg and expert-goggles |
 
 All functions are pure except reading source and XML files (`Extractor`, `XmlFiles`) and writing the outputs (`Main`, `XmlFiles.writeSystem`).

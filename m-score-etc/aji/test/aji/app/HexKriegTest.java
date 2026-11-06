@@ -1,7 +1,7 @@
 package aji.app;
 
 import aji.model.Dep;
-import aji.selftest.Checks;
+import aji.testing.Checks;
 
 import java.util.List;
 import java.util.Set;

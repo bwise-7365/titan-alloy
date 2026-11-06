@@ -1,4 +1,4 @@
-package aji.extract;
+package aji.spec;
 
 import java.nio.file.Path;
 import java.util.List;

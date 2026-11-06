@@ -3,6 +3,8 @@ package aji.score;
 import aji.graph.Graphs;
 import aji.model.Dep;
 import aji.model.FileNode;
+import aji.model.Module;
+import aji.model.Params;
 import aji.model.SystemModel;
 
 import java.util.ArrayList;

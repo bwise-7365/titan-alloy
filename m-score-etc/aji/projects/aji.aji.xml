@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- aji measuring itself. Each package is a layer, in the order the packages are
      meant to depend on one another (layer 1 is the most depended upon):
-       1 model, lex       data records; the lexer
-       2 graph, extract   graph algorithms; dependency extraction
-       3 score            the M-score
-       4 diagnose         what joins the modules that lose the most
-       5 io               XML input and output; the text report
-       6 app              the command line
-       7 selftest         the checks against the paper's examples; the tests on
-                          HexKrieg and expert-goggles -->
+       1 model, lex         the system's files, dependencies and modules, and the
+                            parameters of the score; the lexer
+       2 graph, spec, deps  graph algorithms; the project specification; the
+                            dependency finders
+       3 score, extract     the M-score; the extraction of a model from a project
+       4 diagnose           why the modules that lose the most lose points
+       5 io                 XML input and output; the text report
+       6 app                the command line
+       7 testing            what the tests share
+       8 tests              the self-test; the tests on HexKrieg and expert-goggles
+     A file belongs to the first layer whose pattern it matches, so the rule for
+     test/aji/testing comes before the rule for the rest of test. -->
 <aji-project name="aji" root=".." language="java">
   <layer number="1" name="model, lex">
     <path glob="src/aji/model/**"/>
     <path glob="src/aji/lex/**"/>
   </layer>
-  <layer number="2" name="graph, extract">
+  <layer number="2" name="graph, spec, deps">
     <path glob="src/aji/graph/**"/>
-    <path glob="src/aji/extract/**"/>
+    <path glob="src/aji/spec/**"/>
+    <path glob="src/aji/deps/**"/>
   </layer>
-  <layer number="3" name="score">
+  <layer number="3" name="score, extract">
     <path glob="src/aji/score/**"/>
+    <path glob="src/aji/extract/**"/>
   </layer>
   <layer number="4" name="diagnose">
     <path glob="src/aji/diagnose/**"/>
@@ -30,7 +36,10 @@
   <layer number="6" name="app">
     <path glob="src/aji/app/**"/>
   </layer>
-  <layer number="7" name="selftest">
+  <layer number="7" name="testing">
+    <path glob="test/aji/testing/**"/>
+  </layer>
+  <layer number="8" name="tests">
     <path glob="test/**"/>
   </layer>
 </aji-project>

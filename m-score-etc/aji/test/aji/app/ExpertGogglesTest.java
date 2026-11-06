@@ -2,7 +2,7 @@ package aji.app;
 
 import aji.model.Dep;
 import aji.model.SystemModel;
-import aji.selftest.Checks;
+import aji.testing.Checks;
 
 import java.util.List;
 

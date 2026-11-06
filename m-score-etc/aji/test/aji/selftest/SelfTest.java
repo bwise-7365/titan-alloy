@@ -1,19 +1,20 @@
 package aji.selftest;
 
+import aji.deps.CppDeps;
+import aji.deps.JavaDeps;
+import aji.deps.SourceUnit;
 import aji.diagnose.Diagnosis;
-import aji.extract.CppDeps;
-import aji.extract.JavaDeps;
-import aji.extract.SourceUnit;
 import aji.graph.Graphs;
 import aji.io.XmlFiles;
 import aji.lex.Lexer;
 import aji.lex.Token;
 import aji.model.Dep;
 import aji.model.FileNode;
+import aji.model.Params;
 import aji.model.SystemModel;
 import aji.score.MScore;
-import aji.score.Params;
 import aji.score.Result;
+import aji.testing.Checks;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

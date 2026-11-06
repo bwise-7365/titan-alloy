@@ -1,7 +1,15 @@
 package aji.extract;
 
+import aji.deps.CppDeps;
+import aji.deps.Found;
+import aji.deps.JavaDeps;
+import aji.deps.SourceUnit;
 import aji.model.FileNode;
 import aji.model.SystemModel;
+import aji.spec.Glob;
+import aji.spec.Language;
+import aji.spec.LayerRule;
+import aji.spec.ProjectSpec;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

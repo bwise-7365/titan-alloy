@@ -2,9 +2,9 @@ package aji.io;
 
 import aji.diagnose.Diagnosis;
 import aji.model.Dep;
-import aji.score.Module;
+import aji.model.Module;
+import aji.model.Params;
 import aji.score.ModuleScore;
-import aji.score.Params;
 import aji.score.Result;
 
 import java.util.ArrayList;

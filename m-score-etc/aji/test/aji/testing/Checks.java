@@ -1,4 +1,4 @@
-package aji.selftest;
+package aji.testing;
 
 /**
  * Counts and prints the checks of one test run. A check prints a PASS or FAIL line; an INFO

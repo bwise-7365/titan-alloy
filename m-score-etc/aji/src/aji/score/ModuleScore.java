@@ -1,5 +1,7 @@
 package aji.score;
 
+import aji.model.Module;
+
 import java.util.Comparator;
 
 /**

@@ -2,15 +2,15 @@ package aji.app;
 
 import aji.diagnose.Diagnosis;
 import aji.extract.Extractor;
-import aji.extract.Language;
-import aji.extract.ProjectSpec;
 import aji.graph.Graphs;
 import aji.io.ReportWriter;
 import aji.io.XmlFiles;
+import aji.model.Params;
 import aji.model.SystemModel;
 import aji.score.MScore;
-import aji.score.Params;
 import aji.score.Result;
+import aji.spec.Language;
+import aji.spec.ProjectSpec;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

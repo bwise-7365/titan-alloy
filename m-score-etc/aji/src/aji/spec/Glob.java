@@ -1,4 +1,4 @@
-package aji.extract;
+package aji.spec;
 
 import java.util.regex.Pattern;
 

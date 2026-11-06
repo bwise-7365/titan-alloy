@@ -1,5 +1,6 @@
 package aji.score;
 
+import aji.model.Params;
 import aji.model.SystemModel;
 
 import java.util.List;

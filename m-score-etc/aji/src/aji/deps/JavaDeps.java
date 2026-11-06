@@ -1,4 +1,4 @@
-package aji.extract;
+package aji.deps;
 
 import aji.lex.Lexer;
 import aji.lex.Token;

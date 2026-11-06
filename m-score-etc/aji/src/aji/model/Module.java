@@ -1,4 +1,4 @@
-package aji.score;
+package aji.model;
 
 import java.util.ArrayList;
 import java.util.List;

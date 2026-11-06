@@ -3,11 +3,11 @@ package aji.diagnose;
 import aji.graph.Graphs;
 import aji.model.Dep;
 import aji.model.FileNode;
+import aji.model.Module;
+import aji.model.Params;
 import aji.model.SystemModel;
 import aji.score.MScore;
-import aji.score.Module;
 import aji.score.ModuleScore;
-import aji.score.Params;
 import aji.score.Result;
 
 import java.util.ArrayList;

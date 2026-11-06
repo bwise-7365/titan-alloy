@@ -1,4 +1,4 @@
-package aji.extract;
+package aji.deps;
 
 /** One source file's relative path (forward slashes) and its text. */
 public record SourceUnit(String path, String text) {

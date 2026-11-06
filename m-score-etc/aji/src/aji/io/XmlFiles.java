@@ -1,12 +1,12 @@
 package aji.io;
 
-import aji.extract.Glob;
-import aji.extract.Language;
-import aji.extract.LayerRule;
-import aji.extract.ProjectSpec;
 import aji.model.Dep;
 import aji.model.FileNode;
 import aji.model.SystemModel;
+import aji.spec.Glob;
+import aji.spec.Language;
+import aji.spec.LayerRule;
+import aji.spec.ProjectSpec;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
