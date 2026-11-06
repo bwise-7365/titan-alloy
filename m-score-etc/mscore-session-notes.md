@@ -291,6 +291,31 @@ print(ratsimp((N-1)/N*(1 - 2*(N-2)/((N-1)*(N-2))) - (N-3)/N))$
 
 The expected result is that every check passes except `Fig2B all-lower reading`, which should report a discrepancy of about 2.38 percentage points.
 
+## 8. Implementation: aji (5 November 2026)
+
+The evaluator of Section 6 is implemented as **aji**, in `aji\` beside these notes; its `README.md` is the full description. It is a Java 17 program with no libraries, built as an IntelliJ module.
+
+### 8.1 Decisions
+
+1. **No DRH clustering.** The paper's layers come from the Design Rule Hierarchy clustering in DV8, which is the subject of a Drexel University patent application (US 2013/0219362: minimal elements of the condensation graph define overlapping sub-graphs; regions of overlap become modules; a breadth-first search assigns layers). aji does not implement it. Layers are either **declared** (folder patterns in a project file, following the project's own architecture) or **derived** by a standard longest-path layering of the condensation graph. In both cases a layer's modules are its weakly connected components, as Section 6.3 specifies. The formula itself is reproduced exactly.
+2. **Dependency extraction is built in.** Java: imports and type names, resolved as the language resolves simple names. C++: `#include` lines, resolved by the including folder, declared include folders, and then a path-suffix search. Comments and literals are ignored in both.
+3. **Both open choices are switches** (`--cross PAIRS|FILES`, `--lower ALL|ADJACENT`), and every report shows all four combinations. The defaults are PAIRS and ALL.
+4. **Upward dependencies** are listed and left out of the score (Option A), or stop the run (Option B, `--upward FAIL`).
+
+### 8.2 Findings
+
+- **Ambiguity 2 is narrowed by Fig. 3.** The figure has two modules of four files each. Its published 75.00 % needs a cross-layer penalty of 0.5 on the top module. Under the FILES reading the penalty cannot exceed 4/16 = 0.25, so FILES cannot produce 75 %; PAIRS can (8 of the 16 possible pairs). The N = 12,000 values in the text agree with PAIRS (a penalty of about 0.5 for A and 2/N for B). The figure is still not reproduced exactly: the 6 and 2 crossing dependencies named in the text give 81.25 % and 93.75 % under PAIRS.
+- **Derived layering is lenient.** Under a longest-path layering every dependency crosses layers, so modules larger than one file arise only from cycles. Code without cycles then scores near 100 % (expert-goggles: 99.1 %). Declared layers are the meaningful input.
+- **Test cases** (tests left out): expert-goggles 45.7 % (54.7 % with `apps/shared` as its own layer), HexKrieg 37.8 % (`src/` is one 63-file module), aji 56.1 %. No upward dependencies in any of them. The README's Section 9 gives details.
+- The self-test reproduces Figs. 2A, 2B (adjacent reading) and 4A–4B at N = 6, 7, 10 and 10,000 within 0.005 percentage points.
+
+### 8.3 Next steps
+
+1. The replication package (Zenodo, doi:10.5281/zenodo.12747463) may still settle ambiguities 2 and 3; it has not been downloaded.
+2. Declare finer layers for HexKrieg's `src/`, if a layering is intended there, and decide whether `apps/shared` in expert-goggles is a layer of its own.
+3. Run aji per commit and record the scores, as Section 6.4 recommends.
+4. The Maxima script of Section 7 has still not been run.
+
 ## Sources
 
 **AI-generated code and comprehension debt**

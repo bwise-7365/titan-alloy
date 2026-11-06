@@ -147,6 +147,7 @@ hexsides do not touch, so they neither render nor connect as one river.
 |---|---|---|
 | The Russian Campaign | centre to centre (links) | Ben, 2026-09-25 |
 | PGG, SMW, Velikiye Luki | along hexsides (edges) | as read |
+| Panzergruppe Kleist | along hexsides (edges), drawn freehand beside them | as read (crossing parity, section 6) |
 
 ### Per-map terrain thresholds
 
@@ -163,6 +164,9 @@ is measured, because the measure changes the number: a lake's thick shoreline si
 | Operation Olympic | rough | more than 25% rough (tan) | land part of the 85% inset hex | Ben, 2026-09-25 |
 | Operation Olympic | mountain | 25% or more darkest brown (overrides rough) | land part of the 85% inset hex | Ben, 2026-09-25 |
 | Operation Olympic | assault | a sea hex clearly paler than the sea on its fold panel, unless it holds a red deployment letter | whole hex | Ben, 2026-09-25 |
+| Panzergruppe Kleist | woods | 15% or more forest (the PGG ruling) | visible part of the 85% inset hex | PGG ruling applied, 2026-11-05 (test board) |
+| Panzergruppe Kleist | swamp | 22% or more pale-blue marsh tint | visible part of the 85% inset hex | chosen 2026-11-05 (test board) |
+| Panzergruppe Kleist | lake | 22% or more lake (the PGG ruling) | central 80% of the hex | PGG ruling applied, 2026-11-05 (test board) |
 
 PGG notes: the swamp 1006 is 18% lake (central 80%) and stays swamp. The compass rose (5527) has the
 lakes' colour and is not lake.
@@ -170,5 +174,62 @@ lakes' colour and is not lake.
 One aid failed and should not be tried again as it was: counting dark pixels where a rail crosses a
 hexside. The printed hex ids and the grid lines sit on or next to the hexsides and swamp the signal.
 Trace rails by eye (aid 6) instead.
+
+## 6. Photographed maps (added from Panzergruppe Kleist, 2026-11-05)
+
+The PGK source was a phone photograph of a folded paper map lying on a table, taken at an angle, with
+counters on it, at 2048 x 1648 (a hex pitch of 56 px). Five methods made it readable. The sheet and its
+notes are in `example maps/PGK/`.
+
+1. **Fit the lattice to the grid lines, not to a handful of hexes.** A photograph is neither affine nor
+   flat: the perspective and the folds bend the lattice. Map lattice coordinates to photograph pixels by
+   a smooth polynomial (cubic in each coordinate) and fit it to the printed grid lines:
+   - Start from four or five hexes whose ids can be read, and fit an affine map to them.
+   - For every hex, predict its outline, then search small shifts of it for the one that puts the most
+     grey grid-line ink under the outline. Grid lines are unsaturated mid-grey; mask out coloured and
+     black ink first.
+   - Fit the polynomial to the shifted centres, dropping the weakest third of the scores and the worst
+     residuals. Repeat with a smaller search and a higher degree: radius 12, 8, 5, 4, 3 px; degree 1, 2,
+     3, 3, 3.
+
+   On PGK the median residual was 1 px. Then draw the fitted lattice, with ids, over every crop that is
+   read; no hex is counted by eye. Fit the inverse map (photograph to lattice) the same way, to place
+   labels read from the photograph.
+
+2. **Rivers by crossing parity.** Some artists draw rivers freehand beside the hexsides rather than on
+   them, so the ink score of aid 3 is weak. Instead, for every pair of adjacent hexes, sample the segment
+   between their centres and count the separate runs of river ink on it. An odd count makes the shared
+   hexside a river hexside. This is the reading the rules need, since a unit moving between the two
+   centres crosses the river exactly when the count is odd. The hexsides it selects join into chains
+   without gaps, because a line that enters the triangle of three centres around a vertex must leave it
+   again. A run within about a fifth of the segment from a centre, or a run that lies along the segment,
+   is a doubt. On PGK none occurred, among 247 hexsides.
+   - Build the river mask from the saturated river blue, opened by a 4 x 4 square so that marsh dashes
+     and blue lettering drop out. Remove the lake blobs first.
+   - Then list the ends of the chains: vertices met by one river hexside or by three. Each must be a
+     source, a confluence, the map edge, or a gap under a counter. Close a gap by the shortest hexside
+     path between its two ends, on the side where the river shows.
+
+3. **Freely drawn roads and railroads.** When lines do not run centre to centre, read each as a few
+   points in photograph pixels (aid 6). Then:
+   - Sample the polyline every 1.5 px and take the nearest hex centre at each sample.
+   - Drop a hex the line holds for less than about 18 px, if the hexes before and after it are
+     adjacent; such a hex is only a corner the line cuts.
+   - Check every step for adjacency, and draw the chains back over the photograph.
+
+   Where a point lies a few pixels off the printed line near a vertex, it adds a detour hex. Move the
+   point; do not loosen the rule.
+
+4. **Counters on the map.** Build a mask of the counters (the red blobs and the large grey ones) and
+   measure each fill fraction over the visible part of the hex only. Decide a hex more than 80% covered
+   by eye, from what shows around the counter. Its measured value can mislead: on PGK, hex 1515 measured
+   as marsh because the pale rim of a river was most of what showed.
+
+5. **Ids in the XML.** Colour, terrain and line ids share one XML ID space. A colour named `rail` makes
+   the line `rail` invalid ("not a valid value of the atomic type xs:ID"); name the colour `railgrey`.
+
+When the sheet is a test board for an existing rules set, as PGK was for the PGG rules, Ben's ruling is
+to decide close calls and list the choices in the notes rather than hold them as doubts. Reuse that
+game's terrain ids, line ids and glyphs, so that its rules apply unchanged.
 
 Copyright Ben Paul Wise. All Rights Reserved.
