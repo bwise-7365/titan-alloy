@@ -1,26 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- HexKrieg, Java 17. HexKrieg declares only coarse layers, by source root
-     (CLAUDE.md): the headless engine in src/ must compile alone; the Swing front end
-     (src-gui/) and the continuous-motion simulation (src-hksim/) sit on top of it.
-     Everything in src/ and src-gui/ is in one package, so dependencies within it are
-     found through simple type names.
+<!-- HexKrieg, Java 17. Since 6 November 2026 the headless engine in src/ is six packages,
+     one for each layer, in the folders src/board to src/turn (HexKrieg's CLAUDE.md lists
+     them). A game has a source root of its own: src-pgg/ is Panzergruppe Guderian, with
+     the package HexKrieg.pgg for what the game is and HexKrieg.pgg.play for how it is
+     played. The Swing front end (src-gui/) and the continuous-motion simulation
+     (src-hksim/) sit on top of both.
+
+     The game is declared as three layers, since its forces are used by all the rest of
+     it: the forces, the other files of HexKrieg.pgg, and HexKrieg.pgg.play. A file belongs
+     to the first layer whose pattern matches, so the rule for the forces comes first. A
+     new game adds its own patterns to those three layers.
+
+     The front ends are four layers, a package each but for the last. The package
+     HexKrieg.gui.widgets is the map canvas and the shared controls. HKSim.vehicle is the
+     ground vehicle, its route followers and the entity data. HKSim.tank is the tank, its
+     events and the duel, built on the vehicle. The last layer holds the windows: those of
+     HexKrieg.gui and the viewer in HKSim, both built on the widgets. The patterns of the
+     first three come before those of the windows for the same reason as the rule for the
+     forces.
 
      The sibling HexRules sources are not part of this project; references to them are
-     ignored. Tests are left out; delete the <exclude> line to include them as a third
-     layer below the others.
-
-     Because src/ is one declared layer of about sixty files, run this file also with
-     -layers derived to compare with layers derived from the dependencies. -->
+     ignored. Tests are left out; delete the first <exclude> line to include them as a
+     layer below the others. The module descriptors in modules/ are not source code of
+     the engine and are left out as well. -->
 <aji-project name="hexkrieg" root="../../../../HexKrieg" language="java">
   <exclude glob="test/**"/>
-  <layer number="1" name="engine (src)">
-    <path glob="src/**"/>
+  <exclude glob="modules/**"/>
+  <layer number="1" name="board and units">
+    <path glob="src/board/**"/>
   </layer>
-  <layer number="2" name="front ends (gui, hksim)">
+  <layer number="2" name="position, rules, search">
+    <path glob="src/position/**"/>
+  </layer>
+  <layer number="3" name="map files, terrain, routes">
+    <path glob="src/map/**"/>
+  </layer>
+  <layer number="4" name="adjudication">
+    <path glob="src/adjudication/**"/>
+  </layer>
+  <layer number="5" name="moves, players, scenario">
+    <path glob="src/moves/**"/>
+  </layer>
+  <layer number="6" name="turn engine">
+    <path glob="src/turn/**"/>
+  </layer>
+  <layer number="7" name="game forces">
+    <path glob="src-pgg/PggForces.java"/>
+  </layer>
+  <layer number="8" name="game data">
+    <path glob="src-pgg/*.java"/>
+  </layer>
+  <layer number="9" name="game play">
+    <path glob="src-pgg/play/**"/>
+  </layer>
+  <layer number="10" name="widgets">
+    <path glob="src-gui/widgets/**"/>
+  </layer>
+  <layer number="11" name="vehicle and followers">
+    <path glob="src-hksim/vehicle/**"/>
+  </layer>
+  <layer number="12" name="tank and duel">
+    <path glob="src-hksim/tank/**"/>
+  </layer>
+  <layer number="13" name="windows (gui, hksim viewer)">
     <path glob="src-gui/**"/>
     <path glob="src-hksim/**"/>
   </layer>
-  <layer number="3" name="tests">
+  <layer number="14" name="tests">
     <path glob="test/**"/>
   </layer>
 </aji-project>

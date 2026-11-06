@@ -183,7 +183,7 @@ For every project:
 - the propagation cost lies between 1/N and 1;
 - derived layers leave no upward dependency.
 
-For HexKrieg: both declared layers hold files, the tests are left out, the engine in `src/` uses neither front end, and each front end uses the engine.
+For HexKrieg: every declared layer but the tests holds files, the tests are left out, there is no layering violation (no package of the engine uses a later one, the engine uses no game and no front end, and no layer of the front ends uses a later one), no game uses another game's files, each game and each front end uses the engine, of the Swing front end the simulation uses the widgets alone, and its vehicle and its tank use none of it. A game is a source root `src-NAME` other than `src-gui` and `src-hksim`.
 
 For expert-goggles: every declared layer holds files, the tests are left out, no `#include` points away from the foundation, the libraries of the facilities layer are independent of one another, no application includes another (and `apps/shared` includes none), and the include graph has no cycle. These checks do not depend on whether `apps/shared` is a layer of its own, so `ExpertGogglesTest` also accepts `projects/expert-goggles-shared-layer.aji.xml` as its argument.
 
@@ -234,6 +234,12 @@ What the reports show:
 
 - **expert-goggles.** No layering violations: every include points down, as the architecture requires. Most of the loss (51.9 points) is module size. The largest single loss is the apps layer, which forms one module of 124 files because eight applications include `apps/shared`. Declaring `apps/shared` as its own layer (`projects/expert-goggles-shared-layer.aji.xml`) leaves each application a separate module and raises the score to 54.7 %.
 - **HexKrieg.** `src/` is one declared layer of 63 files, and its dependencies connect all of them into one module. That module costs 49.9 points, almost all of it size. The two front ends form a second module because `HKSimFrame` uses `SwingControls` and `HKSimPanel` uses `HexPanel`. Declaring finer layers inside `src/` would give a more informative score.
+
+  On 6 November HexKrieg was restructured on that finding. The engine in `src/` became six packages, one for each layer cut by depth of dependency, and Panzergruppe Guderian moved to a source root of its own, `src-pgg/`, with a package for what the game is and one for how it is played. With those layers declared (`projects/hexkrieg.aji.xml`), the score rose from 37.809 % to 73.976 %. The 394 dependencies between files are the same before and after. The two front ends were then still one module of 20 files, which cost 12.2 points.
+
+  The same day the front ends were given a base layer. The map canvas and the shared controls became the package `HexKrieg.gui.widgets`, and the ground vehicle of the simulation, with its event and the entity data, became `HKSim.vehicle`. With the base declared as a layer below the rest of the front ends, the score is 81.182 %, again with the same 394 dependencies. The 20-file module was then nine modules. The largest was the rest of the simulation, 8 files, which cost 3.9 points.
+
+  Last, the simulation was divided into three packages that are layers. The two route followers joined the ground vehicle in `HKSim.vehicle`, the tank with its events and the duel became `HKSim.tank`, and the viewer stayed in `HKSim`. With the widgets, the vehicle, the tank and the windows declared as four layers, the score is 84.615 %, with the same 394 dependencies. The largest module of HexKrieg now has five files, and no points are lost to size.
 - **aji.** Its own first run showed that `extract` depended on `graph` (the extractor derived layers itself), which joined two packages that should be independent. Moving that step to the command line raised the score from 52.9 % to 56.1 %.
 
   On 6 November, with the explanation section and the tests on real projects added, aji had 31 files and scored 59.139 %. Three changes that the explanation pointed to raised the score to 75.289 %. The 117 dependencies between files are the same before and after; only the packages and their layers changed.
