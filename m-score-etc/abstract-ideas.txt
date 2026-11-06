@@ -1,0 +1,23 @@
+
+The Supreme Court has long held that three things cannot be patented: laws of nature, natural phenomena and abstract ideas. Mathematical formulas and bare algorithms count as abstract ideas. The reasoning is the one your RAND lawyers gave: such things are discovered, not invented, and must stay free for everyone to use (the Court’s own example is that Einstein could not have patented E=mc²). An invention that applies a formula to a practical end can still be patented, as the Court allowed in 1981 for a rubber-curing process that used a well-known equation. Since Alice in 2014, however, claiming “the idea, but done on a computer” is not enough; the claim must add something genuinely inventive beyond the idea itself.
+
+
+Sources: 
+
+Supreme Court Rules Patent Claims Ineligible as Abstract Ideas (Katten)
+https://katten.com/Supreme-Court-Rules-Patent-Claims-Ineligible-as-Abstract-Ideas
+
+From Benson to Alice (Temple Law Review)
+https://www.templelawreview.org/lawreview/assets/uploads/2015/08/Epelbaum_From-Benson-to-Alice.pdf
+
+Patent eligibility post-Alice (IPWatchdog)
+https://ipwatchdog.com/2014/08/04/patent-eligibility-post-alice/id=50630/
+
+Drexel patent application US20130219362A1
+https://patents.google.com/patent/US20130219362A1/en
+
+M-score paper (Pisch et al., ESEM 2024)
+https://par.nsf.gov/servlets/purl/10590179
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

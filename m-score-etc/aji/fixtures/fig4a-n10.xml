@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- M-score paper, Fig. 4A, N = 10 (reconstructed from the text).
+     File f1 is the top layer; f2..f10 form one bottom-layer module, each depending on f1.
+     Inside the module, f2 is a hub with two-way links to f3..f10, and f3..f10 form a ring
+     with two-way links: 4(N-2) = 32 internal dependencies.
+     Published M-score: 36.62 %. -->
+<system name="fig4a-n10">
+  <file id="f1" layer="1"/>
+  <file id="f2" layer="2"/>
+  <file id="f3" layer="2"/>
+  <file id="f4" layer="2"/>
+  <file id="f5" layer="2"/>
+  <file id="f6" layer="2"/>
+  <file id="f7" layer="2"/>
+  <file id="f8" layer="2"/>
+  <file id="f9" layer="2"/>
+  <file id="f10" layer="2"/>
+  <dep from="f2" to="f1"/>
+  <dep from="f3" to="f1"/>
+  <dep from="f4" to="f1"/>
+  <dep from="f5" to="f1"/>
+  <dep from="f6" to="f1"/>
+  <dep from="f7" to="f1"/>
+  <dep from="f8" to="f1"/>
+  <dep from="f9" to="f1"/>
+  <dep from="f10" to="f1"/>
+  <dep from="f2" to="f3"/>  <dep from="f3" to="f2"/>
+  <dep from="f2" to="f4"/>  <dep from="f4" to="f2"/>
+  <dep from="f2" to="f5"/>  <dep from="f5" to="f2"/>
+  <dep from="f2" to="f6"/>  <dep from="f6" to="f2"/>
+  <dep from="f2" to="f7"/>  <dep from="f7" to="f2"/>
+  <dep from="f2" to="f8"/>  <dep from="f8" to="f2"/>
+  <dep from="f2" to="f9"/>  <dep from="f9" to="f2"/>
+  <dep from="f2" to="f10"/> <dep from="f10" to="f2"/>
+  <dep from="f3" to="f4"/>  <dep from="f4" to="f3"/>
+  <dep from="f4" to="f5"/>  <dep from="f5" to="f4"/>
+  <dep from="f5" to="f6"/>  <dep from="f6" to="f5"/>
+  <dep from="f6" to="f7"/>  <dep from="f7" to="f6"/>
+  <dep from="f7" to="f8"/>  <dep from="f8" to="f7"/>
+  <dep from="f8" to="f9"/>  <dep from="f9" to="f8"/>
+  <dep from="f9" to="f10"/> <dep from="f10" to="f9"/>
+  <dep from="f10" to="f3"/> <dep from="f3" to="f10"/>
+</system>

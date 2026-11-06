@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- expert-goggles (vimcp), C++20. The five declared layers come from
+     restructure/README.md: dependencies may skip layers but always point downward,
+     and the libraries side by side in layer 4 are independent.
+     In M-score terms, layer 1 is the top: the layer most depended upon.
+
+     Tests are left out, so the score describes the production code. To include them,
+     delete the <exclude> line; each test file then joins the layer of its folder.
+     Folders that match no layer (doc, restructure, external-benchmarks, build trees)
+     are left out and listed at the end of the report. -->
+<aji-project name="expert-goggles" root="../../../../expert-goggles" language="cpp">
+  <exclude glob="**/tests/**"/>
+  <layer number="1" name="foundation">
+    <path glob="foundation/**"/>
+  </layer>
+  <layer number="2" name="engines">
+    <path glob="engines/**"/>
+  </layer>
+  <layer number="3" name="orchestration">
+    <path glob="orchestration/**"/>
+  </layer>
+  <layer number="4" name="facilities">
+    <path glob="facilities/**"/>
+  </layer>
+  <layer number="5" name="apps">
+    <path glob="apps/**"/>
+  </layer>
+</aji-project>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- M-score paper, Fig. 4B, N = 10 (reconstructed from the text): Fig. 4A with every
+     two-way link made one-way. The hub f2 depends on f3..f10, and the ring runs
+     f3 -> f4 -> ... -> f10 -> f3: 2(N-2) = 16 internal dependencies.
+     Published M-score: 51.27 %. -->
+<system name="fig4b-n10">
+  <file id="f1" layer="1"/>
+  <file id="f2" layer="2"/>
+  <file id="f3" layer="2"/>
+  <file id="f4" layer="2"/>
+  <file id="f5" layer="2"/>
+  <file id="f6" layer="2"/>
+  <file id="f7" layer="2"/>
+  <file id="f8" layer="2"/>
+  <file id="f9" layer="2"/>
+  <file id="f10" layer="2"/>
+  <dep from="f2" to="f1"/>
+  <dep from="f3" to="f1"/>
+  <dep from="f4" to="f1"/>
+  <dep from="f5" to="f1"/>
+  <dep from="f6" to="f1"/>
+  <dep from="f7" to="f1"/>
+  <dep from="f8" to="f1"/>
+  <dep from="f9" to="f1"/>
+  <dep from="f10" to="f1"/>
+  <dep from="f2" to="f3"/>
+  <dep from="f2" to="f4"/>
+  <dep from="f2" to="f5"/>
+  <dep from="f2" to="f6"/>
+  <dep from="f2" to="f7"/>
+  <dep from="f2" to="f8"/>
+  <dep from="f2" to="f9"/>
+  <dep from="f2" to="f10"/>
+  <dep from="f3" to="f4"/>
+  <dep from="f4" to="f5"/>
+  <dep from="f5" to="f6"/>
+  <dep from="f6" to="f7"/>
+  <dep from="f7" to="f8"/>
+  <dep from="f8" to="f9"/>
+  <dep from="f9" to="f10"/>
+  <dep from="f10" to="f3"/>
+</system>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- M-score paper, Fig. 2A, N = 6 (reconstructed from the text).
+     File f1 is the top layer. Files f2..f6 form one bottom-layer module: a chain with
+     4 internal dependencies, and each of the five depends on f1.
+     Published M-score: 66.67 %. -->
+<system name="fig2a">
+  <file id="f1" layer="1"/>
+  <file id="f2" layer="2"/>
+  <file id="f3" layer="2"/>
+  <file id="f4" layer="2"/>
+  <file id="f5" layer="2"/>
+  <file id="f6" layer="2"/>
+  <dep from="f2" to="f3"/>
+  <dep from="f3" to="f4"/>
+  <dep from="f4" to="f5"/>
+  <dep from="f5" to="f6"/>
+  <dep from="f2" to="f1"/>
+  <dep from="f3" to="f1"/>
+  <dep from="f4" to="f1"/>
+  <dep from="f5" to="f1"/>
+  <dep from="f6" to="f1"/>
+</system>

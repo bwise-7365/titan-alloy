@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- M-score paper, Fig. 2B, N = 7 (reconstructed from the text): Fig. 2A plus an isolated
+     file i1, which forms a new bottom layer of its own.
+     Published M-score: 71.43 %. This is reproduced only when the top module's cross-layer
+     denominator counts the adjacent lower layer (5 files); counting all lower layers
+     (6 files), as the definition says, gives 73.81 %. -->
+<system name="fig2b">
+  <file id="f1" layer="1"/>
+  <file id="f2" layer="2"/>
+  <file id="f3" layer="2"/>
+  <file id="f4" layer="2"/>
+  <file id="f5" layer="2"/>
+  <file id="f6" layer="2"/>
+  <file id="i1" layer="3"/>
+  <dep from="f2" to="f3"/>
+  <dep from="f3" to="f4"/>
+  <dep from="f4" to="f5"/>
+  <dep from="f5" to="f6"/>
+  <dep from="f2" to="f1"/>
+  <dep from="f3" to="f1"/>
+  <dep from="f4" to="f1"/>
+  <dep from="f5" to="f1"/>
+  <dep from="f6" to="f1"/>
+</system>

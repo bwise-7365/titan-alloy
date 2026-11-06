@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="aji on expert-goggles" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="aji.app.Main" />
+    <module name="aji" />
+    <option name="PROGRAM_PARAMETERS" value="projects/expert-goggles.aji.xml" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
