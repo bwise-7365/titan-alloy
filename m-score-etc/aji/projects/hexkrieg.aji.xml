@@ -9,7 +9,8 @@
      The game is declared as three layers, since its forces are used by all the rest of
      it: the forces, the other files of HexKrieg.pgg, and HexKrieg.pgg.play. A file belongs
      to the first layer whose pattern matches, so the rule for the forces comes first. A
-     new game adds its own patterns to those three layers.
+     new game adds its own patterns to those three layers: Panzergruppe Kleist (src-pgk/) and
+     The Russian Campaign (src-trc/) have.
 
      The front ends are four layers, a package each but for the last. The package
      HexKrieg.gui.widgets is the map canvas and the shared controls. HKSim.vehicle is the
@@ -46,12 +47,17 @@
   </layer>
   <layer number="7" name="game forces">
     <path glob="src-pgg/PggForces.java"/>
+    <path glob="src-trc/TrcForces.java"/>
   </layer>
   <layer number="8" name="game data">
     <path glob="src-pgg/*.java"/>
+    <path glob="src-pgk/*.java"/>
+    <path glob="src-trc/*.java"/>
   </layer>
   <layer number="9" name="game play">
     <path glob="src-pgg/play/**"/>
+    <path glob="src-pgk/play/**"/>
+    <path glob="src-trc/play/**"/>
   </layer>
   <layer number="10" name="widgets">
     <path glob="src-gui/widgets/**"/>
