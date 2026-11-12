@@ -59,14 +59,21 @@ aji INPUT.xml [options]
   --top K                modules listed in the report (default 25)
   --explain K            modules for which the report explains the loss
                          (default 3; 0 for none; Section 8)
+  --measures all|mscore  report the four measures beside the M-score and the moves
+                         tried (default), or the M-score alone (Section 11)
+  --group folder|component|top|layer   how files are grouped for the direction and
+                         partition-fit measures (default: folder for Java, component
+                         for C++; Section 11)
   --quiet                do not print the report on the console
 ```
 
-The main class is `aji.app.Main`. It writes three files in the output folder:
+The main class is `aji.app.Main`. It writes five files in the output folder:
 
-- `report.txt`: the report, also printed on the console (Section 8);
+- `report.txt`: the report, also printed on the console (Sections 8 and 11);
 - `modules.csv`: one row per module with every term of the formula, at full precision;
-- `model.xml`: the files, layers and dependencies that were scored, in the `<system>` format. You can edit it and score it again, or compare it between runs.
+- `measures.csv`: one row per grade (the M-score and the four measures), for trend tracking;
+- `moves.csv`: every move tried, in rank order, with the grades after it (Section 11);
+- `model.xml`: the files, layers and dependencies that were scored, and the tests with their dependencies, in the `<system>` format. You can edit it and score it again, or compare it between runs.
 
 Exit status: 0 on success, 1 for a usage or input error, 2 when `--upward FAIL` finds a layering violation.
 
@@ -95,6 +102,7 @@ Exit status: 0 on success, 1 for a usage or input error, 2 when `--upward FAIL` 
 | `<source dir="..."/>` | Folders to search (optional, repeatable). By default aji searches the whole root. |
 | `<include dir="..."/>` | C++ include folders to try first (optional, repeatable; Section 5). |
 | `<exclude glob="..."/>` | Files to leave out (optional, repeatable). |
+| `<tests glob="..."/>` | The test files (optional, repeatable). They stay out of the score, but aji reads their dependencies for the test-reach measure (Section 11). The patterns are matched before the exclusions, so a project may exclude its test folder and still name it here; the three project files do. |
 | `default-excludes="false"` | Turns off the built-in exclusions: `.git`, `.idea`, `.vs`, `.vscode`, `build`, `cmake-build-*`, `out`, `target` and `node_modules` folders. |
 | `<layer number="N" name="...">` | A declared layer, with one or more `<path glob="..."/>`. Layer 1 is the **top**, the layer most depended upon; larger numbers are lower layers. Several `<layer>` elements may share a number. A file belongs to the first layer whose pattern it matches. |
 
@@ -116,7 +124,7 @@ This is the format of the session notes (Section 6.2), with optional layer names
 </system>
 ```
 
-`<dep from="A" to="B"/>` means that file A depends on file B. Each ordered pair counts once. The `fixtures` folder holds the paper's examples in this format.
+`<dep from="A" to="B"/>` means that file A depends on file B. Each ordered pair counts once. The `fixtures` folder holds the paper's examples in this format. A model may also list tests, `<test id="..."/>`, and their dependencies on files, `<dep from="test" to="file" test="true"/>`; `model.xml` carries them, so a saved model gives the same test reach when measured again.
 
 ## 5. How dependencies are found
 
@@ -162,9 +170,10 @@ The published definition leaves two choices open. aji makes each one a switch an
 - Fig. 3, printed for information only;
 - the lexer, Java and C++ dependency resolution, derived layering, propagation cost and upward-dependency handling, on small hand-made inputs;
 - the search for joining files against a small graph with known answers and against taking each node out in turn, and the explanation of a five-file module whose answers can be worked out by hand (Section 8);
-- the cycles, the finest layering and the dependencies from a lower layer of a second small module, also worked out by hand.
+- the cycles, the finest layering and the dependencies from a lower layer of a second small module, also worked out by hand;
+- the four measures of Section 11 on graphs worked by hand: CCD of a chain, a star, a balanced tree and a cycle, with the cuts that lower it; Martin's Ca, Ce and I of three groups in a line with one back-edge; Q of two triangles, of one group, of two separate cliques, and of a file that belongs with the other group; the dependency profiles; test reach on a chain and on a C++ pair; the grouping rules; and the combined trials against direct recomputation.
 
-The self-test makes 29 checks.
+The self-test makes 55 checks.
 
 ### Tests on HexKrieg and expert-goggles
 
@@ -181,13 +190,16 @@ For every project:
 - the three losses add up to 100 % minus the M-score;
 - the M-score lies between 0 and 1 under all four readings, and `--cross FILES` never scores below `--cross PAIRS`;
 - the propagation cost lies between 1/N and 1;
-- derived layers leave no upward dependency.
+- derived layers leave no upward dependency;
+- for the measures of Section 11: CCD lies between N and N squared and agrees with the propagation cost; every cut offered lowers CCD by the amount stated; the dependencies that break the Stable Dependencies Principle add up by group and by pair; every instability lies in [0, 1]; the profile counts of every group add up to its files; every move offered raises Q by the amount stated; the reached and unreached files add up; the tests in `model.xml` depend on files only; every triable move is tried once and ranked by the measures it improves; and `report.txt` holds the sections that `model.xml` gives when measured again.
 
-For HexKrieg: every declared layer but the tests holds files, the tests are left out, there is no layering violation (no package of the engine uses a later one, the engine uses no game and no front end, and no layer of the front ends uses a later one), no game uses another game's files, each game and each front end uses the engine, of the Swing front end the simulation uses the widgets alone, and its vehicle and its tank use none of it. A game is a source root `src-NAME` other than `src-gui` and `src-hksim`.
+For HexKrieg: every declared layer but the tests holds files, the tests are left out, there is no layering violation (no package of the engine uses a later one, the engine uses no game and no front end, and no layer of the front ends uses a later one), no game uses another game's files except the game whose rules and counters it plays (Panzergruppe Kleist plays Panzergruppe Guderian's, so `src-pgk/` may use `src-pgg/`; the map `RULES_PLAYED` in the test names such pairs), each game uses the engine directly or through that game, both games of each such pair are in the tree, each front end uses the engine, of the Swing front end the simulation uses the widgets alone, and its vehicle and its tank use none of it. A game is a source root `src-NAME` other than `src-gui` and `src-hksim`.
 
-For expert-goggles: every declared layer holds files, the tests are left out, no `#include` points away from the foundation, the libraries of the facilities layer are independent of one another, no application includes another (and `apps/shared` includes none), and the include graph has no cycle. These checks do not depend on whether `apps/shared` is a layer of its own, so `ExpertGogglesTest` also accepts `projects/expert-goggles-shared-layer.aji.xml` as its argument.
+For expert-goggles: every declared layer holds files, the tests are left out, no `#include` points away from the foundation, the libraries of the facilities layer are independent of one another, no application includes another, `appsupport` includes no application, the headers of each application are in its folder `include/NAME`, and the include graph has no cycle. These checks do not depend on how finely the layers are declared, so `ExpertGogglesTest` also accepts `projects/expert-goggles-shared-layer.aji.xml`, which declares one layer for each of the six folders.
 
 A test ends with exit status 0 when every check passes and 1 otherwise. A failed architecture check names up to five of the dependencies that break the rule.
+
+On 8 November 2026 `ExpertGogglesTest` passed its 35 checks on both project files, and `HexKriegTest` its 37. Two of HexKrieg's rules were revised that day, after HexKrieg's own changes broke them: a game may now use the game whose rules and counters it plays (PGK uses PGG and reaches the engine through it), where before no game used another.
 
 ## 8. Reading the report
 
@@ -196,6 +208,7 @@ A test ends with exit status 0 when every check passes and 1 otherwise. A failed
 - **LAYERS** shows each layer's files, modules and largest module.
 - **MODULES THAT LOSE THE MOST** ranks modules by the percentage points they cost. Under this metric, these are the places to look first.
 - **WHY THE COSTLIEST MODULES LOSE POINTS** explains the modules that lose the most (three of them, or the number given with `--explain`). It is described below.
+- **REACH**, **DIRECTION**, **PARTITION FIT**, **TEST REACH** and **MOVES THAT HELP MORE THAN ONE MEASURE** are the four measures beside the M-score and the combined list of their moves (Section 11). `--measures mscore` leaves them out.
 - **LAYERING VIOLATIONS** lists upward dependencies.
 
 ### Why a module loses points
@@ -233,6 +246,10 @@ Following the session notes, the M-score is more useful for following trends and
 What the reports show:
 
 - **expert-goggles.** No layering violations: every include points down, as the architecture requires. Most of the loss (51.9 points) is module size. The largest single loss is the apps layer, which forms one module of 124 files because eight applications include `apps/shared`. Declaring `apps/shared` as its own layer (`projects/expert-goggles-shared-layer.aji.xml`) leaves each application a separate module and raises the score to 54.7 %.
+
+  On 6 November expert-goggles was restructured on that finding and on two more. `apps/shared` became `appsupport/`, a folder of its own between the facilities and the applications, and the headers of each application moved to `apps/NAME/include/NAME/`. The project file (`projects/expert-goggles.aji.xml`) now declares 15 layers: in each library and in the applications the headers are a layer above the sources, and `appsupport/` is a layer of its own. The score rose from 45.719 % to 85.691 %, with the same 677 dependencies and no layering violation. Taken alone from 45.719 %, the headers of the applications give +20.9 points, the headers of the libraries +16.8, and `appsupport/` +9.0; the gains overlap, because the first and the third both divide the module of 124 files.
+
+  Two cautions apply to that figure. The header layers change no code. They also rest on aji reading only `#include` lines, so that no source file appears to use another (Section 5). Of the 14.3 points still lost, 12.7 are in six groups of headers that include one another, the largest being the 20 public headers of logistics (3.0 points). `projects/expert-goggles-shared-layer.aji.xml` now declares the six folders as six layers; it gives the 54.673 % of 5 November, for comparison with the earlier figures.
 - **HexKrieg.** `src/` is one declared layer of 63 files, and its dependencies connect all of them into one module. That module costs 49.9 points, almost all of it size. The two front ends form a second module because `HKSimFrame` uses `SwingControls` and `HKSimPanel` uses `HexPanel`. Declaring finer layers inside `src/` would give a more informative score.
 
   On 6 November HexKrieg was restructured on that finding. The engine in `src/` became six packages, one for each layer cut by depth of dependency, and Panzergruppe Guderian moved to a source root of its own, `src-pgg/`, with a package for what the game is and one for how it is played. With those layers declared (`projects/hexkrieg.aji.xml`), the score rose from 37.809 % to 73.976 %. The 394 dependencies between files are the same before and after. The two front ends were then still one module of 20 files, which cost 12.2 points.
@@ -262,11 +279,69 @@ The packages are aji's own layers, declared in `projects/aji.aji.xml`:
 | 2 | `aji.spec` | the project specification: declared layers, path patterns, languages |
 | 2 | `aji.deps` | the Java and C++ dependency finders |
 | 3 | `aji.score` | the M-score: dependency classes, the per-module terms, the result |
-| 3 | `aji.extract` | `Extractor`, which turns a project specification into a model |
+| 3 | `aji.extract` | `Extractor`, which turns a project specification into a model, and reads the tests |
+| 3 | `aji.measure` | the four measures beside the M-score: `Reach`, `Direction`, `Fit`, `TestReach`; `Move`, one suggested change; `Grouping` |
 | 4 | `aji.diagnose` | why the modules that lose the most lose points: folders, joining files, what-if scores, cycles, dependencies from lower layers |
-| 5 | `aji.io` | XML input and output, the text report and the CSV table |
+| 4 | `aji.moves` | `Trials`: every triable move tried on the model, with the change to every measure |
+| 5 | `aji.io` | XML input and output, the text report (`ReportWriter`, `MeasureWriter`) and the CSV tables |
 | 6 | `aji.app` | the command line |
 | 7 | `aji.testing` (in `test/`) | `Checks`, which the tests share |
 | 8 | `aji.selftest`, `aji.app` (in `test/`) | the self-test; the tests on HexKrieg and expert-goggles |
 
 All functions are pure except reading source and XML files (`Extractor`, `XmlFiles`) and writing the outputs (`Main`, `XmlFiles.writeSystem`).
+
+## 11. Four more measures, each with its moves (8 November 2026)
+
+The M-score asks whether the modules are small and layered. Four measures added on 8 November 2026 ask different questions of the same dependency graph. Each is reported in the form of the M-score's own sections: the grade (six decimals where it is a fraction of 1), the source, the parts (three decimals), and MOVES, a ranked list of single changes with their gains. The formulas are taken from the papers named, never from another tool's code; the clustering of Decoupling Level is still not used (Section 1). All four read the include or import graph alone, so they share the M-score's blind spot (Section 5). `PLAN.md` records the design.
+
+**Groups.** Direction and partition fit work on groups of files. `--group folder` is the parent directory, which for Java is the package; `--group component` is the path above the first folder named `include`, `src`, `source`, `test` or `tests`, or failing those `gui`, which is the unit a C++ tree is laid out in (`apps/fleet/include/fleet/gui/w.hpp` and `apps/fleet/gui/w.cpp` are both `apps/fleet`; `facilities/gui/src/v.cpp` is `facilities/gui`); `top` is the first segment of the path; `layer` the declared layer. The default is the folder for Java and the component for C++, where the folder would make every source a stray from its own headers.
+
+### Reach (Lakos)
+
+*Source.* J. Lakos, *Large-Scale C++ Software Design*, Addison-Wesley 1996, chapter 4; propagation cost from MacCormack, Rusnak and Baldwin, *Management Science* 52 (2006).
+
+A file's reach is every file it depends on, directly or through others, counting itself. CCD, the cumulative component dependency, is the sum of the reach sizes over the files; ACD is CCD / N; NCCD divides CCD by that of a balanced binary tree of N files, (N + 1) log2 (N + 1) − N, so a tree-shaped system scores 1.0 and a chain of N about N / (2 log2 N). Files in one cycle reach one another, which inflates CCD as Lakos intends. Propagation cost is CCD / N², the same quantity as a density; the RESULT section keeps it.
+
+The parts are the ten files with the largest reach (the heaviest users) and the ten reached by the most others (the heaviest dependencies). The moves are cuts: for every dependency on the edge of a file's reach aji recomputes CCD without it and lists the ten largest falls. A cut is not an instruction to delete an include; it marks a dependency worth taking out of the users' reach by one of Lakos's three remedies, named in the section: escalate the shared part to a level above both files, demote it below both, or insulate it by including it in the source instead of the header.
+
+### Direction (Martin)
+
+*Source.* R. C. Martin, "OO Design Quality Metrics: An Analysis of Dependencies", 1994, and *Agile Software Development*, 2002, chapter 20. The hub rule follows the idea of Arcan's hub-like dependency (Fontana and others, 2016); the threshold is aji's own.
+
+For a group g, Ca is the number of files outside g that depend on a file of g, Ce the number of files of g that depend on a file outside g, and the instability I = Ce / (Ca + Ce), from 0 (wholly stable) to 1 (wholly unstable). The Stable Dependencies Principle asks that a group depend only on groups at least as stable as itself. The grade is the share of dependencies between groups that obey it. Abstractness, and with it the distance from the main sequence, needs a parser and is not computed.
+
+The parts are a table of the groups with Ca, Ce, I and the dependencies out of each that break the principle. The moves are the violating group pairs, ranked by the dependencies they carry times the difference in instability, each with up to three of its dependencies, which enter the combined list as cuts; and the hubs, files whose fan-in and fan-out are both at or above the 90th percentile of the files and both at least 3, offered as splits.
+
+Under this definition every layer between the top and the bottom has Ce > 0, since its files use the layers above, so a well-layered system can still show a middle layer as less stable than the layer that uses it. Read the violations as questions about those pairs, not as faults by themselves.
+
+### Partition fit (Newman and Girvan; Bouwers, van Deursen and Visser)
+
+*Sources.* M. E. J. Newman and M. Girvan, "Finding and evaluating community structure in networks", *Physical Review E* 69 (2004); E. Bouwers, A. van Deursen and J. Visser, "Dependency profiles for software architecture evaluations", ICSM 2011. Q is past any patent; the profiles are from an academic paper with, as far as is known, no patent.
+
+The modularity Q takes the dependency graph as undirected and unweighted: with m edges, k_i the degree of file i and A_ij 1 when i and j are joined, Q = (1 / 2m) Σ over pairs in one group of (A_ij − k_i k_j / 2m). Dependencies inside groups raise Q; large groups are discounted by what they would hold by chance. One group gives 0, two separate equal cliques 0.5. The share of edges that stay inside groups is printed beside it as the plain reading.
+
+The dependency profiles sort the files of a group by how their dependencies cross its boundary: hidden (none cross), inbound (used from outside only), outbound (uses outside only), transit (both). The share of hidden files is the second grade of the section.
+
+The moves are single-file moves: for each file and each group that holds a neighbour of it, aji recomputes Q with the file moved and lists the ten largest gains, with the file's neighbours there and at home; and the transit files with the most crossing traffic, offered as splits into an interface part and an internal part.
+
+### Test reach
+
+A folk measure; the SIG test-quality model has a version. A project file names its tests with `<tests glob="..."/>` (Section 4). They stay out of the score, and aji reads their dependencies, resolving them together with the production files so that a reference resolves as it would in the build; the production dependencies themselves are the ones found without the tests, so a test file never changes them.
+
+A production file is reached when a test depends on it directly or on a file that reaches it through production dependencies. In C++ a test includes headers and sources are linked, so the share is taken over the headers alone (by extension: `.h .hpp .hh .hxx .inl .ipp`) and the section says so; in Java every file counts. The parts are the share per layer, the unreached files by folder, and the unreached files that the most other files depend on, where a test would reach the most. The moves are `TEST folder` for every folder none of whose countable files is reached.
+
+### The combined list of moves
+
+MOVES THAT HELP MORE THAN ONE MEASURE takes every cut and move suggested above, tries each one alone on the model, and recomputes all six grades: the M-score, NCCD, the stable-direction share, Q, the hidden share and test reach. A cut drops the dependency. A move gives the file the other group and, for the M-score, the layer that most files of that group have (or the layer itself under `--group layer`); a move that adds an upward dependency is marked. Test reach is recomputed for cuts only, since a move changes no dependency, and a cut can take a file out of a test's reach.
+
+A grade counts as improved or worsened when it changes by at least 0.001 (0.1 points for a share); smaller changes are what one dependency more or less does by itself and are shown as unchanged. The list is ranked by the number of measures improved, then by the number worsened (fewer first), then by the gain in M-score points. The table shows `+`, `-` or `.` under each measure, the measures that asked for the move, and the changes themselves; the first twenty are printed and all of them go to `moves.csv`. The splits and the tests, which the model cannot be put through, follow as advice with the measure that asked for each.
+
+### Reference figures (8 November 2026, default options)
+
+| Project | Files | Deps | M-score | NCCD | CCD | Direction | Q | Hidden | Test reach |
+|---|---|---|---|---|---|---|---|---|---|
+| expert-goggles (component groups) | 335 | 677 | 85.691 % | 1.963926 | 4880 | 91.429 % | 0.556049 | 43.284 % | 94.512 % of 164 headers, 115 tests |
+| HexKrieg (package groups) | 102 | 557 | 84.136 % | 2.750935 | 1614 | 99.163 % | 0.031110 | 1.961 % | 96.078 % of 102 files, 68 tests |
+| aji (package groups) | 39 | 179 | 71.526 % | 2.110686 | 367 | 89.677 % | 0.039949 | 0.000 % | not declared |
+
+What the reports show, in brief. On expert-goggles the heaviest dependencies are the foundation headers (`types.hpp` is reached by 304 of 335 files), and the one cut that lowers CCD the most is `plan.hpp -> request.hpp` in the orchestration headers (CCD 4880 to 4198), which the M-score also rewards (+0.500 points); Martin's reading finds the orchestration headers depending on the less stable engines headers; Q is 0.556 over the components, with `solver_contract.hpp` the one foundation header whose neighbours are mostly in engines; 94.5 % of the headers are in some test's reach, and the headers kept in `src/` folders are the ones that are not. HexKrieg's packages are many and small, so Q is near 0 and almost nothing is hidden; its one weak point by these measures is NCCD 2.75, from a deep engine. aji's own figures moved with the new packages: 39 files, 179 dependencies, M-score 71.526 % (75.155 % before them, Section 9), with no layering violation.

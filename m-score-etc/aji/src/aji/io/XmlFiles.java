@@ -52,12 +52,17 @@ public final class XmlFiles {
             files.add(new FileNode(required(e, "id", p),
                     layer.isBlank() ? FileNode.UNASSIGNED : integer(layer, "layer", p)));
         }
+        List<String> tests = new ArrayList<>();
+        for (Element e : children(root, "test")) {
+            tests.add(required(e, "id", p));
+        }
         Set<Dep> deps = new LinkedHashSet<>();
+        Set<Dep> testDeps = new LinkedHashSet<>();
         for (Element e : children(root, "dep")) {
             String from = required(e, "from", p);
             String to = required(e, "to", p);
             if (!from.equals(to)) {
-                deps.add(new Dep(from, to));
+                ("true".equals(e.getAttribute("test")) ? testDeps : deps).add(new Dep(from, to));
             }
         }
         Map<Integer, String> names = new TreeMap<>();
@@ -65,7 +70,7 @@ public final class XmlFiles {
             names.put(integer(required(e, "number", p), "number", p), e.getAttribute("name"));
         }
         try {
-            return new SystemModel(root.getAttribute("name"), files, deps, names);
+            return new SystemModel(root.getAttribute("name"), files, deps, names, tests, testDeps);
         } catch (IllegalArgumentException ex) {
             throw new IOException(p + ": " + ex.getMessage(), ex);
         }
@@ -90,6 +95,10 @@ public final class XmlFiles {
         for (Element e : children(root, "exclude")) {
             excludes.add(Glob.of(required(e, "glob", p)));
         }
+        List<Glob> tests = new ArrayList<>();
+        for (Element e : children(root, "tests")) {
+            tests.add(Glob.of(required(e, "glob", p)));
+        }
         List<LayerRule> layers = new ArrayList<>();
         for (Element e : children(root, "layer")) {
             List<Glob> globs = new ArrayList<>();
@@ -108,7 +117,7 @@ public final class XmlFiles {
         }
         boolean defaults = !"false".equalsIgnoreCase(root.getAttribute("default-excludes").trim());
         return new ProjectSpec(name, projectRoot, language, sources, includes, excludes, defaults,
-                layers);
+                tests, layers);
     }
 
     /** Writes a model in the {@code <system>} format, sorted so that runs can be compared. */
@@ -133,6 +142,17 @@ public final class XmlFiles {
         for (Dep d : deps) {
             b.append("  <dep from=\"").append(esc(d.from())).append("\" to=\"").append(esc(d.to()))
                     .append("\"/>\n");
+        }
+        List<String> tests = new ArrayList<>(m.tests());
+        tests.sort(null);
+        for (String t : tests) {
+            b.append("  <test id=\"").append(esc(t)).append("\"/>\n");
+        }
+        List<Dep> testDeps = new ArrayList<>(m.testDeps());
+        testDeps.sort(Dep.ORDER);
+        for (Dep d : testDeps) {
+            b.append("  <dep from=\"").append(esc(d.from())).append("\" to=\"").append(esc(d.to()))
+                    .append("\" test=\"true\"/>\n");
         }
         b.append("</system>\n");
         Files.writeString(out, b.toString(), StandardCharsets.UTF_8);

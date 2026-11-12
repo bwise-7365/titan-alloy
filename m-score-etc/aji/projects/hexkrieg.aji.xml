@@ -21,11 +21,13 @@
      forces.
 
      The sibling HexRules sources are not part of this project; references to them are
-     ignored. Tests are left out; delete the first <exclude> line to include them as a
+     ignored. Tests are left out of the score and named as tests, so that the test-reach
+     measure reads them; delete the <exclude> and <tests> lines to include them as a
      layer below the others. The module descriptors in modules/ are not source code of
      the engine and are left out as well. -->
 <aji-project name="hexkrieg" root="../../../../HexKrieg" language="java">
   <exclude glob="test/**"/>
+  <tests glob="test/**"/>
   <exclude glob="modules/**"/>
   <layer number="1" name="board and units">
     <path glob="src/board/**"/>

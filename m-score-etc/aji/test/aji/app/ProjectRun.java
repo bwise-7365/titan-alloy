@@ -2,11 +2,19 @@ package aji.app;
 
 import aji.diagnose.Diagnosis;
 import aji.graph.Graphs;
+import aji.io.MeasureWriter;
 import aji.io.ReportWriter;
 import aji.io.XmlFiles;
+import aji.measure.Direction;
+import aji.measure.Fit;
+import aji.measure.Grouping;
+import aji.measure.Move;
+import aji.measure.Reach;
+import aji.measure.TestReach;
 import aji.model.Dep;
 import aji.model.Params;
 import aji.model.SystemModel;
+import aji.moves.Trials;
 import aji.score.EdgeClasses;
 import aji.score.MScore;
 import aji.score.ModuleScore;
@@ -82,6 +90,7 @@ record ProjectRun(String report, String csv, SystemModel model, Result result, R
         run.checkOutputs(c);
         run.checkFormula(c);
         run.checkExplanation(c);
+        run.checkMeasures(c);
         System.out.println();
         System.out.println("Rules of the project's architecture");
         architecture.accept(run, c);
@@ -259,6 +268,125 @@ record ProjectRun(String report, String csv, SystemModel model, Result result, R
                 String.valueOf(pc));
         c.check("layers derived from the dependencies leave no upward dependency",
                 derived.edges().upward().isEmpty(), listing(derived.edges().upward()));
+    }
+
+    /** Properties of the four measures and of the combined list that hold for any project. */
+    void checkMeasures(Checks c) {
+        boolean cpp = TestReach.looksLikeCpp(model);
+        Grouping grouping = Grouping.defaultFor(cpp);
+        MeasureWriter.Measures ms = Main.measures(model, Params.defaults(), grouping, cpp);
+        Reach r = ms.reach();
+        int n = model.files().size();
+        c.info(String.format(Locale.ROOT, "NCCD %.6f (CCD %d, ACD %.3f, %d levels), direction"
+                        + " %.3f %%, Q %.6f, hidden %.3f %%, tests %s", r.nccd(), r.ccd(), r.acd(),
+                r.levels(), 100 * ms.direction().grade(), ms.fit().q(),
+                100 * ms.fit().hiddenShare(), ms.tests() == null ? "not declared"
+                        : String.format(Locale.ROOT, "%.3f %% of %d %s", 100 * ms.tests().grade(),
+                        ms.tests().countable(), ms.tests().headersOnly() ? "headers" : "files")));
+
+        c.check("reach: CCD lies between N and N squared, and equals N squared times the"
+                        + " propagation cost",
+                r.ccd() >= n && r.ccd() <= (long) n * n
+                        && Math.abs(r.propagationCost() - result.propagationCost()) < EPS,
+                "CCD " + r.ccd());
+        boolean cuts = true;
+        long last = -1;
+        for (Reach.Cut cut : r.cuts()) {
+            cuts &= cut.ccdAfter() < r.ccd() && cut.ccdAfter() >= last
+                    && Reach.grade(model.without(cut.dep())).ccd() == cut.ccdAfter();
+            last = cut.ccdAfter();
+        }
+        c.check("reach: every cut offered lowers CCD by the amount stated, largest fall first",
+                cuts, "");
+
+        Direction d = ms.direction();
+        int breaking = d.groups().stream().mapToInt(Direction.Group::breaking).sum();
+        int violating = d.violations().stream().mapToInt(Direction.Violation::deps).sum();
+        c.check("direction: the dependencies that break the principle, by group and by pair,"
+                        + " add up to those not obeying it",
+                breaking == d.between() - d.obeying() && violating == d.between() - d.obeying(),
+                breaking + " by group, " + violating + " by pair, " + (d.between() - d.obeying())
+                        + " not obeying");
+        boolean instabilities = d.groups().stream().allMatch(g -> g.ca() + g.ce() == 0
+                || (g.instability() >= 0 && g.instability() <= 1));
+        boolean examples = d.violations().stream().allMatch(v -> v.fromI() < v.toI()
+                && !v.examples().isEmpty() && v.examples().size() <= Direction.EXAMPLES);
+        c.check("direction: every instability lies in [0, 1], and every violation points to a"
+                + " less stable group with examples", instabilities && examples, "");
+
+        Fit f = ms.fit();
+        int files = f.profiles().stream().mapToInt(Fit.Profile::files).sum();
+        boolean partsAddUp = f.profiles().stream().allMatch(p -> p.hidden() + p.inbound()
+                + p.outbound() + p.transit() == p.files());
+        c.check("fit: Q lies in [-1/2, 1], and the four profile counts of every group add up to"
+                        + " its files, and the groups to N",
+                f.q() >= -0.5 - EPS && f.q() <= 1 + EPS && partsAddUp && files == n,
+                String.format(Locale.ROOT, "Q %.6f, %d files in profiles", f.q(), files));
+        Map<String, String> groupOf = grouping.of(model);
+        boolean shifts = true;
+        for (Fit.Shift s : f.shifts()) {
+            Map<String, String> moved = new java.util.HashMap<>(groupOf);
+            moved.put(s.file(), s.to());
+            shifts &= s.qAfter() > f.q() && s.there() > s.here()
+                    && Math.abs(Fit.grade(model, moved).q() - s.qAfter()) < EPS;
+        }
+        c.check("fit: every move offered raises Q by the amount stated and goes where the file"
+                + " has more neighbours", shifts, "");
+
+        TestReach t = ms.tests();
+        if (t != null) {
+            int byLayer = t.byLayer().stream().mapToInt(TestReach.LayerShare::reached).sum();
+            int unreached = t.byFolder().stream().mapToInt(TestReach.FolderShare::unreached).sum();
+            c.check("test reach: the reached files by layer and the unreached by folder add up"
+                            + " to the countable files",
+                    byLayer == t.reached() && unreached + t.reached() == t.countable()
+                            && t.reached() <= t.countable(),
+                    byLayer + " reached by layer, " + unreached + " unreached by folder, "
+                            + t.countable() + " countable");
+            Set<String> ids = new HashSet<>();
+            model.files().forEach(x -> ids.add(x.id()));
+            boolean testDeps = model.testDeps().stream()
+                    .allMatch(x -> model.tests().contains(x.from()) && ids.contains(x.to()));
+            c.check("test reach: model.xml holds the tests and dependencies from tests to files only",
+                    !model.tests().isEmpty() && testDeps, "");
+        }
+
+        Trials tr = ms.trials();
+        Set<Move> suggested = new java.util.TreeSet<>(Move.SAME);
+        List<Move> all = new java.util.ArrayList<>(r.moves());
+        all.addAll(d.moves());
+        all.addAll(f.moves());
+        if (t != null) {
+            all.addAll(t.moves());
+        }
+        suggested.addAll(all);
+        long triable = suggested.stream().filter(Move::triable).count();
+        c.check("moves: every triable move suggested is tried once, and the rest is advice",
+                tr.trials().size() == triable && tr.advice().size() == all.size() - all.stream()
+                        .filter(Move::triable).count(),
+                tr.trials().size() + " trials for " + triable + " triable moves");
+        boolean counted = true;
+        boolean ordered = true;
+        Trials.Trial previous = null;
+        for (Trials.Trial x : tr.trials()) {
+            int up = 0;
+            int down = 0;
+            for (int k = 0; k < Trials.COLUMNS.size(); k++) {
+                int s = Trials.sign(tr.base(), x.after(), k);
+                up += s > 0 ? 1 : 0;
+                down += s < 0 ? 1 : 0;
+            }
+            counted &= up == x.improved() && down == x.worsened();
+            if (previous != null) {
+                ordered &= previous.improved() > x.improved()
+                        || (previous.improved() == x.improved() && previous.worsened() <= x.worsened());
+            }
+            previous = x;
+        }
+        c.check("moves: the counts of measures improved and worsened match the signs, and the"
+                + " list is ranked by them", counted && ordered, "");
+        c.check("report.txt holds the measures as model.xml gives them when measured again",
+                report.contains(MeasureWriter.text(ms, 25)), "");
     }
 
     private static boolean fraction(double v) {

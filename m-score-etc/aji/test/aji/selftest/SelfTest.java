@@ -8,10 +8,17 @@ import aji.graph.Graphs;
 import aji.io.XmlFiles;
 import aji.lex.Lexer;
 import aji.lex.Token;
+import aji.measure.Direction;
+import aji.measure.Fit;
+import aji.measure.Grouping;
+import aji.measure.Move;
+import aji.measure.Reach;
+import aji.measure.TestReach;
 import aji.model.Dep;
 import aji.model.FileNode;
 import aji.model.Params;
 import aji.model.SystemModel;
+import aji.moves.Trials;
 import aji.score.MScore;
 import aji.score.Result;
 import aji.testing.Checks;
@@ -99,7 +106,229 @@ public final class SelfTest {
         whatJoinsAModule();
         cyclesAndCrossings();
 
+        System.out.println();
+        System.out.println("The four measures beside the M-score, worked by hand");
+        reach();
+        direction();
+        fit();
+        testReach();
+        grouping();
+        trials();
+
         System.exit(CHECKS.finish());
+    }
+
+    // ---- the four measures ------------------------------------------------------------------
+
+    /** Files a, b, ... with one layer each (not needed by the measure under test). */
+    private static SystemModel model(String name, String files, String... deps) {
+        List<FileNode> nodes = new ArrayList<>();
+        for (String f : files.split(" ")) {
+            nodes.add(new FileNode(f, 1));
+        }
+        Set<Dep> set = new HashSet<>();
+        for (String d : deps) {
+            String[] ends = d.split(">");
+            set.add(new Dep(ends[0], ends[1]));
+        }
+        return new SystemModel(name, nodes, set);
+    }
+
+    static void reach() {
+        Reach chain = Reach.of(model("chain", "a b c d", "a>b", "b>c", "c>d"));
+        check("reach: a chain of 4 has CCD 10 and NCCD 10 / (5 log2 5 - 4)",
+                chain.ccd() == 10 && Math.abs(chain.nccd() - 10 / Reach.treeCcd(4)) < 1e-12
+                        && Math.abs(Reach.treeCcd(4) - (5 * Math.log(5) / Math.log(2) - 4)) < 1e-12,
+                "CCD " + chain.ccd());
+        check("reach: in the chain, cutting b -> c lowers CCD the most, to 6",
+                !chain.cuts().isEmpty() && chain.cuts().get(0).dep().equals(new Dep("b", "c"))
+                        && chain.cuts().get(0).ccdAfter() == 6
+                        && chain.cuts().size() == 3,
+                chain.cuts().toString());
+        Reach star = Reach.of(model("star", "r a b c", "r>a", "r>b", "r>c"));
+        check("reach: a star of 1 + 3 has CCD 7", star.ccd() == 7, "CCD " + star.ccd());
+        Reach tree = Reach.of(model("tree", "r m1 m2 l1 l2 l3 l4", "r>m1", "r>m2", "m1>l1",
+                "m1>l2", "m2>l3", "m2>l4"));
+        check("reach: a balanced binary tree of 7 has CCD 17 and NCCD 1",
+                tree.ccd() == 17 && Math.abs(tree.nccd() - 1) < 1e-12, "CCD " + tree.ccd());
+        Reach cycle = Reach.of(model("cycle", "a b c", "a>b", "b>c", "c>a"));
+        check("reach: a cycle of 3 has CCD 9, and any one cut leaves a chain with CCD 6",
+                cycle.ccd() == 9 && cycle.cuts().size() == 3
+                        && cycle.cuts().stream().allMatch(x -> x.ccdAfter() == 6),
+                cycle.cuts().toString());
+        // With the chord a -> c, cutting a -> c changes nothing (a still reaches c through b);
+        // cutting c -> a leaves a chain with the chord (6); cutting a -> b or b -> c leaves a
+        // two-file cycle with a third file beside it (7). The guard against trying a cut that
+        // another dependency covers must still try a -> b, since c reaches b only through a.
+        Reach chord = Reach.of(model("chord", "a b c", "a>b", "b>c", "c>a", "a>c"));
+        boolean found = chord.cuts().stream()
+                .anyMatch(x -> x.dep().equals(new Dep("a", "b")) && x.ccdAfter() == 7);
+        check("reach: with a chord a -> c across the cycle, three cuts help and a -> c does not",
+                chord.ccd() == 9 && found && chord.cuts().size() == 3
+                        && chord.cuts().get(0).dep().equals(new Dep("c", "a"))
+                        && chord.cuts().get(0).ccdAfter() == 6,
+                chord.cuts().toString());
+        check("reach: propagation cost is CCD / N squared",
+                Math.abs(chain.propagationCost() - 10.0 / 16) < 1e-12, "");
+    }
+
+    static void direction() {
+        SystemModel m = model("line", "A/a1 A/a2 B/b1 B/b2 C/c1", "A/a1>B/b1", "A/a2>B/b1",
+                "B/b1>C/c1", "B/b2>C/c1", "C/c1>A/a1");
+        Direction d = Direction.of(m, Grouping.FOLDER.of(m));
+        Map<String, Direction.Group> g = new java.util.HashMap<>();
+        d.groups().forEach(x -> g.put(x.name(), x));
+        check("direction: Ca, Ce and I of three groups in a line with one back-edge",
+                g.get("A").ca() == 1 && g.get("A").ce() == 2
+                        && g.get("B").ca() == 2 && g.get("B").ce() == 2
+                        && g.get("C").ca() == 2 && g.get("C").ce() == 1
+                        && Math.abs(g.get("A").instability() - 2.0 / 3) < 1e-12
+                        && Math.abs(g.get("B").instability() - 0.5) < 1e-12
+                        && Math.abs(g.get("C").instability() - 1.0 / 3) < 1e-12,
+                d.groups().toString());
+        check("direction: 4 of 5 dependencies between groups obey the principle; C -> A breaks it",
+                d.between() == 5 && d.obeying() == 4 && Math.abs(d.grade() - 0.8) < 1e-12
+                        && d.violations().size() == 1 && d.violations().get(0).from().equals("C")
+                        && d.violations().get(0).to().equals("A") && d.violations().get(0).deps() == 1
+                        && g.get("C").breaking() == 1,
+                d.violations().toString());
+        check("direction: no hub among files with fan-in and fan-out below 3", d.hubs().isEmpty(),
+                d.hubs().toString());
+        check("direction: the 90th percentile of 1..10 is 9",
+                Direction.percentile90(new int[] {3, 1, 4, 1, 5, 9, 2, 6, 10, 7}) == 9, "");
+    }
+
+    static void fit() {
+        SystemModel m = model("triangles", "X/x1 X/x2 X/x3 Y/y1 Y/y2 Y/y3", "X/x1>X/x2",
+                "X/x2>X/x3", "X/x1>X/x3", "Y/y1>Y/y2", "Y/y2>Y/y3", "Y/y1>Y/y3", "X/x3>Y/y1");
+        Fit f = Fit.of(m, Grouping.FOLDER.of(m));
+        check("fit: two triangles joined by one edge have Q = 5/14",
+                Math.abs(f.q() - 5.0 / 14) < 1e-12 && f.edges() == 7 && f.inside() == 6,
+                String.valueOf(f.q()));
+        check("fit: no single file has more neighbours in the other triangle", f.shifts().isEmpty(),
+                f.shifts().toString());
+        Map<String, Fit.Profile> p = new java.util.HashMap<>();
+        f.profiles().forEach(x -> p.put(x.group(), x));
+        check("fit: profiles: X has 2 hidden and 1 outbound, Y 2 hidden and 1 inbound",
+                p.get("X").hidden() == 2 && p.get("X").outbound() == 1 && p.get("X").transit() == 0
+                        && p.get("Y").hidden() == 2 && p.get("Y").inbound() == 1
+                        && Math.abs(f.hiddenShare() - 4.0 / 6) < 1e-12 && f.transits().isEmpty(),
+                f.profiles().toString());
+        SystemModel one = model("one", "X/x1 X/x2 X/x3", "X/x1>X/x2", "X/x2>X/x3");
+        check("fit: one group has Q = 0", Math.abs(Fit.of(one, Grouping.FOLDER.of(one)).q()) < 1e-12,
+                "");
+        SystemModel cliques = model("cliques", "X/x1 X/x2 X/x3 Y/y1 Y/y2 Y/y3", "X/x1>X/x2",
+                "X/x2>X/x3", "X/x1>X/x3", "Y/y1>Y/y2", "Y/y2>Y/y3", "Y/y1>Y/y3");
+        check("fit: two separate equal cliques have Q = 0.5",
+                Math.abs(Fit.of(cliques, Grouping.FOLDER.of(cliques)).q() - 0.5) < 1e-12, "");
+        // x1 has one neighbour in X and three in Y. Before the move Q = 10/16 - (49 + 81)/256
+        // = 0.1172; with x1 in Y, Q = 14/16 - (9 + 169)/256 = 0.1797.
+        SystemModel stray = model("stray", "X/x1 X/x2 X/x3 Y/y1 Y/y2 Y/y3", "X/x1>X/x2",
+                "X/x2>X/x3", "Y/y1>Y/y2", "Y/y2>Y/y3", "Y/y1>Y/y3", "Y/y1>X/x1",
+                "Y/y2>X/x1", "Y/y3>X/x1");
+        Fit s = Fit.of(stray, Grouping.FOLDER.of(stray));
+        check("fit: a file with one neighbour at home and three in the other group is offered"
+                        + " a move there (Q 0.1172 to 0.1797)",
+                !s.shifts().isEmpty() && s.shifts().get(0).file().equals("X/x1")
+                        && s.shifts().get(0).to().equals("Y") && s.shifts().get(0).there() == 3
+                        && s.shifts().get(0).here() == 1
+                        && Math.abs(s.q() - (10.0 / 16 - 130.0 / 256)) < 1e-12
+                        && Math.abs(s.shifts().get(0).qAfter() - (14.0 / 16 - 178.0 / 256)) < 1e-12,
+                s.shifts().toString() + " Q " + s.q());
+        // The same six files with x1 tied to both triangles equally: the degree correction
+        // keeps x1 at home, since Y is already the larger group.
+        SystemModel tied = model("tied", "X/x1 X/x2 X/x3 Y/y1 Y/y2 Y/y3", "X/x1>X/x2",
+                "X/x2>X/x3", "X/x1>X/x3", "Y/y1>Y/y2", "Y/y2>Y/y3", "Y/y1>Y/y3", "Y/y1>X/x1",
+                "Y/y2>X/x1", "Y/y3>X/x1");
+        check("fit: a file with two neighbours at home and three away stays, as Q would fall",
+                Fit.of(tied, Grouping.FOLDER.of(tied)).shifts().isEmpty(), "");
+    }
+
+    static void testReach() throws Exception {
+        SystemModel m = model("tests", "a b c d", "a>b", "b>c", "c>d")
+                .withTests(List.of("t"), Set.of(new Dep("t", "b")));
+        TestReach r = TestReach.of(m, false);
+        check("test reach: one test on the second file of a chain of 4 reaches 3 of 4",
+                r.tests() == 1 && r.countable() == 4 && r.reached() == 3
+                        && Math.abs(r.grade() - 0.75) < 1e-12 && r.wanted().size() == 1
+                        && r.wanted().get(0).file().equals("a"),
+                r.toString());
+        SystemModel cpp = model("cpp", "lib/x.hpp lib/x.cpp lib/y.hpp", "lib/x.cpp>lib/x.hpp")
+                .withTests(List.of("tests/t.cpp"), Set.of(new Dep("tests/t.cpp", "lib/x.hpp")));
+        TestReach h = TestReach.of(cpp, true);
+        check("test reach: in C++ the headers alone count; a folder with no reached header is"
+                        + " advice only when all its headers are unreached",
+                TestReach.looksLikeCpp(cpp) && h.countable() == 2 && h.reached() == 1
+                        && h.moves().isEmpty() && h.byFolder().size() == 1
+                        && h.byFolder().get(0).unreached() == 1,
+                h.toString());
+        Path tmp = Files.createTempFile("aji-selftest", ".xml");
+        try {
+            XmlFiles.writeSystem(cpp, tmp, "self-test");
+            SystemModel back = XmlFiles.readSystem(tmp);
+            check("test reach: model.xml keeps the tests and their dependencies",
+                    back.tests().equals(cpp.tests()) && back.testDeps().equals(cpp.testDeps())
+                            && back.deps().equals(cpp.deps()), back.toString());
+        } finally {
+            Files.deleteIfExists(tmp);
+        }
+    }
+
+    static void grouping() {
+        SystemModel m = model("paths", "apps/fleet/include/fleet/gui/w.hpp apps/fleet/gui/w.cpp"
+                + " facilities/gui/src/v.cpp src/aji/model/X.java top.cpp");
+        Map<String, String> c = Grouping.COMPONENT.of(m);
+        Map<String, String> f = Grouping.FOLDER.of(m);
+        check("grouping: components stop at include, src or tests, or failing those at gui",
+                c.get("apps/fleet/include/fleet/gui/w.hpp").equals("apps/fleet")
+                        && c.get("apps/fleet/gui/w.cpp").equals("apps/fleet")
+                        && c.get("facilities/gui/src/v.cpp").equals("facilities/gui")
+                        && c.get("src/aji/model/X.java").equals("(root)")
+                        && c.get("top.cpp").equals("(root)"),
+                c.toString());
+        check("grouping: folders are the parent directories",
+                f.get("src/aji/model/X.java").equals("src/aji/model") && f.get("top.cpp").equals("(root)"),
+                f.toString());
+    }
+
+    static void trials() {
+        // Two folders, P above Q in the layers; one cut and one move suggested.
+        List<FileNode> files = List.of(new FileNode("P/p1", 1), new FileNode("P/p2", 1),
+                new FileNode("Q/q1", 2), new FileNode("Q/q2", 2), new FileNode("Q/q3", 2));
+        Set<Dep> deps = Set.of(new Dep("Q/q1", "P/p1"), new Dep("Q/q2", "P/p1"),
+                new Dep("Q/q3", "P/p2"), new Dep("Q/q1", "Q/q2"), new Dep("P/p2", "P/p1"));
+        SystemModel m = new SystemModel("trials", files, deps);
+        List<Move> suggested = List.of(
+                new Move(Move.Kind.CUT, "Q/q3", "P/p2", "reach", ""),
+                new Move(Move.Kind.CUT, "Q/q3", "P/p2", "direction", ""),
+                new Move(Move.Kind.MOVE, "P/p2", "Q", "fit", ""),
+                new Move(Move.Kind.SPLIT, "P/p1", "", "fit", ""));
+        Trials t = Trials.of(m, Params.defaults(), Grouping.FOLDER, false, suggested);
+        check("trials: the same cut asked for twice is tried once, and advice is kept apart",
+                t.trials().size() == 2 && t.advice().size() == 1
+                        && t.trials().stream().anyMatch(x -> x.askedBy().equals(Set.of("reach", "direction"))),
+                t.trials().toString());
+        SystemModel cut = m.without(new Dep("Q/q3", "P/p2"));
+        Trials.Trial tc = t.trials().stream().filter(x -> x.move().kind() == Move.Kind.CUT).findFirst()
+                .orElseThrow();
+        Trials.Grades direct = Trials.grades(cut, Params.defaults(), Grouping.FOLDER.of(cut), false);
+        check("trials: the grades after a cut are those of the model without the dependency",
+                tc.after().equals(direct) && Math.abs(tc.after().mScore()
+                        - MScore.evaluate(cut, Params.defaults()).mScore()) < 1e-12,
+                tc.after() + " vs " + direct);
+        Trials.Trial tm = t.trials().stream().filter(x -> x.move().kind() == Move.Kind.MOVE).findFirst()
+                .orElseThrow();
+        Map<String, Integer> layers = m.layerOf();
+        layers.put("P/p2", 2);
+        SystemModel moved = m.withLayers(layers, Map.of());
+        Map<String, String> groups = new java.util.HashMap<>(Grouping.FOLDER.of(m));
+        groups.put("P/p2", "Q");
+        check("trials: a move gives the file the destination's layer and group, and the moved"
+                        + " dependency P/p2 -> P/p1 adds no violation",
+                Math.abs(tm.after().mScore() - MScore.evaluate(moved, Params.defaults()).mScore()) < 1e-12
+                        && Math.abs(tm.after().q() - Fit.grade(moved, groups).q()) < 1e-12
+                        && !tm.addsViolation(),
+                tm.toString());
     }
 
     // ---- paper figures -------------------------------------------------------------------

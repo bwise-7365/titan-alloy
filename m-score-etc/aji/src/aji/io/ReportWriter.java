@@ -36,10 +36,20 @@ public final class ReportWriter {
      * @param derivedOnly the same files with derived layers, or null
      * @param top         how many modules to list
      * @param explained   what joins the modules that lose the most; may be empty
+     * @param measures    the four measures beside the M-score and the moves tried, or null
+     *                    when only the M-score was asked for
      */
     public record Input(Result main, List<Result> variants, String source, String language,
                         String layering, List<String> dropped, List<String> notes,
-                        Result derivedOnly, int top, List<Diagnosis> explained) {
+                        Result derivedOnly, int top, List<Diagnosis> explained,
+                        MeasureWriter.Measures measures) {
+
+        public Input(Result main, List<Result> variants, String source, String language,
+                     String layering, List<String> dropped, List<String> notes,
+                     Result derivedOnly, int top, List<Diagnosis> explained) {
+            this(main, variants, source, language, layering, dropped, notes, derivedOnly, top,
+                    explained, null);
+        }
     }
 
     public static String text(Input in) {
@@ -69,7 +79,12 @@ public final class ReportWriter {
         b.append("RESULT\n");
         b.append("  M-score          = ").append(pct6(r.mScore())).append(" %   (")
                 .append(r.params().label()).append(")\n");
-        b.append("  Propagation cost = ").append(pct6(r.propagationCost())).append(" %\n\n");
+        b.append("  Propagation cost = ").append(pct6(r.propagationCost())).append(" %\n");
+        if (in.measures() != null) {
+            b.append("  The other measures (reach, direction, partition fit, test reach) follow"
+                    + " the explanation.\n");
+        }
+        b.append('\n');
         b.append("  The published definition leaves two choices open. The score under each:\n");
         b.append("                  lower=ALL  lower=ADJACENT\n");
         for (Params.CrossCount c : Params.CrossCount.values()) {
@@ -135,6 +150,10 @@ public final class ReportWriter {
 
         if (!in.explained().isEmpty()) {
             b.append(explanation(in.explained())).append('\n');
+        }
+
+        if (in.measures() != null) {
+            b.append(MeasureWriter.text(in.measures(), in.top()));
         }
 
         List<Dep> up = r.edges().upward();

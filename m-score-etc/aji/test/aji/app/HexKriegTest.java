@@ -5,15 +5,18 @@ import aji.model.SystemModel;
 import aji.testing.Checks;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 /**
  * Runs aji on HexKrieg and checks the result against HexKrieg's architecture (its CLAUDE.md):
- * the headless engine in {@code src/} is six packages that form layers, a game such as
- * Panzergruppe Guderian in {@code src-pgg/} uses the engine and no other game, and the Swing
- * front end in {@code src-gui/} and the continuous-motion simulation in {@code src-hksim/}
- * sit on top of both. The front ends are four layers: the widgets of the Swing front end
+ * the headless engine in {@code src/} is six packages that form layers; a game such as
+ * Panzergruppe Guderian in {@code src-pgg/} or The Russian Campaign in {@code src-trc/} uses
+ * the engine and no other game, except the game whose rules and counters it plays, as
+ * Panzergruppe Kleist in {@code src-pgk/} plays PGG's; and the Swing front end in
+ * {@code src-gui/} and the continuous-motion simulation in {@code src-hksim/} sit on top of
+ * all of them. The front ends are four layers: the widgets of the Swing front end
  * ({@code src-gui/widgets/}), the vehicle of the simulation ({@code src-hksim/vehicle/}),
  * its tank ({@code src-hksim/tank/}), and the windows of both. Run it from the aji folder,
  * or pass the project file:
@@ -24,6 +27,15 @@ import java.util.TreeSet;
  * them and checks the rules that must hold whatever they are.
  */
 public final class HexKriegTest {
+
+    /**
+     * The games that play another game's rules and counters, by source root: Panzergruppe
+     * Kleist plays Panzergruppe Guderian's on another map (HexKrieg's CLAUDE.md, Ben,
+     * 2026-11-06), so it uses {@code src-pgg/} and reaches the engine through it. The Russian
+     * Campaign plays neither PGG's rules nor its counters and uses the engine alone. A new game
+     * on another game's rules is added here.
+     */
+    static final Map<String, String> RULES_PLAYED = Map.of("src-pgk", "src-pgg");
 
     private HexKriegTest() {
     }
@@ -50,15 +62,24 @@ public final class HexKriegTest {
                 + " later one", upward.isEmpty(), ProjectRun.listing(upward));
 
         List<Dep> acrossGames = run.deps(d -> game(d.from()) && game(d.to())
-                && !ProjectRun.part(d.from(), 0).equals(ProjectRun.part(d.to(), 0)));
-        c.check("no game uses another game's files", acrossGames.isEmpty(),
-                ProjectRun.listing(acrossGames));
+                && !ProjectRun.part(d.from(), 0).equals(ProjectRun.part(d.to(), 0))
+                && !ProjectRun.part(d.to(), 0).equals(RULES_PLAYED.get(ProjectRun.part(d.from(), 0))));
+        c.check("no game uses another game's files, except the game whose rules and counters"
+                + " it plays (PGK plays PGG's)", acrossGames.isEmpty(), ProjectRun.listing(acrossGames));
 
-        c.check("each game uses the engine",
-                run.files(HexKriegTest::game).stream().map(id -> ProjectRun.part(id, 0)).distinct()
-                        .allMatch(root -> !run.deps(d -> d.from().startsWith(root + "/")
-                                && d.to().startsWith("src/")).isEmpty()),
-                "a game's source root has no dependency on src/");
+        List<String> games = run.files(HexKriegTest::game).stream()
+                .map(id -> ProjectRun.part(id, 0)).distinct().toList();
+        List<String> withoutEngine = games.stream().filter(root -> {
+            String through = RULES_PLAYED.getOrDefault(root, "src");
+            return run.deps(d -> d.from().startsWith(root + "/")
+                    && d.to().startsWith(through + "/")).isEmpty();
+        }).toList();
+        c.check("each game uses the engine, directly or through the game whose rules it plays",
+                !games.isEmpty() && withoutEngine.isEmpty(),
+                "no dependency on the engine or the rules game from " + withoutEngine);
+        c.check("every game that the rules map names is in the tree, and so is the game it plays",
+                games.containsAll(RULES_PLAYED.keySet()) && games.containsAll(RULES_PLAYED.values()),
+                "games " + games + ", rules map " + RULES_PLAYED);
         c.check("the Swing front end uses the engine",
                 !run.deps(d -> d.from().startsWith("src-gui/") && d.to().startsWith("src/"))
                         .isEmpty(), "no dependency from src-gui/ to src/ was found");

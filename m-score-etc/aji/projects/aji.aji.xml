@@ -5,8 +5,10 @@
                             parameters of the score; the lexer
        2 graph, spec, deps  graph algorithms; the project specification; the
                             dependency finders
-       3 score, extract     the M-score; the extraction of a model from a project
-       4 diagnose           why the modules that lose the most lose points
+       3 score, extract,    the M-score; the extraction of a model from a project;
+         measure            the four measures beside the M-score
+       4 diagnose, moves    why the modules that lose the most lose points; the
+                            moves of every measure tried on the model
        5 io                 XML input and output; the text report
        6 app                the command line
        7 testing            what the tests share
@@ -23,12 +25,14 @@
     <path glob="src/aji/spec/**"/>
     <path glob="src/aji/deps/**"/>
   </layer>
-  <layer number="3" name="score, extract">
+  <layer number="3" name="score, extract, measure">
     <path glob="src/aji/score/**"/>
     <path glob="src/aji/extract/**"/>
+    <path glob="src/aji/measure/**"/>
   </layer>
-  <layer number="4" name="diagnose">
+  <layer number="4" name="diagnose, moves">
     <path glob="src/aji/diagnose/**"/>
+    <path glob="src/aji/moves/**"/>
   </layer>
   <layer number="5" name="io">
     <path glob="src/aji/io/**"/>

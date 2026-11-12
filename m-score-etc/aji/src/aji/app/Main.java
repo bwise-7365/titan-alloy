@@ -3,10 +3,18 @@ package aji.app;
 import aji.diagnose.Diagnosis;
 import aji.extract.Extractor;
 import aji.graph.Graphs;
+import aji.io.MeasureWriter;
 import aji.io.ReportWriter;
 import aji.io.XmlFiles;
+import aji.measure.Direction;
+import aji.measure.Fit;
+import aji.measure.Grouping;
+import aji.measure.Move;
+import aji.measure.Reach;
+import aji.measure.TestReach;
 import aji.model.Params;
 import aji.model.SystemModel;
+import aji.moves.Trials;
 import aji.score.MScore;
 import aji.score.Result;
 import aji.spec.Language;
@@ -48,6 +56,11 @@ public final class Main {
               --top K              modules listed in the report (default 25)
               --explain K          modules for which the report explains the loss
                                    (default 3; 0 for none)
+              --measures all|mscore  report the four measures beside the M-score and
+                                   the moves tried (default), or the M-score alone
+              --group folder|component|top|layer  how files are grouped for the direction
+                                   and partition-fit measures (default: folder for Java,
+                                   component for C++)
               --quiet              do not print the report on the console
             """;
 
@@ -58,7 +71,7 @@ public final class Main {
     }
 
     record Options(Path input, Params params, boolean derive, Path out, int top, int explain,
-                   boolean quiet) {
+                   boolean quiet, boolean measures, Grouping grouping) {
     }
 
     public static void main(String[] args) {
@@ -88,6 +101,8 @@ public final class Main {
         int top = 25;
         int explain = DEFAULT_EXPLAIN;
         boolean quiet = false;
+        boolean measures = true;
+        Grouping grouping = null;   // chosen by language unless --group says
         for (int k = 0; k < args.length; k++) {
             String a = args[k];
             switch (a) {
@@ -104,6 +119,14 @@ public final class Main {
                 case "--out" -> out = Path.of(value(args, ++k, a));
                 case "--top" -> top = whole(args, ++k, a);
                 case "--explain" -> explain = whole(args, ++k, a);
+                case "--measures" -> {
+                    String v = value(args, ++k, a);
+                    if (!v.equals("all") && !v.equals("mscore")) {
+                        throw new IllegalArgumentException("--measures takes all or mscore");
+                    }
+                    measures = v.equals("all");
+                }
+                case "--group" -> grouping = Grouping.parse(value(args, ++k, a));
                 case "--quiet" -> quiet = true;
                 case "-h", "--help" -> throw new IllegalArgumentException("help requested");
                 default -> {
@@ -117,7 +140,7 @@ public final class Main {
         if (input == null) {
             throw new IllegalArgumentException("no input file given");
         }
-        return new Options(input, p, derive, out, top, explain, quiet);
+        return new Options(input, p, derive, out, top, explain, quiet, measures, grouping);
     }
 
     private static int whole(String[] args, int k, String option) {
@@ -184,22 +207,58 @@ public final class Main {
             derived = MScore.evaluate(d, o.params().with(Params.UpwardPolicy.EXCLUDE));
         }
 
+        MeasureWriter.Measures measures = null;
+        if (o.measures()) {
+            boolean cpp = language != null ? language.startsWith("C++") : TestReach.looksLikeCpp(model);
+            Grouping grouping = o.grouping() != null ? o.grouping() : Grouping.defaultFor(cpp);
+            measures = measures(model, o.params(), grouping, cpp);
+        }
         String report = ReportWriter.text(new ReportWriter.Input(main, variants,
                 o.input().toString(), language, layering, dropped, notes, derived, o.top(),
-                Diagnosis.of(main, o.explain())));
+                Diagnosis.of(main, o.explain()), measures));
         Path out = o.out() != null ? o.out() : Path.of("aji-out", safe(model.name()));
         Files.createDirectories(out);
         Files.writeString(out.resolve("report.txt"), report, StandardCharsets.UTF_8);
         Files.writeString(out.resolve("modules.csv"), ReportWriter.modulesCsv(main),
                 StandardCharsets.UTF_8);
+        if (measures != null) {
+            Files.writeString(out.resolve("measures.csv"),
+                    MeasureWriter.measuresCsv(measures, main.mScore()), StandardCharsets.UTF_8);
+            Files.writeString(out.resolve("moves.csv"), MeasureWriter.movesCsv(measures.trials()),
+                    StandardCharsets.UTF_8);
+        }
         XmlFiles.writeSystem(model, out.resolve("model.xml"),
                 "written by aji from " + o.input().getFileName() + "; layers " + layering);
         if (!o.quiet()) {
             System.out.print(report);
         }
-        System.out.println("Wrote report.txt, modules.csv and model.xml in "
+        System.out.println("Wrote report.txt, modules.csv" + (measures != null
+                ? ", measures.csv, moves.csv" : "") + " and model.xml in "
                 + out.toAbsolutePath().normalize());
         return 0;
+    }
+
+    /**
+     * The four measures beside the M-score, and every move they suggest tried on the model.
+     *
+     * @param cpp whether test reach counts headers alone
+     */
+    public static MeasureWriter.Measures measures(SystemModel model, Params params,
+                                                  Grouping grouping, boolean cpp) {
+        Map<String, String> groupOf = grouping.of(model);
+        Reach reach = Reach.of(model);
+        Direction direction = Direction.of(model, groupOf);
+        Fit fit = Fit.of(model, groupOf);
+        TestReach tests = model.tests().isEmpty() ? null : TestReach.of(model, cpp);
+        List<Move> suggested = new ArrayList<>();
+        suggested.addAll(reach.moves());
+        suggested.addAll(direction.moves());
+        suggested.addAll(fit.moves());
+        if (tests != null) {
+            suggested.addAll(tests.moves());
+        }
+        Trials trials = Trials.of(model, params, grouping, cpp, suggested);
+        return new MeasureWriter.Measures(reach, direction, fit, tests, grouping, trials);
     }
 
     private static String safe(String name) {

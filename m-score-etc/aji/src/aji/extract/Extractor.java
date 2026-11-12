@@ -4,6 +4,7 @@ import aji.deps.CppDeps;
 import aji.deps.Found;
 import aji.deps.JavaDeps;
 import aji.deps.SourceUnit;
+import aji.model.Dep;
 import aji.model.FileNode;
 import aji.model.SystemModel;
 import aji.spec.Glob;
@@ -20,8 +21,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -58,6 +62,9 @@ public final class Extractor {
         List<String> unlayered = new ArrayList<>();
         List<String> kept = new ArrayList<>();
         for (String p : paths) {
+            if (spec.isTest(p)) {
+                continue;   // read below, with the other tests
+            }
             if (!spec.declaresLayers()) {
                 kept.add(p);
                 continue;
@@ -84,7 +91,65 @@ public final class Extractor {
         }
         SystemModel model = new SystemModel(spec.name(), nodes, found.deps(),
                 useDeclared ? layerNames(spec) : Map.of());
-        return new Extraction(model, useDeclared ? "declared" : "none", unlayered, found.notes());
+        List<String> notes = new ArrayList<>(found.notes());
+        if (spec.declaresTests()) {
+            model = withTests(spec, model, units, notes);
+        }
+        return new Extraction(model, useDeclared ? "declared" : "none", unlayered, notes);
+    }
+
+    /**
+     * Reads the test files and finds their dependencies on the production files. The tests are
+     * resolved together with the production units, so that a test's reference resolves as it
+     * would in the build; the production dependencies themselves are the ones found without
+     * the tests, so that a test file never changes them.
+     */
+    private static SystemModel withTests(ProjectSpec spec, SystemModel model,
+                                         List<SourceUnit> production, List<String> notes)
+            throws IOException {
+        List<String> testPaths = listTests(spec);
+        if (testPaths.isEmpty()) {
+            notes.add("no file matches the <tests> patterns");
+            return model;
+        }
+        Set<String> tests = new LinkedHashSet<>(testPaths);
+        List<SourceUnit> all = new ArrayList<>(production);
+        for (String p : testPaths) {
+            all.add(new SourceUnit(p, read(spec.root().resolve(p))));
+        }
+        Found found = spec.language() == Language.JAVA
+                ? JavaDeps.find(all)
+                : CppDeps.find(all, spec.includeDirs());
+        Set<String> productionIds = new HashSet<>();
+        production.forEach(u -> productionIds.add(u.path()));
+        Set<Dep> testDeps = new LinkedHashSet<>();
+        for (Dep d : found.deps()) {
+            if (tests.contains(d.from()) && productionIds.contains(d.to())) {
+                testDeps.add(d);
+            }
+        }
+        return model.withTests(new ArrayList<>(tests), testDeps);
+    }
+
+    /**
+     * Relative paths of the test files: those under the source directories that match a
+     * {@code <tests>} pattern. Only the default exclusions apply to them, so that a project
+     * may exclude its test folder from the score and still name it as tests.
+     */
+    static List<String> listTests(ProjectSpec spec) throws IOException {
+        if (!spec.declaresTests()) {
+            return List.of();
+        }
+        ProjectSpec testsOnly = new ProjectSpec(spec.name(), spec.root(), spec.language(),
+                spec.sourceDirs(), spec.includeDirs(), List.of(), spec.defaultExcludes(),
+                spec.tests(), List.of());
+        List<String> tests = new ArrayList<>();
+        for (String p : listSources(testsOnly)) {
+            if (spec.isTest(p)) {
+                tests.add(p);
+            }
+        }
+        return tests;
     }
 
     /** Relative paths (forward slashes, sorted) of the source files that are not excluded. */

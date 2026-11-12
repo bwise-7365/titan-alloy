@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- expert-goggles with apps/shared as a layer of its own, between the facilities and
-     the applications. apps/shared is a library that eight applications include
-     (minppd, pform, glra, fleet, glra5, network_demo, ppdi, glrademo). Inside the
-     apps layer it joins them into one module; as its own layer it leaves each
-     application a separate module. Otherwise the same as expert-goggles.aji.xml. -->
+<!-- expert-goggles with its six folders as six layers and nothing finer. This is the
+     declaration of 5 November 2026, when the support that several applications share
+     was apps/shared; on 6 November that folder became appsupport/. It is kept so that
+     a score can be compared with the earlier ones. The headers and the sources of a
+     library or of an application are one layer here; expert-goggles.aji.xml divides
+     them. -->
 <aji-project name="expert-goggles-shared-layer" root="../../../../expert-goggles" language="cpp">
   <exclude glob="**/tests/**"/>
+  <tests glob="**/tests/**"/>
   <layer number="1" name="foundation">
     <path glob="foundation/**"/>
   </layer>
@@ -18,8 +20,8 @@
   <layer number="4" name="facilities">
     <path glob="facilities/**"/>
   </layer>
-  <layer number="5" name="apps/shared">
-    <path glob="apps/shared/**"/>
+  <layer number="5" name="application support">
+    <path glob="appsupport/**"/>
   </layer>
   <layer number="6" name="apps">
     <path glob="apps/**"/>

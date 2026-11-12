@@ -1,28 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- expert-goggles (vimcp), C++20. The five declared layers come from
-     restructure/README.md: dependencies may skip layers but always point downward,
-     and the libraries side by side in layer 4 are independent.
+<!-- expert-goggles (vimcp), C++20. The order of the folders comes from
+     restructure/README.md: foundation, engines, orchestration, facilities, then the
+     support that several applications share (appsupport), then the applications.
+     Dependencies may skip layers but always point toward the foundation, and the
+     libraries side by side in facilities are independent.
+
+     Inside each of these the headers are a layer above the sources. A library keeps
+     its public headers in include/ and its sources in src/. A header kept in src/ is
+     one that most of the sources of its library include, so it is a layer between the
+     two. An application keeps its headers in apps/NAME/include/NAME/.
      In M-score terms, layer 1 is the top: the layer most depended upon.
 
-     Tests are left out, so the score describes the production code. To include them,
-     delete the <exclude> line; each test file then joins the layer of its folder.
-     Folders that match no layer (doc, restructure, external-benchmarks, build trees)
-     are left out and listed at the end of the report. -->
+     Tests are left out of the score, so it describes the production code; the <tests>
+     line names them so that aji reads their includes for the test-reach measure. To
+     score them as well, delete both lines; each test file then joins the layer of its
+     folder. Folders that match no layer (doc, restructure, external-benchmarks, build
+     trees) are left out and listed at the end of the report. -->
 <aji-project name="expert-goggles" root="../../../../expert-goggles" language="cpp">
   <exclude glob="**/tests/**"/>
-  <layer number="1" name="foundation">
+  <tests glob="**/tests/**"/>
+  <layer number="1" name="foundation: public headers">
+    <path glob="foundation/include/**"/>
+  </layer>
+  <layer number="2" name="foundation: headers in src">
+    <path glob="foundation/src/**/*.hpp"/>
+    <path glob="foundation/src/**/*.h"/>
+  </layer>
+  <layer number="3" name="foundation: sources">
     <path glob="foundation/**"/>
   </layer>
-  <layer number="2" name="engines">
+  <layer number="4" name="engines: public headers">
+    <path glob="engines/include/**"/>
+  </layer>
+  <layer number="5" name="engines: headers in src">
+    <path glob="engines/src/**/*.hpp"/>
+  </layer>
+  <layer number="6" name="engines: sources">
     <path glob="engines/**"/>
   </layer>
-  <layer number="3" name="orchestration">
+  <layer number="7" name="orchestration: public headers">
+    <path glob="orchestration/include/**"/>
+  </layer>
+  <layer number="8" name="orchestration: headers in src">
+    <path glob="orchestration/src/**/*.hpp"/>
+  </layer>
+  <layer number="9" name="orchestration: sources">
     <path glob="orchestration/**"/>
   </layer>
-  <layer number="4" name="facilities">
+  <layer number="10" name="facilities: public headers">
+    <path glob="facilities/*/include/**"/>
+  </layer>
+  <layer number="11" name="facilities: headers in src">
+    <path glob="facilities/*/src/**/*.hpp"/>
+  </layer>
+  <layer number="12" name="facilities: sources">
     <path glob="facilities/**"/>
   </layer>
-  <layer number="5" name="apps">
+  <layer number="13" name="application support">
+    <path glob="appsupport/**"/>
+  </layer>
+  <layer number="14" name="apps: headers">
+    <path glob="apps/*/include/**"/>
+  </layer>
+  <layer number="15" name="apps: sources">
     <path glob="apps/**"/>
   </layer>
 </aji-project>

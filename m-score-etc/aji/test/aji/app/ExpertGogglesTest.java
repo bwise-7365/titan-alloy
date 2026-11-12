@@ -8,15 +8,18 @@ import java.util.List;
 
 /**
  * Runs aji on expert-goggles and checks the result against the architecture that
- * expert-goggles documents: five layers whose dependencies always point toward the foundation
+ * expert-goggles documents: layers whose dependencies always point toward the foundation
  * ({@code restructure/README.md}), libraries in the facilities layer that are independent of
- * one another, and applications that use the shared support but never another application
- * ({@code apps/README.md}). Run it from the aji folder, or pass the project file:
+ * one another, shared support in {@code appsupport/} that uses no application, and
+ * applications that never use another application ({@code apps/README.md}), each with its
+ * headers in {@code apps/NAME/include/NAME/}. Run it from the aji folder, or pass the project
+ * file:
  *
  * <pre>  java -cp out aji.app.ExpertGogglesTest [projects/expert-goggles.aji.xml]</pre>
  *
- * The checks do not depend on whether {@code apps/shared} is a layer of its own, so the test
- * also accepts {@code projects/expert-goggles-shared-layer.aji.xml}.
+ * The checks do not depend on how finely the layers are declared, so the test also accepts
+ * {@code projects/expert-goggles-shared-layer.aji.xml}, which declares one layer for each
+ * of the six folders.
  *
  * <p>expert-goggles changes from day to day, so the test fixes no file count and no score.
  * It prints them and checks the rules that must hold whatever they are.
@@ -54,10 +57,22 @@ public final class ExpertGogglesTest {
 
         List<Dep> acrossApps = run.deps(d -> d.from().startsWith("apps/")
                 && d.to().startsWith("apps/")
-                && !ProjectRun.part(d.to(), 1).equals("shared")
                 && !ProjectRun.part(d.from(), 1).equals(ProjectRun.part(d.to(), 1)));
-        c.check("no application includes another, and apps/shared includes none",
-                acrossApps.isEmpty(), ProjectRun.listing(acrossApps));
+        c.check("no application includes another", acrossApps.isEmpty(),
+                ProjectRun.listing(acrossApps));
+
+        List<Dep> supportUsesApps = run.deps(d -> d.from().startsWith("appsupport/")
+                && d.to().startsWith("apps/"));
+        c.check("the support that the applications share (appsupport) includes no application",
+                supportUsesApps.isEmpty(), ProjectRun.listing(supportUsesApps));
+
+        List<String> strayHeaders = run.files(id -> id.startsWith("apps/")
+                && (id.endsWith(".hpp") || id.endsWith(".h"))
+                && !id.startsWith("apps/" + ProjectRun.part(id, 1) + "/include/"
+                        + ProjectRun.part(id, 1) + "/"));
+        c.check("the headers of each application are in its folder include/NAME",
+                strayHeaders.isEmpty(), strayHeaders.size() + " elsewhere"
+                        + (strayHeaders.isEmpty() ? "" : ", the first " + strayHeaders.get(0)));
 
         int modules = run.derived().modules().size();
         c.check("the include graph has no cycle: with derived layers every file is a module"

@@ -356,30 +356,58 @@ public final class Graphs {
         if (n == 0) {
             return Double.NaN;
         }
-        int[] comp = strongComponents(g.out());
+        return (double) cumulativeDependency(reach(g.out())) / ((double) n * n);
+    }
+
+    /**
+     * For each node, the set of nodes it reaches along edges, counting itself. Computed on the
+     * condensation graph: the nodes of one strongly connected component share one set, and
+     * Tarjan's numbering lets the sets be built in one pass from the components that are
+     * reached toward those that reach them.
+     */
+    public static BitSet[] reach(int[][] out) {
+        int n = out.length;
+        int[] comp = strongComponents(out);
         int k = Arrays.stream(comp).max().orElse(-1) + 1;
         int[][] byComp = membersByComponent(comp, k);
-        BitSet[] reach = new BitSet[k];
+        BitSet[] ofComp = new BitSet[k];
         for (int c = 0; c < k; c++) {
-            reach[c] = new BitSet(k);
-            reach[c].set(c);
+            ofComp[c] = new BitSet(n);
             for (int a : byComp[c]) {
-                for (int b : g.out()[a]) {
+                ofComp[c].set(a);
+            }
+            for (int a : byComp[c]) {
+                for (int b : out[a]) {
                     if (comp[b] != c) {
-                        reach[c].or(reach[comp[b]]);
+                        ofComp[c].or(ofComp[comp[b]]);
                     }
                 }
             }
         }
-        double total = 0;
-        for (int c = 0; c < k; c++) {
-            long files = 0;
-            for (int d = reach[c].nextSetBit(0); d >= 0; d = reach[c].nextSetBit(d + 1)) {
-                files += byComp[d].length;
-            }
-            total += (double) byComp[c].length * files;
+        BitSet[] reach = new BitSet[n];
+        for (int a = 0; a < n; a++) {
+            reach[a] = ofComp[comp[a]];
         }
-        return total / ((double) n * n);
+        return reach;
+    }
+
+    /**
+     * Lakos's cumulative component dependency: the sum over the nodes of the number of nodes
+     * each one reaches, counting itself.
+     */
+    public static long cumulativeDependency(BitSet[] reach) {
+        long total = 0;
+        for (BitSet r : reach) {
+            total += r.cardinality();
+        }
+        return total;
+    }
+
+    /** The out-lists with one edge taken out; the arrays are new, the input is unchanged. */
+    public static int[][] without(int[][] out, int from, int to) {
+        int[][] copy = out.clone();
+        copy[from] = Arrays.stream(out[from]).filter(b -> b != to).toArray();
+        return copy;
     }
 
     private static int[][] membersByComponent(int[] comp, int k) {

@@ -28,7 +28,7 @@ javac -encoding UTF-8 -d "$work\aji-classes" $src
 java -cp "$work\aji-classes" aji.selftest.SelfTest "$aji\fixtures"
 ```
 
-The self-test ends with `29 passed, 0 failed`. The build takes a few seconds, so rebuild at the start of a session and whenever aji's source has changed.
+The self-test ends with `55 passed, 0 failed`. The build takes a few seconds, so rebuild at the start of a session and whenever aji's source has changed.
 
 ## 2. Run
 
@@ -36,9 +36,9 @@ The self-test ends with `29 passed, 0 failed`. The build takes a few seconds, so
 java -cp "$WORK/aji-classes" aji.app.Main PROJECT.aji.xml --out "$WORK/aji-out/NAME" --quiet
 ```
 
-aji reads the source tree and changes nothing in it. It writes `report.txt`, `modules.csv` and `model.xml` to the output folder, and its last line on the console names that folder. Without `--out` the folder is `aji-out/NAME` under the current directory, which is the repository the session is working in. Pass `--out` to keep that repository clean.
+aji reads the source tree and changes nothing in it. It writes `report.txt`, `modules.csv`, `measures.csv`, `moves.csv` and `model.xml` to the output folder, and its last line on the console names that folder. Without `--out` the folder is `aji-out/NAME` under the current directory, which is the repository the session is working in. Pass `--out` to keep that repository clean.
 
-With `--quiet` the report is written and not printed. Read `report.txt` afterwards; for the four projects here it is 100 to 180 lines.
+With `--quiet` the report is written and not printed. Read `report.txt` afterwards; for the four projects here it is 250 to 500 lines, of which the M-score part is the first 100 to 180.
 
 | Option | Use |
 |---|---|
@@ -47,6 +47,8 @@ With `--quiet` the report is written and not printed. Read `report.txt` afterwar
 | `--upward FAIL` | Stop with exit status 2 when a dependency breaks the declared order of the layers. |
 | `--layers derived` | Ignore the declared layers and derive them from the dependencies. |
 | `--cross`, `--lower` | The two open choices of the published definition (Section 6). The report gives the score under all four combinations in any case. |
+| `--measures mscore` | The M-score alone, without the four measures and the moves (Section 11). |
+| `--group folder|component|top|layer` | How files are grouped for direction and partition fit. The default, folder for Java and component for C++, is right for the projects here. |
 
 Exit status is 0 on success and 1 for a usage or input error.
 
@@ -70,6 +72,7 @@ A project file names the root of a source tree, the language, and the layers. Th
 - A file belongs to the first layer whose pattern matches it, so a specific pattern must come before a general one. A pattern may name one file.
 - With declared layers, a file that matches no layer is left out of the score. The report counts such files under INPUT and lists them under FILES LEFT OUT at its end. Check that list after every change to the patterns.
 - `language` is `java` or `cpp`. For Java the package comes from the `package` statement, so source roots need no declaration. For C++, `<include dir="..."/>` names include folders.
+- `<tests glob="..."/>` names the test files. They stay out of the score, and the test-reach measure reads their dependencies. Keep the `<exclude>` line for the same folder as well: the tests pattern is matched first, so both together mean "not scored, but read as tests".
 - References to code outside the root are ignored. For HexKrieg that is the sibling repository HexRules.
 - Folders named `.git`, `.idea`, `.vs`, `.vscode`, `build`, `cmake-build-*`, `out`, `target` and `node_modules` are excluded unless `default-excludes="false"` is given.
 
@@ -85,6 +88,8 @@ The sections come in this order.
 - LAYERS gives the files, the modules and the largest module of each layer. A layer whose files all form one large module is where a size loss comes from.
 - MODULES THAT LOSE THE MOST ranks the modules by the points they cost. Work from the top of this list.
 - WHY THE COSTLIEST MODULES LOSE POINTS explains the first modules of that list (Section 8).
+- REACH, DIRECTION, PARTITION FIT and TEST REACH are the four measures beside the M-score, each with a grade, its source, its parts and MOVES (README Section 11). REACH is Lakos's NCCD, lower is better, with the dependencies whose cut shortens the most reach. DIRECTION is the share of dependencies between groups that point toward a group at least as stable (Martin), with the violating pairs and the hub files. PARTITION FIT is the modularity Q of the groups and the share of hidden files, with the files that belong with another group and the transit files. TEST REACH is the share of production files (headers, in C++) that some test depends on, with the folders no test reaches.
+- MOVES THAT HELP MORE THAN ONE MEASURE tries every cut and move the measures suggested and shows, with `+`, `-` and `.`, which of the six grades each one improves. Work from the top of this list when asked for changes that several measures agree on; the splits and tests under it are advice that cannot be tried.
 - LAYERING VIOLATIONS lists the dependencies that point from a higher layer to a lower one.
 
 A module is computed, never declared: it is a set of files of one layer that dependencies inside the layer link together. Its label is the folder its files share and its size, so several modules can carry the same folder. The column `first_file` of `modules.csv` tells them apart.
@@ -101,7 +106,7 @@ The explanation of a module has these parts.
 
 `model.xml` holds the files with their layers and every dependency as `<dep from="A" to="B"/>`, meaning that A depends on B. Search it to see what uses a file. Compare the sorted `<dep` lines of two runs to see which dependencies a change added or removed. It is also a valid input to aji.
 
-`modules.csv` has one row for each module with every term of the formula. Its values are fractions of 1, where the report gives percentage points.
+`modules.csv` has one row for each module with every term of the formula. Its values are fractions of 1, where the report gives percentage points. `measures.csv` has one row per grade, and `moves.csv` every move tried with the six grades after it, for trend tracking and for sorting in a spreadsheet.
 
 ## 5. From a report to a change
 
@@ -126,7 +131,7 @@ This method produced the three steps on HexKrieg (37.8 % to 84.6 %) and the thre
 4. Make the change in the code so that packages or folders follow the new layers, and shorten the patterns to match. Run aji again and compare three figures with the trial: the score, the number of dependencies, and the number of violations.
 5. Record the rules of the architecture as checks (Section 7 below).
 
-When asked for the best improvements, rank the candidates by the points their trials gain, and say for each one whether it only declares or moves layers or also changes code.
+When asked for the best improvements, rank the candidates by the points their trials gain, and say for each one whether it only declares or moves layers or also changes code. When asked for changes that help more than the M-score, take them from MOVES THAT HELP MORE THAN ONE MEASURE, which has already tried each one under all six grades; a cut there is a dependency to take out of the users' reach by one of Lakos's remedies, not an include to delete.
 
 ## 6. Points that are easy to misread
 
@@ -146,19 +151,19 @@ When asked for the best improvements, rank the candidates by the points their tr
 cd "$WORK" && java -cp aji-classes aji.app.HexKriegTest "$AJI/projects/hexkrieg.aji.xml"
 ```
 
-Each check prints PASS or FAIL, and a failed rule names up to five of the dependencies that break it. On 6 November 2026 HexKriegTest passed 25 checks and ExpertGogglesTest 22. To give another project such a test, write a class like `test/aji/app/HexKriegTest.java`. `ProjectRun.test` runs aji and the general checks; `run.deps(...)` and `run.files(...)` select dependencies and files for the project's own rules.
+Each check prints PASS or FAIL, and a failed rule names up to five of the dependencies that break it. On 8 November 2026 ExpertGogglesTest passed its 35 checks and HexKriegTest its 37. When HexKrieg adds a game that plays another game's rules, add the pair to `RULES_PLAYED` in `HexKriegTest`. To give another project such a test, write a class like `test/aji/app/HexKriegTest.java`. `ProjectRun.test` runs aji and the general checks; `run.deps(...)` and `run.files(...)` select dependencies and files for the project's own rules.
 
-## 8. Reference figures (6 November 2026, default options)
+## 8. Reference figures (8 November 2026, default options)
 
-| Project file | Root | Files | Dependencies | Layers | M-score |
-|---|---|---|---|---|---|
-| `projects/aji.aji.xml` | this folder | 31 | 118 | 8 | 75.155 % |
-| `projects/hexkrieg.aji.xml` | `C:\repos\ghub-per\HexKrieg` | 83 | 394 | 13 | 84.615 % |
-| `projects/expert-goggles.aji.xml` | `C:\repos\ghub-per\expert-goggles` | 335 | 677 | 5 | 45.719 % |
-| `projects/expert-goggles-shared-layer.aji.xml` | the same | 335 | 677 | 6 | 54.673 % |
+| Project file | Root | Files | Dependencies | Layers | M-score | NCCD | Direction | Q | Test reach |
+|---|---|---|---|---|---|---|---|---|---|
+| `projects/aji.aji.xml` | this folder | 39 | 179 | 8 | 71.526 % | 2.111 | 89.677 % | 0.040 | not declared |
+| `projects/hexkrieg.aji.xml` | `C:\repos\ghub-per\HexKrieg` | 102 | 557 | 13 | 84.136 % | 2.751 | 99.163 % | 0.031 | 96.078 % |
+| `projects/expert-goggles.aji.xml` | `C:\repos\ghub-per\expert-goggles` | 335 | 677 | 15 | 85.691 % | 1.964 | 91.429 % | 0.556 | 94.512 % |
+| `projects/expert-goggles-shared-layer.aji.xml` | the same | 335 | 677 | 6 | 54.673 % | the same | the same | the same | the same |
 
-None of the four has a layering violation. aji on aji needs only this folder, so it is the quickest check that a build works. Its figures move whenever aji's own source changes: Section 9 of the README records 75.289 % with 117 dependencies, from before `HexKriegTest` came to use `SystemModel`.
+None of the four has a layering violation. aji on aji needs only this folder, so it is the quickest check that a build works. Its figures move whenever aji's own source changes: on 6 November it had 31 files, 118 dependencies and 75.155 %; the measures added seven files. HexKrieg's figures moved with HexKrieg (83 files and 84.615 % on 6 November).
 
 ## 9. Changing aji
 
-aji uses only the JDK; keep it so. Its packages are its layers, declared in `projects/aji.aji.xml` and listed in Section 10 of the README. After a change, run the self-test, the two project tests, and aji on aji, and bring the README up to date where behaviour or recorded figures changed.
+aji uses only the JDK; keep it so. Its packages are its layers, declared in `projects/aji.aji.xml` and listed in Section 10 of the README. After a change, run the self-test, the two project tests, and aji on aji, and bring the README up to date where behaviour or recorded figures changed. A new measure goes in `aji.measure` as a record with `of` (everything) and `grade` (the grade alone, for the trials), returns its suggestions as `Move`s, gets a section in `MeasureWriter` in the same four parts as the others, a column in `Trials.Grades` if the trials are to recompute it, a hand-worked case in the self-test, and a paragraph in README Section 11. `PLAN.md` is the plan the four measures of 8 November were built to.
